@@ -13,23 +13,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget.strings;
+package com.twosigma.beakerx.widget.string;
 
-import com.twosigma.beakerx.message.Message;
+public class Textarea extends StringWidget {
 
-public class Label extends StringWidget {
+  public static final String VIEW_NAME_VALUE = "TextareaView";
+  public static final String MODEL_NAME_VALUE = "TextareaModel";
+  public static final String MODEL_MODULE_VALUE = "beakerx";
+  public static final String VIEW_MODULE_VALUE = "beakerx";
 
-  public static final String VIEW_NAME_VALUE = "LabelView";
-  public static final String MODEL_NAME_VALUE = "LabelModel";
-
-  public Label() {
+  public Textarea() {
     super();
     openComm();
-  }
-
-  public Label(Message parentMessage) {
-    super();
-    openComm(parentMessage);
   }
 
   @Override
@@ -41,4 +36,15 @@ public class Label extends StringWidget {
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
   }
+
+  @Override
+  public String getModelModuleValue(){
+    return MODEL_MODULE_VALUE;
+  }
+
+  @Override
+  public String getViewModuleValue(){
+    return VIEW_MODULE_VALUE;
+  }
+
 }

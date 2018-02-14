@@ -13,16 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget.strings;
+package com.twosigma.beakerx.widget.string;
 
-public class HTMLPre extends StringWidget {
+public class Text extends StringWidget {
 
-  public static final String VIEW_NAME_VALUE = "HTMLPreView";
-  public static final String MODEL_NAME_VALUE = "HTMLPreModel";
+  public static final String VIEW_NAME_VALUE = "TextView";
+  public static final String MODEL_NAME_VALUE = "TextModel";
   public static final String MODEL_MODULE_VALUE = "beakerx";
   public static final String VIEW_MODULE_VALUE = "beakerx";
 
-  public HTMLPre() {
+  public Text() {
     super();
     openComm();
   }

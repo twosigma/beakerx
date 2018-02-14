@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget.strings;
+package com.twosigma.beakerx.widget.string;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.jupyter.SearchMessages;

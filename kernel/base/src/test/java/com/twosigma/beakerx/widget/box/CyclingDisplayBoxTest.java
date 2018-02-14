@@ -19,7 +19,7 @@ import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.widget.Widget;
 import com.twosigma.beakerx.widget.integer.IntSlider;
-import com.twosigma.beakerx.widget.strings.Text;
+import com.twosigma.beakerx.widget.string.Text;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beakerx.widget.strings;
+package com.twosigma.beakerx.widget.string;
 
 public class Password extends StringWidget {
 

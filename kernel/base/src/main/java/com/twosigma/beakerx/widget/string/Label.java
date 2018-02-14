@@ -13,26 +13,32 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget.strings;
+package com.twosigma.beakerx.widget.string;
 
-import java.io.Serializable;
-import java.util.HashMap;
+import com.twosigma.beakerx.message.Message;
 
-import com.twosigma.beakerx.widget.ValueWidget;
+public class Label extends StringWidget {
 
-public abstract class StringWidget extends ValueWidget<String> {
+  public static final String VIEW_NAME_VALUE = "LabelView";
+  public static final String MODEL_NAME_VALUE = "LabelModel";
 
-  @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
-    super.content(content);
-    content.put(VALUE, this.value);
-    content.put("placeholder", "");
-    return content;
+  public Label() {
+    super();
+    openComm();
+  }
+
+  public Label(Message parentMessage) {
+    super();
+    openComm(parentMessage);
   }
 
   @Override
-  public String getValueFromObject(Object input) {
-    return getString(input);
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
   }
 
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
+  }
 }

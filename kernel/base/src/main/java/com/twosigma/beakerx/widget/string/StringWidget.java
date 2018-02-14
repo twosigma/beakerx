@@ -13,31 +13,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget.strings;
+package com.twosigma.beakerx.widget.string;
 
-/**
- * Renders the string `value` as HTML, and render mathematics.
- * 
- * @author konst
- *
- */
-public class HTMLMath extends StringWidget {
+import java.io.Serializable;
+import java.util.HashMap;
 
-  public static final String VIEW_NAME_VALUE = "HTMLMathView";
-  public static final String MODEL_NAME_VALUE = "HTMLMathModel";
+import com.twosigma.beakerx.widget.ValueWidget;
 
-  public HTMLMath() {
-    super();
-    openComm();
+public abstract class StringWidget extends ValueWidget<String> {
+
+  @Override
+  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+    super.content(content);
+    content.put(VALUE, this.value);
+    content.put("placeholder", "");
+    return content;
   }
 
   @Override
-  public String getModelNameValue() {
-    return MODEL_NAME_VALUE;
+  public String getValueFromObject(Object input) {
+    return getString(input);
   }
 
-  @Override
-  public String getViewNameValue() {
-    return VIEW_NAME_VALUE;
-  }
 }

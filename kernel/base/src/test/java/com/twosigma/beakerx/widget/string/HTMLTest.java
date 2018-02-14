@@ -13,7 +13,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget.strings;
+
+package com.twosigma.beakerx.widget.string;
 
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.KernelTest;
@@ -26,7 +27,7 @@ import java.security.NoSuchAlgorithmException;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyMsgForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsg;
 
-public class TextareaTest {
+public class HTMLTest {
 
   private KernelTest groovyKernel;
 
@@ -45,25 +46,26 @@ public class TextareaTest {
   public void shouldSendCommOpenWhenCreate() throws Exception {
     //given
     //when
-    new Textarea();
+    new HTML();
     //then
-    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), Textarea.MODEL_NAME_VALUE, Textarea.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), HTML.MODEL_NAME_VALUE, HTML.VIEW_NAME_VALUE);
   }
 
   @Test
   public void shouldSendCommMsgWhenValueChange() throws Exception {
     //given
-    Textarea widget = textarea();
+    HTML widget = html();
     //when
-    widget.setValue("Text area 1");
+    widget.setValue("Hello <b>World</b>");
     //then
-    verifyMsgForProperty(groovyKernel, Textarea.VALUE, "Text area 1");
+    verifyMsgForProperty(groovyKernel, HTML.VALUE, "Hello <b>World</b>");
   }
 
-  private Textarea textarea() throws NoSuchAlgorithmException {
-    Textarea widget = new Textarea();
+  private HTML html() throws NoSuchAlgorithmException {
+    HTML widget = new HTML();
     groovyKernel.clearPublishedMessages();
     return widget;
   }
+
 
 }

@@ -22,7 +22,7 @@ import com.twosigma.beakerx.widget.bool.Checkbox;
 import com.twosigma.beakerx.widget.floats.FloatSlider;
 import com.twosigma.beakerx.widget.integer.IntSlider;
 import com.twosigma.beakerx.widget.selection.Dropdown;
-import com.twosigma.beakerx.widget.strings.Text;
+import com.twosigma.beakerx.widget.string.Text;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;

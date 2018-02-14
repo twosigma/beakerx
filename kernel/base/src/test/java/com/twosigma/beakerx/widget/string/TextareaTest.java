@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget.strings;
+package com.twosigma.beakerx.widget.string;
 
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.KernelTest;
@@ -26,7 +26,7 @@ import java.security.NoSuchAlgorithmException;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyMsgForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsg;
 
-public class LabelTest {
+public class TextareaTest {
 
   private KernelTest groovyKernel;
 
@@ -45,23 +45,23 @@ public class LabelTest {
   public void shouldSendCommOpenWhenCreate() throws Exception {
     //given
     //when
-    new Label();
+    new Textarea();
     //then
-    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), Label.MODEL_NAME_VALUE, Label.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), Textarea.MODEL_NAME_VALUE, Textarea.VIEW_NAME_VALUE);
   }
 
   @Test
   public void shouldSendCommMsgWhenValueChange() throws Exception {
     //given
-    Label widget = label();
+    Textarea widget = textarea();
     //when
-    widget.setValue("1");
+    widget.setValue("Text area 1");
     //then
-    verifyMsgForProperty(groovyKernel, Label.VALUE, "1");
+    verifyMsgForProperty(groovyKernel, Textarea.VALUE, "Text area 1");
   }
 
-  private Label label() throws NoSuchAlgorithmException {
-    Label widget = new Label();
+  private Textarea textarea() throws NoSuchAlgorithmException {
+    Textarea widget = new Textarea();
     groovyKernel.clearPublishedMessages();
     return widget;
   }

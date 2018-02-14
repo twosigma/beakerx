@@ -16,8 +16,8 @@
 package com.twosigma.beakerx.kernel.magic.command.functionality;
 
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widget.strings.HTML;
-import com.twosigma.beakerx.widget.strings.StringWidget;
+import com.twosigma.beakerx.widget.string.HTML;
+import com.twosigma.beakerx.widget.string.StringWidget;
 
 import java.math.BigDecimal;
 import java.util.Timer;

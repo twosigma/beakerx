@@ -13,10 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget.strings;
+package com.twosigma.beakerx.widget.string;
 
-import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.KernelTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,8 +26,7 @@ import java.security.NoSuchAlgorithmException;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyMsgForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsg;
 
-public class HTMLMathTest {
-
+public class LabelTest {
 
   private KernelTest groovyKernel;
 
@@ -46,28 +45,23 @@ public class HTMLMathTest {
   public void shouldSendCommOpenWhenCreate() throws Exception {
     //given
     //when
-    new HTMLMath();
+    new Label();
     //then
-    verifyOpenCommMsg(
-        groovyKernel.getPublishedMessages(),
-        HTMLMath.MODEL_NAME_VALUE,
-        HTMLMath.VIEW_NAME_VALUE
-    );
+    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), Label.MODEL_NAME_VALUE, Label.VIEW_NAME_VALUE);
   }
 
   @Test
   public void shouldSendCommMsgWhenValueChange() throws Exception {
-    String expected = "<b>123</b>";
     //given
-    HTMLMath widget = htmlMath();
+    Label widget = label();
     //when
-    widget.setValue(expected);
+    widget.setValue("1");
     //then
-    verifyMsgForProperty(groovyKernel, HTMLMath.VALUE, expected);
+    verifyMsgForProperty(groovyKernel, Label.VALUE, "1");
   }
 
-  private HTMLMath htmlMath() throws NoSuchAlgorithmException {
-    HTMLMath widget = new HTMLMath();
+  private Label label() throws NoSuchAlgorithmException {
+    Label widget = new Label();
     groovyKernel.clearPublishedMessages();
     return widget;
   }

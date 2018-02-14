@@ -29,7 +29,8 @@ $gridBorder: 1px solid $borderColor;
 .p-DataGrid {
   min-width: 64px;
   min-height: 330px;
-  border: $gridBorder;
+  padding: 20px;
+  border: 1px solid white;
 
   .bko-menu {
     opacity: 1;
@@ -62,8 +63,14 @@ $gridBorder: 1px solid $borderColor;
   }
 }
 
+.p-DataGrid-viewport {
+  border: $gridBorder;
+}
+
 .p-DataGrid-scrollCorner {
   background-color: $gridBackgroundColor;
+  border-right: $gridBorder;
+  border-bottom: $gridBorder;
 }
 
 .p-DataGrid-scrollCorner::after {
@@ -81,7 +88,9 @@ $gridBorder: 1px solid $borderColor;
     min-height: 16px;
     max-height: 16px;
     min-width: 45px;
-    border-top: $gridBorder;
+    border-bottom: $gridBorder;
+    border-left: $gridBorder;
+    border-right: $gridBorder;
 
     .p-ScrollBar-thumb {
       height: 100%;
@@ -95,7 +104,9 @@ $gridBorder: 1px solid $borderColor;
     min-width: 16px;
     max-width: 16px;
     min-height: 45px;
-    border-left: $gridBorder;
+    border-right: $gridBorder;
+    border-top: $gridBorder;
+    border-bottom: $gridBorder;
 
     .p-ScrollBar-thumb {
       width: 100%;

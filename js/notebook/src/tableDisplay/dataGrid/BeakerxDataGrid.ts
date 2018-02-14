@@ -60,6 +60,9 @@ export class BeakerxDataGrid extends DataGrid {
       case 'mousemove':
         this.handleHeaderCellHover(event as MouseEvent);
         break;
+      case 'mousedown':
+        this.handleHeaderClick(event as MouseEvent);
+        break;
       case 'mouseout':
         this.headerCellHovered.emit(null);
         break;
@@ -128,6 +131,17 @@ export class BeakerxDataGrid extends DataGrid {
     const data = this.getHoveredCellData(event.clientX, event.clientY);
 
     this.headerCellHovered.emit(data);
+  }
+
+  private handleHeaderClick(event: MouseEvent): void {
+    const data = this.getHoveredCellData(event.clientX, event.clientY);
+
+    if (!data) {
+      return;
+    }
+
+    const column = this.columnManager.columns[data.type][data.index];
+    column.toggleSort();
   }
 
   private getHoveredCellData(clientX: number, clientY: number): ICellData|null {

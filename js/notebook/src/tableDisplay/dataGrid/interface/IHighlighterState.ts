@@ -24,6 +24,7 @@ export enum HIGHLIGHTER_TYPE {
   uniqueEntries = 'UniqueEntriesHighlighter',
   threeColorHeatmap = 'ThreeColorHeatmapHighlighter',
   value = 'ValueHighlighter',
+  sort = 'SortHighlighter'
 }
 
 export default interface IHihglighterState {

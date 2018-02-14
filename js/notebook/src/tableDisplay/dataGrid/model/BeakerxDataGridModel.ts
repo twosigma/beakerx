@@ -17,11 +17,16 @@
 import { DataModel } from "@phosphor/datagrid";
 import { ALL_TYPES } from '../dataTypes';
 import { DataFormatter } from '../DataFormatter';
-import {COLUMN_TYPES, default as DataGridColumn} from "../column/DataGridColumn";
+import {COLUMN_TYPES, default as DataGridColumn, SORT_ORDER} from "../column/DataGridColumn";
 import IDataModelState from '../interface/IDataGridModelState';
-import { MapIterator, EmptyIterator, iter } from '@phosphor/algorithm';
+import { MapIterator, EmptyIterator, iter, toArray } from '@phosphor/algorithm';
 import { IColumn } from "../interface/IColumn";
-import ColumnManager, {COLUMN_CHANGED_TYPES, IcolumnsChangedArgs} from "../column/ColumnManager";
+import ColumnManager, {COLUMN_CHANGED_TYPES, IBkoColumnsChangedArgs} from "../column/ColumnManager";
+
+interface IDataGridRow {
+  values: any[],
+  index: number
+}
 
 export interface IDataGridModelColumnState {
   names: string[],
@@ -40,6 +45,7 @@ export class BeakerxDataGridModel extends DataModel {
   private _state: IDataModelState;
   private _columnCount: number;
   private _rowCount: number;
+  private _rows: IDataGridRow[];
 
   constructor(state: IDataModelState, columnManager: ColumnManager) {
     super();
@@ -70,6 +76,10 @@ export class BeakerxDataGridModel extends DataModel {
       ? this.state.columnNames.length -1
       : this.state.columnNames.length || 0;
     this._rowCount = this._data.length;
+    this._rows = toArray(new MapIterator<number, any>(
+      iter(this._data),
+      (values, index) => ({ index: this.state.hasIndex ? values[0] : index, values })
+    ));
 
     this.setState({
       columnsVisible: this.state.columnsVisible || {}
@@ -91,7 +101,7 @@ export class BeakerxDataGridModel extends DataModel {
     const index = this.columnManager.indexResolver.resolveIndex(columnIndex, columnType);
 
     if (region === 'row-header') {
-      return this.state.hasIndex ? this.getValue(region, row, index) : row;
+      return this.state.hasIndex ? this.getValue(region, row, index) : this._rows[row].index;
     }
 
     if (region === 'column-header') {
@@ -112,11 +122,56 @@ export class BeakerxDataGridModel extends DataModel {
     };
   }
 
-  connectTocolumnsChanged() {
+  sortByColumn(column: DataGridColumn) {
+    if (column.type === COLUMN_TYPES.index || column.state.sortOrder === SORT_ORDER.NO_SORT) {
+      return this.sortByIndexColumn(column);
+    }
+
+    this.sortByBodyColumn(column);
+  }
+
+  private sortByIndexColumn(column: DataGridColumn) {
+    this.sortRows(column, (row) => row.index);
+    this.reset();
+  }
+
+  private sortByBodyColumn(column: DataGridColumn) {
+    const dateValueResolver = (row) => row.values[column.index].timestamp;
+
+    if (column.state.dataType === ALL_TYPES.datetime || column.state.dataType === ALL_TYPES.time) {
+      return this.sortRows(column, dateValueResolver);
+    }
+
+    return this.sortRows(column, (row) => row.values[column.index]);
+  }
+
+  private sortRows(column: DataGridColumn, valueResolver: Function): void {
+    const shouldReverse = column.state.sortOrder === SORT_ORDER.DESC;
+
+    this._rows = this._rows.sort((row1, row2) => {
+      let value1 = valueResolver(row1);
+      let value2 = valueResolver(row2);
+      let result = 0;
+
+      if (value1 > value2) {
+        result = 1;
+      }
+
+      if (value1 < value2) {
+        result = -1;
+      }
+
+      return shouldReverse ? -result : result;
+    });
+
+    this.reset();
+  }
+
+  private connectTocolumnsChanged() {
     this.columnManager.columnsChanged.connect(this.setColumnVisible.bind(this));
   }
 
-  private setColumnVisible(sender: ColumnManager, data: IcolumnsChangedArgs) {
+  private setColumnVisible(sender: ColumnManager, data: IBkoColumnsChangedArgs) {
     if(data.type !== COLUMN_CHANGED_TYPES.columnVisible) {
       return;
     }
@@ -128,7 +183,7 @@ export class BeakerxDataGridModel extends DataModel {
   }
 
   getValue(region: DataModel.CellRegion, row: number, columnIndex: number) {
-    return this._data[row][columnIndex];
+    return this._rows[row].values[columnIndex];
   }
 
   getColumnValuesIterator(column: IColumn): MapIterator<number, number> {

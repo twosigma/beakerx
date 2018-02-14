@@ -660,13 +660,6 @@ public class TableDisplay extends BeakerxWidget {
     return subtype;
   }
 
-  @SuppressWarnings("unchecked")
-  public void updateCell(int row, int col, Object value) {
-    List<Object> rowList = (List<Object>) values.get(row);
-    rowList.set(col, value);
-    sendModel();
-  }
-
   public void setDoubleClickAction(String tagName) {
     this.doubleClickListener = null;
     this.doubleClickTag = tagName;

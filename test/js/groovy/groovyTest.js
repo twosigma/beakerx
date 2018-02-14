@@ -17,7 +17,7 @@
 var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('Groovy tests', function () {
+describe('Groovy js', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();

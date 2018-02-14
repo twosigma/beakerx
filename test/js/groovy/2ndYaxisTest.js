@@ -17,7 +17,7 @@
 var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('2nd Y Axis tests', function () {
+describe('2nd Y Axis js', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();

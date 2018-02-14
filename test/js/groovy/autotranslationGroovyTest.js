@@ -17,26 +17,26 @@
 var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('Autotranslation Python to JavaScript and D3 tests', function () {
+describe('Autotranslation Groovy to JavaScript and D3 js', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/test/notebooks/python/AutoTranslationPythonTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/notebooks/groovy/AutoTranslationGroovyTest.ipynb');
   });
 
   afterAll(function () {
     beakerxPO.closeAndHaltNotebook();
   });
 
-  describe('Python code', function(){
+  describe('Groovy code', function(){
     it('Output contains data table', function(){
       var codeCell = beakerxPO.runCodeCellByIndex(0);
       var bkoTable = codeCell.$('div.bko-table');
       expect(bkoTable.isEnabled()).toBeTruthy();
-      var headTable = bkoTable.$('div.dataTables_scrollHead');
-      expect(headTable.$('th[data-column-index="1"]').getText()).toMatch('radius');
-      expect(headTable.$('th[data-column-index="2"]').getText()).toMatch('colorB');
-      expect(bkoTable.$('div.dataTables_scrollBody').$$('tbody > tr').length).toEqual(10);
+      var tblText = bkoTable.$('tbody > tr').getText();
+      expect(tblText).toMatch('nodes');
+      expect(tblText).toMatch('"radius":10');
+      expect(tblText).toMatch('"colorB":20');
     });
   });
 
@@ -58,13 +58,13 @@ describe('Autotranslation Python to JavaScript and D3 tests', function () {
       expect(svgElement.getAttribute('transform')).toMatch('translate');
     });
 
-    it('svg has 10 circles', function(){
-      expect(svgElement.$$('circle').length).toEqual(10);
+    it('svg has 11 circles', function(){
+      expect(svgElement.$$('circle').length).toEqual(11);
     });
 
     it('First and last circles has "class"= "moon"', function(){
       expect(svgElement.$$('circle')[0].getAttribute('class')).toEqual('moon');
-      expect(svgElement.$$('circle')[9].getAttribute('class')).toEqual('moon');
+      expect(svgElement.$$('circle')[10].getAttribute('class')).toEqual('moon');
     });
 
     it('First circle has "r"=5, "cx"=5, "cy"=55', function(){
@@ -74,19 +74,19 @@ describe('Autotranslation Python to JavaScript and D3 tests', function () {
       expect(Math.round(fCircle.getAttribute('cy'))).toEqual(55);
     });
 
-    it('Last circle has "r"=50, "cx"=410, "cy"=100', function(){
-      var lCircle = svgElement.$$('circle')[9];
-      expect(Math.round(lCircle.getAttribute('r'))).toEqual(50);
-      expect(Math.round(lCircle.getAttribute('cx'))).toEqual(410);
-      expect(Math.round(lCircle.getAttribute('cy'))).toEqual(100);
+    it('Last circle has "r"=55, "cx"=455, "cy"=105', function(){
+      var lCircle = svgElement.$$('circle')[10];
+      expect(Math.round(lCircle.getAttribute('r'))).toEqual(55);
+      expect(Math.round(lCircle.getAttribute('cx'))).toEqual(455);
+      expect(Math.round(lCircle.getAttribute('cy'))).toEqual(105);
     });
 
     it('First circle has color rgb(100,100,0)', function(){
       expect(svgElement.$$('circle')[0].getCssProperty('fill').value).toEqual('rgb(100,100,0)');
     });
 
-    it('Last circle has color rgb(100,100,180)', function(){
-      expect(svgElement.$$('circle')[9].getCssProperty('fill').value).toEqual('rgb(100,100,180)');
+    it('Last circle has color rgb(100,100,200)', function(){
+      expect(svgElement.$$('circle')[10].getCssProperty('fill').value).toEqual('rgb(100,100,200)');
     });
   });
 

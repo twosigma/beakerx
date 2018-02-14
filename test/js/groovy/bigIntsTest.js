@@ -17,7 +17,7 @@
 var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('big ints tests', function () {
+describe('big ints js', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();

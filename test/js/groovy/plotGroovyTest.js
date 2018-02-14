@@ -19,7 +19,7 @@ var PlotHelperObject = require('../plot.helper.js');
 var beakerxPO;
 var plotHelper;
 
-describe('Plot groovy tests', function () {
+describe('Plot groovy js', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();

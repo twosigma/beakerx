@@ -21,7 +21,7 @@ var beakerxPO;
 var plotHelper;
 var tableHelper;
 
-describe('Publish plot groovy notebook tests', function () {
+describe('Publish plot groovy notebook js', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();

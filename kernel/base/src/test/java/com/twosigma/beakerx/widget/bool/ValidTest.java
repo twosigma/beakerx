@@ -13,27 +13,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget.bools;
+package com.twosigma.beakerx.widget.bool;
 
-import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.kernel.KernelManager;
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.security.NoSuchAlgorithmException;
-
-import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyMsgForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsg;
 
-public class CheckboxTest {
+public class ValidTest {
 
-  private KernelTest groovyKernel;
+  private KernelTest kernel;
 
   @Before
   public void setUp() throws Exception {
-    groovyKernel = new KernelTest();
-    KernelManager.register(groovyKernel);
+    kernel = new KernelTest();
+    KernelManager.register(kernel);
   }
 
   @After
@@ -45,25 +43,24 @@ public class CheckboxTest {
   public void shouldSendCommOpenWhenCreate() throws Exception {
     //given
     //when
-    new Checkbox();
+    new Valid();
     //then
-    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), Checkbox.MODEL_NAME_VALUE, Checkbox.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(
+        kernel.getPublishedMessages(),
+        Valid.MODEL_NAME_VALUE,
+        Valid.VIEW_NAME_VALUE);
   }
 
   @Test
-  public void shouldSendCommMsgWhenValueChange() throws Exception {
+  public void setReadOutFlag_hasThatReadOutFlag() throws Exception {
+    boolean expected = true;
     //given
-    Checkbox widget = checkbox();
+    Valid valid = new Valid();
+    kernel.clearPublishedMessages();
     //when
-    widget.setValue(true);
+    valid.setReadOut(expected);
     //then
-    verifyMsgForProperty(groovyKernel, Checkbox.VALUE, true);
-  }
-
-  private Checkbox checkbox() throws NoSuchAlgorithmException {
-    Checkbox widget = new Checkbox();
-    groovyKernel.clearPublishedMessages();
-    return widget;
+    Assertions.assertThat(valid.getReadOut()).isEqualTo(expected);
   }
 
 }

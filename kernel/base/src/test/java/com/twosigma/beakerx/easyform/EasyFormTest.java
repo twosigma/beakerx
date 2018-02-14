@@ -36,7 +36,7 @@ import com.twosigma.beakerx.widget.BeakerxWidget;
 import com.twosigma.beakerx.widget.Button;
 import com.twosigma.beakerx.widget.DatePicker;
 import com.twosigma.beakerx.widget.Widget;
-import com.twosigma.beakerx.widget.bools.Checkbox;
+import com.twosigma.beakerx.widget.bool.Checkbox;
 import com.twosigma.beakerx.widget.box.Box;
 import com.twosigma.beakerx.widget.box.HBox;
 import com.twosigma.beakerx.widget.selections.ComboBox;

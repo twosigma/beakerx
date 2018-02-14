@@ -13,25 +13,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget.bools;
+package com.twosigma.beakerx.widget.bool;
 
-import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
-import org.assertj.core.api.Assertions;
+import com.twosigma.beakerx.KernelTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.security.NoSuchAlgorithmException;
+
+import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyMsgForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsg;
 
-public class ValidTest {
+public class CheckboxTest {
 
-  private KernelTest kernel;
+  private KernelTest groovyKernel;
 
   @Before
   public void setUp() throws Exception {
-    kernel = new KernelTest();
-    KernelManager.register(kernel);
+    groovyKernel = new KernelTest();
+    KernelManager.register(groovyKernel);
   }
 
   @After
@@ -43,24 +45,25 @@ public class ValidTest {
   public void shouldSendCommOpenWhenCreate() throws Exception {
     //given
     //when
-    new Valid();
+    new Checkbox();
     //then
-    verifyOpenCommMsg(
-        kernel.getPublishedMessages(),
-        Valid.MODEL_NAME_VALUE,
-        Valid.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), Checkbox.MODEL_NAME_VALUE, Checkbox.VIEW_NAME_VALUE);
   }
 
   @Test
-  public void setReadOutFlag_hasThatReadOutFlag() throws Exception {
-    boolean expected = true;
+  public void shouldSendCommMsgWhenValueChange() throws Exception {
     //given
-    Valid valid = new Valid();
-    kernel.clearPublishedMessages();
+    Checkbox widget = checkbox();
     //when
-    valid.setReadOut(expected);
+    widget.setValue(true);
     //then
-    Assertions.assertThat(valid.getReadOut()).isEqualTo(expected);
+    verifyMsgForProperty(groovyKernel, Checkbox.VALUE, true);
+  }
+
+  private Checkbox checkbox() throws NoSuchAlgorithmException {
+    Checkbox widget = new Checkbox();
+    groovyKernel.clearPublishedMessages();
+    return widget;
   }
 
 }

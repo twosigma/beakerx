@@ -13,32 +13,34 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget.integers;
+package com.twosigma.beakerx.widget.integer;
+
+import com.twosigma.beakerx.widget.ValueWidget;
+
+import java.io.Serializable;
+import java.util.HashMap;
 
 /**
- * Textbox widget that represents an integer bounded from above and below.
+ * Base class for widgets that represent an integer.
  * 
- * @author konst
- *
+ * @param <T>
  */
-public class BoundedIntText extends BoundedIntWidget{
+public abstract class IntWidget<T extends Serializable> extends ValueWidget<T> {
 
-  public static final String VIEW_NAME_VALUE = "IntTextView";
-  public static final String MODEL_NAME_VALUE = "IntTextModel";
-  
-  public BoundedIntText() {
+  protected IntWidget() {
     super();
-    openComm();
-  }
-
-  @Override
-  public String getModelNameValue() {
-    return MODEL_NAME_VALUE;
-  }
-
-  @Override
-  public String getViewNameValue() {
-    return VIEW_NAME_VALUE;
   }
   
+  @Override
+  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+    super.content(content);
+    content.put(VALUE, this.value);
+    return content;
+  }
+  
+  @Override
+  public T getValueFromObject(Object input){
+    return (T)getInteger(input);
+  }
+
 }

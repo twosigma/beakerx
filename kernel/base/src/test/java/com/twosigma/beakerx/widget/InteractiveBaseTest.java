@@ -20,7 +20,7 @@ import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.widget.bool.Checkbox;
 import com.twosigma.beakerx.widget.floats.FloatSlider;
-import com.twosigma.beakerx.widget.integers.IntSlider;
+import com.twosigma.beakerx.widget.integer.IntSlider;
 import com.twosigma.beakerx.widget.selections.Dropdown;
 import com.twosigma.beakerx.widget.strings.Text;
 import org.assertj.core.api.Assertions;

@@ -13,10 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget.integers;
+package com.twosigma.beakerx.widget.integer;
 
-import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.KernelTest;
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +27,7 @@ import java.security.NoSuchAlgorithmException;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyMsgForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsg;
 
-public class BoundedIntTextTest {
+public class IntProgressTest {
 
   private KernelTest groovyKernel;
 
@@ -42,32 +43,39 @@ public class BoundedIntTextTest {
   }
 
   @Test
-  public void createByEmptyConstructor_sendCommOpenMessage() throws Exception {
+  public void shouldSendCommOpenWhenCreate() throws Exception {
     //given
     //when
-    new BoundedIntText();
+    new IntProgress();
     //then
-    verifyOpenCommMsg(
-        groovyKernel.getPublishedMessages(),
-        BoundedIntText.MODEL_NAME_VALUE,
-        BoundedIntText.VIEW_NAME_VALUE
-    );
+    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), IntProgress.MODEL_NAME_VALUE, IntProgress.VIEW_NAME_VALUE);
   }
 
   @Test
-  public void setValue_sendCommMessage() throws Exception {
-    String expected = "test";
+  public void shouldSendCommMsgWhenOrientationChange() throws Exception {
     //given
-    BoundedIntText boundedIntText = BoundedIntText();
+    IntProgress intProgress = intProgress();
     //when
-    boundedIntText.setValue(expected);
+    intProgress.setOrientation("vertical");
     //then
-    verifyMsgForProperty(groovyKernel, boundedIntText.VALUE, expected);
+    verifyMsgForProperty(groovyKernel, IntSlider.ORIENTATION, "vertical");
   }
 
-  private BoundedIntText BoundedIntText() throws NoSuchAlgorithmException {
-    BoundedIntText boundedIntText = new BoundedIntText();
-    groovyKernel.clearPublishedMessages();
-    return boundedIntText;
+  @Test
+  public void setOrientation_hasThatOrientation() throws Exception {
+    String expected = "test";
+    //given
+    IntProgress intProgress = intProgress();
+    //when
+    intProgress.setOrientation(expected);
+    //then
+    Assertions.assertThat(intProgress.getOrientation()).isEqualTo(expected);
   }
+
+  private IntProgress intProgress() throws NoSuchAlgorithmException {
+    IntProgress progress = new IntProgress();
+    groovyKernel.clearPublishedMessages();
+    return progress;
+  }
+
 }

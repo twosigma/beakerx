@@ -13,34 +13,56 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget.integers;
-
-import com.twosigma.beakerx.widget.ValueWidget;
+package com.twosigma.beakerx.widget.integer;
 
 import java.io.Serializable;
 import java.util.HashMap;
 
 /**
- * Base class for widgets that represent an integer.
  * 
- * @param <T>
+ * @author konst
+ *
  */
-public abstract class IntWidget<T extends Serializable> extends ValueWidget<T> {
+public class Play extends BoundedIntWidget{
 
-  protected IntWidget() {
+  public static final String VIEW_NAME_VALUE = "PlayView";
+  public static final String MODEL_NAME_VALUE = "PlayModel";
+  
+  protected static final String _PLAYING = "_playing";
+  protected static final String INTERVAL = "interval";
+  
+  private Integer interval;
+  
+  public Play() {
     super();
+    this.interval = 100;
+    openComm();
   }
   
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
-    content.put(VALUE, this.value);
+    content.put(_PLAYING, false);
     return content;
   }
   
-  @Override
-  public T getValueFromObject(Object input){
-    return (T)getInteger(input);
+  public Integer getOrientation() {
+    return interval;
   }
 
+  public void setOrientation(Integer interval) {
+    this.interval = interval;
+    sendUpdate(INTERVAL, interval);
+  }
+
+  @Override
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
+  }
+  
 }

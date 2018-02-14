@@ -13,11 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget.integers;
+package com.twosigma.beakerx.widget.integer;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
-import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +26,7 @@ import java.security.NoSuchAlgorithmException;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyMsgForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsg;
 
-public class PlayTest {
+public class BoundedIntTextTest {
 
   private KernelTest groovyKernel;
 
@@ -46,47 +45,29 @@ public class PlayTest {
   public void createByEmptyConstructor_sendCommOpenMessage() throws Exception {
     //given
     //when
-    new Play();
+    new BoundedIntText();
     //then
-    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), Play.MODEL_NAME_VALUE, Play.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(
+        groovyKernel.getPublishedMessages(),
+        BoundedIntText.MODEL_NAME_VALUE,
+        BoundedIntText.VIEW_NAME_VALUE
+    );
   }
 
   @Test
   public void setValue_sendCommMessage() throws Exception {
+    String expected = "test";
     //given
-    Play play = Play();
+    BoundedIntText boundedIntText = BoundedIntText();
     //when
-    play.setValue(11);
+    boundedIntText.setValue(expected);
     //then
-    verifyMsgForProperty(groovyKernel, Play.VALUE, 11);
+    verifyMsgForProperty(groovyKernel, boundedIntText.VALUE, expected);
   }
 
-  @Test
-  public void setOrientation_hasThatOrientation() throws Exception {
-    int expected = 50;
-    //given
-    Play play = Play();
-    //when
-    play.setOrientation(expected);
-    //then
-    Assertions.assertThat(play.getOrientation()).isEqualTo(expected);
-  }
-
-  @Test
-  public void setOrientation_sendCommMessage() throws Exception {
-    int expected = 50;
-    //given
-    Play play = Play();
-    //when
-    play.setOrientation(expected);
-    //then
-    verifyMsgForProperty(groovyKernel, Play.INTERVAL, expected);
-  }
-
-  private Play Play() throws NoSuchAlgorithmException {
-    Play play = new Play();
+  private BoundedIntText BoundedIntText() throws NoSuchAlgorithmException {
+    BoundedIntText boundedIntText = new BoundedIntText();
     groovyKernel.clearPublishedMessages();
-    return play;
+    return boundedIntText;
   }
-
 }

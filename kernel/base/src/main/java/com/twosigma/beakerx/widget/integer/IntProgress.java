@@ -13,46 +13,42 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget.integers;
+package com.twosigma.beakerx.widget.integer;
 
 import java.io.Serializable;
 import java.util.HashMap;
 
 /**
- * 
- * @author konst
- *
+ * Progress bar that represents an integer bounded from above and below.
  */
-public class Play extends BoundedIntWidget{
+public class IntProgress extends BoundedIntWidget {
 
-  public static final String VIEW_NAME_VALUE = "PlayView";
-  public static final String MODEL_NAME_VALUE = "PlayModel";
-  
-  protected static final String _PLAYING = "_playing";
-  protected static final String INTERVAL = "interval";
-  
-  private Integer interval;
-  
-  public Play() {
+  public static final String VIEW_NAME_VALUE = "ProgressView";
+  public static final String MODEL_NAME_VALUE = "IntProgressModel";
+  protected static final String ORIENTATION = "orientation";
+
+  private String orientation = "horizontal";
+
+  public IntProgress() {
     super();
-    this.interval = 100;
     openComm();
   }
-  
+
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
-    content.put(_PLAYING, false);
+    content.put(ORIENTATION, this.orientation);
+    content.put("bar_style", "");
     return content;
   }
-  
-  public Integer getOrientation() {
-    return interval;
+
+  public String getOrientation() {
+    return this.orientation;
   }
 
-  public void setOrientation(Integer interval) {
-    this.interval = interval;
-    sendUpdate(INTERVAL, interval);
+  public void setOrientation(String orientation) {
+    this.orientation = orientation;
+    sendUpdate(ORIENTATION, orientation);
   }
 
   @Override
@@ -64,5 +60,5 @@ public class Play extends BoundedIntWidget{
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
   }
-  
+
 }

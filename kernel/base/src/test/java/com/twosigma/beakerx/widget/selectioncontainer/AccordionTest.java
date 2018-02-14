@@ -21,7 +21,7 @@ import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widget.Widget;
-import com.twosigma.beakerx.widget.integers.IntSlider;
+import com.twosigma.beakerx.widget.integer.IntSlider;
 import com.twosigma.beakerx.widget.strings.Text;
 import org.assertj.core.api.Assertions;
 import org.junit.After;

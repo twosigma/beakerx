@@ -13,31 +13,32 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.jvm.object;
+package com.twosigma.beakerx.widget.integer;
 
-import com.twosigma.beakerx.widget.integer.IntProgress;
+/**
+ * Textbox widget that represents an integer bounded from above and below.
+ * 
+ * @author konst
+ *
+ */
+public class BoundedIntText extends BoundedIntWidget{
 
-public class ProgressReporting {
-
-  private IntProgress progressBar;
-
-  public void structuredUpdate(String message, int progress) {
-    if (progressBar == null) {
-      progressBar = new IntProgress();
-      progressBar.display();
-    }
-    progressBar.setValue(progress);
-    progressBar.setDescription(message);
+  public static final String VIEW_NAME_VALUE = "IntTextView";
+  public static final String MODEL_NAME_VALUE = "IntTextModel";
+  
+  public BoundedIntText() {
+    super();
+    openComm();
   }
 
-  public void close() {
-    if (progressBar != null) {
-      progressBar.close();
-      progressBar = null;
-    }
+  @Override
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
   }
 
-  protected IntProgress getIntProgress() {
-    return progressBar;
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
   }
+  
 }

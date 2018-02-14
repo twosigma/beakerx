@@ -30,43 +30,43 @@ export default class RowManager {
     hasIndex ? this.createRowsWithIndex(data) : this.createRowsWithGeneratedIndex(data);
   }
 
-  createRowsWithIndex(data) {
-    this.rows = toArray(new MapIterator<number, any>(
+  createRowsWithGeneratedIndex(data) {
+    this.rows = toArray(new MapIterator<any[], any>(
       iter(data),
       (values, index) => new DataGridRow(index, values)
     ));
   }
 
-  createRowsWithGeneratedIndex(data) {
-    this.rows = toArray(new MapIterator<number, any>(
+  createRowsWithIndex(data) {
+    this.rows = toArray(new MapIterator<any[], any>(
       iter(data),
-      (values, index) => new DataGridRow(values[0], values)
+      (values) => new DataGridRow(values[0], values.slice(1))
     ));
   }
 
-  getRowValues(index) {
-    return this.rows[index].values;
+  getRow(index): DataGridRow {
+    return this.rows[index];
   }
 
   sortByColumn(column: DataGridColumn) {
     if (column.type === COLUMN_TYPES.index || column.state.sortOrder === SORT_ORDER.NO_SORT) {
-      return this.sortRows(column, this.indexValueResolver);
+      return this.sortRows(column.index, column.state.sortOrder, this.indexValueResolver);
     }
 
     if (column.state.dataType === ALL_TYPES.datetime || column.state.dataType === ALL_TYPES.time) {
-      return this.sortRows(column, this.dateValueResolver);
+      return this.sortRows(column.index, column.state.sortOrder, this.dateValueResolver);
     }
 
-    return this.sortRows(column);
+    return this.sortRows(column.index, column.state.sortOrder);
   }
 
-  sortRows(column: DataGridColumn, valueResolver?: Function): void {
-    const shouldReverse = column.state.sortOrder === SORT_ORDER.DESC;
+  sortRows(columnIndex: number, sortOrder: SORT_ORDER, valueResolver?: Function): void {
+    const shouldReverse = sortOrder === SORT_ORDER.DESC;
     const resolverFn = valueResolver ? valueResolver : this.defaultValueResolver;
 
     this.rows = this.rows.sort((row1, row2) => {
-      let value1 = resolverFn(row1, column);
-      let value2 = resolverFn(row2, column);
+      let value1 = resolverFn(row1, columnIndex);
+      let value2 = resolverFn(row2, columnIndex);
       let result = 0;
 
       if (value1 > value2) {
@@ -81,15 +81,15 @@ export default class RowManager {
     });
   }
 
-  defaultValueResolver(row, column) {
-    return row.values[column.index];
+  defaultValueResolver(row: DataGridRow, columnIndex: number) {
+    return row.values[columnIndex];
   }
 
-  dateValueResolver(row, column) {
-    return row.values[column.index].timestamp;
+  dateValueResolver(row, columnIndex: number) {
+    return row.values[columnIndex].timestamp;
   }
 
-  indexValueResolver(row, column) {
+  indexValueResolver(row, columnIndex: number) {
     return row.index;
   }
 }

@@ -28,7 +28,8 @@ describe('ValueHighlighter', () => {
   const dataGrid = new BeakerxDataGrid({}, modelStateMock);
   const column = new DataGridColumn(
     columnOptionsMock,
-    dataGrid
+    dataGrid,
+    dataGrid.columnManager
   );
 
   let valueHighlighter = new ValueHighlighter(

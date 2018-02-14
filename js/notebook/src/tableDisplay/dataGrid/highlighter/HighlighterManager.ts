@@ -61,7 +61,11 @@ export default class HighlighterManager {
       throw new Error(`Can not register highlighter: ${highlighter}`);
     }
 
-    this.highlighters.push(highlighter);
+    if (highlighter.state.type === HIGHLIGHTER_TYPE.sort) {
+      this.highlighters.unshift(highlighter);
+    } else {
+      this.highlighters.push(highlighter);
+    }
   }
 
   unregisterHighlighter(highlighter: Highlighter) {
@@ -80,6 +84,7 @@ export default class HighlighterManager {
   }
 
   addColumnHighlighter(column, highlighterType: HIGHLIGHTER_TYPE) {
+    this.removeColumnHighlighter(column, highlighterType);
     this.registerHighlighter(HighlighterFactory.getHighlighter({
       ...HighlighterFactory.defaultHighlighterState,
       type: highlighterType,

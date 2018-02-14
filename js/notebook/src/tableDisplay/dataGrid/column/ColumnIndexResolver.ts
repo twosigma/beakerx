@@ -18,11 +18,9 @@ import { COLUMN_TYPES } from "./DataGridColumn";
 import { IDataGridModelColumnState as IColumnsState } from "../model/BeakerxDataGridModel";
 
 export default class ColumnIndexResolver {
-  hasIndex: boolean;
   columnIndexesMap: {};
 
-  constructor(hasIndex, indexColumnsState: IColumnsState, bodyColumnsState: IColumnsState) {
-    this.hasIndex = !!hasIndex;
+  constructor(indexColumnsState: IColumnsState, bodyColumnsState: IColumnsState) {
     this.columnIndexesMap = { [COLUMN_TYPES.index]: {}, [COLUMN_TYPES.body]: {} };
 
     this.mapAllIndexes(indexColumnsState, bodyColumnsState);
@@ -34,10 +32,7 @@ export default class ColumnIndexResolver {
   }
 
   resolveIndex(index: number, columnType: COLUMN_TYPES) {
-    return this.applyHasIndex(
-      this.columnIndexesMap[columnType][index],
-      columnType
-    );
+    return this.columnIndexesMap[columnType][index];
   }
 
   mapIndexes(columnType: COLUMN_TYPES, columnsState: IColumnsState) {
@@ -59,11 +54,5 @@ export default class ColumnIndexResolver {
     }
 
     return this.getNexVisibleIndex(index + 1, columnsState);
-  }
-
-  private applyHasIndex(index: number, columnType: COLUMN_TYPES) {
-    return this.hasIndex && columnType === COLUMN_TYPES.body
-      ? index + 1
-      : index;
   }
 }

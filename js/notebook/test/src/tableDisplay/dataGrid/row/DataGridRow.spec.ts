@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,12 +14,20 @@
  *  limitations under the License.
  */
 
-export default class DataGridRow {
-  index: number;
-  values: any[];
+import { expect } from 'chai';
+import DataGridRow from "@beakerx/tableDisplay/dataGrid/row/DataGridRow";
 
-  constructor(index: number, values: any[]) {
-    this.index = index;
-    this.values = values;
-  }
-}
+describe('DataGridRow', () => {
+  const values = [1,2,3,4];
+  const row = new DataGridRow(0,values);
+
+  it('should have index property', () => {
+    expect(row).to.have.property('index');
+    expect(row.index).to.equal(0);
+  });
+
+  it('should have values property', () => {
+    expect(row).to.have.property('values');
+    expect(row.values).to.equal(values);
+  });
+});

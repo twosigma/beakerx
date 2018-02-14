@@ -28,11 +28,6 @@ describe('ColumnIndexResolver', () => {
     expect(columnIndexResolver).to.have.property('resolveIndex');
   });
 
-  it('should have property hasIndex', () => {
-    expect(columnIndexResolver).to.have.property('hasIndex');
-    expect(columnIndexResolver.hasIndex).to.be.false;
-  });
-
   it('should have property columnIndexesMap', () => {
     expect(columnIndexResolver).to.have.property('columnIndexesMap');
   });

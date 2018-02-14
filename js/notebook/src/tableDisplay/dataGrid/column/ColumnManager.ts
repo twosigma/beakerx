@@ -47,7 +47,7 @@ export default class ColumnManager {
     this.dataGrid = dataGrid;
     this.modelState = modelState;
     this.addColumnsState(modelState);
-    this.addIndexResolver(modelState);
+    this.addIndexResolver();
     this.connectToColumnsChanged();
   }
 
@@ -137,9 +137,8 @@ export default class ColumnManager {
       });
   }
 
-  private addIndexResolver(modelState) {
+  private addIndexResolver() {
     this.indexResolver = new ColumnIndexResolver(
-      modelState.hasIndex,
       this.indexColumnsState,
       this.bodyColumnsState
     );

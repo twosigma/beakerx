@@ -27,7 +27,8 @@ describe('HighlighterFactory', () => {
   const dataGrid = new BeakerxDataGrid({}, modelStateMock);
   const column = new DataGridColumn(
     columnOptionsMock,
-    dataGrid
+    dataGrid,
+    dataGrid.columnManager
   );
 
   it('should return HeatmapHighlighter', () => {

@@ -17,11 +17,13 @@
 import { DataModel } from "@phosphor/datagrid";
 import { ALL_TYPES } from '../dataTypes';
 import { DataFormatter } from '../DataFormatter';
-import {COLUMN_TYPES, default as DataGridColumn} from "../column/DataGridColumn";
+import {COLUMN_TYPES, default as DataGridColumn, SORT_ORDER} from "../column/DataGridColumn";
 import IDataModelState from '../interface/IDataGridModelState';
-import { MapIterator, EmptyIterator, iter } from '@phosphor/algorithm';
+import { MapIterator, EmptyIterator, iter, toArray } from '@phosphor/algorithm';
 import { IColumn } from "../interface/IColumn";
-import ColumnManager, {COLUMN_CHANGED_TYPES, IcolumnsChangedArgs} from "../column/ColumnManager";
+import ColumnManager, {COLUMN_CHANGED_TYPES, IBkoColumnsChangedArgs} from "../column/ColumnManager";
+import RowManager from "../row/RowManager";
+import DataGridRow from "../row/DataGridRow";
 
 export interface IDataGridModelColumnState {
   names: string[],
@@ -32,6 +34,7 @@ export interface IDataGridModelColumnState {
 export class BeakerxDataGridModel extends DataModel {
   dataFormatter: DataFormatter;
   columnManager: ColumnManager;
+  rowManager: RowManager;
 
   static DEFAULT_INDEX_COLUMN_TYPE = ALL_TYPES[1]; // integer
   static DEFAULT_INDEX_COLUMN_NAME = 'index';
@@ -63,6 +66,7 @@ export class BeakerxDataGridModel extends DataModel {
   addProperties(state, columnManager) {
     this.dataFormatter = new DataFormatter(state);
     this.columnManager = columnManager;
+    this.rowManager = new RowManager(state.values, state.hasIndex);
 
     this._state = state;
     this._data = state.values;
@@ -89,20 +93,21 @@ export class BeakerxDataGridModel extends DataModel {
   data(region: DataModel.CellRegion, row: number, columnIndex: number): any {
     const columnType = DataGridColumn.getColumnTypeByRegion(region);
     const index = this.columnManager.indexResolver.resolveIndex(columnIndex, columnType);
+    const dataGridRow = this.rowManager.getRow(row);
 
     if (region === 'row-header') {
-      return this.state.hasIndex ? this.getValue(region, row, index) : row;
+      return dataGridRow.index;
     }
 
     if (region === 'column-header') {
-      return this.state.columnNames[index];
+      return this.columnManager.bodyColumnsState.names[index];
     }
 
     if (region === 'corner-header') {
-      return this.state.hasIndex ? this.state.columnNames[index] : BeakerxDataGridModel.DEFAULT_INDEX_COLUMN_NAME;
+      return this.columnManager.indexColumnsState.names[index];
     }
 
-    return this.getValue(region, row, index);
+    return dataGridRow.values[index];
   }
 
   setState(state) {
@@ -112,11 +117,15 @@ export class BeakerxDataGridModel extends DataModel {
     };
   }
 
-  connectTocolumnsChanged() {
+  sortByColumn(column: DataGridColumn) {
+    this.rowManager.sortByColumn(column);
+  }
+
+  private connectTocolumnsChanged() {
     this.columnManager.columnsChanged.connect(this.setColumnVisible.bind(this));
   }
 
-  private setColumnVisible(sender: ColumnManager, data: IcolumnsChangedArgs) {
+  private setColumnVisible(sender: ColumnManager, data: IBkoColumnsChangedArgs) {
     if(data.type !== COLUMN_CHANGED_TYPES.columnVisible) {
       return;
     }
@@ -127,16 +136,12 @@ export class BeakerxDataGridModel extends DataModel {
     this.reset();
   }
 
-  getValue(region: DataModel.CellRegion, row: number, columnIndex: number) {
-    return this._data[row][columnIndex];
-  }
-
   getColumnValuesIterator(column: IColumn): MapIterator<number, number> {
     if (!this.state.hasIndex && column.type === COLUMN_TYPES.index) {
-      return new MapIterator<number, any>(new EmptyIterator(), () => null);
+      return new MapIterator<DataGridRow, any>(iter(this.rowManager.rows), (row) => row.index);
     }
 
-    return new MapIterator(iter(this._data), (rowValues) => rowValues[column.index]);
+    return new MapIterator(iter(this.rowManager.rows), (row) => row.values[column.index]);
   }
 
   getAlignmentConfig(): { alignmentForColumn: {}, alignmentForType: {} } {

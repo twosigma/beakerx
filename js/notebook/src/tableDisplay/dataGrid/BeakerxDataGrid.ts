@@ -36,6 +36,7 @@ export class BeakerxDataGrid extends DataGrid {
   viewport: Widget;
   highlighterManager: HighlighterManager;
   columnManager: ColumnManager;
+  focused: boolean;
 
   headerCellHovered = new Signal<this, ICellData|null>(this);
 
@@ -60,9 +61,12 @@ export class BeakerxDataGrid extends DataGrid {
       case 'mousemove':
         this.handleHeaderCellHover(event as MouseEvent);
         break;
-      case 'mouseout':
-        this.headerCellHovered.emit(null);
+      case 'mousedown':
+        this.handleMouseDown(event as MouseEvent);
         break;
+      case 'wheel':
+        this.handleMouseWheel(event as MouseEvent);
+        return;
     }
 
     super.handleEvent(event);
@@ -92,6 +96,10 @@ export class BeakerxDataGrid extends DataGrid {
   private init(modelState: IDataModelState) {
     this.columnManager = new ColumnManager(modelState, this);
     this.model = new BeakerxDataGridModel(modelState, this.columnManager);
+    this.focused = false;
+
+    this.node.removeEventListener('mouseout', this.handleMouseOut.bind(this));
+    this.node.addEventListener('mouseout', this.handleMouseOut.bind(this));
 
     this.addHighlighterManager(modelState);
     this.addCellRenderers();
@@ -128,6 +136,37 @@ export class BeakerxDataGrid extends DataGrid {
     const data = this.getHoveredCellData(event.clientX, event.clientY);
 
     this.headerCellHovered.emit(data);
+  }
+
+  private handleMouseDown(event: MouseEvent) {
+    this.focused = true;
+    this.node.classList.add('bko-focused');
+    this.handleHeaderClick(event);
+  }
+
+  private handleMouseOut(event: MouseEvent) {
+    this.headerCellHovered.emit(null);
+    this.node.classList.remove('bko-focused');
+    this.focused = false;
+  }
+
+  private handleMouseWheel(event: MouseEvent) {
+    if(!this.focused) {
+      return;
+    }
+
+    super.handleEvent(event);
+  }
+
+  private handleHeaderClick(event: MouseEvent): void {
+    const data = this.getHoveredCellData(event.clientX, event.clientY);
+
+    if (!data) {
+      return;
+    }
+
+    const column = this.columnManager.columns[data.type][data.index];
+    column.toggleSort();
   }
 
   private getHoveredCellData(clientX: number, clientY: number): ICellData|null {

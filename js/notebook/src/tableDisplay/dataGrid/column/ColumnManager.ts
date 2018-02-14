@@ -15,7 +15,7 @@
  */
 
 import { BeakerxDataGridModel, IDataGridModelColumnState } from "../model/BeakerxDataGridModel";
-import { COLUMN_TYPES, default as DataGridColumn } from "./DataGridColumn";
+import {COLUMN_TYPES, default as DataGridColumn, SORT_ORDER} from "./DataGridColumn";
 import { ITriggerOptions } from "../headerMenu/HeaderMenu";
 import { CellRenderer } from "@phosphor/datagrid";
 import { chain, find } from '@phosphor/algorithm'
@@ -24,14 +24,15 @@ import { Signal } from '@phosphor/signaling';
 import ColumnIndexResolver from "./ColumnIndexResolver";
 import IDataModelState from "../interface/IDataGridModelState";
 
-export interface IcolumnsChangedArgs {
+export interface IBkoColumnsChangedArgs {
   type: COLUMN_CHANGED_TYPES,
   value: any,
   column: DataGridColumn
 }
 
 export enum COLUMN_CHANGED_TYPES {
-  'columnVisible'
+  'columnVisible',
+  'columnSort'
 }
 
 export default class ColumnManager {
@@ -40,13 +41,13 @@ export default class ColumnManager {
   modelState: IDataModelState;
   columnsState: {};
   columns = {};
-  columnsChanged = new Signal<this, IcolumnsChangedArgs>(this);
+  columnsChanged = new Signal<this, IBkoColumnsChangedArgs>(this);
 
   constructor(modelState: IDataModelState, dataGrid: BeakerxDataGrid) {
     this.dataGrid = dataGrid;
     this.modelState = modelState;
     this.addColumnsState(modelState);
-    this.addIndexResolver(modelState);
+    this.addIndexResolver();
     this.connectToColumnsChanged();
   }
 
@@ -116,9 +117,18 @@ export default class ColumnManager {
     Signal.disconnectAll(this.columnsChanged);
   }
 
+  sortByColumn(column: DataGridColumn, sortOrder: SORT_ORDER) {
+    this.columnsChanged.emit({
+      column,
+      type: COLUMN_CHANGED_TYPES.columnSort,
+      value: sortOrder
+    });
+    this.dataGrid.model.sortByColumn(column);
+  }
+
   private connectToColumnsChanged() {
     this.columnsChanged.connect(
-      (sender: ColumnManager, data: IcolumnsChangedArgs) => {
+      (sender: ColumnManager, data: IBkoColumnsChangedArgs) => {
         if (data.type !== COLUMN_CHANGED_TYPES.columnVisible) {
           return;
         }
@@ -127,9 +137,8 @@ export default class ColumnManager {
       });
   }
 
-  private addIndexResolver(modelState) {
+  private addIndexResolver() {
     this.indexResolver = new ColumnIndexResolver(
-      modelState.hasIndex,
       this.indexColumnsState,
       this.bodyColumnsState
     );

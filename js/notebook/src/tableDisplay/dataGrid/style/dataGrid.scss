@@ -29,7 +29,8 @@ $gridBorder: 1px solid $borderColor;
 .p-DataGrid {
   min-width: 64px;
   min-height: 330px;
-  border: $gridBorder;
+  padding: 20px;
+  border: 1px solid white;
 
   .bko-menu {
     opacity: 1;
@@ -38,11 +39,38 @@ $gridBorder: 1px solid $borderColor;
       background-color: $highlightBlue;
       background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAWCAYAAADjGu3TAAAAI0lEQVQoFWP8DwQMWAATFjGwED0kcNmNW5xx1B/ogUPFiAIAYSAMFvNwTdIAAAAASUVORK5CYII=');
     }
+
+    &.sorting_asc,
+    &.sorting_desc {
+      background-size: 18px;
+    }
+
+    &.sorting_asc {
+      background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAAAZ0lEQVQ4y2NgGLKgquEuFxBPAGI2ahhWCsS/gDibUoO0gPgxEP8H4ttArEyuQYxAPBdqEAxPBImTY5gjEL9DM+wTENuQahAvEO9DMwiGdwAxOymGJQLxTyD+jgWDxCMZRsEoGAVoAADeemwtPcZI2wAAAABJRU5ErkJggg==');
+
+      &:hover {
+        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAAANklEQVR42mNgGNLgPxBQzSAYoNSgrf9RwVaquIoi1wH1NfzHDqZSxVVkue4/EYBhFIyCUYAGABPAkfD1W4bSAAAAAElFTkSuQmCC");
+      }
+    }
+
+    &.sorting_desc {
+      background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAAAZUlEQVQ4y2NgGAWjYBSggaqGu5FA/BOIv2PBIPFEUgxjB+IdQPwfC94HxLykus4GiD+hGfQOiB3J8SojEE9EM2wuSJzcsFMG4ttQgx4DsRalkZENxL+AuJQaMcsGxBOAmGvopk8AVz1sLZgg0bsAAAAASUVORK5CYII=');
+
+      &:hover {
+        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAAAL0lEQVR42mNgGAWjYBSggf9EAKoZSI7rtuIwayrVvEtJ2KG7bivVIoNqsTu00ycAka+SJUKi7ZcAAAAASUVORK5CYII=");
+      }
+    }
   }
+}
+
+.p-DataGrid-viewport {
+  border: $gridBorder;
 }
 
 .p-DataGrid-scrollCorner {
   background-color: $gridBackgroundColor;
+  border-right: $gridBorder;
+  border-bottom: $gridBorder;
 }
 
 .p-DataGrid-scrollCorner::after {
@@ -60,7 +88,9 @@ $gridBorder: 1px solid $borderColor;
     min-height: 16px;
     max-height: 16px;
     min-width: 45px;
-    border-top: $gridBorder;
+    border-bottom: $gridBorder;
+    border-left: $gridBorder;
+    border-right: $gridBorder;
 
     .p-ScrollBar-thumb {
       height: 100%;
@@ -74,7 +104,9 @@ $gridBorder: 1px solid $borderColor;
     min-width: 16px;
     max-width: 16px;
     min-height: 45px;
-    border-left: $gridBorder;
+    border-right: $gridBorder;
+    border-top: $gridBorder;
+    border-bottom: $gridBorder;
 
     .p-ScrollBar-thumb {
       width: 100%;

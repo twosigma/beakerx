@@ -28,7 +28,8 @@ describe('UniqueEntriesHighlighter', () => {
   const dataGrid = new BeakerxDataGrid({}, modelStateMock);
   const column = new DataGridColumn(
     columnOptionsMock,
-    dataGrid
+    dataGrid,
+    dataGrid.columnManager
   );
 
   let uniqueEntriesHighlighter = new UniqueEntriesHighlighter(

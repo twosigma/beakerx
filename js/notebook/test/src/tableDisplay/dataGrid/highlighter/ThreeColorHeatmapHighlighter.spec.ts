@@ -30,7 +30,8 @@ describe('ThreeColorHeatmapHighlighter', () => {
   const dataGrid = new BeakerxDataGrid({}, modelStateMock);
   const column = new DataGridColumn(
     columnOptionsMock,
-    dataGrid
+    dataGrid,
+    dataGrid.columnManager
   );
 
   let threeColorHeatmapHighlighter = new ThreeColorHeatmapHighlighter(

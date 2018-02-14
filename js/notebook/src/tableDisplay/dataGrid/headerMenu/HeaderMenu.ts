@@ -20,7 +20,7 @@ import { BeakerxDataGrid } from "../BeakerxDataGrid";
 import Menu from './BkoMenu';
 import MenuItem from '../../../shared/interfaces/menuItemInterface';
 import MenuInterface from '../../../shared/interfaces/menuInterface';
-import DataGridColumn from "../column/DataGridColumn";
+import DataGridColumn, {SORT_ORDER} from "../column/DataGridColumn";
 
 export interface ITriggerOptions {
   x: number,
@@ -40,6 +40,8 @@ export default abstract class HeaderMenu implements MenuInterface {
   protected column: DataGridColumn;
 
   private TRIGGER_CLASS_OPENED: string = 'opened';
+  private TRIGGER_CLASS_SORTING_DESC: string = 'sorting_desc';
+  private TRIGGER_CLASS_SORTING_ASC: string = 'sorting_asc';
 
   static DEFAULT_TRIGGER_HEIGHT: number = 20;
 
@@ -61,6 +63,8 @@ export default abstract class HeaderMenu implements MenuInterface {
   protected abstract buildMenu(): void
 
   showTrigger(x?): void {
+    this.assignTriggerSortingCssClass();
+
     if (this.triggerNode.style.visibility === 'visible') {
       return;
     }
@@ -74,6 +78,10 @@ export default abstract class HeaderMenu implements MenuInterface {
   }
 
   hideTrigger() {
+    if (this.column.state.sortOrder !== SORT_ORDER.NO_SORT && this.column.state.visible) {
+      return;
+    }
+
     this.triggerNode.style.visibility = 'hidden';
   }
 
@@ -176,6 +184,25 @@ export default abstract class HeaderMenu implements MenuInterface {
     this.createItems(subitems, submenu);
 
     return submenu;
+  }
+
+  protected assignTriggerSortingCssClass() {
+    if (this.column.state.sortOrder === SORT_ORDER.ASC) {
+      this.triggerNode.classList.remove(this.TRIGGER_CLASS_SORTING_DESC);
+      this.triggerNode.classList.add(this.TRIGGER_CLASS_SORTING_ASC);
+
+      return;
+    }
+
+    if (this.column.state.sortOrder === SORT_ORDER.DESC) {
+      this.triggerNode.classList.remove(this.TRIGGER_CLASS_SORTING_ASC);
+      this.triggerNode.classList.add(this.TRIGGER_CLASS_SORTING_DESC);
+
+      return;
+    }
+
+    this.triggerNode.classList.remove(this.TRIGGER_CLASS_SORTING_ASC);
+    this.triggerNode.classList.remove(this.TRIGGER_CLASS_SORTING_DESC);
   }
 
   protected addTrigger({

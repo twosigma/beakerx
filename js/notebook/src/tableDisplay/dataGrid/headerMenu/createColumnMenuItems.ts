@@ -16,7 +16,7 @@
 
 import { createFormatMenuItems } from './createFormatMenuItems';
 import MenuItem from "../../../shared/interfaces/menuItemInterface";
-import DataGridColumn from "../column/DataGridColumn";
+import DataGridColumn, {SORT_ORDER} from "../column/DataGridColumn";
 import { CENTER, LEFT, RIGHT } from "../column/columnAlignment";
 import {HIGHLIGHTER_TYPE} from "../interface/IHighlighterState";
 
@@ -46,18 +46,18 @@ export function createColumnMenuItems(column: DataGridColumn): MenuItem[] {
     {
       title: 'Sort Ascending',
       separator: true,
-      isChecked: (column) => {},
-      action: (column) => {}
+      isChecked: (column) => column.state.sortOrder === SORT_ORDER.ASC,
+      action: (column) => column.sort(SORT_ORDER.ASC)
     },
     {
       title: 'Sort Descending',
-      isChecked: (column) => {},
-      action: (column) => {}
+      isChecked: (column) => column.state.sortOrder === SORT_ORDER.DESC,
+      action: (column) => column.sort(SORT_ORDER.DESC)
     },
     {
       title: 'No Sort',
-      isChecked: (column) => {},
-      action: (column) => {}
+      isChecked: (column) => column.state.sortOrder === SORT_ORDER.NO_SORT,
+      action: (column) => column.sort(SORT_ORDER.NO_SORT)
     },
     {
       title: 'Align Left',

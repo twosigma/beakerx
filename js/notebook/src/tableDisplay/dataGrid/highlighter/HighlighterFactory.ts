@@ -23,6 +23,7 @@ import DataGridColumn from "../column/DataGridColumn";
 import ThreeColorHeatmapHighlighter from "./ThreeColorHeatmapHighlighter";
 import UniqueEntriesHighlighter from "./UniqueEntriesHighlighter";
 import ValueHighlighter from "./ValueHighlighter";
+import SortHighlighter from "./SortHighlighter";
 
 export default class HighlighterFactory {
   static defaultHighlighterState: IHihglighterState = {
@@ -48,6 +49,8 @@ export default class HighlighterFactory {
         return new UniqueEntriesHighlighter(column, config);
       case HIGHLIGHTER_TYPE.value:
         return new ValueHighlighter(column, config);
+      case HIGHLIGHTER_TYPE.sort:
+        return new SortHighlighter(column, config);
     }
   }
 }

@@ -50,7 +50,7 @@ public class BeakerStdOutErrHandlerTest {
     //when
     System.out.print("Hello");
     //then
-    assertThat(stdout.bList).isNotEmpty();
+    assertThat(stdout.text).isNotEmpty();
   }
 
   @Test
@@ -59,48 +59,26 @@ public class BeakerStdOutErrHandlerTest {
     //when
     System.err.print("Error");
     //then
-    assertThat(stderr.bList).isNotEmpty();
+    assertThat(stderr.text).isNotEmpty();
   }
 
   static class SimpleOutputHandlerTest implements BeakerOutputHandler {
 
-    private int b;
-    private byte[] bList;
+    private String text;
 
     @Override
-    public void write(int b) {
-      this.b = b;
-    }
-
-    @Override
-    public void write(byte[] b) {
-      this.bList = b;
-    }
-
-    @Override
-    public void write(byte[] b, int off, int len) {
-      this.bList = b;
+    public void write(String b) {
+      this.text = b;
     }
   }
 
   static class SimpleErrHandlerTest implements BeakerOutputHandler {
 
-    private int b;
-    private byte[] bList;
+    private String text;
 
     @Override
-    public void write(int b) {
-      this.b = b;
-    }
-
-    @Override
-    public void write(byte[] b) {
-      this.bList = b;
-    }
-
-    @Override
-    public void write(byte[] b, int off, int len) {
-      this.bList = b;
+    public void write(String b) {
+      this.text = b;
     }
   }
 

@@ -21,7 +21,7 @@ describe('(Groovy) Testing of Kernel API', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/groovy/KernelAPITest.ipynb');
+    beakerxPO.runNotebookByUrl('/notebooks/test/ipynb/groovy/KernelAPITest.ipynb');
   }, 2);
 
   afterAll(function () {

@@ -94,16 +94,6 @@ public class Output extends DOMWidget {
     getComm().publish(list);
   }
 
-  public void display(MIMEContainer mimeContainer) {
-    List<Message> list = new ArrayList<>();
-    list.add(getComm().createUpdateMessage(MSG_ID, getComm().getParentMessage().getHeader().getId()));
-    HashMap<String, Serializable> content = new HashMap<>();
-    content.put(mimeContainer.getMime().asString(), (Serializable) mimeContainer.getData());
-    list.add(getComm().createMessage(DISPLAY_DATA, Comm.Buffer.EMPTY, new Comm.Data(content)));
-    list.add(getComm().createUpdateMessage(MSG_ID, ""));
-    getComm().publish(list);
-  }
-
   public void appendStdout(String text) {
     sendOutput(new ConsoleOutput(false, text + "\n"));
   }
@@ -129,5 +119,27 @@ public class Output extends DOMWidget {
     outputs.put(NAME, co.isError() ? STDERR : STDOUT);
     outputs.put(TEXT, co.getText());
     return outputs;
+  }
+
+  public void display(MIMEContainer mimeContainer) {
+    HashMap<String, Serializable> content = new HashMap<>();
+    content.put(mimeContainer.getMime().asString(), (Serializable) mimeContainer.getData());
+    display(content);
+  }
+
+  public void display(Widget widget) {
+    HashMap<String, Serializable> content = new HashMap<>();
+    HashMap<String, Serializable> vendor = new HashMap<>();
+    vendor.put(MODEL_ID, widget.getComm().getCommId());
+    content.put(APPLICATION_VND_JUPYTER_WIDGET_VIEW_JSON, vendor);
+    display(content);
+  }
+
+  private void display(HashMap<String, Serializable> content) {
+    List<Message> list = new ArrayList<>();
+    list.add(getComm().createUpdateMessage(MSG_ID, getComm().getParentMessage().getHeader().getId()));
+    list.add(getComm().createMessage(DISPLAY_DATA, Comm.Buffer.EMPTY, new Comm.Data(content)));
+    list.add(getComm().createUpdateMessage(MSG_ID, ""));
+    getComm().publish(list);
   }
 }

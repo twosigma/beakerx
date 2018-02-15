@@ -30,7 +30,7 @@ describe('(Python) Testing of init cells', function() {
   var cellIndex;
 
   describe('Init cells', function() {
-    it('Init cells display correct output', function(){
+    it('(Python) Init cells display correct output', function(){
       cellIndex = 0;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var currentDate = Date().split(' ').slice(0, 4).join(' ');

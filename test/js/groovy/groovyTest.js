@@ -17,7 +17,7 @@
 var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('Groovy js', function () {
+describe('Groovy base tests. ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
@@ -28,9 +28,12 @@ describe('Groovy js', function () {
     beakerxPO.closeAndHaltNotebook();
   });
 
-  describe('Run first cell. ', function () {
-    it('Output contains "2"', function () {
-      beakerxPO.runCellAndCheckOutputText(0, '2');
+  var cellIndex;
+
+  describe('Define local and global variables. ', function () {
+    it('Output contains "2". ', function () {
+      cellIndex = 0;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /2/);
     });
   });
 

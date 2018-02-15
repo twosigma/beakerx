@@ -19,7 +19,7 @@ var TableHelperObject = require('../table.helper.js');
 var beakerxPO;
 var tableHelper;
 
-describe('SQL Examples notebook', function () {
+describe('SQL base tests. ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
@@ -31,19 +31,17 @@ describe('SQL Examples notebook', function () {
     beakerxPO.closeAndHaltNotebook();
   });
 
-  describe('Create and select table (H2 database)', function () {
-    it('Output contains table', function () {
-      beakerxPO.kernelIdleIcon.waitForEnabled();
+  describe('Create and select table (H2 database). ', function () {
+    it('Output contains table. ', function () {
       beakerxPO.runCodeCellByIndex(0);
       beakerxPO.runCodeCellByIndex(1);
       var dtContainer = beakerxPO.runCellToGetDtContainer(2);
       tableHelper.dataTablesIsEnabled(dtContainer)
-    }, 2);
+    });
   });
 
-  describe('Autocomplete cell', function () {
-    it('Autocomplete list is not empty', function () {
-      beakerxPO.kernelIdleIcon.waitForEnabled();
+  describe('Autocomplete cell. ', function () {
+    it('Autocomplete list is not empty. ', function () {
       var codeCell = beakerxPO.getCodeCellByIndex(3);
       codeCell.scroll();
       codeCell.click();
@@ -51,7 +49,7 @@ describe('SQL Examples notebook', function () {
       browser.keys('\uE000');
       var completeList = $$('#complete > select > option');
       expect(completeList.length).toBeGreaterThan(0);
-    }, 2);
+    });
   });
 
 });

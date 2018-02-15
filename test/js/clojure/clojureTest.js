@@ -17,7 +17,7 @@
 var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('ClojureTutorial notebook', function () {
+describe('Clojure base tests. ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
@@ -28,24 +28,26 @@ describe('ClojureTutorial notebook', function () {
     beakerxPO.closeAndHaltNotebook();
   });
 
+  var cellIndex;
+
   describe('Run first cell. ', function () {
-    it('Output contains "0, 1, 1, 2, 3, 5"', function () {
-      beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCellAndCheckOutputText(0, '0, 1, 1, 2, 3, 5');
+    it('Execute result output contains "0, 1, 1, 2, 3, 5". ', function () {
+      cellIndex = 0;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /0, 1, 1, 2, 3, 5/);
     });
   });
 
   describe('Run 2nd cell. ', function () {
-    it('Output contains "Will print"', function () {
-      beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCellAndCheckOutputText(1, 'Will print');
+    it('Stdout output contains "Will print". ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfStdout(cellIndex, /Will print/);
     });
   });
 
   describe('Run 3rd cell. ', function () {
-    it('Output contains "Distinct: 36"', function () {
-      beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCellAndCheckOutputText(2, 'Distinct: 36');
+    it('Execute result output contains "Distinct: 36". ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfStdout(cellIndex, /Distinct: 36/);
     });
   });
 

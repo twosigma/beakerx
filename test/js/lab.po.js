@@ -89,5 +89,13 @@ var LabPageObject = function () {
   this.getOutputWrapperOutputCss = function () {
     return 'div.jp-RenderedText.jp-OutputArea-output';
   };
+
+  this.getAllOutputExecuteResults = function (codeCell) {
+    return codeCell.$$('div.jp-OutputArea-child.jp-OutputArea-executeResult > div.jp-OutputArea-output');
+  }
+
+  this.getAllOutputStdouts = function (codeCell) {
+    return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output[data-mime-type="application/vnd.jupyter.stdout"]');
+  }
 };
 module.exports = LabPageObject;

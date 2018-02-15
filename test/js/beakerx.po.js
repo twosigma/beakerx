@@ -99,6 +99,30 @@ function BeakerXPageObject() {
     expect(resultTest).toMatch(expectedText);
   };
 
+  this.runAndCheckOutputTextOfExecuteResult = function (cellIndex, expectedText) {
+    this.runCellAndCheckTextHandleError(cellIndex, expectedText, this.getAllOutputExecuteResults);
+  };
+
+  this.runAndCheckOutputTextOfStdout = function (cellIndex, expectedText) {
+    this.runCellAndCheckTextHandleError(cellIndex, expectedText, this.getAllOutputStdouts);
+  };
+
+  this.runCellAndCheckTextHandleError = function(cellIndex, expectedText, getTextElements){
+    var resultTest;
+    var codeCell;
+    var attempt = 3;
+    while(attempt > 0){
+      try {
+        codeCell = this.runCodeCellByIndex(cellIndex);
+        resultTest = getTextElements(codeCell)[0].getText();
+        attempt = 0;
+      } catch (e) {
+        attempt -= 1;
+      }
+    }
+    expect(resultTest).toMatch(expectedText);
+  };
+
   this.runCellToGetOutputTextElement = function (index) {
     var codeCell = this.runCodeCellByIndex(index);
     return codeCell.$(this.getAllOutputTextCss());

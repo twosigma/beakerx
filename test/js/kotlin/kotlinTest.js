@@ -17,7 +17,7 @@
 var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('Kotlin-example notebook', function () {
+describe('Kotlin base tests. ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
@@ -28,18 +28,21 @@ describe('Kotlin-example notebook', function () {
     beakerxPO.closeAndHaltNotebook();
   });
 
-  describe('Run first cell. ', function () {
-    it('Output contains "hello, 623"', function () {
-      beakerxPO.runCodeCellByIndex(0);
-      beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCellAndCheckOutputText(1, 'hello, 623');
+  var cellIndex;
+
+  describe('Define and call kotlin function. ', function () {
+    it('Execute result output contains "hello, 623". ', function () {
+      cellIndex = 0;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /null/);
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /hello, 623/);
     });
   });
 
-  describe('Run 2nd cell. ', function () {
-    it('PlotLegendContainer is enabled', function () {
-      beakerxPO.kernelIdleIcon.waitForEnabled();
-      var dtContainer = beakerxPO.runCellToGetDtContainer(2);
+  describe('Run kotlin code that create Plot. ', function () {
+    it('PlotLegendContainer is enabled. ', function () {
+      cellIndex += 1;
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
       beakerxPO.plotLegendContainerIsEnabled(dtContainer);
     });
   });

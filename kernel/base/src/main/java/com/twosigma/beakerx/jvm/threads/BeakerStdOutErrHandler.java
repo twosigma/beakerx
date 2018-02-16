@@ -15,8 +15,7 @@
  */
 package com.twosigma.beakerx.jvm.threads;
 
-import com.twosigma.beakerx.jvm.object.ConsoleOutput;
-import com.twosigma.beakerx.widget.Output;
+import com.twosigma.beakerx.widget.OutputManager;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -32,7 +31,6 @@ public class BeakerStdOutErrHandler {
   private PrintStream orig_err;
   private BeakerOutputHandler out_handler;
   private BeakerOutputHandler err_handler;
-  private Output outputWidget;
 
   static synchronized public void init() {
     if (instance == null) {
@@ -57,10 +55,6 @@ public class BeakerStdOutErrHandler {
   static synchronized public void clrOutputHandler() {
     if (instance != null)
       instance.theClrOutputHandler();
-  }
-
-  public static void setOuputWidget(Output out) {
-    instance.outputWidget = out;
   }
 
   private void theinit() {
@@ -89,69 +83,31 @@ public class BeakerStdOutErrHandler {
     err_handler = null;
   }
 
-  private BeakerOutputHandler getHandler(boolean out) {
-    if (out_handler != null && err_handler != null) {
-      if (out) {
-        return out_handler;
+  private synchronized void writeStdout(String text) throws IOException {
+    boolean sendStdout = OutputManager.sendStdout(text);
+    if (!sendStdout) {
+      if (out_handler != null) {
+        out_handler.write(text);
       } else {
-        return err_handler;
-      }
-    }
-    return null;
-  }
-
-  private synchronized void write(boolean isout, int b) throws IOException {
-    if (outputWidget != null) {
-      byte[] ba = new byte[1];
-      ba[0] = (byte) b;
-      outputWidget.sendOutput(new ConsoleOutput(!isout, new String(ba, StandardCharsets.UTF_8)));
-    } else {
-      BeakerOutputHandler hdl = getHandler(isout);
-      if (hdl != null) {
-        hdl.write(b);
-      } else if (isout) {
-        orig_out.write(b);
-      } else {
-        orig_err.write(b);
+        orig_out.write(text.getBytes(StandardCharsets.UTF_8));
       }
     }
   }
 
-  private synchronized void write(boolean isout, byte[] b) throws IOException {
-    if (outputWidget != null) {
-      outputWidget.sendOutput(new ConsoleOutput(!isout, new String(b, StandardCharsets.UTF_8)));
-    } else {
-      BeakerOutputHandler hdl = getHandler(isout);
-      if (hdl != null) hdl.write(b);
-      else if (isout)
-        orig_out.write(b);
-      else
-        orig_err.write(b);
-    }
-  }
-
-  private synchronized void write(boolean isout, byte[] b, int off, int len) throws IOException {
-    if (outputWidget != null) {
-      outputWidget.sendOutput(new ConsoleOutput(!isout, new String(b, off, len, StandardCharsets.UTF_8)));
-    } else {
-      BeakerOutputHandler hdl = getHandler(isout);
-      if (hdl != null) {
-        hdl.write(b, off, len);
-      } else if (isout) {
-        orig_out.write(b, off, len);
+  private synchronized void writeStderr(String text) throws IOException {
+    boolean sendStderr = OutputManager.sendStderr(text);
+    if (!sendStderr) {
+      if (err_handler != null) {
+        err_handler.write(text);
       } else {
-        orig_err.write(b, off, len);
+        orig_err.write(text.getBytes(StandardCharsets.UTF_8));
       }
     }
   }
 
-  public static void clearOutput() {
-    if (instance.outputWidget != null) {
-      instance.outputWidget.clearOutput();
-    }
-  }
 
   private class MyOutputStream extends OutputStream {
+
     private boolean is_out;
 
     public MyOutputStream(boolean isout) {
@@ -160,17 +116,30 @@ public class BeakerStdOutErrHandler {
 
     @Override
     public void write(int b) throws IOException {
-      instance.write(is_out, b);
+      byte[] ba = new byte[1];
+      ba[0] = (byte) b;
+      String s = new String(ba, StandardCharsets.UTF_8);
+      write(s);
     }
 
     @Override
     public void write(byte[] b) throws IOException {
-      instance.write(is_out, b);
+      String s = new String(b, StandardCharsets.UTF_8);
+      write(s);
     }
 
     @Override
     public void write(byte[] b, int off, int len) throws IOException {
-      instance.write(is_out, b, off, len);
+      String s = new String(b, off, len, StandardCharsets.UTF_8);
+      write(s);
+    }
+
+    private void write(String s) throws IOException {
+      if (is_out) {
+        instance.writeStdout(s);
+      } else {
+        instance.writeStderr(s);
+      }
     }
   }
 

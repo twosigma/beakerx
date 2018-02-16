@@ -15,15 +15,71 @@
  */
 package com.twosigma.beakerx.widget;
 
-import com.twosigma.beakerx.jvm.threads.BeakerStdOutErrHandler;
-
 public class OutputManager {
 
+  private static Output output;
+  private static Output stderr;
+  private static Output stdout;
+
   public static void setOutput(Output out) {
-    BeakerStdOutErrHandler.setOuputWidget(out);
+    output = out;
+  }
+
+  public static void setStderr(Output out) {
+    stderr = out;
+  }
+
+  public static void setStdout(Output out) {
+    stdout = out;
+  }
+
+  public static void clearStderr() {
+    if (stderr != null) {
+      stderr.clearOutput();
+    }
+  }
+
+  public static void clearStdout() {
+    if (stdout != null) {
+      stdout.clearOutput();
+    }
   }
 
   public static void clearOutput() {
-    BeakerStdOutErrHandler.clearOutput();
+    if (output != null) {
+      output.clearOutput();
+    }
+  }
+
+  public static void clear() {
+    clearOutput();
+    clearStdout();
+    clearStderr();
+  }
+
+  public static boolean sendStdout(String s) {
+    if (output != null || stdout != null) {
+      if (output != null) {
+        output.sendStdout(s);
+      }
+      if (stdout != null) {
+        stdout.sendStdout(s);
+      }
+      return true;
+    }
+    return false;
+  }
+
+  public static boolean sendStderr(String s) {
+    if (output != null || stderr != null) {
+      if (output != null) {
+        output.sendStderr(s);
+      }
+      if (stderr != null) {
+        stderr.sendStderr(s);
+      }
+      return true;
+    }
+    return false;
   }
 }

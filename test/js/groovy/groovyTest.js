@@ -15,12 +15,18 @@
  */
 
 var BeakerXPageObject = require('../beakerx.po.js');
+var PlotHelperObject = require('../plot.helper.js');
+var TableHelperObject = require('../table.helper.js');
 var beakerxPO;
+var plotHelper;
+var tableHelper;
 
 describe('Groovy base tests. ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
+    plotHelper = new PlotHelperObject();
+    tableHelper = new TableHelperObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/groovy/GroovyTest.ipynb');
   }, 2);
 
@@ -31,45 +37,51 @@ describe('Groovy base tests. ', function () {
   var cellIndex;
 
   describe('Define local and global variables. ', function () {
-    it('Output contains "2". ', function () {
+    it('Execute result output contains "2". ', function () {
       cellIndex = 0;
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /2/);
     });
   });
 
-  describe('Run 2nd cell. ', function () {
-    it('Output contains "groovy.lang.MissingPropertyException"', function () {
-      beakerxPO.runCellAndCheckOutputText(1, 'groovy.lang.MissingPropertyException');
+  describe('Run cell with error. ', function () {
+    it('Stderr output contains "groovy.lang.MissingPropertyException". ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfStderr(cellIndex, /groovy.lang.MissingPropertyException/);
     });
   });
 
-  describe('Run 3rd cell. ', function () {
-    it('Output contains "2"', function () {
-      beakerxPO.runCellAndCheckOutputText(2, '2');
+  describe('Call global variable. ', function () {
+    it('Execute result output contains "2". ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /2/);
     });
   });
 
-  describe('Run 4th cell. ', function () {
-    it('Output contains "run_closure"', function () {
-      beakerxPO.runCellAndCheckOutputText(3, 'run_closure');
+  describe('Define groovy closure. ', function () {
+    it('Execute result output contains "run_closure". ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /run_closure/);
     });
   });
 
-  describe('Run 5th cell. ', function () {
-    it('Output contains "8"', function () {
-      beakerxPO.runCellAndCheckOutputText(4, '8');
+  describe('Call defined closure with number argument. ', function () {
+    it('Execute result output contains "8". ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /8/);
     });
   });
 
-  describe('Run 6th cell. ', function () {
-    it('Output contains "Multiplying Strings!Multiplying Strings!"', function () {
-      beakerxPO.runCellAndCheckOutputText(5, 'Multiplying Strings!Multiplying Strings!');
+  describe('Call defined closure with string argument. ', function () {
+    it('Execute result output contains "Multiplying Strings!Multiplying Strings!". ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /Multiplying Strings!Multiplying Strings!/);
     });
   });
 
-  describe('Run 7th cell. ', function () {
-    it('Output contains "9.265"', function () {
-      beakerxPO.runCellAndCheckOutputText(6, '9.265');
+  describe('Call groovy method of Math package. ', function () {
+    it('Execute result output contains "9.265". ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex,  /9.265/);
     });
   });
 
@@ -79,40 +91,41 @@ describe('Groovy base tests. ', function () {
     expect(str.charCodeAt(2).toString(16)).toEqual('44f');
   }
 
-  describe('Cyrillic symbols (Groovy) ', function () {
-    var codeCell;
+  describe('Cyrillic symbols (Groovy). ', function () {
+    var dtContainer;
 
-    it('Output contains UTF-8 hex string', function () {
-      codeCell = beakerxPO.runCodeCellByIndex(7);
-      beakerxPO.waitAndCheckCellOutputStdoutText(7, /d18dd18ed18f/);
+    it('Stdout output contains UTF-8 hex string. ', function () {
+      cellIndex += 1;
+      dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /d18dd18ed18f/);
     });
 
-    it('Plot title is cyrillic (cp1521)', function () {
-      checkCyrilicString(codeCell.$('div#plotTitle').getText());
+    it('Plot title is cyrillic (cp1521). ', function () {
+      checkCyrilicString(plotHelper.getPlotTitle(dtContainer).getText());
     });
 
-    it('Plot x label is cyrillic (utf8 from cp1521)', function () {
-      var svg = codeCell.$('#svgg');
-      checkCyrilicString(svg.$('text#xlabel').getText());
+    it('Plot x label is cyrillic (utf8 from cp1521). ', function () {
+      checkCyrilicString(plotHelper.getXLabel(dtContainer).getText());
     });
 
-    it('Plot y label is cyrillic (utf-8)', function () {
-      var svg = codeCell.$('#svgg');
-      checkCyrilicString(svg.$('text#ylabel').getText());
+    it('Plot y label is cyrillic (utf-8). ', function () {
+      checkCyrilicString(plotHelper.getYLabel(dtContainer).getText());
     });
   });
 
-  describe('getCodeCells(tag) method', function () {
+  describe('getCodeCells(tag) method. ', function () {
 
-    it('Tag cell output contains "5"', function(){
-      beakerxPO.runCellAndCheckOutputText(8, '5');
+    it('Tag cell output contains "5". ', function(){
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex,  /5/);
     });
 
-    it('Output contains table', function () {
-      var codeCell = beakerxPO.runCodeCellByIndex(9);
-      var bkoTable = codeCell.$('div.bko-table');
-      expect(bkoTable.isEnabled()).toBeTruthy();
-      expect(bkoTable.$('tbody > tr').getText()).toMatch('"text/plain":"5"');
+    it('Output contains table. ', function () {
+      cellIndex += 1;
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      tableHelper.dataTablesIsEnabled(dtContainer);
+      var tBody = tableHelper.getDataTableBody(dtContainer);
+      expect(tableHelper.getTableRow(tBody, 0).getText()).toMatch(/"text.plain":"5"/);
     });
   });
 

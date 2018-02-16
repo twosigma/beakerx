@@ -17,7 +17,7 @@
 var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('Scala base tests. ', function () {
+describe('Scala base tests ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
@@ -30,15 +30,15 @@ describe('Scala base tests. ', function () {
 
   var cellIndex;
 
-  describe('Define scala class. ', function () {
-    it('Execute result output contains "defined class Greeter". ', function () {
+  describe('Define scala class ', function () {
+    it('Execute result output contains "defined class Greeter" ', function () {
       cellIndex = 0;
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /defined class Greeter/);
     });
   });
 
-  describe('Call defined class. ', function () {
-    it('Stdout output contains "Hello, Scala developer!". ', function () {
+  describe('Call defined class ', function () {
+    it('Stdout output contains "Hello, Scala developer!" ', function () {
       cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfStdout(cellIndex, /Hello, Scala developer!/);
     });

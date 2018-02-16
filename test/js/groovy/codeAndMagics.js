@@ -17,7 +17,7 @@
 var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('Tests for combination of code and magics', function () {
+describe('Tests for combination of code and magics. ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
@@ -28,33 +28,32 @@ describe('Tests for combination of code and magics', function () {
     beakerxPO.closeAndHaltNotebook();
   });
 
-  var cellIndex = 0;
+  var cellIndex;
   var timeExp = /CPU times: user \d+.+, sys: \d+.+, total: \d+.+\n+Wall Time: \d+/;
   var errorExp = /org.codehaus.groovy.control.MultipleCompilationErrorsException:/;
 
-  describe('Combination of code and magics', function () {
-    it('mixing of println code and %time magic', function () {
-      var outputs = beakerxPO.runCodeCellByIndex(cellIndex).$$(beakerxPO.getAllOutputTextCss());
-      browser.pause(2000);
-      expect(outputs[0].getText()).toMatch(new RegExp('test1\n221\n' + timeExp.source));
-      expect(outputs[0].getText()).toMatch(new RegExp('test2\n' + timeExp.source));
-      expect(outputs[1].getText()).toMatch(/3/);
+  describe('Combination of code and magics. ', function () {
+    it('mixing of println code and %time magic. ', function () {
+      cellIndex = 0;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, new RegExp('test1\n221\n' + timeExp.source));
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, new RegExp('test2\n' + timeExp.source));
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /3/);
     });
 
     it('%import magic inside code', function () {
       cellIndex += 1;
-      var outputs = beakerxPO.runCodeCellByIndex(cellIndex).$$(beakerxPO.getAllOutputTextCss());
-      browser.pause(2000);
-      expect(outputs[0].getText()).toMatch(errorExp);
-      expect(outputs[1].getText()).toMatch(new RegExp('221\n' + timeExp.source));
-      expect(outputs[2].getText()).toMatch(errorExp);
-      expect(outputs[3].getText()).toMatch(timeExp);
-      expect(outputs[4].getText()).toMatch(/3/);
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfStderr(cellIndex, errorExp, 0);
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, new RegExp('221\n' + timeExp.source), 0);
+      beakerxPO.waitAndCheckOutputTextOfStderr(cellIndex, errorExp, 1);
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, timeExp, 1);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /3/);
     });
 
     it('Using of the spaces in %classpath and %import magics', function () {
       cellIndex += 1;
-      beakerxPO.runCellAndCheckOutputText(cellIndex, /Added jar:.+testdemo\.jar.+/);
+      beakerxPO.runAndCheckOutputTextOfStdout(cellIndex, /Added jar:.+testdemo\.jar.+/);
     });
 
     it('Cell has IntSlider widget', function () {
@@ -65,18 +64,17 @@ describe('Tests for combination of code and magics', function () {
 
     it('Output contains "Demo_test_123"', function () {
       cellIndex += 1;
-      beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCellAndCheckOutputText(cellIndex, 'Demo_test_123');
+      beakerxPO.runAndCheckOutputTextOfStdout(cellIndex, 'Demo_test_123');
     });
 
     it('Using of the spaces in %time magic and println code', function () {
       cellIndex += 1;
-      beakerxPO.runCellAndCheckOutputText(cellIndex, new RegExp(/x\s{4}y\n/.source + timeExp.source));
+      beakerxPO.runAndCheckOutputTextOfStdout(cellIndex, new RegExp(/x\s{4}y\n/.source + timeExp.source));
     });
 
     it('%classpath for jar which contains spaces in name', function () {
       cellIndex += 1;
-      beakerxPO.runCellAndCheckOutputText(cellIndex, /Added jar:.+ with space\.jar.+/);
+      beakerxPO.runAndCheckOutputTextOfStdout(cellIndex, /Added jar:.+ with space\.jar.+/);
     });
   });
 

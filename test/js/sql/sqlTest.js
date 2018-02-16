@@ -19,7 +19,7 @@ var TableHelperObject = require('../table.helper.js');
 var beakerxPO;
 var tableHelper;
 
-describe('SQL base tests. ', function () {
+describe('SQL base tests ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
@@ -31,8 +31,8 @@ describe('SQL base tests. ', function () {
     beakerxPO.closeAndHaltNotebook();
   });
 
-  describe('Create and select table (H2 database). ', function () {
-    it('Output contains table. ', function () {
+  describe('Create and select table (H2 database) ', function () {
+    it('Output contains table ', function () {
       beakerxPO.runCodeCellByIndex(0);
       beakerxPO.runCodeCellByIndex(1);
       var dtContainer = beakerxPO.runCellToGetDtContainer(2);
@@ -40,8 +40,8 @@ describe('SQL base tests. ', function () {
     });
   });
 
-  describe('Autocomplete cell. ', function () {
-    it('Autocomplete list is not empty. ', function () {
+  describe('Autocomplete cell ', function () {
+    it('Autocomplete list is not empty ', function () {
       var codeCell = beakerxPO.getCodeCellByIndex(3);
       codeCell.scroll();
       codeCell.click();

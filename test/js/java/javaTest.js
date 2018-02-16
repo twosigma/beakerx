@@ -17,7 +17,7 @@
 var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('Java base tests. ', function () {
+describe('Java base tests ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
@@ -30,53 +30,53 @@ describe('Java base tests. ', function () {
 
   var cellIndex;
 
-  describe('Define java class. ', function () {
+  describe('Define java class ', function () {
     it('Execute result output contains "test.beaker.BeakerTest". ', function () {
       cellIndex = 0;
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /test.beaker.BeakerTest/);
     });
   });
 
-  describe('Call defined java class. ', function () {
-    it('Execute result output contains "Today:". ', function () {
+  describe('Call defined java class ', function () {
+    it('Execute result output contains "Today:" ', function () {
       cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /Today:/);
     });
   });
 
-  describe('Run java code that create Plot. ', function () {
-    it('PlotLegendContainer is enabled. ', function () {
+  describe('Run java code that create Plot ', function () {
+    it('PlotLegendContainer is enabled ', function () {
       cellIndex += 1;
       var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
       beakerxPO.plotLegendContainerIsEnabled(dtContainer);
     });
   });
 
-  describe('Define java interface. ', function () {
-    it('Execute result output contains "test.beaker.DateGetter". ', function () {
+  describe('Define java interface ', function () {
+    it('Execute result output contains "test.beaker.DateGetter" ', function () {
       cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /test.beaker.DateGetter/);
     });
   });
 
-  describe('Extend java class. ', function () {
-    it('Execute result output contains "test.beaker.DG2"', function () {
+  describe('Extend java class ', function () {
+    it('Execute result output contains "test.beaker.DG2" ', function () {
       cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /test.beaker.DG2/);
     });
   });
 
-  describe('Add and use jar. ', function () {
-    it('Add jar by %classpath magic. ', function () {
+  describe('Add and use jar ', function () {
+    it('Add jar by %classpath magic ', function () {
       cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfStdout(cellIndex, /Added jar:.+BeakerXClasspathTest\.jar.+/);
     });
-    it('Check path of added jar. ', function () {
+    it('Check path of added jar ', function () {
       cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfStdout(cellIndex,
         /beakerx.test.ipynb.*\s*.*BeakerXClasspathTest.jar exists in this folder/);
     });
-    it('Call added jar. ', function () {
+    it('Call added jar ', function () {
       cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfStdout(cellIndex, /static_123.*\s*.*object_123/);
     });

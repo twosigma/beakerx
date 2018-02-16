@@ -72,12 +72,16 @@ var NotebookPageObject = function () {
     return 'div.output_wrapper div.output';
   };
 
-  this.getAllOutputExecuteResults = function (codeCell) {
+  this.getAllOutputsExecuteResult = function (codeCell) {
     return codeCell.$$('div.output_subarea.output_result');
   };
 
-  this.getAllOutputStdouts = function (codeCell) {
+  this.getAllOutputsStdout = function (codeCell) {
     return codeCell.$$('div.output_subarea.output_stdout');
+  };
+
+  this.getAllOutputsStderr = function (codeCell) {
+    return codeCell.$$('div.output_subarea.output_error');
   };
 
 };

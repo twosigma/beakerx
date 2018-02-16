@@ -88,23 +88,16 @@ function BeakerXPageObject() {
     return codeCell.$('#svgg');
   };
 
-  this.runCellAndCheckOutputText = function (index, expectedText) {
-    var resultTest;
-    try {
-      resultTest = this.runCellToGetOutputTextElement(index).getText();
-    } catch (e) {
-      console.log(expectedText + ' --- ' + e.toString());
-      resultTest = this.runCellToGetOutputTextElement(index).getText();
-    }
-    expect(resultTest).toMatch(expectedText);
-  };
-
   this.runAndCheckOutputTextOfExecuteResult = function (cellIndex, expectedText) {
-    this.runCellAndCheckTextHandleError(cellIndex, expectedText, this.getAllOutputExecuteResults);
+    this.runCellAndCheckTextHandleError(cellIndex, expectedText, this.getAllOutputsExecuteResult);
   };
 
   this.runAndCheckOutputTextOfStdout = function (cellIndex, expectedText) {
-    this.runCellAndCheckTextHandleError(cellIndex, expectedText, this.getAllOutputStdouts);
+    this.runCellAndCheckTextHandleError(cellIndex, expectedText, this.getAllOutputsStdout);
+  };
+
+  this.runAndCheckOutputTextOfStderr = function (cellIndex, expectedText) {
+    this.runCellAndCheckTextHandleError(cellIndex, expectedText, this.getAllOutputsStderr);
   };
 
   this.runCellAndCheckTextHandleError = function(cellIndex, expectedText, getTextElements){
@@ -121,6 +114,30 @@ function BeakerXPageObject() {
       }
     }
     expect(resultTest).toMatch(expectedText);
+  };
+
+  this.waitAndCheckOutputTextOfExecuteResult = function (cellIndex, expectedText, outputIndex) {
+    this.waitAndCheckOutputText(cellIndex, expectedText, this.getAllOutputsExecuteResult, outputIndex);
+  };
+
+  this.waitAndCheckOutputTextOfStdout = function (cellIndex, expectedText, outputIndex) {
+    this.waitAndCheckOutputText(cellIndex, expectedText, this.getAllOutputsStdout, outputIndex);
+  };
+
+  this.waitAndCheckOutputTextOfStderr = function (cellIndex, expectedText, outputIndex) {
+    this.waitAndCheckOutputText(cellIndex, expectedText, this.getAllOutputsStderr, outputIndex);
+  };
+
+  this.waitAndCheckOutputText = function (index, expectedText, getTextElements, outputIndex) {
+    if(!outputIndex){
+      outputIndex = 0;
+    }
+    var codeCell = this.getCodeCellByIndex(index);
+    codeCell.scroll();
+    browser.waitUntil(function () {
+      var output = getTextElements(codeCell)[outputIndex];
+      return output.isEnabled() && expectedText.test(output.getText());
+    }, 50000, 'expected output toMatch ' + expectedText);
   };
 
   this.runCellToGetOutputTextElement = function (index) {

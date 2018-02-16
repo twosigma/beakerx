@@ -17,7 +17,7 @@
 var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('Kotlin base tests. ', function () {
+describe('Kotlin base tests ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
@@ -30,8 +30,8 @@ describe('Kotlin base tests. ', function () {
 
   var cellIndex;
 
-  describe('Define and call kotlin function. ', function () {
-    it('Execute result output contains "hello, 623". ', function () {
+  describe('Define and call kotlin function ', function () {
+    it('Execute result output contains "hello, 623" ', function () {
       cellIndex = 0;
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /null/);
       cellIndex += 1;
@@ -39,8 +39,8 @@ describe('Kotlin base tests. ', function () {
     });
   });
 
-  describe('Run kotlin code that create Plot. ', function () {
-    it('PlotLegendContainer is enabled. ', function () {
+  describe('Run kotlin code that create Plot ', function () {
+    it('PlotLegendContainer is enabled ', function () {
       cellIndex += 1;
       var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
       beakerxPO.plotLegendContainerIsEnabled(dtContainer);

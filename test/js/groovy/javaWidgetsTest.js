@@ -17,7 +17,7 @@
 var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('Java widgets notebook', function () {
+describe('Java widgets notebook test ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
@@ -28,78 +28,97 @@ describe('Java widgets notebook', function () {
     beakerxPO.closeAndHaltNotebook();
   });
 
-  describe('IntSlider widget', function () {
-    it('Cell has IntSlider widget', function () {
-      var widget = beakerxPO.runCellToGetWidgetElement(0);
-      expect(widget.$('div.slider-container').isEnabled()).toBeTruthy();
-    }, 2);
+  var cellIndex;
 
-    it('Widget value = 60', function () {
-      beakerxPO.runCellAndCheckOutputText(1, '60');
-      var codeCell = beakerxPO.getCodeCellByIndex(0);
+  describe('IntSlider widget ', function () {
+    var wdgIndex;
+    it('Cell has IntSlider widget ', function () {
+      cellIndex = 0;
+      wdgIndex = cellIndex;
+      var widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.$('div.slider-container').isEnabled()).toBeTruthy();
+    });
+
+    it('Widget value = 60 ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /60/);
+      var codeCell = beakerxPO.getCodeCellByIndex(wdgIndex);
       expect(codeCell.$('div.widget-readout').getText()).toBe('60')
     });
 
-    it('Widget value = 76', function () {
-      beakerxPO.runCellAndCheckOutputText(2, '76');
-      var codeCell = beakerxPO.getCodeCellByIndex(0);
+    it('Widget value = 76 ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /76/);
+      var codeCell = beakerxPO.getCodeCellByIndex(wdgIndex);
       expect(codeCell.$('div.widget-readout').getText()).toBe('76')
     });
 
-    it('Widget description = "desc1"', function () {
-      beakerxPO.runCellAndCheckOutputText(3, 'desc1');
-      var codeCell = beakerxPO.getCodeCellByIndex(0);
+    it('Widget description = "desc1" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /desc1/);
+      var codeCell = beakerxPO.getCodeCellByIndex(wdgIndex);
       expect(codeCell.$('label.widget-label').getText()).toBe('desc1')
     });
 
-    it('Cell output contains "false"', function () {
-      beakerxPO.runCellAndCheckOutputText(4, 'false');
+    it('Execute result output contains "false" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /false/);
     });
 
-    it('Cell output contains "50"', function () {
-      beakerxPO.runCellAndCheckOutputText(5, '50');
+    it('Execute result output contains "50" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /50/);
     });
 
-    it('Cell output contains "horizontal"', function () {
-      beakerxPO.runCellAndCheckOutputText(6, 'horizontal');
-      var codeCell = beakerxPO.getCodeCellByIndex(0);
+    it('Execute result output contains "horizontal" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /horizontal/);
+      var codeCell = beakerxPO.getCodeCellByIndex(wdgIndex);
       expect(codeCell.$('div.ui-slider-horizontal').isExisting()).toBeTruthy();
     });
 
-    it('Cell output contains "20"', function () {
-      beakerxPO.runCellAndCheckOutputText(8, '20');
+    it('Execute result output contains "20" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /20/);
     });
 
-    it('Cell output contains "true"', function () {
-      beakerxPO.runCellAndCheckOutputText(9, 'true');
+    it('Execute result output contains "true" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /true/);
       //TODO visible hasn't worked yet
     });
   });
 
-  describe('IntProgress widget', function () {
-    it('Cell has IntProgress widget', function () {
-      var widget = beakerxPO.runCellToGetWidgetElement(10);
+  describe('IntProgress widget ', function () {
+    it('Cell has IntProgress widget ', function () {
+      cellIndex += 1;
+      var widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
       expect(widget.$('div.progress').isEnabled()).toBeTruthy();
-    }, 2);
-
-    it('Widget value = 10', function () {
-      beakerxPO.runCellAndCheckOutputText(11, '10');
     });
 
-    it('Widget value = 110', function () {
-      beakerxPO.runCellAndCheckOutputText(12, '110');
+    it('Widget value = 10 ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /10/);
     });
 
-    it('Cell output contains "50"', function () {
-      beakerxPO.runCellAndCheckOutputText(13, '50');
+    it('Widget value = 110 ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /110/);
     });
 
-    it('Cell output contains "20"', function () {
-      beakerxPO.runCellAndCheckOutputText(14, '20');
+    it('Execute result output contains "50" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /50/);
     });
 
-    it('Cell output contains "horizontal"', function () {
-      beakerxPO.runCellAndCheckOutputText(15, 'horizontal');
+    it('Execute result output contains "20" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /20/);
+    });
+
+    it('Execute result output contains "horizontal" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /horizontal/);
     });
   });
 

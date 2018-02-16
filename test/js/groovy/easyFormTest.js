@@ -30,8 +30,8 @@ describe('(Groovy) Testing of EasyForm', function () {
 
   var cellIndex;
 
-  describe('(Groovy) EasyForm widget', function () {
-    it('Cell has EasyForm widget', function () {
+  describe('(Groovy) EasyForm widget ', function () {
+    it('Cell has EasyForm widget ', function () {
       cellIndex = 0;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       expect(codeCell.$('fieldset').isEnabled()).toBeTruthy();
@@ -40,10 +40,10 @@ describe('(Groovy) Testing of EasyForm', function () {
     });
   });
 
-  describe('(Groovy) EasyForm Text field', function () {
+  describe('(Groovy) EasyForm Text field ', function () {
     var easyForm;
 
-    it('EasyForm has Text field', function () {
+    it('EasyForm has Text field ', function () {
       cellIndex += 1;
       easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-text').isEnabled()).toBeTruthy();
@@ -51,21 +51,21 @@ describe('(Groovy) Testing of EasyForm', function () {
       expect(easyForm.$('input[type="text"]').isEnabled()).toBeTruthy();
     });
 
-    it('Should input text', function () {
+    it('Should input text ', function () {
       var tstText = 'text from user input';
       cellIndex += 1;
       easyForm.$('input[type="text"]').setValue(tstText);
       expect(easyForm.$('input[type="text"]').getValue()).toBe(tstText);
-      beakerxPO.runCellAndCheckOutputText(cellIndex, tstText);
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, tstText);
     });
 
-    it('Should setup text value by code', function () {
+    it('Should setup text value by code ', function () {
       cellIndex += 1;
       var tstText = beakerxPO.runCellToGetOutputTextElement(cellIndex).getText();
       expect(easyForm.$('input[type="text"]').getValue()).toBe(tstText);
     });
 
-    it('Text field size equal 10', function () {
+    it('Text field size equal 10 ', function () {
       cellIndex += 1;
       var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-text').isEnabled()).toBeTruthy();
@@ -74,10 +74,10 @@ describe('(Groovy) Testing of EasyForm', function () {
     });
   });
 
-  describe('(Groovy) EasyForm Textarea field', function () {
+  describe('(Groovy) EasyForm Textarea field ', function () {
     var easyForm;
 
-    it('EasyForm has Textarea field', function () {
+    it('EasyForm has Textarea field ', function () {
       cellIndex += 1;
       easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-textarea').isEnabled()).toBeTruthy();
@@ -85,21 +85,21 @@ describe('(Groovy) Testing of EasyForm', function () {
       expect(easyForm.$('textarea').isEnabled()).toBeTruthy();
     });
 
-    it('Should input text', function () {
+    it('Should input text ', function () {
       var tstText = 'text from user input';
       cellIndex += 1;
       easyForm.$('textarea').setValue(tstText);
       expect(easyForm.$('textarea').getValue()).toBe(tstText);
-      beakerxPO.runCellAndCheckOutputText(cellIndex, tstText);
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, tstText);
     });
 
-    it('Should setup text value by code', function () {
+    it('Should setup text value by code ', function () {
       cellIndex += 1;
       var tstText = beakerxPO.runCellToGetOutputTextElement(cellIndex).getText();
       expect(easyForm.$('textarea').getValue()).toBe(tstText);
     });
 
-    it('Textarea has 5 rows and 20 cols', function () {
+    it('Textarea has 5 rows and 20 cols ', function () {
       cellIndex += 1;
       var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-textarea').isEnabled()).toBeTruthy();
@@ -108,7 +108,7 @@ describe('(Groovy) Testing of EasyForm', function () {
       expect(Math.round(easyForm.$('textarea').getAttribute('cols'))).toBe(20);
     });
 
-    it('Textarea has initial value', function () {
+    it('Textarea has initial value ', function () {
       cellIndex += 1;
       var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-textarea').isEnabled()).toBeTruthy();
@@ -117,10 +117,10 @@ describe('(Groovy) Testing of EasyForm', function () {
     });
   });
 
-  describe('(Groovy) EasyForm Checkbox field', function () {
+  describe('(Groovy) EasyForm Checkbox field ', function () {
     var easyForm;
 
-    it('EasyForm has Checkbox field', function () {
+    it('EasyForm has Checkbox field ', function () {
       cellIndex += 1;
       easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-checkbox').isEnabled()).toBeTruthy();
@@ -128,21 +128,21 @@ describe('(Groovy) Testing of EasyForm', function () {
       expect(easyForm.$('input[type="checkbox"]').isEnabled()).toBeTruthy();
     });
 
-    it('Checkbox should be checked', function () {
+    it('Checkbox should be checked ', function () {
       cellIndex += 1;
       easyForm.$('input[type="checkbox"]').click();
       expect(easyForm.$('input[type="checkbox"]').isSelected()).toBeTruthy();
-      beakerxPO.runCellAndCheckOutputText(cellIndex, 'true');
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, 'true');
     });
 
-    it('Should be unchecked by code', function () {
+    it('Should be unchecked by code ', function () {
       cellIndex += 1;
       var tstText = beakerxPO.runCellToGetOutputTextElement(cellIndex).getText();
       expect(tstText).toBe('false')
       expect(easyForm.$('input[type="checkbox"]').isSelected()).toBeFalsy();
     });
 
-    it('Checkbox has initial value', function () {
+    it('Checkbox has initial value ', function () {
       cellIndex += 1;
       var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-checkbox').isEnabled()).toBeTruthy();
@@ -151,10 +151,10 @@ describe('(Groovy) Testing of EasyForm', function () {
     });
   });
 
-  describe('(Groovy) EasyForm Combobox field', function () {
+  describe('(Groovy) EasyForm Combobox field ', function () {
     var easyForm;
 
-    it('EasyForm has Combobox field', function () {
+    it('EasyForm has Combobox field ', function () {
       cellIndex += 1;
       easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-combobox').isEnabled()).toBeTruthy();
@@ -169,10 +169,10 @@ describe('(Groovy) Testing of EasyForm', function () {
       easyForm.$('span.easyform-combobox > a').click();
       browser.$('div.ui-menu-item-wrapper=' + testValue).click();
       expect(easyForm.$('input.easyform-combobox-input').getValue()).toBe(testValue);
-      beakerxPO.runCellAndCheckOutputText(cellIndex, testValue);
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, testValue);
     });
 
-    it('Should select Combobox value by code', function () {
+    it('Should select Combobox value by code ', function () {
       cellIndex += 1;
       var testValue = beakerxPO.runCellToGetOutputTextElement(cellIndex).getText();
       expect(easyForm.$('input.easyform-combobox-input').getValue()).toBe(testValue);
@@ -187,10 +187,10 @@ describe('(Groovy) Testing of EasyForm', function () {
     browser.keys('\uE000');
   }
 
-  describe('(Groovy) EasyForm List field', function () {
+  describe('(Groovy) EasyForm List field ', function () {
     var easyForm;
 
-    it('EasyForm has List field', function () {
+    it('EasyForm has List field ', function () {
       cellIndex += 1;
       easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-select').isEnabled()).toBeTruthy();
@@ -199,21 +199,21 @@ describe('(Groovy) Testing of EasyForm', function () {
       expect(easyForm.$('select').getText()).toMatch('twof6');
     });
 
-    it('List has size equal 3', function () {
+    it('List has size equal 3 ', function () {
       expect(Math.round(easyForm.$('select').getAttribute('size'))).toBe(3);
     });
 
-    it('Should select "twof6" value', function () {
+    it('Should select "twof6" value ', function () {
       var testValue = 'twof6';
       cellIndex += 1;
       easyForm.$('select').selectByVisibleText(testValue);
       expect(easyForm.$('select').getValue()).toBe(testValue);
       expect(easyForm.$('option=' + testValue).isSelected()).toBeTruthy();
       expect(easyForm.$('option=threef6').isSelected()).toBeFalsy();
-      beakerxPO.runCellAndCheckOutputText(cellIndex, testValue);
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, testValue);
     });
 
-    it('Should select "twof6" and "threef6" values', function () {
+    it('Should select "twof6" and "threef6" values ', function () {
       selectTwoValuesOnList(easyForm.$('select'), 'twof6', 'threef6');
       expect(easyForm.$('option=twof6').isSelected()).toBeTruthy();
       expect(easyForm.$('option=threef6').isSelected()).toBeTruthy();
@@ -222,7 +222,7 @@ describe('(Groovy) Testing of EasyForm', function () {
       expect(result).toMatch('threef6');
     });
 
-    it('Should select List value by code', function () {
+    it('Should select List value by code ', function () {
       cellIndex += 1;
       var testValue = "onef6";
       beakerxPO.runCellToGetOutputTextElement(cellIndex);
@@ -242,7 +242,7 @@ describe('(Groovy) Testing of EasyForm', function () {
       expect(result).toMatch('threef6b');
     });
 
-    it('List has size equal 2', function () {
+    it('List has size equal 2 ', function () {
       cellIndex += 1;
       var easyForm6c = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm6c.$('div.widget-select').isEnabled()).toBeTruthy();
@@ -250,10 +250,10 @@ describe('(Groovy) Testing of EasyForm', function () {
     });
   });
 
-  describe('(Groovy) EasyForm CheckBoxes field', function () {
+  describe('(Groovy) EasyForm CheckBoxes field ', function () {
     var easyForm;
 
-    it('EasyForm has CheckBoxes field', function () {
+    it('EasyForm has CheckBoxes field ', function () {
       cellIndex += 1;
       easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$$('div.widget-checkbox').length).toBe(4);
@@ -261,21 +261,21 @@ describe('(Groovy) Testing of EasyForm', function () {
       expect(easyForm.$('div.widget-label').getText()).toBe('field name7');
     });
 
-    it('CheckBoxes has vertical orientation', function () {
+    it('CheckBoxes has vertical orientation ', function () {
       expect(easyForm.$('div.widget-hbox > div.widget-vbox').isEnabled()).toBeTruthy();
       expect(easyForm.$('div.widget-hbox > div.widget-vbox')
         .getCssProperty('flex-direction').value).toBe('column');
     });
 
-    it('Should select "twof7" value', function () {
+    it('Should select "twof7" value ', function () {
       cellIndex += 1;
       easyForm.$$('input[type="checkbox"]')[1].click();
       expect(easyForm.$$('input[type="checkbox"]')[1].isSelected()).toBeTruthy();
       expect(easyForm.$$('input[type="checkbox"]')[2].isSelected()).toBeFalsy();
-      beakerxPO.runCellAndCheckOutputText(cellIndex, 'twof7');
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, 'twof7');
     });
 
-    it('Should select "fourf7" and "threef7" values', function () {
+    it('Should select "fourf7" and "threef7" values ', function () {
       easyForm.$$('input[type="checkbox"]')[2].click();
       easyForm.$$('input[type="checkbox"]')[3].click();
       expect(easyForm.$$('input[type="checkbox"]')[2].isSelected()).toBeTruthy();
@@ -285,14 +285,14 @@ describe('(Groovy) Testing of EasyForm', function () {
       expect(result).toMatch('threef7');
     });
 
-    it('Should select CheckBoxes value by code', function () {
+    it('Should select CheckBoxes value by code ', function () {
       cellIndex += 1;
       var result = beakerxPO.runCellToGetOutputTextElement(cellIndex).getText();
       expect(result).toMatch('onef7');
       expect(easyForm.$$('input[type="checkbox"]')[0].isSelected()).toBeTruthy();
     });
 
-    it('CheckBoxes has horizontal orientation', function () {
+    it('CheckBoxes has horizontal orientation ', function () {
       cellIndex += 1;
       var easyForm7b = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm7b.$$('div.widget-checkbox').length).toBe(3);
@@ -304,10 +304,10 @@ describe('(Groovy) Testing of EasyForm', function () {
     });
   });
 
-  describe('(Groovy) EasyForm RadioButtons field', function () {
+  describe('(Groovy) EasyForm RadioButtons field ', function () {
     var easyForm;
 
-    it('EasyForm has RadioButtons field', function () {
+    it('EasyForm has RadioButtons field ', function () {
       cellIndex += 1;
       easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-radio-box').isEnabled()).toBeTruthy();
@@ -315,35 +315,35 @@ describe('(Groovy) Testing of EasyForm', function () {
       expect(easyForm.$('label.widget-label').getText()).toBe('field name8');
     });
 
-    it('RadioButtons has vertical orientation', function () {
+    it('RadioButtons has vertical orientation ', function () {
       expect(easyForm.$('div.widget-radio-box').isEnabled()).toBeTruthy();
       expect(easyForm.$('div.widget-radio-box')
         .getCssProperty('flex-direction').value).toBe('column');
     });
 
-    it('RadioButtons does not have default selected button', function () {
+    it('RadioButtons does not have default selected button ', function () {
       var buttonsf8 = easyForm.$$('input[type="radio"]');
       expect(buttonsf8[0].isSelected()).toBeFalsy();
       expect(buttonsf8[1].isSelected()).toBeFalsy();
       expect(buttonsf8[2].isSelected()).toBeFalsy();
     });
 
-    it('Should select "twof8" value', function () {
+    it('Should select "twof8" value ', function () {
       cellIndex += 1;
       easyForm.$$('input[type="radio"]')[1].click();
       expect(easyForm.$$('input[type="radio"]')[1].isSelected()).toBeTruthy();
       expect(easyForm.$$('input[type="radio"]')[0].isSelected()).toBeFalsy();
-      beakerxPO.runCellAndCheckOutputText(cellIndex, 'twof8');
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, 'twof8');
     });
 
-    it('Should select RadioButtons value by code', function () {
+    it('Should select RadioButtons value by code ', function () {
       cellIndex += 1;
       var result = beakerxPO.runCellToGetOutputTextElement(cellIndex).getText();
       expect(result).toMatch('threef8');
       expect(easyForm.$$('input[type="radio"]')[2].isSelected()).toBeTruthy();
     });
 
-    it('RadioButtons has horizontal orientation', function () {
+    it('RadioButtons has horizontal orientation ', function () {
       cellIndex += 1;
       var easyForm8b = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm8b.$('div.widget-radio-box').isEnabled()).toBeTruthy();
@@ -355,17 +355,17 @@ describe('(Groovy) Testing of EasyForm', function () {
     });
   });
 
-  describe('(Groovy) EasyForm DatePicker field', function () {
+  describe('(Groovy) EasyForm DatePicker field ', function () {
     var easyForm;
 
-    it('EasyForm has DatePicker field', function () {
+    it('EasyForm has DatePicker field ', function () {
       cellIndex += 1;
       easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.datepicker-container').isEnabled()).toBeTruthy();
       expect(easyForm.$('label.widget-label').getText()).toBe('field name9');
     });
 
-    it('Should select 25th day', function () {
+    it('Should select 25th day ', function () {
       cellIndex += 1;
       easyForm.$('a.date-picker-button').click();
       browser.$('span.flatpickr-day=25').click();
@@ -374,7 +374,7 @@ describe('(Groovy) Testing of EasyForm', function () {
       expect(result).toMatch('25');
     });
 
-    it('Should select 27th day by code', function () {
+    it('Should select 27th day by code ', function () {
       cellIndex += 1;
       var result = beakerxPO.runCellToGetOutputTextElement(cellIndex).getText();
       expect(result).toMatch('27');
@@ -382,10 +382,10 @@ describe('(Groovy) Testing of EasyForm', function () {
     });
   });
 
-  describe("(Groovy) EasyForm Actions", function(){
+  describe('(Groovy) EasyForm Actions ', function(){
     var inputs;
 
-    it('EasyForm has two buttons', function () {
+    it('EasyForm has two buttons ', function () {
       cellIndex += 1;
       var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       easyForm.$('button=run tag').click();
@@ -393,7 +393,7 @@ describe('(Groovy) Testing of EasyForm', function () {
       easyForm.$('button=actionPerformed').click();
     });
 
-    it('tag should create EasyForm', function () {
+    it('tag should create EasyForm ', function () {
       cellIndex += 2;
       beakerxPO.kernelIdleIcon.waitForEnabled();
       var codeCell_11 = beakerxPO.getCodeCellByIndex(cellIndex);
@@ -402,32 +402,32 @@ describe('(Groovy) Testing of EasyForm', function () {
       inputs = easyForm.$$('input[type="text"]');
     });
 
-    it('onChange action should change text value', function () {
+    it('onChange action should change text value ', function () {
       cellIndex -= 1;
-      beakerxPO.runCellAndCheckOutputText(cellIndex, 'test text');
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, 'test text');
       expect(inputs[1].getValue()).toBe('test text');
       expect(inputs[2].getValue()).toBe('test text from onChange');
     });
 
-    it('onInit action should change text value', function () {
+    it('onInit action should change text value ', function () {
       expect(inputs[0].getValue()).toBe('from onInit');
     });
 
-    it('actionPerformed should change text value', function () {
+    it('actionPerformed should change text value ', function () {
       expect(inputs[3].getValue()).toBe('from actionPerformed');
     });
   });
 
-  describe('(Groovy) IntSlider widget in EasyForm', function(){
+  describe('(Groovy) IntSlider widget in EasyForm ', function(){
     it('EasyForm has IntSlider widget', function(){
       cellIndex += 2;
       var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.slider-container')).toBeTruthy();
     });
 
-    it('IntSlider has value 50', function(){
+    it('IntSlider has value 50 ', function(){
       cellIndex +=1;
-      beakerxPO.runCellAndCheckOutputText(cellIndex, '50');
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, '50');
     });
   });
 

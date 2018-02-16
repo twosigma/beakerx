@@ -17,7 +17,7 @@
 var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('Clojure base tests. ', function () {
+describe('Clojure base tests ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
@@ -30,22 +30,22 @@ describe('Clojure base tests. ', function () {
 
   var cellIndex;
 
-  describe('Run first cell. ', function () {
-    it('Execute result output contains "0, 1, 1, 2, 3, 5". ', function () {
+  describe('Run first cell ', function () {
+    it('Execute result output contains "0, 1, 1, 2, 3, 5" ', function () {
       cellIndex = 0;
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /0, 1, 1, 2, 3, 5/);
     });
   });
 
-  describe('Run 2nd cell. ', function () {
-    it('Stdout output contains "Will print". ', function () {
+  describe('Run 2nd cell ', function () {
+    it('Stdout output contains "Will print" ', function () {
       cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfStdout(cellIndex, /Will print/);
     });
   });
 
-  describe('Run 3rd cell. ', function () {
-    it('Execute result output contains "Distinct: 36". ', function () {
+  describe('Run 3rd cell ', function () {
+    it('Execute result output contains "Distinct: 36" ', function () {
       cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfStdout(cellIndex, /Distinct: 36/);
     });

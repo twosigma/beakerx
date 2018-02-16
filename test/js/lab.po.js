@@ -90,12 +90,16 @@ var LabPageObject = function () {
     return 'div.jp-RenderedText.jp-OutputArea-output';
   };
 
-  this.getAllOutputExecuteResults = function (codeCell) {
+  this.getAllOutputsExecuteResult = function (codeCell) {
     return codeCell.$$('div.jp-OutputArea-child.jp-OutputArea-executeResult > div.jp-OutputArea-output');
-  }
+  };
 
-  this.getAllOutputStdouts = function (codeCell) {
+  this.getAllOutputsStdout = function (codeCell) {
     return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output[data-mime-type="application/vnd.jupyter.stdout"]');
-  }
+  };
+
+  this.getAllOutputsStderr = function (codeCell) {
+    return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output[data-mime-type="application/vnd.jupyter.stderr"]');
+  };
 };
 module.exports = LabPageObject;

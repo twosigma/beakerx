@@ -17,7 +17,7 @@
 package com.twosigma.beakerx.easyform.formitem;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
-import com.twosigma.beakerx.widget.selections.SelectionWidget;
+import com.twosigma.beakerx.widget.SelectionWidget;
 
 import java.util.Collection;
 

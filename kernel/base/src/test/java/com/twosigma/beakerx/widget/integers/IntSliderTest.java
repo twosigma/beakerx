@@ -17,6 +17,8 @@ package com.twosigma.beakerx.widget.integers;
 
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.widget.BoundedIntWidget;
+import com.twosigma.beakerx.widget.IntSlider;
 import com.twosigma.beakerx.widget.Layout;
 import com.twosigma.beakerx.widget.Widget;
 import org.assertj.core.api.Assertions;

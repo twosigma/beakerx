@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
-import com.twosigma.beakerx.widget.selections.ComboBox;
+import com.twosigma.beakerx.widget.ComboBox;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;

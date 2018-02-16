@@ -70,18 +70,6 @@ var LabPageObject = function () {
     this.kernelIdleIcon.waitForEnabled();
   };
 
-  this.getOutputResultCss = function () {
-    return 'div.jp-RenderedText.jp-OutputArea-output';
-  };
-
-  this.getOutputStderrCss = function () {
-    return 'div.jp-RenderedText.jp-OutputArea-output';
-  };
-
-  this.getOutputStdoutCss = function () {
-    return 'div.jp-RenderedText.jp-OutputArea-output';
-  };
-
   this.getAllOutputAreaChildren = function (codeCell) {
     return codeCell.$$('div.jp-OutputArea-child');
   };

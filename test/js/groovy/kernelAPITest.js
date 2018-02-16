@@ -51,7 +51,7 @@ describe('(Groovy) Testing of Kernel API', function () {
     it('Cell displays true output', function () {
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
-      beakerxPO.waitAndCheckCellOutputResultText(cellIndex, /true/);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /true/);
     });
   });
 
@@ -59,7 +59,7 @@ describe('(Groovy) Testing of Kernel API', function () {
     it('Cell displays null output', function () {
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
-      beakerxPO.waitAndCheckCellOutputResultText(cellIndex, /null/);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /null/);
     });
   });
 

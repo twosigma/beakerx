@@ -52,18 +52,6 @@ var NotebookPageObject = function () {
     this.kernelIdleIcon.waitForEnabled();
   };
 
-  this.getOutputResultCss = function () {
-    return 'div.output_subarea.output_text.output_result';
-  };
-
-  this.getOutputStderrCss = function () {
-    return 'div.output_subarea.output_text.output_stderr';
-  };
-
-  this.getOutputStdoutCss = function () {
-    return 'div.output_subarea.output_text.output_stdout';
-  };
-
   this.getAllOutputAreaChildren = function (codeCell) {
     return codeCell.$$('div.output_area');
   };

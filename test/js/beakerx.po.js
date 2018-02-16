@@ -163,27 +163,6 @@ function BeakerXPageObject() {
     return codeCell.$('div.dataTables_scrollBody');
   };
 
-  this.waitAndCheckCellOutputStderrText = function (index, expectedText) {
-    this.waitAndCheckCellOutputText(index, expectedText, this.getOutputStderrCss());
-  };
-
-  this.waitAndCheckCellOutputStdoutText = function (index, expectedText) {
-    this.waitAndCheckCellOutputText(index, expectedText, this.getOutputStdoutCss());
-  };
-
-  this.waitAndCheckCellOutputResultText = function (index, expectedText) {
-    this.waitAndCheckCellOutputText(index, expectedText, this.getOutputResultCss());
-  };
-
-  this.waitAndCheckCellOutputText = function (index, expectedText, selector) {
-    var codeCell = this.getCodeCellByIndex(index);
-    codeCell.scroll();
-    browser.waitUntil(function () {
-      var output = codeCell.$(selector);
-      return output.isEnabled() && expectedText.test(output.getText());
-    }, 50000, 'expected output toMatch ' + expectedText);
-  };
-
   this.getTableColumnLabel = function (tableIndex, columnIndex) {
     var table = $$("div.dataTables_scrollHead") [tableIndex];
     var tableColumnLabels = table.$$("span.header-text");

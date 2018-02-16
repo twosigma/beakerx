@@ -17,7 +17,7 @@
 var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('Autotranslation Groovy to JavaScript and D3 js', function () {
+describe('Autotranslation Groovy to JavaScript and D3 ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
@@ -28,8 +28,8 @@ describe('Autotranslation Groovy to JavaScript and D3 js', function () {
     beakerxPO.closeAndHaltNotebook();
   });
 
-  describe('Groovy code', function(){
-    it('Output contains data table', function(){
+  describe('Groovy code ', function(){
+    it('Output contains data table ', function(){
       var codeCell = beakerxPO.runCodeCellByIndex(0);
       var bkoTable = codeCell.$('div.bko-table');
       expect(bkoTable.isEnabled()).toBeTruthy();

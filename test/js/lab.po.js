@@ -82,12 +82,8 @@ var LabPageObject = function () {
     return 'div.jp-RenderedText.jp-OutputArea-output';
   };
 
-  this.getAllOutputTextCss = function () {
-    return 'div.jp-RenderedText.jp-OutputArea-output';
-  };
-
-  this.getOutputWrapperOutputCss = function () {
-    return 'div.jp-RenderedText.jp-OutputArea-output';
+  this.getAllOutputAreaChildren = function (codeCell) {
+    return codeCell.$$('div.jp-OutputArea-child');
   };
 
   this.getAllOutputsExecuteResult = function (codeCell) {

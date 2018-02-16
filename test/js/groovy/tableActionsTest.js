@@ -51,7 +51,7 @@ describe('Testing of table Actions', function () {
       cell_1.rightClick();
       browser.click('div.p-Menu-itemLabel=tag1ByStr');
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.checkCellOutputText(1, '0:1=2');
+      beakerxPO.waitAndCheckOutputTextOfStdout(1, /0:1=2/);
     });
 
     it('ContextMenuItem should run tag (by closure)', function () {
@@ -59,7 +59,7 @@ describe('Testing of table Actions', function () {
       cell_2.rightClick();
       browser.click('div.p-Menu-itemLabel=tag1ByClosure');
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.checkCellOutputText(1, '0:2=3');
+      beakerxPO.waitAndCheckOutputTextOfStdout(1, /0:2=3/);
     });
 
   });
@@ -81,7 +81,7 @@ describe('Testing of table Actions', function () {
       var cell_1 = tblElement.$$('td.ui-selectee')[2];
       cell_1.doubleClick();
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.checkCellOutputText(4, '0:1=2');
+      beakerxPO.waitAndCheckOutputTextOfStdout(4, /0:1=2/);
     });
 
     it('DoubleClickAction should run tag (by closure)', function () {
@@ -89,7 +89,7 @@ describe('Testing of table Actions', function () {
       var cell_1 = tblElement.$$('td.ui-selectee')[3];
       cell_1.doubleClick();
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.checkCellOutputText(6, '0:2=3');
+      beakerxPO.waitAndCheckOutputTextOfStdout(6, /0:2=3/);
     });
   });
 

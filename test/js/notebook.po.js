@@ -64,12 +64,8 @@ var NotebookPageObject = function () {
     return 'div.output_subarea.output_text.output_stdout';
   };
 
-  this.getAllOutputTextCss = function () {
-    return 'div.output_subarea.output_text';
-  };
-
-  this.getOutputWrapperOutputCss = function () {
-    return 'div.output_wrapper div.output';
+  this.getAllOutputAreaChildren = function (codeCell) {
+    return codeCell.$$('div.output_area');
   };
 
   this.getAllOutputsExecuteResult = function (codeCell) {

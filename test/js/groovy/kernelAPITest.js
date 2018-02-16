@@ -17,20 +17,39 @@
 var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('(Groovy) Testing of showing the null execution result', function() {
+describe('(Groovy) Testing of Kernel API', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/test/ipynb/groovy/ShowNullExecutionResultTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/ipynb/groovy/KernelAPITest.ipynb');
   }, 2);
 
   afterAll(function () {
     beakerxPO.closeAndHaltNotebook();
   });
 
+  var cellIndex;
+
+  describe('(Groovy) Adding jar file', function () {
+    it('Jar file is loaded correctly ', function () {
+      cellIndex = 0;
+      beakerxPO.runAndCheckOutputTextOfStdout(cellIndex, /Added jar: .loadMagicJarDemo.jar/);
+    });
+
+    it('Magic command is added successfully ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfStdout(cellIndex, /Magic command %showEnvs was successfully added/);
+    });
+
+    it('Envs are displayed correctly ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfStdout(cellIndex, /{PATH=/);
+    });
+  });
+
   describe('(Groovy) Show null execution result as true', function() {
     it('Cell displays true output', function () {
-      cellIndex = 0;
+      cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
       beakerxPO.waitAndCheckCellOutputResultText(cellIndex, /true/);
     });
@@ -45,11 +64,24 @@ describe('(Groovy) Testing of showing the null execution result', function() {
   });
 
   describe('(Groovy) Do not show null execution result', function() {
-    it('Cell displays no output', function () {
+    it("Cell doesn't have output", function () {
       cellIndex += 1;
-      var output = beakerxPO.runCodeCellByIndex(cellIndex).$(beakerxPO.getOutputWrapperOutputCss());
-      expect(output.isEnabled()).toBeTruthy();
-      expect(output.getText()).toBe('');
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      expect(beakerxPO.getAllOutputAreaChildren(codeCell).length).toBe(0);
     });
   });
+
+  describe('(Groovy) Jvm Repr', function() {
+    it('Displayer is properly loaded', function() {
+      cellIndex += 1;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      expect(beakerxPO.getAllOutputAreaChildren(codeCell).length).toBe(0);
+    });
+
+    it('Cell displays proper output', function() {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /2/);
+    });
+  });
+
 });

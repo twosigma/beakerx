@@ -215,7 +215,8 @@ describe('(Python) Testing of EasyForm', function () {
       selectTwoValuesOnList(easyForm.$('select'), 'twof6', 'threef6');
       expect(easyForm.$('option=twof6').isSelected()).toBeTruthy();
       expect(easyForm.$('option=threef6').isSelected()).toBeTruthy();
-      var result = beakerxPO.runCellToGetOutputTextElement(cellIndex).getText();
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText();
       expect(result).toMatch('twof6');
       expect(result).toMatch('threef6');
     });
@@ -223,7 +224,7 @@ describe('(Python) Testing of EasyForm', function () {
     it('Should select List value by code', function () {
       cellIndex += 1;
       var testValue = "onef6";
-      beakerxPO.runCellToGetOutputTextElement(cellIndex);
+      beakerxPO.runCodeCellByIndex(cellIndex);
       expect(easyForm.$('option=' + testValue).isSelected()).toBeTruthy();
       expect(easyForm.$('select').getValue()).toBe(testValue);
     });
@@ -235,7 +236,8 @@ describe('(Python) Testing of EasyForm', function () {
       expect(easyForm6b.$('option=twof6b').isSelected()).toBeFalsy();
       expect(easyForm6b.$('option=threef6b').isSelected()).toBeTruthy();
       cellIndex += 1;
-      var result = beakerxPO.runCellToGetOutputTextElement(cellIndex).getText();
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText();
       expect(result).not.toMatch('twof6b');
       expect(result).toMatch('threef6b');
     });
@@ -278,7 +280,8 @@ describe('(Python) Testing of EasyForm', function () {
       easyForm.$$('input[type="checkbox"]')[3].click();
       expect(easyForm.$$('input[type="checkbox"]')[2].isSelected()).toBeTruthy();
       expect(easyForm.$$('input[type="checkbox"]')[3].isSelected()).toBeTruthy();
-      var result = beakerxPO.runCellToGetOutputTextElement(cellIndex).getText();
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText();
       expect(result).toMatch('fourf7');
       expect(result).toMatch('threef7');
     });
@@ -366,7 +369,8 @@ describe('(Python) Testing of EasyForm', function () {
       easyForm.$('a.date-picker-button').click();
       browser.$('span.flatpickr-day=25').click();
       expect(easyForm.$('input[type="text"]').getValue()).toMatch('25');
-      var result = beakerxPO.runCellToGetOutputTextElement(cellIndex).getText();
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText();
       expect(result).toMatch('25');
     });
 

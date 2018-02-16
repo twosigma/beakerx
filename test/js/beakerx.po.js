@@ -140,11 +140,6 @@ function BeakerXPageObject() {
     }, 50000, 'expected output toMatch ' + expectedText);
   };
 
-  this.runCellToGetOutputTextElement = function (index) {
-    var codeCell = this.runCodeCellByIndex(index);
-    return codeCell.$(this.getAllOutputTextCss());
-  };
-
   this.plotLegendContainerIsEnabled = function (dtcontainer) {
     var plotLegendContainer = dtcontainer.$('#plotLegendContainer');
     plotLegendContainer.waitForEnabled();
@@ -166,19 +161,6 @@ function BeakerXPageObject() {
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
     return codeCell.$('div.dataTables_scrollBody');
-  };
-
-  this.checkCellOutputText = function (index, expectedText) {
-    var codeCell = this.getCodeCellByIndex(index);
-    codeCell.scroll();
-    var resultTest;
-    try {
-      resultTest = codeCell.$(this.getAllOutputTextCss()).getText();
-    } catch (e) {
-      console.log(expectedText + ' --- ' + e.toString());
-      resultTest = this.runCellToGetOutputTextElement(index).getText();
-    }
-    expect(resultTest).toMatch(expectedText);
   };
 
   this.waitAndCheckCellOutputStderrText = function (index, expectedText) {

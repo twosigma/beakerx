@@ -74,6 +74,10 @@ export default class ColumnFilter {
   private filterHandler(event: KeyboardEvent) {
     if (event.keyCode === 27 || event.keyCode === 13 || !this.filterInput) { return; }
 
+    if (this.useSearch) {
+      return this.column.search(this.createExpression(this.filterInput.value));
+    }
+
     this.column.filter(this.createExpression(this.filterInput.value));
   }
 

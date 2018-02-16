@@ -24,9 +24,13 @@ export default class RowManager {
   rows: DataGridRow[];
   filterExpression: string;
   expressionVars: string;
+  sortedBy: DataGridColumn;
 
   constructor(data: any[], hasIndex) {
     this.createRows(data, hasIndex);
+
+    this.evaluateSearchExpression = this.evaluateSearchExpression.bind(this);
+    this.evaluateFilterExpression = this.evaluateFilterExpression.bind(this);
   }
 
   createRows(data, hasIndex) {
@@ -55,6 +59,8 @@ export default class RowManager {
   }
 
   sortByColumn(column: DataGridColumn) {
+    this.sortedBy = column;
+
     if (column.type === COLUMN_TYPES.index || column.state.sortOrder === SORT_ORDER.NO_SORT) {
       return this.sortRows(column.index, column.state.sortOrder, this.indexValueResolver);
     }
@@ -128,7 +134,7 @@ export default class RowManager {
     this.filterExpression = expressionParts.join(' && ').trim();
   }
 
-  evaluateFilterExpression(row) {
+  evaluateFilterExpression(row, formatFns) {
     const evalInContext = function(expression: string) {
       const row = { ...this.row };
       const result = eval(expression);
@@ -139,7 +145,25 @@ export default class RowManager {
     return evalInContext(String(`${this.expressionVars} ${this.filterExpression}`));
   }
 
-  filterRows(columns: {}) {
+  evaluateSearchExpression(row, formatFns) {
+    const evalInContext = function(expression: string) {
+      const row = {
+        index: formatFns[COLUMN_TYPES.index][0]({ row: this.row.index, value: this.row.index, column: 0 }),
+        values: this.row.values.map((value, index) => formatFns[COLUMN_TYPES.body][index]({ value, row: this.row.index, column: index }))
+      };
+      const result = eval(expression);
+
+      return result !== undefined ? result : true;
+    }.bind({ row });
+
+    return evalInContext(String(`${this.expressionVars} ${this.filterExpression}`));
+  }
+
+  searchRows(columns: {}) {
+    this.filterRows(columns, this.evaluateSearchExpression);
+  }
+
+  filterRows(columns: {}, evalFn?: Function) {
     this.createFilterExpression(columns);
 
     if (!this.filterExpression) {
@@ -148,11 +172,17 @@ export default class RowManager {
       return;
     }
 
+    const formatFns = {};
+    formatFns[COLUMN_TYPES.index] = columns[COLUMN_TYPES.index].map(column => column.formatFn);
+    formatFns[COLUMN_TYPES.body] = columns[COLUMN_TYPES.body].map(column => column.formatFn);
+
     try {
       this.rows = toArray(filter(
         this.rowsIterator.clone(),
-        (row) => this.evaluateFilterExpression(row)
+        (row) => evalFn ? evalFn(row, formatFns) : this.evaluateFilterExpression(row, formatFns)
       ));
+
+      this.sortedBy && this.sortByColumn(this.sortedBy);
     } catch (e) {}
   }
 }

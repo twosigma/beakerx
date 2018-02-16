@@ -123,6 +123,11 @@ export class BeakerxDataGridModel extends DataModel {
     this.rowManager.sortByColumn(column);
   }
 
+  searchRows() {
+    this.rowManager.searchRows(this.columnManager.columns);
+    this.reset();
+  }
+
   filterRows() {
     this.rowManager.filterRows(this.columnManager.columns);
     this.reset();

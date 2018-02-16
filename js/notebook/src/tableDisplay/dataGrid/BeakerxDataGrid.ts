@@ -102,6 +102,18 @@ export class BeakerxDataGrid extends DataGrid {
     this.showInputs(true, column);
   }
 
+  resetFilters() {
+    const resetFilterFn = column => {
+      column.setState({ filter: '' });
+      column.filterWidget.hideInput();
+    };
+
+    this.model.setFilterHeaderVisible(false);
+    this.columnManager.columns[COLUMN_TYPES.body].forEach(resetFilterFn);
+    this.columnManager.columns[COLUMN_TYPES.index].forEach(resetFilterFn);
+    this.model.filterRows();
+  }
+
   private showInputs(useSearch: boolean, column?: DataGridColumn) {
     const methodToCall = useSearch ? 'showSearchInput' : 'showFilterInput';
     const showInputsFn = columnItem => columnItem.filterWidget
@@ -113,18 +125,6 @@ export class BeakerxDataGrid extends DataGrid {
     this.model.setFilterHeaderVisible(true);
     this.columnManager.columns[COLUMN_TYPES.body].forEach(showInputsFn);
     this.columnManager.columns[COLUMN_TYPES.index].forEach(showInputsFn);
-  }
-
-  resetFilters() {
-    const resetFilterFn = column => {
-      column.setState({ filter: '' });
-      column.filterWidget.hideInput();
-    };
-
-    this.model.setFilterHeaderVisible(false);
-    this.columnManager.columns[COLUMN_TYPES.body].forEach(resetFilterFn);
-    this.columnManager.columns[COLUMN_TYPES.index].forEach(resetFilterFn);
-    this.model.filterRows();
   }
 
   private init(modelState: IDataModelState) {
@@ -162,7 +162,7 @@ export class BeakerxDataGrid extends DataGrid {
     let bodyRowCount = this.model.rowCount('body');
     let rowCount = DEFAULT_PAGE_LENGTH < bodyRowCount ? DEFAULT_PAGE_LENGTH : bodyRowCount;
 
-    this.node.style.minHeight = `${ rowCount * this.baseRowSize + this.baseColumnHeaderSize }px`;
+    this.node.style.minHeight = `${ (rowCount + 2) * this.baseRowSize + this.baseColumnHeaderSize }px`;
   }
 
   //@todo debounce it

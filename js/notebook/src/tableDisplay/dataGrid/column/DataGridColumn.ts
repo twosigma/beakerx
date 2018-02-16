@@ -185,10 +185,19 @@ export default class DataGridColumn {
       this,
       {
         ...menuOptions,
-        y: this.dataGrid.baseColumnHeaderSize,
+        y: this.dataGrid.baseColumnHeaderSize - 1,
         width: this.dataGrid.columnSections.sectionSize(this.index)
       }
     );
+  }
+
+  search(filter: string) {
+    if (filter === this.state.filter) {
+      return;
+    }
+
+    this.setState({ filter });
+    this.dataGrid.model.searchRows();
   }
 
   filter(filter: string) {

@@ -35,15 +35,15 @@ import static com.twosigma.beakerx.mimetype.MIMEContainer.Text;
 import static java.util.Collections.singletonList;
 
 
-public class SerializeToString {
+public class MIMEContainerFactory {
 
   private static List<MIMEContainer> HIDDEN_MIME = singletonList(HIDDEN);
 
-  public static List<MIMEContainer> doit(final Object input) {
+  public static List<MIMEContainer> createMIMEContainers(final Object input) {
     if (input == null) {
       return getMimeContainerForNull();
     }
-    return getMimeContainer(input);
+    return createMIMEContainersFromObject(input);
   }
 
   public static List<MIMEContainer> getMimeContainerForNull() {
@@ -54,7 +54,7 @@ public class SerializeToString {
     return HIDDEN_MIME;
   }
 
-  private static List<MIMEContainer> getMimeContainer(final Object data) {
+  private static List<MIMEContainer> createMIMEContainersFromObject(final Object data) {
 
     Object input = DisplayerDataMapper.convert(data);
 

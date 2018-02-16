@@ -218,11 +218,15 @@ public class Comm {
   }
 
   private Message create(JupyterMessages type, Comm.Buffer buffer, Map<String, Serializable> content) {
-    Message parentMessage = getParentMessage();// can be null
+    Message parentMessage = getParentMessage();
+    return messageMessage(type, buffer, content, parentMessage);
+  }
+
+  public static Message messageMessage(JupyterMessages type, Buffer buffer, Map<String, Serializable> content, Message parentMessage) {
     Message message = new Message();
     message.setHeader(new Header(type, parentMessage != null ? parentMessage.getHeader().getSession() : null));
     if (parentMessage != null) {
-      message.setParentHeader(getParentMessage().getHeader());
+      message.setParentHeader(parentMessage.getHeader());
     }
     message.setContent(content);
     message.setMetadata(buildMetadata());
@@ -270,10 +274,9 @@ public class Comm {
     }
   }
 
-  private HashMap<String, Serializable> buildMetadata() {
+  private static HashMap<String, Serializable> buildMetadata() {
     HashMap<String, Serializable> metadata = new HashMap<>();
     metadata.put(VERSION, "2");
-
     return metadata;
   }
 

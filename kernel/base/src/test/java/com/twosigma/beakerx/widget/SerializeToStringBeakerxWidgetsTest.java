@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.widget;
 
-import com.twosigma.beakerx.SerializeToString;
+import com.twosigma.beakerx.MIMEContainerFactory;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import org.junit.Assert;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class SerializeToStringBeakerxWidgetsTest {
       //give
       Widget internalWidget = clazz.newInstance();
       //when
-      SerializeToString.doit(internalWidget);
+      MIMEContainerFactory.createMIMEContainers(internalWidget);
       //then
       assertEquals("Should be 3 messages for " + clazz, groovyKernel.getPublishedMessages().size(), 3);
       assertThat(groovyKernel.getPublishedMessages().size()).isEqualTo(3);

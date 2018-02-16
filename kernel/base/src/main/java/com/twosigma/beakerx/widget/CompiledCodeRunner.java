@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.widget;
 
-import com.twosigma.beakerx.SerializeToString;
+import com.twosigma.beakerx.MIMEContainerFactory;
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelManager;
@@ -65,7 +65,7 @@ public class CompiledCodeRunner {
     try {
       Object result = handler.executeCode(params);
       if (result != null) {
-        SerializeToString.doit(result);
+        MIMEContainerFactory.createMIMEContainers(result);
       }
     } catch (Exception e) {
       printError(message, seo, e);
@@ -80,7 +80,7 @@ public class CompiledCodeRunner {
     try {
       Object result = handler.executeCode(params);
       if (result != null) {
-        List<MIMEContainer> resultString = SerializeToString.doit(result);
+        List<MIMEContainer> resultString = MIMEContainerFactory.createMIMEContainers(result);
         KernelManager.get().publish(singletonList(MessageCreator.buildDisplayData(message, resultString)));
       }
     } catch (Exception e) {

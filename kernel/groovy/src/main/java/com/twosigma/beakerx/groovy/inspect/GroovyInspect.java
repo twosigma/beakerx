@@ -16,125 +16,85 @@
 
 package com.twosigma.beakerx.groovy.inspect;
 
-import com.twosigma.beakerx.autocomplete.AutocompleteResult;
-import com.twosigma.beakerx.groovy.autocomplete.*;
+import com.twosigma.beakerx.groovy.autocomplete.GroovyAutocomplete;
+import com.twosigma.beakerx.groovy.autocomplete.GroovyClasspathScanner;
 import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.widgets.BeakerxWidget;
 import groovy.lang.GroovyClassLoader;
 import org.apache.commons.io.IOUtils;
 
-import java.io.*;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.twosigma.beakerx.autocomplete.AutocompleteCandidate.EMPTY_NODE;
-
 public class GroovyInspect extends GroovyAutocomplete {
+
+    public static final String INSPECT_DATA_FILENAME = "beakerx_inspect.json";
 
     public GroovyInspect(GroovyClasspathScanner _cps) {
         super(_cps);
     }
 
     public InspectResult doInspect(String code, int caretPosition, GroovyClassLoader groovyClassLoader, Imports imports) {
-        String row = getLineWithCursor(code, caretPosition);
-        if (row.contains(".")) {
-            AutocompleteResult methodMatch = this.doAutocomplete(code, caretPosition, groovyClassLoader, imports);
-            if (methodMatch.getMatches().size() == 1) {
-                String methodName = methodMatch.getMatches().get(0);
-                String[] elements = splitByDot(row.trim());
-                String objectInit = getLineWithPatttern(code, elements[0]);
-                int lastindex = objectInit.lastIndexOf("(");
-                String objectInit2 = objectInit.substring(0, lastindex);
-
-                String className = objectInit2.substring(objectInit2.lastIndexOf("new") + 3).trim();
-
-                ClassLoader classLoader = getClass().getClassLoader();
-                Path workingDirectory = null;
-                try {
-                    workingDirectory= Paths.get(BeakerxWidget.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParent().getParent();
-                } catch (URISyntaxException e) {
-                    e.printStackTrace();
-                }
-
-                try (InputStream inputStream = new FileInputStream(new File(workingDirectory.toFile(), "beakerx_inspect.json"))) {
-                    String everything = IOUtils.toString(inputStream);
-                    SerializeInspect serializeInspect = new SerializeInspect();
-
-                    return getInspectResult(caretPosition, methodName, className, everything, serializeInspect);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+        InspectResult inspectResult = new InspectResult();
+        String row = CodeParsingTool.getLineWithCursor(code, caretPosition);
+        String methodName = CodeParsingTool.getSelectedMethodName(code, caretPosition);
+        String className = CodeParsingTool.getClassName(row, code, caretPosition, methodName);
+        try (InputStream inputStream = new FileInputStream(getInspectFile())) {
+            String inspectData = IOUtils.toString(inputStream, "UTF-8");
+            inspectResult = getInspectResult(caretPosition, methodName, className, inspectData);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        return new InspectResult();
+        return inspectResult;
     }
 
-    private InspectResult getInspectResult(int caretPosition, String methodName, String className, String everything, SerializeInspect serializeInspect) {
-        HashMap<String, ClassInspect> stringClassInspectHashMap = serializeInspect.fromJson(everything);
-        List<MethodInspect> methodInspectsList = null;
+    private File getInspectFile(){
+        Path workingDirectory = null;
+        try {
+            workingDirectory= Paths.get(
+                    BeakerxWidget.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()
+            ).getParent().getParent().getParent();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        return new File(workingDirectory.toFile(), INSPECT_DATA_FILENAME);
+    }
+
+    private InspectResult getInspectResult(int caretPosition, String methodName, String className, String everything) {
+        HashMap<String, ClassInspect> stringClassInspectHashMap = new SerializeInspect().fromJson(everything);
+        InspectResult inspectResult = new InspectResult();
+        ClassInspect classInspect = null;
         if (stringClassInspectHashMap.containsKey(className)) {
-            methodInspectsList = stringClassInspectHashMap.get(className).getMethods();
+            classInspect = stringClassInspectHashMap.get(className);
         } else {
-            for (ClassInspect classInspect : stringClassInspectHashMap.values()) {
-                if (classInspect.getClassName().equals(className)) {
-                    methodInspectsList = classInspect.getMethods();
+            for (ClassInspect cls : stringClassInspectHashMap.values()) {
+                if (cls.getClassName().equals(className)) {
+                    classInspect = cls;
                     break;
                 }
             }
         }
-        if (methodInspectsList == null) {
-            return new InspectResult();
-        }
-        for (MethodInspect methodInspect : methodInspectsList) {
-            if (methodInspect.getMethodName().equals(methodName)) {
-                return new InspectResult(methodInspect.getSignature() + "\n" + methodInspect.getJavadoc(), caretPosition);
-            }
-        }
-        return new InspectResult();
-    }
-
-
-    private String getLineWithCursor(String code, int caretPosition) {
-        String[] lines = code.split(System.lineSeparator());
-        int charSum = 0;
-        String row = "";
-        for (String line : lines) {
-            charSum += line.length() + System.lineSeparator().length();
-            if (charSum > caretPosition) {
-                row = line;
-                break;
-            }
-        }
-        return row;
-    }
-
-    private String getLineWithPatttern(String code, String pattern) {
-        String[] lines = code.split(System.lineSeparator());
-        for (String line : lines) {
-            if (line.trim().contains(pattern)) {
-                return line.trim();
-            }
-        }
-        return "";
-    }
-
-    private String[] splitByDot(String t) {
-        String[] txtv;
-        if (t.endsWith(".")) {
-            txtv = (t + "X").split("\\.");
-            txtv[txtv.length - 1] = EMPTY_NODE;
+        if (methodName == null && classInspect != null) {
+            inspectResult = new InspectResult(classInspect.fullName + "\n" + classInspect.getJavadoc(), caretPosition);
         } else {
-            txtv = (t).split("\\.");
+            List<MethodInspect> methodInspectsList = classInspect == null ? null : classInspect.getMethods();
+            if (methodInspectsList == null) {
+                return new InspectResult();
+            }
+            for (MethodInspect methodInspect : methodInspectsList) {
+                if (methodInspect.getMethodName().equals(methodName)) {
+                    return new InspectResult(methodInspect.getSignature() + "\n" + methodInspect.getJavadoc(), caretPosition);
+                }
+            }
         }
-        return txtv;
+        return inspectResult;
     }
 }

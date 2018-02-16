@@ -150,42 +150,31 @@ export default class ColumnManager {
   }
 
   private addBodyColumns() {
-    this.bodyColumnsState.names.forEach((name, index) => {
-      let menuOptions: ITriggerOptions = {
-        x: this.dataGrid.getColumnOffset(index, COLUMN_TYPES.body),
-        y: 0,
-        width: this.dataGrid.headerHeight,
-        height: this.dataGrid.headerHeight
-      };
-
-      let column = new DataGridColumn({
-        index,
-        name,
-        menuOptions,
-        type: COLUMN_TYPES.body
-      }, this.dataGrid, this);
-
-      this.columns[COLUMN_TYPES.body].push(column);
-    });
+    this.bodyColumnsState.names
+      .forEach((name, index) => this.addColumn(name, index, COLUMN_TYPES.body));
   }
 
   private addIndexColumns(): void {
-    if (!this.dataGrid.rowHeaderSections.sectionCount) {
-      return;
-    }
+    this.indexColumnsState.names
+      .forEach((name, index) => this.addColumn(name, index, COLUMN_TYPES.index));
+  }
+
+  private addColumn(name, index, type) {
+    let menuOptions: ITriggerOptions = {
+      x: this.dataGrid.getColumnOffset(index, type),
+      y: 0,
+      width: this.dataGrid.baseColumnHeaderSize,
+      height: this.dataGrid.baseColumnHeaderSize
+    };
 
     let column = new DataGridColumn({
-      index: 0,
-      name: this.indexColumnsState.names[0],
-      menuOptions: {
-        x: 0, y: 0,
-        width: this.dataGrid.headerHeight,
-        height: this.dataGrid.headerHeight
-      },
-      type: COLUMN_TYPES.index
+      index,
+      name,
+      menuOptions,
+      type,
     }, this.dataGrid, this);
 
-    this.columns[COLUMN_TYPES.index].push(column);
+    this.columns[type].push(column);
   }
 
   private destroyAllColumns() {

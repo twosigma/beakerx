@@ -25,6 +25,7 @@ import { ALL_TYPES, getDisplayType, getTypeByName } from "../dataTypes";
 import { minmax, MapIterator } from '@phosphor/algorithm';
 import { HIGHLIGHTER_TYPE } from "../interface/IHighlighterState";
 import ColumnManager, { COLUMN_CHANGED_TYPES, IBkoColumnsChangedArgs } from "./ColumnManager";
+import ColumnFilter from "./ColumnFilter";
 
 export enum COLUMN_TYPES {
   index,
@@ -44,7 +45,8 @@ export interface IColumnState {
   horizontalAlignment: TextRenderer.HorizontalAlignment,
   formatForTimes: any,
   visible: boolean,
-  sortOrder: SORT_ORDER
+  sortOrder: SORT_ORDER,
+  filter: string|null
 }
 
 export default class DataGridColumn {
@@ -54,6 +56,7 @@ export default class DataGridColumn {
   menu: ColumnMenu|IndexMenu;
   dataGrid: BeakerxDataGrid;
   columnManager: ColumnManager;
+  filterWidget: ColumnFilter;
   formatFn: CellRenderer.ConfigFunc<string>;
   valuesIterator: MapIterator<number, any>;
   minValue: any;
@@ -73,6 +76,7 @@ export default class DataGridColumn {
     this.assignFormatFn();
     this.handleHeaderCellHovered = this.handleHeaderCellHovered.bind(this);
     this.createMenu(options.menuOptions);
+    this.addFilterWidget(options.menuOptions);
     this.connectToHeaderCellHovered();
     this.connectToColumnsChanged();
     this.addMinMaxValues();
@@ -101,7 +105,8 @@ export default class DataGridColumn {
       horizontalAlignment: this.getInitialAlignment(dataType),
       formatForTimes: {},
       visible: true,
-      sortOrder: SORT_ORDER.NO_SORT
+      sortOrder: SORT_ORDER.NO_SORT,
+      filter: null
     };
   }
 
@@ -174,28 +179,33 @@ export default class DataGridColumn {
     this.menu = new ColumnMenu(this, menuOptions);
   }
 
+  addFilterWidget(menuOptions) {
+    this.filterWidget = new ColumnFilter(
+      this.dataGrid,
+      this,
+      {
+        ...menuOptions,
+        y: this.dataGrid.baseColumnHeaderSize,
+        width: this.dataGrid.columnSections.sectionSize(this.index)
+      }
+    );
+  }
+
+  filter(filter: string) {
+    if (filter === this.state.filter) {
+      return;
+    }
+
+    this.setState({ filter });
+    this.dataGrid.model.filterRows();
+  }
+
   destroy() {
     this.menu.destroy();
   }
 
   connectToColumnsChanged() {
     this.columnManager.columnsChanged.connect(this.onColumnsChanged.bind(this));
-  }
-
-  private onColumnsChanged(sender: ColumnManager, args: IBkoColumnsChangedArgs) {
-    if (args.type !== COLUMN_CHANGED_TYPES.columnSort) {
-      return;
-    }
-
-    if (args.column === this && args.value !== SORT_ORDER.NO_SORT) {
-      this.setState({ sortOrder: args.value });
-      this.dataGrid.highlighterManager.addColumnHighlighter(this, HIGHLIGHTER_TYPE.sort);
-      this.menu.showTrigger();
-    } else {
-      this.setState({ sortOrder: SORT_ORDER.NO_SORT });
-      this.dataGrid.highlighterManager.removeColumnHighlighter(this, HIGHLIGHTER_TYPE.sort);
-      this.menu.hideTrigger();
-    }
   }
 
   connectToHeaderCellHovered() {
@@ -260,6 +270,22 @@ export default class DataGridColumn {
     }
 
     this.sort(SORT_ORDER.DESC);
+  }
+
+  private onColumnsChanged(sender: ColumnManager, args: IBkoColumnsChangedArgs) {
+    if (args.type !== COLUMN_CHANGED_TYPES.columnSort) {
+      return;
+    }
+
+    if (args.column === this && args.value !== SORT_ORDER.NO_SORT) {
+      this.setState({ sortOrder: args.value });
+      this.dataGrid.highlighterManager.addColumnHighlighter(this, HIGHLIGHTER_TYPE.sort);
+      this.menu.showTrigger();
+    } else {
+      this.setState({ sortOrder: SORT_ORDER.NO_SORT });
+      this.dataGrid.highlighterManager.removeColumnHighlighter(this, HIGHLIGHTER_TYPE.sort);
+      this.menu.hideTrigger();
+    }
   }
 
   private getDataTypeName(): string {

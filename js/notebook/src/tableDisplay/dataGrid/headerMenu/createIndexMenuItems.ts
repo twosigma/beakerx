@@ -101,24 +101,18 @@ export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
       icon: 'fa fa-search',
       tooltip: 'search the whole table for a substring',
       separator: true,
-      action: () => {
-        //@todo
-      }
+      action: () => dataGrid.showSearch()
     },
     {
       title: 'Filter by Expression',
       icon: 'fa fa-filter',
       tooltip: 'filter with an expression with a variable defined for each column',
       separator: true,
-      action: () => {
-        //@todo
-      }
+      action: () => dataGrid.showFilters()
     },
     {
       title: 'Hide Filter',
-      action: () => {
-        //@todo
-      }
+      action: () => dataGrid.resetFilters()
     },
     {
       title: 'Reset All Interactions',

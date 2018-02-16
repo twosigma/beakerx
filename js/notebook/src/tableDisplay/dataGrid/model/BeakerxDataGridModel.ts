@@ -35,6 +35,7 @@ export class BeakerxDataGridModel extends DataModel {
   dataFormatter: DataFormatter;
   columnManager: ColumnManager;
   rowManager: RowManager;
+  headerRowsCount: number;
 
   static DEFAULT_INDEX_COLUMN_TYPE = ALL_TYPES[1]; // integer
   static DEFAULT_INDEX_COLUMN_NAME = 'index';
@@ -67,6 +68,7 @@ export class BeakerxDataGridModel extends DataModel {
     this.dataFormatter = new DataFormatter(state);
     this.columnManager = columnManager;
     this.rowManager = new RowManager(state.values, state.hasIndex);
+    this.headerRowsCount = 1;
 
     this._state = state;
     this._data = state.values;
@@ -81,7 +83,7 @@ export class BeakerxDataGridModel extends DataModel {
   }
 
   rowCount(region: DataModel.RowRegion): number {
-    return region === 'body' ? this._rowCount : 1;
+    return region === 'body' ? this.rowManager.rows.length : this.headerRowsCount;
   }
 
   columnCount(region: DataModel.ColumnRegion): number {
@@ -100,11 +102,11 @@ export class BeakerxDataGridModel extends DataModel {
     }
 
     if (region === 'column-header') {
-      return this.columnManager.bodyColumnsState.names[index];
+      return row === 0 ? this.columnManager.bodyColumnsState.names[index] : '';
     }
 
     if (region === 'corner-header') {
-      return this.columnManager.indexColumnsState.names[index];
+      return row === 0 ? this.columnManager.indexColumnsState.names[index] : '';
     }
 
     return dataGridRow.values[index];
@@ -119,6 +121,16 @@ export class BeakerxDataGridModel extends DataModel {
 
   sortByColumn(column: DataGridColumn) {
     this.rowManager.sortByColumn(column);
+  }
+
+  filterRows() {
+    this.rowManager.filterRows(this.columnManager.columns);
+    this.reset();
+  }
+
+  setFilterHeaderVisible(visible: boolean) {
+    this.headerRowsCount = visible ? 2 : 1;
+    this.reset();
   }
 
   private connectTocolumnsChanged() {

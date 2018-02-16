@@ -15,14 +15,17 @@
  */
 
 import DataGridRow from "./DataGridRow";
-import { MapIterator, iter, toArray } from '@phosphor/algorithm';
+import { MapIterator, iter, toArray, filter } from '@phosphor/algorithm';
 import {COLUMN_TYPES, default as DataGridColumn, SORT_ORDER} from "../column/DataGridColumn";
 import {ALL_TYPES} from "../dataTypes";
 
 export default class RowManager {
+  rowsIterator: MapIterator<any[], DataGridRow>;
   rows: DataGridRow[];
+  filterExpression: string;
+  expressionVars: string;
 
-  constructor(data: any[], hasIndex: boolean) {
+  constructor(data: any[], hasIndex) {
     this.createRows(data, hasIndex);
   }
 
@@ -31,17 +34,20 @@ export default class RowManager {
   }
 
   createRowsWithGeneratedIndex(data) {
-    this.rows = toArray(new MapIterator<any[], any>(
+    this.rowsIterator = new MapIterator<any[], DataGridRow>(
       iter(data),
       (values, index) => new DataGridRow(index, values)
-    ));
+    );
+    this.rows = toArray(this.rowsIterator.clone());
   }
 
   createRowsWithIndex(data) {
-    this.rows = toArray(new MapIterator<any[], any>(
+    this.rowsIterator = new MapIterator<any[], DataGridRow>(
       iter(data),
-      (values) => new DataGridRow(values[0], values.slice(1))
+      (values) => new DataGridRow(values[0], values.slice(1)
     ));
+
+    this.rows = toArray(this.rowsIterator.clone());
   }
 
   getRow(index): DataGridRow {
@@ -91,5 +97,62 @@ export default class RowManager {
 
   indexValueResolver(row, columnIndex: number) {
     return row.index;
+  }
+
+  createFilterExpressionVars(columns) {
+    this.expressionVars = '';
+
+    const agregationFn = (column: DataGridColumn) => {
+      if (column.type === COLUMN_TYPES.index) {
+        this. expressionVars += `var ${column.name} = row.index;`;
+      } else {
+        this. expressionVars += `var ${column.name} = row.values[${column.index}];`;
+      }
+    };
+
+    columns[COLUMN_TYPES.index].forEach(agregationFn);
+    columns[COLUMN_TYPES.body].forEach(agregationFn);
+  }
+
+  createFilterExpression(columns: {}): void {
+    let expressionParts: string[] = [];
+    const agregationFn = (column: DataGridColumn) => {
+      if (column.state.filter) {
+        expressionParts.push(column.state.filter);
+      }
+    };
+
+    columns[COLUMN_TYPES.index].forEach(agregationFn);
+    columns[COLUMN_TYPES.body].forEach(agregationFn);
+
+    this.filterExpression = expressionParts.join(' && ').trim();
+  }
+
+  evaluateFilterExpression(row) {
+    const evalInContext = function(expression: string) {
+      const row = { ...this.row };
+      const result = eval(expression);
+
+      return result !== undefined ? result : true;
+    }.bind({ row });
+
+    return evalInContext(String(`${this.expressionVars} ${this.filterExpression}`));
+  }
+
+  filterRows(columns: {}) {
+    this.createFilterExpression(columns);
+
+    if (!this.filterExpression) {
+      this.rows = toArray(this.rowsIterator.clone());
+
+      return;
+    }
+
+    try {
+      this.rows = toArray(filter(
+        this.rowsIterator.clone(),
+        (row) => this.evaluateFilterExpression(row)
+      ));
+    } catch (e) {}
   }
 }

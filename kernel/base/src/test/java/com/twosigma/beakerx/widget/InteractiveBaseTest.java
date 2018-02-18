@@ -18,11 +18,6 @@ package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
-import com.twosigma.beakerx.widget.bools.Checkbox;
-import com.twosigma.beakerx.widget.floats.FloatSlider;
-import com.twosigma.beakerx.widget.integers.IntSlider;
-import com.twosigma.beakerx.widget.selections.Dropdown;
-import com.twosigma.beakerx.widget.strings.Text;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;

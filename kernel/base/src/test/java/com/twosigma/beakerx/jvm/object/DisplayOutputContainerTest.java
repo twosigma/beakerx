@@ -22,7 +22,7 @@ import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jupyter.SearchMessages;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.table.TableDisplay;
-import com.twosigma.beakerx.widget.selectioncontainer.Tab;
+import com.twosigma.beakerx.widget.Tab;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

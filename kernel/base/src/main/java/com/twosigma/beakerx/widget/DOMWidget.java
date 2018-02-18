@@ -19,7 +19,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widget.styles.Style;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;

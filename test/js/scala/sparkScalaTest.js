@@ -34,6 +34,7 @@ describe('Scala notebook', function () {
     it('Should add Spark jars ', function () {
       cellIndex = 0;
       beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /spark-sql/);
       beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /spark-core/);
     });

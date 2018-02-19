@@ -38,6 +38,15 @@ var LabPageObject = function () {
       browser.$('span=' + dirName).waitForEnabled();
       i+=1;
     }
+    this.increaseWindowWidth(200);
+  };
+
+  this.increaseWindowWidth = function (addWidth) {
+    var curSize = browser.windowHandleSize();
+    browser.setViewportSize({
+      width: curSize.value.width + addWidth,
+      height: curSize.value.height
+    });
   };
 
   /* Close and Shutdown Notebook */

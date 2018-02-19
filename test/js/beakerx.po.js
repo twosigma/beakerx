@@ -107,6 +107,7 @@ function BeakerXPageObject() {
     while(attempt > 0){
       try {
         codeCell = this.runCodeCellByIndex(cellIndex);
+        this.kernelIdleIcon.waitForEnabled();
         resultTest = getTextElements(codeCell)[0].getText();
         attempt = 0;
       } catch (e) {

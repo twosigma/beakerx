@@ -52,6 +52,16 @@ var NotebookPageObject = function () {
     this.kernelIdleIcon.waitForEnabled();
   };
 
+  this.clickRunAllCells = function () {
+    browser.click('=Cell');
+    browser.waitForEnabled('=Run All');
+    browser.click('=Run All')
+  };
+
+  this.clickDialogPublishButton = function(){
+    browser.$('button.btn.btn-default.btn-sm.btn-primary').click();
+  };
+
   this.getAllOutputAreaChildren = function (codeCell) {
     return codeCell.$$('div.output_area');
   };

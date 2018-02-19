@@ -66,7 +66,7 @@ var LabPageObject = function () {
     var clearAllOutputsMenuItem = browser.$('li[data-command="editmenu:clear-all"]');
     clearAllOutputsMenuItem.waitForEnabled();
     clearAllOutputsMenuItem.click();
-  }
+  };
 
   this.getCodeCellByIndex = function (index) {
     return $$('div.p-Widget.jp-Cell.jp-CodeCell.jp-Notebook-cell')[index];
@@ -77,6 +77,17 @@ var LabPageObject = function () {
     buttonRunCell.waitForEnabled();
     buttonRunCell.click();
     this.kernelIdleIcon.waitForEnabled();
+  };
+
+  this.clickRunAllCells = function() {
+    browser.click('div=Run');
+    var runAllCellsMenuItem = browser.$('li[data-command="runmenu:run-all"]');
+    runAllCellsMenuItem.waitForEnabled();
+    runAllCellsMenuItem.click();
+  };
+
+  this.clickDialogPublishButton = function(){
+    browser.$('div.jp-Dialog-buttonLabel=Publish').click();
   };
 
   this.getAllOutputAreaChildren = function (codeCell) {

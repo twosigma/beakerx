@@ -40,7 +40,7 @@ function BeakerXPageObject() {
   this.publishAndOpenNbviewerWindow = function () {
     this.clickPublish();
     browser.pause(1000);
-    browser.$('button.btn.btn-default.btn-sm.btn-primary').click();
+    this.clickDialogPublishButton();
     browser.waitUntil(function () {
       var windowHandles = browser.windowHandles();
       return windowHandles.value.length === 2;
@@ -48,12 +48,6 @@ function BeakerXPageObject() {
     browser.pause(1000);
     browser.window(browser.windowHandles().value[1]);
     console.log(browser.getUrl());
-  };
-
-  this.clickCellRunAll = function () {
-    browser.click('=Cell');
-    browser.waitForEnabled('=Run All');
-    browser.click('=Run All')
   };
 
   this.getDtContainerByIndex = function (index) {

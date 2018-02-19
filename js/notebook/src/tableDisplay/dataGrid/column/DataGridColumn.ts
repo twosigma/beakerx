@@ -197,7 +197,8 @@ export default class DataGridColumn {
     }
 
     this.setState({ filter });
-    this.dataGrid.model.searchRows();
+    this.dataGrid.rowManager.searchRows();
+    this.dataGrid.model.reset();
   }
 
   filter(filter: string) {
@@ -206,7 +207,8 @@ export default class DataGridColumn {
     }
 
     this.setState({ filter });
-    this.dataGrid.model.filterRows();
+    this.dataGrid.rowManager.filterRows();
+    this.dataGrid.model.reset();
   }
 
   destroy() {

@@ -26,6 +26,7 @@ import HighlighterManager from "./highlighter/HighlighterManager";
 import IHihglighterState from "./interface/IHighlighterState";
 import { DEFAULT_PAGE_LENGTH } from "../consts";
 import ColumnManager from "./column/ColumnManager";
+import RowManager from "./row/RowManager";
 
 export class BeakerxDataGrid extends DataGrid {
   columnSections: any;
@@ -36,6 +37,7 @@ export class BeakerxDataGrid extends DataGrid {
   viewport: Widget;
   highlighterManager: HighlighterManager;
   columnManager: ColumnManager;
+  rowManager: RowManager;
   focused: boolean;
 
   headerCellHovered = new Signal<this, ICellData|null>(this);
@@ -51,10 +53,6 @@ export class BeakerxDataGrid extends DataGrid {
     this.columnSections = this['_columnSections'];
 
     this.init(modelState);
-
-    this.columnManager.addColumns();
-    this.model.rowManager.createFilterExpressionVars(this.columnManager.columns);
-    this.model.reset();
   }
 
   handleEvent(event: Event): void {
@@ -94,46 +92,18 @@ export class BeakerxDataGrid extends DataGrid {
     return this.rowHeaderSections.totalSize + this.columnSections.sectionOffset(index);
   }
 
-  showFilters(column?: DataGridColumn) {
-    this.showInputs(false, column);
-  }
-
-  showSearch(column?: DataGridColumn) {
-    this.showInputs(true, column);
-  }
-
-  resetFilters() {
-    const resetFilterFn = column => {
-      column.setState({ filter: '' });
-      column.filterWidget.hideInput();
-    };
-
-    this.model.setFilterHeaderVisible(false);
-    this.columnManager.columns[COLUMN_TYPES.body].forEach(resetFilterFn);
-    this.columnManager.columns[COLUMN_TYPES.index].forEach(resetFilterFn);
-    this.model.filterRows();
-  }
-
-  private showInputs(useSearch: boolean, column?: DataGridColumn) {
-    const methodToCall = useSearch ? 'showSearchInput' : 'showFilterInput';
-    const showInputsFn = columnItem => columnItem.filterWidget
-      [methodToCall](
-        column === columnItem,
-        this.getColumnOffset(columnItem.index, columnItem.type)
-      );
-
-    this.model.setFilterHeaderVisible(true);
-    this.columnManager.columns[COLUMN_TYPES.body].forEach(showInputsFn);
-    this.columnManager.columns[COLUMN_TYPES.index].forEach(showInputsFn);
-  }
-
   private init(modelState: IDataModelState) {
     this.columnManager = new ColumnManager(modelState, this);
-    this.model = new BeakerxDataGridModel(modelState, this.columnManager);
+    this.rowManager = new RowManager(modelState.values, modelState.hasIndex, this.columnManager);
+    this.model = new BeakerxDataGridModel(modelState, this.columnManager, this.rowManager);
     this.focused = false;
 
     this.node.removeEventListener('mouseout', this.handleMouseOut.bind(this));
     this.node.addEventListener('mouseout', this.handleMouseOut.bind(this));
+
+    this.columnManager.addColumns();
+    this.rowManager.createFilterExpressionVars();
+    this.model.reset();
 
     this.addHighlighterManager(modelState);
     this.addCellRenderers();

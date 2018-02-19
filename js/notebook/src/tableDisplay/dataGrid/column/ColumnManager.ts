@@ -123,7 +123,41 @@ export default class ColumnManager {
       type: COLUMN_CHANGED_TYPES.columnSort,
       value: sortOrder
     });
-    this.dataGrid.model.sortByColumn(column);
+    this.dataGrid.rowManager.sortByColumn(column);
+  }
+
+  resetFilters() {
+    const resetFilterFn = column => {
+      column.setState({ filter: '' });
+      column.filterWidget.hideInput();
+    };
+
+    this.dataGrid.model.setFilterHeaderVisible(false);
+    this.columns[COLUMN_TYPES.body].forEach(resetFilterFn);
+    this.columns[COLUMN_TYPES.index].forEach(resetFilterFn);
+    this.dataGrid.rowManager.filterRows();
+    this.dataGrid.model.reset();
+  }
+
+  showFilters(column?: DataGridColumn) {
+    this.showFilterInputs(false, column);
+  }
+
+  showSearch(column?: DataGridColumn) {
+    this.showFilterInputs(true, column);
+  }
+
+  private showFilterInputs(useSearch: boolean, column?: DataGridColumn) {
+    const methodToCall = useSearch ? 'showSearchInput' : 'showFilterInput';
+    const showInputsFn = columnItem => columnItem.filterWidget
+      [methodToCall](
+      column === columnItem,
+      this.dataGrid.getColumnOffset(columnItem.index, columnItem.type)
+    );
+
+    this.dataGrid.model.setFilterHeaderVisible(true);
+    this.columns[COLUMN_TYPES.body].forEach(showInputsFn);
+    this.columns[COLUMN_TYPES.index].forEach(showInputsFn);
   }
 
   private connectToColumnsChanged() {

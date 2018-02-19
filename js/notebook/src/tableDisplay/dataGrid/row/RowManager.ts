@@ -18,6 +18,7 @@ import DataGridRow from "./DataGridRow";
 import { MapIterator, iter, toArray, filter } from '@phosphor/algorithm';
 import {COLUMN_TYPES, default as DataGridColumn, SORT_ORDER} from "../column/DataGridColumn";
 import {ALL_TYPES} from "../dataTypes";
+import ColumnManager from "../column/ColumnManager";
 
 export default class RowManager {
   rowsIterator: MapIterator<any[], DataGridRow>;
@@ -25,8 +26,10 @@ export default class RowManager {
   filterExpression: string;
   expressionVars: string;
   sortedBy: DataGridColumn;
+  columnManager: ColumnManager;
 
-  constructor(data: any[], hasIndex) {
+  constructor(data: any[], hasIndex: boolean, columnManager: ColumnManager) {
+    this.columnManager = columnManager;
     this.createRows(data, hasIndex);
 
     this.evaluateSearchExpression = this.evaluateSearchExpression.bind(this);
@@ -105,7 +108,7 @@ export default class RowManager {
     return row.index;
   }
 
-  createFilterExpressionVars(columns) {
+  createFilterExpressionVars() {
     this.expressionVars = '';
 
     const agregationFn = (column: DataGridColumn) => {
@@ -116,11 +119,40 @@ export default class RowManager {
       }
     };
 
-    columns[COLUMN_TYPES.index].forEach(agregationFn);
-    columns[COLUMN_TYPES.body].forEach(agregationFn);
+    this.columnManager.columns[COLUMN_TYPES.index].forEach(agregationFn);
+    this.columnManager.columns[COLUMN_TYPES.body].forEach(agregationFn);
   }
 
-  createFilterExpression(columns: {}): void {
+  searchRows() {
+    this.filterRows(this.evaluateSearchExpression);
+  }
+
+  filterRows(evalFn?: Function) {
+    const columns = this.columnManager.columns;
+
+    this.createFilterExpression();
+
+    if (!this.filterExpression) {
+      this.rows = toArray(this.rowsIterator.clone());
+
+      return;
+    }
+
+    const formatFns = {};
+    formatFns[COLUMN_TYPES.index] = columns[COLUMN_TYPES.index].map(column => column.formatFn);
+    formatFns[COLUMN_TYPES.body] = columns[COLUMN_TYPES.body].map(column => column.formatFn);
+
+    try {
+      this.rows = toArray(filter(
+        this.rowsIterator.clone(),
+        (row) => evalFn ? evalFn(row, formatFns) : this.evaluateFilterExpression(row, formatFns)
+      ));
+
+      this.sortedBy && this.sortByColumn(this.sortedBy);
+    } catch (e) {}
+  }
+
+  createFilterExpression(): void {
     let expressionParts: string[] = [];
     const agregationFn = (column: DataGridColumn) => {
       if (column.state.filter) {
@@ -128,8 +160,8 @@ export default class RowManager {
       }
     };
 
-    columns[COLUMN_TYPES.index].forEach(agregationFn);
-    columns[COLUMN_TYPES.body].forEach(agregationFn);
+    this.columnManager.columns[COLUMN_TYPES.index].forEach(agregationFn);
+    this.columnManager.columns[COLUMN_TYPES.body].forEach(agregationFn);
 
     this.filterExpression = expressionParts.join(' && ').trim();
   }
@@ -157,32 +189,5 @@ export default class RowManager {
     }.bind({ row });
 
     return evalInContext(String(`${this.expressionVars} ${this.filterExpression}`));
-  }
-
-  searchRows(columns: {}) {
-    this.filterRows(columns, this.evaluateSearchExpression);
-  }
-
-  filterRows(columns: {}, evalFn?: Function) {
-    this.createFilterExpression(columns);
-
-    if (!this.filterExpression) {
-      this.rows = toArray(this.rowsIterator.clone());
-
-      return;
-    }
-
-    const formatFns = {};
-    formatFns[COLUMN_TYPES.index] = columns[COLUMN_TYPES.index].map(column => column.formatFn);
-    formatFns[COLUMN_TYPES.body] = columns[COLUMN_TYPES.body].map(column => column.formatFn);
-
-    try {
-      this.rows = toArray(filter(
-        this.rowsIterator.clone(),
-        (row) => evalFn ? evalFn(row, formatFns) : this.evaluateFilterExpression(row, formatFns)
-      ));
-
-      this.sortedBy && this.sortByColumn(this.sortedBy);
-    } catch (e) {}
   }
 }

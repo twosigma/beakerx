@@ -87,10 +87,12 @@ import static com.twosigma.beakerx.widget.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsgWitoutLayout;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class TableDisplayTest {
 
   public static final String COL_1 = "str1";
+  public static final String COL_3 = "str3";
 
   protected KernelTest kernel;
 
@@ -848,7 +850,7 @@ public class TableDisplayTest {
   }
 
   private static List<String> getStringList() {
-    return Arrays.asList(COL_1, "str2", "str3");
+    return Arrays.asList(COL_1, "str2", COL_3);
   }
 
   private static List<?> getRowData() {
@@ -875,6 +877,29 @@ public class TableDisplayTest {
 
   private List getValueAsList(Map model, String field) {
     return (List) model.get(field);
+  }
+
+  @Test
+  public void shouldUpdateCellByColumnName() throws Exception {
+    //given
+    //when
+    tableDisplay.updateCell(0, COL_3, 121);
+    //then
+    int indexOfCol3 = tableDisplay.getColumnNames().indexOf(COL_3);
+    assertThat(tableDisplay.getValues().get(0).get(indexOfCol3)).isEqualTo(121);
+  }
+
+  @Test
+  public void shouldThrowExceptionWhenUpdateCellByNotExistingColumnName() throws Exception {
+    //given
+    //when
+    try {
+      tableDisplay.updateCell(0, "UnknownColumnName", 121);
+      fail("Should not update cell for unknown column name");
+    } catch (Exception e) {
+      //then
+      assertThat(e.getMessage()).contains("UnknownColumnName");
+    }
   }
 
 }

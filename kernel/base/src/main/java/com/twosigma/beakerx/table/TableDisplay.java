@@ -758,4 +758,18 @@ public class TableDisplay extends BeakerxWidget {
     String get(int columnIndex, int rowIndex);
   }
 
+  @SuppressWarnings("unchecked")
+  public void updateCell(int row, String columnName, Object value) {
+    int index = getColumnIndex(columnName);
+    List<Object> rowList = (List<Object>) values.get(row);
+    rowList.set(index, value);
+  }
+
+  private int getColumnIndex(String columnName) {
+    int index = columns.indexOf(columnName);
+    if (index < 0) {
+      throw new RuntimeException("There is no given column name: " + columnName);
+    }
+    return index;
+  }
 }

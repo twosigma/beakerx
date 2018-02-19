@@ -18,44 +18,44 @@ var TableHelperObject = function () {
 
   this.getDataTablesScrollBody = function(dtcontainer){
     return dtcontainer.$('.dataTables_scrollBody');
-  }
+  };
 
   this.getDataTablesScrollHead = function(dtcontainer){
     return dtcontainer.$('.dataTables_scrollHead');
-  }
+  };
 
   this.getDataTableBody = function(dtcontainer){
     return this.getDataTablesScrollBody(dtcontainer).$('tbody');
-  }
+  };
 
   this.dataTablesIsEnabled = function(dtcontainer){
     var dataTables = dtcontainer.$('.dataTables_scroll');
     dataTables.waitForEnabled();
-  }
+  };
 
   this.getTableRow = function(tblElement, rowIndex){
     return this.getTableAllRows(tblElement)[rowIndex];
-  }
+  };
 
   this.getTableAllRows  = function(tblElement){
     return tblElement.$$('tr[role="row"]');
-  }
+  };
 
   this.getTableBodyCell = function(tblElement, rowIndex, colIndex){
     return this.getTableBodyRowAllCells(tblElement, rowIndex)[colIndex];
-  }
+  };
 
   this.getTableBodyRowAllCells = function(tblElement, rowIndex){
     return this.getTableRow(tblElement, rowIndex).$$('td.ui-selectee');
-  }
+  };
 
   this.getTableHeaderAllCells = function(tblElement){
     return this.getTableRow(tblElement, 0).$$('th');
-  }
+  };
 
   this.getTableHeaderCell = function(tblElement, rowIndex){
     return this.getTableHeaderAllCells(tblElement, 0)[rowIndex];
-  }
+  };
 
 };
 module.exports = TableHelperObject;

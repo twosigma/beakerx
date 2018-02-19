@@ -44,7 +44,7 @@ describe('Publish plot groovy notebook js', function () {
 
   describe('Run all cells on local notebook', function () {
     it('(local notebook) should run all cells ', function () {
-      beakerxPO.clickCellRunAll();
+      beakerxPO.clickRunAllCells();
       beakerxPO.kernelIdleIcon.waitForEnabled();
     });
     it('(local notebook) 11 dtContainers are exists', function(){

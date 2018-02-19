@@ -21,7 +21,7 @@ describe('(Groovy) Testing of Kernel API', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/notebooks/test/ipynb/groovy/KernelAPITest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/ipynb/groovy/KernelAPITest.ipynb');
   }, 2);
 
   afterAll(function () {
@@ -31,61 +31,43 @@ describe('(Groovy) Testing of Kernel API', function () {
   var cellIndex;
 
   describe('(Groovy) Adding jar file', function () {
-
-    var testValues = {
-      loadJarSuccess: 'Added jar: [loadMagicJarDemo.jar]',
-      magicCommandSuccess: 'Magic command %showEnvs was successfully added.',
-      envs: '{PATH='
-    };
-
-    it('Jar file is loaded correctly', function () {
+    it('Jar file is loaded correctly ', function () {
       cellIndex = 0;
-      var output = beakerxPO.runCellToGetOutputTextElement(cellIndex);
-      expect(output.isEnabled()).toBeTruthy();
-      expect(output.getText()).toBe(testValues.loadJarSuccess);
+      beakerxPO.runAndCheckOutputTextOfStdout(cellIndex, /Added jar: .loadMagicJarDemo.jar/);
     });
 
-    it('Magic command is added successfully', function () {
+    it('Magic command is added successfully ', function () {
       cellIndex += 1;
-      var output = beakerxPO.runCellToGetOutputTextElement(cellIndex);
-      expect(output.isEnabled()).toBeTruthy();
-      expect(output.getText()).toBe(testValues.magicCommandSuccess);
+      beakerxPO.runAndCheckOutputTextOfStdout(cellIndex, /Magic command %showEnvs was successfully added/);
     });
 
-    it('Envs are displayed correctly', function () {
+    it('Envs are displayed correctly ', function () {
       cellIndex += 1;
-      var output = beakerxPO.runCellToGetOutputTextElement(cellIndex);
-      expect(output.isEnabled()).toBeTruthy();
-      expect(output.getText()).toContain(testValues.envs);
+      beakerxPO.runAndCheckOutputTextOfStdout(cellIndex, /{PATH=/);
     });
   });
 
   describe('(Groovy) Show null execution result as true', function() {
     it('Cell displays true output', function () {
       cellIndex += 1;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$('div.output_result').isEnabled()).toBeTruthy();
-      expect(codeCell.$('div.output_result').getText()).toBe('true');
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /true/);
     });
   });
 
   describe('(Groovy) Show null execution result as null', function() {
     it('Cell displays null output', function () {
       cellIndex += 1;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$('div.output_result').isEnabled()).toBeTruthy();
-      expect(codeCell.$('div.output_result').getText()).toBe('null');
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /null/);
     });
   });
 
   describe('(Groovy) Do not show null execution result', function() {
-    it('Cell displays no output', function () {
+    it("Cell doesn't have output", function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$('div.output').getText()).toBe('');
+      expect(beakerxPO.getAllOutputAreaChildren(codeCell).length).toBe(0);
     });
   });
 
@@ -93,16 +75,13 @@ describe('(Groovy) Testing of Kernel API', function () {
     it('Displayer is properly loaded', function() {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$('div.output').getText()).toBe('');
+      expect(beakerxPO.getAllOutputAreaChildren(codeCell).length).toBe(0);
     });
 
     it('Cell displays proper output', function() {
       cellIndex += 1;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$('div.output_result').getText()).toBe('2');
-
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /2/);
     });
   });
+
 });

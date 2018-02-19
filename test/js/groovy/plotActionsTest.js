@@ -46,14 +46,14 @@ describe('Testing of plot Actions', function () {
       svgElement1.$('rect#i0_0').click();
       browser.keys("t");
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.checkCellOutputText(1, '1:6');
+      beakerxPO.waitAndCheckOutputTextOfStdout(1, /1:6/);
     });
 
-    it('onKey "K" should run the tag (by closure)', function () {
+    it('onKey "U" should run the tag (by closure)', function () {
       svgElement1.$('rect#i0_2').click();
-      browser.keys("k");
+      browser.keys("u");
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.checkCellOutputText(1, '3:3');
+      beakerxPO.waitAndCheckOutputTextOfStdout(1, /3:3/);
     });
   });
 
@@ -72,14 +72,14 @@ describe('Testing of plot Actions', function () {
     it('Click on the bar should run the tag (by closure)', function () {
       svgElement2.$('rect#i0_1').click();
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.checkCellOutputText(3, '2:3');
+      beakerxPO.waitAndCheckOutputTextOfStdout(3, /2:3/);
     });
 
     it('Click on the bar should run the tag (by string name)', function () {
       var svgElement3 = beakerxPO.runCellToGetSvgElement(4);
       svgElement3.$('rect#i0_0').click();
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.checkCellOutputText(5, '1:5');
+      beakerxPO.waitAndCheckOutputTextOfStdout(5, /1:5/);
     });
   });
 
@@ -109,6 +109,7 @@ describe('Testing of plot Actions', function () {
   describe("RightClick action", function(){
 
     it('RightClick action should not zoom the plot', function () {
+      beakerxPO.runCodeCellByIndex(5);
       var svgElement5 = beakerxPO.runCellToGetSvgElement(6);
       var height1 = Math.round(svgElement5.$('rect#i0_0').getAttribute('height'));
       var width1 = Math.round(svgElement5.$('rect#i0_0').getAttribute('width'));
@@ -120,6 +121,7 @@ describe('Testing of plot Actions', function () {
     });
 
     it('RightClick action should display the menu', function () {
+      browser.$('ul.p-Menu-content').waitForEnabled();
       expect(browser.$('div.p-Menu-itemLabel=Save as SVG').isVisible()).toBeTruthy();
       expect(browser.$('div.p-Menu-itemLabel=Save as PNG').isVisible()).toBeTruthy();
     });

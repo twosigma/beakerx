@@ -38,6 +38,15 @@ var LabPageObject = function () {
       browser.$('span=' + dirName).waitForEnabled();
       i+=1;
     }
+    this.increaseWindowWidth(200);
+  };
+
+  this.increaseWindowWidth = function (addWidth) {
+    var curSize = browser.windowHandleSize();
+    browser.setViewportSize({
+      width: curSize.value.width + addWidth,
+      height: curSize.value.height
+    });
   };
 
   /* Close and Shutdown Notebook */
@@ -57,7 +66,7 @@ var LabPageObject = function () {
     var clearAllOutputsMenuItem = browser.$('li[data-command="editmenu:clear-all"]');
     clearAllOutputsMenuItem.waitForEnabled();
     clearAllOutputsMenuItem.click();
-  }
+  };
 
   this.getCodeCellByIndex = function (index) {
     return $$('div.p-Widget.jp-Cell.jp-CodeCell.jp-Notebook-cell')[index];
@@ -70,24 +79,31 @@ var LabPageObject = function () {
     this.kernelIdleIcon.waitForEnabled();
   };
 
-  this.getOutputResultCss = function () {
-    return 'div.jp-RenderedText.jp-OutputArea-output';
+  this.clickRunAllCells = function() {
+    browser.click('div=Run');
+    var runAllCellsMenuItem = browser.$('li[data-command="runmenu:run-all"]');
+    runAllCellsMenuItem.waitForEnabled();
+    runAllCellsMenuItem.click();
   };
 
-  this.getOutputStderrCss = function () {
-    return 'div.jp-RenderedText.jp-OutputArea-output';
+  this.clickDialogPublishButton = function(){
+    browser.$('div.jp-Dialog-buttonLabel=Publish').click();
   };
 
-  this.getOutputStdoutCss = function () {
-    return 'div.jp-RenderedText.jp-OutputArea-output';
+  this.getAllOutputAreaChildren = function (codeCell) {
+    return codeCell.$$('div.jp-OutputArea-child');
   };
 
-  this.getAllOutputTextCss = function () {
-    return 'div.jp-RenderedText.jp-OutputArea-output';
+  this.getAllOutputsExecuteResult = function (codeCell) {
+    return codeCell.$$('div.jp-OutputArea-child.jp-OutputArea-executeResult > div.jp-OutputArea-output');
   };
 
-  this.getOutputWrapperOutputCss = function () {
-    return 'div.jp-RenderedText.jp-OutputArea-output';
+  this.getAllOutputsStdout = function (codeCell) {
+    return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output[data-mime-type="application/vnd.jupyter.stdout"]');
+  };
+
+  this.getAllOutputsStderr = function (codeCell) {
+    return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output[data-mime-type="application/vnd.jupyter.stderr"]');
   };
 };
 module.exports = LabPageObject;

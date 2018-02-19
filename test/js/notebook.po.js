@@ -52,24 +52,30 @@ var NotebookPageObject = function () {
     this.kernelIdleIcon.waitForEnabled();
   };
 
-  this.getOutputResultCss = function () {
-    return 'div.output_subarea.output_text.output_result';
+  this.clickRunAllCells = function () {
+    browser.click('=Cell');
+    browser.waitForEnabled('=Run All');
+    browser.click('=Run All')
   };
 
-  this.getOutputStderrCss = function () {
-    return 'div.output_subarea.output_text.output_stderr';
+  this.clickDialogPublishButton = function(){
+    browser.$('button.btn.btn-default.btn-sm.btn-primary').click();
   };
 
-  this.getOutputStdoutCss = function () {
-    return 'div.output_subarea.output_text.output_stdout';
+  this.getAllOutputAreaChildren = function (codeCell) {
+    return codeCell.$$('div.output_area');
   };
 
-  this.getAllOutputTextCss = function () {
-    return 'div.output_subarea.output_text';
+  this.getAllOutputsExecuteResult = function (codeCell) {
+    return codeCell.$$('div.output_subarea.output_result');
   };
 
-  this.getOutputWrapperOutputCss = function () {
-    return 'div.output_wrapper div.output';
+  this.getAllOutputsStdout = function (codeCell) {
+    return codeCell.$$('div.output_subarea.output_stdout');
+  };
+
+  this.getAllOutputsStderr = function (codeCell) {
+    return codeCell.$$('div.output_subarea.output_error');
   };
 
 };

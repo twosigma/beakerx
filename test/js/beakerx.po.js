@@ -40,7 +40,7 @@ function BeakerXPageObject() {
   this.publishAndOpenNbviewerWindow = function () {
     this.clickPublish();
     browser.pause(1000);
-    browser.$('button.btn.btn-default.btn-sm.btn-primary').click();
+    this.clickDialogPublishButton();
     browser.waitUntil(function () {
       var windowHandles = browser.windowHandles();
       return windowHandles.value.length === 2;
@@ -48,12 +48,6 @@ function BeakerXPageObject() {
     browser.pause(1000);
     browser.window(browser.windowHandles().value[1]);
     console.log(browser.getUrl());
-  };
-
-  this.clickCellRunAll = function () {
-    browser.click('=Cell');
-    browser.waitForEnabled('=Run All');
-    browser.click('=Run All')
   };
 
   this.getDtContainerByIndex = function (index) {
@@ -88,20 +82,57 @@ function BeakerXPageObject() {
     return codeCell.$('#svgg');
   };
 
-  this.runCellAndCheckOutputText = function (index, expectedText) {
+  this.runAndCheckOutputTextOfExecuteResult = function (cellIndex, expectedText) {
+    this.runCellAndCheckTextHandleError(cellIndex, expectedText, this.getAllOutputsExecuteResult);
+  };
+
+  this.runAndCheckOutputTextOfStdout = function (cellIndex, expectedText) {
+    this.runCellAndCheckTextHandleError(cellIndex, expectedText, this.getAllOutputsStdout);
+  };
+
+  this.runAndCheckOutputTextOfStderr = function (cellIndex, expectedText) {
+    this.runCellAndCheckTextHandleError(cellIndex, expectedText, this.getAllOutputsStderr);
+  };
+
+  this.runCellAndCheckTextHandleError = function(cellIndex, expectedText, getTextElements){
     var resultTest;
-    try {
-      resultTest = this.runCellToGetOutputTextElement(index).getText();
-    } catch (e) {
-      console.log(expectedText + ' --- ' + e.toString());
-      resultTest = this.runCellToGetOutputTextElement(index).getText();
+    var codeCell;
+    var attempt = 3;
+    while(attempt > 0){
+      try {
+        codeCell = this.runCodeCellByIndex(cellIndex);
+        this.kernelIdleIcon.waitForEnabled();
+        resultTest = getTextElements(codeCell)[0].getText();
+        attempt = 0;
+      } catch (e) {
+        attempt -= 1;
+      }
     }
     expect(resultTest).toMatch(expectedText);
   };
 
-  this.runCellToGetOutputTextElement = function (index) {
-    var codeCell = this.runCodeCellByIndex(index);
-    return codeCell.$(this.getAllOutputTextCss());
+  this.waitAndCheckOutputTextOfExecuteResult = function (cellIndex, expectedText, outputIndex) {
+    this.waitAndCheckOutputText(cellIndex, expectedText, this.getAllOutputsExecuteResult, outputIndex);
+  };
+
+  this.waitAndCheckOutputTextOfStdout = function (cellIndex, expectedText, outputIndex) {
+    this.waitAndCheckOutputText(cellIndex, expectedText, this.getAllOutputsStdout, outputIndex);
+  };
+
+  this.waitAndCheckOutputTextOfStderr = function (cellIndex, expectedText, outputIndex) {
+    this.waitAndCheckOutputText(cellIndex, expectedText, this.getAllOutputsStderr, outputIndex);
+  };
+
+  this.waitAndCheckOutputText = function (index, expectedText, getTextElements, outputIndex) {
+    if(!outputIndex){
+      outputIndex = 0;
+    }
+    var codeCell = this.getCodeCellByIndex(index);
+    codeCell.scroll();
+    browser.waitUntil(function () {
+      var output = getTextElements(codeCell)[outputIndex];
+      return output.isEnabled() && expectedText.test(output.getText());
+    }, 50000, 'expected output toMatch ' + expectedText);
   };
 
   this.plotLegendContainerIsEnabled = function (dtcontainer) {
@@ -125,40 +156,6 @@ function BeakerXPageObject() {
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
     return codeCell.$('div.dataTables_scrollBody');
-  };
-
-  this.checkCellOutputText = function (index, expectedText) {
-    var codeCell = this.getCodeCellByIndex(index);
-    codeCell.scroll();
-    var resultTest;
-    try {
-      resultTest = codeCell.$(this.getAllOutputTextCss()).getText();
-    } catch (e) {
-      console.log(expectedText + ' --- ' + e.toString());
-      resultTest = this.runCellToGetOutputTextElement(index).getText();
-    }
-    expect(resultTest).toMatch(expectedText);
-  };
-
-  this.waitAndCheckCellOutputStderrText = function (index, expectedText) {
-    this.waitAndCheckCellOutputText(index, expectedText, this.getOutputStderrCss());
-  };
-
-  this.waitAndCheckCellOutputStdoutText = function (index, expectedText) {
-    this.waitAndCheckCellOutputText(index, expectedText, this.getOutputStdoutCss());
-  };
-
-  this.waitAndCheckCellOutputResultText = function (index, expectedText) {
-    this.waitAndCheckCellOutputText(index, expectedText, this.getOutputResultCss());
-  };
-
-  this.waitAndCheckCellOutputText = function (index, expectedText, selector) {
-    var codeCell = this.getCodeCellByIndex(index);
-    codeCell.scroll();
-    browser.waitUntil(function () {
-      var output = codeCell.$(selector);
-      return output.isEnabled() && expectedText.test(output.getText());
-    }, 50000, 'expected output toMatch ' + expectedText);
   };
 
   this.getTableColumnLabel = function (tableIndex, columnIndex) {

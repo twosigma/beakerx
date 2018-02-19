@@ -32,10 +32,9 @@ describe('(Python) Testing of init cells', function() {
   describe('Init cells', function() {
     it('(Python) Init cells display correct output', function(){
       cellIndex = 0;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.runCodeCellByIndex(cellIndex);
       var currentDate = Date().split(' ').slice(0, 4).join(' ');
-
-      expect(codeCell.$('div.output_subarea').getText()).toBe(currentDate);
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex,  new RegExp(currentDate));
     });
   })
 });

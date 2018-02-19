@@ -56,7 +56,7 @@ export default class DataGridColumn {
   menu: ColumnMenu|IndexMenu;
   dataGrid: BeakerxDataGrid;
   columnManager: ColumnManager;
-  filterWidget: ColumnFilter;
+  columnFilter: ColumnFilter;
   formatFn: CellRenderer.ConfigFunc<string>;
   valuesIterator: MapIterator<number, any>;
   minValue: any;
@@ -76,7 +76,7 @@ export default class DataGridColumn {
     this.assignFormatFn();
     this.handleHeaderCellHovered = this.handleHeaderCellHovered.bind(this);
     this.createMenu(options.menuOptions);
-    this.addFilterWidget(options.menuOptions);
+    this.addColumnFilter(options.menuOptions);
     this.connectToHeaderCellHovered();
     this.connectToColumnsChanged();
     this.addMinMaxValues();
@@ -179,8 +179,8 @@ export default class DataGridColumn {
     this.menu = new ColumnMenu(this, menuOptions);
   }
 
-  addFilterWidget(menuOptions) {
-    this.filterWidget = new ColumnFilter(
+  addColumnFilter(menuOptions) {
+    this.columnFilter = new ColumnFilter(
       this.dataGrid,
       this,
       {

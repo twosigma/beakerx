@@ -17,16 +17,22 @@
 import { expect } from 'chai';
 import RowManager from "@beakerx/tableDisplay/dataGrid/row/RowManager";
 import {SORT_ORDER} from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
+import {BeakerxDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import modelStateMock from "../mock/modelStateMock";
 
 describe('RowManager', () => {
-  const data = [[1,2,3,4], [5,6,7,8]];
+  const values = [[1,2,3,4], [5,6,7,8]];
+  const columnNames = ['test', 'test1', 'test2', 'test3'];
+  const types = ['double', 'double', 'double', 'double'];
+  const modelState = { ...modelStateMock, values, columnNames, types };
+  const dataGrid = new BeakerxDataGrid({}, modelState);
 
   describe('hasIndex = false', () => {
-    const rowManager = new RowManager(data, false);
+    const rowManager = dataGrid.rowManager;
 
     it('should have rows property', () => {
       expect(rowManager).to.have.property('rows');
-      expect(rowManager.rows).to.have.length(data.length);
+      expect(rowManager.rows).to.have.length(values.length);
     });
 
     it('should implement sort valueResolvers', () => {
@@ -49,14 +55,31 @@ describe('RowManager', () => {
       expect(rowManager.getRow(0).values[0]).to.equal(5);
       expect(rowManager.getRow(1).values[0]).to.equal(1);
     });
+
+    it('should filter rows', () => {
+      const column = dataGrid.columnManager.getColumnByName('test');
+      column.filter(column.columnFilter['createFilterExpression']('$>1'));
+
+      expect(rowManager.getRow(0).values[0]).to.equal(5);
+      expect(rowManager.rows).to.have.length(1);
+    });
+
+    it('should search rows', () => {
+      const column = dataGrid.columnManager.getColumnByName('test');
+      column.search(column.columnFilter['createSearchExpression']('5'));
+
+      expect(rowManager.getRow(0).values[0]).to.equal(5);
+      expect(rowManager.rows).to.have.length(1);
+    });
   });
 
   describe('hasIndex = true', () => {
-    const rowManager = new RowManager(data, true);
+    const dataGrid = new BeakerxDataGrid({}, { ...modelState, hasIndex: true });
+    const rowManager = dataGrid.rowManager;
 
     it('should have rows property', () => {
       expect(rowManager).to.have.property('rows');
-      expect(rowManager.rows).to.have.length(data.length);
+      expect(rowManager.rows).to.have.length(values.length);
     });
 
     it('should return proper row values', () => {
@@ -69,6 +92,22 @@ describe('RowManager', () => {
 
       expect(rowManager.getRow(0).values[0]).to.equal(6);
       expect(rowManager.getRow(1).values[0]).to.equal(2);
+    });
+
+    it('should filter rows', () => {
+      const column = dataGrid.columnManager.getColumnByName('test1');
+      column.filter(column.columnFilter['createFilterExpression']('$>2'));
+
+      expect(rowManager.getRow(0).values[0]).to.equal(6);
+      expect(rowManager.rows).to.have.length(1);
+    });
+
+    it('should search rows', () => {
+      const column = dataGrid.columnManager.getColumnByName('test1');
+      column.search(column.columnFilter['createSearchExpression']('6'));
+
+      expect(rowManager.getRow(0).values[0]).to.equal(6);
+      expect(rowManager.rows).to.have.length(1);
     });
   });
 });

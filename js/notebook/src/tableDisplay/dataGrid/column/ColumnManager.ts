@@ -129,7 +129,7 @@ export default class ColumnManager {
   resetFilters() {
     const resetFilterFn = column => {
       column.setState({ filter: '' });
-      column.filterWidget.hideInput();
+      column.columnFilter.hideInput();
     };
 
     this.dataGrid.model.setFilterHeaderVisible(false);
@@ -149,7 +149,7 @@ export default class ColumnManager {
 
   private showFilterInputs(useSearch: boolean, column?: DataGridColumn) {
     const methodToCall = useSearch ? 'showSearchInput' : 'showFilterInput';
-    const showInputsFn = columnItem => columnItem.filterWidget
+    const showInputsFn = columnItem => columnItem.columnFilter
       [methodToCall](
       column === columnItem,
       this.dataGrid.getColumnOffset(columnItem.index, columnItem.type)

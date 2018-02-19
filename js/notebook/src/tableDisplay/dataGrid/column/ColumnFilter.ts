@@ -50,6 +50,10 @@ export default class ColumnFilter {
     this.showInput(shouldFocus, x);
   }
 
+  hideInput() {
+    this.filterNode.style.visibility = 'hidden';
+  }
+
   private showInput(shouldFocus: boolean, x?: number): void {
     if (this.filterNode.style.visibility === 'visible') {
       return;
@@ -65,10 +69,6 @@ export default class ColumnFilter {
     if (shouldFocus) {
       this.filterInput.focus();
     }
-  }
-
-  hideInput() {
-    this.filterNode.style.visibility = 'hidden';
   }
 
   private filterHandler(event: KeyboardEvent) {

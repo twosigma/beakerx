@@ -147,7 +147,6 @@ export default class RowManager {
         this.rowsIterator.clone(),
         (row) => evalFn ? evalFn(row, formatFns) : this.evaluateFilterExpression(row, formatFns)
       ));
-
       this.sortedBy && this.sortByColumn(this.sortedBy);
     } catch (e) {}
   }

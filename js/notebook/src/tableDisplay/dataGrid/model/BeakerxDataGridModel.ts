@@ -19,7 +19,7 @@ import { ALL_TYPES } from '../dataTypes';
 import { DataFormatter } from '../DataFormatter';
 import {COLUMN_TYPES, default as DataGridColumn, SORT_ORDER} from "../column/DataGridColumn";
 import IDataModelState from '../interface/IDataGridModelState';
-import { MapIterator, EmptyIterator, iter, toArray } from '@phosphor/algorithm';
+import { MapIterator, iter } from '@phosphor/algorithm';
 import { IColumn } from "../interface/IColumn";
 import ColumnManager, {COLUMN_CHANGED_TYPES, IBkoColumnsChangedArgs} from "../column/ColumnManager";
 import RowManager from "../row/RowManager";
@@ -35,6 +35,7 @@ export class BeakerxDataGridModel extends DataModel {
   dataFormatter: DataFormatter;
   columnManager: ColumnManager;
   rowManager: RowManager;
+  headerRowsCount: number;
 
   static DEFAULT_INDEX_COLUMN_TYPE = ALL_TYPES[1]; // integer
   static DEFAULT_INDEX_COLUMN_NAME = 'index';
@@ -44,10 +45,10 @@ export class BeakerxDataGridModel extends DataModel {
   private _columnCount: number;
   private _rowCount: number;
 
-  constructor(state: IDataModelState, columnManager: ColumnManager) {
+  constructor(state: IDataModelState, columnManager: ColumnManager, rowManager: RowManager) {
     super();
 
-    this.addProperties(state, columnManager);
+    this.addProperties(state, columnManager, rowManager);
     this.connectTocolumnsChanged();
   }
 
@@ -63,10 +64,11 @@ export class BeakerxDataGridModel extends DataModel {
     super.emitChanged(args);
   }
 
-  addProperties(state, columnManager) {
+  addProperties(state: IDataModelState, columnManager: ColumnManager, rowManager: RowManager) {
     this.dataFormatter = new DataFormatter(state);
     this.columnManager = columnManager;
-    this.rowManager = new RowManager(state.values, state.hasIndex);
+    this.rowManager = rowManager;
+    this.headerRowsCount = 1;
 
     this._state = state;
     this._data = state.values;
@@ -81,7 +83,7 @@ export class BeakerxDataGridModel extends DataModel {
   }
 
   rowCount(region: DataModel.RowRegion): number {
-    return region === 'body' ? this._rowCount : 1;
+    return region === 'body' ? this.rowManager.rows.length : this.headerRowsCount;
   }
 
   columnCount(region: DataModel.ColumnRegion): number {
@@ -100,11 +102,11 @@ export class BeakerxDataGridModel extends DataModel {
     }
 
     if (region === 'column-header') {
-      return this.columnManager.bodyColumnsState.names[index];
+      return row === 0 ? this.columnManager.bodyColumnsState.names[index] : '';
     }
 
     if (region === 'corner-header') {
-      return this.columnManager.indexColumnsState.names[index];
+      return row === 0 ? this.columnManager.indexColumnsState.names[index] : '';
     }
 
     return dataGridRow.values[index];
@@ -117,22 +119,8 @@ export class BeakerxDataGridModel extends DataModel {
     };
   }
 
-  sortByColumn(column: DataGridColumn) {
-    this.rowManager.sortByColumn(column);
-  }
-
-  private connectTocolumnsChanged() {
-    this.columnManager.columnsChanged.connect(this.setColumnVisible.bind(this));
-  }
-
-  private setColumnVisible(sender: ColumnManager, data: IBkoColumnsChangedArgs) {
-    if(data.type !== COLUMN_CHANGED_TYPES.columnVisible) {
-      return;
-    }
-
-    const columnsVisible = { ...this.state.columnsVisible, [data.column.name]: data.value };
-    this.setState({ columnsVisible });
-
+  setFilterHeaderVisible(visible: boolean) {
+    this.headerRowsCount = visible ? 2 : 1;
     this.reset();
   }
 
@@ -149,5 +137,20 @@ export class BeakerxDataGridModel extends DataModel {
       alignmentForColumn: this._state.alignmentForColumn || {},
       alignmentForType: this._state.alignmentForType || {},
     }
+  }
+
+  private connectTocolumnsChanged() {
+    this.columnManager.columnsChanged.connect(this.setColumnVisible.bind(this));
+  }
+
+  private setColumnVisible(sender: ColumnManager, data: IBkoColumnsChangedArgs) {
+    if(data.type !== COLUMN_CHANGED_TYPES.columnVisible) {
+      return;
+    }
+
+    const columnsVisible = { ...this.state.columnsVisible, [data.column.name]: data.value };
+    this.setState({ columnsVisible });
+
+    this.reset();
   }
 }

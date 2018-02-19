@@ -123,7 +123,41 @@ export default class ColumnManager {
       type: COLUMN_CHANGED_TYPES.columnSort,
       value: sortOrder
     });
-    this.dataGrid.model.sortByColumn(column);
+    this.dataGrid.rowManager.sortByColumn(column);
+  }
+
+  resetFilters() {
+    const resetFilterFn = column => {
+      column.setState({ filter: '' });
+      column.columnFilter.hideInput();
+    };
+
+    this.dataGrid.model.setFilterHeaderVisible(false);
+    this.columns[COLUMN_TYPES.body].forEach(resetFilterFn);
+    this.columns[COLUMN_TYPES.index].forEach(resetFilterFn);
+    this.dataGrid.rowManager.filterRows();
+    this.dataGrid.model.reset();
+  }
+
+  showFilters(column?: DataGridColumn) {
+    this.showFilterInputs(false, column);
+  }
+
+  showSearch(column?: DataGridColumn) {
+    this.showFilterInputs(true, column);
+  }
+
+  private showFilterInputs(useSearch: boolean, column?: DataGridColumn) {
+    const methodToCall = useSearch ? 'showSearchInput' : 'showFilterInput';
+    const showInputsFn = columnItem => columnItem.columnFilter
+      [methodToCall](
+      column === columnItem,
+      this.dataGrid.getColumnOffset(columnItem.index, columnItem.type)
+    );
+
+    this.dataGrid.model.setFilterHeaderVisible(true);
+    this.columns[COLUMN_TYPES.body].forEach(showInputsFn);
+    this.columns[COLUMN_TYPES.index].forEach(showInputsFn);
   }
 
   private connectToColumnsChanged() {
@@ -150,42 +184,31 @@ export default class ColumnManager {
   }
 
   private addBodyColumns() {
-    this.bodyColumnsState.names.forEach((name, index) => {
-      let menuOptions: ITriggerOptions = {
-        x: this.dataGrid.getColumnOffset(index, COLUMN_TYPES.body),
-        y: 0,
-        width: this.dataGrid.headerHeight,
-        height: this.dataGrid.headerHeight
-      };
-
-      let column = new DataGridColumn({
-        index,
-        name,
-        menuOptions,
-        type: COLUMN_TYPES.body
-      }, this.dataGrid, this);
-
-      this.columns[COLUMN_TYPES.body].push(column);
-    });
+    this.bodyColumnsState.names
+      .forEach((name, index) => this.addColumn(name, index, COLUMN_TYPES.body));
   }
 
   private addIndexColumns(): void {
-    if (!this.dataGrid.rowHeaderSections.sectionCount) {
-      return;
-    }
+    this.indexColumnsState.names
+      .forEach((name, index) => this.addColumn(name, index, COLUMN_TYPES.index));
+  }
+
+  private addColumn(name, index, type) {
+    let menuOptions: ITriggerOptions = {
+      x: this.dataGrid.getColumnOffset(index, type),
+      y: 0,
+      width: this.dataGrid.baseColumnHeaderSize,
+      height: this.dataGrid.baseColumnHeaderSize
+    };
 
     let column = new DataGridColumn({
-      index: 0,
-      name: this.indexColumnsState.names[0],
-      menuOptions: {
-        x: 0, y: 0,
-        width: this.dataGrid.headerHeight,
-        height: this.dataGrid.headerHeight
-      },
-      type: COLUMN_TYPES.index
+      index,
+      name,
+      menuOptions,
+      type,
     }, this.dataGrid, this);
 
-    this.columns[COLUMN_TYPES.index].push(column);
+    this.columns[type].push(column);
   }
 
   private destroyAllColumns() {

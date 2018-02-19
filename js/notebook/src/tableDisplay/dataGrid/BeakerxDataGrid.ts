@@ -26,6 +26,7 @@ import HighlighterManager from "./highlighter/HighlighterManager";
 import IHihglighterState from "./interface/IHighlighterState";
 import { DEFAULT_PAGE_LENGTH } from "../consts";
 import ColumnManager from "./column/ColumnManager";
+import RowManager from "./row/RowManager";
 
 export class BeakerxDataGrid extends DataGrid {
   columnSections: any;
@@ -36,6 +37,7 @@ export class BeakerxDataGrid extends DataGrid {
   viewport: Widget;
   highlighterManager: HighlighterManager;
   columnManager: ColumnManager;
+  rowManager: RowManager;
   focused: boolean;
 
   headerCellHovered = new Signal<this, ICellData|null>(this);
@@ -51,9 +53,6 @@ export class BeakerxDataGrid extends DataGrid {
     this.columnSections = this['_columnSections'];
 
     this.init(modelState);
-
-    this.columnManager.addColumns();
-    this.model.reset();
   }
 
   handleEvent(event: Event): void {
@@ -95,11 +94,16 @@ export class BeakerxDataGrid extends DataGrid {
 
   private init(modelState: IDataModelState) {
     this.columnManager = new ColumnManager(modelState, this);
-    this.model = new BeakerxDataGridModel(modelState, this.columnManager);
+    this.rowManager = new RowManager(modelState.values, modelState.hasIndex, this.columnManager);
+    this.model = new BeakerxDataGridModel(modelState, this.columnManager, this.rowManager);
     this.focused = false;
 
     this.node.removeEventListener('mouseout', this.handleMouseOut.bind(this));
     this.node.addEventListener('mouseout', this.handleMouseOut.bind(this));
+
+    this.columnManager.addColumns();
+    this.rowManager.createFilterExpressionVars();
+    this.model.reset();
 
     this.addHighlighterManager(modelState);
     this.addCellRenderers();
@@ -128,7 +132,7 @@ export class BeakerxDataGrid extends DataGrid {
     let bodyRowCount = this.model.rowCount('body');
     let rowCount = DEFAULT_PAGE_LENGTH < bodyRowCount ? DEFAULT_PAGE_LENGTH : bodyRowCount;
 
-    this.node.style.minHeight = `${ rowCount * this.baseRowSize + this.baseColumnHeaderSize }px`;
+    this.node.style.minHeight = `${ (rowCount + 2) * this.baseRowSize + this.baseColumnHeaderSize }px`;
   }
 
   //@todo debounce it

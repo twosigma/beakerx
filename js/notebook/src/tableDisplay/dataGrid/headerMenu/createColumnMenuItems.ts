@@ -30,13 +30,13 @@ export function createColumnMenuItems(column: DataGridColumn): MenuItem[] {
       title: 'Filter by Expression',
       icon: 'fa fa-filter',
       tooltip: 'filter with an expression with a variable defined for each column and $ means the current column.  eg "$ > 5"',
-      action: (column) => {}
+      action: (column) => column.columnManager.showFilters(column)
     },
     {
       title: 'Search for Substring',
       icon: 'fa fa-search',
       tooltip: 'search this column for a substring',
-      action: (column) => {}
+      action: (column) => column.columnManager.showSearch(column)
     },
     {
       title: 'Format',

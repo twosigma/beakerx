@@ -24,7 +24,7 @@ import ColumnManager from "@beakerx/tableDisplay/dataGrid/column/ColumnManager";
 describe('BeakerxDataGridModel', () => {
   describe('BeakerxDataGridModel.hasIndex === false', () => {
     const dataGrid = new BeakerxDataGrid({}, modelStateMock);
-    const beakerxDataGridModel = new BeakerxDataGridModel(modelStateMock, dataGrid.columnManager);
+    const beakerxDataGridModel = dataGrid.model;
 
     it('should be instance of DataModel', () => {
       expect(beakerxDataGridModel).to.be.an.instanceof(DataModel);

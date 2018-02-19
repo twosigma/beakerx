@@ -15,15 +15,25 @@
  */
 
 import DataGridRow from "./DataGridRow";
-import { MapIterator, iter, toArray } from '@phosphor/algorithm';
+import { MapIterator, iter, toArray, filter } from '@phosphor/algorithm';
 import {COLUMN_TYPES, default as DataGridColumn, SORT_ORDER} from "../column/DataGridColumn";
 import {ALL_TYPES} from "../dataTypes";
+import ColumnManager from "../column/ColumnManager";
 
 export default class RowManager {
+  rowsIterator: MapIterator<any[], DataGridRow>;
   rows: DataGridRow[];
+  filterExpression: string;
+  expressionVars: string;
+  sortedBy: DataGridColumn;
+  columnManager: ColumnManager;
 
-  constructor(data: any[], hasIndex: boolean) {
+  constructor(data: any[], hasIndex: boolean, columnManager: ColumnManager) {
+    this.columnManager = columnManager;
     this.createRows(data, hasIndex);
+
+    this.evaluateSearchExpression = this.evaluateSearchExpression.bind(this);
+    this.evaluateFilterExpression = this.evaluateFilterExpression.bind(this);
   }
 
   createRows(data, hasIndex) {
@@ -31,17 +41,20 @@ export default class RowManager {
   }
 
   createRowsWithGeneratedIndex(data) {
-    this.rows = toArray(new MapIterator<any[], any>(
+    this.rowsIterator = new MapIterator<any[], DataGridRow>(
       iter(data),
       (values, index) => new DataGridRow(index, values)
-    ));
+    );
+    this.rows = toArray(this.rowsIterator.clone());
   }
 
   createRowsWithIndex(data) {
-    this.rows = toArray(new MapIterator<any[], any>(
+    this.rowsIterator = new MapIterator<any[], DataGridRow>(
       iter(data),
-      (values) => new DataGridRow(values[0], values.slice(1))
+      (values) => new DataGridRow(values[0], values.slice(1)
     ));
+
+    this.rows = toArray(this.rowsIterator.clone());
   }
 
   getRow(index): DataGridRow {
@@ -49,6 +62,8 @@ export default class RowManager {
   }
 
   sortByColumn(column: DataGridColumn) {
+    this.sortedBy = column;
+
     if (column.type === COLUMN_TYPES.index || column.state.sortOrder === SORT_ORDER.NO_SORT) {
       return this.sortRows(column.index, column.state.sortOrder, this.indexValueResolver);
     }
@@ -91,5 +106,87 @@ export default class RowManager {
 
   indexValueResolver(row, columnIndex: number) {
     return row.index;
+  }
+
+  createFilterExpressionVars() {
+    this.expressionVars = '';
+
+    const agregationFn = (column: DataGridColumn) => {
+      if (column.type === COLUMN_TYPES.index) {
+        this. expressionVars += `var ${column.name} = row.index;`;
+      } else {
+        this. expressionVars += `var ${column.name} = row.values[${column.index}];`;
+      }
+    };
+
+    this.columnManager.columns[COLUMN_TYPES.index].forEach(agregationFn);
+    this.columnManager.columns[COLUMN_TYPES.body].forEach(agregationFn);
+  }
+
+  searchRows() {
+    this.filterRows(this.evaluateSearchExpression);
+  }
+
+  filterRows(evalFn?: Function) {
+    const columns = this.columnManager.columns;
+
+    this.createFilterExpression();
+
+    if (!this.filterExpression) {
+      this.rows = toArray(this.rowsIterator.clone());
+
+      return;
+    }
+
+    const formatFns = {};
+    formatFns[COLUMN_TYPES.index] = columns[COLUMN_TYPES.index].map(column => column.formatFn);
+    formatFns[COLUMN_TYPES.body] = columns[COLUMN_TYPES.body].map(column => column.formatFn);
+
+    try {
+      this.rows = toArray(filter(
+        this.rowsIterator.clone(),
+        (row) => evalFn ? evalFn(row, formatFns) : this.evaluateFilterExpression(row, formatFns)
+      ));
+      this.sortedBy && this.sortByColumn(this.sortedBy);
+    } catch (e) {}
+  }
+
+  createFilterExpression(): void {
+    let expressionParts: string[] = [];
+    const agregationFn = (column: DataGridColumn) => {
+      if (column.state.filter) {
+        expressionParts.push(column.state.filter);
+      }
+    };
+
+    this.columnManager.columns[COLUMN_TYPES.index].forEach(agregationFn);
+    this.columnManager.columns[COLUMN_TYPES.body].forEach(agregationFn);
+
+    this.filterExpression = expressionParts.join(' && ').trim();
+  }
+
+  evaluateFilterExpression(row, formatFns) {
+    const evalInContext = function(expression: string) {
+      const row = { ...this.row };
+      const result = eval(expression);
+
+      return result !== undefined ? result : true;
+    }.bind({ row });
+
+    return evalInContext(String(`${this.expressionVars} ${this.filterExpression}`));
+  }
+
+  evaluateSearchExpression(row, formatFns) {
+    const evalInContext = function(expression: string) {
+      const row = {
+        index: formatFns[COLUMN_TYPES.index][0]({ row: this.row.index, value: this.row.index, column: 0 }),
+        values: this.row.values.map((value, index) => formatFns[COLUMN_TYPES.body][index]({ value, row: this.row.index, column: index }))
+      };
+      const result = eval(expression);
+
+      return result !== undefined ? result : true;
+    }.bind({ row });
+
+    return evalInContext(String(`${this.expressionVars} ${this.filterExpression}`));
   }
 }

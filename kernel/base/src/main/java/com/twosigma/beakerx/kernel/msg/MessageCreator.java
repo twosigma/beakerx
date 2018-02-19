@@ -40,7 +40,7 @@ import com.twosigma.beakerx.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.twosigma.beakerx.SerializeToString;
+import com.twosigma.beakerx.MIMEContainerFactory;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus;
 import com.twosigma.beakerx.kernel.SocketEnum;
 
@@ -265,7 +265,7 @@ public class MessageCreator {
 
   private static MessageHolder createFinishResult(SimpleEvaluationObject seo, Message message) {
     MessageHolder ret = null;
-    List<MIMEContainer> mimes = SerializeToString.doit(seo.getPayload());
+    List<MIMEContainer> mimes = MIMEContainerFactory.createMIMEContainers(seo.getPayload());
     if (!mimes.contains(MIMEContainer.HIDDEN)) {
       ret = new MessageHolder(SocketEnum.IOPUB_SOCKET,
               buildMessage(message, mimes, outputdataResult(seo.getOutputdata()), seo.getExecutionCount()));

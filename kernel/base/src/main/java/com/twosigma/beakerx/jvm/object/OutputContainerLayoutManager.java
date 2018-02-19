@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.jvm.object;
 
-import com.twosigma.beakerx.SerializeToString;
+import com.twosigma.beakerx.MIMEContainerFactory;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 import com.twosigma.beakerx.widget.Widget;
 import com.twosigma.beakerx.widget.HTML;
@@ -54,7 +54,7 @@ public abstract class OutputContainerLayoutManager {
     if (item == null) {
       return handleNull();
     }
-    Widget widget = SerializeToString.getTableDisplay(item);
+    Widget widget = MIMEContainerFactory.getTableDisplay(item);
     if (widget != null) {
       return of(widget);
     }
@@ -69,7 +69,7 @@ public abstract class OutputContainerLayoutManager {
   }
 
   private Optional<Widget> handleNull() {
-    List<MIMEContainer> mimeContainerForNull = SerializeToString.getMimeContainerForNull();
+    List<MIMEContainer> mimeContainerForNull = MIMEContainerFactory.getMimeContainerForNull();
     if (mimeContainerForNull.contains(MIMEContainer.HIDDEN)) {
       return empty();
     }

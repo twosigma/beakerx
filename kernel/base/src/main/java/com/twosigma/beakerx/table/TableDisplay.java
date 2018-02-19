@@ -145,7 +145,7 @@ public class TableDisplay extends BeakerxWidget {
     subtype = LIST_OF_MAPS_SUBTYPE;
 
     // create columns
-    if(v.size() > 0) {
+    if (v.size() > 0) {
       // Every column gets inspected at least once, so put every column in
       // a list with null for the initial type
       ArrayList<String> columnOrder = new ArrayList<String>();
@@ -158,14 +158,14 @@ public class TableDisplay extends BeakerxWidget {
         columnsToCheck.add(columnName);
         typeTracker.put(columnName, null);
       }
-  
+
       // Visit each row and track the row's type. If some value is found to
       // contain a string, the column is marked as string based and is no
       // longer typechecked
       List<String> columnsToRemove = new ArrayList<String>();
       for (Map<String, Object> row : v) {
         // Remove any columns requested from prior iteration
-        for (String columnToRemove: columnsToRemove) {
+        for (String columnToRemove : columnsToRemove) {
           columnsToCheck.remove(columnToRemove);
         }
         columnsToRemove = new ArrayList<String>();
@@ -189,7 +189,7 @@ public class TableDisplay extends BeakerxWidget {
           }
         }
       }
-  
+
       // Put results of type checking into `columns` and `classes`
       for (String columnName : columnOrder) {
         String columnType = typeTracker.get(columnName);
@@ -758,4 +758,18 @@ public class TableDisplay extends BeakerxWidget {
     String get(int columnIndex, int rowIndex);
   }
 
+  @SuppressWarnings("unchecked")
+  public void updateCell(int row, String columnName, Object value) {
+    int index = getColumnIndex(columnName);
+    List<Object> rowList = (List<Object>) values.get(row);
+    rowList.set(index, value);
+  }
+
+  private int getColumnIndex(String columnName) {
+    int index = columns.indexOf(columnName);
+    if (index < 0) {
+      throw new RuntimeException("There is no given column name: " + columnName);
+    }
+    return index;
+  }
 }

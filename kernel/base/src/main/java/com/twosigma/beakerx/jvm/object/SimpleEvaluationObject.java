@@ -119,7 +119,6 @@ public class SimpleEvaluationObject extends Observable {
   }
 
   public class SimpleOutputHandler implements BeakerOutputHandler {
-
     private boolean error;
 
     public SimpleOutputHandler(boolean error) {
@@ -127,28 +126,11 @@ public class SimpleEvaluationObject extends Observable {
     }
 
     @Override
-    public void write(int b) {
-      byte[] ba = new byte[1];
-      ba[0] = (byte) b;
-      consoleOutput.add(new ConsoleOutput(error, new String(ba, StandardCharsets.UTF_8)));
+    public void write(String b) {
+      consoleOutput.add(new ConsoleOutput(error, b));
       setChanged();
       notifyObservers();
     }
-
-    @Override
-    public void write(byte[] b) {
-      consoleOutput.add(new ConsoleOutput(error, new String(b, StandardCharsets.UTF_8)));
-      setChanged();
-      notifyObservers();
-    }
-
-    @Override
-    public void write(byte[] b, int off, int len) {
-      consoleOutput.add(new ConsoleOutput(error, new String(b, off, len, StandardCharsets.UTF_8)));
-      setChanged();
-      notifyObservers();
-    }
-
   }
 
   public synchronized BeakerOutputHandler getStdOutputHandler() {

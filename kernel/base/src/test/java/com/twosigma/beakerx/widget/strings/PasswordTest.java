@@ -20,6 +20,7 @@ import com.twosigma.beakerx.jupyter.SearchMessages;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.Password;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

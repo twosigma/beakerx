@@ -32,7 +32,7 @@ import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widget.DOMWidget;
 import com.twosigma.beakerx.widget.Widget;
-import com.twosigma.beakerx.widget.strings.Text;
+import com.twosigma.beakerx.widget.Text;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

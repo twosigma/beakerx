@@ -39,12 +39,6 @@ export default class CellSelectionManager {
     this.bindEvents();
   }
 
-  bindEvents() {
-    this.dataGrid.node.addEventListener('mouseup', this.handleMouseUp.bind(this));
-    this.dataGrid.node.addEventListener('mousedown', this.handleMouseDown.bind(this));
-    this.dataGrid.node.addEventListener('mousemove', this.handleBodyCellHover.bind(this));
-  }
-
   setStartCell(cellData: ICellData) {
     this.startCellData = cellData;
   }
@@ -137,6 +131,12 @@ export default class CellSelectionManager {
     }
 
     return this.isSelected(config) ? this.selectedCellColor : '';
+  }
+
+  private bindEvents() {
+    this.dataGrid.node.addEventListener('mouseup', this.handleMouseUp.bind(this));
+    this.dataGrid.node.addEventListener('mousedown', this.handleMouseDown.bind(this));
+    this.dataGrid.node.addEventListener('mousemove', this.handleBodyCellHover.bind(this));
   }
 
   private handleMouseDown(event: MouseEvent) {

@@ -17,7 +17,7 @@
 var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('Testing of plot Actions', function () {
+describe('Testing of plot Actions ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
@@ -28,11 +28,14 @@ describe('Testing of plot Actions', function () {
     beakerxPO.closeAndHaltNotebook();
   });
 
-  describe("onKey action", function(){
+  var cellIndex;
+
+  describe('(Groovy) onKey action ', function(){
     var svgElement1;
 
-    it('onKey "SHIFT" should change bar value', function () {
-      svgElement1 = beakerxPO.runCellToGetSvgElement(0);
+    it('onKey "SHIFT" should change bar value ', function () {
+      cellIndex = 0;
+      svgElement1 = beakerxPO.runCellToGetSvgElement(cellIndex);
       var height1 = Math.round(svgElement1.$('rect#i0_0').getAttribute('height'));
       svgElement1.$('rect#i0_0').click();
       browser.keys("Shift");
@@ -42,26 +45,28 @@ describe('Testing of plot Actions', function () {
       expect(height2).toBeGreaterThan(height1);
     });
 
-    it('onKey "T" should run the tag (by string name)', function () {
+    it('onKey "T" should run the tag (by string name) ', function () {
+      cellIndex += 1;
       svgElement1.$('rect#i0_0').click();
       browser.keys("t");
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.waitAndCheckOutputTextOfStdout(1, /1:6/);
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /1:6/);
     });
 
-    it('onKey "U" should run the tag (by closure)', function () {
+    it('onKey "U" should run the tag (by closure) ', function () {
       svgElement1.$('rect#i0_2').click();
       browser.keys("u");
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.waitAndCheckOutputTextOfStdout(1, /3:3/);
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /3:3/);
     });
   });
 
-  describe("onClick action", function(){
+  describe('(Groovy) onClick action', function(){
     var svgElement2;
 
-    it('Click on the bar should change its value', function () {
-      svgElement2 = beakerxPO.runCellToGetSvgElement(2);
+    it('Click on the bar should change its value ', function () {
+      cellIndex += 1;
+      svgElement2 = beakerxPO.runCellToGetSvgElement(cellIndex);
       var height1 = Math.round(svgElement2.$('rect#i0_0').getAttribute('height'));
       svgElement2.$('rect#i0_0').click();
       beakerxPO.kernelIdleIcon.waitForEnabled();
@@ -69,24 +74,28 @@ describe('Testing of plot Actions', function () {
       expect(height2).toBeGreaterThan(height1);
     });
 
-    it('Click on the bar should run the tag (by closure)', function () {
+    it('Click on the bar should run the tag (by closure) ', function () {
+      cellIndex += 1;
       svgElement2.$('rect#i0_1').click();
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.waitAndCheckOutputTextOfStdout(3, /2:3/);
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /2:3/);
     });
 
-    it('Click on the bar should run the tag (by string name)', function () {
-      var svgElement3 = beakerxPO.runCellToGetSvgElement(4);
+    it('Click on the bar should run the tag (by string name) ', function () {
+      cellIndex += 1;
+      var svgElement3 = beakerxPO.runCellToGetSvgElement(cellIndex);
       svgElement3.$('rect#i0_0').click();
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.waitAndCheckOutputTextOfStdout(5, /1:5/);
+      cellIndex += 1;
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /1:5/);
     });
   });
 
-  describe("RightClickAndDrag action", function(){
+  describe('(Groovy) RightClickAndDrag action ', function(){
 
-    it('RightClickAndDrag action should zoom the plot', function () {
-      var svgElement4 = beakerxPO.runCellToGetSvgElement(6);
+    it('RightClickAndDrag action should zoom the plot ', function () {
+      cellIndex += 1;
+      var svgElement4 = beakerxPO.runCellToGetSvgElement(cellIndex);
       var height1 = Math.round(svgElement4.$('rect#i0_0').getAttribute('height'));
       var width1 = Math.round(svgElement4.$('rect#i0_0').getAttribute('width'));
       svgElement4.$('rect#i0_0').moveToObject(0, 0);
@@ -100,17 +109,17 @@ describe('Testing of plot Actions', function () {
       expect(width2).toBeGreaterThan(width1);
     });
 
-    it('RightClickAndDrag should not display the menu', function () {
+    it('RightClickAndDrag should not display the menu ', function () {
       expect(browser.$('div.p-Menu-itemLabel=Save as SVG').isVisible()).toBeFalsy();
       expect(browser.$('div.p-Menu-itemLabel=Save as PNG').isVisible()).toBeFalsy();
     });
   });
 
-  describe("RightClick action", function(){
+  describe('(Groovy) RightClick action ', function(){
 
-    it('RightClick action should not zoom the plot', function () {
-      beakerxPO.runCodeCellByIndex(5);
-      var svgElement5 = beakerxPO.runCellToGetSvgElement(6);
+    it('RightClick action should not zoom the plot ', function () {
+      beakerxPO.runCodeCellByIndex(cellIndex - 1);
+      var svgElement5 = beakerxPO.runCellToGetSvgElement(cellIndex);
       var height1 = Math.round(svgElement5.$('rect#i0_0').getAttribute('height'));
       var width1 = Math.round(svgElement5.$('rect#i0_0').getAttribute('width'));
       svgElement5.$('g#maing').rightClick();
@@ -120,7 +129,7 @@ describe('Testing of plot Actions', function () {
       expect(width2).toEqual(width1);
     });
 
-    it('RightClick action should display the menu', function () {
+    it('RightClick action should display the menu ', function () {
       browser.$('ul.p-Menu-content').waitForEnabled();
       expect(browser.$('div.p-Menu-itemLabel=Save as SVG').isVisible()).toBeTruthy();
       expect(browser.$('div.p-Menu-itemLabel=Save as PNG').isVisible()).toBeTruthy();

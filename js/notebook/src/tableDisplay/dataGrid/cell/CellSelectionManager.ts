@@ -20,7 +20,7 @@ import {ICellData} from "../interface/ICell";
 import {BeakerxDataGrid} from "../BeakerxDataGrid";
 import DataGridColumn from "../column/DataGridColumn";
 
-interface IRangeCells {
+export interface IRangeCells {
   startCell: ICellData,
   endCell: ICellData
 }

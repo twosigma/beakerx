@@ -17,7 +17,8 @@
 import {BeakerxDataGrid} from "../BeakerxDataGrid";
 import * as bkUtils from '../../../shared/bkUtils';
 import {COLUMN_TYPES} from "../column/DataGridColumn";
-import '../../../global.env';
+import {IRangeCells} from "./CellSelectionManager";
+import {CellRenderer, DataModel} from "@phosphor/datagrid";
 
 export default class CellManager {
   dataGrid: BeakerxDataGrid;
@@ -29,8 +30,45 @@ export default class CellManager {
   getSelectedCells() {
     const rowsRange = this.dataGrid.cellSelectionManager.getRowsRangeCells();
     const columnsRange = this.dataGrid.cellSelectionManager.getColumnsRangeCells();
-    const rows = rowsRange && this.dataGrid.rowManager.takeRows(rowsRange.startCell.row, rowsRange.endCell.row + 1);
-    const columns = columnsRange && this.dataGrid.columnManager.takeColumnsByCells(columnsRange.startCell, columnsRange.endCell);
+
+    if (!rowsRange || !columnsRange) {
+      return [];
+    }
+
+    return this.getCells(rowsRange, columnsRange);
+  }
+
+  getAllCells() {
+    const startRow = this.dataGrid.rowManager.rows[0];
+    const endRow = this.dataGrid.rowManager.rows[this.dataGrid.rowManager.rows.length - 1];
+    const rowsRange = {
+      startCell: {
+        row: startRow.index,
+        column: 0,
+        type: COLUMN_TYPES.index,
+        delta: 0,
+        offset: 0
+      },
+      endCell: {
+        row: endRow.index,
+        column: this.dataGrid.columnManager.columns[COLUMN_TYPES.body].length - 1 || 0,
+        type: COLUMN_TYPES.body,
+        delta: 0,
+        offset: 0
+      }
+    };
+    const columnsRange = rowsRange;
+
+    if (!rowsRange || !columnsRange) {
+      return [];
+    }
+
+    return this.getCells(rowsRange, columnsRange);
+  }
+
+  getCells(rowsRange: IRangeCells, columnsRange: IRangeCells) {
+    const rows = this.dataGrid.rowManager.takeRows(rowsRange.startCell.row, rowsRange.endCell.row + 1);
+    const columns = this.dataGrid.columnManager.takeColumnsByCells(columnsRange.startCell, columnsRange.endCell);
     const cells: any = [];
 
     if (!columns || !rows) {
@@ -46,19 +84,19 @@ export default class CellManager {
 
       columns.forEach(column => {
         if(column.type === COLUMN_TYPES.index) {
-          result.push(column.formatFn({
-            region: 'row-headers',
+          result.push(column.formatFn(this.createCellConfig({
+            region: 'row-header',
             row: row.index,
             column: column.index,
-            value: row.index,
-          }));
+            value: row.index
+          })));
         } else {
-          result.push(column.formatFn({
+          result.push(column.formatFn(this.createCellConfig({
             region: 'body',
             row: row.index,
             column: column.index,
             value: row.values[column.index]
-          }));
+          })));
         }
       });
 
@@ -87,8 +125,47 @@ export default class CellManager {
     this.executeCopy(cellsData);
   }
 
+  CSVDownload(selectedOnly) {
+    const href = 'data:attachment/csv;charset=utf-8,' + encodeURI(this.getCSVFromCells(selectedOnly));
+    const target = '_black';
+    const filename = 'tableRows.csv';
+    const anchor = document.createElement('a');
+    const event = document.createEvent("MouseEvents");
+
+    anchor.href = href;
+    anchor.target = target;
+    anchor.download = filename;
+    event.initEvent("click", true, false);
+    anchor.dispatchEvent(event);
+  };
+
+  private createCellConfig(
+    options: { row: number, column: number, value: any, region: DataModel.CellRegion }
+  ): CellRenderer.ICellConfig {
+    return {
+      region: '',
+      row: 0,
+      column: 0,
+      value: 0,
+      x: 0,
+      y: 0,
+      metadata: {},
+      width: 0,
+      height: 0,
+      ...options
+    }
+  }
+
+  private getCSVFromCells(selectedOnly: boolean) {
+    if (selectedOnly) {
+      return this.exportCellsTo(this.getSelectedCells(), 'csv');
+    }
+
+    return this.exportCellsTo(this.getAllCells(), 'csv');
+  }
+
   private executeCopy(text: string) {
-    var input = document.createElement('textarea');
+    const input = document.createElement('textarea');
 
     document.body.appendChild(input);
     input.value = text;

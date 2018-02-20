@@ -152,7 +152,9 @@ export default class ColumnManager {
     let result: any[] = [];
 
     if (endCell.type !== COLUMN_TYPES.index) {
-      result = this.columns[COLUMN_TYPES.body].slice(startCell.column, endCell.column + 1);
+      result = this.columns[COLUMN_TYPES.body]
+        .filter(column => column.state.visible)
+        .slice(startCell.column, endCell.column + 1);
     }
 
     if (startCell.type === COLUMN_TYPES.index) {
@@ -160,6 +162,13 @@ export default class ColumnManager {
     }
 
     return result;
+  }
+
+  showAllColumns() {
+    this.columns[COLUMN_TYPES.body].forEach((column) => {
+      column.setState({ visible: true });
+    });
+    this.dataGrid.model.reset();
   }
 
   private showFilterInputs(useSearch: boolean, column?: DataGridColumn) {

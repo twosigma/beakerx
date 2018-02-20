@@ -1,0 +1,123 @@
+/*
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+@import '~@phosphor/widgets/style/index.css';
+
+.p-TabBar {
+  min-height: 30px;
+  max-height: 30px;
+}
+
+.p-TabBar-content {
+  min-width: 0;
+  align-items: flex-end;
+  border-bottom: 1px solid #ddd;
+}
+
+.p-TabBar-tab {
+  flex: 0 1 auto;
+  min-height: 26px;
+  max-height: 26px;
+  min-width: 35px;
+  margin-left: -1px;
+  border: 1px solid transparent;
+  padding: 6px 15px 4px 15px;
+}
+
+.p-TabBar-tab:first-child {
+  margin-left: 0;
+}
+
+.p-TabBar-tab.p-mod-current {
+  background-color: #fff;
+  border-color: #ddd;
+  border-bottom-color: transparent;
+  transform: translateY(1px);
+}
+
+.p-TabBar-tab:hover:not(.p-mod-current) {
+  background: #F0F0F0;
+}
+
+
+
+#tab_content {
+  height: 100%;
+  position: relative;
+}
+
+#beakerx-tree.tab-pane.active {
+  display: flex;
+  position: absolute;
+  top: 50px;
+  bottom: 0;
+  width: 100%;
+  overflow-y: auto;
+}
+
+#beakerx-tree-widget {
+  flex: 1 1 auto;
+  overflow: auto;
+}
+
+.bx-banner-widget {
+  flex: 1 0 available;
+  padding: 15px;
+}
+
+.bx-banner-widget .beakerx_site_link {
+  display: inline-block;
+}
+
+.bx-banner-widget svg {
+  height: 35px;
+}
+
+.bx-options-widget {
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-basis: auto;
+  padding: 15px 0;
+  display: flex;
+}
+
+.bx-options-widget .p-TabPanel-stackedPanel {
+  width: auto !important;
+  left: 15px;
+  right: 15px;
+}
+
+.bx-ui-options-widget,
+.bx-jvm-options-widget {
+  left: 10px;
+  right: 10px;
+  padding: 15px;
+}
+
+.bx-sync-indicator-widget {
+    flex: 1 0 content;
+    padding: 15px;
+}
+.bx-sync-indicator-widget .saving { color: #f0ad4e; }
+.bx-sync-indicator-widget .saved { color: #5cb85c; }
+
+#properties_property .form-control {
+    margin-right: 10px;
+}
+
+#other_property .form-control {
+    margin-right: 10px;
+}

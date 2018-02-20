@@ -73,16 +73,12 @@ export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
     },
     {
       title: 'Clear selection',
-      action: () => {
-        //@todo
-      }
+      action: () => dataGrid.cellSelectionManager.clear()
     },
     {
       title: 'Copy to Clipboard',
       separator: true,
-      action: () => {
-        //@todo
-      }
+      action: () => dataGrid.cellManager.copyToClipboard()
     },
     {
       title: 'Download All as CSV',

@@ -151,6 +151,10 @@ export default class RowManager {
     } catch (e) {}
   }
 
+  takeRows(start: number, end: number) {
+    return this.rows.slice(start, end);
+  }
+
   createFilterExpression(): void {
     let expressionParts: string[] = [];
     const agregationFn = (column: DataGridColumn) => {

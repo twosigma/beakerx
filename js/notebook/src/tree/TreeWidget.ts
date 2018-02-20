@@ -14,9 +14,7 @@
  *  limitations under the License.
  */
 
-import * as $ from "jquery";
-
-import { Panel, Widget } from "@phosphor/widgets";
+import { Panel } from "@phosphor/widgets";
 import { Message } from "@phosphor/messaging";
 
 import BeakerXApi from "./Utils/BeakerXApi";
@@ -25,22 +23,11 @@ import { Messages } from "./Messages";
 import ITreeWidgetOptions from "./Types/ITreeWidgetOptions";
 import TreeWidgetModel from "./Models/TreeWidgetModel";
 import SyncIndicatorWidget from "./Widgets/SyncIndicatorWidget";
-import JVMOptionsWidget from "./Widgets/JVMOptionsWidget";
-import {UIOptionsWidget} from "./Widgets/UIOptions/UIOptionsWidget";
-import UIOptionsModel from "./Models/UIOptionsModel";
+import OptionsWidget from "./Widgets/OptionsWidget";
+
+import "./styles/tree.css";
 
 export default class TreeWidget extends Panel {
-
-  public readonly HTML_ELEMENT_TEMPLATE = `
-<style>
-  #beakerx-tree { 
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    box-sizing: border-box;
-  }
-</style>
-`;
 
   private _model: TreeWidgetModel;
 
@@ -49,40 +36,24 @@ export default class TreeWidget extends Panel {
 
     let api = new BeakerXApi(this.options.baseUrl);
 
-    this.id = 'beakerx-tree';
+    this.id = 'beakerx-tree-widget';
+
     this.title.label = 'BeakerX';
     this.title.closable = true;
-    this.addClass('tab-pane');
 
-    this.createWidgetContent(api);
-  }
-
-  private createWidgetContent(api: BeakerXApi) {
-
+    let bannerWidget = new BannerWidget(api);
+    let optionsWidget = new OptionsWidget(this.options.isLab);
     let syncIndicatorWidget = new SyncIndicatorWidget();
-    let jvmOptionsWidget = new JVMOptionsWidget();
-    let uiOptionsWidget;
-    let uiOptionsModel;
-    if (false === this.options.isLab) {
-      uiOptionsWidget = new UIOptionsWidget();
-      uiOptionsModel = new UIOptionsModel(uiOptionsWidget);
-    }
 
     this._model = new TreeWidgetModel(
       api,
-      jvmOptionsWidget.model,
-      uiOptionsModel,
+      optionsWidget.jvmOptionsModel,
+      optionsWidget.uiOptionsModel,
       syncIndicatorWidget
     );
 
-    this.addWidget(new BannerWidget(api));
-    this.addWidget(new Widget({ node: document.createElement('br') }));
-
-    if (false === this.options.isLab) {
-      this.addWidget(uiOptionsWidget);
-    }
-
-    this.addWidget(jvmOptionsWidget);
+    this.addWidget(bannerWidget);
+    this.addWidget(optionsWidget);
     this.addWidget(syncIndicatorWidget);
   }
 
@@ -108,13 +79,8 @@ export default class TreeWidget extends Panel {
     }
   }
 
-  public onBeforeAttach(msg: Message): void {
-    this.createWidgetStylesElement();
+  protected onBeforeAttach(msg: Message): void {
     this._model.load();
   }
 
-  private createWidgetStylesElement(): void {
-    $(this.HTML_ELEMENT_TEMPLATE)
-      .insertBefore(this.node);
-  }
 }

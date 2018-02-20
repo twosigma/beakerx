@@ -15,15 +15,12 @@
  */
 
 import * as $ from "jquery";
+
 import { Widget } from "@phosphor/widgets";
 
 export default class SyncIndicatorWidget extends Widget {
 
   public readonly HTML_ELEMENT_TEMPLATE = `
-<style>
-  #sync_indicator .saving { color: #f0ad4e; }
-  #sync_indicator .saved { color: #5cb85c; }
-</style>
 <div class="form-group text-primary">
   <span id="sync_indicator">
     <span class="saving hidden"><i class="fa fa-spinner"></i></span>
@@ -45,6 +42,7 @@ export default class SyncIndicatorWidget extends Widget {
 
   constructor() {
     super();
+    this.addClass('bx-sync-indicator-widget');
 
     $(this.HTML_ELEMENT_TEMPLATE).appendTo(this.node);
 

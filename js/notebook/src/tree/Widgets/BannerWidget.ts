@@ -15,10 +15,10 @@
  */
 
 import * as $ from 'jquery';
+
 import { Widget } from "@phosphor/widgets";
 
 import BeakerXApi from "../Utils/BeakerXApi";
-
 
 export default class BannerWidget extends Widget {
 
@@ -44,41 +44,22 @@ export default class BannerWidget extends Widget {
 `;
 
   static readonly BASIC_HTML_ELEMENT_TEMPLATE = `
-<style>
-  #beakerx_env_toolbar {
-    margin: 0 15px;
-  }
-  #beakerx_info .beakerx_site_link {
-    display: inline-block;
-    margin: 5px 0;
-  }
-
-  #beakerx_info .beakerx_site_link svg {
-    height: 35px;
-  }
-</style>
 <div id="beakerx_env_toolbar" class="list_toolbar">
-    <span id="beakerx_info" class="toolbar_info"></span>
+    <div id="beakerx_info"></div>
 </div>
 `;
 
   constructor(api: BeakerXApi) {
     super();
+
+    this.addClass('bx-banner-widget');
+
+    $(BannerWidget.BASIC_HTML_ELEMENT_TEMPLATE).appendTo(this.node);
     api
       .getVersion()
       .then((version) => {
-          this.buildWidget(version);
+          this.createBanner(version);
       });
-  }
-
-  private buildWidget(version: string) {
-    this.createBaseElement();
-    this.createBanner(version);
-  }
-
-  private createBaseElement(): void {
-    $(BannerWidget.BASIC_HTML_ELEMENT_TEMPLATE)
-      .appendTo(this.node);
   }
 
   private createBanner(version: string): void {

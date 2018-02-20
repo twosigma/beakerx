@@ -28,13 +28,19 @@ define([
 
   function load() {
     var TreeWidget = require('./tree/TreeWidget').default;
-    var options = {
+    var bxTabPane = $('<div>', {
+      class: 'tab-pane',
+      id: 'beakerx-tree'
+    }).appendTo($('.tab-content')).get(0);
+
+    var widgetOptions = {
       baseUrl: (Jupyter.notebook_list || Jupyter.notebook).base_url,
       isLab: false
     };
-    var bxWidget = new TreeWidget(options);
+    var bxWidget = new TreeWidget(widgetOptions);
 
-    Widget.attach(bxWidget, $('.tab-content').get(0));
+    Widget.attach(bxWidget, bxTabPane);
+
     $('#tabs').append(
       $('<li>').append(
         $('<a>', {
@@ -43,15 +49,20 @@ define([
           'data-toggle': 'tab',
           text: 'BeakerX'
         }).on('click', function (e) {
+          if (false === $(e.currentTarget).parents('li').hasClass('active')) {
+            bxWidget.update();
+          }
           if (window.location.hash === '#beakerx-tree') {
             return;
           }
-
           window.history.pushState(null, '', '#beakerx-tree');
-          bxWidget.update();
         })
       )
     );
+
+    $(window).on('resize', function() {
+      bxWidget.update();
+    });
   }
 
   return {

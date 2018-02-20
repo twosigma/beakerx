@@ -19,7 +19,6 @@ import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widget.integers.IntSlider;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

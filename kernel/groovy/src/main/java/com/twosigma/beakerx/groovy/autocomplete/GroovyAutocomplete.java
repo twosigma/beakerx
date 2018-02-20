@@ -41,23 +41,20 @@ public class GroovyAutocomplete {
     registry = AutocompleteRegistryFactory.createRegistry(cps);
   }
 
-  /*
-   * These are meant to be extended by personalized plugin versions.
-   */
-  private void moreSetup(AutocompleteRegistry r) {
-  }
-
-  private GroovyClassUtils createClassUtils(ClassLoader l) {
-    return new GroovyClassUtils(cps, l);
-  }
-
   public AutocompleteResult doAutocomplete(String txt, int cur, ClassLoader l, Imports imports) {
+    try {
+      return tryFindAutocomplete(txt, cur, l, imports);
+    } catch (Exception e) {
+      return new AutocompleteResult(new ArrayList<>(), 0);
+    }
+  }
+
+  private AutocompleteResult tryFindAutocomplete(String txt, int cur, ClassLoader l, Imports imports) {
     registry = AutocompleteRegistryFactory.createRegistry(cps);
     GroovyClassUtils cu = createClassUtils(l);
     setup(cu, registry);
     AutocompleteRegistryFactory.addDefaultImports(cu, registry, imports.toListOfStrings(), cps);
     AutocompleteRegistryFactory.moreSetup(cu);
-    moreSetup(registry);
 
     Lexer lexer = new GroovyLexer(new ANTLRInputStream(txt));
     lexer.removeErrorListeners();
@@ -124,6 +121,10 @@ public class GroovyAutocomplete {
       return extractor3.getStartIndex();
     }
     return 0;
+  }
+
+  private GroovyClassUtils createClassUtils(ClassLoader l) {
+    return new GroovyClassUtils(cps, l);
   }
 
 }

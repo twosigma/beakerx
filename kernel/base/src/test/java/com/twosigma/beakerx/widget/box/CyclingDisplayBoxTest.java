@@ -17,9 +17,10 @@ package com.twosigma.beakerx.widget.box;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.widget.CyclingDisplayBox;
 import com.twosigma.beakerx.widget.Widget;
-import com.twosigma.beakerx.widget.integers.IntSlider;
-import com.twosigma.beakerx.widget.strings.Text;
+import com.twosigma.beakerx.widget.IntSlider;
+import com.twosigma.beakerx.widget.Text;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

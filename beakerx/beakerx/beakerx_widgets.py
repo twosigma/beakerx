@@ -49,6 +49,16 @@ class EasyFormComponent:
     def set_value(self, new_value):
         self.value = new_value
 
+    def add_interface_to(target):
+        target.onInitListeners = list()
+        target.onChangeListeners = list()
+        target.onInit = types.MethodType(EasyFormComponent.onInit, target)
+        target.onChange = types.MethodType(EasyFormComponent.onChange, target)
+        target.fireInit = types.MethodType(EasyFormComponent.fireInit, target)
+        target.fireChanged = types.MethodType(EasyFormComponent.fireChanged, target)
+        target.set_value = types.MethodType(EasyFormComponent.set_value, target)
+
+
 
 class BeakerxLayout(Layout):
     _view_module = Unicode('@jupyter-widgets/base').tag(sync=True)

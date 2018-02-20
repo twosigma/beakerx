@@ -24,7 +24,7 @@ import com.twosigma.beakerx.chart.serializer.LegendPositionSerializer;
 import com.twosigma.beakerx.chart.xychart.XYChart;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widget.chart.BeakerxPlot;
+import com.twosigma.beakerx.widget.BeakerxPlot;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

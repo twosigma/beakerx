@@ -24,7 +24,7 @@ import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widget.TestWidgetUtils;
-import com.twosigma.beakerx.widget.chart.BeakerxPlot;
+import com.twosigma.beakerx.widget.BeakerxPlot;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 

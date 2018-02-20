@@ -149,6 +149,12 @@ class EasyForm(BeakerxBox):
         self.components[radio_buttons.description] = radio_buttons
         return radio_buttons
 
+    def addWidget(self, name, widget):
+        EasyFormComponent.add_interface_to(widget)
+        self.children += (widget,)
+        self.components[name] = widget
+        return widget
+
     def __iter__(self):
         return iter(self.components)
 

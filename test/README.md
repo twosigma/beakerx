@@ -24,8 +24,13 @@ Running the e2e tests from its GitHub source code requires:
 
 ## Run the tests
 
+To run tests for jupyter lab use argument `lab`:
 ```
-./run_tests.py
+./run_tests.py lab
+```
+To run tests for jupyter notebook use argument `nb`:
+```
+./run_tests.py nb
 ```
 
 By default, a notebook server runs locally at 127.0.0.1:8888 and is accessible only from localhost. 

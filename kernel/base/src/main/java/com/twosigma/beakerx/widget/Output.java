@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.widget;
 
-import com.twosigma.beakerx.jvm.object.ConsoleOutput;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
@@ -85,35 +84,33 @@ public class Output extends DOMWidget {
   public void updateValue(Object value) {
   }
 
-  public synchronized void sendOutput(ConsoleOutput co) {
+  public void sendStdout(String text) {
+    send(false, text);
+  }
+
+  public void sendStderr(String text) {
+    send(true, text);
+  }
+
+  public void appendStdout(String text) {
+    sendStdout(text + "\n");
+  }
+
+  public void appendStderr(String text) {
+    sendStderr(text + "\n");
+  }
+
+  private synchronized void send(boolean isError, String text) {
     List<Message> list = new ArrayList<>();
     list.add(getComm().createUpdateMessage(MSG_ID, getComm().getParentMessage().getHeader().getId()));
-    Map<String, Serializable> asMap = addOutput(co);
+    Map<String, Serializable> asMap = addOutput(isError, text);
     list.add(getComm().createOutputContent(asMap));
     list.add(getComm().createUpdateMessage(MSG_ID, ""));
     getComm().publish(list);
   }
 
-  public void display(MIMEContainer mimeContainer) {
-    List<Message> list = new ArrayList<>();
-    list.add(getComm().createUpdateMessage(MSG_ID, getComm().getParentMessage().getHeader().getId()));
-    HashMap<String, Serializable> content = new HashMap<>();
-    content.put(mimeContainer.getMime().asString(), (Serializable) mimeContainer.getData());
-    list.add(getComm().createMessage(DISPLAY_DATA, Comm.Buffer.EMPTY, new Comm.Data(content)));
-    list.add(getComm().createUpdateMessage(MSG_ID, ""));
-    getComm().publish(list);
-  }
-
-  public void appendStdout(String text) {
-    sendOutput(new ConsoleOutput(false, text + "\n"));
-  }
-
-  public void appendStderr(String text) {
-    sendOutput(new ConsoleOutput(true, text + "\n"));
-  }
-
-  private Map<String, Serializable> addOutput(ConsoleOutput co) {
-    Map<String, Serializable> value = createOutput(co);
+  private Map<String, Serializable> addOutput(boolean isError, String text) {
+    Map<String, Serializable> value = createOutput(isError, text);
     outputs.add(value);
     return value;
   }
@@ -123,11 +120,34 @@ public class Output extends DOMWidget {
     sendUpdate(OUTPUTS, emptyList());
   }
 
-  private Map<String, Serializable> createOutput(ConsoleOutput co) {
+  private Map<String, Serializable> createOutput(boolean isError, String text) {
     Map<String, Serializable> outputs = new HashMap<>();
     outputs.put(OUTPUT_TYPE, STREAM);
-    outputs.put(NAME, co.isError() ? STDERR : STDOUT);
-    outputs.put(TEXT, co.getText());
+    outputs.put(NAME, isError ? STDERR : STDOUT);
+    outputs.put(TEXT, text);
     return outputs;
   }
+
+  public void display(MIMEContainer mimeContainer) {
+    HashMap<String, Serializable> content = new HashMap<>();
+    content.put(mimeContainer.getMime().asString(), (Serializable) mimeContainer.getData());
+    display(content);
+  }
+
+  public void display(Widget widget) {
+    HashMap<String, Serializable> content = new HashMap<>();
+    HashMap<String, Serializable> vendor = new HashMap<>();
+    vendor.put(MODEL_ID, widget.getComm().getCommId());
+    content.put(APPLICATION_VND_JUPYTER_WIDGET_VIEW_JSON, vendor);
+    display(content);
+  }
+
+  private void display(HashMap<String, Serializable> content) {
+    List<Message> list = new ArrayList<>();
+    list.add(getComm().createUpdateMessage(MSG_ID, getComm().getParentMessage().getHeader().getId()));
+    list.add(getComm().createMessage(DISPLAY_DATA, Comm.Buffer.EMPTY, new Comm.Data(content)));
+    list.add(getComm().createUpdateMessage(MSG_ID, ""));
+    getComm().publish(list);
+  }
+
 }

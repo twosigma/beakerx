@@ -155,7 +155,7 @@ public class SimpleEvaluationObjectTest {
     //given
     BeakerOutputHandler handler = seo.getStdOutputHandler();
     //when
-    handler.write("test".getBytes(), 0, 2);
+    handler.write("test");
     //then
     Assertions.assertThat(observer.getObjectList().get(0)).isEqualTo(seo);
   }
@@ -165,7 +165,7 @@ public class SimpleEvaluationObjectTest {
     //given
     BeakerOutputHandler handler = seo.getStdOutputHandler();
     //when
-    handler.write('t');
+    handler.write("t");
     //then
     Assertions.assertThat(observer.getObjectList().get(0)).isEqualTo(seo);
   }
@@ -175,7 +175,7 @@ public class SimpleEvaluationObjectTest {
     //given
     BeakerOutputHandler handler = seo.getStdOutputHandler();
     //when
-    handler.write("test".getBytes());
+    handler.write("test");
     //then
     Assertions.assertThat(observer.getObjectList().get(0)).isEqualTo(seo);
   }
@@ -185,7 +185,7 @@ public class SimpleEvaluationObjectTest {
     //given
     BeakerOutputHandler handler = seo.getStdErrorHandler();
     //when
-    handler.write("test".getBytes());
+    handler.write("test");
     //then
     Assertions.assertThat(seo.getConsoleOutput()).isNotEmpty();
   }
@@ -195,7 +195,7 @@ public class SimpleEvaluationObjectTest {
     //given
     BeakerOutputHandler handler = seo.getStdOutputHandler();
     //when
-    handler.write("test".getBytes());
+    handler.write("test");
     //then
     Assertions.assertThat(seo.getConsoleOutput()).isNotEmpty();
   }

@@ -16,8 +16,10 @@
 
 import * as $ from "jquery";
 import * as _ from "underscore";
+
 import { Widget } from "@phosphor/widgets";
 import { MessageLoop } from "@phosphor/messaging";
+
 import DefaultOptionsWidgetInterface from "./DefaultOptionsWidgetInterface";
 import HeapGBValidator from "../../Utils/HeapGBValidator";
 import { Messages } from "../../Messages";

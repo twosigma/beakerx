@@ -16,8 +16,10 @@
 
 import * as $ from "jquery";
 import * as _ from "underscore";
+
 import { Widget } from "@phosphor/widgets";
 import { MessageLoop, Message } from "@phosphor/messaging";
+
 import OtherOptionsWidgetInterface from "./OtherOptionsWidgetInterface";
 import { IOtherJVMOptions } from "../../Types/IJVMOptions";
 import { Messages } from "../../Messages";
@@ -28,11 +30,6 @@ export default class OtherOptionsWidget extends Widget implements OtherOptionsWi
   public readonly PANEL_SELECTOR = '#other_property';
 
   public readonly HTML_ELEMENT_TEMPLATE = `
-<style>
-#other_property .form-control {
-    margin-right: 10px;
-}
-</style>
 <fieldset>
   <div class="panel panel-default">
     <div class="panel-heading">
@@ -113,6 +110,7 @@ export default class OtherOptionsWidget extends Widget implements OtherOptionsWi
     element.appendTo(this.$node.find(this.PANEL_SELECTOR))
 
     MessageLoop.sendMessage(this, new Private.ElementAddedMessage(element));
+    MessageLoop.sendMessage(this.parent, new Messages.SizeChangedMessage());
   }
 
   public processMessage(msg: Message): void {
@@ -150,6 +148,7 @@ export default class OtherOptionsWidget extends Widget implements OtherOptionsWi
     let el: JQuery<HTMLElement> = evt.data.el;
     el.remove();
     MessageLoop.sendMessage(this, new Private.ElementRemovedMessage(el));
+    MessageLoop.sendMessage(this.parent, new Messages.SizeChangedMessage());
   }
 
   private inputChangedHandler(evt): void {

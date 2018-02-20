@@ -15,12 +15,15 @@
  */
 
 import * as $ from "jquery";
+
 import { Widget } from "@phosphor/widgets";
 import { MessageLoop } from "@phosphor/messaging";
 
 import UIOptionsWidgetInterface from "./UIOptionsWidgetInterface";
 import IUIOptions from "../../Types/IUIOptions";
-import {Messages} from "../../Messages";
+import { Messages } from "../../Messages";
+import OptionsWidget from "../OptionsWidget";
+import DOMUtils from "../../Utils/DOMUtils";
 
 export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface {
 
@@ -31,11 +34,6 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
   public readonly AUTO_SAVE_SELECTOR = '#auto_save';
 
   public readonly HTML_ELEMENT_TEMPLATE = `
-<style>
-  #ui_options {
-    margin: 0 16px;
-  }
-</style>
 <fieldset id="ui_options">
   <legend>UI Options:</legend>
   <div class="form-group">
@@ -70,6 +68,11 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
   constructor() {
     super();
 
+    this.addClass('bx-ui-options-widget');
+
+    this.title.label = 'UI Options';
+    this.title.closable = false;
+
     $(this.HTML_ELEMENT_TEMPLATE).appendTo(this.node);
 
     this.$node
@@ -93,11 +96,23 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
     this.setAutoSave(options.auto_save);
   }
 
+  protected onActivateRequest(): void {
+    this._updateSize();
+  }
+
+  private _updateSize(): void {
+    let h = DOMUtils.getRealElementHeight(this.$node.find('#ui_options').get(0));
+
+    $(this.node).height(h);
+    $(this.parent.node).height(h);
+    (this.parent.parent as OptionsWidget).updateDimensions();
+  }
+
   private optionsChangedHandler(evt): void {
     this._options[evt.currentTarget.id] = evt.currentTarget.checked;
 
     MessageLoop.sendMessage(
-      this.parent,
+      this.parent!.parent,
       new Messages.UIOptionsChangedMessage(this._options)
     );
   }

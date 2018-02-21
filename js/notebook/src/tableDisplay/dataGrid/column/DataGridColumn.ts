@@ -283,6 +283,22 @@ export default class DataGridColumn {
     this.sort(SORT_ORDER.DESC);
   }
 
+  getValueResolver(): Function {
+    if(this.state.dataType === ALL_TYPES.datetime || this.state.dataType === ALL_TYPES.time) {
+      return this.dateValueResolver;
+    }
+
+    return this.defaultValueResolver;
+  }
+
+  private dateValueResolver(value) {
+    return value.timestamp;
+  }
+
+  private defaultValueResolver(value) {
+    return value;
+  }
+
   private onColumnsChanged(sender: ColumnManager, args: IBkoColumnsChangedArgs) {
     if (args.type !== COLUMN_CHANGED_TYPES.columnSort) {
       return;
@@ -310,7 +326,17 @@ export default class DataGridColumn {
   }
 
   private addMinMaxValues() {
-    let minMax = minmax(this.valuesIterator.clone(), (a:number, b:number) => a - b);
+    let valueResolver = this.getValueResolver();
+    let minMax = minmax(this.valuesIterator.clone(), (a:any, b:any) => {
+      let value1 = valueResolver(a);
+      let value2 = valueResolver(b);
+
+      if (value1 === value2) {
+        return 0;
+      }
+
+      return value1 < value2 ? -1 : 1;
+    });
 
     this.minValue = minMax ? minMax[0] : null;
     this.maxValue = minMax ? minMax[1] : null;

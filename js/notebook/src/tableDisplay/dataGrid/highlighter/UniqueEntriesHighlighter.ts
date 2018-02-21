@@ -49,8 +49,9 @@ export default class UniqueEntriesHighlighter extends Highlighter {
   }
 
   generateUniqueColors() {
+    let valueResolver = this.column.getValueResolver();
     each(this.uniqueValues, (value, index) => {
-      this.uniqueColors[value] = this.generateColor(index, this.uniqueValues.length);
+      this.uniqueColors[valueResolver(value)] = this.generateColor(index, this.uniqueValues.length);
     });
   }
 }

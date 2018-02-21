@@ -28,7 +28,7 @@ export default class ThreeColorHeatmapHighlighter extends HeatmapHighlighter {
       throw new Error('Min and Max values are not set');
     }
 
-    this.state.midVal = this.state.midVal || (this.state.minVal + this.state.maxVal / 2);
+    this.state.midVal = column.getValueResolver()(this.state.midVal || (this.state.minVal + this.state.maxVal / 2));
     this.state.midColor = formatColor(state.midColor);
 
     this.colorScale = d3scale.scaleLinear()

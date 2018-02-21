@@ -32,7 +32,7 @@ describe('HeatmapHighlighter', () => {
     dataGrid.columnManager
   );
 
-  let heatmapHighlighter = new HeatmapHighlighter(
+  const heatmapHighlighter = new HeatmapHighlighter(
     column,
     highlighterStateMock
   );

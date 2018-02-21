@@ -14,16 +14,14 @@
  *  limitations under the License.
  */
 
-import { expect, assert } from 'chai';
-import { BeakerxDataGrid } from "../../../../../src/tableDisplay/dataGrid/BeakerxDataGrid";
-import DataGridColumn, { COLUMN_TYPES } from '../../../../../src/tableDisplay/dataGrid/column/DataGridColumn';
-import ColumnMenu from "../../../../../src/tableDisplay/dataGrid/headerMenu/ColumnMenu";
-import IndexMenu from "../../../../../src/tableDisplay/dataGrid/headerMenu/IndexMenu";
+import { expect } from 'chai';
+import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import DataGridColumn, { COLUMN_TYPES } from '@beakerx/tableDisplay/dataGrid/column/DataGridColumn';
+import ColumnMenu from "@beakerx/tableDisplay/dataGrid/headerMenu/ColumnMenu";
+import IndexMenu from "@beakerx/tableDisplay/dataGrid/headerMenu/IndexMenu";
 import modelStateMock from "../mock/modelStateMock";
-import ColumnManager from "@beakerx/tableDisplay/dataGrid/column/ColumnManager";
 
 declare var require: Function;
-
 
 describe('DataGridColumn', () => {
   const dataGrid = new BeakerxDataGrid({}, modelStateMock);

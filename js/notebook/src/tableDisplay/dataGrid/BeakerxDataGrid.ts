@@ -119,7 +119,7 @@ export class BeakerxDataGrid extends DataGrid {
 
       if (column) {
         return {
-          column: this.model.columnManager.indexResolver.resolveIndex(column.index, COLUMN_TYPES.index),
+          column: column.index,
           row: 0,
           delta: column.delta,
           type: COLUMN_TYPES.index,
@@ -144,7 +144,7 @@ export class BeakerxDataGrid extends DataGrid {
 
     if (column) {
       return {
-        column: this.model.columnManager.indexResolver.resolveIndex(column.index, columnType),
+        column: column.index,
         delta: column.delta,
         row: row ? row.index : 0,
         type: columnType,
@@ -160,7 +160,7 @@ export class BeakerxDataGrid extends DataGrid {
     let x = event.clientX - rect.left;
     let y = event.clientY - rect.top;
 
-    return x < this.bodyWidth && y < this.headerHeight;
+    return x < (this.bodyWidth + this.rowHeaderSections.totalSize) && y < this.headerHeight;
   }
 
   private init(modelState: IDataModelState) {

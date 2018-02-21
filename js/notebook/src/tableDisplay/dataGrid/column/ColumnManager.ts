@@ -45,6 +45,13 @@ export default class ColumnManager {
   columns: IColumns = {};
   columnsChanged = new Signal<this, IBkoColumnsChangedArgs>(this);
 
+  defaultColumnState: IDataGridModelColumnState = {
+    names: [],
+    types: [],
+    visibility: [],
+    order: []
+  };
+
   constructor(modelState: IDataModelState, dataGrid: BeakerxDataGrid) {
     this.dataGrid = dataGrid;
     this.modelState = modelState;
@@ -62,8 +69,8 @@ export default class ColumnManager {
   }
 
   addColumnsState(state) {
-    let bodyColumnsState: IDataGridModelColumnState = { names: [], types: [], visibility: [] };
-    let indexColumnsState: IDataGridModelColumnState = { names: [], types: [], visibility: [] };
+    let bodyColumnsState: IDataGridModelColumnState = { ...this.defaultColumnState };
+    let indexColumnsState: IDataGridModelColumnState = { ...this.defaultColumnState };
 
     this.columnsState = {};
     this.columnsState[COLUMN_TYPES.body] = bodyColumnsState;
@@ -87,6 +94,11 @@ export default class ColumnManager {
       this.columnsState[COLUMN_TYPES.body].names.map((name) => state.columnsVisible[name] || true);
     this.columnsState[COLUMN_TYPES.index].visibility =
       this.columnsState[COLUMN_TYPES.index].names.map((name) => state.columnsVisible[name] || true);
+
+    this.columnsState[COLUMN_TYPES.body].order =
+      this.columnsState[COLUMN_TYPES.body].names.map((name, index) => index);
+    this.columnsState[COLUMN_TYPES.index].order =
+      this.columnsState[COLUMN_TYPES.index].names.map((name, index) => index);
   }
 
   addColumns() {
@@ -154,6 +166,7 @@ export default class ColumnManager {
 
     if (endCell.type !== COLUMN_TYPES.index) {
       result = this.columns[COLUMN_TYPES.body]
+        .map(column => this.columns[column.type][column.getResolvedIndex()])
         .filter(column => column.state.visible)
         .slice(startCell.column, endCell.column + 1);
     }
@@ -166,10 +179,7 @@ export default class ColumnManager {
   }
 
   showAllColumns() {
-    this.columns[COLUMN_TYPES.body].forEach((column) => {
-      column.setState({ visible: true });
-    });
-    this.dataGrid.model.reset();
+    this.columns[COLUMN_TYPES.body].forEach((column) => column.show());
   }
 
   resetColumnsAlignment() {
@@ -179,8 +189,13 @@ export default class ColumnManager {
     this.dataGrid.model.reset();
   }
 
-  moveColumn(column, destination) {
+  moveColumn(column: DataGridColumn, destination: number) {
+    const lastOrder = this.columnsState[column.type].order.indexOf(column.index);
 
+    this.columnsState[column.type].order.splice(lastOrder, 1);
+    this.columnsState[column.type].order.splice(destination, 0, column.index);
+    this.indexResolver.mapIndexes(column.type, this.columnsState[column.type]);
+    this.dataGrid.model.reset();
   }
 
   private showFilterInputs(useSearch: boolean, column?: DataGridColumn) {

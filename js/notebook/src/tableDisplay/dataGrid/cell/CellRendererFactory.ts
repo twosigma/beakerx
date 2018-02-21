@@ -56,6 +56,8 @@ export class CellRendererFactory {
 
         return DataGridCell.isHeaderCell(config) ? config.value : column.formatFn(config);
       },
+      font: 'normal 13px Lato, Helvetica, sans-serif',
+      textColor: config => config.region === 'column-header' || config.region === "corner-header" ? '#515A5A' : '#000000',
     });
   }
 }

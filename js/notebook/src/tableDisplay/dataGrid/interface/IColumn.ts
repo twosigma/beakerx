@@ -43,7 +43,7 @@ export interface IColumns {
 export interface IColumnState {
   dataType: ALL_TYPES,
   displayType: ALL_TYPES|string,
-  triggerShown: boolean,
+  keepTrigger: boolean,
   horizontalAlignment: TextRenderer.HorizontalAlignment,
   formatForTimes: any,
   visible: boolean,

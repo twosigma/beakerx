@@ -100,18 +100,13 @@ export function createColumnMenuItems(column: DataGridColumn): MenuItem[] {
       action: (column) => {}
     },
     {
-      title: 'Fix Right',
-      isChecked: (column) => {},
-      action: (column) => {}
-    },
-    {
       title: 'Move column to front',
       separator: true,
-      action: (column) => {}
+      action: (column) => column.move(0)
     },
     {
       title: 'Move column to end',
-      action: (column) => {}
+      action: (column) => column.move(column.columnManager.columns[column.type].length -1 || 0)
     },
     {
       title: 'Reset formatting',

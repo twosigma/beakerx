@@ -78,7 +78,7 @@ export default abstract class HeaderMenu implements MenuInterface {
   }
 
   hideTrigger() {
-    if (this.column.state.sortOrder !== SORT_ORDER.NO_SORT && this.column.state.visible) {
+    if (this.column.state.sortOrder !== SORT_ORDER.NO_SORT && this.column.state.visible || this.column.state.keepTrigger) {
       return;
     }
 
@@ -87,6 +87,7 @@ export default abstract class HeaderMenu implements MenuInterface {
 
   attachTriggerToMenu() {
     this.menu.trigger = this.triggerNode;
+    this.column.state.keepTrigger && this.showTrigger();
   }
 
   open(submenuIndex?: number): void {

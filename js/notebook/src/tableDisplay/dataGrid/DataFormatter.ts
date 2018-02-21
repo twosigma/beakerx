@@ -23,7 +23,7 @@ import {
 import { DataGridHelpers } from './dataGridHelpers';
 import { TIME_UNIT_FORMATS } from '../consts';
 import {CellRenderer} from "@phosphor/datagrid";
-import DataGridColumn, { IColumnState } from "./column/DataGridColumn";
+import {IColumnState} from "./interface/IColumn";
 
 const bkUtils = require('../../shared/bkUtils');
 

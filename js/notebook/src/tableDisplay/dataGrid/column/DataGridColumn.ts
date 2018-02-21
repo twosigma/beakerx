@@ -90,7 +90,7 @@ export default class DataGridColumn {
     this.state = {
       dataType,
       displayType,
-      triggerShown: false,
+      keepTrigger: this.type === COLUMN_TYPES.index,
       horizontalAlignment: this.getInitialAlignment(dataType),
       formatForTimes: {},
       visible: true,
@@ -133,6 +133,7 @@ export default class DataGridColumn {
     };
 
     this.setState({ visible: false });
+    this.menu.hideTrigger();
     this.dataGrid.model.emitChanged(args);
     this.columnManager.columnsChanged.emit({
       type: COLUMN_CHANGED_TYPES.columnVisible,
@@ -218,20 +219,20 @@ export default class DataGridColumn {
     this.dataGrid.headerCellHovered.connect(this.handleHeaderCellHovered);
   }
 
-  handleHeaderCellHovered(sender: BeakerxDataGrid, data: ICellData|null) {
-    if (!data || data.column !== this.index || data.type !== this.type) {
-      this.menu.hideTrigger();
-      this.state.triggerShown = false;
-
+  handleHeaderCellHovered(sender: BeakerxDataGrid, data: ICellData) {
+    if(!data) {
       return;
     }
 
-    if (this.state.triggerShown) {
+    const column = this.columnManager.indexResolver.resolveIndex(data.column, data.type);
+
+    if (column !== this.index || data.type !== this.type) {
+      this.menu.hideTrigger();
+
       return;
     }
 
     this.menu.showTrigger(data.offset);
-    this.state.triggerShown = true;
   }
 
   getInitialAlignment(dataType) {
@@ -294,6 +295,14 @@ export default class DataGridColumn {
     }
 
     return this.defaultValueResolver;
+  }
+
+  move(destination: number) {
+    this.columnManager.moveColumn(this, destination);
+  }
+
+  getResolvedIndex() {
+    return this.columnManager.indexResolver.resolveIndex(this.index, this.type);
   }
 
   private dateValueResolver(value) {

@@ -88,29 +88,14 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
   },
 
   initTableDisplay: function(data) {
-    this._currentScope = new TableScope('wrap_'+this.model.model_id);
-    var tmpl = this._currentScope.buildTemplate();
-    var tmplElement = $(tmpl);
-
-    tmplElement.appendTo(this.$el);
-
-    this._currentScope.setWidgetModel(this.model);
-    this._currentScope.setModelData(data);
-    this._currentScope.setElement(tmplElement.children('.dtcontainer'));
-    this._currentScope.enableJupyterKeyHandler();
-    this._currentScope.run();
-    this._currentScope.initColumLimitModal();
-    this._currentScope.setWidgetView(this);
-
-    // For testing keep all tables rendered
-    var grid = new DataGridScope({
+    this._currentScope = new DataGridScope({
       element: this.el,
       data: data,
       widgetModel: this.model,
       widgetView: this
     });
 
-    grid.render();
+    this._currentScope.render();
   },
 
   showWarning: function(data) {

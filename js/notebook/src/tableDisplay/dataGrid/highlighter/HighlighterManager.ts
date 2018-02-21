@@ -115,7 +115,7 @@ export default class HighlighterManager {
   }
 
   getCellBackground(config: CellRenderer.ICellConfig): string {
-    let background = DEFAULT_CELL_BACKGROUND;
+    let background = '';
     let column = this.dataGrid.getColumn(config);
 
     each(

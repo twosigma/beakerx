@@ -39,6 +39,24 @@ export function rgbToHex(r, g, b) {
   return formatColor(bkUtils.rgbaToHex(r, g, b));
 }
 
+// Darken function for color in 'rgb(r, g, b)' format
+export function darken(color: string, factor = 0.8): string {
+  const match = color.match(/\((.*)\)/);
+
+  if (!match) {
+    return color;
+  }
+
+  const rgb: string[] = match[1].split(', ');
+  const rgbArray = [
+    Math.ceil(parseInt(rgb[0]) * factor),
+    Math.ceil(parseInt(rgb[1]) * factor),
+    Math.ceil(parseInt(rgb[2]) * factor)
+  ];
+
+  return rgbToHex(rgbArray[0],rgbArray[1],rgbArray[2]);
+}
+
 export function getDefaultColor(color) {
   return DEFAULT_COLORS[bkHelper.getTheme()][color];
 }

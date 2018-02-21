@@ -18,6 +18,7 @@ import { DEFAULT_ALIGNMENT } from "../column/columnAlignment";
 import { CellRenderer, TextRenderer } from "@phosphor/datagrid";
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
 import DataGridCell from "./DataGridCell";
+import { darken } from "../style/dataGridStyle";
 
 export const DEFAULT_CELL_BACKGROUND = '';
 
@@ -37,7 +38,13 @@ export class CellRendererFactory {
           return DEFAULT_CELL_BACKGROUND;
         }
 
-        return self.dataGrid.highlighterManager.getCellBackground(config);
+        let selectionColor = self.dataGrid.cellSelectionManager.getBackgroundColor(config);
+        let highlighterColor = self.dataGrid.highlighterManager.getCellBackground(config);
+
+        return selectionColor && highlighterColor && darken(highlighterColor) ||
+          highlighterColor ||
+          selectionColor ||
+          DEFAULT_CELL_BACKGROUND;
       },
       horizontalAlignment: (config: CellRenderer.ICellConfig) => {
         let column = self.dataGrid.getColumn(config);

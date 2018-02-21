@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -27,6 +27,9 @@ import IHihglighterState from "./interface/IHighlighterState";
 import { DEFAULT_PAGE_LENGTH } from "../consts";
 import ColumnManager from "./column/ColumnManager";
 import RowManager from "./row/RowManager";
+import CellSelectionManager from "./cell/CellSelectionManager";
+import {SectionList} from "@phosphor/datagrid/lib/sectionlist";
+import CellManager from "./cell/CellManager";
 
 export class BeakerxDataGrid extends DataGrid {
   columnSections: any;
@@ -38,6 +41,8 @@ export class BeakerxDataGrid extends DataGrid {
   highlighterManager: HighlighterManager;
   columnManager: ColumnManager;
   rowManager: RowManager;
+  cellSelectionManager: CellSelectionManager;
+  cellManager: CellManager;
   focused: boolean;
 
   headerCellHovered = new Signal<this, ICellData|null>(this);
@@ -92,9 +97,77 @@ export class BeakerxDataGrid extends DataGrid {
     return this.rowHeaderSections.totalSize + this.columnSections.sectionOffset(index);
   }
 
+  getCellData(clientX: number, clientY: number): ICellData|null {
+    if (!this.viewport) {
+      return null;
+    }
+
+    let column: { index: number, delta: number } | null = null;
+    let rect = this.viewport.node.getBoundingClientRect();
+    let x = clientX - rect.left;
+    let y = clientY - rect.top;
+
+    // Test for a match in the corner header first.
+    if (x <= this.headerWidth && y <= this.headerHeight) {
+      if (y <= this.headerHeight) {
+        column = this.findSectionIndex(this.columnHeaderSections, x);
+      }
+
+      if (!column && x <= this.headerWidth) {
+        column = this.findSectionIndex(this.rowHeaderSections, y);
+      }
+
+      if (column) {
+        return {
+          column: this.model.columnManager.indexResolver.resolveIndex(column.index, COLUMN_TYPES.index),
+          row: 0,
+          delta: column.delta,
+          type: COLUMN_TYPES.index,
+          offset: this.getColumnOffset(column.index, COLUMN_TYPES.index)
+        };
+      }
+
+      return null;
+    }
+
+    let section = this.columnSections;
+    let columnType = COLUMN_TYPES.body;
+    let pos = x + this.scrollX - this.headerWidth;
+    if (x <= this.rowHeaderSections.sectionSize()) {
+      section = this.rowHeaderSections;
+      columnType = COLUMN_TYPES.index;
+      pos += this.headerWidth;
+    }
+
+    let row: { index: number, delta: number } | null = this.findHoveredRowIndex(y);
+    column = this.findSectionIndex(section, pos);
+
+    if (column) {
+      return {
+        column: this.model.columnManager.indexResolver.resolveIndex(column.index, columnType),
+        delta: column.delta,
+        row: row ? row.index : 0,
+        type: columnType,
+        offset: this.getColumnOffset(column.index, columnType)
+      };
+    }
+
+    return null;
+  }
+
+  isOverHeader(event: MouseEvent) {
+    let rect = this.viewport.node.getBoundingClientRect();
+    let x = event.clientX - rect.left;
+    let y = event.clientY - rect.top;
+
+    return x < this.bodyWidth && y < this.headerHeight;
+  }
+
   private init(modelState: IDataModelState) {
     this.columnManager = new ColumnManager(modelState, this);
     this.rowManager = new RowManager(modelState.values, modelState.hasIndex, this.columnManager);
+    this.cellSelectionManager = new CellSelectionManager(this);
+    this.cellManager = new CellManager(this);
     this.model = new BeakerxDataGridModel(modelState, this.columnManager, this.rowManager);
     this.focused = false;
 
@@ -137,7 +210,11 @@ export class BeakerxDataGrid extends DataGrid {
 
   //@todo debounce it
   private handleHeaderCellHover(event: MouseEvent): void {
-    const data = this.getHoveredCellData(event.clientX, event.clientY);
+    if (!this.isOverHeader(event)) {
+      return;
+    }
+
+    const data = this.getCellData(event.clientX, event.clientY);
 
     this.headerCellHovered.emit(data);
   }
@@ -163,80 +240,28 @@ export class BeakerxDataGrid extends DataGrid {
   }
 
   private handleHeaderClick(event: MouseEvent): void {
-    const data = this.getHoveredCellData(event.clientX, event.clientY);
+    if (!this.isOverHeader(event)) {
+      return;
+    }
+
+    const data = this.getCellData(event.clientX, event.clientY);
 
     if (!data) {
       return;
     }
 
-    const column = this.columnManager.columns[data.type][data.index];
+    const column = this.columnManager.columns[data.type][data.column];
     column.toggleSort();
   }
 
-  private getHoveredCellData(clientX: number, clientY: number): ICellData|null {
-    if (!this.viewport) {
-      return null;
-    }
+  private findHoveredRowIndex(y: number) {
+    // Convert the position into unscrolled coordinates.
+    let pos = y + this.scrollY - this.headerHeight;
 
-    let rect = this.viewport.node.getBoundingClientRect();
-    let x = clientX - rect.left;
-    let y = clientY - rect.top;
-
-    // Bail early if the mouse is not over a grid header.
-    if (x >= this.headerWidth && y >= this.headerHeight) {
-      return null;
-    }
-
-    // Test for a match in the corner header first.
-    if (x <= this.headerWidth && y <= this.headerHeight) {
-      let data: { index: number, delta: number } | null = null;
-
-      if (y <= this.headerHeight) {
-        data = this.findHoveredCellIndex(this.columnHeaderSections, x);
-      }
-
-      if (!data && x <= this.headerWidth) {
-        data = this.findHoveredCellIndex(this.rowHeaderSections, y);
-      }
-
-      if (data) {
-        let index = this.model.columnManager.indexResolver.resolveIndex(data.index, COLUMN_TYPES.index);
-
-        return {
-          ...data,
-          index,
-          type: COLUMN_TYPES.index,
-          offset: this.getColumnOffset(data.index, COLUMN_TYPES.index)
-        };
-      }
-
-      return null;
-    }
-
-    // Test for a match in the column header second.
-    if (y <= this.headerHeight) {
-      // Convert the position into unscrolled coordinates.
-      let pos = x + this.scrollX - this.headerWidth;
-      let data = this.findHoveredCellIndex(this.columnSections, pos);
-
-      if (data) {
-        let index = this.model.columnManager.indexResolver.resolveIndex(data.index, COLUMN_TYPES.body);
-
-        return {
-          ...data,
-          index,
-          type: COLUMN_TYPES.body,
-          offset: this.getColumnOffset(data.index, COLUMN_TYPES.body)
-        };
-      }
-
-      return null;
-    }
-
-    return null;
+    return this.findSectionIndex(this.rowSections, pos);
   }
 
-  private findHoveredCellIndex(list: any, cursorPosition: number): { index: number, delta: number } | null {
+  private findSectionIndex(list: SectionList, cursorPosition: number): { index: number, delta: number } | null {
     // Bail early if the list is empty or the position is invalid.
     if (list.sectionCount === 0 || cursorPosition < 0) {
       return null;

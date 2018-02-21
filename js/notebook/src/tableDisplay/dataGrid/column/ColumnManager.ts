@@ -23,6 +23,7 @@ import { BeakerxDataGrid } from "../BeakerxDataGrid";
 import { Signal } from '@phosphor/signaling';
 import ColumnIndexResolver from "./ColumnIndexResolver";
 import IDataModelState from "../interface/IDataGridModelState";
+import {ICellData} from "../interface/ICell";
 
 export interface IBkoColumnsChangedArgs {
   type: COLUMN_CHANGED_TYPES,
@@ -145,6 +146,29 @@ export default class ColumnManager {
 
   showSearch(column?: DataGridColumn) {
     this.showFilterInputs(true, column);
+  }
+
+  takeColumnsByCells(startCell: ICellData, endCell: ICellData) {
+    let result: any[] = [];
+
+    if (endCell.type !== COLUMN_TYPES.index) {
+      result = this.columns[COLUMN_TYPES.body]
+        .filter(column => column.state.visible)
+        .slice(startCell.column, endCell.column + 1);
+    }
+
+    if (startCell.type === COLUMN_TYPES.index) {
+      result.unshift(this.columns[COLUMN_TYPES.index][0]);
+    }
+
+    return result;
+  }
+
+  showAllColumns() {
+    this.columns[COLUMN_TYPES.body].forEach((column) => {
+      column.setState({ visible: true });
+    });
+    this.dataGrid.model.reset();
   }
 
   private showFilterInputs(useSearch: boolean, column?: DataGridColumn) {

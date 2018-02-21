@@ -20,8 +20,8 @@ import Highlighter from "./Highlighter";
 import {CellRenderer} from "@phosphor/datagrid";
 
 export default class SortHighlighter extends Highlighter {
-  oddRowColor = '#f9f9f9';
-  evenRowColor = '#f1f1f1';
+  oddRowColor = 'rgb(249, 249, 249)';
+  evenRowColor = 'rgb(241, 241, 241)';
 
   constructor(column: DataGridColumn, state: IHihglighterState) {
     super(column, state);

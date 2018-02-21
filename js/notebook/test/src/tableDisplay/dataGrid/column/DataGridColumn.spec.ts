@@ -51,7 +51,7 @@ describe('DataGridColumn', () => {
 
     it('should change the trigger state', () => {
       bodyDataGridColumn.handleHeaderCellHovered(
-        dataGrid, { type: COLUMN_TYPES.body, index: 0, delta: 0, offset: 0 }
+        dataGrid, { type: COLUMN_TYPES.body, column: 0, row: 0, delta: 0, offset: 0 }
       );
       expect(bodyDataGridColumn['state'].triggerShown).to.equal(true);
     });
@@ -79,7 +79,7 @@ describe('DataGridColumn', () => {
 
     it('should change the trigger state', () => {
       indexDataGridColumn.handleHeaderCellHovered(
-        dataGrid, { type: COLUMN_TYPES.index, index: 0, delta: 0, offset: 0 }
+        dataGrid, { type: COLUMN_TYPES.index, column: 0, row: 0, delta: 0, offset: 0 }
       );
       expect(indexDataGridColumn['state'].triggerShown).to.equal(true);
     });

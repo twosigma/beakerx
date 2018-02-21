@@ -46,11 +46,7 @@ export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
   return [
     {
       title: 'Show All Columns',
-      action: () => {
-        dataGrid.columnManager.columns[COLUMN_TYPES.body].forEach((column) => {
-          column.show();
-        });
-      }
+      action: () => dataGrid.columnManager.showAllColumns()
     },
     {
       title: 'Show Column',
@@ -73,28 +69,20 @@ export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
     },
     {
       title: 'Clear selection',
-      action: () => {
-        //@todo
-      }
+      action: () => dataGrid.cellSelectionManager.clear()
     },
     {
       title: 'Copy to Clipboard',
       separator: true,
-      action: () => {
-        //@todo
-      }
+      action: () => dataGrid.cellManager.copyToClipboard()
     },
     {
       title: 'Download All as CSV',
-      action: () => {
-        //@todo
-      }
+      action: () => dataGrid.cellManager.CSVDownload(false)
     },
     {
       title: 'Download Selected as CSV',
-      action: () => {
-        //@todo
-      }
+      action: () => dataGrid.cellManager.CSVDownload(true)
     },
     {
       title: 'Search for Substring',
@@ -119,6 +107,10 @@ export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
       separator: true,
       action: () => {
         dataGrid.highlighterManager.removeHighlighters();
+        dataGrid.cellSelectionManager.clear();
+        dataGrid.rowManager.resetSorting();
+        dataGrid.columnManager.resetFilters();
+        dataGrid.columnManager.showAllColumns();
       }
     }
   ]

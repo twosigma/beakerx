@@ -18,7 +18,8 @@ import { COLUMN_TYPES } from "../column/DataGridColumn";
 
 export interface ICellData {
   type: COLUMN_TYPES,
-  index: number,
+  column: number,
+  row: number,
   delta: number,
   offset: number
 }

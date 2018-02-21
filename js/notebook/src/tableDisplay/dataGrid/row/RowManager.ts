@@ -96,6 +96,12 @@ export default class RowManager {
     });
   }
 
+  resetSorting() {
+    if (this.sortedBy) {
+      this.sortedBy.sort(SORT_ORDER.NO_SORT);
+    }
+  }
+
   defaultValueResolver(row: DataGridRow, columnIndex: number) {
     return row.values[columnIndex];
   }
@@ -149,6 +155,10 @@ export default class RowManager {
       ));
       this.sortedBy && this.sortByColumn(this.sortedBy);
     } catch (e) {}
+  }
+
+  takeRows(start: number, end: number) {
+    return this.rows.slice(start, end);
   }
 
   createFilterExpression(): void {

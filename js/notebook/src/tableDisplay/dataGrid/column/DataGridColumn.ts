@@ -224,7 +224,7 @@ export default class DataGridColumn {
   }
 
   handleHeaderCellHovered(sender: BeakerxDataGrid, data: ICellData|null) {
-    if (!data || data.index !== this.index || data.type !== this.type) {
+    if (!data || data.column !== this.index || data.type !== this.type) {
       this.menu.hideTrigger();
       this.state.triggerShown = false;
 

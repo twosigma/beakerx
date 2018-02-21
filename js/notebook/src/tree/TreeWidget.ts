@@ -38,6 +38,12 @@ export default class TreeWidget extends Panel {
 
     this.id = 'beakerx-tree-widget';
 
+    if (this.options.isLab) {
+      this.addClass('isLab');
+    } else {
+      require("./styles/tree-notebook.css");
+    }
+
     this.title.label = 'BeakerX';
     this.title.closable = true;
 

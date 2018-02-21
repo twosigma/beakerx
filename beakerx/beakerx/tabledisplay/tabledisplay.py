@@ -296,6 +296,16 @@ class TableDisplay(BeakerxDOMWidget):
                 state = {'state': msg}
                 comm.send(data=state, buffers=[])
 
+    def updateCell(self, row, columnName, value):
+        row = self.chart.values[row]
+        col_index = self.chart.columnNames.index(columnName)
+        row[col_index] = value
+
+    def sendModel(self):
+        self.model = self.chart.transform()
+
+
+
     @property
     def values(self):
         return self.chart.values

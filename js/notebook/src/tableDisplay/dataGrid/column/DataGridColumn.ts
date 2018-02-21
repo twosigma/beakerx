@@ -17,7 +17,7 @@
 import ColumnMenu from "../headerMenu/ColumnMenu";
 import IndexMenu from "../headerMenu/IndexMenu";
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
-import { IColumnOptions} from "../interface/IColumn";
+import {IColumnOptions, IColumnState} from "../interface/IColumn";
 import { ICellData } from "../interface/ICell";
 import { getAlignmentByChar, getAlignmentByType } from "./columnAlignment";
 import { CellRenderer, DataModel, TextRenderer } from "@phosphor/datagrid";
@@ -36,17 +36,6 @@ export enum SORT_ORDER {
   ASC,
   DESC,
   NO_SORT
-}
-
-export interface IColumnState {
-  dataType: ALL_TYPES,
-  displayType: ALL_TYPES|string,
-  triggerShown: boolean,
-  horizontalAlignment: TextRenderer.HorizontalAlignment,
-  formatForTimes: any,
-  visible: boolean,
-  sortOrder: SORT_ORDER,
-  filter: string|null
 }
 
 export default class DataGridColumn {
@@ -211,6 +200,12 @@ export default class DataGridColumn {
     this.dataGrid.model.reset();
   }
 
+  resetFilter() {
+    this.setState({ filter: '' });
+    this.dataGrid.rowManager.filterRows();
+    this.dataGrid.model.reset();
+  }
+
   destroy() {
     this.menu.destroy();
   }
@@ -263,12 +258,22 @@ export default class DataGridColumn {
     this.setState({ horizontalAlignment });
   }
 
+  resetAlignment() {
+    this.setState({
+      horizontalAlignment: this.getInitialAlignment(this.state.dataType)
+    });
+  }
+
   getHighlighter(highlighterType: HIGHLIGHTER_TYPE) {
     return this.dataGrid.highlighterManager.getColumnHighlighters(this, highlighterType);
   }
 
   toggleHighlighter(highlighterType: HIGHLIGHTER_TYPE) {
     this.dataGrid.highlighterManager.toggleColumnHighlighter(this, highlighterType);
+  }
+
+  resetHighlighters() {
+    this.dataGrid.highlighterManager.removeColumnHighlighter(this);
   }
 
   sort(sortOrder: SORT_ORDER) {

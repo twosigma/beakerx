@@ -116,7 +116,11 @@ export function createColumnMenuItems(column: DataGridColumn): MenuItem[] {
     {
       title: 'Reset formatting',
       separator: true,
-      action: (column) => {}
+      action: (column) => {
+        column.resetHighlighters();
+        column.setInitialState();
+        column.resetFilter();
+      }
     }
   ];
 }

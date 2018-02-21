@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { BeakerxDataGridModel, IDataGridModelColumnState } from "../model/BeakerxDataGridModel";
+import { BeakerxDataGridModel } from "../model/BeakerxDataGridModel";
 import {COLUMN_TYPES, default as DataGridColumn, SORT_ORDER} from "./DataGridColumn";
 import { ITriggerOptions } from "../headerMenu/HeaderMenu";
 import { CellRenderer } from "@phosphor/datagrid";
@@ -22,8 +22,9 @@ import { chain, find } from '@phosphor/algorithm'
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
 import { Signal } from '@phosphor/signaling';
 import ColumnIndexResolver from "./ColumnIndexResolver";
-import IDataModelState from "../interface/IDataGridModelState";
+import IDataModelState, {IDataGridModelColumnState} from "../interface/IDataGridModelState";
 import {ICellData} from "../interface/ICell";
+import {IColumns, IColumnsState} from "../interface/IColumn";
 
 export interface IBkoColumnsChangedArgs {
   type: COLUMN_CHANGED_TYPES,
@@ -40,8 +41,8 @@ export default class ColumnManager {
   dataGrid: BeakerxDataGrid;
   indexResolver: ColumnIndexResolver;
   modelState: IDataModelState;
-  columnsState: {};
-  columns = {};
+  columnsState: IColumnsState;
+  columns: IColumns = {};
   columnsChanged = new Signal<this, IBkoColumnsChangedArgs>(this);
 
   constructor(modelState: IDataModelState, dataGrid: BeakerxDataGrid) {
@@ -169,6 +170,17 @@ export default class ColumnManager {
       column.setState({ visible: true });
     });
     this.dataGrid.model.reset();
+  }
+
+  resetColumnsAlignment() {
+    this.columns[COLUMN_TYPES.body].forEach((column) => {
+      column.resetAlignment();
+    });
+    this.dataGrid.model.reset();
+  }
+
+  moveColumn(column, destination) {
+
   }
 
   private showFilterInputs(useSearch: boolean, column?: DataGridColumn) {

@@ -67,7 +67,10 @@
 }
 
 .bx-banner-widget svg {
-  height: 35px;
+  width: 206px;
+  height: 59px;
+  margin: 0 15px 0 0;
+  transform: translateY(5px);
 }
 
 .bx-options-widget {

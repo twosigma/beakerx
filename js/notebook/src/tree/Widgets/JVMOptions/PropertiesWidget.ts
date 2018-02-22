@@ -88,6 +88,7 @@ export default class PropertiesWidget extends Widget {
   private clear() {
     this._elements = [];
     this.$node.find(this.PROPERTIES_PANEL_SELECTOR).empty();
+    MessageLoop.sendMessage(this.parent, new Messages.SizeChangedMessage());
   }
 
   private addPropertyButtonClickedHandler(evt) {

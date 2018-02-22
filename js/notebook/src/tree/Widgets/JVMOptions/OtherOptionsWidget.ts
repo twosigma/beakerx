@@ -64,12 +64,13 @@ export default class OtherOptionsWidget extends Widget implements OtherOptionsWi
   }
 
   private clear() {
+    this._options = [];
     this.$node.find(this.PANEL_SELECTOR).empty();
+    MessageLoop.sendMessage(this.parent, new Messages.SizeChangedMessage());
   }
 
   public onLoad(otherOptions: IOtherJVMOptions) {
     this.clear();
-    this._options = [];
     for (let option of otherOptions) {
       this.addFormElement(option);
     }

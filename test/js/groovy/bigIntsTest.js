@@ -15,12 +15,15 @@
  */
 
 var BeakerXPageObject = require('../beakerx.po.js');
+var TableHelperObject = require('../table.helper.js');
 var beakerxPO;
+var tableHelper;
 
-describe('big ints js', function () {
+describe('Large Integers in Tables ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
+    tableHelper = new TableHelperObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/groovy/BigIntsTest.ipynb');
   }, 2);
 
@@ -28,127 +31,29 @@ describe('big ints js', function () {
     beakerxPO.closeAndHaltNotebook();
   });
 
-  describe('64-bit Longs labels and values', function () {
+  var cellIndex;
 
-    it('Table has proper column labels', function () {
-      var tableColumnLabel;
-      var cellText;
-      var codeCell = beakerxPO.runCodeCellByIndex(0);
-      beakerxPO.kernelIdleIcon.waitForEnabled();
-
-      tableColumnLabel = beakerxPO.getTableColumnLabel(0, 0);
-      cellText = tableColumnLabel.getText();
-      expect(cellText).toMatch('time');
-
-      tableColumnLabel = beakerxPO.getTableColumnLabel(0, 1);
-      cellText = tableColumnLabel.getText();
-      expect(cellText).toMatch('next_time');
-
-      tableColumnLabel = beakerxPO.getTableColumnLabel(0, 2);
-      cellText = tableColumnLabel.getText();
-      expect(cellText).toMatch('temp');
-      });
-
-    it('Table has proper cell values', function () {
-      var tableCell;
-      var cellText;
-      tableCell = beakerxPO.getTableCell(0, 0, 1);
-      cellText = tableCell.getText();
-      expect(cellText).toMatch('1234567890000007');
-
-      tableCell = beakerxPO.getTableCell(0, 0, 2);
-      cellText = tableCell.getText();
-      expect(cellText).toMatch('1234567890000077');
-
-      tableCell = beakerxPO.getTableCell(0, 0, 3);
-      cellText = tableCell.getText();
-      expect(cellText).toMatch('14.600');
-
-      tableCell = beakerxPO.getTableCell(0, 1, 1);
-      cellText = tableCell.getText();
-      expect(cellText).toMatch('1234567890000014');
-
-      tableCell = beakerxPO.getTableCell(0, 1, 2);
-      cellText = tableCell.getText();
-      expect(cellText).toMatch('2469135780000176');
-
-      tableCell = beakerxPO.getTableCell(0, 1, 3);
-      cellText = tableCell.getText();
-      expect(cellText).toMatch('18.100');
-
-      tableCell = beakerxPO.getTableCell(0, 2, 1);
-      cellText = tableCell.getText();
-      expect(cellText).toMatch('1234567890000021');
-
-      tableCell = beakerxPO.getTableCell(0, 2, 2);
-      cellText = tableCell.getText();
-      expect(cellText).toMatch('3703703670000297');
-
-      tableCell = beakerxPO.getTableCell(0, 2, 3);
-      cellText = tableCell.getText();
-      expect(cellText).toMatch('23.600');
+  describe('64-bit Longs ', function () {
+    it('Should display 64-bit Longs values ', function () {
+      cellIndex = 0;
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      tableHelper.dataTablesIsEnabled(dtContainer);
+      expect(tableHelper.getAllRowsOfTableBody(dtContainer).length).toEqual(3);
+      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 1).getText()).toEqual('1234567890000007');
+      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 2).getText()).toEqual('1234567890000077');
+      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 3).getText()).toMatch(/14.600/);
     });
   });
 
-  describe('BigNums (arbitrary precision) labels and values', function () {
-
-    it('Table has proper column labels', function () {
-      var tableColumnLabel;
-      var cellText;
-      beakerxPO.runCodeCellByIndex(1);
-      beakerxPO.kernelIdleIcon.waitForEnabled();
-
-      tableColumnLabel = beakerxPO.getTableColumnLabel(1, 0);
-      cellText = tableColumnLabel.getText();
-      expect(cellText).toMatch('time');
-
-      tableColumnLabel = beakerxPO.getTableColumnLabel(1, 1);
-      cellText = tableColumnLabel.getText();
-      expect(cellText).toMatch('next_time');
-
-      tableColumnLabel = beakerxPO.getTableColumnLabel(1, 2);
-      cellText = tableColumnLabel.getText();
-      expect(cellText).toMatch('temp');
-    });
-
-    it('Table has proper cell values', function () {
-      var tableCell;
-      var cellText;
-      tableCell = beakerxPO.getTableCell(1, 0, 1);
-      cellText = tableCell.getText();
-      expect(cellText).toMatch('1987654321000007');
-
-      tableCell = beakerxPO.getTableCell(1, 0, 2);
-      cellText = tableCell.getText();
-      expect(cellText).toMatch('1544407407417059829');
-
-      tableCell = beakerxPO.getTableCell(1, 0, 3);
-      cellText = tableCell.getText();
-      expect(cellText).toMatch('3.351');
-
-      tableCell = beakerxPO.getTableCell(1, 1, 1);
-      cellText = tableCell.getText();
-      expect(cellText).toMatch('1987654321000014');
-
-      tableCell = beakerxPO.getTableCell(1, 1, 2);
-      cellText = tableCell.getText();
-      expect(cellText).toMatch('1765037037048078144');
-
-      tableCell = beakerxPO.getTableCell(1, 1, 3);
-      cellText = tableCell.getText();
-      expect(cellText).toMatch('2.355');
-
-      tableCell = beakerxPO.getTableCell(1, 2, 1);
-      cellText = tableCell.getText();
-      expect(cellText).toMatch('1987654321000021');
-
-      tableCell = beakerxPO.getTableCell(1, 2, 2);
-      cellText = tableCell.getText();
-      expect(cellText).toMatch('1985666666679098901');
-
-      tableCell = beakerxPO.getTableCell(1, 2, 3);
-      cellText = tableCell.getText();
-      expect(cellText).toMatch('2.728');
+  describe('BigNums (arbitrary precision) ', function () {
+    it('Should display bignums values ', function () {
+      cellIndex += 1;
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      tableHelper.dataTablesIsEnabled(dtContainer);
+      expect(tableHelper.getAllRowsOfTableBody(dtContainer).length).toEqual(3);
+      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 1).getText()).toEqual('1987654321000007');
+      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 2).getText()).toEqual('1544407407417059829');
+      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 3).getText()).toMatch(/3.351/);
     });
   });
 

@@ -124,8 +124,8 @@ describe('Groovy base tests. ', function () {
       cellIndex += 1;
       var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
       tableHelper.dataTablesIsEnabled(dtContainer);
-      var tBody = tableHelper.getDataTableBody(dtContainer);
-      expect(tableHelper.getTableRow(tBody, 0).getText()).toMatch(/"text.plain":"5"/);
+      expect(tableHelper.getAllRowsOfTableBody(dtContainer)[0].getText())
+        .toMatch(/"text.plain":"5"/);
     });
   });
 

@@ -172,21 +172,19 @@ describe('Publish plot groovy notebook js', function () {
     it('Plot has Table', function () {
       cellIndex +=1 ;
       var dtContainer = beakerxPO.getDtContainerByIndex(cellIndex);
-      var tBody = tableHelper.getDataTableBody(dtContainer);
-      expect(tableHelper.getTableAllRows(tBody).length).toEqual(25);
-      expect(tableHelper.getTableBodyCell(tBody, 0, 1).getText()).toMatch(/8/);
-      expect(tableHelper.getTableBodyCell(tBody, 0, 2).getText()).toMatch(/8.2586/);
-      expect(tableHelper.getTableBodyCell(tBody, 0, 7).getText()).toMatch(/:\)/);
+      expect(tableHelper.getAllRowsOfTableBody(dtContainer).length).toEqual(25);
+      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 1).getText()).toMatch(/8/);
+      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 2).getText()).toMatch(/8.2586/);
+      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 7).getText()).toMatch(/:\)/);
     });
 
     it('Plot has Table with Highlighters', function () {
       cellIndex +=1 ;
       var dtContainer = beakerxPO.getDtContainerByIndex(cellIndex);
-      var tBody = tableHelper.getDataTableBody(dtContainer);
-      expect(tableHelper.getTableAllRows(tBody).length).toEqual(9);
-      var cell1_2 = tableHelper.getTableBodyCell(tBody, 0, 2);
-      var cell2_2 = tableHelper.getTableBodyCell(tBody, 1, 2);
-      var cell3_2 = tableHelper.getTableBodyCell(tBody, 2, 2);
+      expect(tableHelper.getAllRowsOfTableBody(dtContainer).length).toEqual(9);
+      var cell1_2 = tableHelper.getCellOfTableBody(dtContainer, 0, 2);
+      var cell2_2 = tableHelper.getCellOfTableBody(dtContainer, 1, 2);
+      var cell3_2 = tableHelper.getCellOfTableBody(dtContainer, 2, 2);
       expect(cell1_2.getText()).toMatch(/2.000/);
       expect(cell2_2.getText()).toMatch(/4.000/);
       expect(cell3_2.getText()).toMatch(/2.000/);

@@ -152,24 +152,6 @@ function BeakerXPageObject() {
     return codeCell.$('div.beaker-easyform-container');
   };
 
-  this.runCellToGetTableElement = function (index) {
-    this.kernelIdleIcon.waitForEnabled();
-    var codeCell = this.runCodeCellByIndex(index);
-    return codeCell.$('div.dataTables_scrollBody');
-  };
-
-  this.getTableColumnLabel = function (tableIndex, columnIndex) {
-    var table = $$("div.dataTables_scrollHead") [tableIndex];
-    var tableColumnLabels = table.$$("span.header-text");
-    return tableColumnLabels[columnIndex];
-  };
-
-  this.getTableCell = function (tableIndex, rowIndex, columnIndex) {
-    var table = $$("div.dataTables_scrollBody") [tableIndex];
-    var tableRows = table.$$("tbody tr");
-    var rowCells = tableRows[rowIndex].$$("td");
-    return rowCells[columnIndex];
-  };
 };
 
 module.exports = BeakerXPageObject;

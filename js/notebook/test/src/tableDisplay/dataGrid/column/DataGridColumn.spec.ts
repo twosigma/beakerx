@@ -43,15 +43,11 @@ describe('DataGridColumn', () => {
       expect(bodyDataGridColumn.menu).to.be.an.instanceof(ColumnMenu);
     });
 
-    it('should have the trigger state set to false', () => {
-      expect(bodyDataGridColumn['state'].triggerShown).to.equal(false);
-    });
-
     it('should change the trigger state', () => {
       bodyDataGridColumn.handleHeaderCellHovered(
         dataGrid, { type: COLUMN_TYPES.body, column: 0, row: 0, delta: 0, offset: 0 }
       );
-      expect(bodyDataGridColumn['state'].triggerShown).to.equal(true);
+      expect(bodyDataGridColumn.menu['triggerNode'].style.visibility).to.equal('visible');
     });
   });
 
@@ -71,15 +67,11 @@ describe('DataGridColumn', () => {
       expect(indexDataGridColumn.menu).to.be.an.instanceof(IndexMenu);
     });
 
-    it('should have the trigger state set to false', () => {
-      expect(indexDataGridColumn['state'].triggerShown).to.equal(false);
-    });
-
     it('should change the trigger state', () => {
       indexDataGridColumn.handleHeaderCellHovered(
         dataGrid, { type: COLUMN_TYPES.index, column: 0, row: 0, delta: 0, offset: 0 }
       );
-      expect(indexDataGridColumn['state'].triggerShown).to.equal(true);
+      expect(indexDataGridColumn.menu['triggerNode'].style.visibility).to.equal('visible');
     });
   });
 

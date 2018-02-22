@@ -17,7 +17,6 @@
 import { expect } from 'chai';
 import { createColumnMenuItems } from '@beakerx/tableDisplay/dataGrid/headerMenu/createColumnMenuItems';
 import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
-import ColumnMenu from "@beakerx/tableDisplay/dataGrid/headerMenu/ColumnMenu";
 import menuOptionsMock from "../mock/menuOptionsMock";
 import DataGridColumn, {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 import modelStateMock from "../mock/modelStateMock";
@@ -44,7 +43,7 @@ describe('createColumnMenuItems', () => {
     let formatMenuItems = createColumnMenuItems(column);
 
     expect(formatMenuItems).to.be.an.instanceof(Array);
-    expect(formatMenuItems).to.have.length(18);
+    expect(formatMenuItems).to.have.length(17);
   });
 
 });

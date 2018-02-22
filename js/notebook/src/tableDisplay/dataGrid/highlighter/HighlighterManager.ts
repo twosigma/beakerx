@@ -74,11 +74,13 @@ export default class HighlighterManager {
     index !== -1 && this.highlighters.splice(index, 1);
   }
 
-  getColumnHighlighters(column, highlighterType: HIGHLIGHTER_TYPE): Highlighter[] {
+  getColumnHighlighters(column, highlighterType?: HIGHLIGHTER_TYPE): Highlighter[] {
     return toArray(filter(
       iter(this.highlighters),
       (highlighter: Highlighter) => {
-        return highlighter.column === column && highlighter.state.type === highlighterType
+        return highlighterType
+          ? highlighter.column === column && highlighter.state.type === highlighterType
+          : highlighter.column === column;
       }
     ));
   }
@@ -93,7 +95,7 @@ export default class HighlighterManager {
     }, column));
   }
 
-  removeColumnHighlighter(column, highlighterType: HIGHLIGHTER_TYPE) {
+  removeColumnHighlighter(column, highlighterType?: HIGHLIGHTER_TYPE) {
     const highlighters = this.getColumnHighlighters(column, highlighterType);
 
     each(highlighters, this.unregisterHighlighter);
@@ -115,7 +117,7 @@ export default class HighlighterManager {
   }
 
   getCellBackground(config: CellRenderer.ICellConfig): string {
-    let background = '';
+    let background = DEFAULT_CELL_BACKGROUND;
     let column = this.dataGrid.getColumn(config);
 
     each(

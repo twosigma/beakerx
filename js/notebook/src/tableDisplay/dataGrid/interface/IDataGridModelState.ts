@@ -24,29 +24,36 @@ export default interface IDataModelState {
   alignmentForType?: {},
   cellHighlighters: IHihglighterState[],
   columnNames: string[],
-  columnOrder?: number[],
-  columnsFrozen?: {},
-  columnsFrozenRight?: {},
+  columnOrder?: number[], //@todo
+  columnsFrozen?: {}, //@todo
+  columnsFrozenRight?: {}, //@todo
   columnsVisible: {},
-  contextMenuItems?: object[],
-  contextMenuTags?: {},
-  dataFontSize?: number|null,
-  doubleClickTag?: string|null,
-  fontColor?: string[],
-  hasDoubleClickAction?: boolean,
+  contextMenuItems?: object[], //@todo
+  contextMenuTags?: {}, //@todo
+  dataFontSize?: number|null, //@todo
+  doubleClickTag?: string|null, //@todo
+  fontColor?: string[], //@todo
+  hasDoubleClickAction?: boolean, //@todo
   hasIndex: boolean,
-  headerFontSize?: number|null,
-  headersVertical?: boolean,
-  rendererForColumn?: {},
-  rendererForType?: {},
+  headerFontSize?: number|null, //@todo
+  headersVertical?: boolean, //@todo
+  rendererForColumn?: {}, //@todo
+  rendererForType?: {}, //@todo
   stringFormatForColumn: {},
   stringFormatForTimes?: string|null,
   stringFormatForType?: {},
-  subtype?: string,
+  subtype?: string, //@todo
   timeZone?: string,
-  tooManyRows?: boolean,
-  tooltips?: string[],
+  tooManyRows?: boolean, //@todo
+  tooltips?: string[], //@todo
   type?: string,
   types: string[],
   values: any,
+}
+
+export interface IDataGridModelColumnState {
+  names: string[],
+  types: string[],
+  visibility: boolean[],
+  order: number[]
 }

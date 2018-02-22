@@ -17,19 +17,13 @@
 import { DataModel } from "@phosphor/datagrid";
 import { ALL_TYPES } from '../dataTypes';
 import { DataFormatter } from '../DataFormatter';
-import {COLUMN_TYPES, default as DataGridColumn, SORT_ORDER} from "../column/DataGridColumn";
+import {COLUMN_TYPES, default as DataGridColumn} from "../column/DataGridColumn";
 import IDataModelState from '../interface/IDataGridModelState';
 import { MapIterator, iter } from '@phosphor/algorithm';
 import { IColumn } from "../interface/IColumn";
 import ColumnManager, {COLUMN_CHANGED_TYPES, IBkoColumnsChangedArgs} from "../column/ColumnManager";
 import RowManager from "../row/RowManager";
 import DataGridRow from "../row/DataGridRow";
-
-export interface IDataGridModelColumnState {
-  names: string[],
-  types: string[],
-  visibility: boolean[]
-}
 
 export class BeakerxDataGridModel extends DataModel {
   dataFormatter: DataFormatter;

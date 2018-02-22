@@ -17,7 +17,7 @@
 import ColumnMenu from "../headerMenu/ColumnMenu";
 import IndexMenu from "../headerMenu/IndexMenu";
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
-import { IColumnOptions} from "../interface/IColumn";
+import {IColumnOptions, IColumnState} from "../interface/IColumn";
 import { ICellData } from "../interface/ICell";
 import { getAlignmentByChar, getAlignmentByType } from "./columnAlignment";
 import { CellRenderer, DataModel, TextRenderer } from "@phosphor/datagrid";
@@ -36,17 +36,6 @@ export enum SORT_ORDER {
   ASC,
   DESC,
   NO_SORT
-}
-
-export interface IColumnState {
-  dataType: ALL_TYPES,
-  displayType: ALL_TYPES|string,
-  triggerShown: boolean,
-  horizontalAlignment: TextRenderer.HorizontalAlignment,
-  formatForTimes: any,
-  visible: boolean,
-  sortOrder: SORT_ORDER,
-  filter: string|null
 }
 
 export default class DataGridColumn {
@@ -101,7 +90,7 @@ export default class DataGridColumn {
     this.state = {
       dataType,
       displayType,
-      triggerShown: false,
+      keepTrigger: this.type === COLUMN_TYPES.index,
       horizontalAlignment: this.getInitialAlignment(dataType),
       formatForTimes: {},
       visible: true,
@@ -144,6 +133,7 @@ export default class DataGridColumn {
     };
 
     this.setState({ visible: false });
+    this.menu.hideTrigger();
     this.dataGrid.model.emitChanged(args);
     this.columnManager.columnsChanged.emit({
       type: COLUMN_CHANGED_TYPES.columnVisible,
@@ -211,6 +201,12 @@ export default class DataGridColumn {
     this.dataGrid.model.reset();
   }
 
+  resetFilter() {
+    this.setState({ filter: '' });
+    this.dataGrid.rowManager.filterRows();
+    this.dataGrid.model.reset();
+  }
+
   destroy() {
     this.menu.destroy();
   }
@@ -223,20 +219,20 @@ export default class DataGridColumn {
     this.dataGrid.headerCellHovered.connect(this.handleHeaderCellHovered);
   }
 
-  handleHeaderCellHovered(sender: BeakerxDataGrid, data: ICellData|null) {
-    if (!data || data.column !== this.index || data.type !== this.type) {
-      this.menu.hideTrigger();
-      this.state.triggerShown = false;
-
+  handleHeaderCellHovered(sender: BeakerxDataGrid, data: ICellData) {
+    if(!data) {
       return;
     }
 
-    if (this.state.triggerShown) {
+    const column = this.columnManager.indexResolver.resolveIndex(data.column, data.type);
+
+    if (column !== this.index || data.type !== this.type) {
+      this.menu.hideTrigger();
+
       return;
     }
 
     this.menu.showTrigger(data.offset);
-    this.state.triggerShown = true;
   }
 
   getInitialAlignment(dataType) {
@@ -263,12 +259,22 @@ export default class DataGridColumn {
     this.setState({ horizontalAlignment });
   }
 
+  resetAlignment() {
+    this.setState({
+      horizontalAlignment: this.getInitialAlignment(this.state.dataType)
+    });
+  }
+
   getHighlighter(highlighterType: HIGHLIGHTER_TYPE) {
     return this.dataGrid.highlighterManager.getColumnHighlighters(this, highlighterType);
   }
 
   toggleHighlighter(highlighterType: HIGHLIGHTER_TYPE) {
     this.dataGrid.highlighterManager.toggleColumnHighlighter(this, highlighterType);
+  }
+
+  resetHighlighters() {
+    this.dataGrid.highlighterManager.removeColumnHighlighter(this);
   }
 
   sort(sortOrder: SORT_ORDER) {
@@ -281,6 +287,30 @@ export default class DataGridColumn {
     }
 
     this.sort(SORT_ORDER.DESC);
+  }
+
+  getValueResolver(): Function {
+    if(this.state.dataType === ALL_TYPES.datetime || this.state.dataType === ALL_TYPES.time) {
+      return this.dateValueResolver;
+    }
+
+    return this.defaultValueResolver;
+  }
+
+  move(destination: number) {
+    this.columnManager.moveColumn(this, destination);
+  }
+
+  getResolvedIndex() {
+    return this.columnManager.indexResolver.resolveIndex(this.index, this.type);
+  }
+
+  private dateValueResolver(value) {
+    return value.timestamp;
+  }
+
+  private defaultValueResolver(value) {
+    return value;
   }
 
   private onColumnsChanged(sender: ColumnManager, args: IBkoColumnsChangedArgs) {
@@ -310,7 +340,17 @@ export default class DataGridColumn {
   }
 
   private addMinMaxValues() {
-    let minMax = minmax(this.valuesIterator.clone(), (a:number, b:number) => a - b);
+    let valueResolver = this.getValueResolver();
+    let minMax = minmax(this.valuesIterator.clone(), (a:any, b:any) => {
+      let value1 = valueResolver(a);
+      let value2 = valueResolver(b);
+
+      if (value1 === value2) {
+        return 0;
+      }
+
+      return value1 < value2 ? -1 : 1;
+    });
 
     this.minValue = minMax ? minMax[0] : null;
     this.maxValue = minMax ? minMax[1] : null;

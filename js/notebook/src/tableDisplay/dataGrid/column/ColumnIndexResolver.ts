@@ -15,18 +15,24 @@
  */
 
 import { COLUMN_TYPES } from "./DataGridColumn";
-import { IDataGridModelColumnState as IColumnsState } from "../model/BeakerxDataGridModel";
+import {IDataGridModelColumnState} from "../interface/IDataGridModelState";
 
 export default class ColumnIndexResolver {
   columnIndexesMap: {};
 
-  constructor(indexColumnsState: IColumnsState, bodyColumnsState: IColumnsState) {
-    this.columnIndexesMap = { [COLUMN_TYPES.index]: {}, [COLUMN_TYPES.body]: {} };
+  constructor(
+    indexColumnsState: IDataGridModelColumnState,
+    bodyColumnsState: IDataGridModelColumnState
+  ) {
+    this.columnIndexesMap = { [COLUMN_TYPES.index]: [], [COLUMN_TYPES.body]: [] };
 
     this.mapAllIndexes(indexColumnsState, bodyColumnsState);
   }
 
-  mapAllIndexes(indexColumnsState: IColumnsState, bodyColumnsState: IColumnsState) {
+  mapAllIndexes(
+    indexColumnsState: IDataGridModelColumnState,
+    bodyColumnsState: IDataGridModelColumnState
+  ) {
     this.mapIndexes(COLUMN_TYPES.index, indexColumnsState);
     this.mapIndexes(COLUMN_TYPES.body, bodyColumnsState);
   }
@@ -35,24 +41,26 @@ export default class ColumnIndexResolver {
     return this.columnIndexesMap[columnType][index];
   }
 
-  mapIndexes(columnType: COLUMN_TYPES, columnsState: IColumnsState) {
-    let prevVisibleIndex = -1;
-
-    for (let index = 0; index < columnsState.visibility.length; index++) {
-      prevVisibleIndex = this.getNexVisibleIndex(
-        prevVisibleIndex + 1,
-        columnsState
-      );
-
-      this.columnIndexesMap[columnType][index] = prevVisibleIndex;
-    }
+  mapIndexes(columnType: COLUMN_TYPES, columnsState: IDataGridModelColumnState) {
+    this.applyOrderRules(columnType, columnsState);
+    this.applyVisibilityRules(columnType, columnsState);
   }
 
-  private getNexVisibleIndex(index: number, columnsState) {
-    if (columnsState.visibility[index] || index >= columnsState.visibility.length - 1) {
-      return index;
-    }
+  private applyVisibilityRules(columnType: COLUMN_TYPES, columnsState: IDataGridModelColumnState) {
+    columnsState.visibility.forEach((visible, index) => {
+      let mappedIndex = this.columnIndexesMap[columnType][index];
+      let isVisible = columnsState.visibility[mappedIndex];
 
-    return this.getNexVisibleIndex(index + 1, columnsState);
+      if (!isVisible) {
+        this.columnIndexesMap[columnType].splice(index, 1);
+        this.columnIndexesMap[columnType].push(mappedIndex);
+      }
+    });
+  }
+
+  private applyOrderRules(columnType: COLUMN_TYPES, columnsState: IDataGridModelColumnState) {
+    columnsState.order.forEach((columnIndex, order) => {
+      this.columnIndexesMap[columnType][order] = columnIndex;
+    });
   }
 }

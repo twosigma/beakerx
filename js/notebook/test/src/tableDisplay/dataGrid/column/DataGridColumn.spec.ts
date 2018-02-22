@@ -14,16 +14,14 @@
  *  limitations under the License.
  */
 
-import { expect, assert } from 'chai';
-import { BeakerxDataGrid } from "../../../../../src/tableDisplay/dataGrid/BeakerxDataGrid";
-import DataGridColumn, { COLUMN_TYPES } from '../../../../../src/tableDisplay/dataGrid/column/DataGridColumn';
-import ColumnMenu from "../../../../../src/tableDisplay/dataGrid/headerMenu/ColumnMenu";
-import IndexMenu from "../../../../../src/tableDisplay/dataGrid/headerMenu/IndexMenu";
+import { expect } from 'chai';
+import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import DataGridColumn, { COLUMN_TYPES } from '@beakerx/tableDisplay/dataGrid/column/DataGridColumn';
+import ColumnMenu from "@beakerx/tableDisplay/dataGrid/headerMenu/ColumnMenu";
+import IndexMenu from "@beakerx/tableDisplay/dataGrid/headerMenu/IndexMenu";
 import modelStateMock from "../mock/modelStateMock";
-import ColumnManager from "@beakerx/tableDisplay/dataGrid/column/ColumnManager";
 
 declare var require: Function;
-
 
 describe('DataGridColumn', () => {
   const dataGrid = new BeakerxDataGrid({}, modelStateMock);
@@ -45,15 +43,11 @@ describe('DataGridColumn', () => {
       expect(bodyDataGridColumn.menu).to.be.an.instanceof(ColumnMenu);
     });
 
-    it('should have the trigger state set to false', () => {
-      expect(bodyDataGridColumn['state'].triggerShown).to.equal(false);
-    });
-
     it('should change the trigger state', () => {
       bodyDataGridColumn.handleHeaderCellHovered(
         dataGrid, { type: COLUMN_TYPES.body, column: 0, row: 0, delta: 0, offset: 0 }
       );
-      expect(bodyDataGridColumn['state'].triggerShown).to.equal(true);
+      expect(bodyDataGridColumn.menu['triggerNode'].style.visibility).to.equal('visible');
     });
   });
 
@@ -73,15 +67,11 @@ describe('DataGridColumn', () => {
       expect(indexDataGridColumn.menu).to.be.an.instanceof(IndexMenu);
     });
 
-    it('should have the trigger state set to false', () => {
-      expect(indexDataGridColumn['state'].triggerShown).to.equal(false);
-    });
-
     it('should change the trigger state', () => {
       indexDataGridColumn.handleHeaderCellHovered(
         dataGrid, { type: COLUMN_TYPES.index, column: 0, row: 0, delta: 0, offset: 0 }
       );
-      expect(indexDataGridColumn['state'].triggerShown).to.equal(true);
+      expect(indexDataGridColumn.menu['triggerNode'].style.visibility).to.equal('visible');
     });
   });
 

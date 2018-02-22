@@ -27,8 +27,6 @@ export default class HeatmapHighlighter extends Highlighter {
   constructor(column: DataGridColumn, state: IHihglighterState) {
     super(column, state);
 
-    this.state.minVal = this.state.minVal || this.column.minValue;
-    this.state.maxVal = this.state.maxVal || this.column.maxValue;
     this.state.minColor = formatColor(state.minColor || getDefaultColor('blue'));
     this.state.maxColor = formatColor(state.maxColor || getDefaultColor('red'));
 

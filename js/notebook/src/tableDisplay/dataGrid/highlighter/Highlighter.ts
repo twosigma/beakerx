@@ -25,9 +25,13 @@ export default class Highlighter {
   state: IHihglighterState;
 
   constructor(column: DataGridColumn, state: IHihglighterState) {
+    const valueResolver = column.getValueResolver();
+
     this.column = column;
     this.state = { ...state };
     this.state.style = state.style || HIGHLIGHTER_STYLE.SINGLE_COLUMN;
+    this.state.minVal = valueResolver(this.state.minVal || this.column.minValue);
+    this.state.maxVal = valueResolver(this.state.maxVal || this.column.maxValue);
   }
 
   getBackgroundColor(config: CellRenderer.ICellConfig) {
@@ -36,6 +40,7 @@ export default class Highlighter {
 
   getValueToHighlight(config: CellRenderer.ICellConfig) {
     let value = config.value;
+    let valueResolver = this.column.getValueResolver();
 
     if (this.state.style === HIGHLIGHTER_STYLE.FULL_ROW) {
       value = find(this.column.valuesIterator.clone(), (value, index) => {
@@ -43,6 +48,6 @@ export default class Highlighter {
       });
     }
 
-    return value;
+    return valueResolver(value);
   }
 }

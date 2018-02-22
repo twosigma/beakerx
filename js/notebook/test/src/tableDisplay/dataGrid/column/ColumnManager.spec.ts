@@ -58,6 +58,24 @@ describe('ColumnManager', () => {
     destroyStub.restore();
   });
 
+  it('should implement moveColumn method', () => {
+    const column = columnManager.columns[COLUMN_TYPES.body][0];
+
+    expect(columnManager).to.have.property('moveColumn');
+    expect(columnManager.moveColumn).to.be.a('Function');
+
+    columnManager.moveColumn(column, 1);
+    expect(column.getResolvedIndex()).to.equal(1);
+
+    column.hide();
+    expect(column.getResolvedIndex()).to.equal(1);
+    expect(columnManager.columns[COLUMN_TYPES.body][1].getResolvedIndex()).to.equal(0);
+
+    column.show();
+    column.move(0);
+    expect(column.getResolvedIndex()).to.equal(0);
+  });
+
   it('should call setColumnVisible', () => {
     const stub = sinon.stub(columnManager, 'setColumnVisible');
 

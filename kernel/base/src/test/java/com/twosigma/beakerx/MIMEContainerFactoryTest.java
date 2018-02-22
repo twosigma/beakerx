@@ -28,7 +28,7 @@ import java.util.Map;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.MIME.TEXT_HTML;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SerializeToStringTest {
+public class MIMEContainerFactoryTest {
 
   @Test
   public void integerAsTextHtml() throws Exception {

@@ -64,12 +64,12 @@
 
 .bx-banner-widget .beakerx_site_link {
   display: inline-block;
+  margin: 0 75px 0 0;
 }
 
 .bx-banner-widget svg {
   width: 206px;
   height: 59px;
-  margin: 0 15px 0 0;
   transform: translateY(5px);
 }
 

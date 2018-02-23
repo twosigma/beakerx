@@ -60,20 +60,22 @@ export default class BannerWidget extends Widget {
       .empty()
       .append(
         this.createLinkedBannerElementRow(),
-        document.createTextNode('from '),
-        $('<a>', {
-          target: '_blank',
-          href: 'http://opensource.twosigma.com/',
-          text: 'Two Sigma Open Source',
-        }),
-
         document.createTextNode(' version '),
 
         $('<a>', {
           target: '_blank',
           href: `${BannerWidget.GITHUB_RELEASE_TAG_BASE_URL}${version}`,
           text: version
-        })
+        }),
+
+        document.createTextNode(', from '),
+
+        $('<a>', {
+          target: '_blank',
+          href: 'http://opensource.twosigma.com/',
+          text: 'Two Sigma Open Source',
+        }),
+
       );
   }
 

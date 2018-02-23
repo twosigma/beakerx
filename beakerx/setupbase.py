@@ -334,7 +334,7 @@ def run_doclet(path=doclet_path, cmd='build'):
                  '-subpackages', 'com.twosigma.beakerx',
                  '-sourcepath', kernel_source
             ])
-            shutil.copyfile('beakerx_inspect.json', os.path.join('..', 'beakerx', 'beakerx', 'kernel', 'beakerx_inspect.json'))
+            shutil.copyfile('beakerx_inspect.json', os.path.join('..', 'beakerx', 'beakerx', 'kernel', 'base', 'beakerx_inspect.json'))
 
 
     return Gradle

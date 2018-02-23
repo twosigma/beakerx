@@ -25,6 +25,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,6 +37,7 @@ public class GroovyInspectTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         groovyEvaluator = TestGroovyEvaluator.groovyEvaluator();
+        groovyEvaluator.getInspect().setInspectFileName("../beakerx_inspect_test.json");
     }
 
     @Before

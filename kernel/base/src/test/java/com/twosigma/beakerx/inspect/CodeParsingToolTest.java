@@ -1,5 +1,5 @@
 /*
- *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,8 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-package com.twosigma.beakerx.groovy.inspect;
+package com.twosigma.beakerx.inspect;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -110,4 +109,5 @@ public class CodeParsingToolTest {
         Assertions.assertThat(result_1).isEqualTo(expected_1);
         Assertions.assertThat(result_2).isEqualTo(expected_2);
     }
+
 }

@@ -14,14 +14,10 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beakerx.groovy.inspect;
+package com.twosigma.beakerx.inspect;
 
-import com.twosigma.beakerx.groovy.autocomplete.GroovyAutocomplete;
-import com.twosigma.beakerx.groovy.autocomplete.GroovyClasspathScanner;
-import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.widgets.BeakerxWidget;
-import groovy.lang.GroovyClassLoader;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -29,20 +25,18 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.net.URLClassLoader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 
-public class GroovyInspect extends GroovyAutocomplete {
 
-    public static final String INSPECT_DATA_FILENAME = "beakerx_inspect.json";
+public class Inspect {
 
-    public GroovyInspect(GroovyClasspathScanner _cps) {
-        super(_cps);
-    }
+    private static String inspectDataPath = "beakerx_inspect.json";
 
-    public InspectResult doInspect(String code, int caretPosition, GroovyClassLoader groovyClassLoader, Imports imports) {
+    public InspectResult doInspect(String code, int caretPosition, URLClassLoader classLoader, Imports imports) {
         InspectResult inspectResult = new InspectResult();
         String row = CodeParsingTool.getLineWithCursor(code, caretPosition);
         String methodName = CodeParsingTool.getSelectedMethodName(code, caretPosition);
@@ -61,11 +55,11 @@ public class GroovyInspect extends GroovyAutocomplete {
         try {
             workingDirectory= Paths.get(
                     BeakerxWidget.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()
-            ).getParent().getParent().getParent();
+            ).getParent().getParent();
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-        return new File(workingDirectory.toFile(), INSPECT_DATA_FILENAME);
+        return new File(workingDirectory.toFile(), inspectDataPath);
     }
 
     private InspectResult getInspectResult(int caretPosition, String methodName, String className, String everything) {
@@ -97,4 +91,9 @@ public class GroovyInspect extends GroovyAutocomplete {
         }
         return inspectResult;
     }
+
+    public static void setInspectFileName(String inspectDataPath) {
+        Inspect.inspectDataPath = inspectDataPath;
+    }
 }
+

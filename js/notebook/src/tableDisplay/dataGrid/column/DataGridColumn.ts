@@ -299,6 +299,7 @@ export default class DataGridColumn {
 
   move(destination: number) {
     this.columnManager.moveColumn(this, destination);
+    this.menu.hideTrigger();
   }
 
   getResolvedIndex() {

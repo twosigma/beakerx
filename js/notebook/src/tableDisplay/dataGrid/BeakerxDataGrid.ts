@@ -251,7 +251,9 @@ export class BeakerxDataGrid extends DataGrid {
     }
 
     const column = this.columnManager.columns[data.type][data.column];
-    column.toggleSort();
+    const destColumn = this.columnManager.columns[data.type][column.getResolvedIndex()];
+
+    destColumn.toggleSort();
   }
 
   private findHoveredRowIndex(y: number) {

@@ -198,6 +198,13 @@ export default class ColumnManager {
     this.dataGrid.model.reset();
   }
 
+  resetColumnsOrder() {
+    this.columnsState[COLUMN_TYPES.body].order.map((index, order) => order);
+    this.columnsState[COLUMN_TYPES.index].order.map((index, order) => order);
+    this.indexResolver.mapAllIndexes(this.indexColumnsState, this.bodyColumnsState);
+    this.dataGrid.model.reset();
+  }
+
   private showFilterInputs(useSearch: boolean, column?: DataGridColumn) {
     const methodToCall = useSearch ? 'showSearchInput' : 'showFilterInput';
     const showInputsFn = columnItem => columnItem.columnFilter

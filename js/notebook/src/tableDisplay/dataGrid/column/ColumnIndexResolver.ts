@@ -48,12 +48,11 @@ export default class ColumnIndexResolver {
 
   private applyVisibilityRules(columnType: COLUMN_TYPES, columnsState: IDataGridModelColumnState) {
     columnsState.visibility.forEach((visible, index) => {
-      let mappedIndex = this.columnIndexesMap[columnType][index];
-      let isVisible = columnsState.visibility[mappedIndex];
+      if (!visible) {
+        let indexToRemove = this.columnIndexesMap[columnType].indexOf(index);
+        let removed = this.columnIndexesMap[columnType].splice(indexToRemove, 1);
 
-      if (!isVisible) {
-        this.columnIndexesMap[columnType].splice(index, 1);
-        this.columnIndexesMap[columnType].push(mappedIndex);
+        this.columnIndexesMap[columnType].push(removed);
       }
     });
   }

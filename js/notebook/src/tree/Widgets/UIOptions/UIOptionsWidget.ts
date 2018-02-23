@@ -34,8 +34,7 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
   public readonly AUTO_SAVE_SELECTOR = '#auto_save';
 
   public readonly HTML_ELEMENT_TEMPLATE = `
-<fieldset id="ui_options">
-  <legend>UI Options:</legend>
+<div id="ui_options">
   <div class="form-group">
     <div class="form-check">
       <input class="form-check-input" id="auto_close" name="auto_close" type="checkbox">
@@ -58,7 +57,7 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
       <label class="form-check-label" for="auto_save">Auto save notebooks</label>
     </div>
   </div>
-</fieldset>
+</div>
 `;
 
   public get $node(): JQuery<HTMLElement> {

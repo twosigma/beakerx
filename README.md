@@ -107,18 +107,22 @@ The Java unit tests are run with every build. See [test/README.md] for how to ru
 docker run -p 8888:8888 beakerx/beakerx
 ```
 
-## Code Overview
+## Architecture and Code Overview
 
 BeakerX is a collection of kernels and extensions for Jupyter.
 The code is organized into subdirectories as follows:
 
-* [beakerx](beakerx) The Python packages.  the beakerx package has:
+* [beakerx](beakerx) The Python packages.  The beakerx package has:
+
   * kernel manager to allow us to alter the parameters passed to the
   JVM,
+  
   * a kernel spec manager, which allows us to override the
   interrupt function,
+  
   * The Python API for the runtime (tables, plots,
   easyform).
+  
   * The compiled JavaScript and Java jars are in the static
   section of the python package.
 
@@ -140,7 +144,24 @@ The code is organized into subdirectories as follows:
   [js/lab](js/lab) and [js/notebook](js/notebook).  Lab has the
   extension for Jupyter Lab (which is distributed by npm).  Notebook
   has two extensions, one for the wigets, and one for the notebook
-  application.  For the tree view this puts up our 
+  application.  This adds a tab to the tree view with our options
+  panel.  And for regular notebook pages the extension handles:
+
+  * running initialization cells,
+  * publication,
+  * autotranslation,
+  * the getCodeCell and runByTag APIs,
+  * callbacks for table and plot actions.
+
+* [kernel](kernel) The Java implementation of the kernels is here.
+  The main directory is [kernel/base](kernel/base) which has generic
+  code for all the languages, and then there is one subdirectory for
+  each language.  The base kernel has classes for Jupyter's Comm
+  protocol (a layer on ZMQ), magics, the classpath, etc.  It also has
+  the runtime, which consists of widget APIs.
+
+* [test](test) The e2e tests, which are made with wdio (selenium,
+  chromedriver, jasmine).
 
 ## Contributing
 

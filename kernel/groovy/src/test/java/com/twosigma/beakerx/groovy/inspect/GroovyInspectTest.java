@@ -19,7 +19,6 @@ package com.twosigma.beakerx.groovy.inspect;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.groovy.kernel.GroovyKernelMock;
-import com.twosigma.beakerx.inspect.Inspect;
 import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.kernel.KernelManager;
 import org.junit.After;

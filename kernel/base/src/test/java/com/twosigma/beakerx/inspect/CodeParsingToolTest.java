@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.inspect;
 
-import com.twosigma.beakerx.kernel.Code;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
@@ -71,7 +70,7 @@ public class CodeParsingToolTest {
         //given
         String expected = "TableDisplay";
         //when
-        String result = CodeParsingTool.getClassName(CODE_CLASS_ROW_2, CODE_CLASS_ROW_1 + CODE_CLASS_ROW_2, 84, "test");
+        String result = CodeParsingTool.getClassName( CODE_CLASS_ROW_1 + CODE_CLASS_ROW_2, 84, "test");
         //then
         Assertions.assertThat(result).isEqualTo(expected);
     }

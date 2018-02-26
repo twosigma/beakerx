@@ -15,149 +15,116 @@
  */
 package com.twosigma.beakerx.inspect;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class CodeParsingTool {
 
     private CodeParsingTool(){}
 
     public static int getCaretPositionInLine(String code, int caretPosition) {
-        String leftPart = code.substring(0, caretPosition);
-        int begOfLine = leftPart.lastIndexOf(System.lineSeparator());
+        int begOfLine = code.substring(0, caretPosition).lastIndexOf(System.lineSeparator());
         return caretPosition - begOfLine - 1;
     }
 
     public static String getLineWithCursor(String code, int caretPosition) {
-        String[] lines = code.split(System.lineSeparator());
-        int charSum = 0;
-        String row = "";
-        for (String line : lines) {
-            charSum += line.length() + System.lineSeparator().length();
-            if (charSum > caretPosition) {
-                row = line;
-                break;
-            }
-        }
-        return row;
+        int begOfLine = lastIndexOrZero(code.substring(0, caretPosition), System.lineSeparator());
+        int endOfLine = firstIndexOrLength(code.substring(caretPosition), System.lineSeparator());
+        return code.substring(begOfLine, endOfLine + caretPosition).trim();
+    }
+
+    private static int lastIndexOrZero(String string, String pattern) {
+        return string.lastIndexOf(pattern) == -1 ? 0 : string.lastIndexOf(pattern);
+    }
+
+    private static int firstIndexOrLength(String string, String pattern) {
+        return string.indexOf(pattern) == -1 ? string.length() : string.indexOf(pattern);
     }
 
     public static String getSelectedMethodName(String code, int caretPosition) {
-        String methodName = null;
         int pos = getCaretPositionInLine(code, caretPosition);
         String line = getLineWithCursor(code, caretPosition);
-        String leftLine = line.substring(0, pos);
-        String rightLine = line.substring(pos);
-        int begOfMethod = leftLine.lastIndexOf(".");
-        if (begOfMethod != -1) {
-            String leftMethod = leftLine.substring(begOfMethod + 1);
-            int begOfBracket = leftMethod.indexOf("(");
-            if (begOfBracket != -1) {
-                methodName = leftMethod.substring(0, begOfBracket);
-            } else {
-                begOfBracket = rightLine.indexOf("(");
-                if (begOfBracket == -1) {
-                    methodName = leftMethod + rightLine;
-                } else {
-                    methodName = leftMethod + rightLine.substring(0, begOfBracket);
-                }
-            }
+        int begOfMethod = lastIndexOrZero(line.substring(0, pos), ".");
+        int bracketStart = firstIndexOrLength(line.substring(begOfMethod), "(");
+        if (begOfMethod == 0) {
+            return null;
+        } else {
+            return line.substring(begOfMethod + 1, begOfMethod + bracketStart);
         }
-        return methodName;
     }
 
-    public static String getClassName(String row, String code, int caretPosition, String methodName) {
+    public static String getClassName(String code, int caretPosition, String methodName) {
         String inspectObject = getInspectObject(code, caretPosition, methodName);
         return getClassOfInspectObject(code, inspectObject);
     }
 
     public static String getInspectObject(String code, int caretPosition, String methodName) {
-        String inspectObjectName;
         String line = getLineWithCursor(code, caretPosition);
         if (methodName == null || line.indexOf(methodName) < 1) {
-            int caretPos = getCaretPositionInLine(code, caretPosition);
-            char[] endChars = {' ','(','.'};
-            int begOfClass = line.substring(0, caretPos).lastIndexOf(" ");
-            begOfClass = begOfClass == -1 ? 0 : begOfClass;
-            int endOfClass = line.length();
-            for (char c : endChars) {
-                int index = line.substring(caretPos).indexOf(c);
-                if (index != -1 && index + caretPos < endOfClass) {
-                    endOfClass = index + caretPos;
-                }
-            }
-            inspectObjectName = line.substring(begOfClass, endOfClass);
+            return getClassInspectObject(code, caretPosition).trim();
         } else {
-            String lineToMethodName =
-                    methodName == null || line.indexOf(methodName) < 1 ?
-                            line : line.substring(0, line.indexOf(methodName)- 1);
-            String lineToClassName;
-            if (lineToMethodName.charAt(lineToMethodName.length() - 1) == ')') {
-                lineToClassName = removeLastBracket(lineToMethodName);
-            } else {
-                lineToClassName = lineToMethodName;
-            }
-            int lastSpacePos = lineToClassName.lastIndexOf(" ");
-            if (lastSpacePos == -1) {
-                inspectObjectName = lineToClassName;
-            } else {
-                inspectObjectName = lineToClassName.substring(lastSpacePos, lineToClassName.length());
-            }
-            if (inspectObjectName.contains(".")) {
-                inspectObjectName = inspectObjectName.split("\\.")[0].trim();
+            return getMethodInspectObject(methodName, line).trim();
+        }
+    }
+
+    private static String getMethodInspectObject(String methodName, String line) {
+        String lineToMethodName = line.substring(0, line.indexOf(methodName)- 1);
+        String lineToClassName = removeLastBracket(lineToMethodName);
+        return lineToClassName
+                .substring(lastIndexOrZero(lineToClassName, " "))
+                .split("\\.")[0].trim();
+    }
+
+
+    private static String getClassInspectObject(String code, int caretPosition) {
+        int caretPos = getCaretPositionInLine(code, caretPosition);
+        String line = getLineWithCursor(code, caretPosition);
+        int begOfClass = lastIndexOrZero(line.substring(0, caretPos), " ");
+        int endOfClass = line.length();
+        for (char endChar : Arrays.asList(' ', '(', '.')) {
+            int index = line.substring(caretPos).indexOf(endChar);
+            if (index != -1 && index + caretPos < endOfClass) {
+                endOfClass = index + caretPos;
             }
         }
-        return inspectObjectName.trim();
+        return line.substring(begOfClass, endOfClass);
     }
 
     public static String getClassOfInspectObject(String code, String inspectObject) {
-        String className = inspectObject;
-        List<String> lines = getLinesWithPattern(code, inspectObject);
-        for (String line : lines) {
-            int posOfEq = line.indexOf("=");
-            if (posOfEq != -1) {
-                String lineBefEq = line.substring(0, posOfEq).trim();
-                int begOfInspectObj = lineBefEq.lastIndexOf(" ") == -1 ? 0 : lineBefEq.lastIndexOf(" ");
-                if (lineBefEq.substring(begOfInspectObj, lineBefEq.length()).trim().equals(inspectObject)) {
-                    String lineAftEq = line.substring(posOfEq).trim();
-                    className = lineAftEq.substring(
-                            lineAftEq.indexOf("new") == -1 ? 0 : lineAftEq.indexOf("new") + 3,
-                            lineAftEq.indexOf("(") == -1 ? lineAftEq.length() : lineAftEq.indexOf("("));
-                    break;
-                }
-            }
-
-        }
-        return className.trim();
+        Optional<String> inspect = getLinesWithPattern(code, inspectObject).stream()
+                .filter(line -> line.indexOf("=") != -1)
+                .map(line -> line.substring(line.indexOf(inspectObject)))
+                .filter(line -> line.indexOf("new ") != -1 && line.indexOf("(") != -1)
+                .map(line -> line.substring(line.indexOf("new ")+ 4, line.indexOf("(")))
+                .findFirst();
+        return inspect.orElse(inspectObject);
     }
 
     private static String removeLastBracket(String lineToMethodName) {
-        int i = lineToMethodName.length() - 1;
-        int counter = 0;
-        int lastBracketPos = 0;
-        for (; i>0; i--) {
-            char character = lineToMethodName.charAt(i);
-            if (character == ')') {
-                counter++;
-            } else if (character == '(') {
-                counter--;
-            }
-            if (counter == 0) {
-                lastBracketPos = i;
-                break;
+        int lastBracketPos = lineToMethodName.length();
+        int i = lastBracketPos - 1;
+        if (lineToMethodName.charAt(i) == ')') {
+            for (int counter = 0; i>0; i--) {
+                char character = lineToMethodName.charAt(i);
+                if (character == ')') {
+                    counter++;
+                } else if (character == '(') {
+                    counter--;
+                }
+                if (counter == 0) {
+                    lastBracketPos = i;
+                    break;
+                }
             }
         }
         return lineToMethodName.substring(0, lastBracketPos);
     }
 
     private static List<String> getLinesWithPattern(String code, String pattern) {
-        String[] lines = code.split(System.lineSeparator());
-        List<String> linesWithPattern = new ArrayList<>();
-        for (String line : lines) {
-            if (line.trim().contains(pattern)) {
-                linesWithPattern.add(line);
-            }
-        }
-        return linesWithPattern;
+        return Arrays.stream(code.split(System.lineSeparator()))
+                .filter(line -> line.trim().contains(pattern))
+                .collect(Collectors.toList());
     }
 }

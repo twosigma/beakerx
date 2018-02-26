@@ -110,16 +110,20 @@ docker run -p 8888:8888 beakerx/beakerx
 ## Code Overview
 
 BeakerX is a collection of kernels and extensions for Jupyter.
-The code is organized as follows:
+The code is organized into subdirectories as follows:
 
-* [beakerx](beakerx) The Python package.  This has the groovy magic
-  (which allows running groovy from a python notebook), a kernel
-  manager to allow us to alter the parameters passed to the JVM, and a
-  kernek spec manager, which allows us to override the interrupt
-  function.  The Python API for the runtime (tables, plots, easyform).
-  The compiled JavaScript and Java jars are in the static section of
-  the python package.  There is a seperate python package for the
-  groovy magic so it can be loaded without loading the regular beakerx
+* [beakerx](beakerx) The Python packages.  the beakerx package has:
+  * kernel manager to allow us to alter the parameters passed to the
+  JVM,
+  * a kernel spec manager, which allows us to override the
+  interrupt function,
+  * The Python API for the runtime (tables, plots,
+  easyform).
+  * The compiled JavaScript and Java jars are in the static
+  section of the python package.
+
+  There is a seperate python package (beakerx_magics) for the groovy
+  magic so it can be loaded without loading the regular beakerx
   package (which would turn on display of pandas tables with our table
   widget).
 

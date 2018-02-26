@@ -65,6 +65,14 @@ export default class TreeWidget extends Panel {
 
   public processMessage(msg: Message): void {
     switch (msg.type) {
+      case 'show-result':
+        this._model.clearErrors();
+        this._model.showResult();
+        break;
+      case 'hide-result':
+        this._model.clearErrors();
+        this._model.hideResult();
+        break;
       case Messages.TYPE_UI_OPTIONS_CHANGED:
         this._model.clearErrors();
         this._model.setUIOptions((msg as Messages.UIOptionsChangedMessage).options);

@@ -40,7 +40,7 @@
   min-width: 35px;
   margin-left: -1px;
   border: 1px solid transparent;
-  padding: 6px 15px 4px 15px;
+  padding: 4px 15px;
 }
 
 #beakerx-tree-widget .p-TabBar-tab:first-child {
@@ -64,10 +64,13 @@
 
 .bx-banner-widget .beakerx_site_link {
   display: inline-block;
+  margin: 0 75px 0 0;
 }
 
 .bx-banner-widget svg {
-  height: 35px;
+  width: 206px;
+  height: 59px;
+  transform: translateY(5px);
 }
 
 .bx-options-widget {
@@ -92,6 +95,8 @@
 }
 .bx-sync-indicator-widget .saving { color: #f0ad4e; }
 .bx-sync-indicator-widget .saved { color: #5cb85c; }
+
+.bx-sync-indicator-widget .errors-wrapper { color: #ff0000; }
 
 #properties_property .form-control {
   margin-right: 10px;

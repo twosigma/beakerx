@@ -29,8 +29,7 @@ export default class DefaultOptionsWidget extends Widget implements DefaultOptio
   public readonly HEAP_GB_SELECTOR = '#heap_GB';
 
   public readonly HTML_ELEMENT_TEMPLATE = `
-<fieldset id="default_options">
-  <legend>JVM Options:</legend>
+<div id="default_options">
   <div class="form-inline form-group">
 
     <label class="control-label" for="heap_GB">Heap Size</label>
@@ -40,7 +39,7 @@ export default class DefaultOptionsWidget extends Widget implements DefaultOptio
     </div>
 
   </div>
-</fieldset>
+</div>
 `;
 
   public get $node(): JQuery<HTMLElement> {

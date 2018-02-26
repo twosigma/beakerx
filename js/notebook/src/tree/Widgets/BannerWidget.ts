@@ -43,18 +43,11 @@ export default class BannerWidget extends Widget {
 </svg>  
 `;
 
-  static readonly BASIC_HTML_ELEMENT_TEMPLATE = `
-<div id="beakerx_env_toolbar" class="list_toolbar">
-    <div id="beakerx_info"></div>
-</div>
-`;
-
   constructor(api: BeakerXApi) {
     super();
 
     this.addClass('bx-banner-widget');
 
-    $(BannerWidget.BASIC_HTML_ELEMENT_TEMPLATE).appendTo(this.node);
     api
       .getVersion()
       .then((version) => {
@@ -64,48 +57,35 @@ export default class BannerWidget extends Widget {
 
   private createBanner(version: string): void {
     $(this.node)
-      .find('#beakerx_info')
       .empty()
       .append(
         this.createLinkedBannerElementRow(),
-        this.createLinkedVersionElementRow(version),
-        this.createLinkedFromElementRow()
+        document.createTextNode(' version '),
+
+        $('<a>', {
+          target: '_blank',
+          href: `${BannerWidget.GITHUB_RELEASE_TAG_BASE_URL}${version}`,
+          text: version
+        }),
+
+        document.createTextNode(', from '),
+
+        $('<a>', {
+          target: '_blank',
+          href: 'http://opensource.twosigma.com/',
+          text: 'Two Sigma Open Source',
+        }),
+
       );
   }
 
-  private createLinkedFromElementRow() {
-    return $('<div>', {
-      text: 'from '
-    }).append(
-      $('<a>', {
-        target: '_blank',
-        href: 'http://opensource.twosigma.com/',
-        text: 'Two Sigma Open Source',
-      })
-    );
-  }
-
   private createLinkedBannerElementRow() {
-    return $('<div>').append(
-      $('<a>', {
-        class: 'beakerx_site_link',
-        target: '_blank',
-        href: 'http://BeakerX.com',
-      }).append(
-        $(`${BannerWidget.SVG_LOGO}`)
-      )
-    );
-  }
-
-  private createLinkedVersionElementRow(version: string) {
-    return $('<div>', {
-      text: 'version '
+    return $('<a>', {
+      class: 'beakerx_site_link',
+      target: '_blank',
+      href: 'http://BeakerX.com',
     }).append(
-      $('<a>', {
-        target: '_blank',
-        href: `${BannerWidget.GITHUB_RELEASE_TAG_BASE_URL}${version}`,
-        text: version
-      })
+      $(`${BannerWidget.SVG_LOGO}`)
     );
   }
 

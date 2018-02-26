@@ -79,4 +79,22 @@ export default class OptionsWidget extends TabPanel {
     $(this.node).height(h);
   }
 
+  protected onAfterAttach(msg: Message): void {
+    if (this.currentWidget instanceof JVMOptionsWidget) {
+      MessageLoop.sendMessage(this.parent, new Message('show-result'));
+    } else {
+      MessageLoop.sendMessage(this.parent, new Message('hide-result'));
+    }
+
+    this.currentChanged.connect((s, a) => {
+      if (a.currentWidget instanceof JVMOptionsWidget) {
+        MessageLoop.sendMessage(this.parent, new Message('show-result'));
+      } else {
+        MessageLoop.sendMessage(this.parent, new Message('hide-result'));
+      }
+    }, this);
+
+    super.onAfterAttach(msg);
+  }
+
 }

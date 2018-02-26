@@ -16,6 +16,17 @@
 
 var TableHelperObject = function () {
 
+  /*
+ * The table element contains another two tables for header and data.
+ * For data table the css selector is '.dataTables_scrollBody'
+ * For header table the css selector is '.dataTables_scrollHead'
+ */
+
+  this.dataTablesIsEnabled = function(dtcontainer){
+    var dataTables = dtcontainer.$('.dataTables_scroll');
+    dataTables.waitForEnabled();
+  };
+
   this.getDataTablesScrollBody = function(dtcontainer){
     return dtcontainer.$('.dataTables_scrollBody');
   };
@@ -24,37 +35,23 @@ var TableHelperObject = function () {
     return dtcontainer.$('.dataTables_scrollHead');
   };
 
-  this.getDataTableBody = function(dtcontainer){
-    return this.getDataTablesScrollBody(dtcontainer).$('tbody');
-  };
-
-  this.dataTablesIsEnabled = function(dtcontainer){
-    var dataTables = dtcontainer.$('.dataTables_scroll');
-    dataTables.waitForEnabled();
-  };
-
-  this.getTableRow = function(tblElement, rowIndex){
-    return this.getTableAllRows(tblElement)[rowIndex];
-  };
-
-  this.getTableAllRows  = function(tblElement){
+  this.getAllRowsOfTable  = function(tblElement){
     return tblElement.$$('tr[role="row"]');
   };
 
-  this.getTableBodyCell = function(tblElement, rowIndex, colIndex){
-    return this.getTableBodyRowAllCells(tblElement, rowIndex)[colIndex];
+  this.getCellOfTableBody = function(dtContainer, rowIndex, colIndex){
+    var tblBody = this.getDataTablesScrollBody(dtContainer).$('tbody');
+    return this.getAllRowsOfTable(tblBody)[rowIndex].$$('td.ui-selectee')[colIndex];
   };
 
-  this.getTableBodyRowAllCells = function(tblElement, rowIndex){
-    return this.getTableRow(tblElement, rowIndex).$$('td.ui-selectee');
+  this.getAllRowsOfTableBody  = function(dtContainer){
+    var tblBody = this.getDataTablesScrollBody(dtContainer).$('tbody');
+    return this.getAllRowsOfTable(tblBody);
   };
 
-  this.getTableHeaderAllCells = function(tblElement){
-    return this.getTableRow(tblElement, 0).$$('th');
-  };
-
-  this.getTableHeaderCell = function(tblElement, rowIndex){
-    return this.getTableHeaderAllCells(tblElement, 0)[rowIndex];
+  this.getCellOfTableHeader = function(dtContainer, colIndex){
+    var tblHead = this.getDataTablesScrollHead(dtContainer);
+    return this.getAllRowsOfTable(tblHead)[0].$$('th')[colIndex];
   };
 
 };

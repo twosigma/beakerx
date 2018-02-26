@@ -107,14 +107,36 @@ The Java unit tests are run with every build. See [test/README.md] for how to ru
 docker run -p 8888:8888 beakerx/beakerx
 ```
 
-## Overview
+## Code Overview
 
 BeakerX is a collection of kernels and extensions for Jupyter.
 The code is organized as follows:
 
-* [beakerx](beakerx) The Python package.
-* [doc](doc) Documentation consisting of notebooks.  [StartHere.ipynb](StartHere.ipynb) at the top level links to these.
+* [beakerx](beakerx) The Python package.  This has the groovy magic
+  (which allows running groovy from a python notebook), a kernel
+  manager to allow us to alter the parameters passed to the JVM, and a
+  kernek spec manager, which allows us to override the interrupt
+  function.  The Python API for the runtime (tables, plots, easyform).
+  The compiled JavaScript and Java jars are in the static section of
+  the python package.  There is a seperate python package for the
+  groovy magic so it can be loaded without loading the regular beakerx
+  package (which would turn on display of pandas tables with our table
+  widget).
 
+* [doc](doc) Documentation consisting of notebooks.
+  [StartHere.ipynb](StartHere.ipynb) at the top level links to these
+  and is the intended way to navigate them.  There is a subdirectory
+  for each language.
+
+* [docker](docker) configuration files for creating the Docker image.
+  There is a subdirectory [doc/base](doc/base) for an image with
+  BeakerX's dependencies (the Ubuntu and conda packages).
+
+* [js](js) There are two subdirectories of JavaScript,
+  [js/lab](js/lab) and [js/notebook](js/notebook).  Lab has the
+  extension for Jupyter Lab (which is distributed by npm).  Notebook
+  has two extensions, one for the wigets, and one for the notebook
+  application.  For the tree view this puts up our 
 
 ## Contributing
 

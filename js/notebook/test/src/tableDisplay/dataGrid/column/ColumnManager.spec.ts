@@ -19,7 +19,10 @@ import DataGridColumn, {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/colum
 import {expect} from "chai";
 import {BeakerxDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
 import modelStateMock from "../mock/modelStateMock";
-import ColumnManager from "@beakerx/tableDisplay/dataGrid/column/ColumnManager";
+import ColumnManager, {
+  COLUMN_CHANGED_TYPES,
+  IBkoColumnsChangedArgs
+} from "@beakerx/tableDisplay/dataGrid/column/ColumnManager";
 import cellConfigMock from "../mock/cellConfigMock";
 
 describe('ColumnManager', () => {
@@ -61,10 +64,17 @@ describe('ColumnManager', () => {
   it('should implement moveColumn method', () => {
     const column = columnManager.columns[COLUMN_TYPES.body][0];
 
-    expect(columnManager).to.have.property('moveColumn');
-    expect(columnManager.moveColumn).to.be.a('Function');
+    expect(columnManager).to.have.property('setColumnPosition');
+    expect(columnManager['setColumnPosition']).to.be.a('Function');
 
-    columnManager.moveColumn(column, 1);
+    const colChangeArgs: IBkoColumnsChangedArgs = {
+      column,
+      type: COLUMN_CHANGED_TYPES.columnMove,
+      value: 1
+    };
+
+    columnManager['setColumnPosition'](colChangeArgs);
+    columnManager['handleColumnChanged'](colChangeArgs);
     expect(column.getResolvedIndex()).to.equal(1);
 
     column.hide();

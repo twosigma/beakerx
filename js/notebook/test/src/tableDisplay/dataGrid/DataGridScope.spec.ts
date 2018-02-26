@@ -55,7 +55,7 @@ describe('dataGridScope', () => {
   it('should call "dispose" method when calling "doDestroy"', () => {
     const dataGridMock = sinon.mock(dataGridScope['dataGrid']);
 
-    dataGridMock.expects('dispose');
+    dataGridMock.expects('destroy');
     dataGridScope.doDestroy();
     dataGridMock.verify();
     dataGridMock.restore();

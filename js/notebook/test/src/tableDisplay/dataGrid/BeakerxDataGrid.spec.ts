@@ -47,12 +47,15 @@ describe('BeakerxDataGrid', () => {
   });
 
   it('should implement destroy method', () => {
-    const disposeStub = sinon.stub(dataGrid, 'dispose');
+    const eventManagerStub = sinon.stub(dataGrid.eventManager, 'destroy');
+    const columnsDestroyStub = sinon.stub(dataGrid.columnManager, 'destroy');
 
     dataGrid.destroy();
 
-    expect(disposeStub.calledOnce).to.be.true;
+    expect(eventManagerStub.calledOnce).to.be.true;
+    expect(columnsDestroyStub.calledOnce).to.be.true;
 
-    disposeStub.restore();
+    eventManagerStub.restore();
+    columnsDestroyStub.restore();
   });
 });

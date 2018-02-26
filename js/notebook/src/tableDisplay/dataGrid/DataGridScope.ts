@@ -21,8 +21,8 @@ import IDataGridScopeOptions from "./interface/IDataGridScopeOptions";
 import consts from "../consts";
 
 export class DataGridScope {
-  private dataGrid: BeakerxDataGrid;
-  private element: HTMLElement;
+  readonly dataGrid: BeakerxDataGrid;
+  readonly element: HTMLElement;
   private tableDisplayModel: any;
   private tableDisplayView: any;
 

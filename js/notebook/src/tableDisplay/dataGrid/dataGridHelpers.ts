@@ -43,4 +43,33 @@ export namespace DataGridHelpers {
 
     return text;
   }
+
+  export function disableKeyboardManager() {
+    try {
+      Jupyter.keyboard_manager.enabled = false;
+    } catch (e) {}
+  }
+
+  export function enableKeyboardManager() {
+    try {
+      Jupyter.keyboard_manager.enabled = true;
+    } catch (e) {}
+  }
+
+  export function getStringWidth(value: string) {
+    let spanEl: HTMLSpanElement = document.createElement('span');
+    let width: number;
+
+    spanEl.textContent = value;
+    spanEl.style.fontFamily = 'Lato, Helvetica, sans-serif';
+    spanEl.style.fontSize = '13px';
+    spanEl.style.padding = '5px';
+    spanEl.style.position = 'absolute';
+    document.body.appendChild(spanEl);
+
+    width = spanEl.clientWidth;
+    document.body.removeChild(spanEl);
+
+    return width;
+  }
 }

@@ -21,6 +21,7 @@ import DataGridCell from "./DataGridCell";
 import { darken } from "../style/dataGridStyle";
 
 export const DEFAULT_CELL_BACKGROUND = '';
+export const FOCUSED_CELL_BACKGROUND = 'rgb(200, 200, 200)';
 
 export class CellRendererFactory {
   private dataGrid: BeakerxDataGrid;
@@ -40,8 +41,12 @@ export class CellRendererFactory {
 
         let selectionColor = self.dataGrid.cellSelectionManager.getBackgroundColor(config);
         let highlighterColor = self.dataGrid.highlighterManager.getCellBackground(config);
+        let focusedColor = self.dataGrid.cellFocusManager.getFocussedCellBackground(config);
+        let initialColor = selectionColor && highlighterColor && darken(highlighterColor);
 
-        return selectionColor && highlighterColor && darken(highlighterColor) ||
+        return focusedColor && initialColor && darken(initialColor) ||
+          focusedColor ||
+          initialColor ||
           highlighterColor ||
           selectionColor ||
           DEFAULT_CELL_BACKGROUND;

@@ -30,6 +30,11 @@ import RowManager from "./row/RowManager";
 import CellSelectionManager from "./cell/CellSelectionManager";
 import {SectionList} from "@phosphor/datagrid/lib/sectionlist";
 import CellManager from "./cell/CellManager";
+import {DataGridHelpers} from "./dataGridHelpers";
+import EventManager from "./EventManager";
+
+import getStringWidth = DataGridHelpers.getStringWidth;
+import CellFocusManager from "./cell/CellFocusManager";
 
 export class BeakerxDataGrid extends DataGrid {
   columnSections: any;
@@ -43,6 +48,8 @@ export class BeakerxDataGrid extends DataGrid {
   rowManager: RowManager;
   cellSelectionManager: CellSelectionManager;
   cellManager: CellManager;
+  eventManager: EventManager;
+  cellFocusManager: CellFocusManager;
   focused: boolean;
 
   headerCellHovered = new Signal<this, ICellData|null>(this);
@@ -57,28 +64,18 @@ export class BeakerxDataGrid extends DataGrid {
     this.rowSections = this['_rowSections'];
     this.columnSections = this['_columnSections'];
 
+    this.resizeColumnSection = this.resizeColumnSection.bind(this);
     this.init(modelState);
   }
 
   handleEvent(event: Event): void {
-    switch (event.type) {
-      case 'mousemove':
-        this.handleHeaderCellHover(event as MouseEvent);
-        break;
-      case 'mousedown':
-        this.handleMouseDown(event as MouseEvent);
-        break;
-      case 'wheel':
-        this.handleMouseWheel(event as MouseEvent);
-        return;
-    }
-
-    super.handleEvent(event);
+    this.eventManager.handleEvent(event, super.handleEvent);
   }
 
   destroy() {
+    this.eventManager.destroy();
     this.columnManager.destroy();
-    this.dispose();
+    this.isAttached && this.dispose();
   }
 
   getColumn(config: CellRenderer.ICellConfig): DataGridColumn {
@@ -163,24 +160,37 @@ export class BeakerxDataGrid extends DataGrid {
     return x < (this.bodyWidth + this.rowHeaderSections.totalSize) && y < this.headerHeight;
   }
 
+  resizeMovedColumns(oldMap: number[], newMap: number[]) {
+    newMap.forEach((index, position) => {
+      const column = this.columnManager.getColumnByIndex(COLUMN_TYPES.body, index);
+
+      this.columnSections.resizeSection(
+        position,
+        this.getSectionWidth(column)
+      );
+    });
+  }
+
   private init(modelState: IDataModelState) {
     this.columnManager = new ColumnManager(modelState, this);
     this.rowManager = new RowManager(modelState.values, modelState.hasIndex, this.columnManager);
     this.cellSelectionManager = new CellSelectionManager(this);
     this.cellManager = new CellManager(this);
+    this.eventManager = new EventManager(this);
+    this.cellFocusManager = new CellFocusManager(this);
     this.model = new BeakerxDataGridModel(modelState, this.columnManager, this.rowManager);
     this.focused = false;
 
-    this.node.removeEventListener('mouseout', this.handleMouseOut.bind(this));
-    this.node.addEventListener('mouseout', this.handleMouseOut.bind(this));
-
     this.columnManager.addColumns();
     this.rowManager.createFilterExpressionVars();
-    this.model.reset();
 
     this.addHighlighterManager(modelState);
     this.addCellRenderers();
     this.setWidgetHeight();
+    this.resizeSections();
+
+    this.model.reset();
+    this.repaint();
   }
 
   private addHighlighterManager(modelState: IDataModelState) {
@@ -206,54 +216,6 @@ export class BeakerxDataGrid extends DataGrid {
     let rowCount = DEFAULT_PAGE_LENGTH < bodyRowCount ? DEFAULT_PAGE_LENGTH : bodyRowCount;
 
     this.node.style.minHeight = `${ (rowCount + 2) * this.baseRowSize + this.baseColumnHeaderSize }px`;
-  }
-
-  //@todo debounce it
-  private handleHeaderCellHover(event: MouseEvent): void {
-    if (!this.isOverHeader(event)) {
-      return;
-    }
-
-    const data = this.getCellData(event.clientX, event.clientY);
-
-    this.headerCellHovered.emit(data);
-  }
-
-  private handleMouseDown(event: MouseEvent) {
-    this.focused = true;
-    this.node.classList.add('bko-focused');
-    this.handleHeaderClick(event);
-  }
-
-  private handleMouseOut(event: MouseEvent) {
-    this.headerCellHovered.emit(null);
-    this.node.classList.remove('bko-focused');
-    this.focused = false;
-  }
-
-  private handleMouseWheel(event: MouseEvent) {
-    if(!this.focused) {
-      return;
-    }
-
-    super.handleEvent(event);
-  }
-
-  private handleHeaderClick(event: MouseEvent): void {
-    if (!this.isOverHeader(event)) {
-      return;
-    }
-
-    const data = this.getCellData(event.clientX, event.clientY);
-
-    if (!data) {
-      return;
-    }
-
-    const column = this.columnManager.columns[data.type][data.column];
-    const destColumn = this.columnManager.columns[data.type][column.getResolvedIndex()];
-
-    destColumn.toggleSort();
   }
 
   private findHoveredRowIndex(y: number) {
@@ -289,5 +251,36 @@ export class BeakerxDataGrid extends DataGrid {
     }
 
     return null;
+  }
+
+  private resizeColumnSection(column) {
+    this.columnSections.resizeSection(
+      column.getResolvedIndex(),
+      this.getSectionWidth(column)
+    );
+  }
+
+  private getSectionWidth(column) {
+    let value = String(column.formatFn(this.cellManager.createCellConfig({
+      region: 'body',
+      value: column.maxValue,
+      column: column.index,
+      row: 0,
+    })));
+
+    return getStringWidth(value.length > column.name.length ? value : column.name);
+  }
+
+  private resizeSections() {
+    this.columnManager.columns[COLUMN_TYPES.body].forEach(this.resizeColumnSection);
+    this.resizeIndexColumn();
+  }
+
+  private resizeIndexColumn() {
+    let valueCharLength = this.model.rowCount('body');
+    let name = this.columnManager.getColumnByIndex(COLUMN_TYPES.index, 0).name;
+    let value = name.length > valueCharLength ? name : String(valueCharLength);
+
+    this.rowHeaderSections.resizeSection(0, getStringWidth(value) + 10);
   }
 }

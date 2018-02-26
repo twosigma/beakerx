@@ -21,11 +21,12 @@ import {IColumnOptions, IColumnState} from "../interface/IColumn";
 import { ICellData } from "../interface/ICell";
 import { getAlignmentByChar, getAlignmentByType } from "./columnAlignment";
 import { CellRenderer, DataModel, TextRenderer } from "@phosphor/datagrid";
-import { ALL_TYPES, getDisplayType, getTypeByName } from "../dataTypes";
+import {ALL_TYPES, getDisplayType, getTypeByName, isDoubleWithPrecision} from "../dataTypes";
 import { minmax, MapIterator } from '@phosphor/algorithm';
 import { HIGHLIGHTER_TYPE } from "../interface/IHighlighterState";
 import ColumnManager, { COLUMN_CHANGED_TYPES, IBkoColumnsChangedArgs } from "./ColumnManager";
 import ColumnFilter from "./ColumnFilter";
+import {ITriggerOptions} from "../headerMenu/HeaderMenu";
 
 export enum COLUMN_TYPES {
   index,
@@ -50,6 +51,7 @@ export default class DataGridColumn {
   valuesIterator: MapIterator<number, any>;
   minValue: any;
   maxValue: any;
+  dataTypeTooltipNode: HTMLElement;
 
   state: IColumnState;
 
@@ -66,6 +68,7 @@ export default class DataGridColumn {
     this.handleHeaderCellHovered = this.handleHeaderCellHovered.bind(this);
     this.createMenu(options.menuOptions);
     this.addColumnFilter(options.menuOptions);
+    this.addDataTypeTooltip(options.menuOptions);
     this.connectToHeaderCellHovered();
     this.connectToColumnsChanged();
     this.addMinMaxValues();
@@ -95,7 +98,8 @@ export default class DataGridColumn {
       formatForTimes: {},
       visible: true,
       sortOrder: SORT_ORDER.NO_SORT,
-      filter: null
+      filter: null,
+      position: this.columnManager.indexResolver.columnIndexesMap[this.type].indexOf(this.index)
     };
   }
 
@@ -125,16 +129,8 @@ export default class DataGridColumn {
   }
 
   hide() {
-    const args: DataModel.IColumnsChangedArgs = {
-      type: 'columns-removed',
-      region: 'body',
-      index: this.index,
-      span: 0
-    };
-
     this.setState({ visible: false });
     this.menu.hideTrigger();
-    this.dataGrid.model.emitChanged(args);
     this.columnManager.columnsChanged.emit({
       type: COLUMN_CHANGED_TYPES.columnVisible,
       value: false,
@@ -143,15 +139,7 @@ export default class DataGridColumn {
   }
 
   show() {
-    const args: DataModel.IColumnsChangedArgs = {
-      type: 'columns-inserted',
-      region: 'body',
-      index: this.index,
-      span: 0
-    };
-
     this.setState({ visible: true });
-    this.dataGrid.model.emitChanged(args);
     this.columnManager.columnsChanged.emit({
       type: COLUMN_CHANGED_TYPES.columnVisible,
       value: true,
@@ -159,7 +147,7 @@ export default class DataGridColumn {
     });
   }
 
-  createMenu(menuOptions): void {
+  createMenu(menuOptions: ITriggerOptions): void {
     if (this.type === COLUMN_TYPES.index) {
       this.menu = new IndexMenu(this, menuOptions);
 
@@ -209,6 +197,8 @@ export default class DataGridColumn {
 
   destroy() {
     this.menu.destroy();
+    document.body.contains(this.dataTypeTooltipNode) &&
+    document.body.removeChild(this.dataTypeTooltipNode);
   }
 
   connectToColumnsChanged() {
@@ -220,19 +210,17 @@ export default class DataGridColumn {
   }
 
   handleHeaderCellHovered(sender: BeakerxDataGrid, data: ICellData) {
-    if(!data) {
-      return;
-    }
+    const column = data && this.columnManager.indexResolver.getIndexByColumnPosition(data.column, data.type);
 
-    const column = this.columnManager.indexResolver.resolveIndex(data.column, data.type);
-
-    if (column !== this.index || data.type !== this.type) {
+    if(!data || column !== this.index || data.type !== this.type) {
       this.menu.hideTrigger();
+      this.toggleDataTooltip(false);
 
       return;
     }
 
     this.menu.showTrigger(data.offset);
+    this.toggleDataTooltip(true, data);
   }
 
   getInitialAlignment(dataType) {
@@ -298,12 +286,23 @@ export default class DataGridColumn {
   }
 
   move(destination: number) {
-    this.columnManager.moveColumn(this, destination);
+    this.setState({ position: destination });
+    this.columnManager.columnsChanged.emit({
+      type: COLUMN_CHANGED_TYPES.columnMove,
+      value: destination,
+      column: this
+    });
     this.menu.hideTrigger();
   }
 
   getResolvedIndex() {
-    return this.columnManager.indexResolver.resolveIndex(this.index, this.type);
+    return this.columnManager.indexResolver.getIndexByColumnPosition(this.index, this.type);
+  }
+
+  setDataTypePrecission(precission: number) {
+    if (isDoubleWithPrecision(this.state.displayType)) {
+      this.setDisplayType(`4.${precission}`);
+    }
   }
 
   private dateValueResolver(value) {
@@ -355,5 +354,36 @@ export default class DataGridColumn {
 
     this.minValue = minMax ? minMax[0] : null;
     this.maxValue = minMax ? minMax[1] : null;
+  }
+
+  private addDataTypeTooltip(menuOptions: ITriggerOptions) {
+    const rect = this.dataGrid.node.getBoundingClientRect();
+
+    this.dataTypeTooltipNode = document.createElement('div');
+    this.dataTypeTooltipNode.style.position = 'absolute';
+    this.dataTypeTooltipNode.style.visibility = 'visible';
+    this.dataTypeTooltipNode.style.left = `${rect.left + menuOptions.x}px`;
+    this.dataTypeTooltipNode.style.top = `${rect.top + menuOptions.y - this.dataGrid.headerHeight}px`;
+    this.dataTypeTooltipNode.innerText = this.getDataTypeName();
+
+    this.dataTypeTooltipNode.classList.add('bko-tooltip');
+
+    document.body.appendChild(this.dataTypeTooltipNode);
+  }
+
+  private toggleDataTooltip(show: boolean, data?: ICellData) {
+    const rect = this.dataGrid.node.getBoundingClientRect();
+
+    if (!this.dataTypeTooltipNode.classList.contains('visible')) {
+      if (data && data.offset !== undefined) {
+        this.dataTypeTooltipNode.style.left = `${Math.ceil(rect.left + data.offset + 20)}px`;
+      }
+
+      this.dataTypeTooltipNode.style.top = `${Math.ceil(rect.top - 10)}px`;
+    }
+
+    show
+      ? this.dataTypeTooltipNode.classList.add('visible')
+      : this.dataTypeTooltipNode.classList.remove('visible');
   }
 }

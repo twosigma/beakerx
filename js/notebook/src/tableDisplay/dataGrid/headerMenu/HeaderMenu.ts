@@ -109,7 +109,7 @@ export default abstract class HeaderMenu implements MenuInterface {
   }
 
   destroy(): void {
-    this.menu.dispose();
+    this.menu.isAttached && this.menu.dispose();
   }
 
   toggleMenu(submenuIndex?: number): void {

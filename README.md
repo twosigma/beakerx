@@ -107,6 +107,15 @@ The Java unit tests are run with every build. See [test/README.md] for how to ru
 docker run -p 8888:8888 beakerx/beakerx
 ```
 
+## Overview
+
+BeakerX is a collection of kernels and extensions for Jupyter.
+The code is organized as follows:
+
+* [beakerx](beakerx) The Python package.
+* [doc](doc) Documentation consisting of notebooks.  [StartHere.ipynb](StartHere.ipynb) at the top level links to these.
+
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).

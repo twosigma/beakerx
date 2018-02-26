@@ -19,13 +19,13 @@ package com.twosigma.beakerx.groovy.inspect;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.groovy.kernel.GroovyKernelMock;
+import com.twosigma.beakerx.inspect.Inspect;
 import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.kernel.KernelManager;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -56,18 +56,23 @@ public class GroovyInspectTest {
         groovyEvaluator.exit();
     }
 
+    //call inspect on code, "\0" in code defines caret position
+    private InspectResult callInspectOnCaretPos(String code) {
+        int carretPos = code.indexOf("\0");
+        return groovyEvaluator.inspect(code.replace("\0", ""), carretPos);
+    }
+
     @Test
     public void evaluateInspectFooWoBracketCaretAtEnd() throws Exception {
         //given
         String code = "import com.twosigma.beakerx.table.*\n" +
                 "import com.twosigma.beakerx.table.format.TableDisplayStringFormat\n" +
                 "\n" +
-                "csv = new CsvPlotReader()";
-        String codeForinspect = code + "\ncsv.read";
+                "csv = new CsvPlotReader()\n" +
+                "csv.re\0ad";
         String expected = "java.lang.String fileName\n";
-        int caretPosition = codeForinspect.length(); // on method name
         //when
-        InspectResult result = groovyEvaluator.inspect(codeForinspect, caretPosition);
+        InspectResult result = callInspectOnCaretPos(code);
         //then
         assertThat(result.getFound()).isTrue();
         assertThat(result.getData().getTextplain()).isEqualTo(expected);
@@ -79,11 +84,10 @@ public class GroovyInspectTest {
         String code = "import com.twosigma.beakerx.table.*\n" +
                 "import com.twosigma.beakerx.table.format.TableDisplayStringFormat\n" +
                 "\n" +
-                "csv = new CsvPlotReader()";
+                "csv = new CsvPlot\0Reader()";
         String expected = "com.twosigma.beakerx.fileloader.CsvPlotReader\n";
-        int caretPosition = code.length() - 5;
         //when
-        InspectResult result = groovyEvaluator.inspect(code, caretPosition);
+        InspectResult result = callInspectOnCaretPos(code);
         assertThat(result.getFound()).isTrue();
         assertThat(result.getData().getTextplain()).isEqualTo(expected);
     }
@@ -95,11 +99,10 @@ public class GroovyInspectTest {
                 "import com.twosigma.beakerx.table.format.TableDisplayStringFormat\n" +
                 "\n" +
                 "csv = new CsvPlotReader()\n" +
-                "csv.read()";
+                "csv.read(\0)";
         String expected = "java.lang.String fileName\n";
-        int caretPosition = code.length() - 1; //in method call bracket
         //when
-        InspectResult result = groovyEvaluator.inspect(code, caretPosition);
+        InspectResult result = callInspectOnCaretPos(code);
         //then
         assertThat(result.getFound()).isTrue();
         assertThat(result.getData().getTextplain()).isEqualTo(expected);
@@ -112,11 +115,10 @@ public class GroovyInspectTest {
                 "import com.twosigma.beakerx.table.format.TableDisplayStringFormat\n" +
                 "\n" +
                 "table = new TableDisplay(new CsvPlotReader().read('../resources/data/interest-rates.csv'))\n" +
-                "table.setDoubleClickAction()";
+                "table.setDoubleCli\0ckAction()";
         String expected = "java.lang.String tagName\n";
-        int caretPosition = code.length() - 5; //on method name
         //when
-        InspectResult result = groovyEvaluator.inspect(code, caretPosition);
+        InspectResult result = callInspectOnCaretPos(code);
         //then
         assertThat(result.getFound()).isTrue();
         assertThat(result.getData().getTextplain()).isEqualTo(expected);
@@ -128,13 +130,60 @@ public class GroovyInspectTest {
         String code = "import com.twosigma.beakerx.table.*\n" +
                 "import com.twosigma.beakerx.table.format.TableDisplayStringFormat\n" +
                 "\n" +
-                "table = new TableDisplay(new CsvPlotReader().read('args'))";
+                "table = new TableDisplay(new CsvPlotReader().read('ar\0gs'))";
         String expected = "java.lang.String fileName\n";
-        int caretPosition = 155; //in read method argument
         //when
-        InspectResult result = groovyEvaluator.inspect(code, caretPosition);
+        InspectResult result = callInspectOnCaretPos(code);
         //then
         assertThat(result.getFound()).isTrue();
         assertThat(result.getData().getTextplain()).isEqualTo(expected);
     }
+
+    @Test
+    public void evaluateInspectClassNameInsideConstructor() throws Exception {
+        //given
+        String code = "import com.twosigma.beakerx.table.*\n" +
+                "import com.twosigma.beakerx.table.format.TableDisplayStringFormat\n" +
+                "\n" +
+                "display = new TableDisplay(new CsvPlot\0Reader().read(\"../resources/data/interest-rates.csv\"))\n" +
+                "display.setStringFormatForColumn(\"test\")";
+        String expected = "com.twosigma.beakerx.fileloader.CsvPlotReader\n";
+        //when
+        InspectResult result = callInspectOnCaretPos(code);
+        assertThat(result.getFound()).isTrue();
+        assertThat(result.getData().getTextplain()).isEqualTo(expected);
+    }
+
+    @Test
+    public void evaluateInspectOnVariableWithDefKeyword() throws Exception {
+        //given
+        String code = "def display = new TableDisplay()\n" +
+                "dis\0play.setDoubleClickAction()";
+        String expected = "com.twosigma.beakerx.table.TableDisplay\n";
+        //when
+        InspectResult result = callInspectOnCaretPos(code);
+        assertThat(result.getFound()).isTrue();
+        assertThat(result.getData().getTextplain()).isEqualTo(expected);
+    }
+
+    @Test
+    public void evaluateInspectOnMethodVarWithDefKeyword() throws Exception {
+        //given
+        String code = "def display = new TableDisplay()\n" +
+                "display.setDoubleCli\0ckAction()";
+        String expected = "java.lang.String tagName\n";
+        //when
+        InspectResult result = callInspectOnCaretPos(code);
+        assertThat(result.getFound()).isTrue();
+        assertThat(result.getData().getTextplain()).isEqualTo(expected);
+    }
+
+    @Test
+    public void evaluateInspectInsideSingleQuotes() throws Exception {
+        //given
+        String code = "f['la\0st'] = \"Last\"";
+        InspectResult result = callInspectOnCaretPos(code);
+        assertThat(result.getFound()).isFalse();
+    }
 }
+

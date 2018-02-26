@@ -38,14 +38,16 @@ public class Inspect {
 
     public InspectResult doInspect(String code, int caretPosition, URLClassLoader classLoader, Imports imports) {
         InspectResult inspectResult = new InspectResult();
-        String row = CodeParsingTool.getLineWithCursor(code, caretPosition);
-        String methodName = CodeParsingTool.getSelectedMethodName(code, caretPosition);
-        String className = CodeParsingTool.getClassName(row, code, caretPosition, methodName);
-        try (InputStream inputStream = new FileInputStream(getInspectFile())) {
-            String inspectData = IOUtils.toString(inputStream, "UTF-8");
-            inspectResult = getInspectResult(caretPosition, methodName, className, inspectData);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (code.length() >= caretPosition) {
+            String row = CodeParsingTool.getLineWithCursor(code, caretPosition);
+            String methodName = CodeParsingTool.getSelectedMethodName(code, caretPosition);
+            String className = CodeParsingTool.getClassName(row, code, caretPosition, methodName);
+            try (InputStream inputStream = new FileInputStream(getInspectFile())) {
+                String inspectData = IOUtils.toString(inputStream, "UTF-8");
+                inspectResult = getInspectResult(caretPosition, methodName, className, inspectData);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return inspectResult;
     }

@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.inspect;
 
+import com.twosigma.beakerx.kernel.Code;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
@@ -93,6 +94,27 @@ public class CodeParsingToolTest {
     }
 
     @Test
+    public void getInspectObjectNestedTest() {
+        //given
+        String code = "table = new TableDisplay(new CsvPlotReader().read('../resources/data/interest-rates.csv'))";
+        int pos_1 = 2;
+        int pos_2 = 17;
+        int pos_3 = 36;
+        String expected_1 = "table";
+        String expected_2 = "TableDisplay";
+        String expected_3 = "CsvPlotReader";
+        //when
+        String result_1 = CodeParsingTool.getInspectObject(code, pos_1, null);
+        String result_2 = CodeParsingTool.getInspectObject(code, pos_2, null);
+        String result_3 = CodeParsingTool.getInspectObject(code, pos_3, null);
+        //then
+        Assertions.assertThat(result_1).isEqualTo(expected_1);
+        Assertions.assertThat(result_2).isEqualTo(expected_2);
+        Assertions.assertThat(result_3).isEqualTo(expected_3);
+
+    }
+
+    @Test
     public void getClassOfInspectObjectTest() {
         //given
         String code = "import com.twosigma.beakerx.table.*\n" +
@@ -100,14 +122,29 @@ public class CodeParsingToolTest {
                 "table = new TableDisplay(new CsvPlotReader().read('../resources/data/interest-rates.csv'))\n" +
                 "table.setDoubleClickAction()\n" +
                 "CsvPlotReader().read";
-        //when
-        String result_1 = CodeParsingTool.getClassOfInspectObject(code, "CsvPlotReader");
-        String result_2 = CodeParsingTool.getClassOfInspectObject(code, "table");
+        String inspectObject_1 = "CsvPlotReader";
+        String inspectObject_2 = "table";
         String expected_1 = "CsvPlotReader";
         String expected_2 = "TableDisplay";
+        //when
+        String result_1 = CodeParsingTool.getClassOfInspectObject(code, inspectObject_1);
+        String result_2 = CodeParsingTool.getClassOfInspectObject(code, inspectObject_2);
         //then
         Assertions.assertThat(result_1).isEqualTo(expected_1);
         Assertions.assertThat(result_2).isEqualTo(expected_2);
+    }
+
+    @Test
+    public void getClassOfInspectObjectWithDefTest() {
+        //given
+        String code = "def display = new TableDisplay()\n" +
+                "display.setDoubleClickAction()";
+        String inspectObject = "display";
+        String expected = "TableDisplay";
+        //when
+        String result = CodeParsingTool.getClassOfInspectObject(code, inspectObject);
+        //then
+        Assertions.assertThat(result).isEqualTo(expected);
     }
 
 }

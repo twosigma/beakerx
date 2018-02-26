@@ -74,23 +74,38 @@ public class CodeParsingTool {
     public static String getInspectObject(String code, int caretPosition, String methodName) {
         String inspectObjectName;
         String line = getLineWithCursor(code, caretPosition);
-        String lineToMethodName =
-                methodName == null || line.indexOf(methodName) < 1 ?
-                        line : line.substring(0, line.indexOf(methodName)- 1);
-        String lineToClassName;
-        if (lineToMethodName.charAt(lineToMethodName.length() - 1) == ')') {
-            lineToClassName = removeLastBracket(lineToMethodName);
+        if (methodName == null || line.indexOf(methodName) < 1) {
+            int caretPos = getCaretPositionInLine(code, caretPosition);
+            char[] endChars = {' ','(','.'};
+            int begOfClass = line.substring(0, caretPos).lastIndexOf(" ");
+            begOfClass = begOfClass == -1 ? 0 : begOfClass;
+            int endOfClass = line.length();
+            for (char c : endChars) {
+                int index = line.substring(caretPos).indexOf(c);
+                if (index != -1 && index + caretPos < endOfClass) {
+                    endOfClass = index + caretPos;
+                }
+            }
+            inspectObjectName = line.substring(begOfClass, endOfClass);
         } else {
-            lineToClassName = lineToMethodName;
-        }
-        int lastSpacePos = lineToClassName.lastIndexOf(" ");
-        if (lastSpacePos == -1) {
-            inspectObjectName = lineToClassName;
-        } else {
-            inspectObjectName = lineToClassName.substring(lastSpacePos, lineToClassName.length());
-        }
-        if (inspectObjectName.contains(".")) {
-            inspectObjectName = inspectObjectName.split("\\.")[0].trim();
+            String lineToMethodName =
+                    methodName == null || line.indexOf(methodName) < 1 ?
+                            line : line.substring(0, line.indexOf(methodName)- 1);
+            String lineToClassName;
+            if (lineToMethodName.charAt(lineToMethodName.length() - 1) == ')') {
+                lineToClassName = removeLastBracket(lineToMethodName);
+            } else {
+                lineToClassName = lineToMethodName;
+            }
+            int lastSpacePos = lineToClassName.lastIndexOf(" ");
+            if (lastSpacePos == -1) {
+                inspectObjectName = lineToClassName;
+            } else {
+                inspectObjectName = lineToClassName.substring(lastSpacePos, lineToClassName.length());
+            }
+            if (inspectObjectName.contains(".")) {
+                inspectObjectName = inspectObjectName.split("\\.")[0].trim();
+            }
         }
         return inspectObjectName.trim();
     }
@@ -103,9 +118,11 @@ public class CodeParsingTool {
             if (posOfEq != -1) {
                 String lineBefEq = line.substring(0, posOfEq).trim();
                 int begOfInspectObj = lineBefEq.lastIndexOf(" ") == -1 ? 0 : lineBefEq.lastIndexOf(" ");
-                if (lineBefEq.substring(begOfInspectObj, lineBefEq.length()).equals(inspectObject)) {
+                if (lineBefEq.substring(begOfInspectObj, lineBefEq.length()).trim().equals(inspectObject)) {
                     String lineAftEq = line.substring(posOfEq).trim();
-                    className = lineAftEq.substring(lineAftEq.indexOf("new") + 3, lineAftEq.indexOf("("));
+                    className = lineAftEq.substring(
+                            lineAftEq.indexOf("new") == -1 ? 0 : lineAftEq.indexOf("new") + 3,
+                            lineAftEq.indexOf("(") == -1 ? lineAftEq.length() : lineAftEq.indexOf("("));
                     break;
                 }
             }

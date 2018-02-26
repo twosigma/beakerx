@@ -40,7 +40,7 @@
   min-width: 35px;
   margin-left: -1px;
   border: 1px solid transparent;
-  padding: 6px 15px 4px 15px;
+  padding: 4px 15px;
 }
 
 #beakerx-tree-widget .p-TabBar-tab:first-child {

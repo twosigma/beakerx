@@ -167,4 +167,89 @@ describe('Testing of table (python)', function () {
     });
   });
 
+  describe('Pandas read csv ', function(){
+    it('Should display table ', function() {
+      cellIndex += 1;
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      expect(tableHelper.getCellOfTableHeader(dtContainer, 1).getText()).toMatch(/m3/);
+      expect(tableHelper.getCellOfTableHeader(dtContainer, 8).getText()).toMatch(/time/);
+      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 1).getText()).toMatch(/7.898/);
+      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 8).getText()).toMatch(/1990-01-30 19:00:00/);
+      expect(dtContainer.$('div.bko-table-selector').isEnabled()).toBeTruthy();
+      expect(dtContainer.$('div.bko-table-pagenum').isEnabled()).toBeTruthy();
+      expect(dtContainer.$('div.bko-table-use-pagination').isEnabled()).toBeTruthy();
+    });
+  });
+
+  describe('Set alignment provider for "m3" column ', function () {
+    var dtContainer2;
+
+    it('Column "y30" has default alignment equals "right" ', function() {
+      cellIndex += 1;
+      dtContainer2 = beakerxPO.runCellToGetDtContainer(cellIndex);
+      expect(tableHelper.getCellOfTableHeader(dtContainer2, 1).getText()).toMatch(/m3/);
+      expect(tableHelper.getCellOfTableBody(dtContainer2, 0, 1).getAttribute('class')).toMatch(/dtcenter/);
+    });
+
+    it('Column "m3" has center alignment ', function() {
+      expect(tableHelper.getCellOfTableHeader(dtContainer2, 1).getText()).toMatch(/m3/);
+      expect(tableHelper.getCellOfTableBody(dtContainer2, 0, 1).getAttribute('class')).toMatch(/dtcenter/);
+    });
+  });
+
+
+  describe('Set renderer for "y10" column ', function () {
+    var dtContainer2;
+
+    it('Column "y10" has bar element ', function() {
+      dtContainer2 = beakerxPO.getDtContainerByIndex(cellIndex);
+      expect(tableHelper.getCellOfTableHeader(dtContainer2, 6).getText()).toMatch(/y10/);
+      expect(tableHelper.getCellOfTableBody(dtContainer2, 0, 6).$('.dt-bar-data-cell').isEnabled()).toBeTruthy();
+    });
+
+    it('Column "y10" doesn\'t have text element ', function() {
+      expect(tableHelper.getCellOfTableBody(dtContainer2, 0, 6).$('.dt-cell-text').isVisible()).toBeFalsy();
+    });
+  });
+
+  describe('Set renderer for "double" type ', function () {
+    var dtContainer2;
+
+    it('Column "y3" has bar element ', function() {
+      dtContainer2 = beakerxPO.getDtContainerByIndex(cellIndex);
+      expect(tableHelper.getCellOfTableHeader(dtContainer2, 7).getText()).toMatch(/y3/);
+      expect(tableHelper.getCellOfTableBody(dtContainer2, 0, 7).isExisting('.dt-bar-data-cell')).toBeTruthy();
+    });
+
+    it('Column "time" doesn\'t have bar element ', function() {
+      expect(tableHelper.getCellOfTableHeader(dtContainer2, 8).getText()).toMatch(/time/);
+      expect(tableHelper.getCellOfTableBody(dtContainer2, 0, 8).isExisting('.dt-bar-data-cell')).toBeFalsy();
+    });
+  });
+
+  describe('Set string format for times ', function () {
+    it('Column "time" display date by "DAYS" format ', function() {
+      cellIndex += 1;
+      var dtContainer3 = beakerxPO.runCellToGetDtContainer(cellIndex);
+      expect(tableHelper.getCellOfTableHeader(dtContainer3, 8).getText()).toMatch(/time/);
+      expect(tableHelper.getCellOfTableBody(dtContainer3, 0, 8).getText()).toMatch('19900330');
+    });
+  });
+
+  describe('Set string format for "double" type ', function () {
+    it('Column "y30" display 4 digits after decimal point ', function() {
+      var dtContainer3 = beakerxPO.getDtContainerByIndex(cellIndex);
+      expect(tableHelper.getCellOfTableHeader(dtContainer3, 2).getText()).toMatch(/y30/);
+      expect(tableHelper.getCellOfTableBody(dtContainer3, 0, 2).getText()).toMatch(/\d.\d{3}/);
+    });
+  });
+
+  describe('Set string format for "y3" column ', function () {
+    it('Column "y3" display only integer part of number ', function() {
+      var dtContainer3 = beakerxPO.getDtContainerByIndex(cellIndex);
+      expect(tableHelper.getCellOfTableHeader(dtContainer3, 1).getText()).toMatch(/m3/);
+      expect(tableHelper.getCellOfTableBody(dtContainer3, 0, 1).getText()).toMatch(/\d{1}/);
+    });
+  });
+
 });

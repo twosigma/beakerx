@@ -26,34 +26,33 @@ export default class ColumnIndexResolver {
   ) {
     this.columnIndexesMap = { [COLUMN_TYPES.index]: [], [COLUMN_TYPES.body]: [] };
 
-    this.mapAllIndexes(indexColumnsState, bodyColumnsState);
+    this.mapAllColumnPositionsToIndexes(indexColumnsState, bodyColumnsState);
   }
 
-  mapAllIndexes(
+  mapAllColumnPositionsToIndexes(
     indexColumnsState: IDataGridModelColumnState,
     bodyColumnsState: IDataGridModelColumnState
   ) {
-    this.mapIndexes(COLUMN_TYPES.index, indexColumnsState);
-    this.mapIndexes(COLUMN_TYPES.body, bodyColumnsState);
+    this.mapColumnsPositionToIndex(COLUMN_TYPES.index, indexColumnsState);
+    this.mapColumnsPositionToIndex(COLUMN_TYPES.body, bodyColumnsState);
   }
 
-  resolveIndex(index: number, columnType: COLUMN_TYPES) {
-    return this.columnIndexesMap[columnType][index];
+  getIndexByColumnPosition(position: number, columnType: COLUMN_TYPES) {
+    return this.columnIndexesMap[columnType][position];
   }
 
-  mapIndexes(columnType: COLUMN_TYPES, columnsState: IDataGridModelColumnState) {
+  mapColumnsPositionToIndex(columnType: COLUMN_TYPES, columnsState: IDataGridModelColumnState) {
     this.applyOrderRules(columnType, columnsState);
     this.applyVisibilityRules(columnType, columnsState);
   }
 
   private applyVisibilityRules(columnType: COLUMN_TYPES, columnsState: IDataGridModelColumnState) {
     columnsState.visibility.forEach((visible, index) => {
-      let mappedIndex = this.columnIndexesMap[columnType][index];
-      let isVisible = columnsState.visibility[mappedIndex];
+      if (!visible) {
+        let indexToRemove = this.columnIndexesMap[columnType].indexOf(index);
+        let removed = this.columnIndexesMap[columnType].splice(indexToRemove, 1)[0];
 
-      if (!isVisible) {
-        this.columnIndexesMap[columnType].splice(index, 1);
-        this.columnIndexesMap[columnType].push(mappedIndex);
+        this.columnIndexesMap[columnType].push(removed);
       }
     });
   }

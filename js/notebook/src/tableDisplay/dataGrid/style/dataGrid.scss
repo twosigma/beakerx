@@ -25,12 +25,14 @@ $gridBackgroundColor: $gallery;
 $borderColor: $silverChalice;
 $buttonActive: $silver;
 $gridBorder: 1px solid $borderColor;
+$tooltipTransition: opacity 300ms ease-in-out 300ms;
 
 .p-DataGrid {
   min-width: 64px;
   min-height: 330px;
   padding: 20px;
   border: 1px solid white;
+  font-family: "Lato", Helvetica, sans-serif;
 
   .bko-menu {
     opacity: 1;
@@ -60,6 +62,25 @@ $gridBorder: 1px solid $borderColor;
         background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAAAL0lEQVR42mNgGAWjYBSggf9EAKoZSI7rtuIwayrVvEtJ2KG7bivVIoNqsTu00ycAka+SJUKi7ZcAAAAASUVORK5CYII=");
       }
     }
+  }
+}
+
+.bko-tooltip {
+  background-color: #ffffff;
+  box-shadow: 0 0 3px #333333;
+  border-radius: 3px;
+  padding: 5px 10px;
+  opacity: 0;
+  -webkit-transition: $tooltipTransition;
+  -moz-transition: $tooltipTransition;
+  -ms-transition: $tooltipTransition;
+  -o-transition: $tooltipTransition;
+  transition: $tooltipTransition;
+  font-family: "Lato", Helvetica, sans-serif;
+  z-index: 900;
+
+  &.visible {
+    opacity: 1;
   }
 }
 

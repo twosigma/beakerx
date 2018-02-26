@@ -48,5 +48,6 @@ export interface IColumnState {
   formatForTimes: any,
   visible: boolean,
   sortOrder: SORT_ORDER,
-  filter: string|null
+  filter: string|null,
+  position: number
 }

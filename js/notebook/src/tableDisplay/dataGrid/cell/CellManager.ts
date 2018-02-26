@@ -139,7 +139,7 @@ export default class CellManager {
     anchor.dispatchEvent(event);
   };
 
-  private createCellConfig(
+  createCellConfig(
     options: { row: number, column: number, value: any, region: DataModel.CellRegion }
   ): CellRenderer.ICellConfig {
     return {

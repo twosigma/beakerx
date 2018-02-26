@@ -154,6 +154,7 @@ export default class CellSelectionManager {
       return this.setEndCell(cellData);
     }
 
+    this.dataGrid.cellFocusManager.setFocusedCell(cellData);
     this.setStartCell(cellData);
   }
 

@@ -21,7 +21,7 @@ import {COLUMN_TYPES, default as DataGridColumn} from "../column/DataGridColumn"
 import IDataModelState from '../interface/IDataGridModelState';
 import { MapIterator, iter } from '@phosphor/algorithm';
 import { IColumn } from "../interface/IColumn";
-import ColumnManager, {COLUMN_CHANGED_TYPES, IBkoColumnsChangedArgs} from "../column/ColumnManager";
+import ColumnManager from "../column/ColumnManager";
 import RowManager from "../row/RowManager";
 import DataGridRow from "../row/DataGridRow";
 
@@ -43,7 +43,6 @@ export class BeakerxDataGridModel extends DataModel {
     super();
 
     this.addProperties(state, columnManager, rowManager);
-    this.connectTocolumnsChanged();
   }
 
   get state() {
@@ -88,7 +87,7 @@ export class BeakerxDataGridModel extends DataModel {
 
   data(region: DataModel.CellRegion, row: number, columnIndex: number): any {
     const columnType = DataGridColumn.getColumnTypeByRegion(region);
-    const index = this.columnManager.indexResolver.resolveIndex(columnIndex, columnType);
+    const index = this.columnManager.indexResolver.getIndexByColumnPosition(columnIndex, columnType);
     const dataGridRow = this.rowManager.getRow(row);
 
     if (region === 'row-header') {
@@ -131,20 +130,5 @@ export class BeakerxDataGridModel extends DataModel {
       alignmentForColumn: this._state.alignmentForColumn || {},
       alignmentForType: this._state.alignmentForType || {},
     }
-  }
-
-  private connectTocolumnsChanged() {
-    this.columnManager.columnsChanged.connect(this.setColumnVisible.bind(this));
-  }
-
-  private setColumnVisible(sender: ColumnManager, data: IBkoColumnsChangedArgs) {
-    if(data.type !== COLUMN_CHANGED_TYPES.columnVisible) {
-      return;
-    }
-
-    const columnsVisible = { ...this.state.columnsVisible, [data.column.name]: data.value };
-    this.setState({ columnsVisible });
-
-    this.reset();
   }
 }

@@ -24,8 +24,8 @@ describe('ColumnIndexResolver', () => {
   const dataGrid = new BeakerxDataGrid({}, modelStateMock);
   const columnIndexResolver = dataGrid.columnManager.indexResolver;
 
-  it('should implement resolveIndex', () => {
-    expect(columnIndexResolver).to.have.property('resolveIndex');
+  it('should implement getIndexByColumnPosition', () => {
+    expect(columnIndexResolver).to.have.property('getIndexByColumnPosition');
   });
 
   it('should have property columnIndexesMap', () => {
@@ -33,18 +33,18 @@ describe('ColumnIndexResolver', () => {
   });
 
   it('should returned proper column index', () => {
-    expect(columnIndexResolver.resolveIndex(0, COLUMN_TYPES.index)).to.equal(0);
-    expect(columnIndexResolver.resolveIndex(0, COLUMN_TYPES.body)).to.equal(0);
-    expect(columnIndexResolver.resolveIndex(1, COLUMN_TYPES.body)).to.equal(1);
+    expect(columnIndexResolver.getIndexByColumnPosition(0, COLUMN_TYPES.index)).to.equal(0);
+    expect(columnIndexResolver.getIndexByColumnPosition(0, COLUMN_TYPES.body)).to.equal(0);
+    expect(columnIndexResolver.getIndexByColumnPosition(1, COLUMN_TYPES.body)).to.equal(1);
 
     dataGrid.columnManager.columns[COLUMN_TYPES.body][0].hide();
-    expect(columnIndexResolver.resolveIndex(0, COLUMN_TYPES.body)).to.equal(1);
+    expect(columnIndexResolver.getIndexByColumnPosition(0, COLUMN_TYPES.body)).to.equal(1);
     dataGrid.columnManager.columns[COLUMN_TYPES.body][0].show();
-    expect(columnIndexResolver.resolveIndex(0, COLUMN_TYPES.body)).to.equal(0);
+    expect(columnIndexResolver.getIndexByColumnPosition(0, COLUMN_TYPES.body)).to.equal(0);
   });
 
   it('should remap indexes after setting column visible', () => {
-    const stub = sinon.stub(columnIndexResolver, 'mapIndexes');
+    const stub = sinon.stub(columnIndexResolver, 'mapColumnsPositionToIndex');
 
     dataGrid.columnManager.columns[COLUMN_TYPES.body][0].hide();
     expect(stub.calledOnce).to.be.true;

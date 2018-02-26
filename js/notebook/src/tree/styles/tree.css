@@ -1,0 +1,107 @@
+/*
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+#beakerx-tree-widget.isLab {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+#beakerx-tree-widget .p-TabBar {
+  min-height: 30px;
+  max-height: 30px;
+}
+
+#beakerx-tree-widget .p-TabBar-content {
+  min-width: 0;
+  align-items: flex-end;
+  border-bottom: 1px solid #ddd;
+  padding: 0 15px;
+}
+
+#beakerx-tree-widget .p-TabBar-tab {
+  flex: 0 1 auto;
+  min-height: 26px;
+  max-height: 26px;
+  min-width: 35px;
+  margin-left: -1px;
+  border: 1px solid transparent;
+  padding: 4px 15px;
+}
+
+#beakerx-tree-widget .p-TabBar-tab:first-child {
+  margin-left: 0;
+}
+
+#beakerx-tree-widget .p-TabBar-tab.p-mod-current {
+  background-color: #fff;
+  border-color: #ddd;
+  border-bottom-color: transparent;
+  transform: translateY(1px);
+}
+
+#beakerx-tree-widget .p-TabBar-tab:hover:not(.p-mod-current) {
+  background: #F0F0F0;
+}
+
+.bx-banner-widget {
+  padding: 15px;
+}
+
+.bx-banner-widget .beakerx_site_link {
+  display: inline-block;
+  margin: 0 75px 0 0;
+}
+
+.bx-banner-widget svg {
+  width: 206px;
+  height: 59px;
+  transform: translateY(5px);
+}
+
+.bx-options-widget {
+  padding: 15px 0;
+  display: flex;
+}
+
+.bx-options-widget .p-TabPanel-stackedPanel {
+  left: 15px;
+  right: 15px;
+}
+
+.bx-ui-options-widget,
+.bx-jvm-options-widget {
+  left: 10px;
+  right: 10px;
+  padding: 15px;
+}
+
+.bx-sync-indicator-widget {
+  padding: 15px;
+}
+.bx-sync-indicator-widget .saving { color: #f0ad4e; }
+.bx-sync-indicator-widget .saved { color: #5cb85c; }
+
+.bx-sync-indicator-widget .errors-wrapper { color: #ff0000; }
+
+#properties_property .form-control {
+  margin-right: 10px;
+}
+
+#other_property .form-control {
+  margin-right: 10px;
+}

@@ -215,6 +215,7 @@ public abstract class BaseEvaluator implements Evaluator {
     return sessionId;
   }
 
+  @Override
   public String getOutDir() {
     return outDir;
   }

@@ -114,4 +114,8 @@ public class EvaluatorManager {
   public String addRepo(String name, String url) {
     return evaluator.addRepo(name, url);
   }
+
+  public String getOutDir() {
+    return evaluator.getOutDir();
+  }
 }

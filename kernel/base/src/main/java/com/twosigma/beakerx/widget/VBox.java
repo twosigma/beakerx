@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.widget;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +26,10 @@ public class VBox extends Box{
   public static final String VIEW_NAME_VALUE = "VBoxView";
   public static final String MODEL_NAME_VALUE = "VBoxModel";
 
+
+  public VBox() {
+    this(new ArrayList<>());
+  }
 
   public VBox(List<Widget> children) {
     super(children);

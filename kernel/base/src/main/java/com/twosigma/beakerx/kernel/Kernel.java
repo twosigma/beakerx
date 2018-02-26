@@ -270,4 +270,9 @@ public abstract class Kernel implements KernelFunctionality {
 
   protected void configureJvmRepr() {
   }
+
+  @Override
+  public String getOutDir() {
+    return evaluatorManager.getOutDir();
+  }
 }

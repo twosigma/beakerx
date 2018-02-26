@@ -53,6 +53,9 @@ dependencies {
   compile group: 'org.scala-lang', name: 'scala-library', version: '2.11.12'
   compile group: 'jline', name: 'jline', version: '2.12'
 
+  compile group: 'org.apache.spark', name: 'spark-core_2.11', version: '2.2.1'
+  compile group: 'org.apache.spark', name: 'spark-sql_2.11', version: '2.2.1'
+
   testCompile group: 'org.scalatest', name: 'scalatest_2.11', version: '3.0.4'
   testCompile project(':base').sourceSets.test.output
 }

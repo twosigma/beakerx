@@ -274,6 +274,11 @@ public class KernelTest implements KernelFunctionality {
     magicCommandTypes.add(magicCommandType);
   }
 
+  @Override
+  public String getOutDir() {
+    return null;
+  }
+
   private Path tempFolder() {
     if (this.evaluatorManager == null) {
       return EvaluatorTest.getTestTempFolderFactory().createTempFolder();

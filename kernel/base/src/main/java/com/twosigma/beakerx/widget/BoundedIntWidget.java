@@ -31,6 +31,14 @@ public abstract class BoundedIntWidget extends IntWidget<Integer> {
   private Integer max = 100;
   private Integer min = 0;
 
+  protected BoundedIntWidget(Integer min, Integer max, Integer step) {
+    super();
+    value = 0;
+    this.min = min;
+    this.max = max;
+    this.step = step;
+  }
+
   protected BoundedIntWidget() {
     super();
     value = 0;

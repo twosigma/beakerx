@@ -88,4 +88,6 @@ public interface KernelFunctionality {
   Class<?> loadClass(String clazzName) throws ClassNotFoundException;
 
   void registerMagicCommandType(MagicCommandType magicCommandType);
+
+  String getOutDir();
 }

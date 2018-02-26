@@ -19,6 +19,7 @@ var loadedModules = [
   require("./TabView"),
   require("./GridView"),
   require("./CyclingDisplayBox"),
+  require("./SparkUI").default,
   require("./HTMLPre").default
 ];
 

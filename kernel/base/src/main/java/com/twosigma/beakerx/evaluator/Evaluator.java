@@ -72,4 +72,6 @@ public interface Evaluator {
   Path getTempFolder();
 
   Class<?> loadClass(String clazzName) throws ClassNotFoundException;
+
+  String getOutDir();
 }

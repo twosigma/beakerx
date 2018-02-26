@@ -130,7 +130,7 @@ export class BeakerxDataGrid extends DataGrid {
     let section = this.columnSections;
     let columnType = COLUMN_TYPES.body;
     let pos = x + this.scrollX - this.headerWidth;
-    if (x <= this.rowHeaderSections.sectionSize()) {
+    if (x <= this.rowHeaderSections.totalSize) {
       section = this.rowHeaderSections;
       columnType = COLUMN_TYPES.index;
       pos += this.headerWidth;

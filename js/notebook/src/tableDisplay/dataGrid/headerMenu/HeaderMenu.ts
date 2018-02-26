@@ -65,12 +65,12 @@ export default abstract class HeaderMenu implements MenuInterface {
   showTrigger(x?): void {
     this.assignTriggerSortingCssClass();
 
-    if (this.triggerNode.style.visibility === 'visible') {
-      return;
-    }
-
     if (!isNaN(x)) {
       this.triggerNode.style.left = `${x}px`;
+    }
+
+    if (this.triggerNode.style.visibility === 'visible') {
+      return;
     }
 
     this.triggerNode.style.visibility = 'visible';

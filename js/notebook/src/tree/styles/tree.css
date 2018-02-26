@@ -96,6 +96,8 @@
 .bx-sync-indicator-widget .saving { color: #f0ad4e; }
 .bx-sync-indicator-widget .saved { color: #5cb85c; }
 
+.bx-sync-indicator-widget .errors-wrapper { color: #ff0000; }
+
 #properties_property .form-control {
   margin-right: 10px;
 }

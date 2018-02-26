@@ -22,13 +22,18 @@ export default class SyncIndicatorWidget extends Widget {
 
   public readonly HTML_ELEMENT_TEMPLATE = `
 <div class="form-group text-primary">
-  <span id="sync_indicator">
+
+  <span class="sync-indicator">
     <span class="saving hidden"><i class="fa fa-spinner"></i></span>
     <span class="saved hidden"><i class="fa fa-check"></i></span>
   </span>
-  <span>Result: java </span><span id="result"></span>
+
+  <span class="result-wrapper">
+    <span>Result: java </span><span class="result-text"></span>
+  </span>
+
 </div>
-<div id="errors" style="color: red"></div>
+<div class="errors-wrapper"></div>
 `;
 
   private $savingEl;
@@ -46,10 +51,10 @@ export default class SyncIndicatorWidget extends Widget {
 
     $(this.HTML_ELEMENT_TEMPLATE).appendTo(this.node);
 
-    this.$savingEl = this.$node.find('#sync_indicator .saving');
-    this.$savedEl = this.$node.find('#sync_indicator .saved');
-    this.$errorsEl = this.$node.find('#errors');
-    this.$resultEl = this.$node.find('#result');
+    this.$savingEl = this.$node.find('.saving');
+    this.$savedEl = this.$node.find('.saved');
+    this.$errorsEl = this.$node.find('.errors-wrapper');
+    this.$resultEl = this.$node.find('.result-text');
   }
 
   public onSyncStart() {
@@ -74,7 +79,7 @@ export default class SyncIndicatorWidget extends Widget {
     this.$errorsEl.empty();
   }
 
-  public showResult(result: string) {
+  public setResult(result: string) {
     this.$resultEl
       .empty()
       .text(result);

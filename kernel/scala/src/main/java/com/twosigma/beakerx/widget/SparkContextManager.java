@@ -109,7 +109,7 @@ public class SparkContextManager {
     jobItems.add(jobLink);
     VBox job = new VBox(jobItems);
     jobs.put(jobId, job);
-    this.sparkUI.add(job);
+    jobs.values().forEach(Box::display);
   }
 
   private void endJob(int jobId) {

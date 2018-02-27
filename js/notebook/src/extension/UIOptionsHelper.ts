@@ -30,7 +30,7 @@ export function registerFeature(baseUrl: string): void {
 
       setupAutoCloseBrackets(data.ui_options.auto_close);
       setupWideCells(data.ui_options.wide_cells);
-      // setupImproveFonts(data.ui_options.improve_fonts);
+      setupImproveFonts(data.ui_options.improve_fonts);
       setupShowPublication(data.ui_options.show_publication);
       setupAutoSave(data.ui_options.auto_save);
 
@@ -69,10 +69,13 @@ function setupWideCells(wideCells: boolean): void {
   document.body.appendChild(s);
 }
 
-// function setupImproveFonts(improveFonts: boolean) {
-//   // TODO;
-//   console.log('handle improve fonts', improveFonts);
-// }
+function setupImproveFonts(improveFonts: boolean) {
+  if (!improveFonts) {
+    return;
+  }
+
+  document.body.classList.add('improveFonts');
+}
 
 function setupShowPublication(showPublication: boolean) {
   if (!showPublication) {

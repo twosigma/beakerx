@@ -18,5 +18,8 @@
   background-color: #FEFEFE;
   border: none;
   position: relative;
+}
+
+.improveFonts .combplot-plotcontainer {
   font-family: "Lato", Helvetica, sans-serif;
 }

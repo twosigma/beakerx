@@ -44,10 +44,10 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
       <input class="form-check-input" id="wide_cells" name="wide_cells" type="checkbox">
       <label class="form-check-label" for="wide_cells">Wide code cells</label>
     </div>
-    <!--<div class="form-check">-->
-      <!--<input class="form-check-input" id="improve_fonts" name="improve_fonts" type="checkbox">-->
-      <!--<label class="form-check-label" for="improve_fonts">Improve fonts</label>-->
-    <!--</div>-->
+    <div class="form-check">
+      <input class="form-check-input" id="improve_fonts" name="improve_fonts" type="checkbox">
+      <label class="form-check-label" for="improve_fonts">Improve fonts</label>
+    </div>
     <div class="form-check">
       <input class="form-check-input" id="show_publication" name="show_publication" type="checkbox">
       <label class="form-check-label" for="show_publication">Show publication button and menu item</label>
@@ -90,7 +90,7 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
 
     this.setWideCells(options.wide_cells);
     this.setAutoClose(options.auto_close);
-    // this.setImproveFonts(options.improve_fonts);
+    this.setImproveFonts(options.improve_fonts);
     this.setShowPublication(options.show_publication);
     this.setAutoSave(options.auto_save);
   }
@@ -128,11 +128,11 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
       .prop('checked', checked);
   }
 
-  // private setImproveFonts(checked: boolean) {
-  //   this.$node
-  //     .find(this.IMPROVE_FONTS_SELECTOR)
-  //     .prop('checked', checked);
-  // }
+  private setImproveFonts(checked: boolean) {
+    this.$node
+      .find(this.IMPROVE_FONTS_SELECTOR)
+      .prop('checked', checked);
+  }
 
   private setShowPublication(checked: boolean) {
     this.$node

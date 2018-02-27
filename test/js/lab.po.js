@@ -105,5 +105,9 @@ var LabPageObject = function () {
   this.getAllOutputsStderr = function (codeCell) {
     return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output[data-mime-type="application/vnd.jupyter.stderr"]');
   };
+
+  this.getAllOutputsWidget = function(codeCell){
+    return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output');
+  }
 };
 module.exports = LabPageObject;

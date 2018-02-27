@@ -15,15 +15,12 @@
  */
 
 var BeakerXPageObject = require('../beakerx.po.js');
-var PlotHelperObject = require('../plot.helper.js');
 var beakerxPO;
-var plotHelper;
 
 describe('(Groovy) Output Containers ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    plotHelper = new PlotHelperObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/groovy/OutputContainersTest.ipynb');
   });
 
@@ -33,8 +30,12 @@ describe('(Groovy) Output Containers ', function () {
 
   var cellIndex;
 
-  function getTabLabelText(output, tabIndex){
-    return output.$$('div.p-TabBar-tabLabel')[tabIndex].getText();
+  function widgetPlotIsVisible(widget){
+    return widget.isVisible('div#plotLegendContainer');
+  }
+
+  function widgetTableIsVisible(widget){
+    return widget.isVisible('div.bko-table');
   }
 
   describe('(Groovy) OutputCell.HIDDEN ', function() {
@@ -58,16 +59,115 @@ describe('(Groovy) Output Containers ', function () {
     });
   });
 
+  function clickOnTabByName(output, name){
+    output.click('div.p-TabBar-tabLabel=' + name);
+  }
+
+  function getTabLabelText(output, tabIndex){
+    return output.$$('div.p-TabBar-tabLabel')[tabIndex].getText();
+  }
+
   describe('(Groovy) Tabbed Output Containers ', function() {
+    var output;
+    var widgets;
+
     it('Cell contains Tabbed Output with 4 tabs ', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var output = beakerxPO.getAllOutputsWidget(codeCell)[0];
-      expect(output.$$('li.p-TabBar-tab').length).toBe(4);
+      output = beakerxPO.getAllOutputsWidget(codeCell)[0];
+      widgets =  output.$$('div.widget-tab-contents > div.p-Widget > div');
+      expect(widgets.length).toBe(4);
       expect(getTabLabelText(output, 0)).toMatch(/Scatter with History/);
       expect(getTabLabelText(output, 1)).toMatch(/Short Term/);
       expect(getTabLabelText(output, 2)).toMatch(/Long Term/);
       expect(getTabLabelText(output, 3)).toMatch(/1990\/01/);
+    });
+
+    it('Tabbed Output contains 3 plots and 1 table ', function () {
+      clickOnTabByName(output, 'Scatter with History');
+      expect(widgetPlotIsVisible(widgets[0])).toBeTruthy();
+
+      clickOnTabByName(output, 'Short Term');
+      expect(widgetPlotIsVisible(widgets[1])).toBeTruthy();
+
+      clickOnTabByName(output, 'Long Term');
+      expect(widgetPlotIsVisible(widgets[2])).toBeTruthy();
+
+      clickOnTabByName(output, '1990/01');
+      expect(widgetTableIsVisible(widgets[3])).toBeTruthy();
+    });
+  });
+
+  describe('(Groovy) Grid Output Containers ', function() {
+    var widgets;
+
+    it('Cell contains Grid Output with 6 items ', function () {
+      cellIndex += 1;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var output = beakerxPO.getAllOutputsWidget(codeCell)[0];
+      widgets =  output.$$('div.widget-hbox > div.p-Widget > div');
+      expect(widgets.length).toBe(6);
+    });
+
+    it('Grid Output contains 5 plots and 1 table ', function () {
+      expect(widgetPlotIsVisible(widgets[0])).toBeTruthy();
+      expect(widgetPlotIsVisible(widgets[1])).toBeTruthy();
+      expect(widgetPlotIsVisible(widgets[2])).toBeTruthy();
+      expect(widgetPlotIsVisible(widgets[3])).toBeTruthy();
+      expect(widgetTableIsVisible(widgets[4])).toBeTruthy();
+      expect(widgetPlotIsVisible(widgets[5])).toBeTruthy();
+    });
+  });
+
+  function waitWidgetPlotIsVisible(output, lastId){
+    var widgetId;
+    browser.waitUntil(function() {
+      var widget = output.$('div.widget-box > div.p-Widget > div');
+      widgetId = widget.getAttribute('id');
+      return (lastId != widgetId) && widgetPlotIsVisible(widget);
+    });
+    return widgetId;
+  };
+
+  function waitWidgetTableIsVisible(output, lastId){
+    var widgetId;
+    browser.waitUntil(function() {
+      var widget = output.$('div.widget-box > div.p-Widget > div');
+      widgetId = widget.getAttribute('id');
+      return (lastId != widgetId) && widgetTableIsVisible(widget);
+    });
+    return widgetId;
+  };
+
+  describe('(Groovy) Cycling Output Container ', function() {
+    var output;
+    var time1, time2, time3;
+
+    it('Cell output contains widget container ', function () {
+      cellIndex += 1;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      output = beakerxPO.getAllOutputsWidget(codeCell)[0];
+      expect(output.$('div.widget-container.widget-box').isVisible()).toBeTruthy();
+    });
+
+    it('Cycling Output contains 3 plots and 1 table ', function () {
+      var wdgId = waitWidgetPlotIsVisible(output, 'firstPlot');
+
+      wdgId = waitWidgetPlotIsVisible(output, wdgId);
+      time1 = new Date().getTime();
+
+      wdgId = waitWidgetTableIsVisible(output, wdgId);
+      time2 = new Date().getTime();
+
+      waitWidgetPlotIsVisible(output, wdgId);
+      time3 = new Date().getTime();
+    });
+
+    it('Cycling period approximately equals 2 seconds ', function () {
+      expect(time2 - time1).toBeGreaterThan(1500);
+      expect(time2 - time1).toBeLessThan(2500);
+      expect(time3 - time2).toBeGreaterThan(1500);
+      expect(time3 - time2).toBeLessThan(2500);
     });
   });
 

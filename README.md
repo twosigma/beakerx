@@ -112,33 +112,38 @@ docker run -p 8888:8888 beakerx/beakerx
 BeakerX is a collection of kernels and extensions for Jupyter.
 The code is organized into subdirectories as follows:
 
-* [beakerx](beakerx) The Python packages.  The beakerx package has:
+* [beakerx](beakerx) The Python packages.  The main beakerx package has:
 
-  * kernel manager to allow us to alter the parameters passed to the
-  JVM,
+  * a customized KernelSpec to allow BeakerX to configure the JVMs
+    started to run the kernels,
   
-  * a kernel spec manager, which allows us to override the
-  interrupt function,
+  * the beakerx command line program, which has the bkr2ipynb
+    converter as well as install and uninstall functions,
   
-  * The Python API for the runtime (tables, plots,
-  easyform).
+  * the Python API for the runtime (tables, plots, easyform),
+    including automatically installing a displayer for pandas tables,
+    and autotranslation;
   
-  * The compiled JavaScript and Java jars are in the static
-  section of the python package.
+  * the webpack (compiled JavaScript, TypeScript, CSS, fonts, images);
+    and
 
-  There is a seperate python package (beakerx_magics) for the groovy
-  magic so it can be loaded without loading the regular beakerx
-  package (which would turn on display of pandas tables with our table
-  widget).
+  * the compiled Java JARs.
 
-* [doc](doc) Documentation consisting of notebooks.
-  [StartHere.ipynb](StartHere.ipynb) at the top level links to these
-  and is the intended way to navigate them.  There is a subdirectory
-  for each language.
+  There is a seperate python package (beakerx_magics) for the
+  `%%groovy` magic so it can always be loaded *without* loading the
+  regular beakerx package (which would turn on display of pandas
+  tables with our table widget).
+
+* [doc](doc) Documentation consisting of executable tutorial
+  notebooks.  [StartHere.ipynb](StartHere.ipynb) at the top level
+  links to these and is the intended way to navigate them.  There is a
+  subdirectory for each language.
 
 * [docker](docker) configuration files for creating the Docker image.
   There is a subdirectory [doc/base](doc/base) for an image with
-  BeakerX's dependencies (the Ubuntu and conda packages).
+  BeakerX's dependencies (the Ubuntu and conda packages).  The main
+  image is built by compiling BeakerX and installing BeakerX in the
+  base image.
 
 * [js](js) There are two subdirectories of JavaScript,
   [js/lab](js/lab) and [js/notebook](js/notebook).  Lab has the
@@ -148,17 +153,28 @@ The code is organized into subdirectories as follows:
   panel.  And for regular notebook pages the extension handles:
 
   * running initialization cells,
+  
   * publication,
+  
   * autotranslation,
-  * the getCodeCell and runByTag APIs,
-  * callbacks for table and plot actions.
+  
+  * the getCodeCells and runByTag APIs,
+  
+  * callbacks for table and plot actions,
+  
+  * UI customizations such as changing the fonts, allowing wide code
+    cells, and disabling autosave.
 
 * [kernel](kernel) The Java implementation of the kernels is here.
   The main directory is [kernel/base](kernel/base) which has generic
-  code for all the languages, and then there is one subdirectory for
-  each language.  The base kernel has classes for Jupyter's Comm
-  protocol (a layer on ZMQ), magics, the classpath, etc.  It also has
-  the runtime, which consists of widget APIs.
+  code for all the languages.  The base kernel has classes for
+  Jupyter's Comm protocol (a layer over ZMQ), magics, the classpath
+  (including loading from maven), and the kernl parts of the widget
+  APIs.
+
+  There is also a subdirectory for each language which has the
+  evaluator for that language, plus scala has wrappers for the widgets
+  so they have native types.
 
 * [test](test) The e2e tests, which are made with wdio (selenium,
   chromedriver, jasmine).

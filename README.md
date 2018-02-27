@@ -145,12 +145,17 @@ The code is organized into subdirectories as follows:
   image is built by compiling BeakerX and installing BeakerX in the
   base image.
 
-* [js](js) There are two subdirectories of JavaScript,
-  [js/lab](js/lab) and [js/notebook](js/notebook).  Lab has the
-  extension for Jupyter Lab (which is distributed by npm).  Notebook
-  has two extensions, one for the wigets, and one for the notebook
-  application.  This adds a tab to the tree view with our options
-  panel.  And for regular notebook pages the extension handles:
+* [js](js) There are two subdirectories of JavaScript and TypeScript,
+  [js/lab](js/lab) and [js/notebook](js/notebook).  New code is being
+  written in TypeScript.
+
+  The lab subdirectory has the extension for Jupyter Lab (distributed
+  by npm).  Notebook has two extensions, one for the widgets (which
+  are included in Lab as well, and are also seperately distributed
+  with npm for embedded applications such as nbviewer), and one for
+  the notebook application.  This adds a tab to the tree view with our
+  options panel.  And for regular notebook pages the extension
+  handles:
 
   * running initialization cells,
   

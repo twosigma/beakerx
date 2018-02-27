@@ -15,10 +15,10 @@
  */
 
 import IHihglighterState, { HIGHLIGHTER_STYLE } from "../interface/IHighlighterState";
-import { DEFAULT_CELL_BACKGROUND } from "../cell/CellRendererFactory";
 import { CellRenderer } from "@phosphor/datagrid";
 import DataGridColumn from "../column/DataGridColumn";
 import { find } from "@phosphor/algorithm";
+import {DEFAULT_CELL_BACKGROUND} from "../style/dataGridStyle";
 
 export default class Highlighter {
   column: DataGridColumn;

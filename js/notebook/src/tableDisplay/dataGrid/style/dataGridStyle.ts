@@ -22,6 +22,15 @@ import './dataGrid.scss';
 const bkHelper = require('../../../shared/bkHelper');
 const GLOBALS = require('../../../shared/bkGlobals');
 
+export const DEFAULT_CELL_BACKGROUND = '';
+export const FOCUSED_CELL_BACKGROUND = 'rgb(200, 200, 200)';
+export const DEFAULT_DATA_FONT_SIZE = 13;
+export const DEFAULT_HEADER_FONT_COLOR = '#515A5A';
+export const DEFAULT_DATA_FONT_COLOR = '#000000';
+export const DEFAULT_GRID_PADDING = 20;
+export const DEFAULT_GRID_BORDER_WIDTH = 1;
+export const MIN_COLUMN_WIDTH = 20;
+
 export const DEFAULT_COLORS = {
   [GLOBALS.THEMES.DEFAULT]: {
     red: rgbToHex(241, 88, 84),

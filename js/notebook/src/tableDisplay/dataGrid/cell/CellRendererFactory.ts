@@ -18,10 +18,13 @@ import { DEFAULT_ALIGNMENT } from "../column/columnAlignment";
 import { CellRenderer, TextRenderer } from "@phosphor/datagrid";
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
 import DataGridCell from "./DataGridCell";
-import { darken } from "../style/dataGridStyle";
-
-export const DEFAULT_CELL_BACKGROUND = '';
-export const FOCUSED_CELL_BACKGROUND = 'rgb(200, 200, 200)';
+import {
+  darken,
+  DEFAULT_CELL_BACKGROUND,
+  DEFAULT_DATA_FONT_COLOR,
+  DEFAULT_DATA_FONT_SIZE,
+  DEFAULT_HEADER_FONT_COLOR, formatColor
+} from "../style/dataGridStyle";
 
 export class CellRendererFactory {
   private dataGrid: BeakerxDataGrid;
@@ -61,8 +64,27 @@ export class CellRendererFactory {
 
         return DataGridCell.isHeaderCell(config) ? config.value : column.formatFn(config);
       },
-      font: 'normal 13px Lato, Helvetica, sans-serif',
-      textColor: config => config.region === 'column-header' || config.region === "corner-header" ? '#515A5A' : '#000000',
+      font: ({ region }) => {
+        let fontSize = (region === 'column-header' || region === 'corner-header')
+          ? this.dataGrid.model.state.headerFontSize
+          : this.dataGrid.model.state.dataFontSize;
+
+        return `normal ${fontSize || DEFAULT_DATA_FONT_SIZE}px Lato, Helvetica, sans-serif`
+      },
+      textColor: (config) => {
+        if (config.region === 'row-header') {
+          return DEFAULT_DATA_FONT_COLOR;
+        }
+
+        let colors = this.dataGrid.model.state.fontColor;
+        let dataFontColor = colors && colors[config.row]
+          ? formatColor(colors[config.row][config.column])
+          : DEFAULT_DATA_FONT_COLOR;
+
+        return config.region === 'column-header' || config.region === "corner-header"
+          ? DEFAULT_HEADER_FONT_COLOR
+          : dataFontColor;
+      }
     });
   }
 }

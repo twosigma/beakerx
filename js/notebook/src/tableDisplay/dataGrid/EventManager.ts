@@ -150,7 +150,7 @@ export default class EventManager {
   }
 
   private handleNumKeyDown(event: KeyboardEvent, charCode: string, column: DataGridColumn|null) {
-    if (event.keyCode < 48 || event.keyCode > 57) { //numbers 1..9
+    if (event.keyCode < 48 || event.keyCode > 57) { //not numbers 1..9
       return;
     }
 

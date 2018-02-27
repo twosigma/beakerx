@@ -19,7 +19,7 @@ import IHihglighterState from "../interface/IHighlighterState";
 import DataGridColumn from "../column/DataGridColumn";
 import { reduce, each } from "@phosphor/algorithm";
 import { CellRenderer } from "@phosphor/datagrid";
-import { DEFAULT_CELL_BACKGROUND } from "../cell/CellRendererFactory";
+import {DEFAULT_CELL_BACKGROUND} from "../style/dataGridStyle";
 
 export default class UniqueEntriesHighlighter extends Highlighter {
   uniqueValues: any[] = [];

@@ -14,6 +14,9 @@
  *  limitations under the License.
  */
 
+import {SectionList} from "@phosphor/datagrid/lib/sectionlist";
+import {DEFAULT_DATA_FONT_SIZE} from "./style/dataGridStyle";
+
 export namespace DataGridHelpers {
   const htmlCharactersReplacementMap = {
     '"': '&quot;',
@@ -56,13 +59,13 @@ export namespace DataGridHelpers {
     } catch (e) {}
   }
 
-  export function getStringWidth(value: string) {
+  export function getStringWidth(value: string, fontSize: Number|null|undefined) {
     let spanEl: HTMLSpanElement = document.createElement('span');
     let width: number;
 
     spanEl.textContent = value;
     spanEl.style.fontFamily = 'Lato, Helvetica, sans-serif';
-    spanEl.style.fontSize = '13px';
+    spanEl.style.fontSize = `${fontSize || DEFAULT_DATA_FONT_SIZE}px`;
     spanEl.style.padding = '5px';
     spanEl.style.position = 'absolute';
     document.body.appendChild(spanEl);
@@ -71,5 +74,36 @@ export namespace DataGridHelpers {
     document.body.removeChild(spanEl);
 
     return width;
+  }
+
+  export function findSectionIndex(
+    list: SectionList,
+    cursorPosition: number
+  ): { index: number, delta: number } | null {
+    // Bail early if the list is empty or the position is invalid.
+    if (list.sectionCount === 0 || cursorPosition < 0) {
+      return null;
+    }
+
+    // Compute the delta from the end of the list.
+    let delta = cursorPosition - (list.totalSize - 1);
+    if (delta > 0) {
+      return null;
+    }
+
+    // Test whether the hover is just past the last section.
+    let index = list.sectionCount - 1;
+    if (delta >= -list.sectionSize(index)) {
+      return { index, delta };
+    }
+
+    index = list.sectionIndex(cursorPosition);
+    delta = cursorPosition - (list.sectionOffset(index) - 1);
+
+    if (index >= 0) {
+      return { index, delta };
+    }
+
+    return null;
   }
 }

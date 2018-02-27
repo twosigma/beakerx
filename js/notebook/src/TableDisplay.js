@@ -18,7 +18,6 @@ var widgets = require('./widgets');
 var _ = require('underscore');
 var $ = require('jquery');
 
-var TableScope = require('./tableDisplay/tableScope');
 var DataGridScope = require('./tableDisplay/dataGrid').DataGridScope;
 
 require('datatables.net-dt/css/jquery.dataTables.css');
@@ -105,7 +104,7 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
     var tmpl = '<div id="' + this.wrapperId + '">' +
       '<p class="ansired">Note: table is too big to display. ' +
       'The limit is ' + rowLimit + ' rows, but this table has ' + rowLength + ' rows. ' +
-      'The first 1000 rows are displayed as a preview.</p></div>';
+      'The first 10000 rows are displayed as a preview.</p></div>';
     var tmplElement = $(tmpl);
     tmplElement.appendTo(this.$el);
   }

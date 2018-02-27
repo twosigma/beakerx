@@ -26,25 +26,25 @@ export default interface IDataModelState {
   columnNames: string[],
   columnOrder?: number[], //@todo
   columnsFrozen?: {}, //@todo
-  columnsFrozenRight?: {}, //@todo
+  columnsFrozenRight?: {}, //feature is dropped
   columnsVisible: {},
   contextMenuItems?: object[], //@todo
   contextMenuTags?: {}, //@todo
-  dataFontSize?: number|null, //@todo
+  dataFontSize?: number|null,
   doubleClickTag?: string|null, //@todo
-  fontColor?: string[], //@todo
+  fontColor?: string[],
   hasDoubleClickAction?: boolean, //@todo
   hasIndex: boolean,
-  headerFontSize?: number|null, //@todo
-  headersVertical?: boolean, //@todo
-  rendererForColumn?: {}, //@todo
-  rendererForType?: {}, //@todo
+  headerFontSize?: number|null,
+  headersVertical?: boolean, //@todo Needs custom cell renderer
+  rendererForColumn?: {}, //@todo Needs the DataBars highlighter
+  rendererForType?: {}, //@todo Needs the DataBars highlighter
   stringFormatForColumn: {},
   stringFormatForTimes?: string|null,
   stringFormatForType?: {},
   subtype?: string, //@todo
   timeZone?: string,
-  tooManyRows?: boolean, //@todo
+  tooManyRows?: boolean,
   tooltips?: string[], //@todo
   type?: string,
   types: string[],

@@ -45,4 +45,19 @@ export class DataGridScope {
   doDestroy() {
     this.dataGrid.destroy();
   }
+
+  updateModelData(newData) {
+    this.dataGrid.updateModelData(newData);
+    this.dataGrid.model.reset();
+  }
+
+  doResetAll() {
+    this.dataGrid.highlighterManager.removeHighlighters();
+    this.dataGrid.cellSelectionManager.clear();
+    this.dataGrid.rowManager.resetSorting();
+    this.dataGrid.columnManager.resetFilters();
+    this.dataGrid.columnManager.showAllColumns();
+    this.dataGrid.columnManager.resetColumnsAlignment();
+    this.dataGrid.columnManager.resetColumnsOrder();
+  }
 }

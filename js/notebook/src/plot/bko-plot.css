@@ -22,7 +22,6 @@
   border-collapse: initial;
   border: 1px solid transparent;
   box-sizing: content-box;
-  font-family: "Lato", Helvetica, sans-serif;
 }
 
 .plot-test,
@@ -45,8 +44,7 @@
 
 .plot-label,
 .plot-xylabel,
-.plot-legend-label{
-  font-family: "Lato", Helvetica, sans-serif;
+.plot-legend-label {
   line-height: 1.38462;
 }
 .plot-label {
@@ -123,7 +121,6 @@
   font-weight: bold;
   font-size: 1.2em;
   margin: 5px;
-  font-family: "Lato", Helvetica, sans-serif;
 }
 
 .plot-legendbox {
@@ -279,7 +276,6 @@
 }
 .svg-export {
   font-size: 14px;
-  font-family: "Lato", Helvetica, sans-serif;
   line-height: 1.38462;
   color: #333333;
   background-color: white;
@@ -309,8 +305,17 @@
 .heatmap-tooltip{
   color: white;
   background-color: rgba(0,107,179,0.5);
-  font-family: "Lato", Helvetica, sans-serif;
   font-size: 13px;
   line-height: 1.38462;
   padding: 0.5em;
+}
+
+.improveFonts .plot-plotcontainer,
+.improveFonts .plot-label,
+.improveFonts .plot-xylabel,
+.improveFonts .plot-legend-label,
+.improveFonts .plot-title,
+.improveFonts .svg-export,
+.improveFonts .heatmap-tooltip {
+  font-family: "Lato", Helvetica, sans-serif;
 }

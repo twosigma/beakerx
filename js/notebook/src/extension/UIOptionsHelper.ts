@@ -74,12 +74,7 @@ function setupImproveFonts(improveFonts: boolean) {
     return;
   }
 
-  let s = document.createElement('style');
-  s.innerText = `body { font-family: "Lato", sans-serif;  }
-.prompt, code{ font-family: "Roboto Mono", monospace; }
-`;
-
-  document.body.appendChild(s);
+  document.body.classList.add('improveFonts');
 }
 
 function setupShowPublication(showPublication: boolean) {

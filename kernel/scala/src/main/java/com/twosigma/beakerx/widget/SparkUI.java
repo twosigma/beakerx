@@ -19,6 +19,8 @@ import com.twosigma.beakerx.kernel.KernelManager;
 import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
 
+import java.util.ArrayList;
+
 public class SparkUI extends VBox {
 
   public static final String VIEW_NAME_VALUE = "SparkUIView";
@@ -26,9 +28,13 @@ public class SparkUI extends VBox {
 
   private SparkContext sparkContext;
 
-  public SparkUI(SparkConf sparkConf) {
-    this.sparkContext = createSparkContext(sparkConf.clone());
-    openComm();
+  public static SparkUI create(SparkConf sparkConf) {
+    return new SparkUI(sparkConf);
+  }
+
+  private SparkUI(SparkConf sparkConf) {
+    super(new ArrayList<>());
+    sparkContext = createSparkContext(this, sparkConf.clone());
   }
 
   @Override
@@ -55,15 +61,16 @@ public class SparkUI extends VBox {
     return sparkContext;
   }
 
-  private SparkContext createSparkContext(SparkConf sparkConf) {
+  private SparkContext createSparkContext(SparkUI sparkUI, SparkConf sparkConf) {
     if (!isLocalSpark(sparkConf)) {
       sparkConf.set("spark.repl.class.outputDir", KernelManager.get().getOutDir());
     }
-    SparkContextManager sparkContextManager = new SparkContextManager(sparkConf);
+
+    SparkContextManager sparkContextManager = new SparkContextManager(sparkUI, sparkConf);
     return sparkContextManager.getSparkContext();
   }
 
-  private boolean isLocalSpark(SparkConf sparkConf) {
+  private static boolean isLocalSpark(SparkConf sparkConf) {
     return sparkConf.get("spark.master") != null && sparkConf.get("spark.master").startsWith("local");
   }
 }

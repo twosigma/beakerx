@@ -18,8 +18,6 @@ package com.twosigma.beakerx.widget;
 import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
 import org.apache.spark.scheduler.SparkListener;
-import org.apache.spark.scheduler.SparkListenerApplicationEnd;
-import org.apache.spark.scheduler.SparkListenerApplicationStart;
 import org.apache.spark.scheduler.SparkListenerJobEnd;
 import org.apache.spark.scheduler.SparkListenerJobStart;
 import org.apache.spark.scheduler.SparkListenerStageCompleted;
@@ -28,6 +26,7 @@ import org.apache.spark.scheduler.SparkListenerTaskEnd;
 import org.apache.spark.scheduler.SparkListenerTaskStart;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,13 +35,18 @@ import static java.util.Arrays.asList;
 
 public class SparkContextManager {
 
+  private final SparkUI sparkUI;
   private final SparkContext sparkContext;
+  private final SparkConf sparkConf;
   private Map<Integer, VBox> jobs = new HashMap<>();
   private Map<Integer, IntProgress> progressBars = new HashMap<>();
   private Map<Integer, Label> labels = new HashMap<>();
   private VBox jobPanel = null;
 
-  public SparkContextManager(SparkConf sparkConf) {
+
+  public SparkContextManager(SparkUI sparkUI, SparkConf sparkConf) {
+    this.sparkUI = sparkUI;
+    this.sparkConf = sparkConf;
     this.sparkContext = create(sparkConf);
   }
 
@@ -51,6 +55,8 @@ public class SparkContextManager {
   }
 
   private SparkContext create(SparkConf sparkConf) {
+    sparkConf.set("spark.extraListeners", ",com.twosigma.beakerx.widget.StartStopSparkListener");
+    SparkVariable.put(this);
     SparkContext sc = new SparkContext(sparkConf);
     sc.addSparkListener(new SparkListener() {
 
@@ -89,17 +95,28 @@ public class SparkContextManager {
         taskEnd(taskEnd.stageId(), taskEnd.taskInfo().taskId());
       }
 
-      @Override
-      public void onApplicationStart(SparkListenerApplicationStart applicationStart) {
-        super.onApplicationStart(applicationStart);
-      }
-
-      @Override
-      public void onApplicationEnd(SparkListenerApplicationEnd applicationEnd) {
-        super.onApplicationEnd(applicationEnd);
-      }
     });
     return sc;
+  }
+
+  private Label appStatus;
+  private Button disconnect;
+
+  public void applicationStart() {
+    this.appStatus = new Label();
+    appStatus.setValue("Connected to " + sparkConf.get("spark.master"));
+    this.disconnect = new Button();
+    this.disconnect.registerOnClick((content, message) -> sparkContext.stop());
+    disconnect.setDescription("Disconnect");
+    HBox statusPanel = new HBox(Arrays.asList(disconnect, appStatus));
+    sparkUI.add(statusPanel);
+  }
+
+  public void applicationEnd() {
+    if (appStatus != null) {
+      appStatus.setValue("Disconnected");
+      disconnect.getLayout().setDisplayNone();
+    }
   }
 
   private void startJob(int jobId) {
@@ -111,7 +128,7 @@ public class SparkContextManager {
   }
 
   private VBox createJobPanel() {
-    VBox jobPanel = new VBox();
+    VBox jobPanel = new VBox(new ArrayList<>());
     jobs.values().forEach(x -> jobPanel.add(x));
     return jobPanel;
   }
@@ -177,6 +194,5 @@ public class SparkContextManager {
       return html;
     }
   }
-
 
 }

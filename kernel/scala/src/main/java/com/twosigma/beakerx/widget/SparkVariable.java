@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,33 +15,15 @@
  */
 package com.twosigma.beakerx.widget;
 
-import java.util.List;
+public class SparkVariable {
 
-/**
- * Displays multiple widgets vertically using the flexible box model.
- */
-public class VBox extends Box{
-  
-  public static final String VIEW_NAME_VALUE = "VBoxView";
-  public static final String MODEL_NAME_VALUE = "VBoxModel";
+  private static SparkContextManager manager;
 
-  public VBox(List<Widget> children) {
-    super(children);
-    openComm();
+  public static void put(SparkContextManager sparkContextManager) {
+    manager = sparkContextManager;
   }
 
-  @Override
-  public void updateValue(Object value) {
+  public static SparkContextManager get() {
+    return manager;
   }
-  
-  @Override
-  public String getModelNameValue() {
-    return MODEL_NAME_VALUE;
-  }
-
-  @Override
-  public String getViewNameValue() {
-    return VIEW_NAME_VALUE;
-  }
-
 }

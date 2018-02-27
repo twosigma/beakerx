@@ -34,17 +34,13 @@ public abstract class Box extends ValueWidget<String> {
 
   List<Widget> children;
 
-  public Box() {
-    this.children = new ArrayList<>();
-  }
-
   public Box(List<Widget> children) {
     this.children = children;
   }
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
-    List<String> commIds = children.stream().map(x -> IPY_MODEL + x.getComm().getCommId()).collect(Collectors.toList());
+    List<String> commIds = comIds();
     content.put(CHILDREN, commIds.toArray());
     super.content(content);
     return content;
@@ -52,8 +48,16 @@ public abstract class Box extends ValueWidget<String> {
 
   public void add(Widget widget){
     this.children.add(widget);
-    List<String> commIds = children.stream().map(x -> IPY_MODEL + x.getComm().getCommId()).collect(Collectors.toList());
+    updateChildren();
+  }
+
+  private void updateChildren() {
+    List<String> commIds = comIds();
     sendUpdate(CHILDREN,commIds.toArray());
+  }
+
+  private List<String> comIds() {
+    return children.stream().map(x -> IPY_MODEL + x.getComm().getCommId()).collect(Collectors.toList());
   }
 
   @Override

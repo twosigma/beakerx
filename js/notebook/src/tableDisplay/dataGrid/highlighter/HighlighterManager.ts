@@ -23,7 +23,7 @@ import HighlighterFactory from "./HighlighterFactory";
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
 import { each, iter, filter, toArray } from "@phosphor/algorithm";
 import { CellRenderer } from "@phosphor/datagrid";
-import { DEFAULT_CELL_BACKGROUND } from "../cell/CellRendererFactory";
+import {DEFAULT_CELL_BACKGROUND} from "../style/dataGridStyle";
 
 export default class HighlighterManager {
   highlightersState: IHihglighterState[];

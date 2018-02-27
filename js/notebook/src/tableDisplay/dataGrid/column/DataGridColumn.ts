@@ -52,6 +52,7 @@ export default class DataGridColumn {
   minValue: any;
   maxValue: any;
   dataTypeTooltipNode: HTMLElement;
+  tooltipTimout: number;
 
   state: IColumnState;
 
@@ -367,14 +368,12 @@ export default class DataGridColumn {
     this.dataTypeTooltipNode.innerText = this.getDataTypeName();
 
     this.dataTypeTooltipNode.classList.add('bko-tooltip');
-
-    document.body.appendChild(this.dataTypeTooltipNode);
   }
 
   private toggleDataTooltip(show: boolean, data?: ICellData) {
     const rect = this.dataGrid.node.getBoundingClientRect();
 
-    if (!this.dataTypeTooltipNode.classList.contains('visible')) {
+    if (!document.body.contains(this.dataTypeTooltipNode)) {
       if (data && data.offset !== undefined) {
         this.dataTypeTooltipNode.style.left = `${Math.ceil(rect.left + data.offset + 20)}px`;
       }
@@ -382,8 +381,31 @@ export default class DataGridColumn {
       this.dataTypeTooltipNode.style.top = `${Math.ceil(rect.top - 10)}px`;
     }
 
-    show
-      ? this.dataTypeTooltipNode.classList.add('visible')
-      : this.dataTypeTooltipNode.classList.remove('visible');
+    if (show) {
+      return this.showTooltip();
+    }
+
+    this.hideTooltip();
+  }
+
+  private showTooltip() {
+    if (document.body.contains(this.dataTypeTooltipNode)) {
+      return;
+    }
+
+    document.body.appendChild(this.dataTypeTooltipNode);
+    clearTimeout(this.tooltipTimout);
+    setTimeout(() => this.dataTypeTooltipNode.classList.add('visible'), 300);
+  }
+
+  private hideTooltip() {
+    this.dataTypeTooltipNode.classList.remove('visible');
+
+    clearTimeout(this.tooltipTimout);
+    this.tooltipTimout = setTimeout(() => {
+      if (document.body.contains(this.dataTypeTooltipNode)) {
+        document.body.removeChild(this.dataTypeTooltipNode);
+      }
+    }, 300);
   }
 }

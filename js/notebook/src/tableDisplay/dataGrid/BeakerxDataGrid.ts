@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { CellRenderer, DataGrid } from "@phosphor/datagrid";
+import {CellRenderer, DataGrid, DataModel} from "@phosphor/datagrid";
 import { BeakerxDataGridModel } from "./model/BeakerxDataGridModel";
 import { Widget } from "@phosphor/widgets";
 import { Signal } from '@phosphor/signaling';
@@ -28,13 +28,20 @@ import { DEFAULT_PAGE_LENGTH } from "../consts";
 import ColumnManager from "./column/ColumnManager";
 import RowManager from "./row/RowManager";
 import CellSelectionManager from "./cell/CellSelectionManager";
-import {SectionList} from "@phosphor/datagrid/lib/sectionlist";
 import CellManager from "./cell/CellManager";
 import {DataGridHelpers} from "./dataGridHelpers";
-import EventManager from "./EventManager";
+import EventManager from "./EventManager";import {
+  IMessageHandler, Message
+} from '@phosphor/messaging';
 
 import getStringWidth = DataGridHelpers.getStringWidth;
 import CellFocusManager from "./cell/CellFocusManager";
+import findSectionIndex = DataGridHelpers.findSectionIndex;
+import {
+  DEFAULT_GRID_BORDER_WIDTH,
+  DEFAULT_GRID_PADDING,
+  MIN_COLUMN_WIDTH
+} from "./style/dataGridStyle";
 
 export class BeakerxDataGrid extends DataGrid {
   columnSections: any;
@@ -72,10 +79,19 @@ export class BeakerxDataGrid extends DataGrid {
     this.eventManager.handleEvent(event, super.handleEvent);
   }
 
+  messageHook(handler: IMessageHandler, msg: Message): boolean {
+    super.messageHook(handler, msg);
+
+    if (handler === this.viewport && msg.type === 'section-resize-request') {
+      this.setWidgetWidth();
+    }
+
+    return true;
+  }
+
   destroy() {
     this.eventManager.destroy();
     this.columnManager.destroy();
-    this.isAttached && this.dispose();
   }
 
   getColumn(config: CellRenderer.ICellConfig): DataGridColumn {
@@ -84,14 +100,6 @@ export class BeakerxDataGrid extends DataGrid {
 
   getColumnByName(columnName: string): DataGridColumn|undefined {
     return this.columnManager.getColumnByName(columnName);
-  }
-
-  getColumnOffset(index: number, type: COLUMN_TYPES) {
-    if (type === COLUMN_TYPES.index) {
-      return 0;
-    }
-
-    return this.rowHeaderSections.totalSize + this.columnSections.sectionOffset(index);
   }
 
   getCellData(clientX: number, clientY: number): ICellData|null {
@@ -107,11 +115,11 @@ export class BeakerxDataGrid extends DataGrid {
     // Test for a match in the corner header first.
     if (x <= this.headerWidth && y <= this.headerHeight) {
       if (y <= this.headerHeight) {
-        column = this.findSectionIndex(this.columnHeaderSections, x);
+        column = findSectionIndex(this.columnHeaderSections, x);
       }
 
       if (!column && x <= this.headerWidth) {
-        column = this.findSectionIndex(this.rowHeaderSections, y);
+        column = findSectionIndex(this.rowHeaderSections, y);
       }
 
       if (column) {
@@ -137,7 +145,7 @@ export class BeakerxDataGrid extends DataGrid {
     }
 
     let row: { index: number, delta: number } | null = this.findHoveredRowIndex(y);
-    column = this.findSectionIndex(section, pos);
+    column = findSectionIndex(section, pos);
 
     if (column) {
       return {
@@ -150,6 +158,14 @@ export class BeakerxDataGrid extends DataGrid {
     }
 
     return null;
+  }
+
+  getColumnOffset(index: number, type: COLUMN_TYPES) {
+    if (type === COLUMN_TYPES.index) {
+      return 0;
+    }
+
+    return this.rowHeaderSections.totalSize + this.columnSections.sectionOffset(index);
   }
 
   isOverHeader(event: MouseEvent) {
@@ -171,6 +187,10 @@ export class BeakerxDataGrid extends DataGrid {
     });
   }
 
+  updateModelData(state: IDataModelState) {
+    this.model.addProperties(state, this.columnManager, this.rowManager);
+  }
+
   private init(modelState: IDataModelState) {
     this.columnManager = new ColumnManager(modelState, this);
     this.rowManager = new RowManager(modelState.values, modelState.hasIndex, this.columnManager);
@@ -189,8 +209,10 @@ export class BeakerxDataGrid extends DataGrid {
     this.setWidgetHeight();
     this.resizeSections();
 
-    this.model.reset();
-    this.repaint();
+    setTimeout(() => {
+      this.repaint();
+      this.setWidgetWidth();
+    });
   }
 
   private addHighlighterManager(modelState: IDataModelState) {
@@ -212,75 +234,69 @@ export class BeakerxDataGrid extends DataGrid {
   }
 
   private setWidgetHeight() {
-    let bodyRowCount = this.model.rowCount('body');
-    let rowCount = DEFAULT_PAGE_LENGTH < bodyRowCount ? DEFAULT_PAGE_LENGTH : bodyRowCount;
+    this.node.style.minHeight = `${this.getWidgetHeight()}px`;
+  }
 
-    this.node.style.minHeight = `${ (rowCount + 2) * this.baseRowSize + this.baseColumnHeaderSize }px`;
+  private setWidgetWidth() {
+    const scrollBarSpaceWidth = this.getWidgetHeight() >= this.totalHeight ? 0 : 20;
+    const spacing = 2 * (DEFAULT_GRID_PADDING + DEFAULT_GRID_BORDER_WIDTH);
+
+    this.node.style.width = `${this.totalWidth + scrollBarSpaceWidth + spacing}px`;
+    this.fit();
+    this['_syncViewport']();
+  }
+
+  private getWidgetHeight() {
+    const bodyRowCount = this.model.rowCount('body');
+    const rowCount = DEFAULT_PAGE_LENGTH < bodyRowCount ? DEFAULT_PAGE_LENGTH : bodyRowCount;
+    const spacing = 2 * (DEFAULT_GRID_PADDING + DEFAULT_GRID_BORDER_WIDTH);
+
+    return rowCount * this.baseRowSize + this.headerHeight + spacing;
   }
 
   private findHoveredRowIndex(y: number) {
     // Convert the position into unscrolled coordinates.
     let pos = y + this.scrollY - this.headerHeight;
 
-    return this.findSectionIndex(this.rowSections, pos);
-  }
-
-  private findSectionIndex(list: SectionList, cursorPosition: number): { index: number, delta: number } | null {
-    // Bail early if the list is empty or the position is invalid.
-    if (list.sectionCount === 0 || cursorPosition < 0) {
-      return null;
-    }
-
-    // Compute the delta from the end of the list.
-    let delta = cursorPosition - (list.totalSize - 1);
-    if (delta > 0) {
-      return null;
-    }
-
-    // Test whether the hover is just past the last section.
-    let index = list.sectionCount - 1;
-    if (delta >= -list.sectionSize(index)) {
-      return { index, delta };
-    }
-
-    index = list.sectionIndex(cursorPosition);
-    delta = cursorPosition - (list.sectionOffset(index) - 1);
-
-    if (index >= 0) {
-      return { index, delta };
-    }
-
-    return null;
+    return findSectionIndex(this.rowSections, pos);
   }
 
   private resizeColumnSection(column) {
-    this.columnSections.resizeSection(
+    this.resizeSection(
+      'column',
       column.getResolvedIndex(),
       this.getSectionWidth(column)
     );
   }
 
   private getSectionWidth(column) {
-    let value = String(column.formatFn(this.cellManager.createCellConfig({
+    const value = String(column.formatFn(this.cellManager.createCellConfig({
       region: 'body',
       value: column.maxValue,
       column: column.index,
       row: 0,
     })));
+    const nameWidth = getStringWidth(column.name, this.model.state.headerFontSize);
+    const valueWidth = getStringWidth(value,this.model.state.dataFontSize);
+    const result = nameWidth > valueWidth ? nameWidth: valueWidth;
 
-    return getStringWidth(value.length > column.name.length ? value : column.name);
+    return result > MIN_COLUMN_WIDTH ? result : MIN_COLUMN_WIDTH;
   }
 
   private resizeSections() {
     this.columnManager.columns[COLUMN_TYPES.body].forEach(this.resizeColumnSection);
     this.resizeIndexColumn();
+    this.setWidgetWidth();
   }
 
   private resizeIndexColumn() {
-    let valueCharLength = this.model.rowCount('body');
-    let name = this.columnManager.getColumnByIndex(COLUMN_TYPES.index, 0).name;
-    let value = name.length > valueCharLength ? name : String(valueCharLength);
+    const valueCharLength = this.model.rowCount('body');
+    const name = this.columnManager.getColumnByIndex(COLUMN_TYPES.index, 0).name;
+    const value = name.length > valueCharLength ? name : String(valueCharLength);
+    const nameWidth = getStringWidth(name, this.model.state.headerFontSize);
+    const valueWidth = getStringWidth(value, this.model.state.dataFontSize);
+    const result = nameWidth > valueWidth ? nameWidth: valueWidth;
 
-    this.rowHeaderSections.resizeSection(0, getStringWidth(value) + 10);
+    this.rowHeaderSections.resizeSection(0, result + 10);
   }
 }

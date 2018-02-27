@@ -43,7 +43,6 @@ public class SparkContextManager {
   private Map<Integer, Label> labels = new HashMap<>();
   private VBox jobPanel = null;
 
-
   public SparkContextManager(SparkUI sparkUI, SparkConf sparkConf) {
     this.sparkUI = sparkUI;
     this.sparkConf = sparkConf;
@@ -55,8 +54,8 @@ public class SparkContextManager {
   }
 
   private SparkContext create(SparkConf sparkConf) {
+    SparkVariable.putSparkContextManager(this);
     sparkConf.set("spark.extraListeners", ",com.twosigma.beakerx.widget.StartStopSparkListener");
-    SparkVariable.put(this);
     SparkContext sc = new SparkContext(sparkConf);
     sc.addSparkListener(new SparkListener() {
 
@@ -195,4 +194,7 @@ public class SparkContextManager {
     }
   }
 
+  public void cancelAllJobs() {
+    this.sparkContext.cancelAllJobs();
+  }
 }

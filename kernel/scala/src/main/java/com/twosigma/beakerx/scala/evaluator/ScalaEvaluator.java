@@ -41,6 +41,7 @@ import com.twosigma.beakerx.scala.serializers.ScalaMapSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaPrimitiveTypeListOfListSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaPrimitiveTypeMapSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaTableDeSerializer;
+import com.twosigma.beakerx.widget.SparkVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,6 +100,14 @@ public class ScalaEvaluator extends BaseEvaluator {
     this.acshell = newAutoCompleteEvaluator();
     executorService.shutdown();
     executorService = Executors.newSingleThreadExecutor();
+  }
+
+  @Override
+  public void cancelExecution() {
+    super.cancelExecution();
+    if (SparkVariable.getSparkContextManager() != null) {
+      SparkVariable.getSparkContextManager().cancelAllJobs();
+    }
   }
 
   @Override

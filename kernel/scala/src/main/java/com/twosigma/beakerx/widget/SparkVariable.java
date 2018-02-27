@@ -19,11 +19,11 @@ public class SparkVariable {
 
   private static SparkContextManager manager;
 
-  public static void put(SparkContextManager sparkContextManager) {
+  public static void putSparkContextManager(SparkContextManager sparkContextManager) {
     manager = sparkContextManager;
   }
 
-  public static SparkContextManager get() {
+  public static SparkContextManager getSparkContextManager() {
     return manager;
   }
 }

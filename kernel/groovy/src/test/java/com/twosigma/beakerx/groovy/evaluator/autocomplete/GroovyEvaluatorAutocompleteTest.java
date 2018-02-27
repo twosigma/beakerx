@@ -481,4 +481,13 @@ public class GroovyEvaluatorAutocompleteTest {
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length()-1);
   }
 
+  @Test
+  public void shouldReturnEmptyResultForIncorrectCode() throws Exception {
+    String code = "]";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    assertThat(autocomplete.getMatches()).isEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(0);
+  }
 }

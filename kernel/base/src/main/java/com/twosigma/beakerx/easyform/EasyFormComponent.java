@@ -22,9 +22,9 @@ import static com.twosigma.beakerx.kernel.comm.Comm.STATE;
 import com.twosigma.beakerx.easyform.formitem.EasyFormListener;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widgets.CommFunctionality;
-import com.twosigma.beakerx.widgets.UpdateValueCallback;
-import com.twosigma.beakerx.widgets.ValueWidget;
+import com.twosigma.beakerx.widget.CommFunctionality;
+import com.twosigma.beakerx.widget.UpdateValueCallback;
+import com.twosigma.beakerx.widget.ValueWidget;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -127,7 +127,7 @@ public class EasyFormComponent<T extends ValueWidget<?>> implements CommFunction
     this.enabled = enabled;
   }
 
-  public String formatValue(final Object value) {
+  public Object formatValue(final Object value) {
     return String.class.cast(value);
   }
 

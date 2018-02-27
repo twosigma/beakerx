@@ -29,9 +29,17 @@ Create the release
 ------------------
 
 Update the version in `beakerx/beakerx/_version.py` and
-`beakerx/js/package.json` and `js/lab/package.json`.  Commit
-the change and push the git tag.
+`js/notebook/package.json` and `js/lab/package.json`.  Commit
+the change and push the git tag:
 
+```bash
+git commit -a -m 'version $version'
+git push
+git tag $version
+git push origin $version
+```
+
+Make a source archive of the package:
 ```bash
 git clean -xfd
 cd beakerx
@@ -51,9 +59,16 @@ Publish on conda-forge
 
 Update the feedstock repo:
 
-- Make a branch or fork of https://github.com/twosigma/beakerx-feedstock.
+```
+git clone https://github.com/twosigma/beakerx-feedstock.git
+cd beakerx-feedstock
+git remote add upstream https://github.com/conda-forge/beakerx-feedstock.git
+git fetch upstream
+git reset --hard upstream/master
+git push origin master --force
+```
 - Update the `version` and `sha256` variable values in `recipe/meta.yaml`.
-  Return  build number to 0.
+  Return  build number to 1.
 
 Then test it locally:
 
@@ -71,17 +86,19 @@ conda install --use-local beakerx
 - Then commit changes and submit a PR upstream to
   https://github.com/conda-forge/beakerx-feedstock for the new
   version.
+- Have the CI configs [automatically
+  rerendered](https://conda-forge.org/docs/webservice.html#conda-forge-admin-please-rerender).
 - After CI passes, merge the PR.
 
 
 Publish on npmjs
 ----------------
 
-To update the embedded version of our widget library:
-
-- Do a full build.
-- Run `(cd js/notebook; npm publish)`
-- Run `(cd js/lab; npm publish)`
+To update the embedded version of our widget library, and our Lab extension:
+```
+(cd js/notebook; npm publish)
+(cd js/lab; npm publish)
+```
 
 Release to Docker Hub
 ---------------------
@@ -106,7 +123,23 @@ docker tag beakerx beakerx/beakerx
 docker push beakerx/beakerx
 ```
 
+Write Release Notes
+------------------
+
+Open the release on github at
+https://github.com/twosigma/beakerx/releases/tag/$version
+
+And write the release notes.
+
+Update Jitpack
+--------------
+
+Go to https://jitpack.io/#twosigma/beakerx and click "Get it".
+
 Update Binder Link
 ------------------
 
-Update the version of the mybinder link in the README, and push to master.
+Wait for the conda packages to become available.  Then update the
+version of the mybinder link in the README, and push to master.  If
+the conda package isn't ready then mybinder will cache the old
+version forever.

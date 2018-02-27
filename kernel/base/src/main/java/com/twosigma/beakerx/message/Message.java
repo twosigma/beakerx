@@ -35,6 +35,7 @@ public class Message {
   private Header parentHeader;
   private Map<String, Serializable> metadata;
   private Map<String, Serializable> content;
+  private List<byte[]> buffers = new ArrayList<>();
 
   public Message() {
     header = new Header();
@@ -90,4 +91,11 @@ public class Message {
     return "Type = " + header.getType();
   }
 
+  public void setBuffers(List<byte[]> buffers) {
+    this.buffers = buffers;
+  }
+
+  public List<byte[]> getBuffers() {
+    return buffers;
+  }
 }

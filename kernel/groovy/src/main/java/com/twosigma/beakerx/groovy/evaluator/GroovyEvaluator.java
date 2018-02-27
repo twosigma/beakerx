@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.groovy.evaluator;
 
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
@@ -36,6 +37,7 @@ import groovy.lang.GroovyClassLoader;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
 import java.io.File;
+import java.util.concurrent.Executors;
 
 import static com.twosigma.beakerx.groovy.evaluator.EnvVariablesFilter.envVariablesFilter;
 import static com.twosigma.beakerx.groovy.evaluator.GroovyClassLoaderFactory.addImportPathToImportCustomizer;
@@ -49,7 +51,6 @@ public class GroovyEvaluator extends BaseEvaluator {
 
   private GroovyClasspathScanner cps;
   private GroovyAutocomplete gac;
-  private GroovyWorkerThread worker = null;
   private GroovyClassLoader groovyClassLoader;
   private Binding scriptBinding = null;
   private ImportCustomizer icz;
@@ -65,13 +66,11 @@ public class GroovyEvaluator extends BaseEvaluator {
     gac = createGroovyAutocomplete(cps);
     outDir = envVariablesFilter(outDir, System.getenv());
     reloadClassloader();
-    worker = new GroovyWorkerThread(this);
-    worker.start();
   }
 
   @Override
-  public void evaluate(SimpleEvaluationObject seo, String code) {
-    worker.add(new JobDescriptor(code, seo));
+  public TryResult evaluate(SimpleEvaluationObject seo, String code) {
+    return evaluate(seo, new GroovyWorkerThread(this, new JobDescriptor(code, seo)));
   }
 
   @Override
@@ -86,15 +85,16 @@ public class GroovyEvaluator extends BaseEvaluator {
     gac = createGroovyAutocomplete(cps);
     inspect = new Inspect();
     reloadClassloader();
-    worker.halt();
+    executorService.shutdown();
+    executorService = Executors.newSingleThreadExecutor();
   }
 
   @Override
   public void exit() {
     super.exit();
-    worker.doExit();
     cancelExecution();
-    worker.halt();
+    executorService.shutdown();
+    executorService = Executors.newSingleThreadExecutor();
   }
 
   @Override

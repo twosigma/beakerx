@@ -43,6 +43,7 @@ public class DefaultJVMVariables {
   public DefaultJVMVariables() {
     addImports(
             "com.twosigma.beakerx.NamespaceClient",
+            "com.twosigma.beakerx.widget.OutputManager",
             "com.twosigma.beakerx.chart.Color",
             "com.twosigma.beakerx.chart.GradientColor",
             "com.twosigma.beakerx.chart.legend.*",
@@ -60,7 +61,7 @@ public class DefaultJVMVariables {
             //"com.twosigma.beaker.easyform.formitem.*",
             "com.twosigma.beakerx.easyform.EasyForm",
             "com.twosigma.beakerx.table.*",
-            "com.twosigma.beakerx.fileloader.CsvPlotReader",
+            "com.twosigma.beakerx.fileloader.CSV",
             "com.twosigma.beakerx.jvm.object.OutputContainer",
             "com.twosigma.beakerx.jvm.object.TabbedOutputContainerLayoutManager",
             "com.twosigma.beakerx.jvm.object.GridOutputContainerLayoutManager",
@@ -69,7 +70,8 @@ public class DefaultJVMVariables {
             "com.twosigma.beakerx.table.renderer.TableDisplayCellRenderer",
             "com.twosigma.beakerx.table.format.TableDisplayStringFormat",
             "com.twosigma.beakerx.table.highlight.TableDisplayCellHighlighter",
-            "com.twosigma.beakerx.table.highlight.ThreeColorHeatmapHighlighter"
+            "com.twosigma.beakerx.table.highlight.ThreeColorHeatmapHighlighter",
+            "static com.twosigma.beakerx.Display.display"
 
     );
   }

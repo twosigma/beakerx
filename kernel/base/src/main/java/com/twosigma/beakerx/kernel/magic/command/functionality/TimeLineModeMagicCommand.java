@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.kernel.magic.command.functionality;
 
-import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
@@ -35,10 +34,9 @@ public class TimeLineModeMagicCommand extends TimeMagicCommand {
 
   @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
-    Code code = param.getCode();
     Message message = param.getCode().getMessage();
     int executionCount = param.getExecutionCount();
-    String codeToExecute = code.asString().replace(TIME_LINE, "");
-    return time(codeToExecute, message, executionCount);
+    String codeToExecute = param.getCommand().replace(TIME_LINE, "");
+    return time(codeToExecute, message, executionCount,param.isShowResult());
   }
 }

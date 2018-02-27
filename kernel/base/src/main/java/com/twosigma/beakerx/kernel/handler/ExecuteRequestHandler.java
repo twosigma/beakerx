@@ -16,20 +16,23 @@
 package com.twosigma.beakerx.kernel.handler;
 
 
-import com.twosigma.beakerx.kernel.magic.command.CodeFactory;
+import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
-import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.kernel.magic.command.CodeFactory;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import static com.twosigma.beakerx.kernel.handler.MagicCommandExecutor.executeMagicCommands;
+import static com.twosigma.beakerx.kernel.PlainCode.createSimpleEvaluationObject;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.EXECUTE_INPUT;
+import static java.util.Collections.singletonList;
 
 /**
  * Does the actual work of executing user code.
@@ -39,7 +42,7 @@ import static com.twosigma.beakerx.kernel.msg.JupyterMessages.EXECUTE_INPUT;
 public class ExecuteRequestHandler extends KernelHandler<Message> {
 
   private int executionCount;
-  private final Semaphore syncObject = new Semaphore(1, true);
+  private ExecutorService executorService = Executors.newFixedThreadPool(1);
 
   public ExecuteRequestHandler(KernelFunctionality kernel) {
     super(kernel);
@@ -48,37 +51,27 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
 
   @Override
   public void handle(Message message) {
-    try {
-      handleMsg(message);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    executorService.submit(() -> {
+      try {
+        handleMsg(message);
+      } catch (Exception e) {
+        handleException(message, e);
+      }
+    });
   }
 
-  private void handleMsg(Message message) throws Exception {
-    syncObject.acquire();
+  private void handleMsg(Message message) {
     kernel.sendBusyMessage(message);
     executionCount += 1;
     String codeString = takeCodeFrom(message);
     announceTheCode(message, codeString);
     Code code = CodeFactory.create(codeString, message, kernel);
-    executeMagicCommands(code, executionCount, kernel);
-    executeCodeBlock(code);
+    code.execute(kernel, executionCount);
+    finishExecution(message);
   }
 
   private void finishExecution(Message message) {
     kernel.sendIdleMessage(message);
-    syncObject.release();
-  }
-
-  private void executeCodeBlock(Code code) {
-    if (code.getCodeBlock().isPresent()) {
-      kernel.executeCode(code.getCodeBlock().get(), code.getMessage(), executionCount, (seo) -> {
-        finishExecution(seo.getJupyterMessage());
-      });
-    } else {
-      finishExecution(code.getMessage());
-    }
   }
 
   private String takeCodeFrom(Message message) {
@@ -98,7 +91,12 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
     map1.put("execution_count", executionCount);
     map1.put("code", code);
     reply.setContent(map1);
-    kernel.publish(reply);
+    kernel.publish(singletonList(reply));
+  }
+
+  private void handleException(Message message, Exception e) {
+    SimpleEvaluationObject seo = createSimpleEvaluationObject(takeCodeFrom(message), kernel, message, executionCount);
+    seo.error(e);
   }
 
   @Override

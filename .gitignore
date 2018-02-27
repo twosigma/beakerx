@@ -1,41 +1,80 @@
-*~
-*.pyc
-.idea/
-.metadata/
-.recommenders/
-.gradle/
-.settings/
-RemoteSystemsTempFiles/
+# BeakerX gitignore
+
+# General
+lib/
+
+# Beaker
+VERSION
+beakerx/static/
+beakerx/beakerx/static/
+beakerx/beakerx/kernel/
+beakerx/beakerx/javadoc/
+beakerx/record.txt
+
+# Jupyter / iPython
+/.project
 jupyter_contrib_nbextensions/
+.ipynb_checkpoints/
+/*.ipynb
+!StartHere.ipynb
+
+# Gradle
+.gradle/
+/gradle*
+kernel/build/
+kernel/*/build/
+/build/
+/.nb-gradle/
+.nb-gradle-properties
 Groovier-1.0.0.jar
 jupyter-groovy-kernel.log
 jupyter-groovy-kernel-1.0.0.jar
 jupyter-groovy-kernel.log
-.ipynb_checkpoints/
-/*.ipynb
-!StartHere.ipynb
-#.gitignore
-/gradle*
-beaker.egg-info/
 
-beakerx/static/
-beakerx.egg-info/
-beakerx/beakerx/static/
-beakerx/beakerx/kernel/
-beakerx/beakerx/javadoc/
-beakerx/dist
-
-kernel/build/
-kernel/*/build/
-/build/
+# Java
 /.classpath
-/.project
-/.nb-gradle/
-.nb-gradle-properties
+
+# Python
+*.py[cod]
 __pycache__/
-beakerx/__pycache__/
-beakerx/plot/__pycache__/
+beakerx/dist
+*.egg-info/
+
+# Node
 js/bower_components/
-lib/
-beakerx/record.txt
-VERSION
+
+# Ignore tags created by etags, ctags, gtags, or cscope
+TAGS
+.TAGS
+.TAGS/
+tags
+.tags
+!tags/
+gtags.files
+GTAGS
+GRTAGS
+GPATH
+GSYMS
+cscope.files
+cscope.out
+cscope.in.out
+cscope.po.out
+
+# Emacs
+*~
+
+# Vim
+[._]*.s[a-v][a-v]
+[._]*.sw[a-p]
+[._]*s[a-v][a-z]
+[._]sw[a-p]
+
+# IntelliJ
+.idea/
+.iml
+
+# Eclipse
+.metadata/
+.settings/
+.recommenders/
+RemoteSystemsTempFiles/

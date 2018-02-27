@@ -16,9 +16,12 @@
 package com.twosigma.beakerx.kernel;
 
 import static com.twosigma.beakerx.kernel.KernelSignalHandler.addSigIntHandler;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 import com.twosigma.beakerx.BeakerxDefaultDisplayers;
 import com.twosigma.beakerx.DisplayerDataMapper;
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorManager;
@@ -26,7 +29,6 @@ import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beakerx.jvm.object.SimpleEvaluationObjectWithTime;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandTypesFactory;
@@ -152,7 +154,7 @@ public abstract class Kernel implements KernelFunctionality {
     }
   }
 
-  public synchronized void publish(Message message) {
+  public synchronized void publish(List<Message> message) {
     this.kernelSockets.publish(message);
   }
 
@@ -179,15 +181,8 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   @Override
-  public SimpleEvaluationObject executeCode(String code, Message message, int executionCount,
-                                            ExecuteCodeCallback executeCodeCallback) {
-    return this.evaluatorManager.executeCode(code, message, executionCount, executeCodeCallback);
-  }
-
-  @Override
-  public SimpleEvaluationObjectWithTime executeCodeWithTimeMeasurement(String code, Message message,
-                                                                       int executionCount, ExecuteCodeCallbackWithTime executeCodeCallbackWithTime) {
-    return this.evaluatorManager.executeCodeWithTimeMeasurement(code, message, executionCount, executeCodeCallbackWithTime);
+  public TryResult executeCode(String code, SimpleEvaluationObject seo) {
+    return this.evaluatorManager.executeCode(code, seo);
   }
 
   @Override
@@ -207,12 +202,12 @@ public abstract class Kernel implements KernelFunctionality {
 
   @Override
   public void sendBusyMessage(Message message) {
-    publish(MessageCreator.createBusyMessage(message));
+    publish(singletonList(MessageCreator.createBusyMessage(message)));
   }
 
   @Override
   public void sendIdleMessage(Message message) {
-    publish(MessageCreator.createIdleMessage(message));
+    publish(singletonList(MessageCreator.createIdleMessage(message)));
   }
 
   @Override

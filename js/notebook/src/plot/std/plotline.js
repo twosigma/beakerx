@@ -78,8 +78,7 @@ define([
     }
   };
 
-  PlotLine.prototype.getRange = function() {
-    var eles = this.elements;
+  PlotLine.prototype.getRange = function(eles = this.elements) {
     var range = {
       xl : Infinity,
       xr : -Infinity,

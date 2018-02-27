@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.jupyter.msg;
 
-import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.jvm.object.OutputCell;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -42,7 +41,7 @@ public class MessageCreatorNoResultTest {
   @Test
   public void noResult() throws Exception {
     //given
-    SimpleEvaluationObject seo = new SimpleEvaluationObject("code", new ExecuteCodeCallbackTest());
+    SimpleEvaluationObject seo = new SimpleEvaluationObject("code");
     seo.setJupyterMessage(new Message());
     seo.finished(OutputCell.HIDDEN);
     //when

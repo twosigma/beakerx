@@ -86,16 +86,15 @@ def convertNotebook(notebook):
     nb = parseBkr(data)
     nbformat.write(nb, notebook.partition('.')[0] + '.ipynb')
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('notebooks', nargs='+',
-                        help="beaker notebooks to be converted. Enter *.bkr in case you want to convert all notebooks at once.")
-    if len(sys.argv) == 1:
-        parser.print_help()
-    args = parser.parse_args()
-
+def main(args):
     for notebook in args.notebooks:
         convertNotebook(notebook)
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('notebooks', nargs='+',
+                    help="beaker notebooks to be converted. Enter *.bkr in case you want to convert all notebooks at once.")
+    if len(sys.argv) == 1:
+        parser.print_help()
+    args = parser.parse_args()
+    main(args)

@@ -23,6 +23,7 @@ import clojure.lang.Symbol;
 import clojure.lang.Var;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.clojure.autocomplete.ClojureAutocomplete;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
@@ -43,6 +44,7 @@ import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 public class ClojureEvaluator extends BaseEvaluator {
 
@@ -50,7 +52,6 @@ public class ClojureEvaluator extends BaseEvaluator {
   private final static Logger logger = LoggerFactory.getLogger(ClojureEvaluator.class.getName());
 
   private List<String> requirements;
-  private ClojureWorkerThread workerThread;
   private DynamicClassLoader loader;
   private Var clojureLoadString = null;
 
@@ -58,8 +59,6 @@ public class ClojureEvaluator extends BaseEvaluator {
     super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters);
     requirements = new ArrayList<>();
     init();
-    workerThread = new ClojureWorkerThread(this);
-    workerThread.start();
   }
 
   public ClojureEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters) {
@@ -108,7 +107,8 @@ public class ClojureEvaluator extends BaseEvaluator {
     }
 
     Thread.currentThread().setContextClassLoader(oldLoader);
-    workerThread.halt();
+    executorService.shutdown();
+    executorService = Executors.newSingleThreadExecutor();
   }
 
   private void addImportPathToShell(ImportPath s) {
@@ -130,9 +130,9 @@ public class ClojureEvaluator extends BaseEvaluator {
   @Override
   public void exit() {
     super.exit();
-    workerThread.doExit();
     cancelExecution();
-    workerThread.halt();
+    executorService.shutdown();
+    executorService = Executors.newSingleThreadExecutor();
   }
 
   @Override
@@ -141,8 +141,8 @@ public class ClojureEvaluator extends BaseEvaluator {
   }
 
   @Override
-  public void evaluate(SimpleEvaluationObject seo, String code) {
-    workerThread.add(new JobDescriptor(code, seo));
+  public TryResult evaluate(SimpleEvaluationObject seo, String code) {
+    return evaluate(seo, new ClojureWorkerThread(this, new JobDescriptor(code, seo)));
   }
 
   @Override

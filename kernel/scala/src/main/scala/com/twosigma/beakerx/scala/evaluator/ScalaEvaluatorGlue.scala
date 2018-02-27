@@ -18,6 +18,7 @@ package com.twosigma.beakerx.scala.evaluator
 
 import java.net.URL
 
+import com.twosigma.beakerx.TryResult
 import com.twosigma.beakerx.autocomplete.AutocompleteResult
 import com.twosigma.beakerx.jvm.`object`.SimpleEvaluationObject
 
@@ -91,7 +92,7 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
     }
   }
 
-  def addImports(names: Array[String]) : Boolean = {
+  def addImports(names: Array[String]): Boolean = {
     addImport(names.mkString(", "))
   }
 
@@ -108,20 +109,32 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
     }
   }
 
-  def evaluate(out: SimpleEvaluationObject, code: String) {
+  def evaluate(out: SimpleEvaluationObject, code: String): TryResult = {
+    var either: TryResult = null
     baos.reset()
-    out.setOutputHandler()
     out.started()
     try {
+      out.setOutputHandler()
       interpreter.interpret(code) match {
-        case Success => out.finished(getOut.asInstanceOf[java.lang.Object])
-        case Incomplete => out.error("input is incomplete")
-        case Error => out.error(baos.toString())
+        case Success => {
+          val value = getOut.asInstanceOf[Object]
+          either = TryResult.createResult(value)
+        }
+        case Incomplete => {
+          either = TryResult.createError("input is incomplete")
+        }
+        case Error => {
+          either = TryResult.createError(baos.toString())
+        }
       }
     } catch {
-      case ex: Throwable => out.error(ex)
+      case ex: Throwable => {
+        either = TryResult.createError(ex.getMessage())
+      }
+    } finally {
+      out.clrOutputHandler()
     }
-    out.clrOutputHandler()
+    either
   }
 
   def autocomplete(buf: String, len: Integer): AutocompleteResult = {

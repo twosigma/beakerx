@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.kotlin.evaluator;
 
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.autocomplete.ClasspathScanner;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
@@ -35,17 +36,17 @@ import org.jetbrains.kotlin.cli.jvm.repl.ReplInterpreter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
+import static com.twosigma.beakerx.kotlin.evaluator.ReplWithClassLoaderFactory.createParentClassLoader;
 import static com.twosigma.beakerx.kotlin.evaluator.ReplWithClassLoaderFactory.createReplWithKotlinParentClassLoader;
 import static com.twosigma.beakerx.kotlin.evaluator.ReplWithClassLoaderFactory.createReplWithReplClassLoader;
 import static com.twosigma.beakerx.kotlin.evaluator.ReplWithClassLoaderFactory.getImportString;
-import static com.twosigma.beakerx.kotlin.evaluator.ReplWithClassLoaderFactory.createParentClassLoader;
 import static java.util.Collections.singletonList;
 
 public class KotlinEvaluator extends BaseEvaluator {
 
   private ClasspathScanner cps;
-  private KotlinWorkerThread workerThread;
   private ReplInterpreter repl;
   private ReplClassLoader loader = null;
   private BeakerxUrlClassLoader kotlinClassLoader;
@@ -58,8 +59,6 @@ public class KotlinEvaluator extends BaseEvaluator {
     super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters);
     cps = new ClasspathScanner();
     createRepl();
-    workerThread = new KotlinWorkerThread(this);
-    workerThread.start();
   }
 
   @Override
@@ -67,7 +66,8 @@ public class KotlinEvaluator extends BaseEvaluator {
     String cpp = createClasspath(classPath, outDir);
     cps = new ClasspathScanner(cpp);
     createRepl();
-    workerThread.halt();
+    executorService.shutdown();
+    executorService = Executors.newSingleThreadExecutor();
   }
 
   private void createRepl() {
@@ -96,14 +96,13 @@ public class KotlinEvaluator extends BaseEvaluator {
   @Override
   public void exit() {
     super.exit();
-    workerThread.doExit();
     cancelExecution();
-    workerThread.halt();
+    executorService.shutdown();
   }
 
   @Override
-  public void evaluate(SimpleEvaluationObject seo, String code) {
-    workerThread.add(new JobDescriptor(code, seo));
+  public TryResult evaluate(SimpleEvaluationObject seo, String code) {
+    return evaluate(seo, new KotlinWorkerThread(this, new JobDescriptor(code, seo)));
   }
 
   @Override

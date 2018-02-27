@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.twosigma.beakerx.widgets.CompiledCodeRunner.runCompiledCode;
+import static com.twosigma.beakerx.widget.CompiledCodeRunner.runCompiledCode;
 
 public abstract class Graphics implements Serializable, Cloneable {
 
@@ -65,6 +65,10 @@ public abstract class Graphics implements Serializable, Cloneable {
 
   public String getYAxis() {
     return yAxisName;
+  }
+
+  public String getyAxis() {
+    return getYAxis();
   }
 
   public String getUid() {

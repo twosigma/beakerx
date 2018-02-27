@@ -30,7 +30,7 @@ const { Comm } = require('services/kernels/comm');
 
 const msgHandlers = {
   [BEAKER_GETCODECELLS]: (msg) => {
-    if(msg.content.data.name == "CodeCells"){
+    if(msg.content.data.state.name == "CodeCells"){
       sendJupyterCodeCells(JSON.parse(msg.content.data.state.value));
     }
 
@@ -74,21 +74,17 @@ export const registerCommTargets = (kernel: any): void => {
   kernel.comm_manager.register_target(BEAKER_GETCODECELLS, function(comm) {
     comm.on_msg(msgHandlers[BEAKER_GETCODECELLS]);
   });
+
   kernel.comm_manager.register_target(BEAKER_AUTOTRANSLATION, function(comm) {
     comm.on_msg(msgHandlers[BEAKER_AUTOTRANSLATION]);
   });
+
   kernel.comm_manager.register_target(BEAKER_TAG_RUN, function(comm) {
     comm.on_msg(msgHandlers[BEAKER_TAG_RUN]);
   });
 
-  kernel.send_shell_message(
-    "comm_info_request",
-    {},
-    {
-      shell: {
-        reply: (msg) => { assignMsgHandlersToExistingComms(msg.content.comms, kernel); }
-      }
-    }
+  kernel.comm_info(
+    null, (msg) => { assignMsgHandlersToExistingComms(msg.content.comms, kernel); }
   );
 };
 
@@ -113,7 +109,6 @@ const sendJupyterCodeCells = (filter: string) => {
 const assignMsgHandlersToExistingComms = (comms, kernel) => {
   for (let commId in comms) {
     let comm = new Comm(comms[commId].target_name, commId);
-
     kernel.comm_manager.register_comm(comm);
 
     assignMsgHandlerToComm(comm);

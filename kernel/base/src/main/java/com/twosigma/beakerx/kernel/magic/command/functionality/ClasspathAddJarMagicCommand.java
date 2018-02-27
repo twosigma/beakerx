@@ -20,8 +20,6 @@ import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 
-import java.util.Collection;
-
 import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils.splitPath;
 
 public class ClasspathAddJarMagicCommand extends ClasspathMagicCommand {
@@ -59,12 +57,7 @@ public class ClasspathAddJarMagicCommand extends ClasspathMagicCommand {
     if (errorData.hasError()) {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, errorData.getMessage());
     } else {
-      Collection<String> newAddedJars = addJars(path);
-      if (newAddedJars.isEmpty()) {
-        return new MagicCommandOutput(MagicCommandOutput.Status.OK);
-      }
-      String textMessage = "Added " + JAR + (newAddedJars.size() > 1 ? "s: " : ": ") + newAddedJars;
-      return new MagicCommandOutput(MagicCommandOutput.Status.OK, textMessage);
+      return handleAddedJars(path);
     }
   }
 

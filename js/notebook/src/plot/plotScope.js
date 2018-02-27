@@ -48,7 +48,7 @@ define([
   moment
 ) {
 
-  var CONTEXT_MENU_DEBOUNCE_TIME = 250;
+  var CONTEXT_MENU_DEBOUNCE_TIME = 350;
 
   function PlotScope(wrapperId) {
     this.wrapperId = wrapperId;
@@ -103,6 +103,7 @@ define([
     this.legendResetPosition = false;
     this.doNotLoadState = false;
     this.saveAsMenuContainer = null;
+    this.zoomEventsDispatchOrder = [];
 
     this.data2scrX = null;
     this.data2scrY = null;
@@ -422,7 +423,6 @@ define([
       this.showUnorderedHint = false;
       console.warn("unordered area/line detected, truncation disabled");
     }
-
   };
 
   PlotScope.prototype.onKeyAction = function(item, onKeyEvent) {
@@ -1524,7 +1524,17 @@ define([
       "width" : self.layout.rightLayoutMargin,
       "height" : H
     });
+  };
 
+  PlotScope.prototype.updateClipPath = function() {
+    var W = plotUtils.safeWidth(this.jqsvg);
+    var H = plotUtils.safeHeight(this.jqsvg);
+    
+    this.svg.select('#clipPath_' + this.wrapperId + ' rect')
+      .attr("x", this.layout.leftLayoutMargin)
+      .attr("y", this.layout.topLayoutMargin)
+      .attr("height", H - this.layout.topLayoutMargin - this.layout.bottomLayoutMargin)
+      .attr("width", W - this.layout.leftLayoutMargin - this.layout.rightLayoutMargin);
   };
 
   PlotScope.prototype.renderLocateBox = function() {
@@ -1542,14 +1552,15 @@ define([
     }
   };
 
-  PlotScope.prototype.calcLocateBox = function() {
+  PlotScope.prototype.getLocateBoxCoords = function() {
     var self = this;
     var p1 = self.mousep1, p2 = self.mousep2;
     var xl = Math.min(p1.x, p2.x), xr = Math.max(p1.x, p2.x),
       yl = Math.min(p1.y, p2.y), yr = Math.max(p1.y, p2.y);
     if (xr === xl) { xr = xl + 1; }
     if (yr === yl) { yr = yl + 1; }
-    self.locateBox = {
+
+    return {
       "x" : xl,
       "y" : yl,
       "w" : xr - xl,
@@ -1600,7 +1611,7 @@ define([
       "x" : d3.mouse(svgNode)[0],
       "y" : d3.mouse(svgNode)[1]
     };
-    self.calcLocateBox();
+    self.locateBox = self.getLocateBoxCoords();
     self.rpipeRects = [];
     self.renderLocateBox();
   };
@@ -1714,7 +1725,29 @@ define([
       }else{
         // scale only
         var level = self.zoomLevel;
-        if (my <= plotUtils.safeHeight(self.jqsvg) - self.layout.bottomLayoutMargin) {
+        var autoZoomSuccess = false;
+        if (my <= plotUtils.safeHeight(self.jqsvg) - self.layout.bottomLayoutMargin
+          && mx >= self.layout.leftLayoutMargin
+          && this.model.model.auto_zoom) {
+            // Zooming in the middle of the chart, autoscale Y
+            var data = this.stdmodel.data;
+            if (data.map(d => d.getRange ? true : false).every(b => b)) {
+              var ranges = data.map(d =>
+                d.getRange(d.elements.filter(el =>
+                  el.x >= focus.xl && el.x <= focus.xr
+                ))
+              );
+              var minYValue = Math.min(...ranges.map(r => r.yl).filter(y => !isNaN(y) && isFinite(y)));
+              var maxYValue = Math.max(...ranges.map(r => r.yr).filter(y => !isNaN(y) && isFinite(y)));
+              if(!isNaN(minYValue) && isFinite(minYValue) && !isNaN(maxYValue) && isFinite(maxYValue)) {
+                autoZoomSuccess = true;
+                focus.yl = minYValue;
+                focus.yr = maxYValue;
+                focus.yspan = focus.yr - focus.yl;
+              }
+            }
+        }
+        if (!autoZoomSuccess && (my <= plotUtils.safeHeight(self.jqsvg) - self.layout.bottomLayoutMargin)) {
           // scale y
           var ym = focus.yl + self.scr2dataYp(my) * focus.yspan;
           var nyl = ym - zoomRate * (ym - focus.yl),
@@ -1806,15 +1839,22 @@ define([
       }
 
       self.enableZoomWheel();
+
+      var locateBox = self.getLocateBoxCoords();
+      var isDispatchedAsSecond = self.zoomEventsDispatchOrder.indexOf('contextMenu') !== -1;
+
+      if (isDispatchedAsSecond && self.contexteMenuEvent && locateBox.w <= 1 && locateBox.h <= 1) {
+        self.jqcontainer[0] && self.jqcontainer[0].dispatchEvent(self.contexteMenuEvent);
+      }
+
+      self.zoomEventsDispatchOrder.length = 0;
+      if (!isDispatchedAsSecond) {
+        self.zoomEventsDispatchOrder.push('zoomEnd');
+      }
+
+      self.contexteMenuEvent = null;
     }
 
-    var zoomingTime = moment() - self.zoomStarted;
-
-    if(self.contexteMenuEvent && zoomingTime < CONTEXT_MENU_DEBOUNCE_TIME) {
-      self.jqcontainer[0] && self.jqcontainer[0].dispatchEvent(self.contexteMenuEvent);
-    }
-
-    self.contexteMenuEvent = null;
     self.jqsvg.css("cursor", "auto");
   };
 
@@ -1935,10 +1975,20 @@ define([
     });
 
     function handleContextMenuEvent(event) {
-      self.contexteMenuEvent = event;
+      var locateBox = self.getLocateBoxCoords();
+      var isDispatchedAsSecond = self.zoomEventsDispatchOrder.indexOf('zoomEnd') !== -1;
 
-      event.stopPropagation();
-      event.preventDefault();
+      self.zoomEventsDispatchOrder.length = 0;
+
+      if (!isDispatchedAsSecond) {
+        self.contexteMenuEvent = event;
+        self.zoomEventsDispatchOrder.push('contextMenu');
+      }
+
+      if (!isDispatchedAsSecond || isDispatchedAsSecond && (locateBox.w > 1 || locateBox.h > 1)) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
     }
 
     var svgElement = self.svg.node();
@@ -2321,6 +2371,7 @@ define([
     self.renderGridlineLabels();
     self.renderGridlineTicks();
     self.renderCoverBox(); // redraw
+    self.updateClipPath(); // redraw
     plotUtils.plotLabels(self); // redraw
     plotUtils.plotTicks(self); // redraw
 
@@ -2655,9 +2706,12 @@ define([
                '<div id="plotLegendContainer" class="plot-plotlegendcontainer" oncontextmenu="return false;">'+
                '<div class="plot-plotcontainer" oncontextmenu="return false;">'+
                '<svg id="svgg">'+
-               '<defs> <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%"> <stop offset="0.0%" stop-color="#2c7bb6"></stop> <stop offset="12.5%" stop-color="#00a6ca"></stop> <stop offset="25.0%" stop-color="#00ccbc"></stop> <stop offset="37.5%" stop-color="#90eb9d"></stop> <stop offset="50.0%" stop-color="#ffff8c"></stop> <stop offset="62.5%" stop-color="#f9d057"></stop> <stop offset="75.0%" stop-color="#f29e2e"></stop> <stop offset="87.5%" stop-color="#e76818"></stop> <stop offset="100.0%" stop-color="#d7191c"></stop> </linearGradient> <marker id="Triangle" class="text-line-style" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="6" markerHeight="6" orient="auto"> <path d="M 0 0 L 10 5 L 0 10 z"></path> </marker> <filter id="svgfilter"> <feGaussianBlur result="blurOut" in="SourceGraphic" stdDeviation="1"></feGaussianBlur> <feBlend in="SourceGraphic" in2="blurOut" mode="normal"></feBlend> </filter> <filter id="svgAreaFilter"> <feMorphology operator="dilate" result="blurOut" in="SourceGraphic" radius="2"></feMorphology> <feBlend in="SourceGraphic" in2="blurOut" mode="normal"></feBlend> </filter> </defs>' +
+               '<defs>' +
+                  '<linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%"> <stop offset="0.0%" stop-color="#2c7bb6"></stop> <stop offset="12.5%" stop-color="#00a6ca"></stop> <stop offset="25.0%" stop-color="#00ccbc"></stop> <stop offset="37.5%" stop-color="#90eb9d"></stop> <stop offset="50.0%" stop-color="#ffff8c"></stop> <stop offset="62.5%" stop-color="#f9d057"></stop> <stop offset="75.0%" stop-color="#f29e2e"></stop> <stop offset="87.5%" stop-color="#e76818"></stop> <stop offset="100.0%" stop-color="#d7191c"></stop> </linearGradient> <marker id="Triangle" class="text-line-style" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="6" markerHeight="6" orient="auto"> <path d="M 0 0 L 10 5 L 0 10 z"></path> </marker> <filter id="svgfilter"> <feGaussianBlur result="blurOut" in="SourceGraphic" stdDeviation="1"></feGaussianBlur> <feBlend in="SourceGraphic" in2="blurOut" mode="normal"></feBlend> </filter> <filter id="svgAreaFilter"> <feMorphology operator="dilate" result="blurOut" in="SourceGraphic" radius="2"></feMorphology> <feBlend in="SourceGraphic" in2="blurOut" mode="normal"></feBlend> </filter>' +
+                  '<clipPath id="clipPath_' + this.wrapperId + '"><rect x="0" y="0" width="100%" height="100%" /></clipPath>'+
+               '</defs>' +
                '<g id="gridg"></g>'+
-               '<g id="maing"></g>'+
+               '<g id="maing" clip-path="url(#clipPath_' + this.wrapperId + ')"></g>'+
                '<g id="labelg"></g>'+
                '</svg>'+
                '</div>'+

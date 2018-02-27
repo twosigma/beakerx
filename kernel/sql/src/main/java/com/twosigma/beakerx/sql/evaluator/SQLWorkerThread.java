@@ -16,60 +16,44 @@
 package com.twosigma.beakerx.sql.evaluator;
 
 import com.twosigma.beakerx.NamespaceClient;
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
-import com.twosigma.beakerx.evaluator.WorkerThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class SQLWorkerThread extends WorkerThread {
+import java.util.concurrent.Callable;
+
+class SQLWorkerThread implements Callable<TryResult> {
 
   private final static Logger logger = LoggerFactory.getLogger(SQLWorkerThread.class.getName());
   private SQLEvaluator sqlEvaluator;
-  volatile protected boolean exit;
+  private final JobDescriptor job;
 
-  SQLWorkerThread(SQLEvaluator sqlEvaluator) {
-    super("sql worker");
+  SQLWorkerThread(SQLEvaluator sqlEvaluator, JobDescriptor j) {
     this.sqlEvaluator = sqlEvaluator;
+    this.job = j;
   }
-      /*
-      * This thread performs all the evaluation
-      */
 
-  public void run() {
-    JobDescriptor job;
-    NamespaceClient namespaceClient;
-
-    while (!exit) {
-      try {
-        syncObject.acquire();
-      } catch (InterruptedException e) {
-        logger.error(e.getMessage());
-      }
-
-      if (exit) {
-        break;
-      }
-
-      job = jobQueue.poll();
-      job.getSimpleEvaluationObject().started();
-
+  @Override
+  public TryResult call() throws Exception {
+    NamespaceClient namespaceClient = null;
+    TryResult r;
+    job.getSimpleEvaluationObject().started();
+    try {
       job.getSimpleEvaluationObject().setOutputHandler();
       namespaceClient = NamespaceClient.getBeaker(sqlEvaluator.getSessionId());
       namespaceClient.setOutputObj(job.getSimpleEvaluationObject());
 
-      sqlEvaluator.executeTask(new SQLCodeRunner(sqlEvaluator, job.getSimpleEvaluationObject(), namespaceClient));
-
+      r = sqlEvaluator.executeTask(new SQLCodeRunner(sqlEvaluator, job.getSimpleEvaluationObject(), namespaceClient));
+    } finally {
       job.getSimpleEvaluationObject().clrOutputHandler();
-
-      namespaceClient.setOutputObj(null);
-      if (job != null && job.getSimpleEvaluationObject() != null) {
-        job.getSimpleEvaluationObject().executeCodeCallback();
+      if (namespaceClient != null) {
+        namespaceClient.setOutputObj(null);
       }
     }
+    return r;
   }
 
   public void doExit() {
-    this.exit = true;
   }
-
 }

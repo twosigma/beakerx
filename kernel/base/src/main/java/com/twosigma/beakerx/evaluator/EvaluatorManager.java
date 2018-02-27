@@ -15,10 +15,10 @@
  */
 package com.twosigma.beakerx.evaluator;
 
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beakerx.jvm.object.SimpleEvaluationObjectWithTime;
 import com.twosigma.beakerx.kernel.AddImportStatus;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
@@ -27,7 +27,6 @@ import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.kernel.Repos;
-import com.twosigma.beakerx.message.Message;
 
 import java.io.IOException;
 
@@ -73,51 +72,16 @@ public class EvaluatorManager {
     evaluator.killAllThreads();
   }
 
-  public synchronized SimpleEvaluationObject executeCode(String code, Message message,
-                                                         int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
-    return execute(code, message, executionCount, executeCodeCallback);
-  }
-
-  public synchronized SimpleEvaluationObjectWithTime executeCodeWithTimeMeasurement(String code, Message message,
-                                                                                    int executionCount, KernelFunctionality.ExecuteCodeCallbackWithTime executeCodeCallbackWithTime) {
-    return executeWithTimeMeasurement(code, message, executionCount, executeCodeCallbackWithTime);
+  public synchronized TryResult executeCode(String code, SimpleEvaluationObject seo) {
+    return execute(code, seo);
   }
 
   public void exit() {
     evaluator.exit();
   }
 
-  private SimpleEvaluationObject execute(String code, Message message, int executionCount,
-                                         KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
-    SimpleEvaluationObject seo = createSimpleEvaluationObject(code, message, executionCount,
-            executeCodeCallback);
-    evaluator.evaluate(seo, code);
-    return seo;
-  }
-
-  private SimpleEvaluationObjectWithTime executeWithTimeMeasurement(String code, Message message, int executionCount,
-                                                                    KernelFunctionality.ExecuteCodeCallbackWithTime executeCodeCallbackWithTime) {
-    SimpleEvaluationObjectWithTime seowt = createSimpleEvaluationObjectWithTime(code, message, executionCount,
-            executeCodeCallbackWithTime);
-    evaluator.evaluate(seowt, code);
-    return seowt;
-  }
-
-  private SimpleEvaluationObject createSimpleEvaluationObject(String code, Message message,
-                                                              int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, executeCodeCallback);
-    seo.setJupyterMessage(message);
-    seo.setExecutionCount(executionCount);
-    seo.addObserver(kernel.getExecutionResultSender());
-    return seo;
-  }
-
-  private SimpleEvaluationObjectWithTime createSimpleEvaluationObjectWithTime(String code, Message message,
-                                                                              int executionCount, KernelFunctionality.ExecuteCodeCallbackWithTime executeCodeCallbackWithTime) {
-    SimpleEvaluationObjectWithTime seowt = new SimpleEvaluationObjectWithTime(code, executeCodeCallbackWithTime);
-    seowt.setJupyterMessage(message);
-    seowt.setExecutionCount(executionCount);
-    return seowt;
+  private TryResult execute(String code, SimpleEvaluationObject seo) {
+    return evaluator.evaluate(seo, code);
   }
 
   public List<Path> addJarsToClasspath(List<PathToJar> paths) {

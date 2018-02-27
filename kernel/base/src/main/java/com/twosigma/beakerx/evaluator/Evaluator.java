@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.evaluator;
 
 import com.twosigma.beakerx.inspect.InspectResult;
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.kernel.AddImportStatus;
 import com.twosigma.beakerx.kernel.Repos;
 import java.io.IOException;
@@ -51,7 +52,7 @@ public interface Evaluator {
 
   void cancelExecution();
 
-  void evaluate(SimpleEvaluationObject seo, String code);
+  TryResult evaluate(SimpleEvaluationObject seo, String code);
 
   void exit();
 

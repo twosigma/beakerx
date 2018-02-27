@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.jvm.object;
 
-import com.twosigma.beakerx.widgets.integers.IntProgress;
+import com.twosigma.beakerx.widget.IntProgress;
 
 public class ProgressReporting {
 

@@ -17,6 +17,7 @@ package com.twosigma.beakerx.sql.evaluator;
 
 
 import com.twosigma.beakerx.NamespaceClient;
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.autocomplete.ClasspathScanner;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
@@ -27,16 +28,16 @@ import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
+import com.twosigma.beakerx.kernel.Classpath;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.ImportPath;
+import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.sql.ConnectionStringBean;
 import com.twosigma.beakerx.sql.ConnectionStringHolder;
 import com.twosigma.beakerx.sql.JDBCClient;
 import com.twosigma.beakerx.sql.QueryExecutor;
 import com.twosigma.beakerx.sql.ReadVariableException;
 import com.twosigma.beakerx.sql.autocomplete.SQLAutocomplete;
-import com.twosigma.beakerx.kernel.Classpath;
-import com.twosigma.beakerx.kernel.EvaluatorParameters;
-import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.sql.kernel.SQLKernelParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +53,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.concurrent.Executors;
 
 public class SQLEvaluator extends BaseEvaluator {
 
@@ -64,7 +66,6 @@ public class SQLEvaluator extends BaseEvaluator {
   private SQLAutocomplete sac;
   private final QueryExecutor queryExecutor;
   private JDBCClient jdbcClient;
-  private SQLWorkerThread workerThread;
   private DynamicClassLoaderSimple loader;
 
   public SQLEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters) {
@@ -80,8 +81,7 @@ public class SQLEvaluator extends BaseEvaluator {
     jdbcClient.loadDrivers(classPath.getPathsAsStrings());
     queryExecutor = new QueryExecutor(jdbcClient);
     loader = reloadClassLoader();
-    workerThread = new SQLWorkerThread(this);
-    workerThread.start();
+    executorService = Executors.newSingleThreadExecutor();
   }
 
   @Override
@@ -90,14 +90,14 @@ public class SQLEvaluator extends BaseEvaluator {
   }
 
   @Override
-  public void evaluate(SimpleEvaluationObject seo, String code) {
-    workerThread.add(new JobDescriptor(code, seo));
+  public TryResult evaluate(SimpleEvaluationObject seo, String code) {
+    return evaluate(seo, new SQLWorkerThread(this, new JobDescriptor(code, seo)));
   }
 
   @Override
   public void exit() {
     super.exit();
-    workerThread.doExit();
+    executorService.shutdown();
     cancelExecution();
   }
 

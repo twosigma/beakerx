@@ -291,6 +291,19 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
   }
 
   @Test
+  public void setyAutoRangeByFalse_YAutoRangeIsFalse() {
+    //given
+    AbstractChart chart =createWidget();
+    //when
+    chart.setyAutoRange(false);
+    //then
+    assertThat(chart.getYAutoRange()).isFalse();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    assertThat(model.get(Y_AUTO_RANGE)).isEqualTo(false);
+  }
+
+  @Test
   public void setyLogBaseWithDoubleParam_hasYLogBase() {
     //given
     AbstractChart chart =createWidget();

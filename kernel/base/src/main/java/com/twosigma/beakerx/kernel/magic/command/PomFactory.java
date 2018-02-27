@@ -15,38 +15,42 @@
  */
 package com.twosigma.beakerx.kernel.magic.command;
 
-import static com.twosigma.beakerx.kernel.magic.command.MavenJarResolver.POM_XML;
-
 import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver.Dependency;
+import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.io.IOUtils;
-
 public class PomFactory {
 
-  public String createPom(String pathToMavenRepo, Dependency dependency, Map<String, String> repos) throws IOException {
-    InputStream pom = getClass().getClassLoader().getResourceAsStream(POM_XML);
+  public String createPom(String pathToMavenRepo, List<Dependency> dependencies, Map<String, String> repos) throws IOException {
+    InputStream pom = getClass().getClassLoader().getResourceAsStream(MavenJarResolver.POM_XML);
     String pomAsString = IOUtils.toString(pom, StandardCharsets.UTF_8);
     pomAsString = configureOutputDir(pathToMavenRepo, pomAsString);
-    pomAsString = configureDependencies(dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion(), pomAsString);
+    pomAsString = configureDependencies(dependencies, pomAsString);
     pomAsString = configureRepos(repos, pomAsString);
     return pomAsString;
   }
 
-  private String configureDependencies(String groupId, String artifactId, String version, String pomAsString) {
+  private String configureDependencies(List<Dependency> dependencies, String pomAsString) {
+    for (Dependency dependency : dependencies) {
+      pomAsString = configureDependency(dependency, pomAsString);
+    }
+    return pomAsString;
+  }
+
+  private String configureDependency(Dependency dependency, String pomAsString) {
     return pomAsString.replace(
-            "<dependencies></dependencies>",
-            "<dependencies>\n" +
+            "</dependencies>",
                     "  <dependency>\n" +
-                    "    <groupId>" + groupId + "</groupId>\n" +
-                    "    <artifactId>" + artifactId + "</artifactId>\n" +
-                    "    <version>" + version + "</version>\n" +
+                    "    <groupId>" + dependency.groupId + "</groupId>\n" +
+                    "    <artifactId>" + dependency.artifactId + "</artifactId>\n" +
+                    "    <version>" + dependency.version + "</version>\n" +
                     "  </dependency>\n" +
                     "</dependencies>");
   }

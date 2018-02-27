@@ -18,6 +18,7 @@ package com.twosigma.beakerx.scala.evaluator;
 
 import com.google.inject.Provider;
 import com.twosigma.beakerx.NamespaceClient;
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
@@ -40,18 +41,17 @@ import com.twosigma.beakerx.scala.serializers.ScalaMapSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaPrimitiveTypeListOfListSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaPrimitiveTypeMapSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaTableDeSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.concurrent.Executors;
 
 public class ScalaEvaluator extends BaseEvaluator {
 
   private final static Logger logger = LoggerFactory.getLogger(ScalaEvaluator.class.getName());
   private BeakerxObjectFactory beakerxObjectFactory;
-  private ScalaWorkerThread workerThread;
   private final Provider<BeakerObjectConverter> objectSerializerProvider;
   private static boolean autoTranslationSetup = false;
   private BeakerxUrlClassLoader classLoader;
@@ -69,13 +69,11 @@ public class ScalaEvaluator extends BaseEvaluator {
     this.classLoader = newClassLoader();
     this.shell = createNewEvaluator();
     this.acshell = newAutoCompleteEvaluator();
-    this.workerThread = new ScalaWorkerThread(this);
-    this.workerThread.start();
   }
 
   @Override
-  public void evaluate(SimpleEvaluationObject seo, String code) {
-    workerThread.add(new JobDescriptor(code, seo));
+  public TryResult evaluate(SimpleEvaluationObject seo, String code) {
+    return evaluate(seo, new ScalaWorkerThread(this, new JobDescriptor(code, seo)));
   }
 
   @Override
@@ -99,15 +97,15 @@ public class ScalaEvaluator extends BaseEvaluator {
     this.classLoader = newClassLoader();
     this.shell = createNewEvaluator();
     this.acshell = newAutoCompleteEvaluator();
-    this.workerThread.halt();
+    executorService.shutdown();
+    executorService = Executors.newSingleThreadExecutor();
   }
 
   @Override
   public void exit() {
     super.exit();
-    workerThread.doExit();
     cancelExecution();
-    workerThread.halt();
+    executorService.shutdown();
   }
 
   @Override
@@ -208,7 +206,7 @@ public class ScalaEvaluator extends BaseEvaluator {
       String[] imp = importsPaths.stream().map(importPath -> adjustImport(importPath.asString())).toArray(String[]::new);
       logger.debug("importing : {}", importsPaths);
       if (!shell.addImports(imp)) {
-        logger.warn("ERROR: cannot add import '{}'", imp);
+        logger.warn("ERROR: cannot add import '{}'", (Object[]) imp);
       }
     }
   }
@@ -224,9 +222,9 @@ public class ScalaEvaluator extends BaseEvaluator {
   }
 
   /*
- * Scala uses multiple classloaders and (unfortunately) cannot fallback to the java one while compiling scala code so we
- * have to build our DynamicClassLoader and also build a proper classpath for the compiler classloader.
- */
+   * Scala uses multiple classloaders and (unfortunately) cannot fallback to the java one while compiling scala code so we
+   * have to build our DynamicClassLoader and also build a proper classpath for the compiler classloader.
+   */
   private BeakerxUrlClassLoader newClassLoader() {
     logger.debug("creating new loader");
     BeakerxUrlClassLoader cl = new BeakerxUrlClassLoader(ClassLoader.getSystemClassLoader());

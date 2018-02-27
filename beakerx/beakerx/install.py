@@ -26,6 +26,7 @@ import tempfile
 
 from string import Template
 from jupyter_client.kernelspecapp import KernelSpecManager
+from jupyter_core import paths
 from traitlets.config.manager import BaseJSONConfigManager
 from distutils import log
 
@@ -49,7 +50,7 @@ def _classpath_for(kernel):
 def _uninstall_nbextension():
     subprocess.check_call(["jupyter", "nbextension", "disable", "beakerx", "--py", "--sys-prefix"])
     subprocess.check_call(["jupyter", "nbextension", "uninstall", "beakerx", "--py", "--sys-prefix"])
-
+    subprocess.check_call(["jupyter", "serverextension", "disable", "beakerx", "--py", "--sys-prefix"])
 
 def _install_nbextension():
     if sys.platform == 'win32':
@@ -115,7 +116,10 @@ def _uninstall_kernels():
         uninstall_cmd = [
             'jupyter', 'kernelspec', 'remove', kernel, '-y', '-f'
         ]
-        subprocess.check_call(uninstall_cmd)
+        try:
+            subprocess.check_call(uninstall_cmd)
+        except subprocess.CalledProcessError:
+            pass #uninstal_cmd prints the appropriate message
 
 
 def _install_magics():
@@ -124,8 +128,13 @@ def _install_magics():
     pathlib.Path(dir_path).mkdir(parents=True, exist_ok=True)
     file = open(os.path.join(dir_path, 'ipython_config.py'), 'w+')
     file.write("c = get_config()\n")
-    file.write("c.InteractiveShellApp.extensions = ['beakerx.groovy_magic']")
+    file.write("c.InteractiveShellApp.extensions = ['beakerx_magics.groovy_magic']\n")
     file.close()
+
+def _set_conf_privileges():
+    config_path = os.path.join(paths.jupyter_config_dir(), 'beakerx.json')
+    if pathlib.Path(config_path).exists():
+        os.chmod(config_path, 0o600)
 
 
 def _pretty(it):
@@ -148,7 +157,7 @@ def _install_kernelspec_manager(prefix, disable=False):
     nb_app = cfg.setdefault("KernelSpecManager", {})
     if disable and nb_app.get(KSMC, None) == CKSM:
         nb_app.pop(KSMC)
-    else:
+    elif not disable:
         nb_app.update({KSMC: CKSM})
 
     log.debug("Writing config in {}...".format(path))
@@ -175,9 +184,10 @@ def make_parser():
     return parser
 
 
-def _disable_beakerx():
+def _disable_beakerx(args):
     _uninstall_nbextension()
     _uninstall_kernels()
+    _install_kernelspec_manager(args.prefix, disable=True)
 
 
 def _install_beakerx(args):
@@ -187,19 +197,14 @@ def _install_beakerx(args):
     _copy_icons()
     _install_kernelspec_manager(args.prefix)
     _install_magics()
+    _set_conf_privileges()
 
 
-def install():
-    try:
-        parser = make_parser()
-        args = parser.parse_args()
-        if args.disable:
-            _disable_beakerx()
-        else:
-            _install_beakerx(args)
-    except KeyboardInterrupt:
-        return 130
-    return 0
+def install(args):
+    _install_beakerx(args)
+
+def uninstall(args):
+    _disable_beakerx(args)
 
 
 if __name__ == "__main__":

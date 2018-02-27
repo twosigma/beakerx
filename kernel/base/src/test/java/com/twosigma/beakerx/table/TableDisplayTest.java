@@ -19,7 +19,7 @@ package com.twosigma.beakerx.table;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.chart.Color;
 import com.twosigma.beakerx.chart.xychart.XYChart;
-import com.twosigma.beakerx.fileloader.CsvPlotReader;
+import com.twosigma.beakerx.fileloader.CSV;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.serialization.DateSerializer;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
@@ -51,8 +51,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import static com.twosigma.beakerx.fileloader.CsvPlotReaderTest.TABLE_ROWS_TEST_CSV;
-import static com.twosigma.beakerx.fileloader.CsvPlotReaderTest.getOsAppropriatePath;
+import static com.twosigma.beakerx.fileloader.CSVTest.TABLE_ROWS_TEST_CSV;
+import static com.twosigma.beakerx.fileloader.CSVTest.getOsAppropriatePath;
 import static com.twosigma.beakerx.table.serializer.DecimalStringFormatSerializer.MAX_DECIMALS;
 import static com.twosigma.beakerx.table.serializer.DecimalStringFormatSerializer.MIN_DECIMALS;
 import static com.twosigma.beakerx.table.serializer.ObservableTableDisplaySerializer.DOUBLE_CLICK_TAG;
@@ -81,16 +81,18 @@ import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.TOOLT
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.TYPE;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.VALUES;
 import static com.twosigma.beakerx.table.serializer.ValueStringFormatSerializer.VALUE_STRING;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.findValueForProperty;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.getMessageUpdate;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyOpenCommMsgWitoutLayout;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.findValueForProperty;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.getMessageUpdate;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.getValueForProperty;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsgWitoutLayout;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class TableDisplayTest {
 
   public static final String COL_1 = "str1";
+  public static final String COL_3 = "str3";
 
   protected KernelTest kernel;
 
@@ -591,6 +593,15 @@ public class TableDisplayTest {
   }
 
   @Test
+  public void createWithUndefinedTypes() throws Exception {
+    TableDisplay tableDisplay = new TableDisplay(getListOfMapsWithEmptyTypes());
+    assertThat(tableDisplay.getSubtype()).isEqualTo(TableDisplay.LIST_OF_MAPS_SUBTYPE);
+    System.out.println(tableDisplay.getTypes());
+    List<String> expectedValues = Arrays.asList("string", "double", "integer");
+    assertThat(tableDisplay.getTypes()).isEqualTo(expectedValues);
+  }
+
+  @Test
   public void createWithListOfMapsParam_hasListOfMapsSubtype() throws Exception {
     //when
     TableDisplay tableDisplay = new TableDisplay(getListOfMapsData());
@@ -694,12 +705,12 @@ public class TableDisplayTest {
   @Test
   public void shouldContainTime() throws Exception {
     //given
-    List<Map<String, Object>> data = new CsvPlotReader().read(getOsAppropriatePath(getClass().getClassLoader(), TABLE_ROWS_TEST_CSV));
+    List<Map<String, Object>> data = new CSV().read(getOsAppropriatePath(getClass().getClassLoader(), TABLE_ROWS_TEST_CSV));
     TableDisplay tableDisplay = new TableDisplay(data);
     //when
     tableDisplay.display();
     //then
-    assertThat(tableDisplay.getTypes()).contains(CsvPlotReader.TIME_COLUMN);
+    assertThat(tableDisplay.getTypes()).contains(CSV.TIME_COLUMN);
     LinkedHashMap model = getModel();
     List values = (List) model.get(VALUES);
     List row0 = (List) values.get(0);
@@ -796,6 +807,36 @@ public class TableDisplayTest {
     return list;
   }
 
+  public static List<Map<String, Object>> getListOfMapsWithEmptyTypes() {
+    List<Map<String, Object>> list = new ArrayList<>();
+    List<String> cols = getStringList();
+    list.add(
+            new LinkedHashMap<String, Object>() {
+              {
+                put(cols.get(0), "string 1");
+                put(cols.get(1), null);
+                put(cols.get(2), 1);
+              }
+            });
+    list.add(
+            new LinkedHashMap<String, Object>() {
+              {
+                put(cols.get(0), null);
+                put(cols.get(1), 2.2);
+                put(cols.get(2), 2);
+              }
+            });
+    list.add(
+            new LinkedHashMap<String, Object>() {
+              {
+                put(cols.get(0), "string 3");
+                put(cols.get(1), 2.3);
+                put(cols.get(2), null);
+              }
+            });
+    return list;
+  }
+
   private Map<?, ?> getMapData() {
     return new HashMap<String, Object>() {
       {
@@ -809,7 +850,7 @@ public class TableDisplayTest {
   }
 
   private static List<String> getStringList() {
-    return Arrays.asList(COL_1, "str2", "str3");
+    return Arrays.asList(COL_1, "str2", COL_3);
   }
 
   private static List<?> getRowData() {
@@ -836,6 +877,29 @@ public class TableDisplayTest {
 
   private List getValueAsList(Map model, String field) {
     return (List) model.get(field);
+  }
+
+  @Test
+  public void shouldUpdateCellByColumnName() throws Exception {
+    //given
+    //when
+    tableDisplay.updateCell(0, COL_3, 121);
+    //then
+    int indexOfCol3 = tableDisplay.getColumnNames().indexOf(COL_3);
+    assertThat(tableDisplay.getValues().get(0).get(indexOfCol3)).isEqualTo(121);
+  }
+
+  @Test
+  public void shouldThrowExceptionWhenUpdateCellByNotExistingColumnName() throws Exception {
+    //given
+    //when
+    try {
+      tableDisplay.updateCell(0, "UnknownColumnName", 121);
+      fail("Should not update cell for unknown column name");
+    } catch (Exception e) {
+      //then
+      assertThat(e.getMessage()).contains("UnknownColumnName");
+    }
   }
 
 }

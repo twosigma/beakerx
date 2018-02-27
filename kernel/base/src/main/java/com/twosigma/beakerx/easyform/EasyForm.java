@@ -24,15 +24,16 @@ import com.twosigma.beakerx.easyform.formitem.widgets.CheckBoxGroupWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.CheckBoxWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.ComboBoxWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.DatePickerComponentWidget;
+import com.twosigma.beakerx.easyform.formitem.widgets.PasswordWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.SelectMultipleSingleWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.SelectMultipleWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.RadioButtonComponentWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.TextAreaWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.TextFieldWidget;
-import com.twosigma.beakerx.widgets.DOMWidget;
-import com.twosigma.beakerx.widgets.DisplayableWidget;
-import com.twosigma.beakerx.widgets.ValueWidget;
-import com.twosigma.beakerx.widgets.Widget;
+import com.twosigma.beakerx.widget.DOMWidget;
+import com.twosigma.beakerx.widget.DisplayableWidget;
+import com.twosigma.beakerx.widget.ValueWidget;
+import com.twosigma.beakerx.widget.Widget;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
@@ -82,6 +83,18 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
     textField.setLabel(label);
     textField.setSize(size);
     return addComponentOrThrow(label, textField);
+  }
+
+  public EasyFormComponent addPasswordField(final String label) throws Exception {
+    return addPasswordField(label, -1);
+  }
+
+  public EasyFormComponent addPasswordField(String label, int size) throws Exception {
+    PasswordWidget passwordWidget = new PasswordWidget();
+    passwordWidget.registerUpdateValueCallback(passwordWidget::fireChanged);
+    passwordWidget.setLabel(label);
+    passwordWidget.setSize(size);
+    return addComponentOrThrow(label, passwordWidget);
   }
 
   public EasyFormComponent addTextArea(final String label) throws Exception {
@@ -315,7 +328,7 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
               String.format("\"%s\" is not a valid option for %s \"%s\".",
                       value, component.getClass().getSimpleName(), key));
     }
-    final String currentValue = component.formatValue(value);
+    final Object currentValue = component.formatValue(value);
     final String previousValue = (component.getValue() == null) ? "" : component.getValue().toString();
     component.setValue(currentValue);
     getValuesMap().put(key, currentValue);

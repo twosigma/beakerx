@@ -32,7 +32,6 @@ public class PathToJar {
 
   public PathToJar(final String path) {
     checkNotNull(path);
-    checkNotWhitespaces(path);
     File file = getFile(path);
     try {
       canonicalPath = file.getCanonicalPath();

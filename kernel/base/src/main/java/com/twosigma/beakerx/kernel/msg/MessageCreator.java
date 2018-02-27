@@ -40,7 +40,7 @@ import com.twosigma.beakerx.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.twosigma.beakerx.SerializeToString;
+import com.twosigma.beakerx.MIMEContainerFactory;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus;
 import com.twosigma.beakerx.kernel.SocketEnum;
 
@@ -169,30 +169,39 @@ public class MessageCreator {
     List<MessageHolder> ret = new ArrayList<>();
     if (isConsoleOutputMessage(seo)) {
       ret.addAll(createConsoleResult(seo, message));
-    } else if (isSupportedStatus(seo.getStatus())) {
-      ret.addAll(createResultForSupportedStatus(seo, message));
+    } else if (isError(seo.getStatus())) {
+      ret.addAll(createError(seo, message));
+    } else if (isFinish(seo.getStatus()) && seo.isShowResult()) {
+      ret.addAll(createFinish(seo, message));
     } else {
       logger.debug("Unhandled status of SimpleEvaluationObject : " + seo.getStatus());
     }
     return ret;
   }
 
-  private static List<MessageHolder> createResultForSupportedStatus(SimpleEvaluationObject seo, Message message) {
+  private static List<MessageHolder> createFinish(SimpleEvaluationObject seo, Message message) {
     List<MessageHolder> ret = new ArrayList<>();
-    if (EvaluationStatus.FINISHED == seo.getStatus() && showResult(seo)) {
-      MessageHolder mh = createFinishResult(seo, message);
-      if (mh != null) {
-        ret.add(mh);
-      }
-    } else if (EvaluationStatus.ERROR == seo.getStatus()) {
-      ret.add(createErrorResult(seo, message));
+    MessageHolder mh = createFinishResult(seo, message);
+    if (mh != null) {
+      ret.add(mh);
     }
     ret.add(new MessageHolder(SocketEnum.SHELL_SOCKET, buildReply(message, seo)));
     return ret;
   }
 
-  private static boolean isSupportedStatus(EvaluationStatus status) {
-    return EvaluationStatus.FINISHED == status || EvaluationStatus.ERROR == status;
+  private static boolean isFinish(EvaluationStatus status) {
+    return EvaluationStatus.FINISHED == status;
+  }
+
+  private static List<MessageHolder> createError(SimpleEvaluationObject seo, Message message) {
+    List<MessageHolder> ret = new ArrayList<>();
+    ret.add(createErrorResult(seo, message));
+    ret.add(new MessageHolder(SocketEnum.SHELL_SOCKET, buildReply(message, seo)));
+    return ret;
+  }
+
+  private static boolean isError(EvaluationStatus status) {
+    return EvaluationStatus.ERROR == status;
   }
 
   private static boolean isConsoleOutputMessage(SimpleEvaluationObject seo) {
@@ -232,7 +241,7 @@ public class MessageCreator {
     }
     map4.put("ename", ename);
     map4.put("evalue", evalue);
-    map4.put("traceback", markRed(errorMessage));
+    map4.put("traceback", TracebackPrinter.print(errorMessage));
     map4.put(ERROR_MESSAGE, seo.getPayload().toString());
     reply.setContent(map4);
     return new MessageHolder(SocketEnum.IOPUB_SOCKET, reply);
@@ -254,21 +263,9 @@ public class MessageCreator {
     return ret.stream().toArray(String[]::new);
   }
 
-  private static String[] markRed(String[] input) {
-    List<String> ret = new ArrayList<>();
-    if (input != null) {
-      for (String line : input) {
-        if (line != null) {
-          ret.add("\u001b[0;31m" + line + "");
-        }
-      }
-    }
-    return ret.stream().toArray(String[]::new);
-  }
-
   private static MessageHolder createFinishResult(SimpleEvaluationObject seo, Message message) {
     MessageHolder ret = null;
-    List<MIMEContainer> mimes = SerializeToString.doit(seo.getPayload());
+    List<MIMEContainer> mimes = MIMEContainerFactory.createMIMEContainers(seo.getPayload());
     if (!mimes.contains(MIMEContainer.HIDDEN)) {
       ret = new MessageHolder(SocketEnum.IOPUB_SOCKET,
               buildMessage(message, mimes, outputdataResult(seo.getOutputdata()), seo.getExecutionCount()));

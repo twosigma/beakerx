@@ -24,13 +24,25 @@ public class ScalaDefaultVariables extends DefaultJVMVariables {
 
   public ScalaDefaultVariables() {
     removeImports("com.twosigma.beakerx.easyform.EasyForm",
+        "com.twosigma.beakerx.fileloader.CSV",
         "com.twosigma.beakerx.chart.xychart.*",
         "com.twosigma.beakerx.chart.xychart.plotitem.*",
+        "com.twosigma.beakerx.chart.categoryplot.*",
+        "com.twosigma.beakerx.chart.categoryplot.plotitem.*",
+        "com.twosigma.beakerx.chart.heatmap.HeatMap",
+        "com.twosigma.beakerx.chart.histogram.*",
+        "com.twosigma.beakerx.chart.treemap.*",
         "com.twosigma.beakerx.table.*"
     );
 
     addImports("com.twosigma.beakerx.scala.chart.xychart._",
         "com.twosigma.beakerx.scala.chart.xychart.plotitem._",
+        "com.twosigma.beakerx.scala.chart.xychart.{Plot,TimePlot,NanoPlot,SimpleTimePlot,CombinedPlot}",
+        "com.twosigma.beakerx.scala.chart.categoryplot.plotitem._",
+        "com.twosigma.beakerx.scala.chart.categoryplot.CategoryPlot",
+        "com.twosigma.beakerx.scala.chart.heatmap.HeatMap",
+        "com.twosigma.beakerx.scala.chart.histogram.Histogram",
+        "com.twosigma.beakerx.scala.chart.treemap.TreeMap",
         "com.twosigma.beakerx.scala.easyform.EasyForm",
         "com.twosigma.beakerx.easyform.formitem._",
         "com.twosigma.beakerx.scala.table._",
@@ -43,12 +55,9 @@ public class ScalaDefaultVariables extends DefaultJVMVariables {
         "com.twosigma.beakerx.table.RowFilter",
         "com.twosigma.beakerx.table.FontColorProvider",
         "com.twosigma.beakerx.scala.fileloader._",
-        "com.twosigma.beakerx.chart.xychart.CombinedPlot",
-        "com.twosigma.beakerx.chart.xychart.NanoPlot",
-        "com.twosigma.beakerx.chart.xychart.plotitem.YAxis",
         "com.twosigma.beakerx.chart.xychart.plotitem.ShapeType",
         "com.twosigma.beakerx.chart.xychart.plotitem.StrokeType",
-        "com.twosigma.beakerx.scala.fileloader.CsvPlotReader"
+        "com.twosigma.beakerx.scala.fileloader.CSV"
     );
   }
 }

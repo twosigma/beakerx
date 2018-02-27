@@ -17,33 +17,23 @@
 package com.twosigma.beakerx.scala.chart.xychart.plotitem
 
 import com.twosigma.beakerx.chart.Color
+import com.twosigma.beakerx.scala.JavaAdapter._
+
 import scala.collection.JavaConverters._
 
-class Bars extends com.twosigma.beakerx.chart.xychart.plotitem.Bars {
+class Bars extends com.twosigma.beakerx.chart.xychart.plotitem.Bars with BarsProperties
 
-  def this(x: Seq[Int], y: Seq[Int]) {
-    this()
-    super.setX(x.map(x => x.asInstanceOf[AnyRef]).asJava)
-    super.setY(y.map(x => x.asInstanceOf[Number]).asJava)
-  }
+trait BarsProperties extends BasedXYGraphicsProperties {
+  this: com.twosigma.beakerx.chart.xychart.plotitem.Bars =>
 
-  def this(x: Seq[Int], y: Seq[Int], colors: Seq[Color], outLineColor: Color, width: Number) {
-    this(x, y)
-    super.setColor(colors.map(x => x.asInstanceOf[AnyRef]).asJava)
-    super.setOutlineColor(outLineColor)
-    super.setWidth(width)
-  }
+  def outlineColor = Option(getOutlineColor)
+  def outlineColor_=(color: Color) = setOutlineColor(color)
+  def outlineColor_=(color: java.awt.Color) = setOutlineColor(color)
+  def outlineColor_=[T <: AnyRef : BeakerColor](colors: Seq[T]) = setOutlineColor(colors.toObjects.asJava)
+  def outlineColors = getNullableList(getOutlineColors)
 
-  def this(x: Seq[Int], y: Seq[Int], color: Color, outLineColor: Color, width: Number) {
-    this(x, y)
-    super.setColor(color)
-    super.setOutlineColor(outLineColor)
-    super.setWidth(width)
-  }
-
-  def this(displayName: String, x: Seq[Int], y: Seq[Int], width: Number) {
-    this(x, y)
-    super.setDisplayName(displayName)
-    super.setWidth(width)
-  }
+  def width = Option(getWidth)
+  def width_=(width: Number) = setWidth(width)
+  def width_=[T : NumberView](widths: Seq[T]) = setWidth(widths.toNumbers.asJava)
+  def widths = getNullableList(getWidths)
 }

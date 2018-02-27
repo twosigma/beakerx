@@ -15,16 +15,18 @@
  */
 package com.twosigma.beakerx.clojure.evaluator;
 
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.Callable;
 
 import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
 
-class ClojureCodeRunner implements Runnable {
+class ClojureCodeRunner implements Callable<TryResult> {
 
   private ClojureEvaluator clojureEvaluator;
   private final String theCode;
@@ -37,23 +39,23 @@ class ClojureCodeRunner implements Runnable {
   }
 
   @Override
-  public void run() {
+  public TryResult call() throws Exception {
     ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader(clojureEvaluator.getClassLoader());
-
-    theOutput.setOutputHandler();
+    TryResult either;
     try {
+      theOutput.setOutputHandler();
       InternalVariable.setValue(theOutput);
       Object o = clojureEvaluator.runCode(theCode);
       try {
         checkingOfCorruptedClojureObjects(o);
-        theOutput.finished(o);
+        either = TryResult.createResult(o);
       } catch (Exception e) {
-        theOutput.error("Object: " + o.getClass() + ", value cannot be displayed due to following error: " + e.getMessage());
+        either = TryResult.createError("Object: " + o.getClass() + ", value cannot be displayed due to following error: " + e.getMessage());
       }
     } catch (Throwable e) {
       if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {
-        theOutput.error(INTERUPTED_MSG);
+        either = TryResult.createError(INTERUPTED_MSG);
       } else {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
@@ -62,11 +64,13 @@ class ClojureCodeRunner implements Runnable {
         } else {
           e.printStackTrace(pw);
         }
-        theOutput.error(sw.toString());
+        either = TryResult.createError(sw.toString());
       }
+    } finally {
+      theOutput.setOutputHandler();
+      Thread.currentThread().setContextClassLoader(oldLoader);
     }
-    theOutput.setOutputHandler();
-    Thread.currentThread().setContextClassLoader(oldLoader);
+    return either;
   }
 
   private void checkingOfCorruptedClojureObjects(Object o) {

@@ -19,7 +19,7 @@ import com.twosigma.beakerx.KernelSocketsServiceTest;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.groovy.kernel.Groovy;
-import com.twosigma.beakerx.widgets.Widget;
+import com.twosigma.beakerx.widget.Widget;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.message.Message;
 import org.junit.After;
@@ -31,7 +31,7 @@ import java.util.Map;
 
 import static com.twosigma.beakerx.KernelCloseKernelAction.NO_ACTION;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getCacheFolderFactory;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.getState;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.getState;
 import static org.junit.Assert.assertTrue;
 
 public abstract class GroovyExamplesSetupTest {

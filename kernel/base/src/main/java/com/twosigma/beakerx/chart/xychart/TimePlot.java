@@ -19,8 +19,8 @@ package com.twosigma.beakerx.chart.xychart;
 import java.util.Date;
 import java.util.List;
 
-import static com.twosigma.beakerx.widgets.chart.BeakerxPlot.MODEL_NAME_VALUE;
-import static com.twosigma.beakerx.widgets.chart.BeakerxPlot.VIEW_NAME_VALUE;
+import static com.twosigma.beakerx.widget.BeakerxPlot.MODEL_NAME_VALUE;
+import static com.twosigma.beakerx.widget.BeakerxPlot.VIEW_NAME_VALUE;
 
 public class TimePlot extends XYChart {
 
@@ -42,6 +42,10 @@ public class TimePlot extends XYChart {
   public XYChart setXBound(Date lower, Date upper) {
     setXBound((double) lower.getTime(), (double) upper.getTime());
     return this;
+  }
+
+  public XYChart setxBound(Date lower, Date upper) {
+    return setXBound(lower, upper);
   }
 
   @Override

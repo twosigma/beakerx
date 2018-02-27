@@ -36,10 +36,9 @@ import static com.twosigma.beakerx.table.TableDisplayToJson.serializeStringForma
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeStringFormatForType;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeTimeZone;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeTooltips;
-import static com.twosigma.beakerx.widgets.CompiledCodeRunner.runCompiledCode;
+import static com.twosigma.beakerx.widget.CompiledCodeRunner.runCompiledCode;
 import static java.util.Arrays.asList;
 
-import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.chart.Color;
 import com.twosigma.beakerx.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
@@ -49,9 +48,8 @@ import com.twosigma.beakerx.table.format.ValueStringFormat;
 import com.twosigma.beakerx.table.highlight.TableDisplayCellHighlighter;
 import com.twosigma.beakerx.table.highlight.ValueHighlighter;
 import com.twosigma.beakerx.table.renderer.TableDisplayCellRenderer;
-import com.twosigma.beakerx.widgets.BeakerxWidget;
-import com.twosigma.beakerx.widgets.CommActions;
-import com.twosigma.beakerx.widgets.RunWidgetClosure;
+import com.twosigma.beakerx.widget.BeakerxWidget;
+import com.twosigma.beakerx.widget.RunWidgetClosure;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
@@ -147,7 +145,7 @@ public class TableDisplay extends BeakerxWidget {
     subtype = LIST_OF_MAPS_SUBTYPE;
 
     // create columns
-    if(v.size() > 0) {
+    if (v.size() > 0) {
       // Every column gets inspected at least once, so put every column in
       // a list with null for the initial type
       ArrayList<String> columnOrder = new ArrayList<String>();
@@ -160,14 +158,14 @@ public class TableDisplay extends BeakerxWidget {
         columnsToCheck.add(columnName);
         typeTracker.put(columnName, null);
       }
-  
+
       // Visit each row and track the row's type. If some value is found to
       // contain a string, the column is marked as string based and is no
       // longer typechecked
       List<String> columnsToRemove = new ArrayList<String>();
       for (Map<String, Object> row : v) {
         // Remove any columns requested from prior iteration
-        for (String columnToRemove: columnsToRemove) {
+        for (String columnToRemove : columnsToRemove) {
           columnsToCheck.remove(columnToRemove);
         }
         columnsToRemove = new ArrayList<String>();
@@ -179,17 +177,19 @@ public class TableDisplay extends BeakerxWidget {
 
           if (currentType == null || !currentType.equals("string")) {
             Object rowItem = row.get(columnToCheck);
-            String colType = rowItem.getClass().getName();
-            String beakerColType = serializer.convertType(colType);
-            typeTracker.put(columnToCheck, beakerColType);
+            if (rowItem != null) {
+              String colType = rowItem.getClass().getName();
+              String beakerColType = serializer.convertType(colType);
+              typeTracker.put(columnToCheck, beakerColType);
 
-            if (beakerColType.equals("string")) {
-              columnsToRemove.add(columnToCheck);
+              if (beakerColType.equals("string")) {
+                columnsToRemove.add(columnToCheck);
+              }
             }
           }
         }
       }
-  
+
       // Put results of type checking into `columns` and `classes`
       for (String columnName : columnOrder) {
         String columnType = typeTracker.get(columnName);
@@ -758,4 +758,18 @@ public class TableDisplay extends BeakerxWidget {
     String get(int columnIndex, int rowIndex);
   }
 
+  @SuppressWarnings("unchecked")
+  public void updateCell(int row, String columnName, Object value) {
+    int index = getColumnIndex(columnName);
+    List<Object> rowList = (List<Object>) values.get(row);
+    rowList.set(index, value);
+  }
+
+  private int getColumnIndex(String columnName) {
+    int index = columns.indexOf(columnName);
+    if (index < 0) {
+      throw new RuntimeException("There is no given column name: " + columnName);
+    }
+    return index;
+  }
 }

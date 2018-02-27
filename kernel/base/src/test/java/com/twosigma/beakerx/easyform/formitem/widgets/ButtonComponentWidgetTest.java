@@ -19,7 +19,7 @@ import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.easyform.EasyFormComponent;
 import com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher;
 import com.twosigma.beakerx.jvm.threads.BeakerStdOutErrHandler;
-import com.twosigma.beakerx.widgets.Button;
+import com.twosigma.beakerx.widget.Button;
 import com.twosigma.beakerx.message.Message;
 import org.junit.Test;
 
@@ -30,7 +30,7 @@ import java.util.Optional;
 import static com.twosigma.beakerx.kernel.msg.MessageCreator.NAME;
 import static com.twosigma.beakerx.kernel.msg.MessageCreator.STDOUT;
 import static com.twosigma.beakerx.kernel.msg.MessageCreator.TEXT;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.getValueForProperty;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 

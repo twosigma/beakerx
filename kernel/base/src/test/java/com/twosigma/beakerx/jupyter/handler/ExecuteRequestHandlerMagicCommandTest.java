@@ -16,10 +16,12 @@
 
 package com.twosigma.beakerx.jupyter.handler;
 
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.JavaScriptMagicCommand.JAVASCRIPT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.handler.ExecuteRequestHandler;
 import com.twosigma.beakerx.message.Message;
@@ -50,7 +52,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
   }
 
   @Test
-  public void handleMagicClasspathAddJarAndExecuteTheCode() throws Exception {
+  public void handleMagicClasspathAddJarAndExecuteTheCode() throws InterruptedException {
     //given
     String code = "" +
             "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKER_XCLASSPATH_TEST_JAR + "\n" +
@@ -60,33 +62,35 @@ public class ExecuteRequestHandlerMagicCommandTest {
 
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(code);
     //when
-
     executeRequestHandler.handle(magicMessage);
+    waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(4);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(5);
   }
 
   @Test
-  public void handleMagicClasspathAddJar() throws Exception {
+  public void handleMagicClasspathAddJar() throws InterruptedException {
     //when
     String code = "" +
             "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKER_XCLASSPATH_TEST_JAR;
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(code);
     executeRequestHandler.handle(magicMessage);
+    waitForIdleMessage(kernel);
     //then
     assertThat(kernel.getPublishedMessages().size()).isEqualTo(4);
   }
 
   @Test
-  public void handleMagicClasspathAddJarWithCode() throws Exception {
+  public void handleMagicClasspathAddJarWithCode() throws InterruptedException {
     //when
     String code = "" +
             "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKER_XCLASSPATH_TEST_JAR + "\n" +
             "1+1";
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(code);
     executeRequestHandler.handle(magicMessage);
+    waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(4);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(5);
   }
 
   @Test
@@ -109,6 +113,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(JAVASCRIPT + jsCode);
     //when
     executeRequestHandler.handle(magicMessage);
+    waitForIdleMessage(kernel);
     //then
     assertThat(kernel.getPublishedMessages().size()).isEqualTo(4);
   }
@@ -117,37 +122,39 @@ public class ExecuteRequestHandlerMagicCommandTest {
   public void handleImportMagicCommandAndExecuteTheCode() throws Exception {
     //given
     String code = "" +
-            "%import com.twosigma.beakerx.widgets.integers.IntSlider\n" +
+            "%import com.twosigma.beakerx.widget.IntSlider\n" +
             "w = new IntSlider()";
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(code);
     //when
     executeRequestHandler.handle(magicMessage);
+    waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(3);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(4);
   }
 
   @Test
   public void noResetEnvironmentForDuplicatedImportPath() throws Exception {
     //when
     String code = "" +
-            "%import com.twosigma.beakerx.widgets.integers.IntSlider\n" +
-            "%import com.twosigma.beakerx.widgets.integers.IntSlider\n" +
-            "%import com.twosigma.beakerx.widgets.integers.IntSlider\n";
+            "%import com.twosigma.beakerx.widget.IntSlider\n" +
+            "%import com.twosigma.beakerx.widget.IntSlider\n" +
+            "%import com.twosigma.beakerx.widget.IntSlider\n";
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(code);
     executeRequestHandler.handle(magicMessage);
+    waitForIdleMessage(kernel);
     //then
     assertThat(evaluator.getResetEnvironmentCounter()).isEqualTo(0);
   }
 
   @Test
-  public void noCodeToExecute() throws Exception {
+  public void noCodeToExecute() throws InterruptedException {
     //given
     String code = "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR;
     noCode(code);
   }
 
   @Test
-  public void noCodeToExecuteWithWhiteSpaces() throws Exception {
+  public void noCodeToExecuteWithWhiteSpaces() throws InterruptedException {
     //given
     String code = "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR + "\n" +
             " \n" +
@@ -156,26 +163,28 @@ public class ExecuteRequestHandlerMagicCommandTest {
     noCode(code);
   }
 
-  private void noCode(String code) {
+  private void noCode(String code) throws InterruptedException {
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(code);
     //when
     executeRequestHandler.handle(magicMessage);
+    waitForIdleMessage(kernel);
     //then
     assertThat(kernel.getPublishedMessages().size()).isEqualTo(4);
-    assertThat(kernel.getSentMessages().size()).isEqualTo(1);
+    //assertThat(kernel.getSentMessages().size()).isEqualTo(1);
     assertThat(kernel.getCode()).isNull();
   }
 
   @Test
-  public void codeToExecute() throws Exception {
+  public void codeToExecute() throws InterruptedException {
     //given
     String code = "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR + "\n" +
             "code code code";
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(code);
     //when
     executeRequestHandler.handle(magicMessage);
+    waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(4);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(5);
     assertThat(kernel.getCode()).isEqualTo("code code code");
   }
 
@@ -189,6 +198,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(code);
     //when
     executeRequestHandler.handle(magicMessage);
+    waitForIdleMessage(kernel);
     //then
     assertThat(kernel.getPublishedMessages().size()).isEqualTo(5);
   }
@@ -203,7 +213,8 @@ public class ExecuteRequestHandlerMagicCommandTest {
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(code);
     //when
     executeRequestHandler.handle(magicMessage);
+    waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(5);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(6);
   }
 }

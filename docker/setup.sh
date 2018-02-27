@@ -15,7 +15,7 @@
 
 source activate beakerx
 (cd beakerx; pip install -e . --verbose)
-beakerx-install
+beakerx install
 jupyter labextension install @jupyter-widgets/jupyterlab-manager
 (cd js/lab; jupyter labextension install .)
 

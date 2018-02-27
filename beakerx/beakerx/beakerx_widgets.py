@@ -12,12 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ipywidgets import Box, DOMWidget, CoreWidget, Text, Label, Textarea, \
+from ipywidgets import Box, DOMWidget, CoreWidget, \
+    Text, Label, Textarea, Password, \
     Button, Widget, \
     SelectMultiple, Select, Dropdown, Checkbox, HBox, \
     VBox, RadioButtons, register, Layout, widget_serialization, HTML
 from ipywidgets.widgets.trait_types import InstanceDict
-from traitlets import Int, Unicode, Dict, Bool, Union, List
+from traitlets import Int, Unicode, Dict, Bool, Union, List, Any, observe
 from IPython.display import display
 import types
 
@@ -44,6 +45,19 @@ class EasyFormComponent:
     def fireChanged(self, x=None):
         for f in self.onChangeListeners:
             f(x)
+
+    def set_value(self, new_value):
+        self.value = new_value
+
+    def add_interface_to(target):
+        target.onInitListeners = list()
+        target.onChangeListeners = list()
+        target.onInit = types.MethodType(EasyFormComponent.onInit, target)
+        target.onChange = types.MethodType(EasyFormComponent.onChange, target)
+        target.fireInit = types.MethodType(EasyFormComponent.fireInit, target)
+        target.fireChanged = types.MethodType(EasyFormComponent.fireChanged, target)
+        target.set_value = types.MethodType(EasyFormComponent.set_value, target)
+
 
 
 class BeakerxLayout(Layout):
@@ -147,6 +161,24 @@ class BeakerxText(Text, EasyFormComponent):
     style = None
 
 
+class BeakerxPassword(Password, EasyFormComponent):
+    def on_value_change(self, change):
+        self.fireChanged(change['new'])
+
+    def __init__(self, **kwargs):
+        super(BeakerxPassword, self).__init__(**kwargs)
+        self.observe(self.on_value_change, names='value')
+
+    _view_module = Unicode('beakerx').tag(sync=True)
+    _model_module = Unicode('beakerx').tag(sync=True)
+    _model_module_version = Unicode('*').tag(sync=True)
+    _view_module_version = Unicode('*').tag(sync=True)
+
+    size = Int(default_value=-1).tag(sync=True)
+    layout = InstanceDict(BeakerxLayout).tag(sync=True, **widget_serialization)
+    style = None
+
+
 class BeakerxHTML(HTML, EasyFormComponent):
     def __init__(self, *args, **kwargs):
         super(BeakerxHTML, self).__init__(**kwargs)
@@ -168,6 +200,8 @@ class BeakerxHTMLPre(HTML, EasyFormComponent):
 
     _view_name = Unicode('HTMLPreView').tag(sync=True)
     _model_name = Unicode('HTMLPreModel').tag(sync=True)
+    _view_module = Unicode('beakerx').tag(sync=True)
+    _model_module = Unicode('beakerx').tag(sync=True)
     _model_module_version = Unicode('*').tag(sync=True)
     _view_module_version = Unicode('*').tag(sync=True)
 
@@ -203,17 +237,27 @@ class BeakerxComboBox(Dropdown, EasyFormComponent):
     _model_module_version = Unicode('*').tag(sync=True)
     _view_module_version = Unicode('*').tag(sync=True)
     editable = Bool(default_value=False).tag(sync=True)
+    value = Any(None, allow_none=True).tag(sync=True)
     original_options = Union([List(), Dict()])
     style = None
+
+    def _update_options_list(self, new_value):
+        if new_value not in self.options:
+            self.options = self.original_options[:]
+            self.options += (new_value,)
+            self._options_values = tuple(tuple(self.options))
 
     def _handle_msg(self, msg):
         if 'value' in msg['content']['data']['state']:
             value = msg['content']['data']['state']['value']
-            if msg['content']['data']['state']['value'] not in self.options:
-                self.options = self.original_options[:]
-                self.options += (msg['content']['data']['state']['value'],)
+            self._update_options_list(value)
             self.value = value
         super(BeakerxComboBox, self)._handle_msg(msg)
+
+    def set_value(self, value):
+        if self.editable:
+            self._update_options_list(value)
+        self.value = value
 
 
 class BeakerxCheckbox(Checkbox, EasyFormComponent):
@@ -233,8 +277,12 @@ class BeakerxCheckboxGroup(EasyFormComponent):
     def __init__(self, **kwargs):
         super(BeakerxCheckboxGroup, self).__init__(**kwargs)
 
+    def __set_value(self, new_value):
+        for item in self.children:
+            item.value = item.description in new_value
+
     children = []
-    value = property(lambda self: [item.description for item in self.children if item.value])
+    value = property(lambda self: [item.description for item in self.children if item.value], __set_value)
 
     def addChildren(self, children):
         self.children.append(children)
@@ -284,6 +332,9 @@ class BeakerxVBox(VBox):
 class CyclingDisplayBox(BeakerxBox):
     _view_name = Unicode('CyclingDisplayBoxView').tag(sync=True)
     _model_name = Unicode('CyclingDisplayBoxModel').tag(sync=True)
+    _view_module = Unicode('beakerx').tag(sync=True)
+    _model_module = Unicode('beakerx').tag(sync=True)
+
     period = Int(5000).tag(sync=True)
 
     def __init__(self, children):
@@ -362,6 +413,11 @@ class DatePicker(BeakerxDOMWidget, EasyFormComponent):
 
     _view_name = Unicode('DatePickerView').tag(sync=True)
     _model_name = Unicode('DatePickerModel').tag(sync=True)
+    _view_module = Unicode('beakerx').tag(sync=True)
+    _model_module = Unicode('beakerx').tag(sync=True)
+    _model_module_version = Unicode('*').tag(sync=True)
+    _view_module_version = Unicode('*').tag(sync=True)
+
     showTime = Bool(default_value=False,
                     help="Enable or disable user changes.").tag(sync=True)
     value = Unicode(default_value="").tag(sync=True)

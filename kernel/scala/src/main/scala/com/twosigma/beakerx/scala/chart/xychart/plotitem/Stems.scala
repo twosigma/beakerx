@@ -18,27 +18,22 @@ package com.twosigma.beakerx.scala.chart.xychart.plotitem
 
 import java.util
 
-import scala.collection.JavaConverters._
 import com.twosigma.beakerx.chart.Color
 import com.twosigma.beakerx.chart.xychart.plotitem.StrokeType
+import com.twosigma.beakerx.scala.JavaAdapter._
 
-class Stems extends com.twosigma.beakerx.chart.xychart.plotitem.Stems {
+import scala.collection.JavaConverters._
 
-  def this(y: Seq[Double], colors: Seq[Color], style: StrokeType, width: Float) {
-    this()
-    super.setY(y.map(x => x.asInstanceOf[Number]).asJava)
-    val toList: util.List[Object] = colors.map(x => x.asInstanceOf[Object]).asJava
-    super.setColor(toList)
-    super.setStyle(style)
-    super.setWidth(width)
-  }
+class Stems extends com.twosigma.beakerx.chart.xychart.plotitem.Stems with StemsProperties
 
-  def this(y: Seq[Double], colors: Seq[Color], styles: Seq[StrokeType], width: Float) {
-    this()
-    super.setY(y.map(x => x.asInstanceOf[Number]).asJava)
-    val toList: util.List[Object] = colors.map(x => x.asInstanceOf[Object]).asJava
-    super.setColor(toList)
-    super.setStyle(styles.asJava)
-    super.setWidth(width)
-  }
+trait StemsProperties extends BasedXYGraphicsProperties {
+  this: com.twosigma.beakerx.chart.xychart.plotitem.Stems =>
+
+  def style = getStyle
+  def style_=(stroke: StrokeType) = setStyle(stroke)
+  def style_=(strokes: Seq[StrokeType]) = setStyle(strokes.asJava)
+  def styles = getNullableList(getStyles)
+
+  def width = getWidth
+  def width_=(width: Float) = setWidth(width)
 }

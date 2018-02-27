@@ -19,7 +19,7 @@ import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widgets.TestWidgetUtils;
+import com.twosigma.beakerx.widget.TestWidgetUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

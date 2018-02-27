@@ -20,13 +20,8 @@ import { DocumentRegistry } from '@jupyterlab/docregistry';
 import { INotebookModel, NotebookPanel } from '@jupyterlab/notebook';
 import { registerCommTargets } from './comm';
 import { registerCommentOutCmd } from './codeEditor';
-
-declare global {
-  interface Window {
-    beakerx: any,
-    require: Function
-  }
-}
+import { enableInitializationCellsFeature } from './initializationCells';
+import { registerFeature as registerGistPublishFeature } from './gistPublish/index';
 
 function displayHTML(widget: Widget, html: string): void {
   if (!widget.node || !html) {
@@ -50,6 +45,8 @@ class BeakerxExtension implements DocumentRegistry.WidgetExtension {
     registerGlobal();
 
     Promise.all([panel.ready, context.ready]).then(function() {
+      enableInitializationCellsFeature(panel);
+      registerGistPublishFeature(panel);
       registerCommentOutCmd(panel);
       registerCommTargets(panel, context);
     });

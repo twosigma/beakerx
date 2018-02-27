@@ -17,7 +17,7 @@
 package com.twosigma.beakerx.chart.actions;
 
 import com.twosigma.beakerx.chart.Graphics;
-import com.twosigma.beakerx.widgets.CommActions;
+import com.twosigma.beakerx.widget.CommActions;
 
 import java.io.Serializable;
 

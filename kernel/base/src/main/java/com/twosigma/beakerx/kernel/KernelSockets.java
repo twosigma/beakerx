@@ -17,9 +17,11 @@ package com.twosigma.beakerx.kernel;
 
 import com.twosigma.beakerx.message.Message;
 
+import java.util.List;
+
 public abstract class KernelSockets extends Thread {
 
-  public abstract void publish(Message message);
+  public abstract void publish(List<Message> message);
 
   public abstract void send(Message message);
 }

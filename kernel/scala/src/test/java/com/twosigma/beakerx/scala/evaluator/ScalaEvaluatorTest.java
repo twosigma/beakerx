@@ -16,7 +16,7 @@
 
 package com.twosigma.beakerx.scala.evaluator;
 
-import com.twosigma.ExecuteCodeCallbackTest;
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.chart.xychart.Plot;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -25,7 +25,7 @@ import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.scala.TestScalaEvaluator;
 import com.twosigma.beakerx.scala.kernel.ScalaKernelMock;
 
-import com.twosigma.beakerx.widgets.DisplayableWidget;
+import com.twosigma.beakerx.widget.DisplayableWidget;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -39,9 +39,6 @@ import java.util.Map;
 
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.KernelExecutionTest.DEMO_JAR;
-import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
-import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.ERROR;
-import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -76,14 +73,12 @@ public class ScalaEvaluatorTest {
     String code = "import com.twosigma.beakerx.chart.xychart.Plot;\n" +
             "val plot = new Plot();\n" +
             "plot.setTitle(\"test title\");";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     //when
-    scalaEvaluator.evaluate(seo, code);
-    waitForResult(seo);
+    TryResult evaluate = scalaEvaluator.evaluate(seo, code);
     //then
-    assertThat(seo.getStatus()).isEqualTo(FINISHED);
-    assertThat(seo.getPayload() instanceof Plot).isTrue();
-    assertThat(((Plot) seo.getPayload()).getTitle()).isEqualTo("test title");
+    assertThat(evaluate.result() instanceof Plot).isTrue();
+    assertThat(((Plot) evaluate.result()).getTitle()).isEqualTo("test title");
   }
 
   @Test
@@ -98,37 +93,33 @@ public class ScalaEvaluatorTest {
     //when
     scalaEvaluator.setShellOptions(kernelParameters);
     String code = "val x = staticMethod()";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
-    scalaEvaluator.evaluate(seo, code);
-    waitForResult(seo);
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    TryResult evaluate = scalaEvaluator.evaluate(seo, code);
     //then
-    assertThat(seo.getStatus()).isEqualTo(FINISHED);
+    assertThat(evaluate.result()).isNull();
   }
 
   @Test
   public void incompleteInput_shouldBeDetected() throws Exception {
     //given
     String code = "1 to 10 map { i => i * 2";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     //when
-    scalaEvaluator.evaluate(seo, code);
-    waitForResult(seo);
+    TryResult evaluate = scalaEvaluator.evaluate(seo, code);
     //then
-    assertThat(seo.getStatus()).isEqualTo(ERROR);
-    assertThat((String) seo.getPayload()).contains("incomplete");
+    assertThat(evaluate.error()).contains("incomplete");
   }
 
   @Test
   public void displayTable() throws Exception {
     //given
-    String code = "val table = new TableDisplay(new CsvPlotReader().readFile(\"src/test/resources/tableRowsTest.csv\"))\n" +
+    String code = "val table = new TableDisplay(new CSV().readFile(\"src/test/resources/tableRowsTest.csv\"))\n" +
             "table";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     //when
-    scalaEvaluator.evaluate(seo, code);
-    waitForResult(seo);
+    TryResult evaluate = scalaEvaluator.evaluate(seo, code);
     //then
-    assertThat(seo.getPayload() instanceof DisplayableWidget).isTrue();
+    assertThat(evaluate.result() instanceof DisplayableWidget).isTrue();
   }
 
   @Test

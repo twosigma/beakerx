@@ -18,7 +18,7 @@ import { DocumentRegistry } from '@jupyterlab/docregistry';
 import { INotebookModel, Notebook, NotebookPanel } from '@jupyterlab/notebook';
 import { showDialog, Dialog, IClientSession } from '@jupyterlab/apputils';
 import { sendJupyterCodeCells, getCodeCellsByTag } from './codeCells';
-import { messageData } from '../interface/messageData';
+import {messageData, messageState} from '../interface/messageData';
 import { Kernel } from "@jupyterlab/services";
 import { CodeCell } from '@jupyterlab/cells';
 
@@ -32,27 +32,27 @@ const getMsgHandlers = (
   notebook: Notebook
 ) => ({
   [BEAKER_GETCODECELLS]: (msg) => {
-    const data: messageData = <object>msg.content.data;
+    const state: messageState = msg.content.data.state;
 
-    if (!data.name) {
+    if (!state.name) {
       return;
     }
 
-    if(data.name == "CodeCells") {
-      sendJupyterCodeCells(kernelInstance, notebook, JSON.parse(data.value));
+    if(state.name == "CodeCells") {
+      sendJupyterCodeCells(kernelInstance, notebook, JSON.parse(state.value));
     }
 
-    window.beakerx[data.name] = JSON.parse(data.value);
+    window.beakerx[state.name] = JSON.parse(state.value);
   },
 
   [BEAKER_AUTOTRANSLATION]: (msg) => {
-    const data: messageData = <object>msg.content.data;
+    const state: messageState = msg.content.data.state;
 
-    window.beakerx[data.name] = JSON.parse(data.value);
+    window.beakerx[state.name] = JSON.parse(state.value);
   },
 
   [BEAKER_TAG_RUN]: (msg) => {
-    const data: { state?: any } = <object>msg.content.data;
+    const data: messageData = msg.content.data;
 
     if(!data.state || !data.state.runByTag) {
       return;

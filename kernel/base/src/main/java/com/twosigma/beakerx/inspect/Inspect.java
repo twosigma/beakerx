@@ -17,7 +17,7 @@
 package com.twosigma.beakerx.inspect;
 
 import com.twosigma.beakerx.kernel.Imports;
-import com.twosigma.beakerx.widgets.BeakerxWidget;
+import com.twosigma.beakerx.widget.BeakerxWidget;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;

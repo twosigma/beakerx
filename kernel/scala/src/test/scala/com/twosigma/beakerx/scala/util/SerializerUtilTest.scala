@@ -17,8 +17,8 @@ package com.twosigma.beakerx.scala.util
 
 import com.twosigma.beakerx.scala.chart.xychart.plotitem.Points
 import com.twosigma.beakerx.util.SerializerUtil
-import org.junit.Assert._
 import org.junit.Test
+import org.scalatest.Matchers._
 
 class SerializerUtilTest {
   @Test
@@ -27,7 +27,7 @@ class SerializerUtilTest {
     val points = new Points
     val anonymousPoints = new Points {}
 
-    assertEquals("Points", SerializerUtil.getTypeName(points))
-    assertEquals("Points", SerializerUtil.getTypeName(anonymousPoints))
+    SerializerUtil.getTypeName(points) shouldBe "Points"
+    SerializerUtil.getTypeName(anonymousPoints) shouldBe "Points"
   }
 }

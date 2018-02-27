@@ -44,11 +44,20 @@ class EasyForm(BeakerxBox):
         self.components[text.description] = text
         return text
 
+    def addPasswordField(self, *args, **kwargs):
+        password = BeakerxPassword(description=self.getDescription(args, kwargs))
+        password.size = getValue(kwargs, 'width', -1)
+        self.children += (password,)
+        self.components[password.description] = password
+        return password
+
     def addTextArea(self, *args, **kwargs):
         textarea = BeakerxTextArea(
             description=self.getDescription(args, kwargs))
         textarea.cols = getValue(kwargs, 'width', -1)
         textarea.rows = getValue(kwargs, 'height', -1)
+        textarea.value = getValue(kwargs, 'value', "")
+        textarea.placeholder = getValue(kwargs, 'placeholder', "")
         self.children += (textarea,)
         self.components[textarea.description] = textarea
         return textarea
@@ -78,7 +87,7 @@ class EasyForm(BeakerxBox):
             list = SelectMultipleSingle(
                 description=self.getDescription(args, kwargs))
         list.options = self.getOptions(args, kwargs)
-        list.size = getValue(kwargs, 'rows', 2)
+        list.size = getValue(kwargs, 'rows', len(list.options))
 
         self.children += (list,)
         self.components[list.description] = list
@@ -101,6 +110,7 @@ class EasyForm(BeakerxBox):
 
     def addCheckBox(self, *args, **kwargs):
         checkbox = BeakerxCheckbox(description=self.getDescription(args, kwargs))
+        checkbox.value = getValue(kwargs, 'value', False)
         self.children += (checkbox,)
         self.components[checkbox.description] = checkbox
         return checkbox
@@ -139,6 +149,12 @@ class EasyForm(BeakerxBox):
         self.components[radio_buttons.description] = radio_buttons
         return radio_buttons
 
+    def addWidget(self, name, widget):
+        EasyFormComponent.add_interface_to(widget)
+        self.children += (widget,)
+        self.components[name] = widget
+        return widget
+
     def __iter__(self):
         return iter(self.components)
 
@@ -155,7 +171,7 @@ class EasyForm(BeakerxBox):
             return ""
 
     def put(self, key, value):
-        self.components[key].value = value
+        self.components[key].set_value(value)
 
     @staticmethod
     def getDescription(args, kwargs):

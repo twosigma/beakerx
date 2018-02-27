@@ -17,37 +17,15 @@
 package com.twosigma.beakerx.scala.chart.xychart.plotitem
 
 import com.twosigma.beakerx.chart.Color
+import com.twosigma.beakerx.scala.JavaAdapter._
 
 import scala.collection.JavaConverters._
 
-class Area extends com.twosigma.beakerx.chart.xychart.plotitem.Area {
+class Area extends com.twosigma.beakerx.chart.xychart.plotitem.Area with AreaProperties
 
-  def this(x: Seq[Int], y: Seq[Int]) {
-    this()
-    super.setX(x.map(x => x.asInstanceOf[AnyRef]).asJava)
-    super.setY(y.map(x => x.asInstanceOf[Number]).asJava)
-  }
+trait AreaProperties extends BasedXYGraphicsProperties {
+  this: com.twosigma.beakerx.chart.xychart.plotitem.Area =>
 
-  def this(x: Seq[Int], y: Seq[Int], color: Color, interpolation: Int) {
-    this(x, y)
-    super.setColor(color)
-    super.setInterpolation(interpolation)
-  }
-
-  def this(y: Seq[Int], base: Seq[Int], color: Color, displayName: String) {
-    this()
-    super.setY(y.map(x => x.asInstanceOf[Number]).asJava)
-    super.setBase(base.map(x => x.asInstanceOf[AnyRef]).asJava)
-    super.setColor(color)
-    super.setDisplayName(displayName)
-  }
-
-  def this(y: Seq[Int], displayName: String) {
-    this()
-    super.setY(y.map(x => x.asInstanceOf[Number]).asJava)
-    super.setDisplayName(displayName)
-  }
-
-
-
+  def interpolation = safeOption(getInterpolation)
+  def interpolation_=(i: Int) = setInterpolation(i)
 }

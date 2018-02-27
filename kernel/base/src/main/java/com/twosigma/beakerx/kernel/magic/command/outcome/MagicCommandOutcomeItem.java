@@ -15,6 +15,8 @@
  */
 package com.twosigma.beakerx.kernel.magic.command.outcome;
 
+import com.twosigma.beakerx.TryResult;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 
 import java.util.Optional;
@@ -26,6 +28,10 @@ public interface MagicCommandOutcomeItem {
   Status getStatus();
 
   Outcome getOutcome();
+
+  TryResult getResult();
+
+  SimpleEvaluationObject getSimpleEvaluationObject();
 
   enum Status {
     OK,

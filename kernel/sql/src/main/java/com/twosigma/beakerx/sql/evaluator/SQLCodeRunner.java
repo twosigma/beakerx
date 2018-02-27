@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.sql.evaluator;
 
 import com.twosigma.beakerx.NamespaceClient;
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.sql.ReadVariableException;
@@ -23,10 +24,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
+import java.util.concurrent.Callable;
 
 import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
 
-class SQLCodeRunner implements Runnable {
+class SQLCodeRunner implements Callable<TryResult> {
 
   private final static Logger logger = LoggerFactory.getLogger(SQLCodeRunner.class.getName());
 
@@ -41,19 +43,22 @@ class SQLCodeRunner implements Runnable {
   }
 
   @Override
-  public void run() {
+  public TryResult call() throws Exception {
+    TryResult either;
     try {
       InternalVariable.setValue(simpleEvaluationObject);
-      simpleEvaluationObject.finished(sqlEvaluator.executeQuery(simpleEvaluationObject.getExpression(), namespaceClient, sqlEvaluator.defaultConnectionString, sqlEvaluator.namedConnectionString));
+      Object r = sqlEvaluator.executeQuery(simpleEvaluationObject.getExpression(), namespaceClient, sqlEvaluator.defaultConnectionString, sqlEvaluator.namedConnectionString);
+      either = TryResult.createResult(r);
     } catch (SQLException e) {
-      simpleEvaluationObject.error(e.toString());
+      either = TryResult.createError(e.toString());
     } catch (ThreadDeath e) {
-      simpleEvaluationObject.error(INTERUPTED_MSG);
+      either = TryResult.createError(INTERUPTED_MSG);
     } catch (ReadVariableException e) {
-      simpleEvaluationObject.error(e.getMessage());
+      either = TryResult.createError(e.getMessage());
     } catch (Throwable e) {
       logger.error(e.getMessage());
-      simpleEvaluationObject.error(e.toString());
+      either = TryResult.createError(e.toString());
     }
+    return either;
   }
 }

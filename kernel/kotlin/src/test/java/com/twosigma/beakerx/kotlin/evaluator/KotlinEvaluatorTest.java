@@ -15,29 +15,23 @@
  */
 package com.twosigma.beakerx.kotlin.evaluator;
 
-import com.twosigma.ExecuteCodeCallbackTest;
-
-import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
-import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
-import static com.twosigma.beakerx.evaluator.EvaluatorTest.KERNEL_PARAMETERS;
-import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
-import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
-import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
-
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kotlin.kernel.KotlinKernelMock;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.ERROR;
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
+import static com.twosigma.beakerx.evaluator.EvaluatorTest.KERNEL_PARAMETERS;
+import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
+import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -70,11 +64,10 @@ public class KotlinEvaluatorTest {
     //when
     evaluator.setShellOptions(kernelParameters);
     String code = "val x = staticMethod()";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
-    evaluator.evaluate(seo, code);
-    waitForResult(seo);
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    TryResult evaluate = evaluator.evaluate(seo, code);
     //then
-    assertThat(seo.getStatus()).isEqualTo(FINISHED);
+    assertThat(evaluate.result()).isNull();
   }
 
   @Test
@@ -86,12 +79,11 @@ public class KotlinEvaluatorTest {
     String code = "val plot = Plot()\n" +
             "plot.setTitle(\"test title\");\n" +
             "plot.display();";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     //when
-    evaluator.evaluate(seo, code);
-    waitForResult(seo);
+    TryResult evaluate = evaluator.evaluate(seo, code);
     //then
-    assertThat(seo.getStatus()).isEqualTo(FINISHED);
+    assertThat(evaluate.result()).isNull();
   }
 
   @Test
@@ -100,26 +92,22 @@ public class KotlinEvaluatorTest {
     String code = "" +
             "import com.twosigma.beakerx.chart.xychart.*\n" +
             "val plot = Plot()";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     //when
-    evaluator.evaluate(seo, code);
-    waitForResult(seo);
+    TryResult evaluate = evaluator.evaluate(seo, code);
     //then
-    assertThat(seo.getStatus()).isEqualTo(FINISHED);
-    assertThat(seo.getPayload()).isNull();
+    assertThat(evaluate.result()).isNull();
   }
 
   @Test
   public void handleErrors() throws Exception {
     //given
     String code = "val plot = UndefinedPlot()";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     //when
-    evaluator.evaluate(seo, code);
-    waitForResult(seo);
+    TryResult evaluate = evaluator.evaluate(seo, code);
     //then
-    assertThat(seo.getStatus()).isEqualTo(ERROR);
-    assertThat((String) seo.getPayload()).contains("unresolved reference: UndefinedPlot");
+    assertThat(evaluate.error()).contains("unresolved reference: UndefinedPlot");
   }
 
   @Test
@@ -133,13 +121,11 @@ public class KotlinEvaluatorTest {
             "\n" +
             "println(f(2.0))\n" +
             "f(2.0)";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     //when
-    evaluator.evaluate(seo, code);
-    waitForResult(seo);
+    TryResult evaluate = evaluator.evaluate(seo, code);
     //then
-    assertThat(seo.getStatus()).isEqualTo(FINISHED);
-    assertThat((Double) seo.getPayload()).isEqualTo(18.4);
+    assertThat((Double) evaluate.result()).isEqualTo(18.4);
   }
 
 }

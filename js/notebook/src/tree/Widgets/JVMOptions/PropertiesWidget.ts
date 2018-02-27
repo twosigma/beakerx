@@ -19,8 +19,9 @@ import * as _ from "underscore";
 
 import { Widget } from "@phosphor/widgets";
 import { MessageLoop, Message } from "@phosphor/messaging";
-import {IPropertiesJVMOptions} from "../../Types/IJVMOptions";
-import {Messages} from "../../Messages";
+
+import { IPropertiesJVMOptions } from "../../Types/IJVMOptions";
+import { Messages } from "../../Messages";
 
 export default class PropertiesWidget extends Widget {
 
@@ -28,11 +29,6 @@ export default class PropertiesWidget extends Widget {
   public readonly PROPERTIES_PANEL_SELECTOR: string = '#properties_property';
 
   public readonly HTML_ELEMENT_TEMPLATE = `
-<style>
-#properties_property .form-control {
-    margin-right: 10px;
-}
-</style>
 <fieldset>
   <div class="panel panel-default">
     <div class="panel-heading">
@@ -92,6 +88,7 @@ export default class PropertiesWidget extends Widget {
   private clear() {
     this._elements = [];
     this.$node.find(this.PROPERTIES_PANEL_SELECTOR).empty();
+    MessageLoop.sendMessage(this.parent, new Messages.SizeChangedMessage());
   }
 
   private addPropertyButtonClickedHandler(evt) {
@@ -109,30 +106,7 @@ export default class PropertiesWidget extends Widget {
     element.appendTo(this.$node.find(this.PROPERTIES_PANEL_SELECTOR));
 
     MessageLoop.sendMessage(this, new Private.ElementAddedMessage(element));
-  }
-
-  private createFormRowElement(): JQuery<HTMLElement> {
-    return $('<div>', {
-      class: 'form-group form-inline bko-spacing'
-    });
-  }
-
-  private createInputElement(placeholder: string, val: string = ''): JQuery<HTMLElement> {
-    return $('<input>', {
-      class: 'form-control',
-      type: 'text',
-      placeholder: placeholder,
-    }).val(val)
-      .data('val', val);
-  }
-
-  private createRemoveButtonElement(): JQuery<HTMLElement> {
-    return $('<button>', {
-      'type': 'button',
-      'class': 'btn btn-default'
-    }).append(
-      $('<i>', { class: 'fa fa-times'})
-    );
+    MessageLoop.sendMessage(this.parent, new Messages.SizeChangedMessage());
   }
 
   private onElementAdded(msg: Private.ElementAddedMessage): void {
@@ -168,6 +142,7 @@ export default class PropertiesWidget extends Widget {
     });
 
     MessageLoop.sendMessage(this, new Private.ElementRemovedMessage(elementToRemove));
+    MessageLoop.sendMessage(this.parent, new Messages.SizeChangedMessage());
   }
 
   private propertiesChanged() {
@@ -188,9 +163,32 @@ export default class PropertiesWidget extends Widget {
     }
     return properties;
   }
+
+  private createFormRowElement(): JQuery<HTMLElement> {
+    return $('<div>', {
+      class: 'form-group form-inline'
+    });
+  }
+
+  private createInputElement(placeholder: string, val: string = ''): JQuery<HTMLElement> {
+    return $('<input>', {
+      class: 'form-control',
+      type: 'text',
+      placeholder: placeholder,
+    }).val(val)
+      .data('val', val);
+  }
+
+  private createRemoveButtonElement(): JQuery<HTMLElement> {
+    return $('<button>', {
+      'type': 'button',
+      'class': 'btn btn-default'
+    }).append(
+      $('<i>', { class: 'fa fa-times'})
+    );
+  }
+
 }
-
-
 
 namespace Private {
 

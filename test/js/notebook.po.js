@@ -78,5 +78,9 @@ var NotebookPageObject = function () {
     return codeCell.$$('div.output_subarea.output_error');
   };
 
+  this.getAllOutputsWidget = function(codeCell){
+    return codeCell.$$('div.output_subarea.jupyter-widgets-view');
+  }
+
 };
 module.exports = NotebookPageObject;

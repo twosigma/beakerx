@@ -36,14 +36,13 @@ import static java.util.Arrays.asList;
 
 public class SparkContextManager {
 
-  private SparkUI sparkUI;
   private final SparkContext sparkContext;
   private Map<Integer, VBox> jobs = new HashMap<>();
   private Map<Integer, IntProgress> progressBars = new HashMap<>();
   private Map<Integer, Label> labels = new HashMap<>();
+  private VBox jobPanel = null;
 
-  public SparkContextManager(SparkUI sparkUI, SparkConf sparkConf) {
-    this.sparkUI = sparkUI;
+  public SparkContextManager(SparkConf sparkConf) {
     this.sparkContext = create(sparkConf);
   }
 
@@ -104,12 +103,24 @@ public class SparkContextManager {
   }
 
   private void startJob(int jobId) {
+    jobPanel = createJobPanel();
+    VBox job = createJob(jobId);
+    jobs.put(jobId, job);
+    jobPanel.add(job);
+    jobPanel.display();
+  }
+
+  private VBox createJobPanel() {
+    VBox jobPanel = new VBox();
+    jobs.values().forEach(x -> jobPanel.add(x));
+    return jobPanel;
+  }
+
+  private VBox createJob(int jobId) {
     HTML jobLink = jobLink(jobId);
     List<Widget> jobItems = new ArrayList<>();
     jobItems.add(jobLink);
-    VBox job = new VBox(jobItems);
-    jobs.put(jobId, job);
-    jobs.values().forEach(Box::display);
+    return new VBox(jobItems);
   }
 
   private void endJob(int jobId) {
@@ -132,6 +143,9 @@ public class SparkContextManager {
   private void endStage(int stageId) {
     IntProgress intProgress = progressBars.get(stageId);
     intProgress.setBarStyle(IntProgress.BarStyle.SUCCESS);
+    jobPanel.getLayout().setDisplayNone();
+    jobPanel.close();
+    jobPanel = null;
   }
 
   private void taskEnd(int stageId, long taskId) {

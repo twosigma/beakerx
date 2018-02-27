@@ -59,7 +59,7 @@ public class SparkUI extends VBox {
     if (!isLocalSpark(sparkConf)) {
       sparkConf.set("spark.repl.class.outputDir", KernelManager.get().getOutDir());
     }
-    SparkContextManager sparkContextManager = new SparkContextManager(this, sparkConf);
+    SparkContextManager sparkContextManager = new SparkContextManager(sparkConf);
     return sparkContextManager.getSparkContext();
   }
 

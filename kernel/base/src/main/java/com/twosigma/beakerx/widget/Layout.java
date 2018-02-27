@@ -160,4 +160,9 @@ public class Layout extends Widget {
     this.margin = margin;
     sendUpdate("margin", this.margin);
   }
+
+  public void setDisplayNone() {
+    sendUpdate(DISPLAY, "none");
+  }
+
 }

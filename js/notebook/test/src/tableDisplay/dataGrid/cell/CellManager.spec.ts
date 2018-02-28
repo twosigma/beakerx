@@ -18,14 +18,19 @@ import { expect } from 'chai';
 import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
 import modelStateMock from "../mock/modelStateMock";
 import CellManager from "@beakerx/tableDisplay/dataGrid/cell/CellManager";
+import cellDataMock from "../mock/cellDataMock";
 
 describe('CellManager', () => {
   let dataGrid;
   let cellManager;
+  let cellSelectionManager;
 
   before(() => {
     dataGrid = new BeakerxDataGrid({}, modelStateMock);
     cellManager = dataGrid.cellManager;
+    cellSelectionManager = dataGrid.cellSelectionManager;
+    cellSelectionManager.setStartCell(cellDataMock);
+    cellSelectionManager.setEndCell({ ...cellDataMock, column: 1 });
   });
 
   after(() => {
@@ -39,6 +44,7 @@ describe('CellManager', () => {
   it('should implement getSelectedCells method', () => {
     expect(cellManager).to.have.property('getSelectedCells');
     expect(cellManager.getSelectedCells).to.be.a('Function');
+    expect(cellManager.getSelectedCells()).to.have.length(2);
   });
 
   it('should implement getAllCells method', () => {
@@ -54,6 +60,10 @@ describe('CellManager', () => {
   it('should implement getCells method', () => {
     expect(cellManager).to.have.property('getCells');
     expect(cellManager.getCells).to.be.a('Function');
+    const rowsRange = cellSelectionManager.getRowsRangeCells();
+    const columnsRange = cellSelectionManager.getColumnsRangeCells();
+
+    expect(cellManager.getCells(rowsRange, columnsRange)).to.have.length(2);
   });
 
   it('should implement copyToClipboard method', () => {
@@ -64,5 +74,46 @@ describe('CellManager', () => {
   it('should implement CSVDownload method', () => {
     expect(cellManager).to.have.property('CSVDownload');
     expect(cellManager.CSVDownload).to.be.a('Function');
+  });
+
+  it('should implement createCellConfig method', () => {
+    expect(cellManager).to.have.property('createCellConfig');
+    expect(cellManager.createCellConfig).to.be.a('Function');
+
+    const cellConfig = cellManager.createCellConfig({
+      row: 1,
+      column: 1,
+      value: 2,
+      region: 'body'
+    });
+
+    expect(cellConfig.row).to.equal(1);
+    expect(cellConfig.column).to.equal(1);
+    expect(cellConfig.value).to.equal(2);
+    expect(cellConfig.region).to.equal('body');
+
+    expect(cellConfig).to.have.property('x');
+    expect(cellConfig).to.have.property('y');
+    expect(cellConfig).to.have.property('width');
+    expect(cellConfig).to.have.property('height');
+  });
+
+  it('should implement exportCellsTo method', () => {
+    expect(cellManager).to.have.property('exportCellsTo');
+    expect(cellManager.exportCellsTo).to.be.a('Function');
+    const cells = cellManager.getSelectedCells();
+    const resultCsv = `"test","column"\n"1","2"\n`;
+    const resultTabs = `test\tcolumn\n1\t2\n`;
+
+    expect(cellManager.exportCellsTo(cells, 'csv')).to.equal(resultCsv);
+    expect(cellManager.exportCellsTo(cells, 'tabs')).to.equal(resultTabs);
+  });
+
+  it('should implement getCSVFromCells method', () => {
+    expect(cellManager).to.have.property('getCSVFromCells');
+    expect(cellManager.getCSVFromCells).to.be.a('Function');
+    const result = `"test","column"\n"1","2"\n`;
+
+    expect(cellManager.getCSVFromCells(true)).to.equal(result);
   });
 });

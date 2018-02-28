@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,20 +14,15 @@
  *  limitations under the License.
  */
 
-var jsdom = require('jsdom');
+import {ICellData} from "@beakerx/tableDisplay/dataGrid/interface/ICell";
+import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 
-global.window = new jsdom.JSDOM().window;
-global.document = window.document;
-global.Element = window.Element;
-global.HTMLElement = window.HTMLElement;
-global.HTMLSpanElement = window.HTMLSpanElement;
-global.HTMLInputElement = window.HTMLInputElement;
-global.MouseEvent = window.MouseEvent;
-global.KeyboardEvent = window.KeyboardEvent;
-
-window.HTMLCanvasElement.prototype.getContext = function() {
-  return {};
+const cellDataMock: ICellData = {
+  row: 0,
+  column: 0,
+  type: COLUMN_TYPES.body,
+  offset: 0,
+  delta: 0
 };
 
-global.navigator = window.navigator;
-global.define = function() {};
+export default cellDataMock;

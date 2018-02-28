@@ -15,6 +15,13 @@
     "ipython",
     "ipywidgets"
   ],
+  "nyc": {
+    "extension": [
+      ".ts",
+      ".js"
+    ],
+    "include": ["**/src/tableDisplay/**/*.ts"]
+  },
   "scripts": {
     "build": "yarn run build:dev",
     "build:prod": "webpack --config webpack.prod.js --progress && yarn run build-lab-extension",
@@ -22,6 +29,7 @@
     "build-lab-extension": "cd ../lab && npm install",
     "prepublish": "yarn run build:prod",
     "test": "TS_NODE_PROJECT=test mocha",
+    "coverage": "TS_NODE_PROJECT=test nyc mocha",
     "stats": "webpack --env production --profile --json > stats.json"
   },
   "devDependencies": {
@@ -38,6 +46,7 @@
     "json-loader": "^0.5.4",
     "mocha": "^5.0.0",
     "node-sass": "^4.5.2",
+    "nyc": "^11.4.1",
     "sass-loader": "^6.0.5",
     "sinon": "^4.2.0",
     "source-map-loader": "^0.2.1",

@@ -15,7 +15,7 @@
  */
 
 import {BeakerxDataGrid} from "./BeakerxDataGrid";
-import DataGridColumn from "./column/DataGridColumn";
+import DataGridColumn, {COLUMN_TYPES} from "./column/DataGridColumn";
 import {HIGHLIGHTER_TYPE} from "./interface/IHighlighterState";
 import {DataGridHelpers} from "./dataGridHelpers";
 import disableKeyboardManager = DataGridHelpers.disableKeyboardManager;
@@ -29,9 +29,12 @@ export default class EventManager {
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleMouseOut = this.handleMouseOut.bind(this);
     this.handleMouseOut = this.handleMouseOut.bind(this);
+    this.handleDoubleClick = this.handleDoubleClick.bind(this);
 
     this.dataGrid.node.removeEventListener('mouseout', this.handleMouseOut);
     this.dataGrid.node.addEventListener('mouseout', this.handleMouseOut);
+    this.dataGrid.node.removeEventListener('dblclick', this.handleDoubleClick);
+    this.dataGrid.node.addEventListener('dblclick', this.handleDoubleClick);
     document.removeEventListener('keydown', this.handleKeyDown);
     document.addEventListener('keydown', this.handleKeyDown);
   }
@@ -158,6 +161,40 @@ export default class EventManager {
       column.setDataTypePrecission(parseInt(charCode));
     } else {
       this.dataGrid.columnManager.setColumnsDataTypePrecission(parseInt(charCode));
+    }
+  }
+
+  private handleDoubleClick(event: MouseEvent) {
+    event.stopPropagation();
+    event.preventDefault();
+
+    if (this.dataGrid.isOverHeader(event)) {
+      return;
+    }
+
+    const data = this.dataGrid.getCellData(event.clientX, event.clientY);
+
+    if (!data || data.type === COLUMN_TYPES.index) {
+      return;
+    }
+
+    if (this.dataGrid.model.state.hasDoubleClickAction) {
+      this.dataGrid.commSignal.emit({
+        event: 'DOUBLE_CLICK',
+        row : data.row,
+        column: data.column
+      });
+    }
+
+    if (this.dataGrid.model.state.doubleClickTag) {
+      this.dataGrid.commSignal.emit({
+        event: 'actiondetails',
+        params: {
+          actionType: 'DOUBLE_CLICK',
+          row: data.row,
+          col: data.column
+        }
+      });
     }
   }
 }

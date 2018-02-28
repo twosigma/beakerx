@@ -53,6 +53,7 @@ describe('EventManager', () => {
     expect(eventManager).to.have.property('handleMouseOut');
     expect(eventManager).to.have.property('handleMouseWheel');
     expect(eventManager).to.have.property('handleKeyDown');
+    expect(eventManager).to.have.property('handleDoubleClick');
   });
 
   it('should implement DataGrid event handlers', () => {

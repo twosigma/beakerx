@@ -26,8 +26,17 @@ import ColumnManager, {
 import cellConfigMock from "../mock/cellConfigMock";
 
 describe('ColumnManager', () => {
-  const dataGrid = new BeakerxDataGrid({}, modelStateMock);
-  const columnManager = dataGrid.columnManager;
+  let dataGrid;
+  let columnManager;
+
+  before(() => {
+    dataGrid = new BeakerxDataGrid({}, modelStateMock);
+    columnManager = dataGrid.columnManager;
+  });
+
+  after(() => {
+    dataGrid.destroy();
+  });
 
   it('should create IndexResolver', () => {
     expect(columnManager).to.have.property('indexResolver');
@@ -53,14 +62,6 @@ describe('ColumnManager', () => {
     expect(columnManager.getColumnByName('test')).to.equal(columnManager.columns[COLUMN_TYPES.body][0]);
   });
 
-  it('should implement destroy method', () => {
-    const destroyStub = sinon.stub(columnManager, 'destroyAllColumns');
-
-    columnManager.destroy();
-    expect(destroyStub.calledOnce).to.be.true;
-    destroyStub.restore();
-  });
-
   it('should implement moveColumn method', () => {
     const column = columnManager.columns[COLUMN_TYPES.body][0];
 
@@ -79,19 +80,28 @@ describe('ColumnManager', () => {
 
     column.hide();
     expect(column.getResolvedIndex()).to.equal(1);
-    expect(columnManager.columns[COLUMN_TYPES.body][1].getResolvedIndex()).to.equal(0);
+    expect(columnManager.bodyColumns[1].getResolvedIndex()).to.equal(0);
 
     column.show();
     column.move(0);
+    console.log(column.index, column.getResolvedIndex());
     expect(column.getResolvedIndex()).to.equal(0);
   });
 
   it('should call setColumnVisible', () => {
     const stub = sinon.stub(columnManager, 'setColumnVisible');
+    columnManager.bodyColumns[0].hide();
+    columnManager.bodyColumns[0].show();
 
-    columnManager.columns[COLUMN_TYPES.body][0].hide();
-    columnManager.columns[COLUMN_TYPES.body][0].show();
     expect(stub.calledTwice).to.be.true;
     stub.restore();
+  });
+
+  it('should implement destroy method', () => {
+    const destroyStub = sinon.stub(columnManager, 'destroyAllColumns');
+
+    columnManager.destroy();
+    expect(destroyStub.calledOnce).to.be.true;
+    destroyStub.restore();
   });
 });

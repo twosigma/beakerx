@@ -24,16 +24,16 @@ export default interface IDataModelState {
   alignmentForType?: {},
   cellHighlighters: IHihglighterState[],
   columnNames: string[],
-  columnOrder?: number[], //@todo
+  columnOrder: string[],
   columnsFrozen?: {}, //@todo
   columnsFrozenRight?: {}, //feature is dropped
   columnsVisible: {},
   contextMenuItems?: object[], //@todo
   contextMenuTags?: {}, //@todo
   dataFontSize?: number|null,
-  doubleClickTag?: string|null, //@todo
+  doubleClickTag?: string|null,
   fontColor?: string[],
-  hasDoubleClickAction?: boolean, //@todo
+  hasDoubleClickAction?: boolean,
   hasIndex: boolean,
   headerFontSize?: number|null,
   headersVertical?: boolean, //@todo Needs custom cell renderer

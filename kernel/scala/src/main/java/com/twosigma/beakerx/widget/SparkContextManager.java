@@ -44,6 +44,7 @@ public class SparkContextManager {
   private VBox jobPanel = null;
 
   public SparkContextManager(SparkUI sparkUI, SparkConf sparkConf) {
+    SparkVariable.putSparkContextManager(this);
     this.sparkUI = sparkUI;
     this.sparkConf = sparkConf;
     this.sparkContext = create(sparkConf);
@@ -54,9 +55,12 @@ public class SparkContextManager {
   }
 
   private SparkContext create(SparkConf sparkConf) {
-    SparkVariable.putSparkContextManager(this);
-    sparkConf.set("spark.extraListeners", ",com.twosigma.beakerx.widget.StartStopSparkListener");
     SparkContext sc = new SparkContext(sparkConf);
+    sc = addListener(sc);
+    return sc;
+  }
+
+  private SparkContext addListener(SparkContext sc) {
     sc.addSparkListener(new SparkListener() {
 
       @Override
@@ -93,7 +97,6 @@ public class SparkContextManager {
         super.onTaskEnd(taskEnd);
         taskEnd(taskEnd.stageId(), taskEnd.taskInfo().taskId());
       }
-
     });
     return sc;
   }
@@ -102,10 +105,10 @@ public class SparkContextManager {
   private Button disconnect;
 
   public void applicationStart() {
-    this.appStatus = new Label();
+    appStatus = new Label();
     appStatus.setValue("Connected to " + sparkConf.get("spark.master"));
-    this.disconnect = new Button();
-    this.disconnect.registerOnClick((content, message) -> sparkContext.stop());
+    disconnect = new Button();
+    disconnect.registerOnClick((content, message) -> sparkContext.stop());
     disconnect.setDescription("Disconnect");
     HBox statusPanel = new HBox(Arrays.asList(disconnect, appStatus));
     sparkUI.add(statusPanel);
@@ -128,7 +131,6 @@ public class SparkContextManager {
 
   private VBox createJobPanel() {
     VBox jobPanel = new VBox(new ArrayList<>());
-    jobs.values().forEach(x -> jobPanel.add(x));
     return jobPanel;
   }
 

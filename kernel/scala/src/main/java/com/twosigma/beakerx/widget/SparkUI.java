@@ -23,6 +23,8 @@ import java.util.ArrayList;
 
 public class SparkUI extends VBox {
 
+  public static final String SPARK_EXTRA_LISTENERS = "spark.extraListeners";
+
   public static final String VIEW_NAME_VALUE = "SparkUIView";
   public static final String MODEL_NAME_VALUE = "SparkUIModel";
 
@@ -62,15 +64,28 @@ public class SparkUI extends VBox {
   }
 
   private SparkContext createSparkContext(SparkUI sparkUI, SparkConf sparkConf) {
+    sparkConf = configureSparkConf(sparkConf);
+    return new SparkContextManager(sparkUI, sparkConf).getSparkContext();
+  }
+
+  private SparkConf configureSparkConf(SparkConf sparkConf) {
     if (!isLocalSpark(sparkConf)) {
       sparkConf.set("spark.repl.class.outputDir", KernelManager.get().getOutDir());
     }
-
-    SparkContextManager sparkContextManager = new SparkContextManager(sparkUI, sparkConf);
-    return sparkContextManager.getSparkContext();
+    sparkConf = configureExtraListeners(sparkConf);
+    return sparkConf;
   }
 
   private static boolean isLocalSpark(SparkConf sparkConf) {
     return sparkConf.get("spark.master") != null && sparkConf.get("spark.master").startsWith("local");
+  }
+
+  private SparkConf configureExtraListeners(SparkConf sparkConf) {
+    String listeners = "";
+    if (sparkConf.contains(SPARK_EXTRA_LISTENERS)) {
+      listeners = sparkConf.get(SPARK_EXTRA_LISTENERS) + ",";
+    }
+    sparkConf.set(SPARK_EXTRA_LISTENERS, listeners + "com.twosigma.beakerx.widget.StartStopSparkListener");
+    return sparkConf;
   }
 }

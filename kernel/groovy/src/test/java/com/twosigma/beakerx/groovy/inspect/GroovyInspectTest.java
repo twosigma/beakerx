@@ -181,8 +181,22 @@ public class GroovyInspectTest {
     public void evaluateInspectInsideSingleQuotes() throws Exception {
         //given
         String code = "f['la\0st'] = \"Last\"";
+        //when
         InspectResult result = callInspectOnCaretPos(code);
+        //then
         assertThat(result.getFound()).isFalse();
+    }
+
+    @Test
+    public void evaluateInspectBracketBeforeNew() throws Exception {
+        //given
+        String code = "def display = new Table\0Display(new CSV().read(\"../resources/data/interest-rates.csv\"))";
+        String expected = "com.twosigma.beakerx.table.TableDisplay\n";
+        //when
+        InspectResult result = callInspectOnCaretPos(code);
+        //then
+        assertThat(result.getFound()).isTrue();
+        assertThat(result.getData().getTextplain()).isEqualTo(expected);
     }
 }
 

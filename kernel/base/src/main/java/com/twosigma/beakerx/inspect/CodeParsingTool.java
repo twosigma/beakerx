@@ -94,10 +94,11 @@ public class CodeParsingTool {
 
     public static String getClassOfInspectObject(String code, String inspectObject) {
         Optional<String> inspect = getLinesWithPattern(code, inspectObject).stream()
-                .filter(line -> line.indexOf("=") != -1)
                 .map(line -> line.substring(line.indexOf(inspectObject)))
-                .filter(line -> line.indexOf("new ") != -1 && line.indexOf("(") != -1)
-                .map(line -> line.substring(line.indexOf("new ")+ 4, line.indexOf("(")))
+                .filter(line -> line.indexOf("= new ") != -1 || line.indexOf("=new ") != -1)
+                .map(line -> line.substring(line.indexOf("new ")+ 4))
+                .filter(line ->  line.indexOf("(") != -1)
+                .map(line -> line.substring(0, line.indexOf("(")))
                 .findFirst();
         return inspect.orElse(inspectObject);
     }

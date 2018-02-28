@@ -16,11 +16,8 @@
     "ipywidgets"
   ],
   "nyc": {
-    "extension": [
-      ".ts",
-      ".js"
-    ],
-    "include": ["**/src/tableDisplay/**/*.ts"]
+    "extension": [ ".ts" ],
+    "include": [ "**/src/**/*.ts" ]
   },
   "scripts": {
     "build": "yarn run build:dev",

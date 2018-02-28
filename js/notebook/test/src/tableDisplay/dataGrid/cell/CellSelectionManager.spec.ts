@@ -25,8 +25,8 @@ import cellConfigMock from "../mock/cellConfigMock";
 describe('CellSelectionManager', () => {
   let dataGrid;
   let cellSelectionManager;
-  let startCell: ICellData = { row: 0, column: 0, type: COLUMN_TYPES.index };
-  let endCell: ICellData = { row: 2, column: 3, type: COLUMN_TYPES.body };
+  let startCell: ICellData = { row: 0, column: 0, type: COLUMN_TYPES.index, offset: 0, delta: 0 };
+  let endCell: ICellData = { row: 2, column: 3, type: COLUMN_TYPES.body, offset: 0, delta: 0 };
 
   before(() => {
     dataGrid = new BeakerxDataGrid({}, modelStateMock);

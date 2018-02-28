@@ -60,6 +60,7 @@ export class BeakerxDataGrid extends DataGrid {
   focused: boolean;
 
   headerCellHovered = new Signal<this, ICellData|null>(this);
+  commSignal = new Signal<this, {}>(this);
 
   constructor(options: DataGrid.IOptions, modelState: IDataModelState) {
     super(options);
@@ -83,7 +84,7 @@ export class BeakerxDataGrid extends DataGrid {
     super.messageHook(handler, msg);
 
     if (handler === this.viewport && msg.type === 'section-resize-request') {
-      this.setWidgetWidth();
+      this.updateWidgetWidth();
     }
 
     return true;
@@ -92,6 +93,8 @@ export class BeakerxDataGrid extends DataGrid {
   destroy() {
     this.eventManager.destroy();
     this.columnManager.destroy();
+
+    Signal.disconnectAll(this);
   }
 
   getColumn(config: CellRenderer.ICellConfig): DataGridColumn {
@@ -188,7 +191,15 @@ export class BeakerxDataGrid extends DataGrid {
   }
 
   updateModelData(state: IDataModelState) {
-    this.model.addProperties(state, this.columnManager, this.rowManager);
+    this.model.updateData(state);
+    this.columnManager.recalculateMinMaxValues();
+    this.resizeSections();
+  }
+
+  resizeSections() {
+    this.columnManager.columns[COLUMN_TYPES.body].forEach(this.resizeColumnSection);
+    this.resizeIndexColumn();
+    this.updateWidgetWidth();
   }
 
   private init(modelState: IDataModelState) {
@@ -208,11 +219,6 @@ export class BeakerxDataGrid extends DataGrid {
     this.addCellRenderers();
     this.setWidgetHeight();
     this.resizeSections();
-
-    setTimeout(() => {
-      this.repaint();
-      this.setWidgetWidth();
-    });
   }
 
   private addHighlighterManager(modelState: IDataModelState) {
@@ -237,13 +243,17 @@ export class BeakerxDataGrid extends DataGrid {
     this.node.style.minHeight = `${this.getWidgetHeight()}px`;
   }
 
-  private setWidgetWidth() {
-    const scrollBarSpaceWidth = this.getWidgetHeight() >= this.totalHeight ? 0 : 20;
+  private updateWidgetWidth() {
+    const bodyRowCount = this.model.rowCount('body');
+    const scrollBarSpaceWidth = bodyRowCount > DEFAULT_PAGE_LENGTH ? 20 : 0;
     const spacing = 2 * (DEFAULT_GRID_PADDING + DEFAULT_GRID_BORDER_WIDTH);
 
     this.node.style.width = `${this.totalWidth + scrollBarSpaceWidth + spacing}px`;
     this.fit();
-    this['_syncViewport']();
+
+    setTimeout(() => {
+      this['_syncViewport']();
+    });
   }
 
   private getWidgetHeight() {
@@ -281,12 +291,6 @@ export class BeakerxDataGrid extends DataGrid {
     const result = nameWidth > valueWidth ? nameWidth: valueWidth;
 
     return result > MIN_COLUMN_WIDTH ? result : MIN_COLUMN_WIDTH;
-  }
-
-  private resizeSections() {
-    this.columnManager.columns[COLUMN_TYPES.body].forEach(this.resizeColumnSection);
-    this.resizeIndexColumn();
-    this.setWidgetWidth();
   }
 
   private resizeIndexColumn() {

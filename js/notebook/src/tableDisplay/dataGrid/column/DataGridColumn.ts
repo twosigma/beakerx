@@ -122,6 +122,7 @@ export default class DataGridColumn {
     this.setState({ displayType });
     this.assignFormatFn();
     this.dataGrid.repaint();
+    this.dataGrid.resizeSections();
   }
 
   setTimeDisplayType(timeUnit) {
@@ -306,6 +307,27 @@ export default class DataGridColumn {
     }
   }
 
+  addMinMaxValues() {
+    let valueResolver = this.getValueResolver();
+    let minMax = minmax(this.valuesIterator.clone(), (a:any, b:any) => {
+      let value1 = valueResolver(a);
+      let value2 = valueResolver(b);
+
+      if (value1 === value2) {
+        return 0;
+      }
+
+      return value1 < value2 ? -1 : 1;
+    });
+
+    this.minValue = minMax ? minMax[0] : null;
+    this.maxValue = minMax ? minMax[1] : null;
+  }
+
+  updateValuesIterator() {
+    this.valuesIterator = this.dataGrid.model.getColumnValuesIterator(this);
+  }
+
   private dateValueResolver(value) {
     return value.timestamp;
   }
@@ -338,23 +360,6 @@ export default class DataGridColumn {
 
   private getDataType(): ALL_TYPES {
     return getTypeByName(this.getDataTypeName());
-  }
-
-  private addMinMaxValues() {
-    let valueResolver = this.getValueResolver();
-    let minMax = minmax(this.valuesIterator.clone(), (a:any, b:any) => {
-      let value1 = valueResolver(a);
-      let value2 = valueResolver(b);
-
-      if (value1 === value2) {
-        return 0;
-      }
-
-      return value1 < value2 ? -1 : 1;
-    });
-
-    this.minValue = minMax ? minMax[0] : null;
-    this.maxValue = minMax ? minMax[1] : null;
   }
 
   private addDataTypeTooltip(menuOptions: ITriggerOptions) {

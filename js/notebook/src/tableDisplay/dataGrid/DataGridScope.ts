@@ -18,7 +18,6 @@ import { Widget } from '@phosphor/widgets';
 import { BeakerxDataGrid } from './BeakerxDataGrid';
 import { silverStripeStyle } from './style/dataGridStyle';
 import IDataGridScopeOptions from "./interface/IDataGridScopeOptions";
-import consts from "../consts";
 
 export class DataGridScope {
   readonly dataGrid: BeakerxDataGrid;
@@ -36,6 +35,8 @@ export class DataGridScope {
       },
       options.data
     );
+
+    this.connectToCommSignal();
   }
 
   render(): void {
@@ -48,7 +49,6 @@ export class DataGridScope {
 
   updateModelData(newData) {
     this.dataGrid.updateModelData(newData);
-    this.dataGrid.model.reset();
   }
 
   doResetAll() {
@@ -59,5 +59,11 @@ export class DataGridScope {
     this.dataGrid.columnManager.showAllColumns();
     this.dataGrid.columnManager.resetColumnsAlignment();
     this.dataGrid.columnManager.resetColumnsOrder();
+  }
+
+  connectToCommSignal() {
+    this.dataGrid.commSignal.connect((handler, args) => {
+      this.tableDisplayModel.send(args, this.tableDisplayView.callbacks());
+    }, this);
   }
 }

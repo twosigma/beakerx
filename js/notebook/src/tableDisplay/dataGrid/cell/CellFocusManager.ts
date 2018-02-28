@@ -26,6 +26,7 @@ export default class CellFocusManager {
 
   constructor(dataGrid: BeakerxDataGrid) {
     this.dataGrid = dataGrid;
+    this.focusedCellData = null;
   }
 
   setFocusedCell(cellData: ICellData|null) {

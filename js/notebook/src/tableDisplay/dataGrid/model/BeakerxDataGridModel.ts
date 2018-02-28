@@ -36,8 +36,6 @@ export class BeakerxDataGridModel extends DataModel {
 
   private _data: Array<any>;
   private _state: IDataModelState;
-  private _columnCount: number;
-  private _rowCount: number;
 
   constructor(state: IDataModelState, columnManager: ColumnManager, rowManager: RowManager) {
     super();
@@ -65,14 +63,17 @@ export class BeakerxDataGridModel extends DataModel {
 
     this._state = state;
     this._data = state.values;
-    this._columnCount = this.state.hasIndex
-      ? this.state.columnNames.length -1
-      : this.state.columnNames.length || 0;
-    this._rowCount = this._data.length;
 
     this.setState({
       columnsVisible: this.state.columnsVisible || {}
     });
+  }
+
+  updateData(state: IDataModelState) {
+    this.setState({ ...state });
+    this._data = state.values;
+    this.rowManager.createRows(this._data, this.state.hasIndex);
+    this.reset();
   }
 
   rowCount(region: DataModel.RowRegion): number {

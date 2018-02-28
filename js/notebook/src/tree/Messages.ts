@@ -110,4 +110,14 @@ export namespace Messages {
     }
   }
 
+  export const TYPE_SIZE_CHANGED = 'size-changed';
+
+  export class SizeChangedMessage extends Message {
+
+    constructor() {
+      super(TYPE_SIZE_CHANGED);
+    }
+
+  }
+
 }

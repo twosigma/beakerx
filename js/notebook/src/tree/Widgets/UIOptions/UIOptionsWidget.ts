@@ -15,12 +15,15 @@
  */
 
 import * as $ from "jquery";
+
 import { Widget } from "@phosphor/widgets";
 import { MessageLoop } from "@phosphor/messaging";
 
 import UIOptionsWidgetInterface from "./UIOptionsWidgetInterface";
 import IUIOptions from "../../Types/IUIOptions";
-import {Messages} from "../../Messages";
+import { Messages } from "../../Messages";
+import OptionsWidget from "../OptionsWidget";
+import DOMUtils from "../../Utils/DOMUtils";
 
 export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface {
 
@@ -31,13 +34,7 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
   public readonly AUTO_SAVE_SELECTOR = '#auto_save';
 
   public readonly HTML_ELEMENT_TEMPLATE = `
-<style>
-  #ui_options {
-    margin: 0 16px;
-  }
-</style>
-<fieldset id="ui_options">
-  <legend>UI Options:</legend>
+<div id="ui_options">
   <div class="form-group">
     <div class="form-check">
       <input class="form-check-input" id="auto_close" name="auto_close" type="checkbox">
@@ -47,10 +44,10 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
       <input class="form-check-input" id="wide_cells" name="wide_cells" type="checkbox">
       <label class="form-check-label" for="wide_cells">Wide code cells</label>
     </div>
-    <!--<div class="form-check">-->
-      <!--<input class="form-check-input" id="improve_fonts" name="improve_fonts" type="checkbox">-->
-      <!--<label class="form-check-label" for="improve_fonts">Improve fonts</label>-->
-    <!--</div>-->
+    <div class="form-check">
+      <input class="form-check-input" id="improve_fonts" name="improve_fonts" type="checkbox">
+      <label class="form-check-label" for="improve_fonts">Improve fonts</label>
+    </div>
     <div class="form-check">
       <input class="form-check-input" id="show_publication" name="show_publication" type="checkbox">
       <label class="form-check-label" for="show_publication">Show publication button and menu item</label>
@@ -60,7 +57,7 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
       <label class="form-check-label" for="auto_save">Auto save notebooks</label>
     </div>
   </div>
-</fieldset>
+</div>
 `;
 
   public get $node(): JQuery<HTMLElement> {
@@ -69,6 +66,11 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
 
   constructor() {
     super();
+
+    this.addClass('bx-ui-options-widget');
+
+    this.title.label = 'UI Options';
+    this.title.closable = false;
 
     $(this.HTML_ELEMENT_TEMPLATE).appendTo(this.node);
 
@@ -88,16 +90,28 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
 
     this.setWideCells(options.wide_cells);
     this.setAutoClose(options.auto_close);
-    // this.setImproveFonts(options.improve_fonts);
+    this.setImproveFonts(options.improve_fonts);
     this.setShowPublication(options.show_publication);
     this.setAutoSave(options.auto_save);
+  }
+
+  protected onActivateRequest(): void {
+    this._updateSize();
+  }
+
+  private _updateSize(): void {
+    let h = DOMUtils.getRealElementHeight(this.$node.find('#ui_options').get(0));
+
+    $(this.node).height(h);
+    $(this.parent.node).height(h);
+    (this.parent.parent as OptionsWidget).updateDimensions();
   }
 
   private optionsChangedHandler(evt): void {
     this._options[evt.currentTarget.id] = evt.currentTarget.checked;
 
     MessageLoop.sendMessage(
-      this.parent,
+      this.parent!.parent,
       new Messages.UIOptionsChangedMessage(this._options)
     );
   }
@@ -114,11 +128,11 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
       .prop('checked', checked);
   }
 
-  // private setImproveFonts(checked: boolean) {
-  //   this.$node
-  //     .find(this.IMPROVE_FONTS_SELECTOR)
-  //     .prop('checked', checked);
-  // }
+  private setImproveFonts(checked: boolean) {
+    this.$node
+      .find(this.IMPROVE_FONTS_SELECTOR)
+      .prop('checked', checked);
+  }
 
   private setShowPublication(checked: boolean) {
     this.$node

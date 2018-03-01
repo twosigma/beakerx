@@ -40,14 +40,10 @@ describe('SQL base tests ', function () {
     });
   });
 
-  describe('Autocomplete cell ', function () {
+  describe('(SQL) Autocomplete cell ', function () {
     it('Autocomplete list is not empty ', function () {
       var codeCell = beakerxPO.getCodeCellByIndex(3);
-      codeCell.scroll();
-      codeCell.click();
-      browser.keys("Tab");
-      browser.keys('\uE000');
-      var completeList = $$('#complete > select > option');
+      var completeList = beakerxPO.callAutocompleteAndGetItsList(codeCell);
       expect(completeList.length).toBeGreaterThan(0);
     });
   });

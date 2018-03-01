@@ -29,12 +29,22 @@ describe('(Python) Testing of init cells', function() {
 
   var cellIndex;
 
-  describe('Init cells', function() {
-    it('(Python) Init cells display correct output', function(){
+  describe('(Python) Init cells ', function() {
+    it('Init cells display correct output ', function(){
       cellIndex = 0;
       beakerxPO.runCodeCellByIndex(cellIndex);
       var currentDate = Date().split(' ').slice(0, 4).join(' ');
       beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex,  new RegExp(currentDate));
     });
-  })
+  });
+
+  describe('(Python) Press "Tab" to autocomplete code ', function(){
+    it('Autocomplete list is not empty ', function(){
+      cellIndex += 1;
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      var completeList = beakerxPO.callAutocompleteAndGetItsList(codeCell);
+      expect(completeList.length).toBeGreaterThan(0);
+    });
+  });
+
 });

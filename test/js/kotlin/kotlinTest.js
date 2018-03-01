@@ -47,4 +47,13 @@ describe('Kotlin base tests ', function () {
     });
   });
 
+  describe('(Kotlin) Press "Tab" to autocomplete code ', function(){
+    it('Autocomplete list is not empty ', function(){
+      cellIndex += 1;
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      var completeList = beakerxPO.callAutocompleteAndGetItsList(codeCell);
+      expect(completeList.length).toBeGreaterThan(0);
+    });
+  });
+
 });

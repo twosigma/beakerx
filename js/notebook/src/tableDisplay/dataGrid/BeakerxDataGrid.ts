@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import {CellRenderer, DataGrid, DataModel} from "@phosphor/datagrid";
+import {CellRenderer, DataGrid} from "@phosphor/datagrid";
 import { BeakerxDataGridModel } from "./model/BeakerxDataGridModel";
 import { Widget } from "@phosphor/widgets";
 import { Signal } from '@phosphor/signaling';
@@ -30,19 +30,17 @@ import RowManager from "./row/RowManager";
 import CellSelectionManager from "./cell/CellSelectionManager";
 import CellManager from "./cell/CellManager";
 import {DataGridHelpers} from "./dataGridHelpers";
-import EventManager from "./EventManager";import {
-  IMessageHandler, Message
-} from '@phosphor/messaging';
-
-import getStringWidth = DataGridHelpers.getStringWidth;
+import EventManager from "./EventManager";
+import { IMessageHandler, Message } from '@phosphor/messaging';
 import CellFocusManager from "./cell/CellFocusManager";
-import findSectionIndex = DataGridHelpers.findSectionIndex;
 import {
   DEFAULT_GRID_BORDER_WIDTH,
   DEFAULT_GRID_PADDING, DEFAULT_ROW_HEIGHT,
   MIN_COLUMN_WIDTH
 } from "./style/dataGridStyle";
 import CellTooltipManager from "./cell/CellTooltipManager";
+import findSectionIndex = DataGridHelpers.findSectionIndex;
+import getStringSize = DataGridHelpers.getStringSize;
 
 export class BeakerxDataGrid extends DataGrid {
   columnSections: any;
@@ -138,7 +136,7 @@ export class BeakerxDataGrid extends DataGrid {
           delta: column.delta,
           type: COLUMN_TYPES.index,
           offset: this.getColumnOffset(column.index, COLUMN_TYPES.index),
-          offsetTop: 0
+          offsetTop: this.headerHeight
         };
       }
 
@@ -164,7 +162,7 @@ export class BeakerxDataGrid extends DataGrid {
         row: row ? row.index : 0,
         type: columnType,
         offset: this.getColumnOffset(column.index, columnType),
-        offsetTop: row ? this.getRowOffset(row.index) : 0
+        offsetTop: row ? this.getRowOffset(row.index) + this.headerHeight : 0
       };
     }
 
@@ -230,6 +228,7 @@ export class BeakerxDataGrid extends DataGrid {
 
     this.addHighlighterManager(modelState);
     this.addCellRenderers();
+    this.resizeHeader();
     this.setWidgetHeight();
     this.resizeSections();
   }
@@ -292,6 +291,14 @@ export class BeakerxDataGrid extends DataGrid {
     );
   }
 
+  private resizeHeader() {
+    if (!this.model.state.headersVertical) { return; }
+
+    this.baseColumnHeaderSize = Math.max.apply(null, this.columnManager.bodyColumnNames.map(name => {
+      return getStringSize(name, this.model.state.headerFontSize).width;
+    }));
+  }
+
   private getSectionWidth(column) {
     const value = String(column.formatFn(this.cellManager.createCellConfig({
       region: 'body',
@@ -299,9 +306,10 @@ export class BeakerxDataGrid extends DataGrid {
       column: column.index,
       row: 0,
     })));
-    const nameWidth = getStringWidth(column.name, this.model.state.headerFontSize);
-    const valueWidth = getStringWidth(value,this.model.state.dataFontSize);
-    const result = nameWidth > valueWidth ? nameWidth: valueWidth;
+    const nameSize = getStringSize(column.name, this.model.state.headerFontSize);
+    const valueSize = getStringSize(value,this.model.state.dataFontSize);
+    const nameSizeProp = this.model.state.headersVertical ? 'height' : 'width';
+    const result = nameSize[nameSizeProp] > valueSize.width ? nameSize[nameSizeProp] : valueSize.width;
 
     return result > MIN_COLUMN_WIDTH ? result : MIN_COLUMN_WIDTH;
   }
@@ -310,9 +318,10 @@ export class BeakerxDataGrid extends DataGrid {
     const valueCharLength = this.model.rowCount('body');
     const name = this.columnManager.getColumnByIndex(COLUMN_TYPES.index, 0).name;
     const value = name.length > valueCharLength ? name : String(valueCharLength);
-    const nameWidth = getStringWidth(name, this.model.state.headerFontSize);
-    const valueWidth = getStringWidth(value, this.model.state.dataFontSize);
-    const result = nameWidth > valueWidth ? nameWidth: valueWidth;
+    const nameSizeProp = this.model.state.headersVertical ? 'height' : 'width';
+    const nameSize = getStringSize(name, this.model.state.headerFontSize);
+    const valueSize = getStringSize(value, this.model.state.dataFontSize);
+    const result = nameSize[nameSizeProp] > valueSize.width ? nameSize[nameSizeProp]: valueSize.width;
 
     this.rowHeaderSections.resizeSection(0, result + 10);
   }

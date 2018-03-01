@@ -97,6 +97,7 @@ export default class EventManager {
     this.dataGrid.headerCellHovered.emit(null);
     this.dataGrid.node.classList.remove('bko-focused');
     this.dataGrid.focused = false;
+    this.dataGrid.cellTooltipManager.hideTooltip();
     enableKeyboardManager();
   }
 

@@ -39,6 +39,10 @@ export default class CellTooltipManager {
     }
   }
 
+  hideTooltip() {
+    this.tooltip && this.tooltip.hide();
+  }
+
   handleCellHovered(sender: BeakerxDataGrid, data: ICellData) {
     if (!data || data.type === COLUMN_TYPES.index) {
       return this.tooltip.hide();

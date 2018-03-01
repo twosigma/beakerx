@@ -36,13 +36,13 @@ export default interface IDataModelState {
   hasDoubleClickAction?: boolean,
   hasIndex: boolean,
   headerFontSize?: number|null,
-  headersVertical?: boolean, //@todo Needs custom cell renderer
+  headersVertical?: boolean,
   rendererForColumn?: {}, //@todo Needs the DataBars highlighter
   rendererForType?: {}, //@todo Needs the DataBars highlighter
   stringFormatForColumn: {},
   stringFormatForTimes?: string|null,
   stringFormatForType?: {},
-  subtype?: string, //@todo
+  subtype?: string,
   timeZone?: string,
   tooManyRows?: boolean,
   tooltips: string[],

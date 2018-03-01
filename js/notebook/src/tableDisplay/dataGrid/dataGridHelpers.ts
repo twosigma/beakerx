@@ -59,9 +59,10 @@ export namespace DataGridHelpers {
     } catch (e) {}
   }
 
-  export function getStringWidth(value: string, fontSize: Number|null|undefined) {
+  export function getStringSize(value: string, fontSize: Number|null|undefined) {
     let spanEl: HTMLSpanElement = document.createElement('span');
     let width: number;
+    let height: number;
 
     spanEl.textContent = value;
     spanEl.style.fontFamily = 'Lato, Helvetica, sans-serif';
@@ -71,9 +72,10 @@ export namespace DataGridHelpers {
     document.body.appendChild(spanEl);
 
     width = spanEl.clientWidth;
+    height = spanEl.clientHeight;
     document.body.removeChild(spanEl);
 
-    return width;
+    return { width, height };
   }
 
   export function findSectionIndex(

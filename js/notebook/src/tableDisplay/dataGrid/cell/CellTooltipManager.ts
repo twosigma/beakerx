@@ -48,13 +48,17 @@ export default class CellTooltipManager {
       return;
     }
 
+    let column = this.dataGrid.columnManager.indexResolver.getIndexByColumnPosition(
+      data.column,
+      data.type
+    );
     this.tooltip.hide();
     this.lastData = data;
 
     setTimeout(() => {
       let x = data.offset + data.delta + DEFAULT_GRID_PADDING;
 
-      this.tooltip.node.innerText = this.tooltips[data.row][data.column] || '';
+      this.tooltip.node.innerText = this.tooltips[data.row][column] || '';
       this.tooltip.show(x, data.offsetTop);
     }, 300);
   }

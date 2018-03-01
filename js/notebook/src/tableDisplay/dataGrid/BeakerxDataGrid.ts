@@ -39,7 +39,7 @@ import CellFocusManager from "./cell/CellFocusManager";
 import findSectionIndex = DataGridHelpers.findSectionIndex;
 import {
   DEFAULT_GRID_BORDER_WIDTH,
-  DEFAULT_GRID_PADDING,
+  DEFAULT_GRID_PADDING, DEFAULT_ROW_HEIGHT,
   MIN_COLUMN_WIDTH
 } from "./style/dataGridStyle";
 import CellTooltipManager from "./cell/CellTooltipManager";
@@ -74,6 +74,9 @@ export class BeakerxDataGrid extends DataGrid {
     this.rowHeaderSections = this['_rowHeaderSections'];
     this.rowSections = this['_rowSections'];
     this.columnSections = this['_columnSections'];
+
+    this.baseRowSize = DEFAULT_ROW_HEIGHT;
+    this.baseColumnHeaderSize = DEFAULT_ROW_HEIGHT;
 
     this.resizeColumnSection = this.resizeColumnSection.bind(this);
     this.init(modelState);

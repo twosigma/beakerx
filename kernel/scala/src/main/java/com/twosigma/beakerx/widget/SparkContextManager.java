@@ -110,7 +110,7 @@ public class SparkContextManager {
     disconnect = new Button();
     disconnect.registerOnClick((content, message) -> sparkContext.stop());
     disconnect.setDescription("Disconnect");
-    HBox statusPanel = new HBox(Arrays.asList(disconnect, appStatus));
+    HBox statusPanel = new HBox(Arrays.asList(uiLink(), disconnect, appStatus));
     sparkUI.add(statusPanel);
   }
 
@@ -170,6 +170,18 @@ public class SparkContextManager {
     IntProgress intProgress = progressBars.get(stageId);
     intProgress.setValue(intProgress.getValue() + 1);
     labels.get(stageId).setValue(intProgress.getValue() + "/" + intProgress.getMax());
+  }
+
+  private HTML uiLink() {
+    if (sparkContext.uiWebUrl().isDefined()) {
+      HTML html = new HTML();
+      html.setValue("<a target=\"_blank\" href=\"" + sparkContext.uiWebUrl().get() + "\">Spark UI" + "</a>");
+      return html;
+    } else {
+      HTML html = new HTML();
+      html.setValue("<a target=\"_blank\" href=\"\">Spark UI " + "</a>");
+      return html;
+    }
   }
 
   private HTML stageLink(int stageId) {

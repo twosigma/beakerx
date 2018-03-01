@@ -30,9 +30,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class Inspect {
+
+    private static final String COLOR_RED = "\u001B[31m";
+    private static final String COLOR_RESET = "\033[0m";
 
     private static String inspectDataPath = "beakerx_inspect.json";
 
@@ -78,23 +82,45 @@ public class Inspect {
             }
         }
         if (methodName == null && classInspect != null) {
-            inspectResult = new InspectResult(classInspect.fullName + "\n" + classInspect.getJavadoc(), caretPosition);
+            List<MethodInspect> constructors = classInspect.getConstructors();
+            String classInfo = parseClassInfo(classInspect) + "\n\n" + parseMethodsInfo(constructors, "");
+            inspectResult = new InspectResult(classInfo, caretPosition);
         } else {
             List<MethodInspect> methodInspectsList = classInspect == null ? null : classInspect.getMethods();
             if (methodInspectsList == null) {
                 return new InspectResult();
             }
-            for (MethodInspect methodInspect : methodInspectsList) {
-                if (methodInspect.getMethodName().equals(methodName)) {
-                    return new InspectResult(methodInspect.getSignature() + "\n" + methodInspect.getJavadoc(), caretPosition);
-                }
+            List<MethodInspect> methods = methodInspectsList.stream()
+                    .filter(m -> m.getMethodName().equals(methodName))
+                    .collect(Collectors.toList());
+            if (!methods.isEmpty()) {
+                return new InspectResult(parseMethodsInfo(methods, className), caretPosition);
             }
         }
         return inspectResult;
     }
 
+    private String parseClassInfo(ClassInspect classInspect) {
+        return COLOR_RED + "Class: " + COLOR_RESET + classInspect.fullName + "\n"
+                + COLOR_RED + "JavaDoc: " + (classInspect.getJavadoc().equals("")
+                ? "<no JavaDoc>" : COLOR_RESET + classInspect.getJavadoc());
+    }
+
     public static void setInspectFileName(String inspectDataPath) {
         Inspect.inspectDataPath = inspectDataPath;
+    }
+
+    public String parseMethodsInfo(List<MethodInspect> methods, String className) {
+        if (methods == null) {
+            return "";
+        }
+        String parsedMethods = methods.stream()
+                .map(m ->
+                        COLOR_RED + "Signature: " + COLOR_RESET + className + (className.equals("") ? "" : ".")
+                                + m.getMethodName() + "(" + m.getSignature() + ")" + "\n" + COLOR_RED + "JavaDoc: " +
+                                (m.getJavadoc().equals("") ? "<no JavaDoc>" : COLOR_RESET + m.getJavadoc()))
+                .collect(Collectors.joining("\n\n"));
+        return parsedMethods;
     }
 }
 

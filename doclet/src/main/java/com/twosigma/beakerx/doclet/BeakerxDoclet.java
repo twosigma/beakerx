@@ -20,6 +20,7 @@ import com.sun.javadoc.*;
 import com.sun.tools.javadoc.ClassDocImpl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,27 +29,31 @@ public class BeakerxDoclet extends Doclet {
         //iterate over all classes.
         HashMap<String, ClassInspect> inspects = new HashMap<>(root.classes().length);
         ClassDoc[] classes = root.classes();
+
         for (ClassDoc classDoc : classes) {
             ClassInspect classInspect = new ClassInspect(classDoc.name(), ((ClassDocImpl) classDoc).type.toString(), classDoc.commentText());
             inspects.put(classInspect.getFullName(), classInspect);
-
-            MethodDoc[] methods = classDoc.methods();
-            List<MethodInspect> methodsInspect = new ArrayList<>(methods.length);
-            for (MethodDoc methodDoc : methods) {
-                List<String> signature = new ArrayList<>();
-                for (Parameter parameter : methodDoc.parameters()) {
-                    signature.add(parameter.type().qualifiedTypeName() + " " + parameter.name());
-                }
-
-                MethodInspect methodInspect = new MethodInspect(methodDoc.name(), methodDoc.getRawCommentText(), String.join(", ", signature));
-                methodsInspect.add(methodInspect);
-            }
-            classInspect.setMethods(methodsInspect);
+            classInspect.setMethods(getInspects(classDoc.methods()));
+            classInspect.setConstructors(getInspects(classDoc.constructors()));
         }
 
         SerializeInspect serializeInspect = new SerializeInspect();
         String json = serializeInspect.toJson(inspects);
         serializeInspect.saveToFile(json);
         return true;
+    }
+
+    private static List<MethodInspect> getInspects(ExecutableMemberDoc[] memberDocs) {
+        List<MethodInspect> methodInspects = new ArrayList<>(memberDocs.length);
+        for (ExecutableMemberDoc memberDoc : memberDocs) {
+            List<String> signature = new ArrayList<>();
+            for (Parameter parameter : memberDoc.parameters()) {
+                signature.add(parameter.type().qualifiedTypeName() + " " + parameter.name());
+            }
+            MethodInspect methodInspect = new MethodInspect(memberDoc.name(), memberDoc.getRawCommentText(),
+                    String.join(", ", signature));
+            methodInspects.add(methodInspect);
+        }
+        return methodInspects;
     }
 }

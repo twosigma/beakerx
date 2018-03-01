@@ -23,6 +23,7 @@ public class ClassInspect {
     String fullName;
     String javadoc;
     List<MethodInspect> methods;
+    List<MethodInspect> constructors;
 
     public ClassInspect(String className, String fullName, String javadoc) {
         this.className = className;
@@ -48,5 +49,13 @@ public class ClassInspect {
 
     public void setMethods(List<MethodInspect> methods) {
         this.methods = methods;
+    }
+
+    public List<MethodInspect> getConstructors() {
+        return constructors;
+    }
+
+    public void setConstructors(List<MethodInspect> constructors) {
+        this.constructors = constructors;
     }
 }

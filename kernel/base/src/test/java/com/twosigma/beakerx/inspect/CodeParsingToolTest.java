@@ -25,11 +25,6 @@ public class CodeParsingToolTest {
             "csv = new CSV()\n" +
             "csv.read(test)";
 
-    private final static String CODE_CLASS_ROW_1 =
-            "table = new TableDisplay(new CsvPlotReader(\"default\", new Reader(\"test\")).\n";
-    private final static String CODE_CLASS_ROW_2 =
-            "table.test(\"test\")";
-
 
     @Test
     public void getCaretPositionInLineTest() {
@@ -70,7 +65,9 @@ public class CodeParsingToolTest {
         //given
         String expected = "TableDisplay";
         //when
-        String result = CodeParsingTool.getClassName( CODE_CLASS_ROW_1 + CODE_CLASS_ROW_2, 84, "test");
+        String result = CodeParsingTool.getClassName(
+                "table = new TableDisplay(new CsvPlotReader(\"default\", new Reader(\"test\")).\n"
+                        + "table.test(\"test\")", 84, "test");
         //then
         Assertions.assertThat(result).isEqualTo(expected);
     }

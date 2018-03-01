@@ -18,18 +18,32 @@ package com.twosigma.beakerx.groovy.inspect;
 
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
-import com.twosigma.beakerx.groovy.kernel.GroovyKernelMock;
 import com.twosigma.beakerx.inspect.InspectResult;
-import com.twosigma.beakerx.kernel.KernelManager;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GroovyInspectTest {
+
+    private static final String COLOR_RED = "\u001B[31m";
+    private static final String COLOR_RESET = "\033[0m";
+
+    private final String METHOD_CSV_PLOT_READER_READ =
+            printSignature("CsvPlotReader.read(java.lang.String fileName)") + "\n" + printEmptyJavaDoc();
+    private final String CLASS_CSV_PLOT_READER =
+            printClass("com.twosigma.beakerx.fileloader.CsvPlotReader")
+                    + "\n" + printEmptyJavaDoc() + "\n\n";
+    private final String METHOD_TABLE_DISPLAY_SETDBLCLICK =
+            printSignature("TableDisplay.setDoubleClickAction(java.lang.String tagName)")
+                    + "\n" + printEmptyJavaDoc()
+                    + "\n\n" + printSignature("TableDisplay.setDoubleClickAction(java.lang.Object listener)")
+                    + "\n" + printEmptyJavaDoc();
+    private final String CLASS_TABLE_DISPLAY =
+            printClass("com.twosigma.beakerx.table.TableDisplay")
+                    + "\n" + printEmptyJavaDoc() + "\n\n";
+
 
     private static BaseEvaluator groovyEvaluator;
 
@@ -39,26 +53,9 @@ public class GroovyInspectTest {
         groovyEvaluator.getInspect().setInspectFileName("../beakerx_inspect_test.json");
     }
 
-    @Before
-    public void setUp() throws Exception {
-        GroovyKernelMock kernel = new GroovyKernelMock("id", groovyEvaluator);
-        KernelManager.register(kernel);
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        KernelManager.register(null);
-    }
-
     @AfterClass
     public static void tearDownClass() throws Exception {
         groovyEvaluator.exit();
-    }
-
-    //call inspect on code, "\0" in code defines caret position
-    private InspectResult callInspectOnCaretPos(String code) {
-        int carretPos = code.indexOf("\0");
-        return groovyEvaluator.inspect(code.replace("\0", ""), carretPos);
     }
 
     @Test
@@ -69,7 +66,8 @@ public class GroovyInspectTest {
                 "\n" +
                 "csv = new CsvPlotReader()\n" +
                 "csv.re\0ad";
-        String expected = "java.lang.String fileName\n";
+        String expected = METHOD_CSV_PLOT_READER_READ;
+
         //when
         InspectResult result = callInspectOnCaretPos(code);
         //then
@@ -84,7 +82,7 @@ public class GroovyInspectTest {
                 "import com.twosigma.beakerx.table.format.TableDisplayStringFormat\n" +
                 "\n" +
                 "csv = new CsvPlot\0Reader()";
-        String expected = "com.twosigma.beakerx.fileloader.CsvPlotReader\n";
+        String expected = CLASS_CSV_PLOT_READER;
         //when
         InspectResult result = callInspectOnCaretPos(code);
         assertThat(result.getFound()).isTrue();
@@ -99,7 +97,7 @@ public class GroovyInspectTest {
                 "\n" +
                 "csv = new CsvPlotReader()\n" +
                 "csv.read(\0)";
-        String expected = "java.lang.String fileName\n";
+        String expected = METHOD_CSV_PLOT_READER_READ;
         //when
         InspectResult result = callInspectOnCaretPos(code);
         //then
@@ -115,7 +113,7 @@ public class GroovyInspectTest {
                 "\n" +
                 "table = new TableDisplay(new CsvPlotReader().read('../resources/data/interest-rates.csv'))\n" +
                 "table.setDoubleCli\0ckAction()";
-        String expected = "java.lang.String tagName\n";
+        String expected = METHOD_TABLE_DISPLAY_SETDBLCLICK;
         //when
         InspectResult result = callInspectOnCaretPos(code);
         //then
@@ -130,7 +128,7 @@ public class GroovyInspectTest {
                 "import com.twosigma.beakerx.table.format.TableDisplayStringFormat\n" +
                 "\n" +
                 "table = new TableDisplay(new CsvPlotReader().read('ar\0gs'))";
-        String expected = "java.lang.String fileName\n";
+        String expected = METHOD_CSV_PLOT_READER_READ;
         //when
         InspectResult result = callInspectOnCaretPos(code);
         //then
@@ -146,7 +144,7 @@ public class GroovyInspectTest {
                 "\n" +
                 "display = new TableDisplay(new CsvPlot\0Reader().read(\"../resources/data/interest-rates.csv\"))\n" +
                 "display.setStringFormatForColumn(\"test\")";
-        String expected = "com.twosigma.beakerx.fileloader.CsvPlotReader\n";
+        String expected = CLASS_CSV_PLOT_READER;
         //when
         InspectResult result = callInspectOnCaretPos(code);
         assertThat(result.getFound()).isTrue();
@@ -158,7 +156,7 @@ public class GroovyInspectTest {
         //given
         String code = "def display = new TableDisplay()\n" +
                 "dis\0play.setDoubleClickAction()";
-        String expected = "com.twosigma.beakerx.table.TableDisplay\n";
+        String expected = CLASS_TABLE_DISPLAY;
         //when
         InspectResult result = callInspectOnCaretPos(code);
         assertThat(result.getFound()).isTrue();
@@ -170,7 +168,7 @@ public class GroovyInspectTest {
         //given
         String code = "def display = new TableDisplay()\n" +
                 "display.setDoubleCli\0ckAction()";
-        String expected = "java.lang.String tagName\n";
+        String expected = METHOD_TABLE_DISPLAY_SETDBLCLICK;
         //when
         InspectResult result = callInspectOnCaretPos(code);
         assertThat(result.getFound()).isTrue();
@@ -191,12 +189,30 @@ public class GroovyInspectTest {
     public void evaluateInspectBracketBeforeNew() throws Exception {
         //given
         String code = "def display = new Table\0Display(new CSV().read(\"../resources/data/interest-rates.csv\"))";
-        String expected = "com.twosigma.beakerx.table.TableDisplay\n";
+        String expected = CLASS_TABLE_DISPLAY;
         //when
         InspectResult result = callInspectOnCaretPos(code);
         //then
         assertThat(result.getFound()).isTrue();
         assertThat(result.getData().getTextplain()).isEqualTo(expected);
+    }
+
+    //call inspect on code, "\0" in code defines caret position
+    private InspectResult callInspectOnCaretPos(String code) {
+        int carretPos = code.indexOf("\0");
+        return groovyEvaluator.inspect(code.replace("\0", ""), carretPos);
+    }
+
+    private String printClass(String className) {
+        return COLOR_RED + "Class: " + COLOR_RESET + className;
+    }
+
+    private String printSignature(String signature) {
+        return COLOR_RED + "Signature: " + COLOR_RESET + signature;
+    }
+
+    private String printEmptyJavaDoc() {
+        return COLOR_RED + "JavaDoc: <no JavaDoc>";
     }
 }
 

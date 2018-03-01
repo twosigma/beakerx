@@ -47,14 +47,16 @@ export default class CellManager {
         column: 0,
         type: COLUMN_TYPES.index,
         delta: 0,
-        offset: 0
+        offset: 0,
+        offsetTop: 0
       },
       endCell: {
         row: endRow.index,
         column: this.dataGrid.columnManager.columns[COLUMN_TYPES.body].length - 1 || 0,
         type: COLUMN_TYPES.body,
         delta: 0,
-        offset: 0
+        offset: 0,
+        offsetTop: 0
       }
     };
     const columnsRange = rowsRange;

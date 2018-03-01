@@ -21,5 +21,6 @@ export interface ICellData {
   column: number,
   row: number,
   delta: number,
-  offset: number
+  offset: number,
+  offsetTop: number
 }

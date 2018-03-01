@@ -20,6 +20,8 @@ import {HIGHLIGHTER_TYPE} from "./interface/IHighlighterState";
 import {DataGridHelpers} from "./dataGridHelpers";
 import disableKeyboardManager = DataGridHelpers.disableKeyboardManager;
 import enableKeyboardManager = DataGridHelpers.enableKeyboardManager;
+import throttle = DataGridHelpers.throttle;
+import {ICellData} from "./interface/ICell";
 
 export default class EventManager {
   dataGrid: BeakerxDataGrid;
@@ -28,8 +30,9 @@ export default class EventManager {
     this.dataGrid = dataGrid;
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleMouseOut = this.handleMouseOut.bind(this);
-    this.handleMouseOut = this.handleMouseOut.bind(this);
+    this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleDoubleClick = this.handleDoubleClick.bind(this);
+    this.handleCellHover = throttle<MouseEvent, void>(this.handleCellHover.bind(this), 150);
 
     this.dataGrid.node.removeEventListener('mouseout', this.handleMouseOut);
     this.dataGrid.node.addEventListener('mouseout', this.handleMouseOut);
@@ -42,7 +45,7 @@ export default class EventManager {
   handleEvent(event: Event, parentHandler: Function): void {
     switch (event.type) {
       case 'mousemove':
-        this.handleHeaderCellHover(event as MouseEvent);
+        this.handleCellHover(event as MouseEvent);
         break;
       case 'mousedown':
         this.handleMouseDown(event as MouseEvent);
@@ -60,16 +63,27 @@ export default class EventManager {
   }
 
   //@todo debounce it
-  private handleHeaderCellHover(event: MouseEvent): void {
-    if (!this.dataGrid.isOverHeader(event)) {
-      this.dataGrid.headerCellHovered.emit(null);
-
-      return;
-    }
-
+  private handleCellHover(event: MouseEvent): void {
     const data = this.dataGrid.getCellData(event.clientX, event.clientY);
 
+    this.handleBodyCellHover(data, event);
+    this.handleHeaderCellHover(data, event);
+  }
+
+  private handleHeaderCellHover(data: ICellData|null, event: MouseEvent) {
+    if (!this.dataGrid.isOverHeader(event)) {
+      return this.dataGrid.headerCellHovered.emit(null);
+    }
+
     this.dataGrid.headerCellHovered.emit(data);
+  }
+
+  private handleBodyCellHover(data: ICellData|null, event: MouseEvent) {
+    if (this.dataGrid.isOverHeader(event)) {
+      return this.dataGrid.cellHovered.emit(null);
+    }
+
+    this.dataGrid.cellHovered.emit(data);
   }
 
   private handleMouseDown(event: MouseEvent): void {

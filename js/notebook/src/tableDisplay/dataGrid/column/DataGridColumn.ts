@@ -27,6 +27,7 @@ import { HIGHLIGHTER_TYPE } from "../interface/IHighlighterState";
 import ColumnManager, { COLUMN_CHANGED_TYPES, IBkoColumnsChangedArgs } from "./ColumnManager";
 import ColumnFilter from "./ColumnFilter";
 import {ITriggerOptions} from "../headerMenu/HeaderMenu";
+import CellTooltip from "../cell/CellTooltip";
 
 export enum COLUMN_TYPES {
   index,
@@ -51,8 +52,7 @@ export default class DataGridColumn {
   valuesIterator: MapIterator<number, any>;
   minValue: any;
   maxValue: any;
-  dataTypeTooltipNode: HTMLElement;
-  tooltipTimout: number;
+  dataTypeTooltip: CellTooltip;
 
   state: IColumnState;
 
@@ -69,7 +69,7 @@ export default class DataGridColumn {
     this.handleHeaderCellHovered = this.handleHeaderCellHovered.bind(this);
     this.createMenu(options.menuOptions);
     this.addColumnFilter(options.menuOptions);
-    this.addDataTypeTooltip(options.menuOptions);
+    this.addDataTypeTooltip();
     this.connectToHeaderCellHovered();
     this.connectToColumnsChanged();
     this.addMinMaxValues();
@@ -199,8 +199,7 @@ export default class DataGridColumn {
 
   destroy() {
     this.menu.destroy();
-    document.body.contains(this.dataTypeTooltipNode) &&
-    document.body.removeChild(this.dataTypeTooltipNode);
+    this.dataTypeTooltip.hide();
   }
 
   connectToColumnsChanged() {
@@ -362,55 +361,20 @@ export default class DataGridColumn {
     return getTypeByName(this.getDataTypeName());
   }
 
-  private addDataTypeTooltip(menuOptions: ITriggerOptions) {
-    const rect = this.dataGrid.node.getBoundingClientRect();
-
-    this.dataTypeTooltipNode = document.createElement('div');
-    this.dataTypeTooltipNode.style.position = 'absolute';
-    this.dataTypeTooltipNode.style.visibility = 'visible';
-    this.dataTypeTooltipNode.style.left = `${rect.left + menuOptions.x}px`;
-    this.dataTypeTooltipNode.style.top = `${rect.top + menuOptions.y - this.dataGrid.headerHeight}px`;
-    this.dataTypeTooltipNode.innerText = this.getDataTypeName();
-
-    this.dataTypeTooltipNode.classList.add('bko-tooltip');
+  private addDataTypeTooltip() {
+    this.dataTypeTooltip = new CellTooltip(this.getDataTypeName(), document.body);
   }
 
   private toggleDataTooltip(show: boolean, data?: ICellData) {
     const rect = this.dataGrid.node.getBoundingClientRect();
 
-    if (!document.body.contains(this.dataTypeTooltipNode)) {
-      if (data && data.offset !== undefined) {
-        this.dataTypeTooltipNode.style.left = `${Math.ceil(rect.left + data.offset + 20)}px`;
-      }
-
-      this.dataTypeTooltipNode.style.top = `${Math.ceil(rect.top - 10)}px`;
+    if (show && data) {
+      return this.dataTypeTooltip.show(
+        Math.ceil(rect.left + data.offset + 20),
+        Math.ceil(rect.top - 10)
+      );
     }
 
-    if (show) {
-      return this.showTooltip();
-    }
-
-    this.hideTooltip();
-  }
-
-  private showTooltip() {
-    if (document.body.contains(this.dataTypeTooltipNode)) {
-      return;
-    }
-
-    document.body.appendChild(this.dataTypeTooltipNode);
-    clearTimeout(this.tooltipTimout);
-    setTimeout(() => this.dataTypeTooltipNode.classList.add('visible'), 300);
-  }
-
-  private hideTooltip() {
-    this.dataTypeTooltipNode.classList.remove('visible');
-
-    clearTimeout(this.tooltipTimout);
-    this.tooltipTimout = setTimeout(() => {
-      if (document.body.contains(this.dataTypeTooltipNode)) {
-        document.body.removeChild(this.dataTypeTooltipNode);
-      }
-    }, 300);
+    this.dataTypeTooltip.hide();
   }
 }

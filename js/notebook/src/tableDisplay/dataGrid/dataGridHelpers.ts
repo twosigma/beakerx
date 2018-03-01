@@ -106,4 +106,30 @@ export namespace DataGridHelpers {
 
     return null;
   }
+
+  export function throttle<T, U>(func: Function, limit: number): (T) => U|undefined {
+    let lastFunc;
+    let lastRan;
+
+    return function(...args: T[]): U|undefined {
+      const context = this;
+
+      if (!lastRan) {
+        func.apply(context, args);
+        lastRan = Date.now();
+
+        return;
+      }
+
+      clearTimeout(lastFunc);
+      lastFunc = setTimeout(() => {
+        if ((Date.now() - lastRan) < limit) {
+          return;
+        }
+
+        func.apply(context, args);
+        lastRan = Date.now();
+      }, limit - (Date.now() - lastRan))
+    }
+  }
 }

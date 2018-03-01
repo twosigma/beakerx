@@ -30,6 +30,7 @@ export const DEFAULT_DATA_FONT_COLOR = '#000000';
 export const DEFAULT_GRID_PADDING = 20;
 export const DEFAULT_GRID_BORDER_WIDTH = 1;
 export const MIN_COLUMN_WIDTH = 20;
+export const DEFAULT_ROW_HEIGHT = 24;
 
 export const DEFAULT_COLORS = {
   [GLOBALS.THEMES.DEFAULT]: {

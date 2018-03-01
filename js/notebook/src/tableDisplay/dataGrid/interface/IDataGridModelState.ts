@@ -45,7 +45,7 @@ export default interface IDataModelState {
   subtype?: string, //@todo
   timeZone?: string,
   tooManyRows?: boolean,
-  tooltips?: string[], //@todo
+  tooltips: string[],
   type?: string,
   types: string[],
   values: any,

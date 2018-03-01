@@ -42,6 +42,7 @@ import {
   DEFAULT_GRID_PADDING,
   MIN_COLUMN_WIDTH
 } from "./style/dataGridStyle";
+import CellTooltipManager from "./cell/CellTooltipManager";
 
 export class BeakerxDataGrid extends DataGrid {
   columnSections: any;
@@ -57,9 +58,11 @@ export class BeakerxDataGrid extends DataGrid {
   cellManager: CellManager;
   eventManager: EventManager;
   cellFocusManager: CellFocusManager;
+  cellTooltipManager: CellTooltipManager;
   focused: boolean;
 
   headerCellHovered = new Signal<this, ICellData|null>(this);
+  cellHovered = new Signal<this, ICellData|null>(this);
   commSignal = new Signal<this, {}>(this);
 
   constructor(options: DataGrid.IOptions, modelState: IDataModelState) {
@@ -131,7 +134,8 @@ export class BeakerxDataGrid extends DataGrid {
           row: 0,
           delta: column.delta,
           type: COLUMN_TYPES.index,
-          offset: this.getColumnOffset(column.index, COLUMN_TYPES.index)
+          offset: this.getColumnOffset(column.index, COLUMN_TYPES.index),
+          offsetTop: 0
         };
       }
 
@@ -156,7 +160,8 @@ export class BeakerxDataGrid extends DataGrid {
         delta: column.delta,
         row: row ? row.index : 0,
         type: columnType,
-        offset: this.getColumnOffset(column.index, columnType)
+        offset: this.getColumnOffset(column.index, columnType),
+        offsetTop: row ? this.getRowOffset(row.index) : 0
       };
     }
 
@@ -169,6 +174,10 @@ export class BeakerxDataGrid extends DataGrid {
     }
 
     return this.rowHeaderSections.totalSize + this.columnSections.sectionOffset(index);
+  }
+
+  getRowOffset(row: number) {
+    return this.rowSections.sectionOffset(row);
   }
 
   isOverHeader(event: MouseEvent) {
@@ -209,6 +218,7 @@ export class BeakerxDataGrid extends DataGrid {
     this.cellManager = new CellManager(this);
     this.eventManager = new EventManager(this);
     this.cellFocusManager = new CellFocusManager(this);
+    this.cellTooltipManager = new CellTooltipManager(this, modelState.tooltips);
     this.model = new BeakerxDataGridModel(modelState, this.columnManager, this.rowManager);
     this.focused = false;
 

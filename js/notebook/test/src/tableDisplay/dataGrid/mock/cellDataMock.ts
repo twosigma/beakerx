@@ -22,6 +22,7 @@ const cellDataMock: ICellData = {
   column: 0,
   type: COLUMN_TYPES.body,
   offset: 0,
+  offsetTop: 0,
   delta: 0
 };
 

@@ -21,12 +21,13 @@ import CellSelectionManager from "@beakerx/tableDisplay/dataGrid/cell/CellSelect
 import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 import {ICellData} from "@beakerx/tableDisplay/dataGrid/interface/ICell";
 import cellConfigMock from "../mock/cellConfigMock";
+import cellDataMock from "../mock/cellDataMock";
 
 describe('CellSelectionManager', () => {
   let dataGrid;
   let cellSelectionManager;
-  let startCell: ICellData = { row: 0, column: 0, type: COLUMN_TYPES.index, offset: 0, delta: 0 };
-  let endCell: ICellData = { row: 2, column: 3, type: COLUMN_TYPES.body, offset: 0, delta: 0 };
+  let startCell: ICellData = { ...cellDataMock, type: COLUMN_TYPES.index };
+  let endCell: ICellData = { ...cellDataMock, row: 2, column: 3 };
 
   before(() => {
     dataGrid = new BeakerxDataGrid({}, modelStateMock);

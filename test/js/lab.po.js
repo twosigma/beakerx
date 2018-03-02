@@ -108,6 +108,19 @@ var LabPageObject = function () {
 
   this.getAllOutputsWidget = function(codeCell){
     return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output');
-  }
+  };
+
+  this.callAutocompleteAndGetItsList = function(codeCell, codeStr){
+    codeCell.scroll();
+    codeCell.click('div.CodeMirror.cm-s-jupyter');
+    codeCell.keys(codeStr);
+    browser.keys("Tab");
+    browser.keys('\uE000');
+    browser.waitUntil(function() {
+      return browser.isVisible('ul.jp-Completer')
+    }, 10000, 'autocomplete list is not visible');
+    return $$('li.jp-Completer-item');
+  };
+
 };
 module.exports = LabPageObject;

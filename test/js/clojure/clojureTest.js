@@ -55,7 +55,7 @@ describe('Clojure base tests ', function () {
     it('Autocomplete list is not empty ', function(){
       cellIndex += 1;
       var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
-      var completeList = beakerxPO.callAutocompleteAndGetItsList(codeCell);
+      var completeList = beakerxPO.callAutocompleteAndGetItsList(codeCell, 'def');
       expect(completeList.length).toBeGreaterThan(0);
     });
   });

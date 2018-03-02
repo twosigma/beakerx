@@ -152,17 +152,6 @@ function BeakerXPageObject() {
     return codeCell.$('div.beaker-easyform-container');
   };
 
-  this.callAutocompleteAndGetItsList = function(codeCell){
-    codeCell.scroll();
-    codeCell.click('div.CodeMirror-code[role="presentation"]');
-    browser.keys("Tab");
-    browser.keys('\uE000');
-    browser.waitUntil(function() {
-      return browser.isVisible('#complete');
-    }, 10000, 'autocomplete list is not visible');
-    return $$('#complete > select > option');
-  }
-
 };
 
 module.exports = BeakerXPageObject;

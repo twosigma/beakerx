@@ -46,10 +46,10 @@
   font-weight: bold;
 }
 
-.CodeMirror pre,
-.rendered_html pre,
-.rendered_html code,
-.output_area pre {
+.improveFonts .CodeMirror pre,
+.improveFonts .rendered_html pre,
+.improveFonts .rendered_html code,
+.improveFonts .output_area pre {
   font-family: "Roboto Mono", monospace, sans-serif;
 }
 
@@ -57,13 +57,13 @@ div.output_text {
   line-height: 1.3em;
 }
 
-.widget-html-content,
-.rendered_html,
-.cm-header-1,
-.cm-header-2,
-.cm-header-3,
-.cm-header-4,
-.cm-header-5,
-.cm-header-6 {
+.improveFonts .widget-html-content,
+.improveFonts .rendered_html,
+.improveFonts .cm-header-1,
+.improveFonts .cm-header-2,
+.improveFonts .cm-header-3,
+.improveFonts .cm-header-4,
+.improveFonts .cm-header-5,
+.improveFonts .cm-header-6 {
   font-family: "Lato", Helvetica, sans-serif;
 }

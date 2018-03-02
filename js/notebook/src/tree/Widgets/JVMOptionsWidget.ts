@@ -15,39 +15,42 @@
  */
 
 import * as $ from "jquery";
+
 import { Panel } from "@phosphor/widgets";
 import { Message, MessageLoop } from "@phosphor/messaging";
 
 import { Messages } from "../Messages";
-
 import JVMOptionsModel from "../Models/JVMOptionsModel";
 import DefaultOptionsWidget from "./JVMOptions/DefaultOptionsWidget";
 import OtherOptionsWidget from "./JVMOptions/OtherOptionsWidget";
 import PropertiesWidget from "./JVMOptions/PropertiesWidget";
-
+import OptionsWidget from "./OptionsWidget";
+import DOMUtils from "../Utils/DOMUtils";
 
 export default class JVMOptionsWidget extends Panel {
-
-  public readonly HTML_ELEMENT_TEMPLATE = `
-<style>
-  #beakerx-tree label { 
-    font-weight: normal; 
-  }
-  .beakerx_container {
-    margin: 0 16px;
-  }
-</style>
-`;
 
   constructor() {
     super();
 
     this.addClass('beakerx_container');
-    this.setupWidgets();
-  }
 
-  public onBeforeAttach(msg: Message): void {
-    this.createWidgetStylesElement();
+    this.addClass('bx-jvm-options-widget');
+    this.title.label = 'JVM Options';
+    this.title.closable = false;
+
+    let defaultOptionsWidget  = new DefaultOptionsWidget();
+    let otherOptionsWidget = new OtherOptionsWidget();
+    let propertiesWidget = new PropertiesWidget();
+
+    this._model = this.createModel(
+      defaultOptionsWidget,
+      propertiesWidget,
+      otherOptionsWidget
+    );
+
+    this.addWidget(defaultOptionsWidget);
+    this.addWidget(propertiesWidget);
+    this.addWidget(otherOptionsWidget);
   }
 
   public processMessage(msg: Message): void {
@@ -65,7 +68,10 @@ export default class JVMOptionsWidget extends Panel {
         this.sendMessageToParent(new Messages.JVMOptionsChangedMessage(this._model.options));
         break;
       case Messages.TYPE_JVM_OPTIONS_ERROR:
-        MessageLoop.sendMessage(this.parent, msg);
+        this.sendMessageToParent(msg);
+        break;
+      case Messages.TYPE_SIZE_CHANGED:
+        this._updateSize();
         break;
       default:
         super.processMessage(msg);
@@ -77,27 +83,22 @@ export default class JVMOptionsWidget extends Panel {
     return this._model;
   }
 
+  protected onActivateRequest(): void {
+    this._updateSize();
+  }
+
+  private _updateSize(): void {
+    let h = 0;
+    for (let w of this.widgets) {
+      h += DOMUtils.getRealElementHeight(w.node);
+    }
+
+    $(this.node).height(h);
+    $(this.parent.node).height(h);
+    (this.parent!.parent as OptionsWidget).updateDimensions();
+  }
+
   private _model: JVMOptionsModel;
-
-  private createWidgetStylesElement(): void {
-    $(this.HTML_ELEMENT_TEMPLATE).insertBefore(this.node);
-  }
-
-  private setupWidgets() {
-    let defaultOptionsWidget  = new DefaultOptionsWidget();
-    let otherOptionsWidget = new OtherOptionsWidget();
-    let propertiesWidget = new PropertiesWidget();
-
-    this._model = this.createModel(
-      defaultOptionsWidget,
-      propertiesWidget,
-      otherOptionsWidget
-    );
-
-    this.addWidget(defaultOptionsWidget);
-    this.addWidget(propertiesWidget);
-    this.addWidget(otherOptionsWidget);
-  }
 
   private createModel(defaultOptionsWidget: DefaultOptionsWidget, propertiesWidget: PropertiesWidget, otherOptionsWidget: OtherOptionsWidget) {
     return new JVMOptionsModel(
@@ -108,7 +109,8 @@ export default class JVMOptionsWidget extends Panel {
   }
 
   private sendMessageToParent(msg: Message) {
-    MessageLoop.sendMessage(this.parent, msg);
+    // direct parent is stacked panel of tab panel
+    MessageLoop.sendMessage(this.parent!.parent, msg);
   }
 
 }

@@ -167,4 +167,167 @@ describe('Testing of table (python)', function () {
     });
   });
 
+  describe('Pandas read csv ', function(){
+    it('Should display table ', function() {
+      cellIndex += 1;
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      var headers = tableHelper.getAllCellsOfTableHeader(dtContainer);
+      expect(headers.length).toEqual(12);
+      expect(headers[1].getText()).toMatch(/m3/);
+      expect(headers[8].getText()).toMatch(/time/);
+      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 1).getText()).toMatch(/7.898/);
+      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 8).getText()).toMatch(/1990-01-30 19:00:00/);
+      expect(dtContainer.$('div.bko-table-selector').isEnabled()).toBeTruthy();
+      expect(dtContainer.$('div.bko-table-pagenum').isEnabled()).toBeTruthy();
+      expect(dtContainer.$('div.bko-table-use-pagination').isEnabled()).toBeTruthy();
+    });
+  });
+
+  describe('Set alignment provider for "m3" column ', function () {
+    var dtContainer2;
+
+    it('Column "y30" has default alignment equals "right" ', function() {
+      cellIndex += 1;
+      dtContainer2 = beakerxPO.runCellToGetDtContainer(cellIndex);
+      expect(tableHelper.getCellOfTableHeader(dtContainer2, 1).getText()).toMatch(/m3/);
+      expect(tableHelper.getCellOfTableBody(dtContainer2, 0, 1).getAttribute('class')).toMatch(/dtcenter/);
+    });
+
+    it('Column "m3" has center alignment ', function() {
+      expect(tableHelper.getCellOfTableHeader(dtContainer2, 1).getText()).toMatch(/m3/);
+      expect(tableHelper.getCellOfTableBody(dtContainer2, 0, 1).getAttribute('class')).toMatch(/dtcenter/);
+    });
+  });
+
+  describe('Set renderer for "y10" column ', function () {
+    var dtContainer2;
+
+    it('Column "y10" has bar element ', function() {
+      dtContainer2 = beakerxPO.getDtContainerByIndex(cellIndex);
+      expect(tableHelper.getCellOfTableHeader(dtContainer2, 6).getText()).toMatch(/y10/);
+      expect(tableHelper.getCellOfTableBody(dtContainer2, 0, 6).$('.dt-bar-data-cell').isEnabled()).toBeTruthy();
+    });
+
+    it('Column "y10" doesn\'t have text element ', function() {
+      expect(tableHelper.getCellOfTableBody(dtContainer2, 0, 6).$('.dt-cell-text').isVisible()).toBeFalsy();
+    });
+  });
+
+  describe('Set renderer for "double" type ', function () {
+    var dtContainer2;
+
+    it('Column "y3" has bar element ', function() {
+      dtContainer2 = beakerxPO.getDtContainerByIndex(cellIndex);
+      expect(tableHelper.getCellOfTableHeader(dtContainer2, 7).getText()).toMatch(/y3/);
+      expect(tableHelper.getCellOfTableBody(dtContainer2, 0, 7).isExisting('.dt-bar-data-cell')).toBeTruthy();
+    });
+
+    it('Column "time" doesn\'t have bar element ', function() {
+      expect(tableHelper.getCellOfTableHeader(dtContainer2, 8).getText()).toMatch(/time/);
+      expect(tableHelper.getCellOfTableBody(dtContainer2, 0, 8).isExisting('.dt-bar-data-cell')).toBeFalsy();
+    });
+  });
+
+  describe('Set string format for times ', function () {
+    it('Column "time" display date by "DAYS" format ', function() {
+      cellIndex += 1;
+      var dtContainer3 = beakerxPO.runCellToGetDtContainer(cellIndex);
+      expect(tableHelper.getCellOfTableHeader(dtContainer3, 8).getText()).toMatch(/time/);
+      expect(tableHelper.getCellOfTableBody(dtContainer3, 0, 8).getText()).toMatch('19900330');
+    });
+  });
+
+  describe('Set string format for "double" type ', function () {
+    it('Column "y30" display 4 digits after decimal point ', function() {
+      var dtContainer3 = beakerxPO.getDtContainerByIndex(cellIndex);
+      expect(tableHelper.getCellOfTableHeader(dtContainer3, 2).getText()).toMatch(/y30/);
+      expect(tableHelper.getCellOfTableBody(dtContainer3, 0, 2).getText()).toMatch(/\d.\d{3}/);
+    });
+  });
+
+  describe('Set string format for "y3" column ', function () {
+    it('Column "y3" display only integer part of number ', function() {
+      var dtContainer3 = beakerxPO.getDtContainerByIndex(cellIndex);
+      expect(tableHelper.getCellOfTableHeader(dtContainer3, 1).getText()).toMatch(/m3/);
+      expect(tableHelper.getCellOfTableBody(dtContainer3, 0, 1).getText()).toMatch(/\d{1}/);
+    });
+  });
+
+  describe('Hide "y30" column ', function () {
+    it('"y30" column is not visible ', function (){
+      cellIndex += 1;
+      var dtContainer4 = beakerxPO.runCellToGetDtContainer(cellIndex);
+      var headers = tableHelper.getAllCellsOfTableHeader(dtContainer4);
+      expect(headers.length).toEqual(11);
+      expect(headers[1].getText()).toMatch(/m3/);
+      expect(headers[2].getText()).not.toMatch(/y30/);
+      expect(headers[3].getText()).toMatch(/m6/);
+    });
+  });
+
+  describe('Set column frozen ', function () {
+    it('Column "y1" is fixed to left ', function() {
+      var dtContainer4 = beakerxPO.getDtContainerByIndex(cellIndex);
+      expect(tableHelper.getCellOfTableHeader(dtContainer4, 2).getText()).toMatch(/y1/);
+      expect(tableHelper.getCellOfTableHeader(dtContainer4, 2).getAttribute('class'))
+        .toMatch(/left-fix-col-separator/);
+    });
+  });
+
+  describe('Set column frozen to right ', function () {
+    it('Column "y10" is fixed to right ', function() {
+      var dtContainer4 = beakerxPO.getDtContainerByIndex(cellIndex);
+      expect(tableHelper.getCellOfTableHeader(dtContainer4, 5).getText()).toMatch(/y10/);
+      expect(tableHelper.getCellOfTableHeader(dtContainer4, 5).getAttribute('class'))
+        .toMatch(/right-fix-col-separator/);
+    });
+  });
+
+  describe('Set column order ', function () {
+    it('Table columns is ordered ', function (){
+      cellIndex += 1;
+      var dtContainer5 = beakerxPO.runCellToGetDtContainer(cellIndex);
+      var headers = tableHelper.getAllCellsOfTableHeader(dtContainer5);
+      expect(headers.length).toEqual(6);
+      expect(headers[1].getText()).toMatch(/m3/);
+      expect(headers[2].getText()).toMatch(/y1/);
+      expect(headers[3].getText()).toMatch(/y10/);
+      expect(headers[4].getText()).toMatch(/time/);
+      expect(headers[5].getText()).toMatch(/y2/);
+    });
+  });
+
+  function getBackColorForCell(cell){
+    return cell.getCssProperty('background-color').value;
+  }
+
+  describe('Add cell highlighter for row ', function () {
+    var dtContainer5;
+
+    it('Column cells with different values have different back colors ', function (){
+      cellIndex += 1;
+      dtContainer5 = beakerxPO.runCellToGetDtContainer(cellIndex);
+      expect(tableHelper.getCellOfTableHeader(dtContainer5, 1).getText()).toMatch(/m3/);
+      var cell_0_1 = tableHelper.getCellOfTableBody(dtContainer5, 0, 1);
+      var cell_1_1 = tableHelper.getCellOfTableBody(dtContainer5, 1, 1);
+      expect(cell_0_1.getText()).not.toEqual(cell_1_1.getText());
+      expect(getBackColorForCell(cell_0_1)).not.toEqual(getBackColorForCell(cell_1_1));
+    });
+
+    it('Column cells with one value have the same back colors ', function (){
+      var cell_1_1 = tableHelper.getCellOfTableBody(dtContainer5, 1, 1);
+      var cell_2_1 = tableHelper.getCellOfTableBody(dtContainer5, 2, 1);
+      expect(cell_1_1.getText()).toEqual(cell_2_1.getText());
+      expect(getBackColorForCell(cell_1_1)).toEqual(getBackColorForCell(cell_2_1));
+    });
+
+    it('Row cells have the same back colors ', function (){
+      var cell_0_2 = tableHelper.getCellOfTableBody(dtContainer5, 0, 2);
+      var cell_0_3 = tableHelper.getCellOfTableBody(dtContainer5, 0, 3);
+      expect(getBackColorForCell(cell_0_2)).toEqual(getBackColorForCell(cell_0_3));
+      var cell_1_2 = tableHelper.getCellOfTableBody(dtContainer5, 1, 2);
+      var cell_1_3 = tableHelper.getCellOfTableBody(dtContainer5, 1, 3);
+      expect(getBackColorForCell(cell_1_2)).toEqual(getBackColorForCell(cell_1_3));
+    });
+  });
 });

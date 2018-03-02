@@ -49,9 +49,13 @@ var TableHelperObject = function () {
     return this.getAllRowsOfTable(tblBody);
   };
 
-  this.getCellOfTableHeader = function(dtContainer, colIndex){
+  this.getAllCellsOfTableHeader = function(dtContainer){
     var tblHead = this.getDataTablesScrollHead(dtContainer);
-    return this.getAllRowsOfTable(tblHead)[0].$$('th')[colIndex];
+    return this.getAllRowsOfTable(tblHead)[0].$$('th');
+  };
+
+  this.getCellOfTableHeader = function(dtContainer, colIndex){
+    return this.getAllCellsOfTableHeader(dtContainer)[colIndex];
   };
 
 };

@@ -50,7 +50,7 @@ export default class TreeWidgetModel {
             .update(data.ui_options);
         }
 
-        this.showResult(data.jvm_options);
+        this.setResult(data.jvm_options);
 
         setTimeout(() => {
           this.syncEnd()
@@ -64,7 +64,7 @@ export default class TreeWidgetModel {
 
     let payload: IApiSettingsResponse = this.api.mergeWithDefaults(this._options);
 
-    this.showResult(payload.jvm_options);
+    this.setResult(payload.jvm_options);
 
     this.api.saveSettings({ beakerx:  payload })
       .then(() => {
@@ -90,6 +90,19 @@ export default class TreeWidgetModel {
     this._options.jvm_options = options;
   }
 
+  public showResult() {
+    if (this._options) {
+      this.jvmOptionsModel
+        .update(this._options.jvm_options);
+    }
+
+    this.syncWidget.show();
+  }
+
+  public hideResult() {
+    this.syncWidget.hide();
+  }
+
   private syncStart(): void {
     this.syncWidget.onSyncStart();
   }
@@ -98,8 +111,8 @@ export default class TreeWidgetModel {
     this.syncWidget.onSyncEnd();
   }
 
-  private showResult(options: IJVMOptions) {
-    this.syncWidget.showResult(this.buildResult(options));
+  private setResult(options: IJVMOptions) {
+    this.syncWidget.setResult(this.buildResult(options));
   }
 
   private buildResult(options: IJVMOptions): string {

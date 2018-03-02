@@ -51,4 +51,13 @@ describe('Clojure base tests ', function () {
     });
   });
 
+  describe('(Clojure) Press "Tab" to autocomplete code ', function(){
+    it('Autocomplete list is not empty ', function(){
+      cellIndex += 1;
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      var completeList = beakerxPO.callAutocompleteAndGetItsList(codeCell, 'def');
+      expect(completeList.length).toBeGreaterThan(0);
+    });
+  });
+
 });

@@ -82,4 +82,13 @@ describe('Java base tests ', function () {
     });
   });
 
+  describe('(Java) Press "Tab" to autocomplete code ', function(){
+    it('Autocomplete list is not empty ', function(){
+      cellIndex += 1;
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      var completeList = beakerxPO.callAutocompleteAndGetItsList(codeCell, 'imp');
+      expect(completeList.length).toBeGreaterThan(0);
+    });
+  });
+
 });

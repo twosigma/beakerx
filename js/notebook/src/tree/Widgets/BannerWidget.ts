@@ -15,10 +15,10 @@
  */
 
 import * as $ from 'jquery';
+
 import { Widget } from "@phosphor/widgets";
 
 import BeakerXApi from "../Utils/BeakerXApi";
-
 
 export default class BannerWidget extends Widget {
 
@@ -43,88 +43,49 @@ export default class BannerWidget extends Widget {
 </svg>  
 `;
 
-  static readonly BASIC_HTML_ELEMENT_TEMPLATE = `
-<style>
-  #beakerx_env_toolbar {
-    margin: 0 15px;
-  }
-  #beakerx_info .beakerx_site_link {
-    display: inline-block;
-    margin: 5px 0;
-  }
-
-  #beakerx_info .beakerx_site_link svg {
-    height: 35px;
-  }
-</style>
-<div id="beakerx_env_toolbar" class="list_toolbar">
-    <span id="beakerx_info" class="toolbar_info"></span>
-</div>
-`;
-
   constructor(api: BeakerXApi) {
     super();
+
+    this.addClass('bx-banner-widget');
+
     api
       .getVersion()
       .then((version) => {
-          this.buildWidget(version);
+          this.createBanner(version);
       });
-  }
-
-  private buildWidget(version: string) {
-    this.createBaseElement();
-    this.createBanner(version);
-  }
-
-  private createBaseElement(): void {
-    $(BannerWidget.BASIC_HTML_ELEMENT_TEMPLATE)
-      .appendTo(this.node);
   }
 
   private createBanner(version: string): void {
     $(this.node)
-      .find('#beakerx_info')
       .empty()
       .append(
         this.createLinkedBannerElementRow(),
-        this.createLinkedVersionElementRow(version),
-        this.createLinkedFromElementRow()
+        document.createTextNode(' version '),
+
+        $('<a>', {
+          target: '_blank',
+          href: `${BannerWidget.GITHUB_RELEASE_TAG_BASE_URL}${version}`,
+          text: version
+        }),
+
+        document.createTextNode(', from '),
+
+        $('<a>', {
+          target: '_blank',
+          href: 'http://opensource.twosigma.com/',
+          text: 'Two Sigma Open Source',
+        }),
+
       );
   }
 
-  private createLinkedFromElementRow() {
-    return $('<div>', {
-      text: 'from '
-    }).append(
-      $('<a>', {
-        target: '_blank',
-        href: 'http://opensource.twosigma.com/',
-        text: 'Two Sigma Open Source',
-      })
-    );
-  }
-
   private createLinkedBannerElementRow() {
-    return $('<div>').append(
-      $('<a>', {
-        class: 'beakerx_site_link',
-        target: '_blank',
-        href: 'http://BeakerX.com',
-      }).append(
-        $(`${BannerWidget.SVG_LOGO}`)
-      )
-    );
-  }
-
-  private createLinkedVersionElementRow(version: string) {
-    return $('<div>', {
-      text: 'version '
+    return $('<a>', {
+      class: 'beakerx_site_link',
+      target: '_blank',
+      href: 'http://BeakerX.com',
     }).append(
-      $('<a>', {
-        target: '_blank',
-        href: `${BannerWidget.GITHUB_RELEASE_TAG_BASE_URL}${version}`,
-        text: version
-      })
+      $(`${BannerWidget.SVG_LOGO}`)
     );
   }
 

@@ -209,6 +209,8 @@ public class SparkContextManager {
   }
 
   public void cancelAllJobs() {
-    this.sparkContext.cancelAllJobs();
+    if (this.sparkContext != null) {
+      this.sparkContext.cancelAllJobs();
+    }
   }
 }

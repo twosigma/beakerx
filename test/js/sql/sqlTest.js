@@ -43,7 +43,7 @@ describe('SQL base tests ', function () {
   describe('(SQL) Autocomplete cell ', function () {
     it('Autocomplete list is not empty ', function () {
       var codeCell = beakerxPO.getCodeCellByIndex(3);
-      var completeList = beakerxPO.callAutocompleteAndGetItsList(codeCell);
+      var completeList = beakerxPO.callAutocompleteAndGetItsList(codeCell, 's');
       expect(completeList.length).toBeGreaterThan(0);
     });
   });

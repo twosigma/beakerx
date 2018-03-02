@@ -123,7 +123,7 @@ export default abstract class HeaderMenu implements MenuInterface {
       let menuItem = items[i];
 
       const subitems = (typeof menuItem.items == 'function') ? menuItem.items(this.column) : menuItem.items;
-      const hasSubitems = subitems instanceof Array && subitems.length;
+      const hasSubitems = Array.isArray(subitems) && subitems.length;
 
       menuItem.separator && menu.addItem({ type: 'separator' });
 

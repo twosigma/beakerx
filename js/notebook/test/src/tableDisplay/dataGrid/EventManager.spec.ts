@@ -64,7 +64,7 @@ describe('EventManager', () => {
   it('should implement handleMouseDown event handler', () => {
     expect(eventManager).to.have.property('handleMouseDown');
     expect(eventManager.handleMouseDown).to.be.a('Function');
-    eventManager.handleMouseDown(new MouseEvent('mousedown'));
+    eventManager.handleMouseDown(new MouseEvent('mousedown', { buttons: 1 }));
     expect(dataGrid.focused).to.be.true;
     expect(dataGrid.node.classList.contains('bko-focused')).to.be.true;
   });

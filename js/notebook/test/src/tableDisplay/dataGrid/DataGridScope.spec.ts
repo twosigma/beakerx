@@ -38,7 +38,7 @@ describe('dataGridScope', () => {
     assert.throws(
       () => { new DataGridScope({ ...scopeOptions, data: {} }); },
       Error,
-      "Cannot read property 'map' of undefined"
+      "Cannot read property 'length' of undefined"
     );
   });
 

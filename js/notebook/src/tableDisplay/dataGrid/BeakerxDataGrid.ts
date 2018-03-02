@@ -24,7 +24,7 @@ import DataGridColumn, { COLUMN_TYPES } from "./column/DataGridColumn";
 import IDataModelState from "./interface/IDataGridModelState";
 import HighlighterManager from "./highlighter/HighlighterManager";
 import IHihglighterState from "./interface/IHighlighterState";
-import { DEFAULT_PAGE_LENGTH } from "../consts";
+import {DEFAULT_PAGE_LENGTH} from "../consts";
 import ColumnManager from "./column/ColumnManager";
 import RowManager from "./row/RowManager";
 import CellSelectionManager from "./cell/CellSelectionManager";
@@ -39,10 +39,12 @@ import {
   MIN_COLUMN_WIDTH
 } from "./style/dataGridStyle";
 import CellTooltipManager from "./cell/CellTooltipManager";
+import * as bkUtils from '../../shared/bkUtils';
 import findSectionIndex = DataGridHelpers.findSectionIndex;
 import getStringSize = DataGridHelpers.getStringSize;
 
 export class BeakerxDataGrid extends DataGrid {
+  id: string;
   columnSections: any;
   columnHeaderSections: any;
   model: BeakerxDataGridModel;
@@ -58,6 +60,7 @@ export class BeakerxDataGrid extends DataGrid {
   cellFocusManager: CellFocusManager;
   cellTooltipManager: CellTooltipManager;
   focused: boolean;
+  wrapperId: string;
 
   headerCellHovered = new Signal<this, ICellData|null>(this);
   cellHovered = new Signal<this, ICellData|null>(this);
@@ -212,7 +215,18 @@ export class BeakerxDataGrid extends DataGrid {
     this.updateWidgetWidth();
   }
 
+  setWrapperId(id: string) {
+    this.wrapperId = id;
+  }
+
+  resize() {
+    this.resizeHeader();
+    this.setWidgetHeight();
+    this.resizeSections();
+  }
+
   private init(modelState: IDataModelState) {
+    this.id = 'grid_' + bkUtils.generateId(6);
     this.columnManager = new ColumnManager(modelState, this);
     this.rowManager = new RowManager(modelState.values, modelState.hasIndex, this.columnManager);
     this.cellSelectionManager = new CellSelectionManager(this);
@@ -292,11 +306,20 @@ export class BeakerxDataGrid extends DataGrid {
   }
 
   private resizeHeader() {
-    if (!this.model.state.headersVertical) { return; }
+    let bodyColumnNamesWidths: number[] = [];
+    let indexColumnNamesWidths: number[] = [];
 
-    this.baseColumnHeaderSize = Math.max.apply(null, this.columnManager.bodyColumnNames.map(name => {
-      return getStringSize(name, this.model.state.headerFontSize).width;
-    }));
+    if (this.model.state.headersVertical) {
+      const mapNameToWidth = name => getStringSize(name, this.model.state.headerFontSize).width;
+
+      bodyColumnNamesWidths = this.columnManager.bodyColumnNames.map(mapNameToWidth);
+      indexColumnNamesWidths = this.columnManager.indexColumnNames.map(mapNameToWidth);
+    }
+
+    this.baseColumnHeaderSize = Math.max.apply(
+      null,
+      [...bodyColumnNamesWidths, ...indexColumnNamesWidths, DEFAULT_ROW_HEIGHT]
+    );
   }
 
   private getSectionWidth(column) {

@@ -95,6 +95,15 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
     });
 
     this._currentScope.render();
+
+
+    // this._currentScope.setWidgetModel(this.model);
+    // this._currentScope.setModelData(data);
+    // this._currentScope.setElement(tmplElement.children('.dtcontainer'));
+    // this._currentScope.enableJupyterKeyHandler();
+    // this._currentScope.run();
+    // this._currentScope.initColumLimitModal();
+    // this._currentScope.setWidgetView(this);
   },
 
   showWarning: function(data) {

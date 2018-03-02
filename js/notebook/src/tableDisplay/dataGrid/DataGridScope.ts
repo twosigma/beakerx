@@ -18,8 +18,12 @@ import { Widget } from '@phosphor/widgets';
 import { BeakerxDataGrid } from './BeakerxDataGrid';
 import { silverStripeStyle } from './style/dataGridStyle';
 import IDataGridScopeOptions from "./interface/IDataGridScopeOptions";
+import DataGridContextMenu from "./contextMenu/DataGridContextMenu";
+import ColumnLimitModal from "./modal/ColumnLimitModal";
 
 export class DataGridScope {
+  contextMenu: DataGridContextMenu;
+
   readonly dataGrid: BeakerxDataGrid;
   readonly element: HTMLElement;
   private tableDisplayModel: any;
@@ -36,7 +40,11 @@ export class DataGridScope {
       options.data
     );
 
+    this.element.id = `wrap_${this.tableDisplayModel.model_id}`;
+    this.dataGrid.setWrapperId(this.element.id);
     this.connectToCommSignal();
+    this.createContextMenu();
+    this.initColumnLimitModal();
   }
 
   render(): void {
@@ -45,6 +53,7 @@ export class DataGridScope {
 
   doDestroy() {
     this.dataGrid.destroy();
+    this.contextMenu.destroy();
   }
 
   updateModelData(newData) {
@@ -65,5 +74,13 @@ export class DataGridScope {
     this.dataGrid.commSignal.connect((handler, args) => {
       this.tableDisplayModel.send(args, this.tableDisplayView.callbacks());
     }, this);
+  }
+
+  createContextMenu() {
+    this.contextMenu = new DataGridContextMenu(this);
+  }
+
+  initColumnLimitModal() {
+    return new ColumnLimitModal(this.dataGrid, this.element);
   }
 }

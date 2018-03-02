@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -45,6 +45,7 @@ export default class ColumnManager {
   columnsState: IColumnsState;
   columns: IColumns = {};
   columnsChanged = new Signal<this, IBkoColumnsChangedArgs>(this);
+  outputColumnLimit: number;
 
   defaultColumnState: IDataGridModelColumnState = {
     names: [],
@@ -56,6 +57,10 @@ export default class ColumnManager {
   constructor(modelState: IDataModelState, dataGrid: BeakerxDataGrid) {
     this.dataGrid = dataGrid;
     this.modelState = modelState;
+    this.outputColumnLimit = beakerx.prefs && beakerx.prefs.outputColumnLimit
+      ? beakerx.prefs.outputColumnLimit
+      : modelState.columnNames.length;
+
     this.addColumnsState(modelState);
     this.addIndexResolver();
     this.connectToColumnsChanged();
@@ -228,7 +233,11 @@ export default class ColumnManager {
   
   private addColumnsVisibilityState(state: IDataModelState) {
     const hasInitialOrder = state.columnOrder && state.columnOrder.length > 0;
-    const addVisibilityStateItem = (name) => {
+    const addVisibilityStateItem = (name, index) => {
+      if (index >= this.outputColumnLimit) {
+        return false;
+      }
+
       if (hasInitialOrder) {
         return state.columnOrder.indexOf(name) !== -1;
       }

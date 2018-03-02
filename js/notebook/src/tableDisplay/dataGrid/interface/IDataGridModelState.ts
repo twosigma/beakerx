@@ -28,8 +28,8 @@ export default interface IDataModelState {
   columnsFrozen?: {}, //@todo
   columnsFrozenRight?: {}, //feature is dropped
   columnsVisible: {},
-  contextMenuItems?: object[], //@todo
-  contextMenuTags?: {}, //@todo
+  contextMenuItems?: string[],
+  contextMenuTags?: {},
   dataFontSize?: number|null,
   doubleClickTag?: string|null,
   fontColor?: string[],
@@ -45,7 +45,7 @@ export default interface IDataModelState {
   subtype?: string,
   timeZone?: string,
   tooManyRows?: boolean,
-  tooltips: string[],
+  tooltips: string[][],
   type?: string,
   types: string[],
   values: any,

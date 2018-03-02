@@ -22,11 +22,11 @@ import {COLUMN_TYPES} from "../column/DataGridColumn";
 
 export default class CellTooltipManager {
   dataGrid: BeakerxDataGrid;
-  tooltips: string[];
+  tooltips: string[][];
   tooltip: CellTooltip;
   lastData: ICellData;
 
-  constructor(dataGrid: BeakerxDataGrid, tooltips: string[]) {
+  constructor(dataGrid: BeakerxDataGrid, tooltips: string[][]) {
     this.tooltips = tooltips;
     this.dataGrid = dataGrid;
 

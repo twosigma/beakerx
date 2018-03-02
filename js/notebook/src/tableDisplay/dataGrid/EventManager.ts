@@ -87,6 +87,10 @@ export default class EventManager {
   }
 
   private handleMouseDown(event: MouseEvent): void {
+    if (event.buttons !== 1) {
+      return;
+    }
+
     this.dataGrid.focused = true;
     this.dataGrid.node.classList.add('bko-focused');
     this.handleHeaderClick(event);
@@ -94,6 +98,10 @@ export default class EventManager {
   }
 
   private handleMouseOut(event: MouseEvent): void {
+    if (this.dataGrid.node.contains(event.toElement)) {
+      return;
+    }
+
     this.dataGrid.headerCellHovered.emit(null);
     this.dataGrid.node.classList.remove('bko-focused');
     this.dataGrid.focused = false;

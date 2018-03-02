@@ -19,6 +19,7 @@ import { BeakerxDataGrid } from './BeakerxDataGrid';
 import { silverStripeStyle } from './style/dataGridStyle';
 import IDataGridScopeOptions from "./interface/IDataGridScopeOptions";
 import DataGridContextMenu from "./contextMenu/DataGridContextMenu";
+import ColumnLimitModal from "./modal/ColumnLimitModal";
 
 export class DataGridScope {
   contextMenu: DataGridContextMenu;
@@ -43,6 +44,7 @@ export class DataGridScope {
     this.dataGrid.setWrapperId(this.element.id);
     this.connectToCommSignal();
     this.createContextMenu();
+    this.initColumnLimitModal();
   }
 
   render(): void {
@@ -76,5 +78,9 @@ export class DataGridScope {
 
   createContextMenu() {
     this.contextMenu = new DataGridContextMenu(this);
+  }
+
+  initColumnLimitModal() {
+    return new ColumnLimitModal(this.dataGrid, this.element);
   }
 }

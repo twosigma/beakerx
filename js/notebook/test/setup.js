@@ -16,6 +16,7 @@
 
 var jsdom = require('jsdom');
 
+global.beakerx = {};
 global.window = new jsdom.JSDOM().window;
 global.document = window.document;
 global.Element = window.Element;

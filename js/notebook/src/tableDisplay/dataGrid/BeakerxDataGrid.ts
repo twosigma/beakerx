@@ -39,10 +39,12 @@ import {
   MIN_COLUMN_WIDTH
 } from "./style/dataGridStyle";
 import CellTooltipManager from "./cell/CellTooltipManager";
+import * as bkUtils from '../../shared/bkUtils';
 import findSectionIndex = DataGridHelpers.findSectionIndex;
 import getStringSize = DataGridHelpers.getStringSize;
 
 export class BeakerxDataGrid extends DataGrid {
+  id: string;
   columnSections: any;
   columnHeaderSections: any;
   model: BeakerxDataGridModel;
@@ -224,6 +226,7 @@ export class BeakerxDataGrid extends DataGrid {
   }
 
   private init(modelState: IDataModelState) {
+    this.id = 'grid_' + bkUtils.generateId(6);
     this.columnManager = new ColumnManager(modelState, this);
     this.rowManager = new RowManager(modelState.values, modelState.hasIndex, this.columnManager);
     this.cellSelectionManager = new CellSelectionManager(this);

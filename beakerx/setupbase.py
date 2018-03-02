@@ -54,8 +54,8 @@ here = os.path.abspath(os.path.dirname(sys.argv[0]))
 root = os.path.abspath(os.path.join(here, os.pardir))
 kernel_path = os.path.join(root, 'kernel')
 kernel_source = os.path.join(kernel_path, 'base','src', 'main', 'java')
-doclet_path = os.path.join(root, 'doclet')
-doclet_jar = os.path.join(doclet_path, 'build/libs/doclet-1.0-SNAPSHOT.jar')
+doclet_path = os.path.join(kernel_path, 'doclet')
+doclet_jar = os.path.join(doclet_path, 'build/libs/doclet.jar')
 is_repo = os.path.exists(os.path.join(root, '.git'))
 node_modules = os.path.join(here, 'js', 'node_modules')
 node_modules_path = ':'.join([
@@ -312,7 +312,7 @@ def run_gradle(path=kernel_path, cmd='build'):
 
     return Gradle
 
-def run_doclet(path=doclet_path, cmd='build'):
+def run_doclet():
     """Return a Command for running gradle scripts.
 
     Parameters
@@ -327,7 +327,6 @@ def run_doclet(path=doclet_path, cmd='build'):
         description = 'Run gradle script'
 
         def run(self):
-            run([('' if sys.platform == 'win32' else './') + 'gradlew', '--no-daemon', cmd], cwd=path)
             run(['javadoc',
                  '-doclet', 'com.twosigma.beakerx.doclet.BeakerxDoclet',
                  '-docletpath', doclet_jar,

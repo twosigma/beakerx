@@ -46,7 +46,7 @@ cmdclass['js'] = install_node_modules(
 )
 cmdclass['java'] = run_gradle(cmd='build')
 cmdclass['javadoc'] = run_gradle(cmd='base:javadoc')
-cmdclass['doclet'] = run_doclet(cmd='build')
+cmdclass['doclet'] = run_doclet()
 
 setup_args = dict(
     name                = 'beakerx',

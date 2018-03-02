@@ -132,4 +132,9 @@ export class BeakerxDataGridModel extends DataModel {
       alignmentForType: this._state.alignmentForType || {},
     }
   }
+
+  setHeaderTextVertical(headersVertical: boolean) {
+    this.setState({ headersVertical });
+    this.reset();
+  }
 }

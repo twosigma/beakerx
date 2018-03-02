@@ -51,7 +51,7 @@ export default class BkoMenu extends Menu {
     }
   }
 
-  protected M(msg: Message) {
+  protected onActivateRequest(msg: Message) {
     super.onActivateRequest(msg);
 
     if (!this.parentMenu || !this.parentMenu.activeItem || this.parentMenu.activeItem.type !== 'submenu') {

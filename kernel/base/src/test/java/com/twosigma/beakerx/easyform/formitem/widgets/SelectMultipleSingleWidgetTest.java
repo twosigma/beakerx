@@ -16,14 +16,14 @@
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
-import com.twosigma.beakerx.widgets.selections.SelectMultiple;
-import com.twosigma.beakerx.widgets.selections.SelectMultipleSingle;
+import com.twosigma.beakerx.widget.SelectMultiple;
+import com.twosigma.beakerx.widget.SelectMultipleSingle;
 import org.junit.Test;
 
 import java.util.Collections;
 import java.util.List;
 
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyMsgForProperty;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyMsgForProperty;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 

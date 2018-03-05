@@ -32,6 +32,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CommTest {
@@ -61,7 +62,7 @@ public class CommTest {
     assertThat(kernel.getPublishedMessages().get(0).getParentHeader()).isEqualTo(parentMessage.getHeader());
     kernel.clearPublishedMessages();
     //then
-    comm.send();
+    comm.send(COMM_MSG, Comm.Buffer.EMPTY, comm.getData());
     assertThat(kernel.getPublishedMessages().get(0).getParentHeader()).isEqualTo(parentMessage.getHeader());
   }
 
@@ -74,7 +75,7 @@ public class CommTest {
     kernel.clearPublishedMessages();
     // code from second execution
     Message message2 = submitCodeToExecution();
-    comm.send();
+    comm.send(COMM_MSG, Comm.Buffer.EMPTY, comm.getData());
     assertThat(kernel.getPublishedMessages().get(0).getParentHeader()).isEqualTo(message2.getHeader());
   }
 
@@ -199,7 +200,7 @@ public class CommTest {
   @Test
   public void commSend_shouldSendIOPubSocketMessage() throws NoSuchAlgorithmException {
     //when
-    comm.send();
+    comm.send(COMM_MSG, Comm.Buffer.EMPTY, comm.getData());
     //then
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
     assertThat(kernel.getPublishedMessages().get(0)).isNotNull();
@@ -208,7 +209,7 @@ public class CommTest {
   @Test
   public void commSend_sentMessageHasTypeIsCommClose() throws NoSuchAlgorithmException {
     //when
-    comm.send();
+    comm.send(COMM_MSG, Comm.Buffer.EMPTY, comm.getData());
     //then
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message sendMessage = kernel.getPublishedMessages().get(0);
@@ -219,7 +220,7 @@ public class CommTest {
   @Test
   public void commSend_sentMessageHasCommId() throws NoSuchAlgorithmException {
     //when
-    comm.send();
+    comm.send(COMM_MSG, Comm.Buffer.EMPTY, comm.getData());
     //then
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message sendMessage = kernel.getPublishedMessages().get(0);
@@ -230,7 +231,7 @@ public class CommTest {
   public void commClose_sentMessageHasData() throws NoSuchAlgorithmException {
     initCommData(comm);
     //when
-    comm.send();
+    comm.send(COMM_MSG, Comm.Buffer.EMPTY, comm.getData());
     //then
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message sendMessage = kernel.getPublishedMessages().get(0);

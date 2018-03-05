@@ -15,14 +15,14 @@
  */
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
-import static com.twosigma.beakerx.widgets.Widget.VALUE;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.getValueForProperty;
+import static com.twosigma.beakerx.widget.Widget.VALUE;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widgets.selections.ComboBox;
+import com.twosigma.beakerx.widget.ComboBox;
 import org.junit.Test;
 
 public class ComboBoxWidgetTest extends EasyFormWidgetTest {

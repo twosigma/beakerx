@@ -34,6 +34,10 @@ public class ImportPath {
     return anImport;
   }
 
+  public boolean isStatic() {
+    return anImport.startsWith("static");
+  }
+
   @Override
   public boolean equals(Object o) {
     return reflectionEquals(this, o);
@@ -47,5 +51,9 @@ public class ImportPath {
   @Override
   public String toString() {
     return reflectionToString(this);
+  }
+
+  public String path() {
+    return isStatic() ? anImport.replace("static ", "") : anImport;
   }
 }

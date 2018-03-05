@@ -23,18 +23,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Queue;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.twosigma.beakerx.message.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Abstraction around an evaluation, for communication of the state over REST to the plugin.
  */
 public class SimpleEvaluationObject extends Observable {
-
-  private final static Logger logger = LoggerFactory.getLogger(SimpleEvaluationObject.class.getName());
 
   private Message jupyterMessage;
   private int executionCount;
@@ -43,13 +40,22 @@ public class SimpleEvaluationObject extends Observable {
   private Object payload;
   private BeakerOutputHandler stdout;
   private BeakerOutputHandler stderr;
-  private Queue<ConsoleOutput> consoleOutput = new ConcurrentLinkedQueue<ConsoleOutput>();
+  private Queue<ConsoleOutput> consoleOutput = new ConcurrentLinkedQueue<>();
   private ProgressReporting progressReporting;
   private boolean showResult = true;
+
+  public SimpleEvaluationObject(String e, BeakerOutputHandler stdout, BeakerOutputHandler stderr) {
+    expression = e;
+    status = EvaluationStatus.QUEUED;
+    this.stdout = stdout;
+    this.stderr = stderr;
+  }
 
   public SimpleEvaluationObject(String e) {
     expression = e;
     status = EvaluationStatus.QUEUED;
+    this.stdout = new SimpleOutputHandler(false);
+    this.stderr = new SimpleOutputHandler(true);
   }
 
   public boolean isShowResult() {
@@ -57,7 +63,6 @@ public class SimpleEvaluationObject extends Observable {
   }
 
   public synchronized void started() {
-    setOutputHandler();
     this.status = EvaluationStatus.RUNNING;
     setChanged();
     notifyObservers();
@@ -70,7 +75,6 @@ public class SimpleEvaluationObject extends Observable {
     setChanged();
     notifyObservers();
   }
-
 
   public synchronized void error(Object r) {
     clrOutputHandler();
@@ -115,7 +119,6 @@ public class SimpleEvaluationObject extends Observable {
   }
 
   public class SimpleOutputHandler implements BeakerOutputHandler {
-
     private boolean error;
 
     public SimpleOutputHandler(boolean error) {
@@ -123,39 +126,18 @@ public class SimpleEvaluationObject extends Observable {
     }
 
     @Override
-    public void write(int b) {
-      byte[] ba = new byte[1];
-      ba[0] = (byte) b;
-      consoleOutput.add(new ConsoleOutput(error, new String(ba, StandardCharsets.UTF_8)));
+    public void write(String b) {
+      consoleOutput.add(new ConsoleOutput(error, b));
       setChanged();
       notifyObservers();
     }
-
-    @Override
-    public void write(byte[] b) {
-      consoleOutput.add(new ConsoleOutput(error, new String(b, StandardCharsets.UTF_8)));
-      setChanged();
-      notifyObservers();
-    }
-
-    @Override
-    public void write(byte[] b, int off, int len) {
-      consoleOutput.add(new ConsoleOutput(error, new String(b, off, len, StandardCharsets.UTF_8)));
-      setChanged();
-      notifyObservers();
-    }
-
   }
 
   public synchronized BeakerOutputHandler getStdOutputHandler() {
-    if (stdout == null)
-      stdout = new SimpleOutputHandler(false);
     return stdout;
   }
 
   public synchronized BeakerOutputHandler getStdErrorHandler() {
-    if (stderr == null)
-      stderr = new SimpleOutputHandler(true);
     return stderr;
   }
 

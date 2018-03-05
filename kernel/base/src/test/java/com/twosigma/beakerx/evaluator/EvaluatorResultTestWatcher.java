@@ -20,16 +20,12 @@ import com.twosigma.beakerx.KernelSocketsTest;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.jupyter.SearchMessages;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
-import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widgets.TestWidgetUtils;
+import com.twosigma.beakerx.widget.TestWidgetUtils;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.QUEUED;
-import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.RUNNING;
 
 public class EvaluatorResultTestWatcher {
 
@@ -91,29 +87,52 @@ public class EvaluatorResultTestWatcher {
     return sentMessage;
   }
 
+  public static Optional<Message> waitForErrorMessage(KernelTest kernelTest) throws InterruptedException {
+    int count = 0;
+    Optional<Message> idleMessage = getError(kernelTest.getPublishedMessages());
+    while (!idleMessage.isPresent() && count < ATTEMPT) {
+      Thread.sleep(SLEEP_IN_MILLIS);
+      idleMessage = getError(kernelTest.getPublishedMessages());
+      count++;
+    }
+    return idleMessage;
+  }
+
   public static Optional<Message> waitForErrorMessage(KernelSocketsTest socketsTest) throws InterruptedException {
     int count = 0;
-    Optional<Message> idleMessage = getError(socketsTest);
+    Optional<Message> idleMessage = getError(socketsTest.getPublishedMessages());
     while (!idleMessage.isPresent() && count < ATTEMPT) {
       Thread.sleep(SLEEP_IN_MILLIS);
-      idleMessage = getError(socketsTest);
+      idleMessage = getError(socketsTest.getPublishedMessages());
       count++;
     }
     return idleMessage;
   }
 
-  public static Optional<Message> waitForUpdateMessage(KernelTest socketsTest) throws InterruptedException {
+
+  public static Optional<Message> waitForUpdateMessage(KernelSocketsTest socketsTest) throws InterruptedException {
     int count = 0;
-    Optional<Message> idleMessage = getUpdate(socketsTest);
+    Optional<Message> idleMessage = getUpdate(socketsTest.getPublishedMessages());
     while (!idleMessage.isPresent() && count < ATTEMPT) {
       Thread.sleep(SLEEP_IN_MILLIS);
-      idleMessage = getUpdate(socketsTest);
+      idleMessage = getUpdate(socketsTest.getPublishedMessages());
       count++;
     }
     return idleMessage;
   }
 
-  private static Optional<Message> getStreamMessage(KernelTest kernelTest) {
+  public static Optional<Message> waitForUpdateMessage(KernelTest kernelTest) throws InterruptedException {
+    int count = 0;
+    Optional<Message> idleMessage = getUpdate(kernelTest.getPublishedMessages());
+    while (!idleMessage.isPresent() && count < ATTEMPT) {
+      Thread.sleep(SLEEP_IN_MILLIS);
+      idleMessage = getUpdate(kernelTest.getPublishedMessages());
+      count++;
+    }
+    return idleMessage;
+  }
+
+  public static Optional<Message> getStreamMessage(KernelTest kernelTest) {
     List<Message> listMessagesByType = SearchMessages.getListMessagesByType(kernelTest.getPublishedMessages(), JupyterMessages.STREAM);
     return listMessagesByType.stream().findFirst();
   }
@@ -133,14 +152,14 @@ public class EvaluatorResultTestWatcher {
             filter(x -> x.type().equals(JupyterMessages.EXECUTE_RESULT)).findFirst();
   }
 
-  private static Optional<Message> getError(KernelSocketsTest socketsTest) {
-    return socketsTest.getPublishedMessages().stream().
+  private static Optional<Message> getError(List<Message> messages) {
+    return messages.stream().
             filter(x -> x.type().equals(JupyterMessages.ERROR)).findFirst();
   }
 
 
-  private static Optional<Message> getUpdate(KernelTest kernel) {
-    return kernel.getPublishedMessages().stream().
+  private static Optional<Message> getUpdate(List<Message> messages) {
+    return messages.stream().
             filter(x -> x.type().equals(JupyterMessages.COMM_MSG)).
             filter(x -> TestWidgetUtils.getData(x).get("method").equals("update")).
             findFirst();

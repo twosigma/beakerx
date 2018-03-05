@@ -15,19 +15,18 @@
  */
 package com.twosigma.beakerx.clojure.handlers;
 
+import clojure.java.api.Clojure;
+import clojure.lang.IFn;
 import com.twosigma.beakerx.BeakerImplementationInfo;
 import com.twosigma.beakerx.KernelInfoHandler;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
+
 import java.io.Serializable;
 import java.util.HashMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ClojureKernelInfoHandler extends KernelInfoHandler {
 
-  public static final String CLOJURE_VERSION = "1.7";
-  private final static Logger logger = LoggerFactory.getLogger(ClojureKernelInfoHandler.class);
-
+  public static final String CLOJURE_VERSION = getVersion();
 
   public ClojureKernelInfoHandler(KernelFunctionality kernel) {
     super(kernel);
@@ -51,4 +50,8 @@ public class ClojureKernelInfoHandler extends KernelInfoHandler {
     return content;
   }
 
+  private static String getVersion() {
+    IFn println = Clojure.var("clojure.core", "clojure-version");
+    return (String) println.invoke();
+  }
 }

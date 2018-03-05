@@ -28,6 +28,8 @@ import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.msg.MessageHolder;
 import com.twosigma.beakerx.kernel.SocketEnum;
 
+import static java.util.Collections.singletonList;
+
 public class ExecutionResultSender implements Observer {
 
   public static Logger logger = LoggerFactory.getLogger(ExecutionResultSender.class);
@@ -44,7 +46,7 @@ public class ExecutionResultSender implements Observer {
       List<MessageHolder> message = MessageCreator.createMessage(seo);
       message.forEach(job -> {
         if (SocketEnum.IOPUB_SOCKET.equals(job.getSocketType())) {
-          kernel.publish(job.getMessage());
+          kernel.publish(singletonList(job.getMessage()));
         } else if (SocketEnum.SHELL_SOCKET.equals(job.getSocketType())) {
           kernel.send(job.getMessage());
         }

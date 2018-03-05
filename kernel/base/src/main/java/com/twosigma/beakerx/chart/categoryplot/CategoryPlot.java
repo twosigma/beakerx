@@ -23,8 +23,8 @@ import com.twosigma.beakerx.chart.xychart.plotitem.PlotOrientationType;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.twosigma.beakerx.widgets.chart.BeakerxPlot.MODEL_NAME_VALUE;
-import static com.twosigma.beakerx.widgets.chart.BeakerxPlot.VIEW_NAME_VALUE;
+import static com.twosigma.beakerx.widget.BeakerxPlot.MODEL_NAME_VALUE;
+import static com.twosigma.beakerx.widget.BeakerxPlot.VIEW_NAME_VALUE;
 
 public class CategoryPlot extends AbstractChart {
   private final List<CategoryGraphics> categoryGraphics        = new ArrayList<>();

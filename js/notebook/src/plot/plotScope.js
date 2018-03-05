@@ -423,7 +423,6 @@ define([
       this.showUnorderedHint = false;
       console.warn("unordered area/line detected, truncation disabled");
     }
-
   };
 
   PlotScope.prototype.onKeyAction = function(item, onKeyEvent) {
@@ -1525,7 +1524,17 @@ define([
       "width" : self.layout.rightLayoutMargin,
       "height" : H
     });
+  };
 
+  PlotScope.prototype.updateClipPath = function() {
+    var W = plotUtils.safeWidth(this.jqsvg);
+    var H = plotUtils.safeHeight(this.jqsvg);
+    
+    this.svg.select('#clipPath_' + this.wrapperId + ' rect')
+      .attr("x", this.layout.leftLayoutMargin)
+      .attr("y", this.layout.topLayoutMargin)
+      .attr("height", H - this.layout.topLayoutMargin - this.layout.bottomLayoutMargin)
+      .attr("width", W - this.layout.leftLayoutMargin - this.layout.rightLayoutMargin);
   };
 
   PlotScope.prototype.renderLocateBox = function() {
@@ -2362,6 +2371,7 @@ define([
     self.renderGridlineLabels();
     self.renderGridlineTicks();
     self.renderCoverBox(); // redraw
+    self.updateClipPath(); // redraw
     plotUtils.plotLabels(self); // redraw
     plotUtils.plotTicks(self); // redraw
 
@@ -2696,9 +2706,12 @@ define([
                '<div id="plotLegendContainer" class="plot-plotlegendcontainer" oncontextmenu="return false;">'+
                '<div class="plot-plotcontainer" oncontextmenu="return false;">'+
                '<svg id="svgg">'+
-               '<defs> <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%"> <stop offset="0.0%" stop-color="#2c7bb6"></stop> <stop offset="12.5%" stop-color="#00a6ca"></stop> <stop offset="25.0%" stop-color="#00ccbc"></stop> <stop offset="37.5%" stop-color="#90eb9d"></stop> <stop offset="50.0%" stop-color="#ffff8c"></stop> <stop offset="62.5%" stop-color="#f9d057"></stop> <stop offset="75.0%" stop-color="#f29e2e"></stop> <stop offset="87.5%" stop-color="#e76818"></stop> <stop offset="100.0%" stop-color="#d7191c"></stop> </linearGradient> <marker id="Triangle" class="text-line-style" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="6" markerHeight="6" orient="auto"> <path d="M 0 0 L 10 5 L 0 10 z"></path> </marker> <filter id="svgfilter"> <feGaussianBlur result="blurOut" in="SourceGraphic" stdDeviation="1"></feGaussianBlur> <feBlend in="SourceGraphic" in2="blurOut" mode="normal"></feBlend> </filter> <filter id="svgAreaFilter"> <feMorphology operator="dilate" result="blurOut" in="SourceGraphic" radius="2"></feMorphology> <feBlend in="SourceGraphic" in2="blurOut" mode="normal"></feBlend> </filter> </defs>' +
+               '<defs>' +
+                  '<linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%"> <stop offset="0.0%" stop-color="#2c7bb6"></stop> <stop offset="12.5%" stop-color="#00a6ca"></stop> <stop offset="25.0%" stop-color="#00ccbc"></stop> <stop offset="37.5%" stop-color="#90eb9d"></stop> <stop offset="50.0%" stop-color="#ffff8c"></stop> <stop offset="62.5%" stop-color="#f9d057"></stop> <stop offset="75.0%" stop-color="#f29e2e"></stop> <stop offset="87.5%" stop-color="#e76818"></stop> <stop offset="100.0%" stop-color="#d7191c"></stop> </linearGradient> <marker id="Triangle" class="text-line-style" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="6" markerHeight="6" orient="auto"> <path d="M 0 0 L 10 5 L 0 10 z"></path> </marker> <filter id="svgfilter"> <feGaussianBlur result="blurOut" in="SourceGraphic" stdDeviation="1"></feGaussianBlur> <feBlend in="SourceGraphic" in2="blurOut" mode="normal"></feBlend> </filter> <filter id="svgAreaFilter"> <feMorphology operator="dilate" result="blurOut" in="SourceGraphic" radius="2"></feMorphology> <feBlend in="SourceGraphic" in2="blurOut" mode="normal"></feBlend> </filter>' +
+                  '<clipPath id="clipPath_' + this.wrapperId + '"><rect x="0" y="0" width="100%" height="100%" /></clipPath>'+
+               '</defs>' +
                '<g id="gridg"></g>'+
-               '<g id="maing"></g>'+
+               '<g id="maing" clip-path="url(#clipPath_' + this.wrapperId + ')"></g>'+
                '<g id="labelg"></g>'+
                '</svg>'+
                '</div>'+

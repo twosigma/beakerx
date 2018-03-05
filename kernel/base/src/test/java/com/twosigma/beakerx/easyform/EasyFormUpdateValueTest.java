@@ -17,8 +17,7 @@ package com.twosigma.beakerx.easyform;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
-import com.twosigma.beakerx.widgets.ValueWidget;
-import com.twosigma.beakerx.widgets.strings.Text;
+import com.twosigma.beakerx.widget.ValueWidget;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,6 +45,18 @@ public class EasyFormUpdateValueTest {
     String label = "text1";
     EasyForm easyForm = new EasyForm("EasyForm with text field");
     easyForm.addTextField(label);
+    //when
+    easyForm.getWidget(label).doUpdateValueWithCallback("new Value");
+    //then
+    assertThat(((ValueWidget) easyForm.getWidget(label)).getValue()).isEqualTo("new Value");
+  }
+
+  @Test
+  public void shouldUpdatePasswordField() throws Exception {
+    //given
+    String label = "pass1";
+    EasyForm easyForm = new EasyForm("EasyForm with password field");
+    easyForm.addPasswordField(label);
     //when
     easyForm.getWidget(label).doUpdateValueWithCallback("new Value");
     //then

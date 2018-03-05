@@ -21,15 +21,9 @@ import com.twosigma.beakerx.chart.Filter;
 import com.twosigma.beakerx.chart.Graphics;
 import com.twosigma.beakerx.chart.ListColorConverter;
 import com.twosigma.beakerx.util.DateUtil;
-import com.twosigma.beakerx.widgets.RunWidgetClosure;
+import com.twosigma.beakerx.widget.RunWidgetClosure;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 

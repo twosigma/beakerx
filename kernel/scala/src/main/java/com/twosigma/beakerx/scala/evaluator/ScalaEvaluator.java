@@ -41,21 +41,17 @@ import com.twosigma.beakerx.scala.serializers.ScalaMapSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaPrimitiveTypeListOfListSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaPrimitiveTypeMapSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaTableDeSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ScalaEvaluator extends BaseEvaluator {
 
   private final static Logger logger = LoggerFactory.getLogger(ScalaEvaluator.class.getName());
   private BeakerxObjectFactory beakerxObjectFactory;
-  private ExecutorService executorService;
   private final Provider<BeakerObjectConverter> objectSerializerProvider;
   private static boolean autoTranslationSetup = false;
   private BeakerxUrlClassLoader classLoader;
@@ -73,19 +69,11 @@ public class ScalaEvaluator extends BaseEvaluator {
     this.classLoader = newClassLoader();
     this.shell = createNewEvaluator();
     this.acshell = newAutoCompleteEvaluator();
-    this.executorService = Executors.newSingleThreadExecutor();
   }
 
   @Override
   public TryResult evaluate(SimpleEvaluationObject seo, String code) {
-    Future<TryResult> submit = executorService.submit(new ScalaWorkerThread(this, new JobDescriptor(code, seo)));
-    TryResult either = null;
-    try {
-      either = submit.get();
-    } catch (Exception e) {
-      either = TryResult.createError(e.getLocalizedMessage());
-    }
-    return either;
+    return evaluate(seo, new ScalaWorkerThread(this, new JobDescriptor(code, seo)));
   }
 
   @Override

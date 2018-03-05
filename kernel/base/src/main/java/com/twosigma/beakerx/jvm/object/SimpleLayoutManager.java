@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.jvm.object;
 
-import com.twosigma.beakerx.widgets.Widget;
+import com.twosigma.beakerx.widget.Widget;
 
 public class SimpleLayoutManager extends OutputContainerLayoutManager {
 

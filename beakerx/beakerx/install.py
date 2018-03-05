@@ -50,7 +50,7 @@ def _classpath_for(kernel):
 def _uninstall_nbextension():
     subprocess.check_call(["jupyter", "nbextension", "disable", "beakerx", "--py", "--sys-prefix"])
     subprocess.check_call(["jupyter", "nbextension", "uninstall", "beakerx", "--py", "--sys-prefix"])
-
+    subprocess.check_call(["jupyter", "serverextension", "disable", "beakerx", "--py", "--sys-prefix"])
 
 def _install_nbextension():
     if sys.platform == 'win32':
@@ -116,17 +116,19 @@ def _uninstall_kernels():
         uninstall_cmd = [
             'jupyter', 'kernelspec', 'remove', kernel, '-y', '-f'
         ]
-        subprocess.check_call(uninstall_cmd)
+        try:
+            subprocess.check_call(uninstall_cmd)
+        except subprocess.CalledProcessError:
+            pass #uninstal_cmd prints the appropriate message
 
 
 def _install_magics():
     log.info("installing groovy magic for python...")
     dir_path = os.path.join(sys.prefix, 'etc', 'ipython')
     pathlib.Path(dir_path).mkdir(parents=True, exist_ok=True)
-    file = open(os.path.join(dir_path, 'ipython_config.py'), 'w+')
-    file.write("c = get_config()\n")
-    file.write("c.InteractiveShellApp.extensions = ['beakerx.groovy_magic']")
-    file.close()
+    with open(os.path.join(dir_path, 'ipython_config.py'), 'w+') as ipython_config:
+        ipython_config.write("c = get_config()\n")
+        ipython_config.write("c.InteractiveShellApp.extensions = ['beakerx_magics.groovy_magic']\n")
 
 def _set_conf_privileges():
     config_path = os.path.join(paths.jupyter_config_dir(), 'beakerx.json')
@@ -154,7 +156,7 @@ def _install_kernelspec_manager(prefix, disable=False):
     nb_app = cfg.setdefault("KernelSpecManager", {})
     if disable and nb_app.get(KSMC, None) == CKSM:
         nb_app.pop(KSMC)
-    else:
+    elif not disable:
         nb_app.update({KSMC: CKSM})
 
     log.debug("Writing config in {}...".format(path))
@@ -181,9 +183,10 @@ def make_parser():
     return parser
 
 
-def _disable_beakerx():
+def _disable_beakerx(args):
     _uninstall_nbextension()
     _uninstall_kernels()
+    _install_kernelspec_manager(args.prefix, disable=True)
 
 
 def _install_beakerx(args):
@@ -199,8 +202,8 @@ def _install_beakerx(args):
 def install(args):
     _install_beakerx(args)
 
-def uninstall():
-    _disable_beakerx()
+def uninstall(args):
+    _disable_beakerx(args)
 
 
 if __name__ == "__main__":

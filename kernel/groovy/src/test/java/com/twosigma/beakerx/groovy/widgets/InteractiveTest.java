@@ -18,7 +18,7 @@ package com.twosigma.beakerx.groovy.widgets;
 
 import static com.twosigma.beakerx.kernel.comm.Comm.COMM_ID;
 import static com.twosigma.beakerx.kernel.comm.Comm.DATA;
-import static com.twosigma.beakerx.widgets.strings.TextTest.verifyTextField;
+import static com.twosigma.beakerx.widget.strings.TextTest.verifyTextField;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
@@ -30,9 +30,9 @@ import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widgets.DOMWidget;
-import com.twosigma.beakerx.widgets.Widget;
-import com.twosigma.beakerx.widgets.strings.Text;
+import com.twosigma.beakerx.widget.DOMWidget;
+import com.twosigma.beakerx.widget.Widget;
+import com.twosigma.beakerx.widget.Text;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

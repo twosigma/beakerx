@@ -20,7 +20,7 @@ from .bkr2ipynb import main
 
 def install_subparser(subparser):
     install_parser = subparser.add_parser('install', help='installs BeakerX extensions')
-    install_parser.set_defaults(func = install)
+    install_parser.set_defaults(func=install)
     install_parser.add_argument("--prefix",
                                 help="location of the environment to install into",
                                 default=sys.prefix)
@@ -28,7 +28,10 @@ def install_subparser(subparser):
 
 def uninstall_subparser(subparser):
     uninstall_parser = subparser.add_parser('uninstall', help='uninstalls BeakerX extensions')
-    uninstall_parser.set_defaults(func=lambda args : uninstall())
+    uninstall_parser.set_defaults(func=uninstall)
+    uninstall_parser.add_argument("--prefix",
+                                  help="location of the environment to uninstall from",
+                                  default=sys.prefix)
     return subparser
 
 def bkr2ipynb_subparser(subparser):

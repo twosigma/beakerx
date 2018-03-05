@@ -93,7 +93,6 @@ table.dataTable {
       position: static;
       z-index: 1;
     }
-    font-family: "Lato", Helvetica, sans-serif;
   }
   thead {
     background-color: #E6E6E6;
@@ -119,7 +118,7 @@ table.dataTable {
     > .selected,
     > .ui-selected,
     > .ui-selecting {
-        background-color: #B0BED9;
+      background-color: #B0BED9;
 
       &[class*="sorting_"] {
         background-color: #bec9e0 !important;
@@ -391,7 +390,6 @@ $fix-col-separator-width: 3px;
 .bko-table {
   left: 0;
   position: relative;
-  font-family: "Lato", Helvetica, sans-serif;
 }
 
 .bko-menu {
@@ -658,5 +656,17 @@ $fix-col-separator-width: 3px;
 
   .fa {
     margin-right: 6px;
+  }
+}
+
+.improveFonts {
+  .bko-table {
+    font-family: "Lato", Helvetica, sans-serif;
+  }
+
+  table.dataTable {
+    thead th, tbody td {
+      font-family: "Lato", Helvetica, sans-serif;
+    }
   }
 }

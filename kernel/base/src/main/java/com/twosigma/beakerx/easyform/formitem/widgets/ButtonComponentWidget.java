@@ -17,7 +17,7 @@ package com.twosigma.beakerx.easyform.formitem.widgets;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
 import com.twosigma.beakerx.easyform.formitem.EasyFormListener;
-import com.twosigma.beakerx.widgets.Button;
+import com.twosigma.beakerx.widget.Button;
 import com.twosigma.beakerx.message.Message;
 
 import java.util.HashMap;

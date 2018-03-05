@@ -53,9 +53,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class SQLEvaluator extends BaseEvaluator {
 
@@ -68,7 +66,6 @@ public class SQLEvaluator extends BaseEvaluator {
   private SQLAutocomplete sac;
   private final QueryExecutor queryExecutor;
   private JDBCClient jdbcClient;
-  private ExecutorService executorService;
   private DynamicClassLoaderSimple loader;
 
   public SQLEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters) {
@@ -94,14 +91,7 @@ public class SQLEvaluator extends BaseEvaluator {
 
   @Override
   public TryResult evaluate(SimpleEvaluationObject seo, String code) {
-    Future<TryResult> submit = executorService.submit(new SQLWorkerThread(this, new JobDescriptor(code, seo)));
-    TryResult either = null;
-    try {
-      either = submit.get();
-    } catch (Exception e) {
-      either = TryResult.createError(e.getLocalizedMessage());
-    }
-    return either;
+    return evaluate(seo, new SQLWorkerThread(this, new JobDescriptor(code, seo)));
   }
 
   @Override

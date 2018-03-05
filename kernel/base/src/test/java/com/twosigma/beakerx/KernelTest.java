@@ -32,11 +32,13 @@ import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.kernel.Repos;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandWhichThrowsException;
 import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver;
 import com.twosigma.beakerx.kernel.magic.command.functionality.AddImportMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.AddStaticImportMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.BashMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClassPathAddMvnCellMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddDynamicMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddJarMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddRepoMagicCommand;
@@ -64,6 +66,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +75,6 @@ import java.util.Set;
 
 import static com.twosigma.beakerx.kernel.magic.command.ClasspathAddMvnDepsMagicCommandTest.TEST_MVN_CACHE;
 import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.synchronizedList;
 
 public class KernelTest implements KernelFunctionality {
@@ -133,6 +135,8 @@ public class KernelTest implements KernelFunctionality {
                     new ClasspathAddMvnMagicCommand(mavenResolverParam, this)),
             new MagicCommandType(ClassPathAddMvnCellMagicCommand.CLASSPATH_ADD_MVN_CELL, "<group name version>",
                     new ClassPathAddMvnCellMagicCommand(mavenResolverParam, this)),
+            addDynamic(this),
+            addMagicCommandWhichThrowsException(),
             new MagicCommandType(ClasspathRemoveMagicCommand.CLASSPATH_REMOVE, "<jar path>", new ClasspathRemoveMagicCommand(this)),
             new MagicCommandType(ClasspathShowMagicCommand.CLASSPATH_SHOW, "", new ClasspathShowMagicCommand(this)),
             new MagicCommandType(AddStaticImportMagicCommand.ADD_STATIC_IMPORT, "<classpath>", new AddStaticImportMagicCommand(this)),
@@ -146,9 +150,17 @@ public class KernelTest implements KernelFunctionality {
     ));
   }
 
+  private static MagicCommandType addDynamic(KernelFunctionality kernel) {
+    return new MagicCommandType(ClasspathAddDynamicMagicCommand.CLASSPATH_ADD_DYNAMIC, "", new ClasspathAddDynamicMagicCommand(kernel));
+  }
+
+  private static MagicCommandType addMagicCommandWhichThrowsException() {
+    return new MagicCommandType(MagicCommandWhichThrowsException.MAGIC_COMMAND_WHICH_THROWS_EXCEPTION, "", new MagicCommandWhichThrowsException());
+  }
+
   @Override
-  public void publish(Message message) {
-    this.publishedMessages.add(message);
+  public void publish(List<Message> message) {
+    this.publishedMessages.addAll(message);
   }
 
   @Override
@@ -334,13 +346,13 @@ public class KernelTest implements KernelFunctionality {
   @Override
   public void sendBusyMessage(Message message) {
     Message busyMessage = MessageCreator.createBusyMessage(message);
-    publish(busyMessage);
+    publish(Collections.singletonList(busyMessage));
   }
 
   @Override
   public void sendIdleMessage(Message message) {
     Message idleMessage = MessageCreator.createIdleMessage(message);
-    publish(idleMessage);
+    publish(Collections.singletonList(idleMessage));
   }
 
   public void exit() {

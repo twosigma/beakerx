@@ -36,20 +36,17 @@ import org.jetbrains.kotlin.cli.jvm.repl.ReplInterpreter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
+import static com.twosigma.beakerx.kotlin.evaluator.ReplWithClassLoaderFactory.createParentClassLoader;
 import static com.twosigma.beakerx.kotlin.evaluator.ReplWithClassLoaderFactory.createReplWithKotlinParentClassLoader;
 import static com.twosigma.beakerx.kotlin.evaluator.ReplWithClassLoaderFactory.createReplWithReplClassLoader;
 import static com.twosigma.beakerx.kotlin.evaluator.ReplWithClassLoaderFactory.getImportString;
-import static com.twosigma.beakerx.kotlin.evaluator.ReplWithClassLoaderFactory.createParentClassLoader;
 import static java.util.Collections.singletonList;
 
 public class KotlinEvaluator extends BaseEvaluator {
 
   private ClasspathScanner cps;
-  private ExecutorService executorService;
   private ReplInterpreter repl;
   private ReplClassLoader loader = null;
   private BeakerxUrlClassLoader kotlinClassLoader;
@@ -62,7 +59,6 @@ public class KotlinEvaluator extends BaseEvaluator {
     super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters);
     cps = new ClasspathScanner();
     createRepl();
-    executorService = Executors.newSingleThreadExecutor();
   }
 
   @Override
@@ -106,14 +102,7 @@ public class KotlinEvaluator extends BaseEvaluator {
 
   @Override
   public TryResult evaluate(SimpleEvaluationObject seo, String code) {
-    Future<TryResult> submit = executorService.submit(new KotlinWorkerThread(this, new JobDescriptor(code, seo)));
-    TryResult either = null;
-    try {
-      either = submit.get();
-    } catch (Exception e) {
-      either = TryResult.createError(e.getLocalizedMessage());
-    }
-    return either;
+    return evaluate(seo, new KotlinWorkerThread(this, new JobDescriptor(code, seo)));
   }
 
   @Override

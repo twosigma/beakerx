@@ -16,6 +16,8 @@
 package com.twosigma.beakerx.kernel;
 
 import static com.twosigma.beakerx.kernel.KernelSignalHandler.addSigIntHandler;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 import com.twosigma.beakerx.BeakerxDefaultDisplayers;
 import com.twosigma.beakerx.DisplayerDataMapper;
@@ -151,7 +153,7 @@ public abstract class Kernel implements KernelFunctionality {
     }
   }
 
-  public synchronized void publish(Message message) {
+  public synchronized void publish(List<Message> message) {
     this.kernelSockets.publish(message);
   }
 
@@ -194,12 +196,12 @@ public abstract class Kernel implements KernelFunctionality {
 
   @Override
   public void sendBusyMessage(Message message) {
-    publish(MessageCreator.createBusyMessage(message));
+    publish(singletonList(MessageCreator.createBusyMessage(message)));
   }
 
   @Override
   public void sendIdleMessage(Message message) {
-    publish(MessageCreator.createIdleMessage(message));
+    publish(singletonList(MessageCreator.createIdleMessage(message)));
   }
 
   @Override

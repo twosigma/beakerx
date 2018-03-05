@@ -17,7 +17,7 @@
 package com.twosigma.beakerx.scala.easyform
 
 import com.twosigma.beakerx.easyform.EasyFormComponent
-import com.twosigma.beakerx.widgets.DOMWidget
+import com.twosigma.beakerx.widget.DOMWidget
 
 import scala.collection.JavaConverters._
 

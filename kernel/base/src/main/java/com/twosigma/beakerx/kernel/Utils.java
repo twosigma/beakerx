@@ -31,6 +31,10 @@ public class Utils {
   public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mmZ";
   public static final String EMPTY_STRING = "";
 
+  private static UUIDStrategy UUID_STRATEGY_DEFAULT = () -> UUID.randomUUID().toString();
+
+  private static UUIDStrategy commUUIDStrategy = UUID_STRATEGY_DEFAULT;
+
   public static String timestamp() {
     // SimpleDateFormat is not thread-safe so we need to create a new one for
     // each
@@ -42,6 +46,10 @@ public class Utils {
 
   public static String uuid() {
     return UUID.randomUUID().toString();
+  }
+
+  public static String commUUID() {
+    return commUUIDStrategy.get();
   }
 
   public static String getUsString(String[] input) {
@@ -60,5 +68,24 @@ public class Utils {
     }
     return getUsString(input.toArray(new String[input.size()]));
   }
+
+  private static int fixedUUIDCounter;
+
+  public static synchronized void setFixedCommUUID(String uuid) {
+    fixedUUIDCounter = 0;
+    commUUIDStrategy = () -> {
+      fixedUUIDCounter++;
+      return uuid + fixedUUIDCounter;
+    };
+  }
+
+  public static synchronized void setDefaultCommUUID() {
+    commUUIDStrategy = UUID_STRATEGY_DEFAULT;
+  }
+
+  interface UUIDStrategy {
+    String get();
+  }
+
 
 }

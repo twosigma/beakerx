@@ -64,12 +64,11 @@ git clone https://github.com/twosigma/beakerx-feedstock.git
 cd beakerx-feedstock
 git remote add upstream https://github.com/conda-forge/beakerx-feedstock.git
 git fetch upstream
-git checkout master
-git reset --hard upstream/master  
+git reset --hard upstream/master
 git push origin master --force
 ```
 - Update the `version` and `sha256` variable values in `recipe/meta.yaml`.
-  Return  build number to 0.
+  Return  build number to 1.
 
 Then test it locally:
 
@@ -95,11 +94,11 @@ conda install --use-local beakerx
 Publish on npmjs
 ----------------
 
-To update the embedded version of our widget library:
-
-- Do a full build.
-- Run `(cd js/notebook; npm publish)`
-- Run `(cd js/lab; npm publish)`
+To update the embedded version of our widget library, and our Lab extension:
+```
+(cd js/notebook; npm publish)
+(cd js/lab; npm publish)
+```
 
 Release to Docker Hub
 ---------------------

@@ -34,4 +34,5 @@ RUN apt-get update && \
 	apt-get update && apt-get install yarn -y && \
 	apt-get clean && \
 	conda create -y -n beakerx 'python>=3' nodejs pandas openjdk maven && \
+    conda config --env --add pinned_packages 'openjdk >8.0.121' && \
 	conda install -y -n beakerx -c conda-forge ipywidgets jupyterhub jupyterlab pyzmq pytest

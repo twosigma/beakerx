@@ -48,6 +48,10 @@ export default class GistPublishModal {
         return;
       }
 
+      if (result.button.label === "CANCEL") {
+        return;
+      }
+
       submitCallback(result.value);
       this.storePersonalAccessToken(result.value);
     };

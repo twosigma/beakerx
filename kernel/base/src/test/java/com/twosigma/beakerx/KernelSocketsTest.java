@@ -30,8 +30,8 @@ public class KernelSocketsTest extends KernelSockets {
   private volatile List<Message> sentMessages = synchronizedList(new ArrayList<>());
 
   @Override
-  public void publish(Message message) {
-    publishedMessages.add(message);
+  public void publish(List<Message> message) {
+    publishedMessages.addAll(message);
   }
 
   @Override

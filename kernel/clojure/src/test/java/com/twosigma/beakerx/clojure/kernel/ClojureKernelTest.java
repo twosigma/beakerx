@@ -23,8 +23,8 @@ import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widgets.TestWidgetUtils;
-import com.twosigma.beakerx.widgets.chart.BeakerxPlot;
+import com.twosigma.beakerx.widget.TestWidgetUtils;
+import com.twosigma.beakerx.widget.BeakerxPlot;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
@@ -41,7 +41,7 @@ import static com.twosigma.beakerx.evaluator.EvaluatorTest.KERNEL_PARAMETERS;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getCacheFolderFactory;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
-import static com.twosigma.beakerx.widgets.Widget.MODEL_NAME;
+import static com.twosigma.beakerx.widget.Widget.MODEL_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClojureKernelTest extends KernelExecutionTest {

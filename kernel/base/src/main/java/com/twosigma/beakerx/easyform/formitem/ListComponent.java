@@ -17,14 +17,9 @@
 package com.twosigma.beakerx.easyform.formitem;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
-import com.twosigma.beakerx.widgets.selections.SelectionWidget;
+import com.twosigma.beakerx.widget.SelectionWidget;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class ListComponent<T extends SelectionWidget<?>> extends EasyFormComponent<T> {
 

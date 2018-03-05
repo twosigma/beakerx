@@ -21,11 +21,10 @@ import com.twosigma.beakerx.chart.ChartToJson;
 import com.twosigma.beakerx.chart.Color;
 import com.twosigma.beakerx.chart.ListColorConverter;
 
-import java.util.Collection;
 import java.util.List;
 
-import static com.twosigma.beakerx.widgets.chart.BeakerxPlot.MODEL_NAME_VALUE;
-import static com.twosigma.beakerx.widgets.chart.BeakerxPlot.VIEW_NAME_VALUE;
+import static com.twosigma.beakerx.widget.BeakerxPlot.MODEL_NAME_VALUE;
+import static com.twosigma.beakerx.widget.BeakerxPlot.VIEW_NAME_VALUE;
 
 public class Histogram extends AbstractChart {
 

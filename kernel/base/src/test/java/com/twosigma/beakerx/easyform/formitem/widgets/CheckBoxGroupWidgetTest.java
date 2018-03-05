@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
-import com.twosigma.beakerx.widgets.strings.Label;
+import com.twosigma.beakerx.widget.Label;
 import com.twosigma.beakerx.message.Message;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -24,7 +24,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.getValueForProperty;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 

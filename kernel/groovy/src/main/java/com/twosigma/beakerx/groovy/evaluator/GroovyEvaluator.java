@@ -36,9 +36,7 @@ import groovy.lang.GroovyClassLoader;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
 import java.io.File;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import static com.twosigma.beakerx.groovy.evaluator.EnvVariablesFilter.envVariablesFilter;
 import static com.twosigma.beakerx.groovy.evaluator.GroovyClassLoaderFactory.addImportPathToImportCustomizer;
@@ -52,7 +50,6 @@ public class GroovyEvaluator extends BaseEvaluator {
 
   private GroovyClasspathScanner cps;
   private GroovyAutocomplete gac;
-  private ExecutorService executorService;
   private GroovyClassLoader groovyClassLoader;
   private Binding scriptBinding = null;
   private ImportCustomizer icz;
@@ -68,19 +65,11 @@ public class GroovyEvaluator extends BaseEvaluator {
     gac = createGroovyAutocomplete(cps);
     outDir = envVariablesFilter(outDir, System.getenv());
     reloadClassloader();
-    executorService = Executors.newSingleThreadExecutor();
   }
 
   @Override
   public TryResult evaluate(SimpleEvaluationObject seo, String code) {
-    Future<TryResult> submit = executorService.submit(new GroovyWorkerThread(this, new JobDescriptor(code, seo)));
-    TryResult either;
-    try {
-      either = submit.get();
-    } catch (Exception e) {
-      either = TryResult.createError(e.getLocalizedMessage());
-    }
-    return either;
+    return evaluate(seo, new GroovyWorkerThread(this, new JobDescriptor(code, seo)));
   }
 
   @Override

@@ -93,7 +93,7 @@ public class GroovyClassLoaderFactory {
     }
   }
 
-  protected static BeakerxUrlClassLoader newParentClassLoader(Classpath classpath) {
+  public static BeakerxUrlClassLoader newParentClassLoader(Classpath classpath) {
     BeakerxUrlClassLoader loader = new BeakerxUrlClassLoader(ClassLoader.getSystemClassLoader());
     loader.addPathToJars(classpath.getPaths());
     return loader;

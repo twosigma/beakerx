@@ -44,6 +44,13 @@ class EasyForm(BeakerxBox):
         self.components[text.description] = text
         return text
 
+    def addPasswordField(self, *args, **kwargs):
+        password = BeakerxPassword(description=self.getDescription(args, kwargs))
+        password.size = getValue(kwargs, 'width', -1)
+        self.children += (password,)
+        self.components[password.description] = password
+        return password
+
     def addTextArea(self, *args, **kwargs):
         textarea = BeakerxTextArea(
             description=self.getDescription(args, kwargs))
@@ -142,6 +149,12 @@ class EasyForm(BeakerxBox):
         self.components[radio_buttons.description] = radio_buttons
         return radio_buttons
 
+    def addWidget(self, name, widget):
+        EasyFormComponent.add_interface_to(widget)
+        self.children += (widget,)
+        self.components[name] = widget
+        return widget
+
     def __iter__(self):
         return iter(self.components)
 
@@ -158,7 +171,7 @@ class EasyForm(BeakerxBox):
             return ""
 
     def put(self, key, value):
-        self.components[key].value = value
+        self.components[key].set_value(value)
 
     @staticmethod
     def getDescription(args, kwargs):

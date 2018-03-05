@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.kernel.magic.command.functionality;
 
+import com.twosigma.beakerx.kernel.AddImportStatus;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
@@ -23,6 +24,7 @@ import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 
 import static com.twosigma.beakerx.kernel.magic.command.functionality.AddImportMagicCommand.IMPORT;
+import static com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem.Status.ERROR;
 
 public class AddStaticImportMagicCommand implements MagicCommandFunctionality {
 
@@ -52,7 +54,10 @@ public class AddStaticImportMagicCommand implements MagicCommandFunctionality {
     if (parts.length != 3) {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, WRONG_FORMAT_MSG);
     }
-    this.kernel.addImport(new ImportPath(parts[1] + " " + parts[2]));
+    AddImportStatus status = this.kernel.addImport(new ImportPath(parts[1] + " " + parts[2]));
+    if (AddImportStatus.ERROR.equals(status)) {
+      return new MagicCommandOutput(ERROR, "Could not import static " + parts[2]);
+    }
     return new MagicCommandOutput(MagicCommandOutput.Status.OK);
   }
 }

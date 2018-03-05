@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.twosigma.beakerx.widgets.chart.BeakerxPlot.MODEL_NAME_VALUE;
-import static com.twosigma.beakerx.widgets.chart.BeakerxPlot.VIEW_NAME_VALUE;
+import static com.twosigma.beakerx.widget.BeakerxPlot.MODEL_NAME_VALUE;
+import static com.twosigma.beakerx.widget.BeakerxPlot.VIEW_NAME_VALUE;
 
 /**
  * CombinedPlot

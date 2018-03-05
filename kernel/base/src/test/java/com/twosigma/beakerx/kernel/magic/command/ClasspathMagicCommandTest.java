@@ -37,6 +37,7 @@ public class ClasspathMagicCommandTest {
   private static final String SRC_TEST_RESOURCES = "./src/test/resources/";
   public static final String FOO_JAR = "foo.jar";
   private static final String CLASSPATH_TO_JAR = SRC_TEST_RESOURCES + "dirWithTwoJars/" + FOO_JAR;
+
   private KernelTest kernel;
   private EvaluatorTest evaluator;
 
@@ -131,4 +132,14 @@ public class ClasspathMagicCommandTest {
     String text = (String) std.get(0).getContent().get("text");
     assertThat(text).contains("Added jar: [" + FOO_JAR + "]\n");
   }
+
+  @Test
+  public void allowSpacesInJarPath() {
+    Code code = CodeFactory.create("%classpath add jar \"./src/test/resources/jars/ with space.jar\"", new Message(), kernel);
+    code.execute(kernel, 1);
+    List<Message> std = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());
+    String text = (String) std.get(0).getContent().get("text");
+    assertThat(text).contains("Added jar: [ with space.jar]\n");
+  }
+
 }

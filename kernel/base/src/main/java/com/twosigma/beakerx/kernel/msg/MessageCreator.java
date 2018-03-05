@@ -40,7 +40,7 @@ import com.twosigma.beakerx.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.twosigma.beakerx.SerializeToString;
+import com.twosigma.beakerx.MIMEContainerFactory;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus;
 import com.twosigma.beakerx.kernel.SocketEnum;
 
@@ -241,7 +241,7 @@ public class MessageCreator {
     }
     map4.put("ename", ename);
     map4.put("evalue", evalue);
-    map4.put("traceback", markRed(errorMessage));
+    map4.put("traceback", TracebackPrinter.print(errorMessage));
     map4.put(ERROR_MESSAGE, seo.getPayload().toString());
     reply.setContent(map4);
     return new MessageHolder(SocketEnum.IOPUB_SOCKET, reply);
@@ -263,21 +263,9 @@ public class MessageCreator {
     return ret.stream().toArray(String[]::new);
   }
 
-  private static String[] markRed(String[] input) {
-    List<String> ret = new ArrayList<>();
-    if (input != null) {
-      for (String line : input) {
-        if (line != null) {
-          ret.add("\u001b[0;31m" + line + "");
-        }
-      }
-    }
-    return ret.stream().toArray(String[]::new);
-  }
-
   private static MessageHolder createFinishResult(SimpleEvaluationObject seo, Message message) {
     MessageHolder ret = null;
-    List<MIMEContainer> mimes = SerializeToString.doit(seo.getPayload());
+    List<MIMEContainer> mimes = MIMEContainerFactory.createMIMEContainers(seo.getPayload());
     if (!mimes.contains(MIMEContainer.HIDDEN)) {
       ret = new MessageHolder(SocketEnum.IOPUB_SOCKET,
               buildMessage(message, mimes, outputdataResult(seo.getOutputdata()), seo.getExecutionCount()));

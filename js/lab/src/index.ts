@@ -14,15 +14,15 @@
  *  limitations under the License.
  */
 
-declare function require(moduleName: string): any;
-
+import './global.env';
 import { IJupyterWidgetRegistry } from '@jupyter-widgets/base';
-import BeakerxExtension from './plugin';
 import { JupyterLab } from '@jupyterlab/application';
+import BeakerxExtension from './plugin';
+import BeakerxTreeJupyterLabPlugin from "./tree";
 
 const beakerx = require('../lib/index.js');
 
-export default {
+const beakerx_ext = {
   id: 'beakerx',
   requires: [IJupyterWidgetRegistry],
   activate: (app: JupyterLab, widgets: IJupyterWidgetRegistry ) => {
@@ -36,3 +36,10 @@ export default {
   },
   autoStart: true
 };
+
+const tree_ext = BeakerxTreeJupyterLabPlugin;
+
+export default [
+  beakerx_ext,
+  tree_ext
+];

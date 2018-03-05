@@ -15,12 +15,14 @@
  */
 package com.twosigma.beakerx.kernel;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.ClassPath;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,11 +32,11 @@ import static com.twosigma.beakerx.kernel.AddImportStatus.EXISTS;
 
 public class Imports {
 
-  private List<ImportPath> imports = new ArrayList<>();
+  private List<ImportPath> imports;
   private List<String> importsAsStrings = null;
 
   public Imports(List<ImportPath> importPaths) {
-    this.imports = Preconditions.checkNotNull(importPaths);
+    this.imports = checkNotNull(importPaths);
   }
 
   public List<ImportPath> getImportPaths() {
@@ -92,12 +94,70 @@ public class Imports {
   }
 
   private boolean isImportPathValid(ImportPath anImport, ClassLoader classLoader) {
-    String importToCheck = anImport.asString();
+    if (anImport.isStatic()) {
+      return isValidStaticImport(anImport, classLoader);
+    } else {
+      return isValidImport(anImport, classLoader);
+    }
+  }
+
+  private boolean isValidStaticImport(ImportPath anImport, ClassLoader classLoader) {
+    String importToCheck = anImport.path();
+    if (!importToCheck.contains(".")) {
+      return false;
+    }
+    if (importToCheck.endsWith(".*")) {
+      return isValidStaticImportWithWildcard(classLoader, importToCheck);
+    } else {
+      return isValidStatic(classLoader, importToCheck);
+    }
+  }
+
+  private boolean isValidImport(ImportPath anImport, ClassLoader classLoader) {
+    String importToCheck = anImport.path();
     if (importToCheck.endsWith(".*")) {
       return isValidImportWithWildcard(importToCheck, classLoader);
     } else {
       return isValidClassImport(importToCheck, classLoader);
     }
+  }
+
+  private boolean isValidStaticImportWithWildcard(ClassLoader classLoader, String importToCheck) {
+    String classImport = importToCheck.substring(0, importToCheck.lastIndexOf("."));
+    return isValidClassImport(classImport, classLoader);
+  }
+
+  private boolean isValidStatic(ClassLoader classLoader, String importToCheck) {
+    String packageImport = importToCheck.substring(0, importToCheck.lastIndexOf("."));
+    boolean validClassImport = isValidClassImport(packageImport, classLoader);
+    if (validClassImport) {
+      String methodOrName = importToCheck.substring(importToCheck.lastIndexOf("."), importToCheck.length()).replaceFirst(".", "");
+      if (methodOrName.isEmpty()) {
+        return false;
+      }
+      try {
+        Class<?> aClass = classLoader.loadClass(packageImport);
+        List<Method> methods = getMethods(methodOrName, aClass);
+        if (!methods.isEmpty()) {
+          return true;
+        }
+        List<Field> fields = getFields(methodOrName, aClass);
+        return !fields.isEmpty();
+      } catch (ClassNotFoundException e) {
+        return false;
+      }
+    }
+    return false;
+  }
+
+  private List<Field> getFields(String methodOrName, Class<?> aClass) {
+    Field[] publicFields = aClass.getFields();
+    return Arrays.stream(publicFields).filter(x -> x.getName().equals(methodOrName)).collect(Collectors.toList());
+  }
+
+  private List<Method> getMethods(String methodOrName, Class<?> aClass) {
+    Method[] publicMethods = aClass.getMethods();
+    return Arrays.stream(publicMethods).filter(x -> x.getName().equals(methodOrName)).collect(Collectors.toList());
   }
 
   private boolean isValidClassImport(String importToCheck, ClassLoader classLoader) {

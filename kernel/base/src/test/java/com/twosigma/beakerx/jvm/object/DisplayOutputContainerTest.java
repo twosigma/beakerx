@@ -22,7 +22,7 @@ import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jupyter.SearchMessages;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.table.TableDisplay;
-import com.twosigma.beakerx.widgets.selectioncontainer.Tab;
+import com.twosigma.beakerx.widget.Tab;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,8 +32,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.*;
-import static com.twosigma.beakerx.widgets.Widget.VIEW_NAME;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.*;
+import static com.twosigma.beakerx.widget.Widget.VIEW_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DisplayOutputContainerTest {

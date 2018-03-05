@@ -15,9 +15,9 @@
  */
 package com.twosigma.beakerx.jvm.object;
 
-import com.twosigma.beakerx.widgets.Widget;
-import com.twosigma.beakerx.widgets.box.GridView;
-import com.twosigma.beakerx.widgets.box.HBox;
+import com.twosigma.beakerx.widget.Widget;
+import com.twosigma.beakerx.widget.GridView;
+import com.twosigma.beakerx.widget.HBox;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.jvm.object;
 
-import com.twosigma.beakerx.widgets.box.CyclingDisplayBox;
+import com.twosigma.beakerx.widget.CyclingDisplayBox;
 
 public class CyclingOutputContainerLayoutManager extends OutputContainerLayoutManager {
   

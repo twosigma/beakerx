@@ -1,6 +1,6 @@
 {
   "name": "beakerx-jupyterlab",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "description": "BeakerX: Beaker Extensions for JupyterLab",
   "author": "Two Sigma Open Source, LLC",
   "main": "dist/index.js",
@@ -12,7 +12,7 @@
   "keywords": [
     "ipywidgets",
     "jupyterlab",
-    "jupyterlab extension"
+    "jupyterlab-extension"
   ],
   "scripts": {
     "build": "npm run build:src",
@@ -24,15 +24,15 @@
     "@jupyter-widgets/base": "^1.1.5",
     "@jupyter-widgets/controls": "^1.1.2",
     "@jupyter-widgets/output": "^1.0.10",
-    "@jupyterlab/application": "^0.13.0",
-    "@jupyterlab/codemirror": "^0.13.0",
-    "@jupyterlab/coreutils": "^0.13.0",
-    "@jupyterlab/docregistry": "^0.13.0",
-    "@jupyterlab/notebook": "^0.13.0",
-    "@jupyterlab/outputarea": "^0.13.1",
-    "@jupyterlab/rendermime": "^0.13.0",
-    "@jupyterlab/rendermime-interfaces": "^0.4.2",
-    "@jupyterlab/services": "^0.52.0",
+    "@jupyterlab/application": "^0.15.2",
+    "@jupyterlab/codemirror": "^0.15.2",
+    "@jupyterlab/coreutils": "^1.0.4",
+    "@jupyterlab/docregistry": "^0.15.2",
+    "@jupyterlab/notebook": "^0.15.2",
+    "@jupyterlab/outputarea": "^0.15.2",
+    "@jupyterlab/rendermime": "^0.15.2",
+    "@jupyterlab/rendermime-interfaces": "^1.0.4",
+    "@jupyterlab/services": "^1.1.2",
     "@types/node": "^8.0.56",
     "rimraf": "^2.6.2",
     "typescript": "~2.6.2"

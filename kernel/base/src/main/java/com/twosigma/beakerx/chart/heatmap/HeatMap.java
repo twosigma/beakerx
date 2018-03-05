@@ -22,8 +22,8 @@ import com.twosigma.beakerx.chart.GradientColor;
 import com.twosigma.beakerx.chart.legend.LegendLayout;
 import com.twosigma.beakerx.chart.legend.LegendPosition;
 
-import static com.twosigma.beakerx.widgets.chart.BeakerxPlot.MODEL_NAME_VALUE;
-import static com.twosigma.beakerx.widgets.chart.BeakerxPlot.VIEW_NAME_VALUE;
+import static com.twosigma.beakerx.widget.BeakerxPlot.MODEL_NAME_VALUE;
+import static com.twosigma.beakerx.widget.BeakerxPlot.VIEW_NAME_VALUE;
 
 public class HeatMap extends AbstractChart {
 

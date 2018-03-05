@@ -29,11 +29,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_CLOSE;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_OPEN;
 import static java.util.Collections.EMPTY_LIST;
+import static java.util.Collections.singletonList;
 
 public class Comm {
 
@@ -52,7 +54,7 @@ public class Comm {
 
   private String commId;
   private String targetName;
-  private HashMap<?, ?> data;
+  private Comm.Data data;
   private HashMap<?, ?> metadata;
   private String targetModule;
   private KernelFunctionality kernel;
@@ -64,7 +66,7 @@ public class Comm {
     this.kernel = KernelManager.get();
     this.commId = commId;
     this.targetName = targetName;
-    this.data = new HashMap<>();
+    this.data = new Comm.Data(new HashMap<>());
     this.metadata = new HashMap<>();
   }
 
@@ -73,11 +75,11 @@ public class Comm {
   }
 
   public Comm(TargetNamesEnum targetName) {
-    this(Utils.uuid(), targetName.getTargetName());
+    this(Utils.commUUID(), targetName.getTargetName());
   }
 
   public Comm(String targetName) {
-    this(Utils.uuid(), targetName);
+    this(Utils.commUUID(), targetName);
   }
 
   public String getCommId() {
@@ -88,12 +90,12 @@ public class Comm {
     return targetName;
   }
 
-  public HashMap<?, ?> getData() {
-    return data;
+  public Comm.Data getData() {
+    return new Comm.Data(new HashMap<>(data.getData()));
   }
 
   public void setData(HashMap<?, ?> data) {
-    this.data = data;
+    this.data = new Comm.Data(data);
   }
 
   public void setMetaData(HashMap<?, ?> metadata) {
@@ -152,8 +154,8 @@ public class Comm {
     map.put(TARGET_NAME, getTargetName());
 
     HashMap<String, Serializable> state = new HashMap<>();
-    state.put(STATE, data);
-    state.put(METHOD, (Serializable) data.get(METHOD));
+    state.put(STATE, data.getData());
+    state.put(METHOD, (Serializable) data.getData().get(METHOD));
     if (!buffer.isEmpty()) {
       state.put(BUFFER_PATHS, buffer.getBufferPaths());
       message.setBuffers(buffer.getBuffers());
@@ -164,7 +166,7 @@ public class Comm {
     map.put(TARGET_MODULE, getTargetModule());
     message.setContent(map);
     message.setMetadata(buildMetadata());
-    kernel.publish(message);
+    kernel.publish(singletonList(message));
     kernel.addComm(getCommId(), this);
   }
 
@@ -189,42 +191,53 @@ public class Comm {
     message.setMetadata(buildMetadata());
 
     kernel.removeComm(getCommId());
-    kernel.publish(message);
+    kernel.publish(singletonList(message));
   }
 
-  public void send() {
-    send(COMM_MSG, Buffer.EMPTY);
+  public void send(Comm.Buffer buffer, Comm.Data data) {
+    send(COMM_MSG, buffer, data);
   }
 
-  public void send(Comm.Buffer buffer) {
-    send(COMM_MSG, buffer);
+  public void send(JupyterMessages type, Comm.Data data) {
+    send(type, Buffer.EMPTY, data);
   }
 
-  public void send(JupyterMessages type) {
-    send(type, Buffer.EMPTY);
+  public void send(JupyterMessages type, Comm.Buffer buffer, Comm.Data data) {
+    Message message = createMessage(type, buffer, data);
+    kernel.publish(singletonList(message));
   }
 
-  public void send(JupyterMessages type, Comm.Buffer buffer) {
-    Message parentMessage = getParentMessage();// can be null
-    Message message = new Message();
-    message.setHeader(new Header(type, parentMessage != null ? parentMessage.getHeader().getSession() : null));
-    if (parentMessage != null) {
-      message.setParentHeader(getParentMessage().getHeader());
-    }
+  public Message createMessage(JupyterMessages type, Buffer buffer, Comm.Data data) {
     HashMap<String, Serializable> map = new HashMap<>(6);
-
     if (type != JupyterMessages.DISPLAY_DATA) {
       map.put(COMM_ID, getCommId());
     }
-
-    map.put(DATA, data);
+    map.put(DATA, data.getData());
     map.put(METADATA, metadata);
-    message.setContent(map);
+    return create(type, buffer, map);
+  }
+
+  private Message create(JupyterMessages type, Comm.Buffer buffer, Map<String, Serializable> content) {
+    Message parentMessage = getParentMessage();
+    return messageMessage(type, buffer, content, parentMessage);
+  }
+
+  public static Message messageMessage(JupyterMessages type, Buffer buffer, Map<String, Serializable> content, Message parentMessage) {
+    Message message = new Message();
+    message.setHeader(new Header(type, parentMessage != null ? parentMessage.getHeader().getSession() : null));
+    if (parentMessage != null) {
+      message.setParentHeader(parentMessage.getHeader());
+    }
+    message.setContent(content);
     message.setMetadata(buildMetadata());
     if (!buffer.isEmpty()) {
       message.setBuffers(buffer.getBuffers());
     }
-    kernel.publish(message);
+    return message;
+  }
+
+  public void publish(List<Message> list) {
+    kernel.publish(list);
   }
 
   public void sendUpdate(Comm.Buffer buffer) {
@@ -233,19 +246,26 @@ public class Comm {
     HashMap<Object, Object> state = new HashMap<>();
     content.put(STATE, state);
     content.put(BUFFER_PATHS, buffer.getBufferPaths());
-    this.setData(content);
-    this.send(buffer);
+    this.send(buffer, new Comm.Data(content));
+  }
+
+  public Message createOutputContent(final Map<String, Serializable> content) {
+    return this.create(JupyterMessages.STREAM, Buffer.EMPTY, content);
   }
 
   public void sendUpdate(final String propertyName, final Object value) {
+    Message message = createUpdateMessage(propertyName, value);
+    kernel.publish(singletonList(message));
+  }
+
+  public Message createUpdateMessage(String propertyName, Object value) {
     HashMap<String, Serializable> content = new HashMap<>();
     content.put(METHOD, UPDATE);
     HashMap<Object, Object> state = new HashMap<>();
     state.put(propertyName, value);
     content.put(STATE, state);
     content.put(BUFFER_PATHS, new HashMap<>());
-    this.setData(content);
-    this.send();
+    return this.createMessage(COMM_MSG, Buffer.EMPTY, new Comm.Data(content));
   }
 
   public void handleMsg(Message parentMessage) {
@@ -254,10 +274,9 @@ public class Comm {
     }
   }
 
-  private HashMap<String, Serializable> buildMetadata() {
+  private static HashMap<String, Serializable> buildMetadata() {
     HashMap<String, Serializable> metadata = new HashMap<>();
     metadata.put(VERSION, "2");
-
     return metadata;
   }
 
@@ -274,6 +293,19 @@ public class Comm {
 
   interface GetParentMessageStrategy {
     Message getParentMessage();
+  }
+
+  public static class Data {
+
+    private HashMap<?, ?> data;
+
+    public Data(HashMap<?, ?> data) {
+      this.data = data;
+    }
+
+    public HashMap<?, ?> getData() {
+      return data;
+    }
   }
 
   public static class Buffer {

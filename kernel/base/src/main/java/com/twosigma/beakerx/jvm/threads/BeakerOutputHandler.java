@@ -16,7 +16,5 @@
 package com.twosigma.beakerx.jvm.threads;
 
 public interface BeakerOutputHandler {
-  void write(int b);
-  void write(byte[] b);
-  void write(byte[] b, int off, int len);
+  void write(String text);
 }

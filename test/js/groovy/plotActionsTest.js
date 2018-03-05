@@ -162,7 +162,7 @@ describe('Testing of plot Actions ', function () {
       svgElements6[0].$('rect#i0_1').click();
       beakerxPO.kernelIdleIcon.waitForEnabled();
       cellIndex += 1;
-      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /5:2/);
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /2:5/);
     });
 
     it('Click on the bar should run the tag (by closure) ', function () {

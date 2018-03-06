@@ -20,7 +20,6 @@ from setupbase import (
     create_cmdclass,
     install_node_modules,
     run_gradle,
-    run_doclet,
     get_version,
     get_data_files,
     here
@@ -32,12 +31,10 @@ cmdclass = create_cmdclass(develop_wrappers=[
     'js',
     'java',
     'javadoc',
-    'doclet',
 ], distribute_wrappers=[
     'js',
     'java',
     'javadoc',
-    'doclet',
 ])
 cmdclass['js'] = install_node_modules(
     path='../js/notebook',
@@ -46,7 +43,6 @@ cmdclass['js'] = install_node_modules(
 )
 cmdclass['java'] = run_gradle(cmd='build')
 cmdclass['javadoc'] = run_gradle(cmd='base:javadoc')
-cmdclass['doclet'] = run_doclet()
 
 setup_args = dict(
     name                = 'beakerx',

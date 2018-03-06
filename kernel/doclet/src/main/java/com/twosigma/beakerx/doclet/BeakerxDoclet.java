@@ -16,15 +16,18 @@
 
 package com.twosigma.beakerx.doclet;
 
-import com.sun.javadoc.*;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.ExecutableMemberDoc;
+import com.sun.javadoc.Parameter;
+import com.sun.javadoc.RootDoc;
+import com.sun.tools.doclets.standard.Standard;
 import com.sun.tools.javadoc.ClassDocImpl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-public class BeakerxDoclet extends Doclet {
+public class BeakerxDoclet extends Standard {
     public static boolean start(RootDoc root) {
         //iterate over all classes.
         HashMap<String, ClassInspect> inspects = new HashMap<>(root.classes().length);

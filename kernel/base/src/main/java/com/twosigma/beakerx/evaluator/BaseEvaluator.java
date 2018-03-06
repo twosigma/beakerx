@@ -17,6 +17,8 @@ package com.twosigma.beakerx.evaluator;
 
 import com.google.common.collect.Lists;
 import com.twosigma.beakerx.DefaultJVMVariables;
+import com.twosigma.beakerx.inspect.Inspect;
+import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -50,6 +52,7 @@ public abstract class BaseEvaluator implements Evaluator {
   protected final String shellId;
   protected final String sessionId;
   protected String outDir;
+  protected Inspect inspect;
   protected Classpath classPath;
   protected Imports imports;
   private final CellExecutor executor;
@@ -66,6 +69,7 @@ public abstract class BaseEvaluator implements Evaluator {
     classPath = new Classpath();
     classPath.add(new PathToJar(outDir));
     repos = new Repos();
+    inspect = new Inspect();
     executorService = Executors.newSingleThreadExecutor();
     init(evaluatorParameters);
   }
@@ -253,5 +257,14 @@ public abstract class BaseEvaluator implements Evaluator {
       }
     }
     return theDir;
+  }
+
+  @Override
+  public InspectResult inspect(String code, int caretPosition) {
+    return inspect.doInspect(code, caretPosition, null, imports);
+  }
+
+  public Inspect getInspect() {
+    return inspect;
   }
 }

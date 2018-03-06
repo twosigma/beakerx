@@ -13,23 +13,29 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-include 'base'
-include 'groovy'
-include 'kotlin'
-include 'scala'
-include 'java'
-include 'clojure'
-include 'sql'
 
-include 'doclet'
+package com.twosigma.beakerx.inspect;
 
-if (System.getProperty('includeCpp', 'false') == 'true') {
-  include 'cpp'
+public class MethodInspect {
+    String methodName;
+    String javadoc;
+    String signature;
+
+    public MethodInspect(String methodName, String javadoc, String signature) {
+        this.methodName = methodName;
+        this.javadoc = javadoc;
+        this.signature = signature;
+    }
+
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public String getJavadoc() {
+        return javadoc;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
 }
-
-// uncomment when demo projects have to be rebuild
-//include 'demoProjects'
-//include 'demoProjects:loadMagicJarDemo'
-//include 'demoProjects:demo'
-//include 'demoProjects:BeakerXClasspathTest'
-

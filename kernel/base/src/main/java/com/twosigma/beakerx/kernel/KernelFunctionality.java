@@ -17,11 +17,12 @@ package com.twosigma.beakerx.kernel;
 
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.handler.Handler;
+import com.twosigma.beakerx.inspect.InspectResult;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
-import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Message;
 
 import java.nio.file.Path;
@@ -60,6 +61,8 @@ public interface KernelFunctionality {
   TryResult executeCode(String code, SimpleEvaluationObject seo);
 
   AutocompleteResult autocomplete(String code, int cursorPos);
+
+  InspectResult inspect(String code, int cursorPos);
 
   void sendBusyMessage(Message message);
 

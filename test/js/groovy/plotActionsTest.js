@@ -39,7 +39,7 @@ describe('Testing of plot Actions ', function () {
       var height1 = Math.round(svgElement1.$('rect#i0_0').getAttribute('height'));
       svgElement1.$('rect#i0_0').click();
       browser.keys("Shift");
-      browser.keys('\uE000');;
+      browser.keys('\uE000');
       beakerxPO.kernelIdleIcon.waitForEnabled();
       var height2 = Math.round(svgElement1.$('rect#i0_0').getAttribute('height'));
       expect(height2).toBeGreaterThan(height1);
@@ -168,6 +168,49 @@ describe('Testing of plot Actions ', function () {
     it('Click on the bar should run the tag (by closure) ', function () {
       cellIndex += 1;
       svgElements6[1].$('rect#i0_1').click();
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /com.twosigma.beakerx.chart.xychart.Plot/);
+    });
+  });
+
+  describe('(Groovy) onKey action for Combined Plot ', function(){
+    var svgElements7, svgElements8;
+
+    it('onKey "SHIFT" should change bar value ', function () {
+      cellIndex += 1;
+      svgElements7 = beakerxPO.runCellToGetSvgElements(cellIndex);
+      var height1 = Math.round(svgElements7[0].$('rect#i0_0').getAttribute('height'));
+      svgElements7[0].$('rect#i0_0').click();
+      browser.keys("Shift");
+      browser.keys('\uE000');
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      var height2 = Math.round(svgElements7[0].$('rect#i0_0').getAttribute('height'));
+      expect(height2).toBeGreaterThan(height1);
+    });
+
+    it('onKey "T" should run the tag (by string name) ', function () {
+      svgElements7[1].$('rect#i0_0').click();
+      browser.keys("t");
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      cellIndex += 1;
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /com.twosigma.beakerx.chart.xychart.Plot/);
+    });
+
+    it('The action details are available after onKey ', function () {
+      cellIndex += 1;
+      svgElements8 = beakerxPO.runCellToGetSvgElements(cellIndex);
+      svgElements8[0].$('rect#i0_1').click();
+      browser.keys("Shift");
+      browser.keys('\uE000');
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      cellIndex += 1;
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /2:5/);
+    });
+
+    it('onKey "U" should run the tag (by closure) ', function () {
+      cellIndex += 1;
+      svgElements8[1].$('rect#i0_1').click();
+      browser.keys("u");
       beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /com.twosigma.beakerx.chart.xychart.Plot/);
     });

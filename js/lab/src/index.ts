@@ -44,7 +44,7 @@ const requirejs_ext: JupyterLabPlugin<void> = {
   id: 'beakerx:requirejs',
   autoStart: true,
   requires: [],
-  activate: (app: JupyterLab):any => {
+  activate: (app: JupyterLab): Promise<void> => {
     return RequirejsLoader.load();
   }
 };

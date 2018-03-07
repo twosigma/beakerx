@@ -17,24 +17,36 @@
 import MenuItem from '../../../shared/interfaces/menuItemInterface';
 import { createFormatMenuItems } from './createFormatMenuItems';
 import DataGridColumn, {COLUMN_TYPES} from "../column/DataGridColumn";
+import {
+  selectBodyColumnStates,
+  selectColumnVisible
+} from "../column/selectors";
 
 export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
 
   const dataGrid = column.dataGrid;
   const createShowColumnSubmenu = (): MenuItem[] => {
     const items: MenuItem[] = [];
-    const columnsState = dataGrid.columnManager.bodyColumnsState;
+    const columnsStates = selectBodyColumnStates(dataGrid.store.state);
 
-    columnsState.names.forEach((name, index) => {
+    columnsStates.forEach((state) => {
       items.push({
-        title: name,
-        isChecked: () => columnsState.visibility[index],
+        title: state.name,
+        isChecked: () => selectColumnVisible(
+          dataGrid.store.state,
+          state.columnType,
+          state.index
+        ),
         action: () => {
-          let column = dataGrid.columnManager.getColumnByName(name);
+          let column = dataGrid.columnManager.getColumnByName(state.name);
 
-          if (column) {
-            column.state.visible ? column.hide() : column.show();
-          }
+          if (!column) { return; }
+
+          selectColumnVisible(
+            dataGrid.store.state,
+            state.columnType,
+            state.index
+          ) ? column.hide() : column.show();
         },
         updateLayout: true
       });

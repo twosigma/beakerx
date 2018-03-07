@@ -78,7 +78,7 @@ export default abstract class HeaderMenu implements MenuInterface {
   }
 
   hideTrigger() {
-    if (this.column.state.sortOrder !== SORT_ORDER.NO_SORT && this.column.state.visible || this.column.state.keepTrigger) {
+    if (this.column.getSortOrder() !== SORT_ORDER.NO_SORT && this.column.getVisible() || this.column.getKeepTrigger()) {
       return;
     }
 
@@ -87,7 +87,7 @@ export default abstract class HeaderMenu implements MenuInterface {
 
   attachTriggerToMenu() {
     this.menu.trigger = this.triggerNode;
-    this.column.state.keepTrigger && this.showTrigger();
+    this.column.getKeepTrigger() && this.showTrigger();
   }
 
   open(submenuIndex?: number): void {
@@ -188,14 +188,16 @@ export default abstract class HeaderMenu implements MenuInterface {
   }
 
   protected assignTriggerSortingCssClass() {
-    if (this.column.state.sortOrder === SORT_ORDER.ASC) {
+    const sortOrder = this.column.getSortOrder();
+
+    if (sortOrder === SORT_ORDER.ASC) {
       this.triggerNode.classList.remove(this.TRIGGER_CLASS_SORTING_DESC);
       this.triggerNode.classList.add(this.TRIGGER_CLASS_SORTING_ASC);
 
       return;
     }
 
-    if (this.column.state.sortOrder === SORT_ORDER.DESC) {
+    if (sortOrder === SORT_ORDER.DESC) {
       this.triggerNode.classList.remove(this.TRIGGER_CLASS_SORTING_ASC);
       this.triggerNode.classList.add(this.TRIGGER_CLASS_SORTING_DESC);
 

@@ -22,11 +22,15 @@ import disableKeyboardManager = DataGridHelpers.disableKeyboardManager;
 import enableKeyboardManager = DataGridHelpers.enableKeyboardManager;
 import throttle = DataGridHelpers.throttle;
 import {ICellData} from "./interface/ICell";
+import {BeakerxDataStore} from "./store/dataStore";
+import {selectDoubleClickTag, selectHasDoubleClickAction} from "./model/selectors";
 
 export default class EventManager {
   dataGrid: BeakerxDataGrid;
+  store: BeakerxDataStore;
 
   constructor(dataGrid: BeakerxDataGrid) {
+    this.store = dataGrid.store;
     this.dataGrid = dataGrid;
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleMouseOut = this.handleMouseOut.bind(this);
@@ -201,7 +205,7 @@ export default class EventManager {
       return;
     }
 
-    if (this.dataGrid.model.state.hasDoubleClickAction) {
+    if (selectHasDoubleClickAction(this.store.state)) {
       this.dataGrid.commSignal.emit({
         event: 'DOUBLE_CLICK',
         row : data.row,
@@ -209,7 +213,7 @@ export default class EventManager {
       });
     }
 
-    if (this.dataGrid.model.state.doubleClickTag) {
+    if (selectDoubleClickTag(this.store.state)) {
       this.dataGrid.commSignal.emit({
         event: 'actiondetails',
         params: {

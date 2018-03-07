@@ -24,8 +24,20 @@ import { IColumn } from "../interface/IColumn";
 import ColumnManager from "../column/ColumnManager";
 import RowManager from "../row/RowManager";
 import DataGridRow from "../row/DataGridRow";
+import {BeakerxDataStore} from "../store/dataStore";
+import {
+  selectAlignmentForColumn, selectAlignmentForType,
+  selectColumnsVisible,
+  selectHasIndex,
+  selectModel,
+  selectValues
+} from "./selectors";
+import DataGridAction from "../store/DataGridAction";
+import {UPDATE_MODEL_DATA} from "./reducer";
+import {selectBodyColumnVisibility, selectColumnIndexByPosition} from "../column/selectors";
 
 export class BeakerxDataGridModel extends DataModel {
+  store: BeakerxDataStore;
   dataFormatter: DataFormatter;
   columnManager: ColumnManager;
   rowManager: RowManager;
@@ -35,16 +47,11 @@ export class BeakerxDataGridModel extends DataModel {
   static DEFAULT_INDEX_COLUMN_NAME = 'index';
 
   private _data: Array<any>;
-  private _state: IDataModelState;
 
-  constructor(state: IDataModelState, columnManager: ColumnManager, rowManager: RowManager) {
+  constructor(store: BeakerxDataStore, columnManager: ColumnManager, rowManager: RowManager) {
     super();
 
-    this.addProperties(state, columnManager, rowManager);
-  }
-
-  get state() {
-    return this._state;
+    this.addProperties(store, columnManager, rowManager);
   }
 
   reset() {
@@ -55,24 +62,24 @@ export class BeakerxDataGridModel extends DataModel {
     super.emitChanged(args);
   }
 
-  addProperties(state: IDataModelState, columnManager: ColumnManager, rowManager: RowManager) {
-    this.dataFormatter = new DataFormatter(state);
+  addProperties(store: BeakerxDataStore, columnManager: ColumnManager, rowManager: RowManager) {
+    this.store = store;
+    this.dataFormatter = new DataFormatter(store.state.model);
     this.columnManager = columnManager;
     this.rowManager = rowManager;
     this.headerRowsCount = 1;
 
-    this._state = state;
-    this._data = state.values;
+    this._data = selectValues(store.state);
 
     this.setState({
-      columnsVisible: this.state.columnsVisible || {}
+      columnsVisible: selectColumnsVisible(this.store.state) || {}
     });
   }
 
   updateData(state: IDataModelState) {
-    this.setState({ ...state });
-    this._data = state.values;
-    this.rowManager.createRows(this._data, this.state.hasIndex);
+    this.store.dispatch(new DataGridAction(UPDATE_MODEL_DATA, state));
+    this._data = selectValues(this.store.state);
+    this.rowManager.createRows(this._data, selectHasIndex(this.store.state));
     this.reset();
   }
 
@@ -82,13 +89,13 @@ export class BeakerxDataGridModel extends DataModel {
 
   columnCount(region: DataModel.ColumnRegion): number {
     return region === 'body'
-      ? this.columnManager.bodyColumnsState.visibility.filter((value) => value).length
+      ? selectBodyColumnVisibility(this.store.state).filter((value) => value).length
       : 1;
   }
 
-  data(region: DataModel.CellRegion, row: number, columnIndex: number): any {
+  data(region: DataModel.CellRegion, row: number, position: number): any {
     const columnType = DataGridColumn.getColumnTypeByRegion(region);
-    const index = this.columnManager.indexResolver.getIndexByColumnPosition(columnIndex, columnType);
+    const index = selectColumnIndexByPosition(this.store.state, columnType, position);
     const dataGridRow = this.rowManager.getRow(row);
 
     if (region === 'row-header') {
@@ -96,21 +103,18 @@ export class BeakerxDataGridModel extends DataModel {
     }
 
     if (region === 'column-header') {
-      return row === 0 ? this.columnManager.bodyColumnsState.names[index] : '';
+      return row === 0 ? this.columnManager.bodyColumnNames[index] : '';
     }
 
     if (region === 'corner-header') {
-      return row === 0 ? this.columnManager.indexColumnsState.names[index] : '';
+      return row === 0 ? this.columnManager.indexColumnNames[index] : '';
     }
 
     return dataGridRow.values[index];
   }
 
   setState(state) {
-    this._state = {
-      ...this._state,
-      ...state,
-    };
+    this.store.dispatch(new DataGridAction(UPDATE_MODEL_DATA, state));
   }
 
   setFilterHeaderVisible(visible: boolean) {
@@ -119,18 +123,11 @@ export class BeakerxDataGridModel extends DataModel {
   }
 
   getColumnValuesIterator(column: IColumn): MapIterator<number, number> {
-    if (!this.state.hasIndex && column.type === COLUMN_TYPES.index) {
+    if (!selectHasIndex(this.store.state) && column.type === COLUMN_TYPES.index) {
       return new MapIterator<DataGridRow, any>(iter(this.rowManager.rows), (row) => row.index);
     }
 
     return new MapIterator(iter(this.rowManager.rows), (row) => row.values[column.index]);
-  }
-
-  getAlignmentConfig(): { alignmentForColumn: {}, alignmentForType: {} } {
-    return {
-      alignmentForColumn: this._state.alignmentForColumn || {},
-      alignmentForType: this._state.alignmentForType || {},
-    }
   }
 
   setHeaderTextVertical(headersVertical: boolean) {

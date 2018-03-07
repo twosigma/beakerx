@@ -40,6 +40,12 @@
     "@phosphor/signaling" "^1.2.2"
     "@phosphor/widgets" "^1.5.0"
 
+"@phosphor/datastore@^0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@phosphor/datastore/-/datastore-0.7.0.tgz#3c7e8c27d43fd469ae4a98e1fd5cb6b0443ca58a"
+  dependencies:
+    "@phosphor/signaling" "^1.2.2"
+
 "@phosphor/disposable@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@phosphor/disposable/-/disposable-1.1.2.tgz#a192dd6a2e6c69d5d09d39ecf334dab93778060e"

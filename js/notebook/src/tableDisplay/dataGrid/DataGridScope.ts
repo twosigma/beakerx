@@ -20,31 +20,34 @@ import { silverStripeStyle } from './style/dataGridStyle';
 import IDataGridScopeOptions from "./interface/IDataGridScopeOptions";
 import DataGridContextMenu from "./contextMenu/DataGridContextMenu";
 import ColumnLimitModal from "./modal/ColumnLimitModal";
+import createStore, {BeakerxDataStore} from "./store/dataStore";
+import {selectModel} from "./model/selectors";
 
 export class DataGridScope {
   contextMenu: DataGridContextMenu;
 
   readonly dataGrid: BeakerxDataGrid;
   readonly element: HTMLElement;
+  readonly store: BeakerxDataStore;
   private tableDisplayModel: any;
   private tableDisplayView: any;
 
   constructor(options: IDataGridScopeOptions) {
+    this.store = createStore(options.data);
     this.element = options.element;
     this.tableDisplayModel = options.widgetModel;
     this.tableDisplayView = options.widgetView;
-    this.dataGrid = new BeakerxDataGrid(
-      {
-        style: silverStripeStyle,
-      },
-      options.data
-    );
+    this.dataGrid = new BeakerxDataGrid({ style: silverStripeStyle }, this.store);
 
     this.element.id = `wrap_${this.tableDisplayModel.model_id}`;
     this.dataGrid.setWrapperId(this.element.id);
     this.connectToCommSignal();
     this.createContextMenu();
     this.initColumnLimitModal();
+  }
+
+  get state() {
+    return selectModel(this.store.state);
   }
 
   render(): void {

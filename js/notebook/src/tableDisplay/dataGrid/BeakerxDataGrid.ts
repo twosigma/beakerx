@@ -42,9 +42,17 @@ import CellTooltipManager from "./cell/CellTooltipManager";
 import * as bkUtils from '../../shared/bkUtils';
 import findSectionIndex = DataGridHelpers.findSectionIndex;
 import getStringSize = DataGridHelpers.getStringSize;
+import {BeakerxDataStore} from "./store/dataStore";
+import {
+  selectCellHighlighters, selectDataFontSize,
+  selectHasIndex, selectHeaderFontSize, selectHeadersVertical, selectModel,
+  selectTooltips,
+  selectValues
+} from "./model/selectors";
 
 export class BeakerxDataGrid extends DataGrid {
   id: string;
+  store: BeakerxDataStore;
   columnSections: any;
   columnHeaderSections: any;
   model: BeakerxDataGridModel;
@@ -66,7 +74,7 @@ export class BeakerxDataGrid extends DataGrid {
   cellHovered = new Signal<this, ICellData|null>(this);
   commSignal = new Signal<this, {}>(this);
 
-  constructor(options: DataGrid.IOptions, modelState: IDataModelState) {
+  constructor(options: DataGrid.IOptions, dataStore: BeakerxDataStore) {
     super(options);
 
     //@todo this is hack to use private properties
@@ -80,7 +88,7 @@ export class BeakerxDataGrid extends DataGrid {
     this.baseColumnHeaderSize = DEFAULT_ROW_HEIGHT;
 
     this.resizeColumnSection = this.resizeColumnSection.bind(this);
-    this.init(modelState);
+    this.init(dataStore);
   }
 
   handleEvent(event: Event): void {
@@ -124,10 +132,6 @@ export class BeakerxDataGrid extends DataGrid {
 
     // Test for a match in the corner header first.
     if (x <= this.headerWidth && y <= this.headerHeight) {
-      if (y <= this.headerHeight) {
-        column = findSectionIndex(this.columnHeaderSections, x);
-      }
-
       if (!column && x <= this.headerWidth) {
         column = findSectionIndex(this.rowHeaderSections, y);
       }
@@ -225,32 +229,35 @@ export class BeakerxDataGrid extends DataGrid {
     this.resizeSections();
   }
 
-  private init(modelState: IDataModelState) {
+  private init(store: BeakerxDataStore) {
     this.id = 'grid_' + bkUtils.generateId(6);
-    this.columnManager = new ColumnManager(modelState, this);
-    this.rowManager = new RowManager(modelState.values, modelState.hasIndex, this.columnManager);
+    this.store = store;
+    this.columnManager = new ColumnManager(this);
+    this.rowManager = new RowManager(selectValues(store.state), selectHasIndex(store.state), this.columnManager);
     this.cellSelectionManager = new CellSelectionManager(this);
     this.cellManager = new CellManager(this);
     this.eventManager = new EventManager(this);
     this.cellFocusManager = new CellFocusManager(this);
-    this.cellTooltipManager = new CellTooltipManager(this, modelState.tooltips);
-    this.model = new BeakerxDataGridModel(modelState, this.columnManager, this.rowManager);
+    this.cellTooltipManager = new CellTooltipManager(this, selectTooltips(store.state));
+    this.model = new BeakerxDataGridModel(store, this.columnManager, this.rowManager);
     this.focused = false;
 
     this.columnManager.addColumns();
     this.rowManager.createFilterExpressionVars();
+    this.store.changed.connect((store) => {
+      this.resize();
+      this.model.reset();
+    });
 
-    this.addHighlighterManager(modelState);
+    this.addHighlighterManager();
     this.addCellRenderers();
     this.resizeHeader();
     this.setWidgetHeight();
     this.resizeSections();
   }
 
-  private addHighlighterManager(modelState: IDataModelState) {
-    let cellHighlighters: IHihglighterState[] = modelState && modelState.cellHighlighters
-      ? modelState.cellHighlighters
-      : [];
+  private addHighlighterManager() {
+    let cellHighlighters: IHihglighterState[] = selectCellHighlighters(this.store.state);
 
     this.highlighterManager = new HighlighterManager(this, cellHighlighters);
   }
@@ -309,8 +316,8 @@ export class BeakerxDataGrid extends DataGrid {
     let bodyColumnNamesWidths: number[] = [];
     let indexColumnNamesWidths: number[] = [];
 
-    if (this.model.state.headersVertical) {
-      const mapNameToWidth = name => getStringSize(name, this.model.state.headerFontSize).width;
+    if (selectHeadersVertical(this.store.state)) {
+      const mapNameToWidth = name => getStringSize(name, selectHeaderFontSize(this.store.state)).width;
 
       bodyColumnNamesWidths = this.columnManager.bodyColumnNames.map(mapNameToWidth);
       indexColumnNamesWidths = this.columnManager.indexColumnNames.map(mapNameToWidth);
@@ -329,9 +336,9 @@ export class BeakerxDataGrid extends DataGrid {
       column: column.index,
       row: 0,
     })));
-    const nameSize = getStringSize(column.name, this.model.state.headerFontSize);
-    const valueSize = getStringSize(value,this.model.state.dataFontSize);
-    const nameSizeProp = this.model.state.headersVertical ? 'height' : 'width';
+    const nameSize = getStringSize(column.name, selectHeaderFontSize(this.store.state));
+    const valueSize = getStringSize(value, selectDataFontSize(this.store.state));
+    const nameSizeProp = selectHeadersVertical(this.store.state) ? 'height' : 'width';
     const result = nameSize[nameSizeProp] > valueSize.width ? nameSize[nameSizeProp] : valueSize.width;
 
     return result > MIN_COLUMN_WIDTH ? result : MIN_COLUMN_WIDTH;
@@ -341,9 +348,9 @@ export class BeakerxDataGrid extends DataGrid {
     const valueCharLength = this.model.rowCount('body');
     const name = this.columnManager.getColumnByIndex(COLUMN_TYPES.index, 0).name;
     const value = name.length > valueCharLength ? name : String(valueCharLength);
-    const nameSizeProp = this.model.state.headersVertical ? 'height' : 'width';
-    const nameSize = getStringSize(name, this.model.state.headerFontSize);
-    const valueSize = getStringSize(value, this.model.state.dataFontSize);
+    const nameSizeProp = selectHeadersVertical(this.store.state) ? 'height' : 'width';
+    const nameSize = getStringSize(name, selectHeaderFontSize(this.store.state));
+    const valueSize = getStringSize(value, selectDataFontSize(this.store.state));
     const result = nameSize[nameSizeProp] > valueSize.width ? nameSize[nameSizeProp]: valueSize.width;
 
     this.rowHeaderSections.resizeSection(0, result + 10);

@@ -17,14 +17,16 @@
 import MenuItem from '../../../shared/interfaces/contextMenuItemInterface';
 import {BeakerxDataGrid} from "../BeakerxDataGrid";
 import DataGridContextMenu from "./DataGridContextMenu";
+import {selectContextMenuItems, selectContextMenuTags} from "../model/selectors";
+import {selectColumnIndexByPosition} from "../column/selectors";
 
 export default function createCellContextMenuItems(
   dataGrid: BeakerxDataGrid,
   contextMenu: DataGridContextMenu
 ): MenuItem[] {
   const selector = `#${dataGrid.wrapperId} canvas`;
-  const contextMenuItems = dataGrid.model.state.contextMenuItems || [];
-  const contextMenuTags = dataGrid.model.state.contextMenuTags || {};
+  const contextMenuItems = selectContextMenuItems(dataGrid.store.state);
+  const contextMenuTags = selectContextMenuTags(dataGrid.store.state);
   const isVisible = () => {
     const data = dataGrid.getCellData(contextMenu.event.clientX, contextMenu.event.clientY);
 
@@ -52,7 +54,7 @@ export default function createCellContextMenuItems(
           event: 'CONTEXT_MENU_CLICK',
           itemKey : item,
           row : data.row,
-          column : dataGrid.columnManager.indexResolver.getIndexByColumnPosition(data.column, data.type)
+          column : selectColumnIndexByPosition(dataGrid.store.state, data.type, data.column)
         });
       }
     }));
@@ -80,7 +82,7 @@ export default function createCellContextMenuItems(
             actionType: 'CONTEXT_MENU_CLICK',
             contextMenuItem: name,
             row: data.row,
-            col: dataGrid.columnManager.indexResolver.getIndexByColumnPosition(data.column, data.type)
+            col: selectColumnIndexByPosition(dataGrid.store.state, data.type, data.column)
           };
 
           dataGrid.commSignal.emit({

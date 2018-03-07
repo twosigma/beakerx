@@ -19,6 +19,7 @@ import MenuItem from "../../../shared/interfaces/menuItemInterface";
 import DataGridColumn, {SORT_ORDER} from "../column/DataGridColumn";
 import { CENTER, LEFT, RIGHT } from "../column/columnAlignment";
 import {HIGHLIGHTER_TYPE} from "../interface/IHighlighterState";
+import {selectBodyColumnVisibility} from "../column/selectors";
 
 export function createColumnMenuItems(column: DataGridColumn): MenuItem[] {
   return [
@@ -46,17 +47,17 @@ export function createColumnMenuItems(column: DataGridColumn): MenuItem[] {
     {
       title: 'Sort Ascending',
       separator: true,
-      isChecked: (column) => column.state.sortOrder === SORT_ORDER.ASC,
+      isChecked: (column) => column.getSortOrder() === SORT_ORDER.ASC,
       action: (column) => column.sort(SORT_ORDER.ASC)
     },
     {
       title: 'Sort Descending',
-      isChecked: (column) => column.state.sortOrder === SORT_ORDER.DESC,
+      isChecked: (column) => column.getSortOrder() === SORT_ORDER.DESC,
       action: (column) => column.sort(SORT_ORDER.DESC)
     },
     {
       title: 'No Sort',
-      isChecked: (column) => column.state.sortOrder === SORT_ORDER.NO_SORT,
+      isChecked: (column) => column.getSortOrder() === SORT_ORDER.NO_SORT,
       action: (column) => column.sort(SORT_ORDER.NO_SORT)
     },
     {
@@ -106,7 +107,12 @@ export function createColumnMenuItems(column: DataGridColumn): MenuItem[] {
     },
     {
       title: 'Move column to end',
-      action: (column) => column.move(column.columnManager.columns[column.type].length -1 || 0)
+      action: (column) => {
+        let position = selectBodyColumnVisibility(column.dataGrid.store.state)
+          .filter(visible => visible).length - 1;
+
+        column.move(position);
+      }
     },
     {
       title: 'Reset formatting',

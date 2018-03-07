@@ -17,6 +17,7 @@
 import MenuItem from '../../../shared/interfaces/contextMenuItemInterface';
 import {BeakerxDataGrid} from "../BeakerxDataGrid";
 import DataGridContextMenu from "./DataGridContextMenu";
+import {selectHeadersVertical} from "../model/selectors";
 
 export default function createHeaderContextMenuItems(
   dataGrid: BeakerxDataGrid,
@@ -44,13 +45,13 @@ export default function createHeaderContextMenuItems(
       id: `${dataGrid.wrapperId}_verticalHeaders`,
       title: 'vertical headers',
       action: rotateMenuItemAction(true),
-      isVisible: () => isVisible(!dataGrid.model.state.headersVertical),
+      isVisible: () => isVisible(!selectHeadersVertical(dataGrid.store.state)),
       selector
     }, {
       id: `${dataGrid.wrapperId}_horizontalHeaders`,
       title: 'horizontal headers',
       action: rotateMenuItemAction(false),
-      isVisible: () => isVisible(!!dataGrid.model.state.headersVertical),
+      isVisible: () => isVisible(!!selectHeadersVertical(dataGrid.store.state)),
       selector
     }
   ]

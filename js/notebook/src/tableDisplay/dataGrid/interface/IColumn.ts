@@ -41,6 +41,10 @@ export interface IColumns {
 }
 
 export interface IColumnState {
+  name: string,
+  index: number,
+  columnType: COLUMN_TYPES,
+  dataTypeName: string,
   dataType: ALL_TYPES,
   displayType: ALL_TYPES|string,
   keepTrigger: boolean,

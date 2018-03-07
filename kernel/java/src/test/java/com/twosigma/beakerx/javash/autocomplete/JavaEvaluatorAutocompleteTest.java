@@ -13,37 +13,46 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.groovy.evaluator.autocomplete;
+package com.twosigma.beakerx.javash.autocomplete;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
-import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
+import com.twosigma.beakerx.javash.evaluator.JavaEvaluator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.stream.Collectors;
 
+import static com.twosigma.beakerx.evaluator.EvaluatorTest.KERNEL_PARAMETERS;
+import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
+import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GroovyEvaluatorAutocompleteTest {
+public class JavaEvaluatorAutocompleteTest {
 
-  private static BaseEvaluator groovyEvaluator;
+  private static BaseEvaluator evaluator;
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    groovyEvaluator = TestGroovyEvaluator.groovyEvaluator();
+    evaluator = new JavaEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS);
   }
 
   @AfterClass
   public static void tearDown() throws Exception {
-    groovyEvaluator.exit();
+    evaluator.exit();
   }
 
+  private BaseEvaluator evaluator() {
+    return evaluator;
+  }
+
+  @Ignore
   @Test
   public void shouldReturnPrintlnForFirstLine() throws Exception {
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(
+    AutocompleteResult autocomplete = evaluator().autocomplete(
             "System.out.printl\n" +
                     "System.out.print\n" +
                     "System.out.prin\n" +
@@ -53,10 +62,11 @@ public class GroovyEvaluatorAutocompleteTest {
     assertThat(autocomplete.getStartIndex()).isEqualTo(11);
   }
 
+  @Ignore
   @Test
   public void shouldReturnPrintlnForSecondLine() throws Exception {
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(
+    AutocompleteResult autocomplete = evaluator().autocomplete(
             "System.out.printl\n" +
                     "System.out.print\n" +
                     "System.out.prin\n" +
@@ -66,10 +76,11 @@ public class GroovyEvaluatorAutocompleteTest {
     assertThat(autocomplete.getStartIndex()).isEqualTo(29);
   }
 
+  @Ignore
   @Test
   public void shouldReturnAutocompleteForPrintlnWithComment() throws Exception {
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(
+    AutocompleteResult autocomplete = evaluator().autocomplete(
             "//comment\n" +
                     "System.out.printl\n" +
                     "System.out.printl", 27);
@@ -82,7 +93,7 @@ public class GroovyEvaluatorAutocompleteTest {
   public void autocompleteMatchesForSystemAfterDot() throws Exception {
     String code = "System.";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
   }
@@ -91,7 +102,7 @@ public class GroovyEvaluatorAutocompleteTest {
   public void autocompleteMatchesForSystemOutAfterDot() throws Exception {
     String code = "System.out.";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getMatches()).contains("println");
@@ -102,81 +113,89 @@ public class GroovyEvaluatorAutocompleteTest {
   public void shouldReturnResultEqualToImport() throws Exception {
     String code = "imp";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("import");
   }
 
+  @Ignore
   @Test
   public void shouldReturnResultEqualToToString() throws Exception {
-    String code = "def v = 'str'\nv.toS";
+    String code = "String v = \"str\";\nv.toS";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("toString");
   }
 
+  @Ignore
   @Test
   public void shouldReturnResultEqualToParamInt() throws Exception {
-    String code = "int paramInt = 10\n" +
-            "println par";
+    String code = "int paramInt = 10;\n" +
+            "System.out.println( par";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("paramInt");
   }
 
+  @Ignore
   @Test
   public void shouldReturnResultEqualToParamDouble() throws Exception {
-    String code = "def paramDouble = 10.0\n" +
-            "println par";
+    String code = "double paramDouble = 10.0;\n" +
+            "System.out.println( par";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("paramDouble");
   }
 
+  @Ignore
   @Test
   public void shouldReturnResultEqualToParamString() throws Exception {
-    String code = "def paramString = 'str'\n" +
-            "println \"test ${par";
+    String code = "String paramString = \"str\";\n" +
+            "System.out.println( \"test ${par";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("paramString");
   }
 
+  @Ignore
   @Test
   public void shouldReturnResultEqualToParamArray() throws Exception {
-    String code = "def paramArray = [1, 3, 5]\n" +
-            "println par";
+    String code = "int[] paramArray = new int[]{1, 3, 5};\n" +
+            "System.out.println(paramA";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("paramArray");
   }
 
+  @Ignore
   @Test
   public void shouldReturnResultEqualToParamMap() throws Exception {
-    String code = "def paramMap = ['abc':1, 'def':2, 'xyz':3]\n" +
-            "println par";
+    String code = "Map<String,Integer> paramMap = new HashMap<>();\n" +
+            "System.out.println( par";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("paramMap");
   }
 
+  @Ignore
   @Test
   public void shouldReturnResultEqualToBLUE() throws Exception {
     String code = "import static java.awt.Color.BLUE\n" +
-            "println BL";
+            "System.out.println( BL";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("BLUE");
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 2);
   }
 
+  @Ignore
   @Test
   public void autocompleteForClass_shouldReturnResultEqualToCoordinates() throws Exception {
     String code = "class Coordinates {\n" +
@@ -185,7 +204,7 @@ public class GroovyEvaluatorAutocompleteTest {
             "def coordinates = new Coordinates(latitude: 43.23, longitude: 3.67)\n" +
             "this.class.co";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("coordinates");
   }
@@ -194,7 +213,7 @@ public class GroovyEvaluatorAutocompleteTest {
   public void shouldReturnResultEqualToPackage() throws Exception {
     String code = "pack";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(0);
@@ -204,7 +223,7 @@ public class GroovyEvaluatorAutocompleteTest {
   public void shouldReturnImplements() throws Exception {
     String code = "class Coordinates implemen";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches().get(0)).isEqualTo("implements");
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 8);
@@ -214,7 +233,7 @@ public class GroovyEvaluatorAutocompleteTest {
   public void shouldReturnExtends() throws Exception {
     String code = "class Coordinates exten";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches().get(0)).isEqualTo("extends");
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 5);
@@ -224,9 +243,10 @@ public class GroovyEvaluatorAutocompleteTest {
   public void shouldReturnClass() throws Exception {
     String code = "cla";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
-    assertThat(autocomplete.getMatches().get(0)).isEqualTo("class");
+    assertThat(autocomplete.getMatches().size()).isGreaterThan(0);
+    assertThat(autocomplete.getMatches().stream().filter(x -> x.contains("class")).collect(Collectors.toList())).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(0);
   }
 
@@ -234,18 +254,19 @@ public class GroovyEvaluatorAutocompleteTest {
   public void shouldAutocompleteToSystem() throws Exception {
     String code = "Syste";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
-    assertThat(autocomplete.getMatches().get(0)).isEqualTo("System");
+    assertThat(autocomplete.getMatches().size()).isGreaterThan(0);
+    assertThat(autocomplete.getMatches().stream().filter(x -> x.contains("System")).collect(Collectors.toList())).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(0);
   }
 
   @Test
   public void shouldAutocompleteToB() throws Exception {
-    String code = "import java.awt.Color\n" +
-            "println Color.B";
+    String code = "import java.awt.Color;\n" +
+            "System.out.println( Color.B";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 1);
@@ -253,10 +274,10 @@ public class GroovyEvaluatorAutocompleteTest {
 
   @Test
   public void shouldAutocompleteWithAsterisk() throws Exception {
-    String code = "import java.awt.*\n" +
-            "println Color.B";
+    String code = "import java.awt.*;\n" +
+            "System.out.println( Color.B";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 1);
@@ -266,7 +287,7 @@ public class GroovyEvaluatorAutocompleteTest {
   public void autocompleteShouldNotMatchForEmptyString() throws Exception {
     String code = "";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(0);
@@ -276,7 +297,7 @@ public class GroovyEvaluatorAutocompleteTest {
   public void defaultImportsAutocompleteToRED() throws Exception {
     String code = "def colors = [ Color.RE";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 2);
@@ -286,7 +307,7 @@ public class GroovyEvaluatorAutocompleteTest {
   public void autocompleteMatchesForColorAfterDot() throws Exception {
     String code = "Color.";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
@@ -296,7 +317,7 @@ public class GroovyEvaluatorAutocompleteTest {
   public void autocompleteMatchesToColor() throws Exception {
     String code = "Colo";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(0);
@@ -306,7 +327,7 @@ public class GroovyEvaluatorAutocompleteTest {
   public void autocompleteMatchesToRED() throws Exception {
     String code = "Color.R";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 1);
@@ -317,7 +338,7 @@ public class GroovyEvaluatorAutocompleteTest {
     String code = "%classpath add jar demoResources/BeakerXClasspathTest.jar\n" +
             "System.";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
@@ -327,7 +348,7 @@ public class GroovyEvaluatorAutocompleteTest {
   public void autocompleteToArrayList() throws Exception {
     String code = "ArrayLi";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(0);
@@ -337,7 +358,7 @@ public class GroovyEvaluatorAutocompleteTest {
   public void autocompleteToList() throws Exception {
     String code = "Li";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(0);
@@ -348,10 +369,10 @@ public class GroovyEvaluatorAutocompleteTest {
     String code = "List myList = new ArrayList();\n" +
             "myList.";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
-    assertThat(autocomplete.getMatches().stream().filter(x -> x.contains("add")).collect(Collectors.toList())).isNotEmpty();
+    assertThat(autocomplete.getMatches().stream().filter(x -> x.equals("add")).collect(Collectors.toList())).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
   }
 
@@ -360,7 +381,7 @@ public class GroovyEvaluatorAutocompleteTest {
     String code = "Map myMap = new HashMap<>();\n" +
             "myMap.";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getMatches().stream().filter(x -> x.contains("put")).collect(Collectors.toList())).isNotEmpty();
@@ -372,7 +393,7 @@ public class GroovyEvaluatorAutocompleteTest {
     String code = "List<String> myList = new ArrayList();\n" +
             "myList.";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getMatches().stream().filter(x -> x.contains("add")).collect(Collectors.toList())).isNotEmpty();
@@ -384,7 +405,7 @@ public class GroovyEvaluatorAutocompleteTest {
     String code = "Map<String,String> myMap = new HashMap<>();\n" +
             "myMap.";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getMatches().stream().filter(x -> x.contains("put")).collect(Collectors.toList())).isNotEmpty();
@@ -395,7 +416,7 @@ public class GroovyEvaluatorAutocompleteTest {
   public void autocompleteForJavaAwtAfterDotPackage() throws Exception {
     String code = "java.awt.";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
@@ -405,7 +426,7 @@ public class GroovyEvaluatorAutocompleteTest {
   public void autocompleteForJavaAwtPackage() throws Exception {
     String code = "java.aw";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 2);
@@ -415,7 +436,7 @@ public class GroovyEvaluatorAutocompleteTest {
   public void autocompleteForJavaPackage() throws Exception {
     String code = "java.";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
@@ -425,23 +446,25 @@ public class GroovyEvaluatorAutocompleteTest {
   public void autocompleteToJavaPackage() throws Exception {
     String code = "jav";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(0);
   }
 
+  @Ignore
   @Test
   public void autocompleteStringMethod() throws Exception {
-    String code = "a = \"ABC\";\n" +
+    String code = "String a = \"ABC\";\n" +
             "a.";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
   }
 
+  @Ignore
   @Test
   public void autocompleteToMethodsForImportedClassesSeparatedByNewLine() throws Exception {
     String code = "import com.twosigma.beakerx.mimetype.MIMEContainer\n" +
@@ -449,12 +472,13 @@ public class GroovyEvaluatorAutocompleteTest {
             "def jsonSlurper = new JsonSlurper()\n" +
             "def json = jsonSlurper.";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
   }
 
+  @Ignore
   @Test
   public void autocompleteToMethodsForImportedClassesSeparatedBySemicolon() throws Exception {
     String code = "import com.twosigma.beakerx.mimetype.MIMEContainer;" +
@@ -462,7 +486,7 @@ public class GroovyEvaluatorAutocompleteTest {
             "def jsonSlurper = new JsonSlurper()\n" +
             "def json = jsonSlurper.";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
@@ -471,20 +495,20 @@ public class GroovyEvaluatorAutocompleteTest {
   @Test
   public void autocompleteToFileMethods() throws Exception {
     String code = "fname = \"demoResources/bar-chart.vg.json\"\n" +
-                  "fileContents = new File(fname)\n" +
-                  "fileContents.t";
+            "fileContents = new File(fname)\n" +
+            "fileContents.t";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
-    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length()-1);
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 1);
   }
 
   @Test
   public void shouldReturnEmptyResultForIncorrectCode() throws Exception {
     String code = "]";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(0);

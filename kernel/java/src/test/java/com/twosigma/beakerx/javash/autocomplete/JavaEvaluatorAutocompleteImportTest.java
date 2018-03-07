@@ -13,21 +13,32 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.groovy.evaluator.autocomplete;
+package com.twosigma.beakerx.javash.autocomplete;
 
 import com.twosigma.beakerx.autocomplete.JVMEvaluatorAutocompleteImportTest;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
-import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
+import com.twosigma.beakerx.javash.evaluator.JavaEvaluator;
+import com.twosigma.beakerx.javash.kernel.JavaDefaultVariables;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-public class GroovyEvaluatorAutocompleteImportTest extends JVMEvaluatorAutocompleteImportTest {
+import java.util.HashMap;
+
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
+import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
+import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
+
+public class JavaEvaluatorAutocompleteImportTest extends JVMEvaluatorAutocompleteImportTest {
 
   private static BaseEvaluator groovyEvaluator;
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    groovyEvaluator = TestGroovyEvaluator.groovyEvaluator();
+    HashMap<String, Object> map = new HashMap<>();
+    map.put(IMPORTS, new JavaDefaultVariables().getImports());
+    EvaluatorParameters kernelParameters = new EvaluatorParameters(map);
+    groovyEvaluator = new JavaEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), kernelParameters);
   }
 
   @AfterClass

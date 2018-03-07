@@ -198,12 +198,16 @@ public class GroovyNodeCompletion extends GroovyAbstractListener {
 //          }
 //        }
 //      }
-      String t = ctx.getText().substring(0, ctx.getText().length() - 5);
+      String t = removeEOF(ctx.getText());
       addQuery(classUtils.expandExpression(t, registry, classUtils.DO_ALL), calculateStartIndex(t, ctx));
       String[] txtv = splitByDot(t);
       AutocompleteCandidate c2 = new AutocompleteCandidate(GroovyCompletionTypes.FQ_TYPE, txtv);
       addQuery(c2, calculateStartIndex(t, ctx));
     }
+  }
+
+  private String removeEOF(String text) {
+    return text.substring(0, text.length() - 5);
   }
 
   private String[] splitByDot(String t) {

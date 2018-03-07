@@ -13,57 +13,64 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.groovy.evaluator.autocomplete;
+package com.twosigma.beakerx.javash.autocomplete;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
-import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
+import com.twosigma.beakerx.javash.evaluator.JavaEvaluator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static com.twosigma.beakerx.evaluator.EvaluatorTest.KERNEL_PARAMETERS;
+import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
+import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GroovyEvaluatorAutocompleteClassNameExpressionTest {
+public class JavaEvaluatorAutocompleteClassNameExpressionTest {
 
-  private static BaseEvaluator groovyEvaluator;
+  private static BaseEvaluator evaluator;
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    groovyEvaluator = TestGroovyEvaluator.groovyEvaluator();
+    evaluator = new JavaEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS);
   }
 
   @AfterClass
   public static void tearDown() throws Exception {
-    groovyEvaluator.exit();
+    evaluator.exit();
+  }
+
+  private BaseEvaluator evaluator() {
+    return evaluator;
   }
 
   @Test
   public void autocompleteToClassWithPackage() throws Exception {
-    String code = "def f = new java.text.SimpleDateFor";
+    String code = "SimpleDateFor f = new java.text.SimpleDateFor";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
-    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length()-13);
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 13);
   }
 
   @Test
   public void autocompleteToClassWithoutPackage() throws Exception {
-    String code = "def f = new Inte";
+    String code = "Integer f = new Integ";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
-    assertThat(autocomplete.getMatches().size()).isEqualTo(1);
-    assertThat(autocomplete.getMatches().get(0)).isEqualTo("Integer");
-    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length()-4);
+    assertThat(autocomplete.getMatches().size()).isGreaterThan(0);
+    assertThat(autocomplete.getMatches()).contains("Integer");
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 5);
   }
 
   @Test
   public void autocompleteToIntegerClassWithPackage() throws Exception {
-    String code = "def f = new java.lang.Inte";
+    String code = "Integer f = new java.lang.Inte";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 4);
@@ -73,10 +80,9 @@ public class GroovyEvaluatorAutocompleteClassNameExpressionTest {
   public void autocompleteCreateNewIntegerWithPackage() throws Exception {
     String code = "new java.lang.Inte";
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 4);
   }
-
 }

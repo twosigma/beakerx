@@ -20,10 +20,12 @@ import {COLUMN_TYPES, default as DataGridColumn} from "./DataGridColumn";
 import {selectColumnNames} from "../model/selectors";
 
 export const selectColumnStates = (state: IBeakerxDataGridState): IColumnsState => state.columns;
+
 export const selectBodyColumnKeys = (state: IBeakerxDataGridState) => (
   Object.keys(selectColumnStates(state))
     .filter(key => key.indexOf(`${COLUMN_TYPES.body}`) === 0)
 );
+
 export const selectIndexColumnKeys = (state: IBeakerxDataGridState) => (
   Object.keys(selectColumnStates(state))
     .filter(key => key.indexOf(`${COLUMN_TYPES.index}`) === 0)
@@ -50,9 +52,11 @@ export const selectIndexColumnStates = (state: IBeakerxDataGridState) => {
 export const selectBodyColumnNames = (state: IBeakerxDataGridState) => (
   selectBodyColumnStates(state).map(state => state.name)
 );
+
 export const selectIndexColumnNames = (state: IBeakerxDataGridState) => (
   selectIndexColumnStates(state).map(state => state.name)
 );
+
 export const selectBodyColumnVisibility = (state: IBeakerxDataGridState) => (
   selectBodyColumnStates(state).map(state => state.visible)
 );
@@ -65,32 +69,45 @@ export const selectColumnState = (
 export const selectColumnDataTypeName = (state: IBeakerxDataGridState, column: DataGridColumn) => (
   selectColumnState(state, column).dataTypeName
 );
+
 export const selectColumnVisible = (state: IBeakerxDataGridState, column: DataGridColumn) => (
   selectColumnState(state, column).visible
 );
+
 export const selectColumnHorizontalAlignment = (state: IBeakerxDataGridState, column: DataGridColumn) => (
   selectColumnState(state, column).horizontalAlignment
 );
+
 export const selectColumnDisplayType = (state: IBeakerxDataGridState, column: DataGridColumn) => (
   selectColumnState(state, column).displayType
 );
+
 export const selectColumnFilter = (state: IBeakerxDataGridState, column: DataGridColumn) => (
   selectColumnState(state, column).filter || ''
 );
+
 export const selectColumnDataType = (state: IBeakerxDataGridState, column: DataGridColumn) => (
   selectColumnState(state, column).dataType
 );
+
 export const selectColumnSortOrder = (state: IBeakerxDataGridState, column: DataGridColumn) => (
   selectColumnState(state, column).sortOrder
 );
+
 export const selectColumnKeepTrigger = (state: IBeakerxDataGridState, column: DataGridColumn) => (
   selectColumnState(state, column).keepTrigger
 );
+
 export const selectColumnFormatForTimes = (state: IBeakerxDataGridState, column: DataGridColumn) => (
   selectColumnState(state, column).formatForTimes
 );
+
+export const selectColumnWidth = (state: IBeakerxDataGridState, column: DataGridColumn) => (
+  selectColumnState(state, column).width || 0
+);
+
 export const selectColumnPosition = (state: IBeakerxDataGridState, column: DataGridColumn) => (
-  selectColumnState(state, column).position
+  selectColumnState(state, column).position || 0
 );
 
 export const selectColumnIndexByPosition = (

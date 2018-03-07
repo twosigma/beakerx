@@ -33,6 +33,7 @@ export const UPDATE_COLUMN_HORIZONTAL_ALIGNMENT = 'UPDATE_COLUMN_HORIZONTAL_ALIG
 export const UPDATE_COLUMN_FORMAT_FOR_TIMES = 'UPDATE_COLUMN_FORMAT_FOR_TIMES';
 export const UPDATE_COLUMN_DISPLAY_TYPE = 'UPDATE_COLUMN_DISPLAY_TYPE';
 export const UPDATE_COLUMN_SORT_ORDER = 'UPDATE_COLUMN_SORT_ORDER';
+export const UPDATE_COLUMN_WIDTH = 'UPDATE_COLUMN_WIDTH';
 
 export interface IColumnsState {
   [key: string]: IColumnState
@@ -48,6 +49,7 @@ const reduceColumnFilter = reduceColumnStateProperty('filter');
 const reduceColumnFormatForTimes = reduceColumnStateProperty('formatForTimes');
 const reduceColumnDisplayType = reduceColumnStateProperty('displayType');
 const reduceColumnSortOrder = reduceColumnStateProperty('sortOrder');
+const reduceColumnWidth = reduceColumnStateProperty('width');
 
 const columnReducer: Reducer<IColumnsState> = (
   state: IColumnsState,
@@ -95,6 +97,9 @@ const columnReducer: Reducer<IColumnsState> = (
 
     case UPDATE_COLUMN_SORT_ORDER:
       return reduceColumnSortOrder(state, action);
+
+    case UPDATE_COLUMN_WIDTH:
+      return reduceColumnWidth(state, action);
 
     default:
       return state;

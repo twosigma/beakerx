@@ -27,16 +27,16 @@ export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
     const columnsStates = selectBodyColumnStates(dataGrid.store.state);
 
     columnsStates.forEach((state) => {
-      let column = dataGrid.columnManager.getColumnByName(state.name);
-
-      if (!column) {
-        return true;
-      }
-
       items.push({
         title: state.name,
-        isChecked: () => column && column.getVisible(),
+        isChecked: () => {
+          let column = dataGrid.columnManager.getColumnByName(state.name);
+
+          return column && column.getVisible();
+        },
         action: () => {
+          let column = dataGrid.columnManager.getColumnByName(state.name);
+
           if (!column) { return; }
 
           column.getVisible() ? column.hide() : column.show();
@@ -118,6 +118,7 @@ export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
         dataGrid.columnManager.showAllColumns();
         dataGrid.columnManager.resetColumnsAlignment();
         dataGrid.columnManager.resetColumnsOrder();
+        dataGrid.setInitialSize();
       }
     }
   ]

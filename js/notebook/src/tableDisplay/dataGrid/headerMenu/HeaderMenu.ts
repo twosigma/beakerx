@@ -21,6 +21,7 @@ import Menu from './BkoMenu';
 import MenuItem from '../../../shared/interfaces/menuItemInterface';
 import MenuInterface from '../../../shared/interfaces/menuInterface';
 import DataGridColumn, {SORT_ORDER} from "../column/DataGridColumn";
+import {selectColumnIndexByPosition, selectColumnPosition} from "../column/selectors";
 
 export interface ITriggerOptions {
   x: number,
@@ -62,12 +63,16 @@ export default abstract class HeaderMenu implements MenuInterface {
 
   protected abstract buildMenu(): void
 
-  showTrigger(x?): void {
-    this.assignTriggerSortingCssClass();
+  updateTriggerPosition() {
+    this.triggerNode.style.left = `${this.dataGrid.getColumnOffset(
+      selectColumnPosition(this.dataGrid.store.state, this.column),
+      this.column.type
+    )}px`;
+  }
 
-    if (!isNaN(x)) {
-      this.triggerNode.style.left = `${x}px`;
-    }
+  showTrigger(): void {
+    this.updateTriggerPosition();
+    this.assignTriggerSortingCssClass();
 
     if (this.triggerNode.style.visibility === 'visible') {
       return;

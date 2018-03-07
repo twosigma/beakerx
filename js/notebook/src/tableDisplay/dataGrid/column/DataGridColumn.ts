@@ -33,8 +33,7 @@ import {
   selectColumnDisplayType,
   selectColumnFilter, selectColumnFormatForTimes,
   selectColumnHorizontalAlignment,
-  selectColumnIndexByPosition, selectColumnKeepTrigger, selectColumnPosition,
-  selectColumnSortOrder,
+  selectColumnIndexByPosition, selectColumnKeepTrigger, selectColumnSortOrder,
   selectColumnState, selectColumnVisible
 } from "./selectors";
 import {DataGridColumnAction} from "../store/DataGridAction";
@@ -48,7 +47,7 @@ import {
   UPDATE_COLUMN_FILTER, UPDATE_COLUMN_FORMAT_FOR_TIMES,
   UPDATE_COLUMN_HORIZONTAL_ALIGNMENT,
   UPDATE_COLUMN_POSITION, UPDATE_COLUMN_SORT_ORDER,
-  UPDATE_COLUMN_VISIBILITY
+  UPDATE_COLUMN_VISIBILITY, UPDATE_COLUMN_WIDTH
 } from "./columnReducer";
 import {BeakerxDataStore} from "../store/dataStore";
 
@@ -87,8 +86,9 @@ export default class DataGridColumn {
     this.columnManager = columnManager;
     this.valuesIterator = this.dataGrid.model.getColumnValuesIterator(this);
 
-    this.assignFormatFn();
     this.handleHeaderCellHovered = this.handleHeaderCellHovered.bind(this);
+
+    this.assignFormatFn();
     this.createMenu(options.menuOptions);
     this.addColumnFilter(options.menuOptions);
     this.addDataTypeTooltip();
@@ -108,33 +108,6 @@ export default class DataGridColumn {
   assignFormatFn() {
     this.formatFn = this.dataGrid.model.dataFormatter
       .getFormatFnByDisplayType(this.getDisplayType(), this.getState());
-  }
-  
-  setDisplayType(displayType: ALL_TYPES|string) {
-    this.store.dispatch(new DataGridColumnAction(
-      UPDATE_COLUMN_DISPLAY_TYPE,
-      { value: displayType, columnIndex: this.index, columnType: this.type }
-    ));
-    this.assignFormatFn();
-    this.dataGrid.repaint();
-    this.dataGrid.resizeSections();
-  }
-
-  setTimeDisplayType(timeUnit) {
-    this.store.dispatch(new DataGridColumnAction(
-      UPDATE_COLUMN_FORMAT_FOR_TIMES,
-      { value: timeUnit, columnIndex: this.index, columnType: this.type }
-    ));
-    this.setDisplayType(ALL_TYPES.datetime);
-  }
-
-  hide() {
-    this.menu.hideTrigger();
-    this.toggleVisibility(false);
-  }
-
-  show() {
-    this.toggleVisibility(true);
   }
 
   createMenu(menuOptions: ITriggerOptions): void {
@@ -157,6 +130,32 @@ export default class DataGridColumn {
         width: this.dataGrid.columnSections.sectionSize(this.index)
       }
     );
+  }
+  
+  setDisplayType(displayType: ALL_TYPES|string) {
+    this.store.dispatch(new DataGridColumnAction(
+      UPDATE_COLUMN_DISPLAY_TYPE,
+      { value: displayType, columnIndex: this.index, columnType: this.type }
+    ));
+    this.assignFormatFn();
+    this.dataGrid.repaint();
+  }
+
+  setTimeDisplayType(timeUnit) {
+    this.store.dispatch(new DataGridColumnAction(
+      UPDATE_COLUMN_FORMAT_FOR_TIMES,
+      { value: timeUnit, columnIndex: this.index, columnType: this.type }
+    ));
+    this.setDisplayType(ALL_TYPES.datetime);
+  }
+
+  hide() {
+    this.menu.hideTrigger();
+    this.toggleVisibility(false);
+  }
+
+  show() {
+    this.toggleVisibility(true);
   }
 
   search(filter: string) {
@@ -194,16 +193,16 @@ export default class DataGridColumn {
   }
 
   handleHeaderCellHovered(sender: BeakerxDataGrid, data: ICellData) {
-    const column = data && selectColumnIndexByPosition(this.store.state, data.type, data.column);
+    const column = data && this.columnManager.getColumnByPosition(data.type, data.column);
 
-    if(!data || column !== this.index || data.type !== this.type) {
+    if(!data || column !== this) {
       this.menu.hideTrigger();
       this.toggleDataTooltip(false);
 
       return;
     }
 
-    this.menu.showTrigger(data.offset);
+    this.menu.showTrigger();
     this.toggleDataTooltip(true, data);
   }
 
@@ -220,6 +219,15 @@ export default class DataGridColumn {
       this.getDataType(),
       this.name
     ));
+  }
+
+  setWidth(width: number) {
+    this.store.dispatch(new DataGridColumnAction(
+      UPDATE_COLUMN_WIDTH,
+      { value: width, columnIndex: this.index, columnType: this.type }
+    ));
+    this.columnFilter.resizeInput();
+    this.menu.updateTriggerPosition();
   }
 
   getState() {
@@ -306,7 +314,10 @@ export default class DataGridColumn {
         hasIndex: selectHasIndex(this.store.state)
       })
     );
+
     this.menu.hideTrigger();
+    this.menu.updateTriggerPosition();
+    this.dataGrid.resize();
   }
 
   setDataTypePrecission(precission: number) {
@@ -347,6 +358,8 @@ export default class DataGridColumn {
     this.resetHighlighters();
     this.resetFilter();
     this.move(this.index);
+    this.dataGrid.setInitialSectionWidth(this);
+    this.dataGrid.updateWidgetWidth();
   }
 
   destroy() {
@@ -368,6 +381,7 @@ export default class DataGridColumn {
       columnType: this.type,
       hasIndex: selectHasIndex(this.store.state)
     }));
+    this.dataGrid.resize();
   }
 
   private dateValueResolver(value) {

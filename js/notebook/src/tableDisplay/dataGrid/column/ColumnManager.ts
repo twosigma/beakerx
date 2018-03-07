@@ -94,6 +94,12 @@ export default class ColumnManager {
     return this.columns[columnType][index];
   }
 
+  getColumnByPosition(columnType: COLUMN_TYPES, position: number) {
+    const columnIndex = selectColumnIndexByPosition(this.store.state, columnType, position);
+
+    return this.getColumnByIndex(columnType, columnIndex);
+  }
+
   getColumnByName(columnName: string): DataGridColumn|undefined {
     return find(
       chain(this.bodyColumns, this.indexColumns),
@@ -208,8 +214,7 @@ export default class ColumnManager {
 
   private showFilterInputs(useSearch: boolean, column?: DataGridColumn) {
     const methodToCall = useSearch ? 'showSearchInput' : 'showFilterInput';
-    const showInputsFn = columnItem => columnItem.columnFilter
-      [methodToCall](
+    const showInputsFn = columnItem => columnItem.columnFilter[methodToCall](
       column === columnItem,
       this.dataGrid.getColumnOffset(columnItem.index, columnItem.type)
     );

@@ -16,6 +16,7 @@
 
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
 import DataGridColumn, {COLUMN_TYPES} from "./DataGridColumn";
+import {selectColumnPosition, selectColumnWidth} from "./selectors";
 
 export default class ColumnFilter {
   dataGrid: BeakerxDataGrid;
@@ -54,7 +55,23 @@ export default class ColumnFilter {
     this.filterNode.style.visibility = 'hidden';
   }
 
+  resizeInput() {
+    this.filterNode.style.width = `${selectColumnWidth(this.dataGrid.store.state, this.column)}px`;
+    this.setInputPosition(this.dataGrid.getColumnOffset(
+      selectColumnPosition(this.dataGrid.store.state, this.column),
+      this.column.type
+    ));
+  }
+
+  setInputPosition(x) {
+    if (x && !isNaN(x)) {
+      this.filterNode.style.left = `${x}px`;
+    }
+  }
+
   private showInput(shouldFocus: boolean, x?: number): void {
+    this.resizeInput();
+
     if (this.filterNode.style.visibility === 'visible') {
       return;
     }
@@ -127,6 +144,8 @@ export default class ColumnFilter {
     this.filterIcon = this.filterNode.querySelector('.filter-icon') || new HTMLSpanElement();
     this.filterInput = this.filterNode.querySelector('input') || new HTMLInputElement();
     this.clearIcon = this.filterNode.querySelector('.clear-filter') || new HTMLSpanElement();
+    this.filterInput.style.height = `${options.height}px`;
+
     this.bindEvents();
   }
 
@@ -141,5 +160,7 @@ export default class ColumnFilter {
         this.filterInput.value = '';
       });
     }
+
+
   }
 }

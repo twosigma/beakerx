@@ -146,7 +146,7 @@ export default class ColumnManager {
 
     if (endCell.type !== COLUMN_TYPES.index) {
       result = this.bodyColumns
-        .map(column => this.columns[column.type][column.getResolvedIndex()])
+        .map(column => this.columns[column.type][selectColumnIndexByPosition(this.store.state, column.type, column.index)])
         .filter(column => column.getVisible())
         .slice(startCell.column, endCell.column + 1);
     }

@@ -17,10 +17,7 @@
 import MenuItem from '../../../shared/interfaces/menuItemInterface';
 import { createFormatMenuItems } from './createFormatMenuItems';
 import DataGridColumn, {COLUMN_TYPES} from "../column/DataGridColumn";
-import {
-  selectBodyColumnStates,
-  selectColumnVisible
-} from "../column/selectors";
+import { selectBodyColumnStates } from "../column/selectors";
 
 export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
 
@@ -30,23 +27,19 @@ export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
     const columnsStates = selectBodyColumnStates(dataGrid.store.state);
 
     columnsStates.forEach((state) => {
+      let column = dataGrid.columnManager.getColumnByName(state.name);
+
+      if (!column) {
+        return true;
+      }
+
       items.push({
         title: state.name,
-        isChecked: () => selectColumnVisible(
-          dataGrid.store.state,
-          state.columnType,
-          state.index
-        ),
+        isChecked: () => column && column.getVisible(),
         action: () => {
-          let column = dataGrid.columnManager.getColumnByName(state.name);
-
           if (!column) { return; }
 
-          selectColumnVisible(
-            dataGrid.store.state,
-            state.columnType,
-            state.index
-          ) ? column.hide() : column.show();
+          column.getVisible() ? column.hide() : column.show();
         },
         updateLayout: true
       });

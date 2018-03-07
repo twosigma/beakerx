@@ -48,11 +48,8 @@ export function createFormatMenuItems(column: DataGridColumn) {
 
 export function createPrecisionSubitems(column: DataGridColumn): MenuItem[] {
   const items: MenuItem[] = [];
-  const formetters = column.dataGrid.model.dataFormatter.getdoubleWithPrecisionFormatters(
-    scopeData.allPrecissions
-  );
 
-  formetters.forEach((formatter, precision) => {
+  scopeData.allPrecissions.forEach((precision) => {
     let item = {
       title: `${precision}`,
       isChecked: (column) => `4.${precision}` === column.getDisplayType(),

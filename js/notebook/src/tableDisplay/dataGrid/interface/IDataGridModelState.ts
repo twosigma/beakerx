@@ -50,10 +50,3 @@ export default interface IDataModelState {
   types: string[],
   values: any,
 }
-
-export interface IDataGridModelColumnState {
-  names: string[],
-  types: string[],
-  visibility: boolean[],
-  order: number[]
-}

@@ -24,6 +24,7 @@ import throttle = DataGridHelpers.throttle;
 import {ICellData} from "./interface/ICell";
 import {BeakerxDataStore} from "./store/dataStore";
 import {selectDoubleClickTag, selectHasDoubleClickAction} from "./model/selectors";
+import {selectColumnIndexByPosition} from "./column/selectors";
 
 export default class EventManager {
   dataGrid: BeakerxDataGrid;
@@ -132,8 +133,10 @@ export default class EventManager {
       return;
     }
 
-    const column = this.dataGrid.columnManager.columns[data.type][data.column];
-    const destColumn = this.dataGrid.columnManager.getColumnByIndex(data.type, column.getResolvedIndex());
+    const destColumn = this.dataGrid.columnManager.getColumnByIndex(
+      data.type,
+      selectColumnIndexByPosition(this.store.state, data.type, data.column)
+    );
 
     destColumn.toggleSort();
   }

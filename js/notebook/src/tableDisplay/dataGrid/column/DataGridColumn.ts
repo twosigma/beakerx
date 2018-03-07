@@ -20,7 +20,7 @@ import { BeakerxDataGrid } from "../BeakerxDataGrid";
 import {IColumnOptions} from "../interface/IColumn";
 import { ICellData } from "../interface/ICell";
 import { CellRenderer, DataModel, TextRenderer } from "@phosphor/datagrid";
-import {ALL_TYPES, isDoubleWithPrecision} from "../dataTypes";
+import {ALL_TYPES, getDisplayType, isDoubleWithPrecision} from "../dataTypes";
 import { minmax, MapIterator } from '@phosphor/algorithm';
 import { HIGHLIGHTER_TYPE } from "../interface/IHighlighterState";
 import ColumnManager, { COLUMN_CHANGED_TYPES, IBkoColumnsChangedArgs } from "./ColumnManager";
@@ -33,14 +33,15 @@ import {
   selectColumnDisplayType,
   selectColumnFilter, selectColumnFormatForTimes,
   selectColumnHorizontalAlignment,
-  selectColumnIndexByPosition, selectColumnKeepTrigger,
+  selectColumnIndexByPosition, selectColumnKeepTrigger, selectColumnPosition,
   selectColumnSortOrder,
   selectColumnState, selectColumnVisible
 } from "./selectors";
 import {DataGridColumnAction} from "../store/DataGridAction";
 import {
+  selectColumnsVisible,
   selectHasIndex,
-  selectInitialColumnAlignment
+  selectInitialColumnAlignment, selectStringFormatForcolumn, selectStringFormatForType
 } from "../model/selectors";
 import {
   UPDATE_COLUMN_DISPLAY_TYPE,
@@ -106,10 +107,7 @@ export default class DataGridColumn {
 
   assignFormatFn() {
     this.formatFn = this.dataGrid.model.dataFormatter
-      .getFormatFnByDisplayType(
-        this.getDisplayType(),
-        this.getState()
-      );
+      .getFormatFnByDisplayType(this.getDisplayType(), this.getState());
   }
   
   setDisplayType(displayType: ALL_TYPES|string) {
@@ -187,11 +185,6 @@ export default class DataGridColumn {
     this.dataGrid.model.reset();
   }
 
-  destroy() {
-    this.menu.destroy();
-    this.dataTypeTooltip.hide();
-  }
-
   connectToColumnsChanged() {
     this.columnManager.columnsChanged.connect(this.onColumnsChanged.bind(this));
   }
@@ -230,47 +223,43 @@ export default class DataGridColumn {
   }
 
   getState() {
-    return selectColumnState(this.store.state, this.type, this.index);
+    return selectColumnState(this.store.state, this);
   }
 
   getAlignment() {
-    return selectColumnHorizontalAlignment(this.store.state, this.type, this.index);
-  }
-
-  getResolvedIndex() {
-    return selectColumnIndexByPosition(this.store.state, this.type, this.index);
+    return selectColumnHorizontalAlignment(this.store.state, this);
   }
 
   getVisible() {
-    return selectColumnVisible(this.store.state, this.type, this.index);
+    return selectColumnVisible(this.store.state, this);
   }
 
   getDataType() {
-    return selectColumnDataType(this.store.state, this.type, this.index);
+    return selectColumnDataType(this.store.state, this);
   }
 
   getSortOrder() {
-    return selectColumnSortOrder(this.store.state, this.type, this.index);
+    return selectColumnSortOrder(this.store.state, this);
   }
 
   getFilter() {
-    return selectColumnFilter(this.store.state, this.type, this.index);
+    return selectColumnFilter(this.store.state, this);
   }
 
   getKeepTrigger() {
-    return selectColumnKeepTrigger(this.store.state, this.type, this.index);
+    return selectColumnKeepTrigger(this.store.state, this);
   }
 
   getDataTypeName(): string {
-    return selectColumnDataTypeName(this.store.state, this.type, this.index);
+    return selectColumnDataTypeName(this.store.state, this);
   }
 
   getDisplayType() {
-    return selectColumnDisplayType(this.store.state, this.type, this.index);
+    return selectColumnDisplayType(this.store.state, this);
   }
 
   getFormatForTimes() {
-    return selectColumnFormatForTimes(this.store.state, this.type, this.index);
+    return selectColumnFormatForTimes(this.store.state, this);
   }
 
   getHighlighter(highlighterType: HIGHLIGHTER_TYPE) {
@@ -347,6 +336,24 @@ export default class DataGridColumn {
     this.valuesIterator = this.dataGrid.model.getColumnValuesIterator(this);
   }
 
+  resetState() {
+    this.setDisplayType(getDisplayType(
+      this.getDataType(),
+      selectStringFormatForType(this.store.state),
+      selectStringFormatForcolumn(this.store.state)[this.name]
+    ));
+    this.setAlignment(selectInitialColumnAlignment(this.store.state, this.getDataType(), name));
+    this.toggleVisibility(selectColumnsVisible(this.store.state)[this.name] !== false);
+    this.resetHighlighters();
+    this.resetFilter();
+    this.move(this.index);
+  }
+
+  destroy() {
+    this.menu.destroy();
+    this.dataTypeTooltip.hide();
+  }
+
   private updateColumnFilter(filter: string) {
     this.store.dispatch(new DataGridColumnAction(
       UPDATE_COLUMN_FILTER,
@@ -390,12 +397,7 @@ export default class DataGridColumn {
   private setColumnSortOrder(order: SORT_ORDER) {
     this.store.dispatch(new DataGridColumnAction(
       UPDATE_COLUMN_SORT_ORDER,
-      {
-        value: order,
-        columnIndex: this.index,
-        columnType: this.type,
-        hasIndex: selectHasIndex(this.store.state)
-      })
+      { value: order, columnIndex: this.index, columnType: this.type })
     );
   }
 

@@ -18,7 +18,6 @@ import { ITriggerOptions } from "../headerMenu/HeaderMenu";
 import {COLUMN_TYPES, default as DataGridColumn, SORT_ORDER} from "../column/DataGridColumn";
 import {TextRenderer} from "@phosphor/datagrid";
 import {ALL_TYPES} from "../dataTypes";
-import {IDataGridModelColumnState} from "./IDataGridModelState";
 
 export interface IColumn {
   index: number,
@@ -30,10 +29,6 @@ export interface IColumnOptions {
   name: string,
   type: COLUMN_TYPES,
   menuOptions: ITriggerOptions
-}
-
-export interface IColumnsState {
-  [key: number]: IDataGridModelColumnState
 }
 
 export interface IColumns {
@@ -53,5 +48,6 @@ export interface IColumnState {
   visible: boolean,
   sortOrder: SORT_ORDER,
   filter: string|null,
-  position: number
+  position: number,
+  width?: number
 }

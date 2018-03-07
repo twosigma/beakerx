@@ -19,7 +19,8 @@ import {DataGridColumnAction, DataGridColumnsAction} from "../store/DataGridActi
 import {COLUMN_TYPES} from "./DataGridColumn";
 import {IColumnState} from "../interface/IColumn";
 
-export const UPDATE_COLUMN_STATES = 'UPDATE_COLUMNS_STATES';
+export const UPDATE_COLUMNS_STATES = 'UPDATE_COLUMNS_STATES';
+export const UPDATE_COLUMN_STATE = 'UPDATE_COLUMNS_STATE';
 export const UPDATE_COLUMNS_VISIBILITY = 'UPDATE_COLUMNS_VISIBILITY';
 export const UPDATE_COLUMNS_POSITION = 'UPDATE_COLUMNS_POSITION';
 export const UPDATE_COLUMN_POSITION = 'UPDATE_COLUMN_POSITION';
@@ -42,19 +43,22 @@ const reduceColumnsPosition = reduceColumnsState('position');
 const reduceColumnsNames = reduceColumnsState('name');
 const reduceColumnsTypes = reduceColumnsState('dataTypeName');
 const reduceColumnsFilters = reduceColumnsState('filter');
-const reduceColumnHorizontalAlignment = reduceColumnState('horizontalAlignment');
-const reduceColumnFilter = reduceColumnState('filter');
-const reduceColumnFormatForTimes = reduceColumnState('formatForTimes');
-const reduceColumnDisplayType = reduceColumnState('displayType');
-const reduceColumnSortOrder = reduceColumnState('sortOrder');
+const reduceColumnHorizontalAlignment = reduceColumnStateProperty('horizontalAlignment');
+const reduceColumnFilter = reduceColumnStateProperty('filter');
+const reduceColumnFormatForTimes = reduceColumnStateProperty('formatForTimes');
+const reduceColumnDisplayType = reduceColumnStateProperty('displayType');
+const reduceColumnSortOrder = reduceColumnStateProperty('sortOrder');
 
 const columnReducer: Reducer<IColumnsState> = (
   state: IColumnsState,
   action: DataGridColumnAction|DataGridColumnsAction
 ): IColumnsState => {
   switch(action.type) {
-    case UPDATE_COLUMN_STATES:
+    case UPDATE_COLUMNS_STATES:
       return { ...state, ...action.payload.value };
+      
+    case UPDATE_COLUMN_STATE:
+      return reduceColumnState(state, action);
 
     case UPDATE_COLUMNS_VISIBILITY:
       return reduceColumnsVisibility(state, action);
@@ -123,7 +127,18 @@ function updateColumnStateProperty(state, newState, property, columnType) {
   };
 }
 
-function reduceColumnState (property: string) {
+function reduceColumnState(state, action) {
+  if (!(action instanceof DataGridColumnAction)) {
+    return state;
+  }
+
+  const { columnType, columnIndex, value } = action.payload;
+  const key = `${columnType}_${columnIndex}`;
+
+  return { ...state, [key]: { ...state[key], ...value } };
+}
+
+function reduceColumnStateProperty(property: string) {
   return (state, action) => {
     if (!(action instanceof DataGridColumnAction)) {
       return state;
@@ -137,7 +152,7 @@ function reduceColumnState (property: string) {
 }
 
 function reduceColumnVisibility(state, action) {
-  const newState = reduceColumnState('visible')(state, action);
+  const newState = reduceColumnStateProperty('visible')(state, action);
 
   return reduceColumnPosition(newState, new DataGridColumnAction(
     UPDATE_COLUMN_POSITION,

@@ -49,6 +49,8 @@ import {
   selectTooltips,
   selectValues
 } from "./model/selectors";
+import {selectColumnIndexByPosition} from "./column/selectors";
+import throttle = DataGridHelpers.throttle;
 
 export class BeakerxDataGrid extends DataGrid {
   id: string;
@@ -244,16 +246,18 @@ export class BeakerxDataGrid extends DataGrid {
 
     this.columnManager.addColumns();
     this.rowManager.createFilterExpressionVars();
-    this.store.changed.connect((store) => {
-      this.resize();
-      this.model.reset();
-    });
+    this.store.changed.connect(throttle(this.handleStateChanged.bind(this), 150));
 
     this.addHighlighterManager();
     this.addCellRenderers();
     this.resizeHeader();
     this.setWidgetHeight();
     this.resizeSections();
+  }
+
+  private handleStateChanged() {
+    this.resize();
+    this.model.reset();
   }
 
   private addHighlighterManager() {
@@ -307,7 +311,7 @@ export class BeakerxDataGrid extends DataGrid {
   private resizeColumnSection(column) {
     this.resizeSection(
       'column',
-      column.getResolvedIndex(),
+      selectColumnIndexByPosition(this.store.state, column.type, column.index),
       this.getSectionWidth(column)
     );
   }

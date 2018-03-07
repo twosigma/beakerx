@@ -47,4 +47,13 @@ describe('(Python) Testing of init cells', function() {
     });
   });
 
+  describe('(Python) Press "Shift + Tab" to display doc ', function(){
+    it('doc tooltip is not empty ', function(){
+      cellIndex += 1;
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      var tooltip = beakerxPO.callDocAndGetItsTooltip(codeCell, 'time');
+      expect(tooltip.getText().length).toBeGreaterThan(0);
+    });
+  });
+
 });

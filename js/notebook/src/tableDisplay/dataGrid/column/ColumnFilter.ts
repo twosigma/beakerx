@@ -37,47 +37,43 @@ export default class ColumnFilter {
     this.addInputNode(options);
   }
 
-  showSearchInput(shouldFocus: boolean, x?: number) {
+  showSearchInput(shouldFocus: boolean) {
     this.useSearch = true;
     this.filterIcon.classList.remove('fa-filter');
     this.filterIcon.classList.add('fa-search');
-    this.showInput(shouldFocus, x);
+    this.showInput(shouldFocus);
   }
 
-  showFilterInput(shouldFocus: boolean, x?: number) {
+  showFilterInput(shouldFocus: boolean) {
     this.useSearch = false;
     this.filterIcon.classList.add('fa-filter');
     this.filterIcon.classList.remove('fa-search');
-    this.showInput(shouldFocus, x);
+    this.showInput(shouldFocus);
   }
 
   hideInput() {
     this.filterNode.style.visibility = 'hidden';
   }
 
-  resizeInput() {
+  updateInputNode() {
     this.filterNode.style.width = `${selectColumnWidth(this.dataGrid.store.state, this.column)}px`;
-    this.setInputPosition(this.dataGrid.getColumnOffset(
+    this.updateInputPosition();
+  }
+
+  private updateInputPosition() {
+    const position = this.dataGrid.getColumnOffset(
       selectColumnPosition(this.dataGrid.store.state, this.column),
       this.column.type
-    ));
+    );
+
+    this.filterNode.style.left = `${position}px`;
   }
 
-  setInputPosition(x) {
-    if (x && !isNaN(x)) {
-      this.filterNode.style.left = `${x}px`;
-    }
-  }
-
-  private showInput(shouldFocus: boolean, x?: number): void {
-    this.resizeInput();
+  private showInput(shouldFocus: boolean): void {
+    this.updateInputNode();
 
     if (this.filterNode.style.visibility === 'visible') {
       return;
-    }
-
-    if (x && !isNaN(x)) {
-      this.filterNode.style.left = `${x}px`;
     }
 
     this.filterNode.style.visibility = 'visible';

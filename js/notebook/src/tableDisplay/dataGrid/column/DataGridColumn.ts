@@ -33,7 +33,7 @@ import {
   selectColumnDisplayType,
   selectColumnFilter, selectColumnFormatForTimes,
   selectColumnHorizontalAlignment,
-  selectColumnIndexByPosition, selectColumnKeepTrigger, selectColumnSortOrder,
+  selectColumnKeepTrigger, selectColumnSortOrder,
   selectColumnState, selectColumnVisible
 } from "./selectors";
 import {DataGridColumnAction} from "../store/DataGridAction";
@@ -226,7 +226,7 @@ export default class DataGridColumn {
       UPDATE_COLUMN_WIDTH,
       { value: width, columnIndex: this.index, columnType: this.type }
     ));
-    this.columnFilter.resizeInput();
+    this.columnManager.updateColumnFilterNodes();
     this.menu.updateTriggerPosition();
   }
 
@@ -316,7 +316,6 @@ export default class DataGridColumn {
     );
 
     this.menu.hideTrigger();
-    this.menu.updateTriggerPosition();
     this.dataGrid.resize();
   }
 

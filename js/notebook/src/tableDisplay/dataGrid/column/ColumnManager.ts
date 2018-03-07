@@ -147,6 +147,11 @@ export default class ColumnManager {
     this.showFilterInputs(true, column);
   }
 
+  updateColumnFilterNodes() {
+    this.bodyColumns.forEach(column => column.columnFilter.updateInputNode());
+    this.indexColumns.forEach(column => column.columnFilter.updateInputNode());
+  }
+
   takeColumnsByCells(startCell: ICellData, endCell: ICellData) {
     let result: any[] = [];
 

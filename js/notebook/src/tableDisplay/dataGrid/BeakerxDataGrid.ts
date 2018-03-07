@@ -169,6 +169,7 @@ export class BeakerxDataGrid extends DataGrid {
     this.resizeHeader();
     this.resizeSections();
     this.updateWidgetWidth();
+    this.columnManager.updateColumnFilterNodes();
   }
 
   setInitialSize() {
@@ -222,6 +223,7 @@ export class BeakerxDataGrid extends DataGrid {
 
   private handleStateChanged() {
     this.model.reset();
+    this.resize();
   }
 
   private addHighlighterManager() {

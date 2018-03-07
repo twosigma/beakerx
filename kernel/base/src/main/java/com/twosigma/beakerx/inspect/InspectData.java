@@ -13,23 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-include 'base'
-include 'groovy'
-include 'kotlin'
-include 'scala'
-include 'java'
-include 'clojure'
-include 'sql'
+package com.twosigma.beakerx.inspect;
 
-include 'doclet'
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-if (System.getProperty('includeCpp', 'false') == 'true') {
-  include 'cpp'
+import java.io.Serializable;
+
+public class InspectData implements Serializable {
+    private String textplain;
+
+    public InspectData(String textplain) {
+        this.textplain = textplain;
+    }
+    @JsonProperty("text/plain")
+    public String getTextplain() {
+        return textplain;
+    }
+
 }
-
-// uncomment when demo projects have to be rebuild
-//include 'demoProjects'
-//include 'demoProjects:loadMagicJarDemo'
-//include 'demoProjects:demo'
-//include 'demoProjects:BeakerXClasspathTest'
-

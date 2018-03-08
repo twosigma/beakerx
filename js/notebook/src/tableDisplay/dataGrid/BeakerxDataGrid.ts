@@ -195,10 +195,7 @@ export class BeakerxDataGrid extends DataGrid {
   }
 
   setInitialSectionWidth(column) {
-    const columnOnPosition = this.columnManager.getColumnByPosition(column.type, column.index);
-    const value = this.getSectionWidth(column);
-
-    this.setSectionWidth('column', columnOnPosition, value);
+    this.setSectionWidth('column', column, this.getSectionWidth(column));
   }
 
   private init(store: BeakerxDataStore) {

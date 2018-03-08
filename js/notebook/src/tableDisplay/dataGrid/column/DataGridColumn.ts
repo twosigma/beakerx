@@ -62,7 +62,6 @@ export default class DataGridColumn {
   columnManager: ColumnManager;
   columnFilter: ColumnFilter;
   formatFn: CellRenderer.ConfigFunc<string>;
-  valuesIterator: MapIterator<number, any>;
   minValue: any;
   maxValue: any;
   dataTypeTooltip: CellTooltip;
@@ -74,7 +73,6 @@ export default class DataGridColumn {
     this.dataGrid = dataGrid;
     this.store = dataGrid.store;
     this.columnManager = columnManager;
-    this.valuesIterator = this.dataGrid.model.getColumnValuesIterator(this);
 
     this.handleHeaderCellHovered = this.handleHeaderCellHovered.bind(this);
 
@@ -321,7 +319,8 @@ export default class DataGridColumn {
 
   addMinMaxValues() {
     let valueResolver = this.getValueResolver();
-    let minMax = minmax(this.valuesIterator.clone(), (a:any, b:any) => {
+    let valuesIterator = this.dataGrid.model.getColumnValuesIterator(this);
+    let minMax = minmax(valuesIterator, (a:any, b:any) => {
       let value1 = valueResolver(a);
       let value2 = valueResolver(b);
 
@@ -334,10 +333,6 @@ export default class DataGridColumn {
 
     this.minValue = minMax ? minMax[0] : null;
     this.maxValue = minMax ? minMax[1] : null;
-  }
-
-  updateValuesIterator() {
-    this.valuesIterator = this.dataGrid.model.getColumnValuesIterator(this);
   }
 
   resetState() {

@@ -19,15 +19,18 @@ import { CellRenderer } from "@phosphor/datagrid";
 import DataGridColumn from "../column/DataGridColumn";
 import { find } from "@phosphor/algorithm";
 import {DEFAULT_CELL_BACKGROUND} from "../style/dataGridStyle";
+import {BeakerxDataGridModel} from "../model/BeakerxDataGridModel";
 
 export default class Highlighter {
   column: DataGridColumn;
+  model: BeakerxDataGridModel;
   state: IHihglighterState;
 
   constructor(column: DataGridColumn, state: IHihglighterState) {
     const valueResolver = column.getValueResolver();
 
     this.column = column;
+    this.model = column.dataGrid.model;
     this.state = { ...state };
     this.state.style = state.style || HIGHLIGHTER_STYLE.SINGLE_COLUMN;
     this.state.minVal = valueResolver(this.state.minVal || this.column.minValue);
@@ -43,9 +46,7 @@ export default class Highlighter {
     let valueResolver = this.column.getValueResolver();
 
     if (this.state.style === HIGHLIGHTER_STYLE.FULL_ROW) {
-      value = find(this.column.valuesIterator.clone(), (value, index) => {
-        return index === config.row;
-      });
+      value = this.model.rowManager.getValueByColumn(config.row, this.column.index, this.column.type);
     }
 
     return valueResolver(value);

@@ -25,7 +25,7 @@ import os
 import functools
 import pipes
 import sys
-import site
+import shutil
 from subprocess import check_call
 from setuptools import Command
 from setuptools.command.develop import develop
@@ -53,6 +53,7 @@ else:
 here = os.path.abspath(os.path.dirname(sys.argv[0]))
 root = os.path.abspath(os.path.join(here, os.pardir))
 kernel_path = os.path.join(root, 'kernel')
+kernel_source = os.path.join(kernel_path, 'base','src', 'main', 'java')
 is_repo = os.path.exists(os.path.join(root, '.git'))
 node_modules = os.path.join(here, 'js', 'node_modules')
 node_modules_path = ':'.join([
@@ -308,7 +309,6 @@ def run_gradle(path=kernel_path, cmd='build'):
             run([('' if sys.platform == 'win32' else './') + 'gradlew', '--no-daemon', cmd], cwd=path)
 
     return Gradle
-
 
 def ensure_targets(targets):
     """Return a Command that checks that certain files exist.

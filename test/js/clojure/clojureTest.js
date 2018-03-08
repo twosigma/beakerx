@@ -60,4 +60,13 @@ describe('Clojure base tests ', function () {
     });
   });
 
+  describe('(Clojure) Press "Shift + Tab" to display doc ', function(){
+    it('doc tooltip is not empty ', function(){
+      cellIndex += 1;
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      var tooltip = beakerxPO.callDocAndGetItsTooltip(codeCell, 'Plot');
+      expect(tooltip.getText()).toMatch(/com.twosigma.beakerx.chart.xychart.Plot/);
+    });
+  });
+
 });

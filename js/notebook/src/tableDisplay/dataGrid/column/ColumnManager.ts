@@ -152,6 +152,11 @@ export default class ColumnManager {
     this.indexColumns.forEach(column => column.columnFilter.updateInputNode());
   }
 
+  updateColumnMenuTriggers() {
+    this.bodyColumns.forEach(column => column.menu.updateTriggerPosition());
+    this.indexColumns.forEach(column => column.menu.updateTriggerPosition());
+  }
+
   takeColumnsByCells(startCell: ICellData, endCell: ICellData) {
     let result: any[] = [];
 

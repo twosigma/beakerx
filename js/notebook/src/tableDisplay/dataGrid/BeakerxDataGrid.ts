@@ -170,6 +170,7 @@ export class BeakerxDataGrid extends DataGrid {
     this.resizeSections();
     this.updateWidgetWidth();
     this.columnManager.updateColumnFilterNodes();
+    this.columnManager.updateColumnMenuTriggers();
   }
 
   setInitialSize() {

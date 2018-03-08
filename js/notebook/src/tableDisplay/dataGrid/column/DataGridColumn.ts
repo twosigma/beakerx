@@ -227,7 +227,7 @@ export default class DataGridColumn {
       { value: width, columnIndex: this.index, columnType: this.type }
     ));
     this.columnManager.updateColumnFilterNodes();
-    this.menu.updateTriggerPosition();
+    this.columnManager.updateColumnMenuTriggers();
   }
 
   getState() {

@@ -38,12 +38,15 @@ export default class EventManager {
     this.handleMouseOut = this.handleMouseOut.bind(this);
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleDoubleClick = this.handleDoubleClick.bind(this);
+    this.handleHeaderClick = this.handleHeaderClick.bind(this);
     this.handleCellHover = throttle<MouseEvent, void>(this.handleCellHover.bind(this), 150);
 
     this.dataGrid.node.removeEventListener('mouseout', this.handleMouseOut);
     this.dataGrid.node.addEventListener('mouseout', this.handleMouseOut);
     this.dataGrid.node.removeEventListener('dblclick', this.handleDoubleClick);
     this.dataGrid.node.addEventListener('dblclick', this.handleDoubleClick);
+    this.dataGrid.node.removeEventListener('mouseup', this.handleHeaderClick);
+    this.dataGrid.node.addEventListener('mouseup', this.handleHeaderClick);
     document.removeEventListener('keydown', this.handleKeyDown);
     document.addEventListener('keydown', this.handleKeyDown);
   }
@@ -99,7 +102,6 @@ export default class EventManager {
 
     this.dataGrid.focused = true;
     this.dataGrid.node.classList.add('bko-focused');
-    this.handleHeaderClick(event);
     disableKeyboardManager();
   }
 
@@ -124,7 +126,7 @@ export default class EventManager {
   }
 
   private handleHeaderClick(event: MouseEvent): void {
-    if (!this.dataGrid.isOverHeader(event)) {
+    if (!this.dataGrid.isOverHeader(event) || event.target !== this.dataGrid['_canvas']) {
       return;
     }
 

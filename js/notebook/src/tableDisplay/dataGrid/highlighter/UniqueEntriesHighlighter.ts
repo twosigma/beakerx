@@ -42,7 +42,7 @@ export default class UniqueEntriesHighlighter extends Highlighter {
 
   generateUniqueValues() {
     reduce(
-      this.column.valuesIterator.clone(),
+      this.model.getColumnValuesIterator(this.column),
       (acc, value) => acc.indexOf(value) === -1 && acc.push(value) && acc || acc,
       this.uniqueValues
     );
@@ -50,6 +50,7 @@ export default class UniqueEntriesHighlighter extends Highlighter {
 
   generateUniqueColors() {
     let valueResolver = this.column.getValueResolver();
+
     each(this.uniqueValues, (value, index) => {
       this.uniqueColors[valueResolver(value)] = this.generateColor(index, this.uniqueValues.length);
     });

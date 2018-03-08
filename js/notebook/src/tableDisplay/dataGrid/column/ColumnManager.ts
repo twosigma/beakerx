@@ -218,7 +218,6 @@ export default class ColumnManager {
 
   private recalculateColumnsMinMax(columns: DataGridColumn[]) {
     columns.forEach(column => {
-      column.updateValuesIterator();
       column.addMinMaxValues();
     });
   }

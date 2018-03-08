@@ -9,6 +9,9 @@
     "moduleResolution": "Node",
     "noEmit": true,
     "lib": ["dom", "es5", "es2015"],
-    "types": []
+    "types": [],
+    "paths": {
+      "jquery": ["jquery/dist/jquery.js"]
+    }
   }
 }

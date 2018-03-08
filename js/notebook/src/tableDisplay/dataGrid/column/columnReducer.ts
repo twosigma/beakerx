@@ -18,6 +18,7 @@ import {Reducer} from "@phosphor/datastore";
 import {DataGridColumnAction, DataGridColumnsAction} from "../store/DataGridAction";
 import {IColumnsState, IColumnState} from "../interface/IColumn";
 import {COLUMN_TYPES} from "./enums";
+import {selectBodyColumnVisibility} from "./selectors";
 
 export const UPDATE_COLUMNS_STATES = 'UPDATE_COLUMNS_STATES';
 export const UPDATE_COLUMN_STATE = 'UPDATE_COLUMNS_STATE';
@@ -159,13 +160,17 @@ function reduceColumnStateProperty(property: string) {
 }
 
 function reduceColumnVisibility(state, action) {
-  const newState = reduceColumnStateProperty('visible')(state, action);
+  const newState: IColumnsState = reduceColumnStateProperty('visible')(state, action);
+  const visibleStates: IColumnState[] = Array.from(newState.values()).filter(
+    columnState => columnState.columnType === COLUMN_TYPES.body && columnState.visible
+  );
 
+  // Move column to the end or behind the visible columns
   return reduceColumnPosition(newState, new DataGridColumnAction(
     UPDATE_COLUMN_POSITION,
     {
       ...action.payload,
-      value: state.size - 2 // do not count the index column state
+      value: action.payload.value ? visibleStates.length - 1 : visibleStates.length
     }
   ));
 }

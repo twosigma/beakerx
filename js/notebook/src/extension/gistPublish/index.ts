@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import * as $ from 'jquery';
+import * as $ from 'jquery/dist/jquery.js';
 import GistPublishModal from './gistPublishModal';
 
 const dialog = require('base/js/dialog');
@@ -101,7 +101,7 @@ function doPublish(personalAccessToken): void {
     }
   };
 
-  $.ajax(gistsUrl, settings).catch((jqXHR, status, err) => {
+  $.ajax(gistsUrl, settings).fail((jqXHR, status, err) => {
     let errorMsg = jqXHR.readyState === 0 && !err ? 'NETWORK ERROR!' : err;
 
     if (jqXHR.responseJSON && jqXHR.responseJSON.message) {

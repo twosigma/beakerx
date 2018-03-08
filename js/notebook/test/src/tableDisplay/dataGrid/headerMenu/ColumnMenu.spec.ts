@@ -21,17 +21,21 @@ import ColumnMenu from '@beakerx/tableDisplay/dataGrid/headerMenu/ColumnMenu';
 import { createColumnMenuItems } from '@beakerx/tableDisplay/dataGrid/headerMenu/createColumnMenuItems';
 import HeaderMenu from '@beakerx/tableDisplay/dataGrid/headerMenu/HeaderMenu';
 import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
-import DataGridColumn, { COLUMN_TYPES } from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
+import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 import menuOptionsMock from "../mock/menuOptionsMock";
 import modelStateMock from "../mock/modelStateMock";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
 
 describe('ColumnMenu', () => {
   let columnMenu;
   let column;
   let dataGrid;
+  let dataStore;
 
   before(() => {
-    dataGrid = new BeakerxDataGrid({}, modelStateMock);
+    dataStore = createStore(modelStateMock);
+    dataGrid = new BeakerxDataGrid({}, dataStore);
     column = new DataGridColumn({
       index: 0,
       type: COLUMN_TYPES.body,

@@ -15,16 +15,18 @@
  */
 
 import { expect } from 'chai';
-import { BeakerxDataGrid } from "../../../../../src/tableDisplay/dataGrid/BeakerxDataGrid";
-import DataGridColumn, { COLUMN_TYPES } from '../../../../../src/tableDisplay/dataGrid/column/DataGridColumn';
+import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import DataGridColumn from '@beakerx/tableDisplay/dataGrid/column/DataGridColumn';
 import modelStateMock from "../mock/modelStateMock";
 import ColumnFilter from "@beakerx/tableDisplay/dataGrid/column/ColumnFilter";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
 
 declare var require: Function;
 
-
 describe('ColumnFilter', () => {
-  const dataGrid = new BeakerxDataGrid({}, modelStateMock);
+  const dataStore = createStore(modelStateMock);
+  const dataGrid = new BeakerxDataGrid({}, dataStore);
   const columnManager = dataGrid.columnManager;
   const bodyDataGridColumn = new DataGridColumn({
     type: COLUMN_TYPES.body,

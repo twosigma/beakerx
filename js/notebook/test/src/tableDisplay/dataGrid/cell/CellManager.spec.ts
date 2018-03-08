@@ -19,14 +19,17 @@ import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid"
 import modelStateMock from "../mock/modelStateMock";
 import CellManager from "@beakerx/tableDisplay/dataGrid/cell/CellManager";
 import cellDataMock from "../mock/cellDataMock";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
 
 describe('CellManager', () => {
   let dataGrid;
+  let dataStore;
   let cellManager;
   let cellSelectionManager;
 
   before(() => {
-    dataGrid = new BeakerxDataGrid({}, modelStateMock);
+    dataStore = createStore(modelStateMock);
+    dataGrid = new BeakerxDataGrid({}, dataStore);
     cellManager = dataGrid.cellManager;
     cellSelectionManager = dataGrid.cellSelectionManager;
     cellSelectionManager.setStartCell(cellDataMock);

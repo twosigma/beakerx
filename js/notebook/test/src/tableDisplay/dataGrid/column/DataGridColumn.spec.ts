@@ -14,26 +14,25 @@
  *  limitations under the License.
  */
 
+import * as sinon from 'sinon';
 import { expect } from 'chai';
 import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
-import DataGridColumn, { COLUMN_TYPES } from '@beakerx/tableDisplay/dataGrid/column/DataGridColumn';
+import DataGridColumn from '@beakerx/tableDisplay/dataGrid/column/DataGridColumn';
 import ColumnMenu from "@beakerx/tableDisplay/dataGrid/headerMenu/ColumnMenu";
 import IndexMenu from "@beakerx/tableDisplay/dataGrid/headerMenu/IndexMenu";
 import modelStateMock from "../mock/modelStateMock";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
 
 declare var require: Function;
 
 describe('DataGridColumn', () => {
-  const dataGrid = new BeakerxDataGrid({}, modelStateMock);
+  const dataStore = createStore(modelStateMock);
+  const dataGrid = new BeakerxDataGrid({}, dataStore);
   const columnManager = dataGrid.columnManager;
 
   describe('DataGridColumn.type === "body"', () => {
-    const bodyDataGridColumn = new DataGridColumn({
-      type: COLUMN_TYPES.body,
-      index: 0,
-      name: 'index',
-      menuOptions: { x: 0, y: 0, height: 20, width: 20 }
-    }, dataGrid, columnManager);
+    const bodyDataGridColumn = columnManager.bodyColumns[0];
 
     it('should have the body column type set', () => {
       expect(bodyDataGridColumn.type).to.equal(COLUMN_TYPES.body);
@@ -45,19 +44,42 @@ describe('DataGridColumn', () => {
 
     it('should change the trigger state', () => {
       bodyDataGridColumn.handleHeaderCellHovered(
-        dataGrid, { type: COLUMN_TYPES.body, column: 0, row: 0, delta: 0, offset: 0 }
+        dataGrid, { type: COLUMN_TYPES.body, column: 0, row: 0, delta: 0, offset: 10, offsetTop: 10 }
       );
+
       expect(bodyDataGridColumn.menu['triggerNode'].style.visibility).to.equal('visible');
+    });
+
+    it('should implement move method', () => {
+      expect(bodyDataGridColumn).to.have.property('move');
+      expect(bodyDataGridColumn.move).to.be.a('Function');
+
+      bodyDataGridColumn.move(1);
+      expect(bodyDataGridColumn.getPosition()).to.equal(1);
+
+      bodyDataGridColumn.hide();
+      expect(bodyDataGridColumn.getPosition()).to.equal(1);
+      expect(columnManager.bodyColumns[1].getPosition()).to.equal(0);
+
+      bodyDataGridColumn.show();
+      bodyDataGridColumn.move(0);
+
+      expect(bodyDataGridColumn.getPosition()).to.equal(0);
+    });
+
+    it('should call toggleVisibility', () => {
+      const stub = sinon.stub(bodyDataGridColumn, 'toggleVisibility');
+
+      bodyDataGridColumn.hide();
+      bodyDataGridColumn.show();
+
+      expect(stub.calledTwice).to.be.true;
+      stub.restore();
     });
   });
 
   describe('DataGridColumn.type === "index"', () => {
-    const indexDataGridColumn = new DataGridColumn({
-      type: COLUMN_TYPES.index,
-      index: 0,
-      name: 'index',
-      menuOptions: { x: 0, y: 0, height: 20, width: 20 }
-    }, dataGrid, columnManager);
+    const indexDataGridColumn = columnManager.indexColumns[0];
 
     it('should have the index column type set', () => {
       expect(indexDataGridColumn.type).to.equal(COLUMN_TYPES.index);
@@ -69,7 +91,7 @@ describe('DataGridColumn', () => {
 
     it('should change the trigger state', () => {
       indexDataGridColumn.handleHeaderCellHovered(
-        dataGrid, { type: COLUMN_TYPES.index, column: 0, row: 0, delta: 0, offset: 0 }
+        dataGrid, { type: COLUMN_TYPES.index, column: 0, row: 0, delta: 0, offset: 0, offsetTop: 0 }
       );
       expect(indexDataGridColumn.menu['triggerNode'].style.visibility).to.equal('visible');
     });

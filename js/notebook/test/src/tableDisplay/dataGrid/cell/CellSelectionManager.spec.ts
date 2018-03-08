@@ -18,19 +18,22 @@ import { expect } from 'chai';
 import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
 import modelStateMock from "../mock/modelStateMock";
 import CellSelectionManager from "@beakerx/tableDisplay/dataGrid/cell/CellSelectionManager";
-import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 import {ICellData} from "@beakerx/tableDisplay/dataGrid/interface/ICell";
 import cellConfigMock from "../mock/cellConfigMock";
 import cellDataMock from "../mock/cellDataMock";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
 
 describe('CellSelectionManager', () => {
   let dataGrid;
+  let dataStore;
   let cellSelectionManager;
   let startCell: ICellData = { ...cellDataMock, type: COLUMN_TYPES.index };
   let endCell: ICellData = { ...cellDataMock, row: 2, column: 3 };
 
   before(() => {
-    dataGrid = new BeakerxDataGrid({}, modelStateMock);
+    dataStore = createStore(modelStateMock);
+    dataGrid = new BeakerxDataGrid({}, dataStore);
     cellSelectionManager = dataGrid.cellSelectionManager;
   });
 

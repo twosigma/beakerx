@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 import {IColumnOptions} from "@beakerx/tableDisplay/dataGrid/interface/IColumn";
+import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
 
 let columnOptionsMock: IColumnOptions = {
   index: 0,

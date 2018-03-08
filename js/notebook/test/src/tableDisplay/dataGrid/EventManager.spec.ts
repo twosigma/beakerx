@@ -20,13 +20,16 @@ import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid"
 import modelStateMock from "./mock/modelStateMock";
 import EventManager from "@beakerx/tableDisplay/dataGrid/EventManager";
 import cellDataMock from "./mock/cellDataMock";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
 
 describe('EventManager', () => {
   let dataGrid;
   let eventManager;
+  let dataStore;
 
   before(() => {
-    dataGrid = new BeakerxDataGrid({}, modelStateMock);
+    dataStore = createStore(modelStateMock);
+    dataGrid = new BeakerxDataGrid({}, dataStore);
     eventManager = dataGrid.eventManager;
   });
 

@@ -24,15 +24,18 @@ import {
   DEFAULT_CELL_BACKGROUND,
   FOCUSED_CELL_BACKGROUND
 } from "@beakerx/tableDisplay/dataGrid/style/dataGridStyle";
-import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
 
 describe('CellFocusManager', () => {
   let dataGrid;
+  let dataStore;
   let cellFocusManager;
   let focusedCell = { ...cellDataMock };
 
   before(() => {
-    dataGrid = new BeakerxDataGrid({}, modelStateMock);
+    dataStore = createStore(modelStateMock);
+    dataGrid = new BeakerxDataGrid({}, dataStore);
     cellFocusManager = dataGrid.cellFocusManager;
   });
 

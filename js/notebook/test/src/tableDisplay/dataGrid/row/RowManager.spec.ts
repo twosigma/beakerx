@@ -16,16 +16,18 @@
 
 import { expect } from 'chai';
 import RowManager from "@beakerx/tableDisplay/dataGrid/row/RowManager";
-import {SORT_ORDER} from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 import {BeakerxDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
 import modelStateMock from "../mock/modelStateMock";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import {SORT_ORDER} from "@beakerx/tableDisplay/dataGrid/column/enums";
 
 describe('RowManager', () => {
   const values = [[1,2,3,4], [5,6,7,8]];
   const columnNames = ['test', 'test1', 'test2', 'test3'];
   const types = ['double', 'double', 'double', 'double'];
   const modelState = { ...modelStateMock, values, columnNames, types };
-  const dataGrid = new BeakerxDataGrid({}, modelState);
+  const dataStore = createStore(modelState);
+  const dataGrid = new BeakerxDataGrid({}, dataStore);
 
   describe('hasIndex = false', () => {
     const rowManager = dataGrid.rowManager;
@@ -74,7 +76,8 @@ describe('RowManager', () => {
   });
 
   describe('hasIndex = true', () => {
-    const dataGrid = new BeakerxDataGrid({}, { ...modelState, hasIndex: true });
+    const dataStore = createStore({ ...modelState, hasIndex: true });
+    const dataGrid = new BeakerxDataGrid({}, dataStore);
     const rowManager = dataGrid.rowManager;
 
     it('should have rows property', () => {

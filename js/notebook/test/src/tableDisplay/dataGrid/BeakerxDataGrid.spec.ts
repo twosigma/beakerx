@@ -21,12 +21,15 @@ import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid"
 import { BeakerxDataGridModel } from "@beakerx/tableDisplay/dataGrid/model/BeakerxDataGridModel";
 import modelStateMock from "./mock/modelStateMock";
 import ColumnManager from "@beakerx/tableDisplay/dataGrid/column/ColumnManager";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
 
 describe('BeakerxDataGrid', () => {
   let dataGrid;
+  let dataStore;
 
   before(() => {
-    dataGrid = new BeakerxDataGrid({}, modelStateMock);
+    dataStore = createStore(modelStateMock);
+    dataGrid = new BeakerxDataGrid({}, dataStore);
   });
 
   after(() => {

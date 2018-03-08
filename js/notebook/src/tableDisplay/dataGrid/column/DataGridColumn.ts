@@ -33,7 +33,7 @@ import {
   selectColumnDisplayType,
   selectColumnFilter, selectColumnFormatForTimes,
   selectColumnHorizontalAlignment,
-  selectColumnKeepTrigger, selectColumnSortOrder,
+  selectColumnKeepTrigger, selectColumnPosition, selectColumnSortOrder,
   selectColumnState, selectColumnVisible
 } from "./selectors";
 import {DataGridColumnAction} from "../store/DataGridAction";
@@ -258,6 +258,10 @@ export default class DataGridColumn {
 
   getFormatForTimes() {
     return selectColumnFormatForTimes(this.store.state, this);
+  }
+
+  getPosition() {
+    return selectColumnPosition(this.store.state, this);
   }
 
   getHighlighter(highlighterType: HIGHLIGHTER_TYPE) {

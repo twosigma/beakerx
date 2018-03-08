@@ -15,7 +15,7 @@
  */
 
 import {ICellData} from "@beakerx/tableDisplay/dataGrid/interface/ICell";
-import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
+import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
 
 const cellDataMock: ICellData = {
   row: 0,

@@ -15,7 +15,8 @@
  */
 
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
-import DataGridColumn, {COLUMN_TYPES} from "./DataGridColumn";
+import DataGridColumn from "./DataGridColumn";
+import {selectColumnPosition, selectColumnWidth} from "./selectors";
 
 export default class ColumnFilter {
   dataGrid: BeakerxDataGrid;
@@ -36,31 +37,43 @@ export default class ColumnFilter {
     this.addInputNode(options);
   }
 
-  showSearchInput(shouldFocus: boolean, x?: number) {
+  showSearchInput(shouldFocus: boolean) {
     this.useSearch = true;
     this.filterIcon.classList.remove('fa-filter');
     this.filterIcon.classList.add('fa-search');
-    this.showInput(shouldFocus, x);
+    this.showInput(shouldFocus);
   }
 
-  showFilterInput(shouldFocus: boolean, x?: number) {
+  showFilterInput(shouldFocus: boolean) {
     this.useSearch = false;
     this.filterIcon.classList.add('fa-filter');
     this.filterIcon.classList.remove('fa-search');
-    this.showInput(shouldFocus, x);
+    this.showInput(shouldFocus);
   }
 
   hideInput() {
     this.filterNode.style.visibility = 'hidden';
   }
 
-  private showInput(shouldFocus: boolean, x?: number): void {
+  updateInputNode() {
+    this.filterNode.style.width = `${selectColumnWidth(this.dataGrid.store.state, this.column)}px`;
+    this.updateInputPosition();
+  }
+
+  private updateInputPosition() {
+    const position = this.dataGrid.getColumnOffset(
+      selectColumnPosition(this.dataGrid.store.state, this.column),
+      this.column.type
+    );
+
+    this.filterNode.style.left = `${position}px`;
+  }
+
+  private showInput(shouldFocus: boolean): void {
+    this.updateInputNode();
+
     if (this.filterNode.style.visibility === 'visible') {
       return;
-    }
-
-    if (x && !isNaN(x)) {
-      this.filterNode.style.left = `${x}px`;
     }
 
     this.filterNode.style.visibility = 'visible';
@@ -127,6 +140,8 @@ export default class ColumnFilter {
     this.filterIcon = this.filterNode.querySelector('.filter-icon') || new HTMLSpanElement();
     this.filterInput = this.filterNode.querySelector('input') || new HTMLInputElement();
     this.clearIcon = this.filterNode.querySelector('.clear-filter') || new HTMLSpanElement();
+    this.filterInput.style.height = `${options.height}px`;
+
     this.bindEvents();
   }
 
@@ -141,5 +156,7 @@ export default class ColumnFilter {
         this.filterInput.value = '';
       });
     }
+
+
   }
 }

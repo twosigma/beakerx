@@ -18,13 +18,18 @@ import '../../../global.env';
 import ColumnManager from "../column/ColumnManager";
 import createModalTemplate from './columnLimitModalTemplate';
 import {BeakerxDataGrid} from "../BeakerxDataGrid";
+import {selectColumnNames} from "../model/selectors";
+import {BeakerxDataStore} from "../store/dataStore";
+import {selectOutputColumnLimit} from "../column/selectors";
 
 export default class ColumnLimitModal {
+  store: BeakerxDataStore;
   columnManager: ColumnManager;
   container: HTMLElement;
   modalId: string;
 
   constructor(dataGrid: BeakerxDataGrid, container: HTMLElement) {
+    this.store = dataGrid.store;
     this.columnManager = dataGrid.columnManager;
     this.container = container;
     this.modalId = dataGrid.id;
@@ -33,7 +38,7 @@ export default class ColumnLimitModal {
   }
 
   shouldOpenModal() {
-    return this.columnManager.outputColumnLimit < this.columnManager.modelState.columnNames.length;
+    return selectOutputColumnLimit(this.store.state) < selectColumnNames(this.store.state).length;
   }
 
   init() {
@@ -46,8 +51,8 @@ export default class ColumnLimitModal {
     modal.id = this.modalId;
     modal.style.display = 'none';
     modal.innerHTML = createModalTemplate(
-      this.columnManager.outputColumnLimit,
-      this.columnManager.modelState.columnNames.length
+      selectOutputColumnLimit(this.store.state),
+      selectColumnNames(this.store.state).length
     );
 
     this.container.appendChild(modal);

@@ -20,7 +20,7 @@ import { ALL_TYPES, getAllowedTypesByType } from "../dataTypes";
 import DataGridColumn from "../column/DataGridColumn";
 
 export function createFormatMenuItems(column: DataGridColumn) {
-  const types = getAllowedTypesByType(column.state.dataType);
+  const types = getAllowedTypesByType(column.getDataType());
   let items: MenuItem[] = [];
 
   types.forEach((obj) => {
@@ -32,7 +32,7 @@ export function createFormatMenuItems(column: DataGridColumn) {
 
     let item: MenuItem = {
       title: obj.name,
-      isChecked: (column) => column.state.displayType === obj.type
+      isChecked: (column) => column.getDisplayType() === obj.type
     };
 
     if (obj.type === 4) { //double with precision
@@ -48,14 +48,11 @@ export function createFormatMenuItems(column: DataGridColumn) {
 
 export function createPrecisionSubitems(column: DataGridColumn): MenuItem[] {
   const items: MenuItem[] = [];
-  const formetters = column.dataGrid.model.dataFormatter.getdoubleWithPrecisionFormatters(
-    scopeData.allPrecissions
-  );
 
-  formetters.forEach((formatter, precision) => {
+  scopeData.allPrecissions.forEach((precision) => {
     let item = {
       title: `${precision}`,
-      isChecked: (column) => `4.${precision}` === column.state.displayType,
+      isChecked: (column) => `4.${precision}` === column.getDisplayType(),
       action: (column) => column.setDisplayType(`4.${precision}`)
     };
 
@@ -72,10 +69,12 @@ export function createTimeSubitems(): MenuItem[] {
     let item = {
       title: TIME_UNIT_FORMATS[key].title,
       isChecked: (column) => {
+        const displayType = column.getDisplayType();
+
         return (
-          column.state.displayType === ALL_TYPES.datetime ||
-          column.state.displayType === ALL_TYPES.time
-        ) && TIME_UNIT_FORMATS[key] === column.state.formatForTimes
+          displayType === ALL_TYPES.datetime ||
+          displayType === ALL_TYPES.time
+        ) && TIME_UNIT_FORMATS[key] === column.getFormatForTimes()
       },
       action: (column) => column.setTimeDisplayType(TIME_UNIT_FORMATS[key])
     };

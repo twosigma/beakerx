@@ -25,8 +25,16 @@ import {
   DEFAULT_DATA_FONT_SIZE,
   DEFAULT_HEADER_FONT_COLOR, formatColor
 } from "../style/dataGridStyle";
+import {BeakerxDataStore} from "../store/dataStore";
+import {
+  selectDataFontSize,
+  selectFontColor,
+  selectHeaderFontSize,
+  selectHeadersVertical
+} from "../model/selectors";
 
 export default class BeakerxCellRenderer extends TextRenderer {
+  store: BeakerxDataStore;
   dataGrid: BeakerxDataGrid;
   backgroundColor: CellRenderer.ConfigOption<string>;
   horizontalAlignment: CellRenderer.ConfigOption<TextRenderer.HorizontalAlignment>;
@@ -37,6 +45,7 @@ export default class BeakerxCellRenderer extends TextRenderer {
   constructor(dataGrid: BeakerxDataGrid, options?: TextRenderer.IOptions) {
     super(options);
     
+    this.store = dataGrid.store;
     this.dataGrid = dataGrid;
     this.backgroundColor = this.getBackgroundColor.bind(this);
     this.horizontalAlignment = this.getHorizontalAlignment.bind(this);
@@ -77,8 +86,8 @@ export default class BeakerxCellRenderer extends TextRenderer {
 
   getFont({ region }): string {
     let fontSize = (region === 'column-header' || region === 'corner-header')
-      ? this.dataGrid.model.state.headerFontSize
-      : this.dataGrid.model.state.dataFontSize;
+      ? selectHeaderFontSize(this.store.state)
+      : selectDataFontSize(this.store.state);
 
     return `normal ${fontSize || DEFAULT_DATA_FONT_SIZE}px Lato, Helvetica, sans-serif`
   }
@@ -88,7 +97,7 @@ export default class BeakerxCellRenderer extends TextRenderer {
       return DEFAULT_DATA_FONT_COLOR;
     }
 
-    let colors = this.dataGrid.model.state.fontColor;
+    let colors = selectFontColor(this.store.state);
     let dataFontColor = colors && colors[config.row]
       ? formatColor(colors[config.row][config.column])
       : DEFAULT_DATA_FONT_COLOR;
@@ -180,7 +189,7 @@ export default class BeakerxCellRenderer extends TextRenderer {
       gc.clip();
     }
 
-    let verticalHeader = DataGridCell.isHeaderCell(config) && this.dataGrid.model.state.headersVertical;
+    let verticalHeader = DataGridCell.isHeaderCell(config) && selectHeadersVertical(this.store.state);
 
     // Set the gc state.
     gc.textBaseline = 'bottom';

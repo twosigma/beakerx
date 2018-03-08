@@ -17,8 +17,10 @@
 import {BeakerxDataGrid} from "../BeakerxDataGrid";
 import {ICellData} from "../interface/ICell";
 import {CellRenderer} from "@phosphor/datagrid";
-import {COLUMN_TYPES, default as DataGridColumn} from "../column/DataGridColumn";
+import DataGridColumn from "../column/DataGridColumn";
 import {DEFAULT_CELL_BACKGROUND, FOCUSED_CELL_BACKGROUND} from "../style/dataGridStyle";
+import {selectBodyColumnVisibility} from "../column/selectors";
+import {COLUMN_TYPES} from "../column/enums";
 
 export default class CellFocusManager {
   dataGrid: BeakerxDataGrid;
@@ -72,7 +74,7 @@ export default class CellFocusManager {
     const nextColumn = this.focusedCellData.type === COLUMN_TYPES.body
       ? this.focusedCellData.column + 1
       : this.focusedCellData.column;
-    const lastColumnIndex = this.dataGrid.columnManager.bodyColumnsState.visibility
+    const lastColumnIndex = selectBodyColumnVisibility(this.dataGrid.store.state)
       .filter(visible => visible).length - 1;
 
     this.setFocusedCell({

@@ -16,7 +16,6 @@
 
 import { Menu } from '@phosphor/widgets'
 import { Message } from '@phosphor/messaging'
-import $ from 'jquery';
 
 export default class BkoMenu extends Menu {
   keepOpen: boolean|undefined;
@@ -59,7 +58,7 @@ export default class BkoMenu extends Menu {
     }
 
     const itemNode = this.parentMenu.contentNode.children[this.parentMenu.activeIndex];
-    const itemOffset = $(itemNode).offset().top;
+    const itemOffset = itemNode.getBoundingClientRect().top;
     this.node.style.top = `${itemOffset}px`;
 
     this.show();

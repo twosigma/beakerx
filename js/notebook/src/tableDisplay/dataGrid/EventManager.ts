@@ -15,18 +15,24 @@
  */
 
 import {BeakerxDataGrid} from "./BeakerxDataGrid";
-import DataGridColumn, {COLUMN_TYPES} from "./column/DataGridColumn";
+import DataGridColumn from "./column/DataGridColumn";
 import {HIGHLIGHTER_TYPE} from "./interface/IHighlighterState";
 import {DataGridHelpers} from "./dataGridHelpers";
 import disableKeyboardManager = DataGridHelpers.disableKeyboardManager;
 import enableKeyboardManager = DataGridHelpers.enableKeyboardManager;
 import throttle = DataGridHelpers.throttle;
 import {ICellData} from "./interface/ICell";
+import {BeakerxDataStore} from "./store/dataStore";
+import {selectDoubleClickTag, selectHasDoubleClickAction} from "./model/selectors";
+import {selectColumnIndexByPosition} from "./column/selectors";
+import {COLUMN_TYPES} from "./column/enums";
 
 export default class EventManager {
   dataGrid: BeakerxDataGrid;
+  store: BeakerxDataStore;
 
   constructor(dataGrid: BeakerxDataGrid) {
+    this.store = dataGrid.store;
     this.dataGrid = dataGrid;
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleMouseOut = this.handleMouseOut.bind(this);
@@ -128,8 +134,10 @@ export default class EventManager {
       return;
     }
 
-    const column = this.dataGrid.columnManager.columns[data.type][data.column];
-    const destColumn = this.dataGrid.columnManager.getColumnByIndex(data.type, column.getResolvedIndex());
+    const destColumn = this.dataGrid.columnManager.getColumnByIndex(
+      data.type,
+      selectColumnIndexByPosition(this.store.state, data.type, data.column)
+    );
 
     destColumn.toggleSort();
   }
@@ -201,7 +209,7 @@ export default class EventManager {
       return;
     }
 
-    if (this.dataGrid.model.state.hasDoubleClickAction) {
+    if (selectHasDoubleClickAction(this.store.state)) {
       this.dataGrid.commSignal.emit({
         event: 'DOUBLE_CLICK',
         row : data.row,
@@ -209,7 +217,7 @@ export default class EventManager {
       });
     }
 
-    if (this.dataGrid.model.state.doubleClickTag) {
+    if (selectDoubleClickTag(this.store.state)) {
       this.dataGrid.commSignal.emit({
         event: 'actiondetails',
         params: {

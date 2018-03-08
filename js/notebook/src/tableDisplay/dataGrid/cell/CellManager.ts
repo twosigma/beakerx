@@ -16,9 +16,9 @@
 
 import {BeakerxDataGrid} from "../BeakerxDataGrid";
 import * as bkUtils from '../../../shared/bkUtils';
-import {COLUMN_TYPES} from "../column/DataGridColumn";
 import {IRangeCells} from "./CellSelectionManager";
 import {CellRenderer, DataModel} from "@phosphor/datagrid";
+import {COLUMN_TYPES} from "../column/enums";
 
 export default class CellManager {
   dataGrid: BeakerxDataGrid;

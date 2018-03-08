@@ -70,7 +70,7 @@ function doPublish(panel: NotebookPanel, personalAccessToken: string|null): void
     }
   };
 
-  $.ajax(gistsUrl, settings).catch((jqXHR, status, err) => {
+  $.ajax(gistsUrl, settings).fail((jqXHR, status, err) => {
     let errorMsg = jqXHR.readyState === 0 && !err ? 'NETWORK ERROR!' : err;
 
     if (jqXHR.responseJSON && jqXHR.responseJSON.message) {

@@ -25,9 +25,11 @@ import cellConfigMock from "../mock/cellConfigMock";
 import ThreeColorHeatmapHighlighter
   from "@beakerx/tableDisplay/dataGrid/highlighter/ThreeColorHeatmapHighlighter";
 import { HIGHLIGHTER_TYPE } from "@beakerx/tableDisplay/dataGrid/interface/IHighlighterState";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
 
 describe('ThreeColorHeatmapHighlighter', () => {
-  const dataGrid = new BeakerxDataGrid({}, modelStateMock);
+  const dataStore = createStore(modelStateMock);
+  const dataGrid = new BeakerxDataGrid({}, dataStore);
   const column = new DataGridColumn(
     columnOptionsMock,
     dataGrid,

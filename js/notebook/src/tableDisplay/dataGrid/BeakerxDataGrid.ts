@@ -20,7 +20,7 @@ import { Widget } from "@phosphor/widgets";
 import { Signal } from '@phosphor/signaling';
 import { ICellData } from "./interface/ICell";
 import { CellRendererFactory } from "./cell/CellRendererFactory";
-import DataGridColumn, { COLUMN_TYPES } from "./column/DataGridColumn";
+import DataGridColumn from "./column/DataGridColumn";
 import IDataModelState from "./interface/IDataGridModelState";
 import HighlighterManager from "./highlighter/HighlighterManager";
 import IHihglighterState from "./interface/IHighlighterState";
@@ -40,11 +40,22 @@ import {
 } from "./style/dataGridStyle";
 import CellTooltipManager from "./cell/CellTooltipManager";
 import * as bkUtils from '../../shared/bkUtils';
-import findSectionIndex = DataGridHelpers.findSectionIndex;
 import getStringSize = DataGridHelpers.getStringSize;
+import {BeakerxDataStore} from "./store/dataStore";
+import {
+  selectCellHighlighters, selectDataFontSize,
+  selectHasIndex, selectHeaderFontSize, selectHeadersVertical,
+  selectTooltips,
+  selectValues
+} from "./model/selectors";
+import {selectColumnWidth} from "./column/selectors";
+import throttle = DataGridHelpers.throttle;
+import DataGridCell from "./cell/DataGridCell";
+import {COLUMN_TYPES} from "./column/enums";
 
 export class BeakerxDataGrid extends DataGrid {
   id: string;
+  store: BeakerxDataStore;
   columnSections: any;
   columnHeaderSections: any;
   model: BeakerxDataGridModel;
@@ -66,7 +77,7 @@ export class BeakerxDataGrid extends DataGrid {
   cellHovered = new Signal<this, ICellData|null>(this);
   commSignal = new Signal<this, {}>(this);
 
-  constructor(options: DataGrid.IOptions, modelState: IDataModelState) {
+  constructor(options: DataGrid.IOptions, dataStore: BeakerxDataStore) {
     super(options);
 
     //@todo this is hack to use private properties
@@ -79,8 +90,11 @@ export class BeakerxDataGrid extends DataGrid {
     this.baseRowSize = DEFAULT_ROW_HEIGHT;
     this.baseColumnHeaderSize = DEFAULT_ROW_HEIGHT;
 
-    this.resizeColumnSection = this.resizeColumnSection.bind(this);
-    this.init(modelState);
+    this.setSectionWidth = this.setSectionWidth.bind(this);
+    this.setInitialSectionWidth = this.setInitialSectionWidth.bind(this);
+    this.resizeSectionWidth = this.resizeSectionWidth.bind(this);
+    this.resize = throttle(this.resize.bind(this), 150);
+    this.init(dataStore);
   }
 
   handleEvent(event: Event): void {
@@ -91,7 +105,13 @@ export class BeakerxDataGrid extends DataGrid {
     super.messageHook(handler, msg);
 
     if (handler === this.viewport && msg.type === 'section-resize-request') {
+      this.columnSections['_sections'].forEach(({ index, size }) => {
+        let columnOnPosition = this.columnManager.getColumnByPosition(COLUMN_TYPES.body, index);
+
+        columnOnPosition.setWidth(size);
+      });
       this.updateWidgetWidth();
+      this.updateWidgetHeight();
     }
 
     return true;
@@ -113,63 +133,7 @@ export class BeakerxDataGrid extends DataGrid {
   }
 
   getCellData(clientX: number, clientY: number): ICellData|null {
-    if (!this.viewport) {
-      return null;
-    }
-
-    let column: { index: number, delta: number } | null = null;
-    let rect = this.viewport.node.getBoundingClientRect();
-    let x = clientX - rect.left;
-    let y = clientY - rect.top;
-
-    // Test for a match in the corner header first.
-    if (x <= this.headerWidth && y <= this.headerHeight) {
-      if (y <= this.headerHeight) {
-        column = findSectionIndex(this.columnHeaderSections, x);
-      }
-
-      if (!column && x <= this.headerWidth) {
-        column = findSectionIndex(this.rowHeaderSections, y);
-      }
-
-      if (column) {
-        return {
-          column: column.index,
-          row: 0,
-          delta: column.delta,
-          type: COLUMN_TYPES.index,
-          offset: this.getColumnOffset(column.index, COLUMN_TYPES.index),
-          offsetTop: this.headerHeight
-        };
-      }
-
-      return null;
-    }
-
-    let section = this.columnSections;
-    let columnType = COLUMN_TYPES.body;
-    let pos = x + this.scrollX - this.headerWidth;
-    if (x <= this.rowHeaderSections.totalSize) {
-      section = this.rowHeaderSections;
-      columnType = COLUMN_TYPES.index;
-      pos += this.headerWidth;
-    }
-
-    let row: { index: number, delta: number } | null = this.findHoveredRowIndex(y);
-    column = findSectionIndex(section, pos);
-
-    if (column) {
-      return {
-        column: column.index,
-        delta: column.delta,
-        row: row ? row.index : 0,
-        type: columnType,
-        offset: this.getColumnOffset(column.index, columnType),
-        offsetTop: row ? this.getRowOffset(row.index) + this.headerHeight : 0
-      };
-    }
-
-    return null;
+    return DataGridCell.getCellData(this, clientX, clientY);
   }
 
   getColumnOffset(index: number, type: COLUMN_TYPES) {
@@ -192,65 +156,80 @@ export class BeakerxDataGrid extends DataGrid {
     return x < (this.bodyWidth + this.rowHeaderSections.totalSize) && y < this.headerHeight;
   }
 
-  resizeMovedColumns(oldMap: number[], newMap: number[]) {
-    newMap.forEach((index, position) => {
-      const column = this.columnManager.getColumnByIndex(COLUMN_TYPES.body, index);
-
-      this.columnSections.resizeSection(
-        position,
-        this.getSectionWidth(column)
-      );
-    });
-  }
-
   updateModelData(state: IDataModelState) {
     this.model.updateData(state);
     this.columnManager.recalculateMinMaxValues();
-    this.resizeSections();
-  }
-
-  resizeSections() {
-    this.columnManager.columns[COLUMN_TYPES.body].forEach(this.resizeColumnSection);
-    this.resizeIndexColumn();
-    this.updateWidgetWidth();
+    this.setInitialSize();
   }
 
   setWrapperId(id: string) {
     this.wrapperId = id;
   }
 
-  resize() {
+  resize(args?: any): void {
     this.resizeHeader();
-    this.setWidgetHeight();
     this.resizeSections();
+    this.updateWidgetWidth();
+    this.columnManager.updateColumnFilterNodes();
+    this.columnManager.updateColumnMenuTriggers();
   }
 
-  private init(modelState: IDataModelState) {
+  setInitialSize() {
+    this.resizeHeader();
+    this.updateWidgetHeight();
+    this.setInitialSectionWidths();
+    this.updateWidgetWidth();
+  }
+
+  updateWidgetWidth() {
+    const bodyRowCount = this.model.rowCount('body');
+    const scrollBarSpaceWidth = bodyRowCount > DEFAULT_PAGE_LENGTH ? 20 : 0;
+    const spacing = 2 * (DEFAULT_GRID_PADDING + DEFAULT_GRID_BORDER_WIDTH);
+
+    this.node.style.width = `${this.totalWidth + scrollBarSpaceWidth + spacing}px`;
+    this.fit();
+
+    setTimeout(() => {
+      this['_syncViewport']();
+    });
+  }
+
+  setInitialSectionWidth(column) {
+    const columnOnPosition = this.columnManager.getColumnByPosition(column.type, column.index);
+    const value = this.getSectionWidth(column);
+
+    this.setSectionWidth('column', columnOnPosition, value);
+  }
+
+  private init(store: BeakerxDataStore) {
     this.id = 'grid_' + bkUtils.generateId(6);
-    this.columnManager = new ColumnManager(modelState, this);
-    this.rowManager = new RowManager(modelState.values, modelState.hasIndex, this.columnManager);
+    this.store = store;
+    this.columnManager = new ColumnManager(this);
+    this.rowManager = new RowManager(selectValues(store.state), selectHasIndex(store.state), this.columnManager);
     this.cellSelectionManager = new CellSelectionManager(this);
     this.cellManager = new CellManager(this);
     this.eventManager = new EventManager(this);
     this.cellFocusManager = new CellFocusManager(this);
-    this.cellTooltipManager = new CellTooltipManager(this, modelState.tooltips);
-    this.model = new BeakerxDataGridModel(modelState, this.columnManager, this.rowManager);
+    this.cellTooltipManager = new CellTooltipManager(this, selectTooltips(store.state));
+    this.model = new BeakerxDataGridModel(store, this.columnManager, this.rowManager);
     this.focused = false;
 
     this.columnManager.addColumns();
     this.rowManager.createFilterExpressionVars();
+    this.store.changed.connect(throttle<void, void>(this.handleStateChanged.bind(this), 150));
 
-    this.addHighlighterManager(modelState);
+    this.addHighlighterManager();
     this.addCellRenderers();
-    this.resizeHeader();
-    this.setWidgetHeight();
-    this.resizeSections();
+    this.setInitialSize();
   }
 
-  private addHighlighterManager(modelState: IDataModelState) {
-    let cellHighlighters: IHihglighterState[] = modelState && modelState.cellHighlighters
-      ? modelState.cellHighlighters
-      : [];
+  private handleStateChanged() {
+    this.model.reset();
+    this.resize();
+  }
+
+  private addHighlighterManager() {
+    let cellHighlighters: IHihglighterState[] = selectCellHighlighters(this.store.state);
 
     this.highlighterManager = new HighlighterManager(this, cellHighlighters);
   }
@@ -265,23 +244,6 @@ export class BeakerxDataGrid extends DataGrid {
     this.cellRenderers.set('row-header', {}, defaultRenderer);
   }
 
-  private setWidgetHeight() {
-    this.node.style.minHeight = `${this.getWidgetHeight()}px`;
-  }
-
-  private updateWidgetWidth() {
-    const bodyRowCount = this.model.rowCount('body');
-    const scrollBarSpaceWidth = bodyRowCount > DEFAULT_PAGE_LENGTH ? 20 : 0;
-    const spacing = 2 * (DEFAULT_GRID_PADDING + DEFAULT_GRID_BORDER_WIDTH);
-
-    this.node.style.width = `${this.totalWidth + scrollBarSpaceWidth + spacing}px`;
-    this.fit();
-
-    setTimeout(() => {
-      this['_syncViewport']();
-    });
-  }
-
   private getWidgetHeight() {
     const bodyRowCount = this.model.rowCount('body');
     const rowCount = DEFAULT_PAGE_LENGTH < bodyRowCount ? DEFAULT_PAGE_LENGTH : bodyRowCount;
@@ -290,27 +252,34 @@ export class BeakerxDataGrid extends DataGrid {
     return rowCount * this.baseRowSize + this.headerHeight + spacing;
   }
 
-  private findHoveredRowIndex(y: number) {
-    // Convert the position into unscrolled coordinates.
-    let pos = y + this.scrollY - this.headerHeight;
-
-    return findSectionIndex(this.rowSections, pos);
+  private updateWidgetHeight() {
+    this.node.style.minHeight = `${this.getWidgetHeight()}px`;
   }
 
-  private resizeColumnSection(column) {
-    this.resizeSection(
-      'column',
-      column.getResolvedIndex(),
-      this.getSectionWidth(column)
-    );
+  private setInitialSectionWidths() {
+    this.columnManager.bodyColumns.forEach(this.setInitialSectionWidth);
+    this.resizeIndexColumn();
+  }
+
+  private resizeSections() {
+    this.columnManager.bodyColumns.forEach(this.resizeSectionWidth);
+    this.columnManager.indexColumns.forEach(this.resizeSectionWidth);
+  }
+
+  private resizeSectionWidth(column) {
+    const columnOnPosition = this.columnManager.getColumnByPosition(column.type, column.index);
+    const value = selectColumnWidth(this.store.state, columnOnPosition);
+    const area = column.type === COLUMN_TYPES.body ? 'column' : 'row-header';
+
+    this.resizeSection(area, column.index, value);
   }
 
   private resizeHeader() {
     let bodyColumnNamesWidths: number[] = [];
     let indexColumnNamesWidths: number[] = [];
 
-    if (this.model.state.headersVertical) {
-      const mapNameToWidth = name => getStringSize(name, this.model.state.headerFontSize).width;
+    if (selectHeadersVertical(this.store.state)) {
+      const mapNameToWidth = name => getStringSize(name, selectHeaderFontSize(this.store.state)).width;
 
       bodyColumnNamesWidths = this.columnManager.bodyColumnNames.map(mapNameToWidth);
       indexColumnNamesWidths = this.columnManager.indexColumnNames.map(mapNameToWidth);
@@ -329,9 +298,9 @@ export class BeakerxDataGrid extends DataGrid {
       column: column.index,
       row: 0,
     })));
-    const nameSize = getStringSize(column.name, this.model.state.headerFontSize);
-    const valueSize = getStringSize(value,this.model.state.dataFontSize);
-    const nameSizeProp = this.model.state.headersVertical ? 'height' : 'width';
+    const nameSize = getStringSize(column.name, selectHeaderFontSize(this.store.state));
+    const valueSize = getStringSize(value, selectDataFontSize(this.store.state));
+    const nameSizeProp = selectHeadersVertical(this.store.state) ? 'height' : 'width';
     const result = nameSize[nameSizeProp] > valueSize.width ? nameSize[nameSizeProp] : valueSize.width;
 
     return result > MIN_COLUMN_WIDTH ? result : MIN_COLUMN_WIDTH;
@@ -341,11 +310,17 @@ export class BeakerxDataGrid extends DataGrid {
     const valueCharLength = this.model.rowCount('body');
     const name = this.columnManager.getColumnByIndex(COLUMN_TYPES.index, 0).name;
     const value = name.length > valueCharLength ? name : String(valueCharLength);
-    const nameSizeProp = this.model.state.headersVertical ? 'height' : 'width';
-    const nameSize = getStringSize(name, this.model.state.headerFontSize);
-    const valueSize = getStringSize(value, this.model.state.dataFontSize);
-    const result = nameSize[nameSizeProp] > valueSize.width ? nameSize[nameSizeProp]: valueSize.width;
+    const nameSizeProp = selectHeadersVertical(this.store.state) ? 'height' : 'width';
+    const nameSize = getStringSize(name, selectHeaderFontSize(this.store.state));
+    const valueSize = getStringSize(value, selectDataFontSize(this.store.state));
+    const result = (nameSize[nameSizeProp] > valueSize.width ? nameSize[nameSizeProp]: valueSize.width) + 10;
+    const column = this.columnManager.getColumnByIndex(COLUMN_TYPES.index, 0);
 
-    this.rowHeaderSections.resizeSection(0, result + 10);
+    this.setSectionWidth('row-header', column, result);
+  }
+
+  private setSectionWidth(section, column: DataGridColumn, value: number) {
+    this.resizeSection(section, column.index, value);
+    column.setWidth(value);
   }
 }

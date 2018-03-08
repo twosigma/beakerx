@@ -15,31 +15,28 @@
  */
 
 import * as sinon from 'sinon';
-import DataGridColumn, {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
+import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 import {expect} from "chai";
 import {BeakerxDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
 import modelStateMock from "../mock/modelStateMock";
-import ColumnManager, {
-  COLUMN_CHANGED_TYPES,
-  IBkoColumnsChangedArgs
-} from "@beakerx/tableDisplay/dataGrid/column/ColumnManager";
+import ColumnManager from "@beakerx/tableDisplay/dataGrid/column/ColumnManager";
 import cellConfigMock from "../mock/cellConfigMock";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
 
 describe('ColumnManager', () => {
   let dataGrid;
+  let dataStore;
   let columnManager;
 
   before(() => {
-    dataGrid = new BeakerxDataGrid({}, modelStateMock);
+    dataStore = createStore(modelStateMock);
+    dataGrid = new BeakerxDataGrid({}, dataStore);
     columnManager = dataGrid.columnManager;
   });
 
   after(() => {
     dataGrid.destroy();
-  });
-
-  it('should create IndexResolver', () => {
-    expect(columnManager).to.have.property('indexResolver');
   });
 
   it('should create index column', () => {
@@ -60,41 +57,6 @@ describe('ColumnManager', () => {
 
   it('should return column by column name', () => {
     expect(columnManager.getColumnByName('test')).to.equal(columnManager.columns[COLUMN_TYPES.body][0]);
-  });
-
-  it('should implement moveColumn method', () => {
-    const column = columnManager.columns[COLUMN_TYPES.body][0];
-
-    expect(columnManager).to.have.property('setColumnPosition');
-    expect(columnManager['setColumnPosition']).to.be.a('Function');
-
-    const colChangeArgs: IBkoColumnsChangedArgs = {
-      column,
-      type: COLUMN_CHANGED_TYPES.columnMove,
-      value: 1
-    };
-
-    columnManager['setColumnPosition'](colChangeArgs);
-    columnManager['handleColumnChanged'](colChangeArgs);
-    expect(column.getResolvedIndex()).to.equal(1);
-
-    column.hide();
-    expect(column.getResolvedIndex()).to.equal(1);
-    expect(columnManager.bodyColumns[1].getResolvedIndex()).to.equal(0);
-
-    column.show();
-    column.move(0);
-    console.log(column.index, column.getResolvedIndex());
-    expect(column.getResolvedIndex()).to.equal(0);
-  });
-
-  it('should call setColumnVisible', () => {
-    const stub = sinon.stub(columnManager, 'setColumnVisible');
-    columnManager.bodyColumns[0].hide();
-    columnManager.bodyColumns[0].show();
-
-    expect(stub.calledTwice).to.be.true;
-    stub.restore();
   });
 
   it('should implement destroy method', () => {

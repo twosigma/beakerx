@@ -15,10 +15,10 @@
  */
 
 import { ITriggerOptions } from "../headerMenu/HeaderMenu";
-import {COLUMN_TYPES, default as DataGridColumn, SORT_ORDER} from "../column/DataGridColumn";
+import DataGridColumn from "../column/DataGridColumn";
 import {TextRenderer} from "@phosphor/datagrid";
 import {ALL_TYPES} from "../dataTypes";
-import {IDataGridModelColumnState} from "./IDataGridModelState";
+import {COLUMN_TYPES, SORT_ORDER} from "../column/enums";
 
 export interface IColumn {
   index: number,
@@ -32,15 +32,17 @@ export interface IColumnOptions {
   menuOptions: ITriggerOptions
 }
 
-export interface IColumnsState {
-  [key: number]: IDataGridModelColumnState
-}
-
 export interface IColumns {
   [key: number]: DataGridColumn[]
 }
 
+export type IColumnsState = Map<string, IColumnState>;
+
 export interface IColumnState {
+  name: string,
+  index: number,
+  columnType: COLUMN_TYPES,
+  dataTypeName: string,
   dataType: ALL_TYPES,
   displayType: ALL_TYPES|string,
   keepTrigger: boolean,
@@ -49,5 +51,6 @@ export interface IColumnState {
   visible: boolean,
   sortOrder: SORT_ORDER,
   filter: string|null,
-  position: number
+  position: number,
+  width?: number
 }

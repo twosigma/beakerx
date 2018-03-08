@@ -19,14 +19,17 @@ import CellTooltipManager from "@beakerx/tableDisplay/dataGrid/cell/CellTooltipM
 import modelStateMock from "../mock/modelStateMock";
 import {BeakerxDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
 import CellTooltip from "@beakerx/tableDisplay/dataGrid/cell/CellTooltip";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
 
 describe('CellTooltipManager', () => {
   let dataGrid;
+  let dataStore;
   let cellTooltipManager;
   let tooltips = [['test', 'test2'], ['test3', 'test4']];
 
   before(() => {
-    dataGrid = new BeakerxDataGrid({}, { ...modelStateMock, tooltips });
+    dataStore = createStore({ ...modelStateMock, tooltips });
+    dataGrid = new BeakerxDataGrid({}, dataStore);
     cellTooltipManager = dataGrid.cellTooltipManager;
   });
 

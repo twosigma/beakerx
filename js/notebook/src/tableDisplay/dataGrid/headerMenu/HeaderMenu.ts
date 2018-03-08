@@ -20,7 +20,9 @@ import { BeakerxDataGrid } from "../BeakerxDataGrid";
 import Menu from './BkoMenu';
 import MenuItem from '../../../shared/interfaces/menuItemInterface';
 import MenuInterface from '../../../shared/interfaces/menuInterface';
-import DataGridColumn, {SORT_ORDER} from "../column/DataGridColumn";
+import DataGridColumn from "../column/DataGridColumn";
+import {selectColumnPosition} from "../column/selectors";
+import {SORT_ORDER} from "../column/enums";
 
 export interface ITriggerOptions {
   x: number,
@@ -62,12 +64,16 @@ export default abstract class HeaderMenu implements MenuInterface {
 
   protected abstract buildMenu(): void
 
-  showTrigger(x?): void {
-    this.assignTriggerSortingCssClass();
+  updateTriggerPosition() {
+    this.triggerNode.style.left = `${this.dataGrid.getColumnOffset(
+      selectColumnPosition(this.dataGrid.store.state, this.column),
+      this.column.type
+    )}px`;
+  }
 
-    if (!isNaN(x)) {
-      this.triggerNode.style.left = `${x}px`;
-    }
+  showTrigger(): void {
+    this.updateTriggerPosition();
+    this.assignTriggerSortingCssClass();
 
     if (this.triggerNode.style.visibility === 'visible') {
       return;
@@ -78,7 +84,7 @@ export default abstract class HeaderMenu implements MenuInterface {
   }
 
   hideTrigger() {
-    if (this.column.state.sortOrder !== SORT_ORDER.NO_SORT && this.column.state.visible || this.column.state.keepTrigger) {
+    if (this.column.getSortOrder() !== SORT_ORDER.NO_SORT && this.column.getVisible() || this.column.getKeepTrigger()) {
       return;
     }
 
@@ -87,7 +93,7 @@ export default abstract class HeaderMenu implements MenuInterface {
 
   attachTriggerToMenu() {
     this.menu.trigger = this.triggerNode;
-    this.column.state.keepTrigger && this.showTrigger();
+    this.column.getKeepTrigger() && this.showTrigger();
   }
 
   open(submenuIndex?: number): void {
@@ -188,14 +194,16 @@ export default abstract class HeaderMenu implements MenuInterface {
   }
 
   protected assignTriggerSortingCssClass() {
-    if (this.column.state.sortOrder === SORT_ORDER.ASC) {
+    const sortOrder = this.column.getSortOrder();
+
+    if (sortOrder === SORT_ORDER.ASC) {
       this.triggerNode.classList.remove(this.TRIGGER_CLASS_SORTING_DESC);
       this.triggerNode.classList.add(this.TRIGGER_CLASS_SORTING_ASC);
 
       return;
     }
 
-    if (this.column.state.sortOrder === SORT_ORDER.DESC) {
+    if (sortOrder === SORT_ORDER.DESC) {
       this.triggerNode.classList.remove(this.TRIGGER_CLASS_SORTING_ASC);
       this.triggerNode.classList.add(this.TRIGGER_CLASS_SORTING_DESC);
 

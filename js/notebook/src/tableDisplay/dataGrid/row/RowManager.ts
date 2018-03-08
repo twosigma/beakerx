@@ -16,9 +16,10 @@
 
 import DataGridRow from "./DataGridRow";
 import { MapIterator, iter, toArray, filter } from '@phosphor/algorithm';
-import {COLUMN_TYPES, default as DataGridColumn, SORT_ORDER} from "../column/DataGridColumn";
+import DataGridColumn from "../column/DataGridColumn";
 import {ALL_TYPES} from "../dataTypes";
 import ColumnManager from "../column/ColumnManager";
+import {COLUMN_TYPES, SORT_ORDER} from "../column/enums";
 
 export default class RowManager {
   rowsIterator: MapIterator<any[], DataGridRow>;
@@ -62,17 +63,19 @@ export default class RowManager {
   }
 
   sortByColumn(column: DataGridColumn) {
+    const sortOrder = column.getSortOrder();
+
     this.sortedBy = column;
 
-    if (column.type === COLUMN_TYPES.index || column.state.sortOrder === SORT_ORDER.NO_SORT) {
-      return this.sortRows(column.index, column.state.sortOrder, this.indexValueResolver);
+    if (column.type === COLUMN_TYPES.index || sortOrder === SORT_ORDER.NO_SORT) {
+      return this.sortRows(column.index, sortOrder, this.indexValueResolver);
     }
 
-    if (column.state.dataType === ALL_TYPES.datetime || column.state.dataType === ALL_TYPES.time) {
-      return this.sortRows(column.index, column.state.sortOrder, this.dateValueResolver);
+    if (column.getDataType() === ALL_TYPES.datetime || column.getDataType() === ALL_TYPES.time) {
+      return this.sortRows(column.index, sortOrder, this.dateValueResolver);
     }
 
-    return this.sortRows(column.index, column.state.sortOrder);
+    return this.sortRows(column.index, sortOrder);
   }
 
   sortRows(columnIndex: number, sortOrder: SORT_ORDER, valueResolver?: Function): void {
@@ -164,8 +167,10 @@ export default class RowManager {
   createFilterExpression(): void {
     let expressionParts: string[] = [];
     const agregationFn = (column: DataGridColumn) => {
-      if (column.state.filter) {
-        expressionParts.push(column.state.filter);
+      let filter = column.getFilter();
+
+      if (filter) {
+        expressionParts.push(filter);
       }
     };
 

@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "sourceMap": true,
+    "strictNullChecks": false,
+    "module": "ES2015",
+    "target": "es5",
+    "allowJs": true,
+    "moduleResolution": "Node",
+    "noEmit": true,
+    "lib": ["dom", "es5", "es2015"],
+    "types": [],
+    "paths": {
+      "jquery": ["jquery/dist/jquery.js"]
+    }
+  }
+}

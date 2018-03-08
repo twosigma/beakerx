@@ -20,10 +20,6 @@ var $ = require('jquery');
 
 var DataGridScope = require('./tableDisplay/dataGrid').DataGridScope;
 
-require('datatables.net-dt/css/jquery.dataTables.css');
-require('datatables.net-colreorder-dt/css/colReorder.dataTables.css');
-require('datatables.net-fixedcolumns-dt/css/fixedColumns.dataTables.css');
-require('datatables.net-keytable-dt/css/keyTable.dataTables.css');
 require('./tableDisplay/css/datatables.scss');
 
 var TableDisplayModel = widgets.DOMWidgetModel.extend({
@@ -95,15 +91,6 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
     });
 
     this._currentScope.render();
-
-
-    // this._currentScope.setWidgetModel(this.model);
-    // this._currentScope.setModelData(data);
-    // this._currentScope.setElement(tmplElement.children('.dtcontainer'));
-    // this._currentScope.enableJupyterKeyHandler();
-    // this._currentScope.run();
-    // this._currentScope.initColumLimitModal();
-    // this._currentScope.setWidgetView(this);
   },
 
   showWarning: function(data) {
@@ -119,7 +106,6 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
   }
 
 });
-
 
 module.exports = {
   TableDisplayModel: TableDisplayModel,

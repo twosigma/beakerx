@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,13 +14,21 @@
  *  limitations under the License.
  */
 
-import {COLUMN_TYPES} from "../column/enums";
+import {Reducer} from "@phosphor/datastore";
+import IDataModelState from "../interface/IDataGridModelState";
+import DataGridAction from "../store/DataGridAction";
 
-export interface ICellData {
-  type: COLUMN_TYPES,
-  column: number,
-  row: number,
-  delta: number,
-  offset: number,
-  offsetTop: number
-}
+export const UPDATE_MODEL_DATA = 'UPDATE_MODEL_DATA';
+
+const dataGridModelReducer: Reducer<IDataModelState> = (
+  state: IDataModelState,
+  action: DataGridAction
+): IDataModelState => {
+  if (action.type === UPDATE_MODEL_DATA) {
+    return { ...state, ...action.payload };
+  }
+
+  return state;
+};
+
+export default dataGridModelReducer;

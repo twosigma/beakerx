@@ -17,16 +17,20 @@
 import { expect } from 'chai';
 import { createIndexMenuItems } from '@beakerx/tableDisplay/dataGrid/headerMenu/createIndexMenuItems';
 import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
-import DataGridColumn, {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
+import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 import menuOptionsMock from "../mock/menuOptionsMock";
 import modelStateMock from "../mock/modelStateMock";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
 
 describe('createIndexMenuItems', () => {
   let dataGrid;
+  let dataStore;
   let column;
 
   before(() => {
-    dataGrid = new BeakerxDataGrid({}, modelStateMock);
+    dataStore = createStore(modelStateMock);
+    dataGrid = new BeakerxDataGrid({}, dataStore);
     column = new DataGridColumn({
       index: 0,
       type: COLUMN_TYPES.index,

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,28 +17,40 @@
 import ColumnMenu from "../headerMenu/ColumnMenu";
 import IndexMenu from "../headerMenu/IndexMenu";
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
-import {IColumnOptions, IColumnState} from "../interface/IColumn";
+import {IColumnOptions} from "../interface/IColumn";
 import { ICellData } from "../interface/ICell";
-import { getAlignmentByChar, getAlignmentByType } from "./columnAlignment";
 import { CellRenderer, DataModel, TextRenderer } from "@phosphor/datagrid";
-import {ALL_TYPES, getDisplayType, getTypeByName, isDoubleWithPrecision} from "../dataTypes";
+import {ALL_TYPES, getDisplayType, isDoubleWithPrecision} from "../dataTypes";
 import { minmax, MapIterator } from '@phosphor/algorithm';
 import { HIGHLIGHTER_TYPE } from "../interface/IHighlighterState";
 import ColumnManager, { COLUMN_CHANGED_TYPES, IBkoColumnsChangedArgs } from "./ColumnManager";
 import ColumnFilter from "./ColumnFilter";
 import {ITriggerOptions} from "../headerMenu/HeaderMenu";
 import CellTooltip from "../cell/CellTooltip";
-
-export enum COLUMN_TYPES {
-  index,
-  body
-}
-
-export enum SORT_ORDER {
-  ASC,
-  DESC,
-  NO_SORT
-}
+import {
+  selectColumnDataType,
+  selectColumnDataTypeName,
+  selectColumnDisplayType,
+  selectColumnFilter, selectColumnFormatForTimes,
+  selectColumnHorizontalAlignment,
+  selectColumnKeepTrigger, selectColumnPosition, selectColumnSortOrder,
+  selectColumnState, selectColumnVisible
+} from "./selectors";
+import {DataGridColumnAction} from "../store/DataGridAction";
+import {
+  selectColumnsVisible,
+  selectHasIndex,
+  selectInitialColumnAlignment, selectStringFormatForcolumn, selectStringFormatForType
+} from "../model/selectors";
+import {
+  UPDATE_COLUMN_DISPLAY_TYPE,
+  UPDATE_COLUMN_FILTER, UPDATE_COLUMN_FORMAT_FOR_TIMES,
+  UPDATE_COLUMN_HORIZONTAL_ALIGNMENT,
+  UPDATE_COLUMN_POSITION, UPDATE_COLUMN_SORT_ORDER,
+  UPDATE_COLUMN_VISIBILITY, UPDATE_COLUMN_WIDTH
+} from "./columnReducer";
+import {BeakerxDataStore} from "../store/dataStore";
+import {COLUMN_TYPES, SORT_ORDER} from "./enums";
 
 export default class DataGridColumn {
   index: number;
@@ -46,6 +58,7 @@ export default class DataGridColumn {
   type: COLUMN_TYPES;
   menu: ColumnMenu|IndexMenu;
   dataGrid: BeakerxDataGrid;
+  store: BeakerxDataStore;
   columnManager: ColumnManager;
   columnFilter: ColumnFilter;
   formatFn: CellRenderer.ConfigFunc<string>;
@@ -54,19 +67,18 @@ export default class DataGridColumn {
   maxValue: any;
   dataTypeTooltip: CellTooltip;
 
-  state: IColumnState;
-
   constructor(options: IColumnOptions, dataGrid: BeakerxDataGrid, columnManager: ColumnManager) {
     this.index = options.index;
     this.name = options.name;
     this.type = options.type;
     this.dataGrid = dataGrid;
+    this.store = dataGrid.store;
     this.columnManager = columnManager;
     this.valuesIterator = this.dataGrid.model.getColumnValuesIterator(this);
 
-    this.setInitialState();
-    this.assignFormatFn();
     this.handleHeaderCellHovered = this.handleHeaderCellHovered.bind(this);
+
+    this.assignFormatFn();
     this.createMenu(options.menuOptions);
     this.addColumnFilter(options.menuOptions);
     this.addDataTypeTooltip();
@@ -83,70 +95,9 @@ export default class DataGridColumn {
     return COLUMN_TYPES.body;
   }
 
-  setInitialState() {
-    const dataType = this.getDataType();
-    const displayType = getDisplayType(
-      dataType,
-      this.dataGrid.model.dataFormatter.stringFormatForType,
-      this.dataGrid.model.dataFormatter.stringFormatForColumn[this.name]
-    );
-
-    this.state = {
-      dataType,
-      displayType,
-      keepTrigger: this.type === COLUMN_TYPES.index,
-      horizontalAlignment: this.getInitialAlignment(dataType),
-      formatForTimes: {},
-      visible: true,
-      sortOrder: SORT_ORDER.NO_SORT,
-      filter: null,
-      position: this.columnManager.indexResolver.columnIndexesMap[this.type].indexOf(this.index)
-    };
-  }
-
   assignFormatFn() {
     this.formatFn = this.dataGrid.model.dataFormatter
-      .getFormatFnByDisplayType(this.state.displayType, this.state);
-  }
-
-  setState(state) {
-    this.state = {
-      ...this.state,
-      ...state,
-    };
-
-    this.dataGrid['repaint']();
-  }
-  
-  setDisplayType(displayType: ALL_TYPES|string) {
-    this.setState({ displayType });
-    this.assignFormatFn();
-    this.dataGrid.repaint();
-    this.dataGrid.resizeSections();
-  }
-
-  setTimeDisplayType(timeUnit) {
-    this.setState({ formatForTimes: timeUnit });
-    this.setDisplayType(ALL_TYPES.datetime);
-  }
-
-  hide() {
-    this.setState({ visible: false });
-    this.menu.hideTrigger();
-    this.columnManager.columnsChanged.emit({
-      type: COLUMN_CHANGED_TYPES.columnVisible,
-      value: false,
-      column: this
-    });
-  }
-
-  show() {
-    this.setState({ visible: true });
-    this.columnManager.columnsChanged.emit({
-      type: COLUMN_CHANGED_TYPES.columnVisible,
-      value: true,
-      column: this
-    });
+      .getFormatFnByDisplayType(this.getDisplayType(), this.getState());
   }
 
   createMenu(menuOptions: ITriggerOptions): void {
@@ -170,36 +121,57 @@ export default class DataGridColumn {
       }
     );
   }
+  
+  setDisplayType(displayType: ALL_TYPES|string) {
+    this.store.dispatch(new DataGridColumnAction(
+      UPDATE_COLUMN_DISPLAY_TYPE,
+      { value: displayType, columnIndex: this.index, columnType: this.type }
+    ));
+    this.assignFormatFn();
+    this.dataGrid.setInitialSectionWidth(this);
+  }
+
+  setTimeDisplayType(timeUnit) {
+    this.store.dispatch(new DataGridColumnAction(
+      UPDATE_COLUMN_FORMAT_FOR_TIMES,
+      { value: timeUnit, columnIndex: this.index, columnType: this.type }
+    ));
+    this.setDisplayType(ALL_TYPES.datetime);
+  }
+
+  hide() {
+    this.menu.hideTrigger();
+    this.toggleVisibility(false);
+  }
+
+  show() {
+    this.toggleVisibility(true);
+  }
 
   search(filter: string) {
-    if (filter === this.state.filter) {
+    if (filter === this.getFilter()) {
       return;
     }
 
-    this.setState({ filter });
+    this.updateColumnFilter(filter);
     this.dataGrid.rowManager.searchRows();
     this.dataGrid.model.reset();
   }
 
   filter(filter: string) {
-    if (filter === this.state.filter) {
+    if (filter === this.getFilter()) {
       return;
     }
 
-    this.setState({ filter });
+    this.updateColumnFilter(filter);
     this.dataGrid.rowManager.filterRows();
     this.dataGrid.model.reset();
   }
 
   resetFilter() {
-    this.setState({ filter: '' });
+    this.updateColumnFilter('');
     this.dataGrid.rowManager.filterRows();
     this.dataGrid.model.reset();
-  }
-
-  destroy() {
-    this.menu.destroy();
-    this.dataTypeTooltip.hide();
   }
 
   connectToColumnsChanged() {
@@ -211,47 +183,85 @@ export default class DataGridColumn {
   }
 
   handleHeaderCellHovered(sender: BeakerxDataGrid, data: ICellData) {
-    const column = data && this.columnManager.indexResolver.getIndexByColumnPosition(data.column, data.type);
+    const column = data && this.columnManager.getColumnByPosition(data.type, data.column);
 
-    if(!data || column !== this.index || data.type !== this.type) {
+    if(!data || column !== this) {
       this.menu.hideTrigger();
       this.toggleDataTooltip(false);
 
       return;
     }
 
-    this.menu.showTrigger(data.offset);
+    this.menu.showTrigger();
     this.toggleDataTooltip(true, data);
   }
 
-  getInitialAlignment(dataType) {
-    let config = this.dataGrid.model.getAlignmentConfig();
-    let alignmentForType = config.alignmentForType[ALL_TYPES[dataType]];
-    let alignmentForColumn = config.alignmentForColumn[this.name];
-
-    if (alignmentForType) {
-      return getAlignmentByChar(alignmentForType);
-    }
-
-    if (alignmentForColumn) {
-      return getAlignmentByChar(alignmentForColumn);
-    }
-
-    return getAlignmentByType(dataType);
-  }
-
-  getAlignment() {
-    return this.state.horizontalAlignment;
-  }
-
   setAlignment(horizontalAlignment: TextRenderer.HorizontalAlignment) {
-    this.setState({ horizontalAlignment });
+    this.store.dispatch(new DataGridColumnAction(
+      UPDATE_COLUMN_HORIZONTAL_ALIGNMENT,
+      { value: horizontalAlignment, columnIndex: this.index, columnType: this.type }
+    ));
   }
 
   resetAlignment() {
-    this.setState({
-      horizontalAlignment: this.getInitialAlignment(this.state.dataType)
-    });
+    this.setAlignment(selectInitialColumnAlignment(
+      this.store.state,
+      this.getDataType(),
+      this.name
+    ));
+  }
+
+  setWidth(width: number) {
+    this.store.dispatch(new DataGridColumnAction(
+      UPDATE_COLUMN_WIDTH,
+      { value: width, columnIndex: this.index, columnType: this.type }
+    ));
+    this.columnManager.updateColumnFilterNodes();
+    this.columnManager.updateColumnMenuTriggers();
+  }
+
+  getState() {
+    return selectColumnState(this.store.state, this);
+  }
+
+  getAlignment() {
+    return selectColumnHorizontalAlignment(this.store.state, this);
+  }
+
+  getVisible() {
+    return selectColumnVisible(this.store.state, this);
+  }
+
+  getDataType() {
+    return selectColumnDataType(this.store.state, this);
+  }
+
+  getSortOrder() {
+    return selectColumnSortOrder(this.store.state, this);
+  }
+
+  getFilter() {
+    return selectColumnFilter(this.store.state, this);
+  }
+
+  getKeepTrigger() {
+    return selectColumnKeepTrigger(this.store.state, this);
+  }
+
+  getDataTypeName(): string {
+    return selectColumnDataTypeName(this.store.state, this);
+  }
+
+  getDisplayType() {
+    return selectColumnDisplayType(this.store.state, this);
+  }
+
+  getFormatForTimes() {
+    return selectColumnFormatForTimes(this.store.state, this);
+  }
+
+  getPosition() {
+    return selectColumnPosition(this.store.state, this);
   }
 
   getHighlighter(highlighterType: HIGHLIGHTER_TYPE) {
@@ -271,7 +281,7 @@ export default class DataGridColumn {
   }
 
   toggleSort() {
-    if (this.state.sortOrder !== SORT_ORDER.ASC) {
+    if (this.getSortOrder() !== SORT_ORDER.ASC) {
       return this.sort(SORT_ORDER.ASC);
     }
 
@@ -279,7 +289,9 @@ export default class DataGridColumn {
   }
 
   getValueResolver(): Function {
-    if(this.state.dataType === ALL_TYPES.datetime || this.state.dataType === ALL_TYPES.time) {
+    const dataType = this.getDataType();
+
+    if(dataType === ALL_TYPES.datetime || dataType === ALL_TYPES.time) {
       return this.dateValueResolver;
     }
 
@@ -287,21 +299,22 @@ export default class DataGridColumn {
   }
 
   move(destination: number) {
-    this.setState({ position: destination });
-    this.columnManager.columnsChanged.emit({
-      type: COLUMN_CHANGED_TYPES.columnMove,
-      value: destination,
-      column: this
-    });
-    this.menu.hideTrigger();
-  }
+    this.store.dispatch(new DataGridColumnAction(
+      UPDATE_COLUMN_POSITION,
+      {
+        value: destination,
+        columnType: this.type,
+        columnIndex: this.index,
+        hasIndex: selectHasIndex(this.store.state)
+      })
+    );
 
-  getResolvedIndex() {
-    return this.columnManager.indexResolver.getIndexByColumnPosition(this.index, this.type);
+    this.menu.hideTrigger();
+    this.dataGrid.resize();
   }
 
   setDataTypePrecission(precission: number) {
-    if (isDoubleWithPrecision(this.state.displayType)) {
+    if (isDoubleWithPrecision(this.getDisplayType())) {
       this.setDisplayType(`4.${precission}`);
     }
   }
@@ -327,6 +340,43 @@ export default class DataGridColumn {
     this.valuesIterator = this.dataGrid.model.getColumnValuesIterator(this);
   }
 
+  resetState() {
+    this.setDisplayType(getDisplayType(
+      this.getDataType(),
+      selectStringFormatForType(this.store.state),
+      selectStringFormatForcolumn(this.store.state)[this.name]
+    ));
+    this.setAlignment(selectInitialColumnAlignment(this.store.state, this.getDataType(), name));
+    this.toggleVisibility(selectColumnsVisible(this.store.state)[this.name] !== false);
+    this.resetHighlighters();
+    this.resetFilter();
+    this.move(this.index);
+    this.dataGrid.setInitialSectionWidth(this);
+    this.dataGrid.updateWidgetWidth();
+  }
+
+  destroy() {
+    this.menu.destroy();
+    this.dataTypeTooltip.hide();
+  }
+
+  private updateColumnFilter(filter: string) {
+    this.store.dispatch(new DataGridColumnAction(
+      UPDATE_COLUMN_FILTER,
+      { value: filter, columnIndex: this.index, columnType: this.type }
+    ));
+  }
+
+  private toggleVisibility(value) {
+    this.store.dispatch(new DataGridColumnAction(UPDATE_COLUMN_VISIBILITY, {
+      value,
+      columnIndex: this.index,
+      columnType: this.type,
+      hasIndex: selectHasIndex(this.store.state)
+    }));
+    this.dataGrid.resize();
+  }
+
   private dateValueResolver(value) {
     return value.timestamp;
   }
@@ -341,24 +391,21 @@ export default class DataGridColumn {
     }
 
     if (args.column === this && args.value !== SORT_ORDER.NO_SORT) {
-      this.setState({ sortOrder: args.value });
+      this.setColumnSortOrder(args.value);
       this.dataGrid.highlighterManager.addColumnHighlighter(this, HIGHLIGHTER_TYPE.sort);
       this.menu.showTrigger();
     } else {
-      this.setState({ sortOrder: SORT_ORDER.NO_SORT });
+      this.setColumnSortOrder(SORT_ORDER.NO_SORT);
       this.dataGrid.highlighterManager.removeColumnHighlighter(this, HIGHLIGHTER_TYPE.sort);
       this.menu.hideTrigger();
     }
   }
 
-  private getDataTypeName(): string {
-    return this.type === COLUMN_TYPES.index
-      ? this.dataGrid.columnManager.columnsState[COLUMN_TYPES.index].types[this.index]
-      : this.dataGrid.columnManager.columnsState[COLUMN_TYPES.body].types[this.index];
-  }
-
-  private getDataType(): ALL_TYPES {
-    return getTypeByName(this.getDataTypeName());
+  private setColumnSortOrder(order: SORT_ORDER) {
+    this.store.dispatch(new DataGridColumnAction(
+      UPDATE_COLUMN_SORT_ORDER,
+      { value: order, columnIndex: this.index, columnType: this.type })
+    );
   }
 
   private addDataTypeTooltip() {

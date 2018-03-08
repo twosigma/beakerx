@@ -19,13 +19,16 @@ import { CellRendererFactory } from "@beakerx/tableDisplay/dataGrid/cell/CellRen
 import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
 import { TextRenderer } from "@phosphor/datagrid";
 import modelStateMock from "../mock/modelStateMock";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
 
 describe('CellRendererFactory', () => {
   let dataGrid;
   let cellRendererFactory;
+  let dataStore;
 
   before(() => {
-    dataGrid = new BeakerxDataGrid({}, modelStateMock);
+    dataStore = createStore(modelStateMock);
+    dataGrid = new BeakerxDataGrid({}, dataStore);
     cellRendererFactory = new CellRendererFactory(dataGrid);
   });
 

@@ -22,9 +22,11 @@ import highlighterStateMock from "../mock/highlighterStateMock";
 import modelStateMock from "../mock/modelStateMock";
 import columnOptionsMock from "../mock/columnOptionsMock";
 import HeatmapHighlighter from "@beakerx/tableDisplay/dataGrid/highlighter/HeatmapHighlighter";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
 
 describe('HighlighterFactory', () => {
-  const dataGrid = new BeakerxDataGrid({}, modelStateMock);
+  const dataStore = createStore(modelStateMock);
+  const dataGrid = new BeakerxDataGrid({}, dataStore);
   const column = new DataGridColumn(
     columnOptionsMock,
     dataGrid,

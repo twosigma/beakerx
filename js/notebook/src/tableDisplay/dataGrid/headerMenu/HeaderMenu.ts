@@ -20,8 +20,9 @@ import { BeakerxDataGrid } from "../BeakerxDataGrid";
 import Menu from './BkoMenu';
 import MenuItem from '../../../shared/interfaces/menuItemInterface';
 import MenuInterface from '../../../shared/interfaces/menuInterface';
-import DataGridColumn, {SORT_ORDER} from "../column/DataGridColumn";
-import {selectColumnIndexByPosition, selectColumnPosition} from "../column/selectors";
+import DataGridColumn from "../column/DataGridColumn";
+import {selectColumnPosition} from "../column/selectors";
+import {SORT_ORDER} from "../column/enums";
 
 export interface ITriggerOptions {
   x: number,

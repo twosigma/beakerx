@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,13 +14,13 @@
  *  limitations under the License.
  */
 
-import {COLUMN_TYPES} from "../column/enums";
+export enum COLUMN_TYPES {
+  index,
+  body
+}
 
-export interface ICellData {
-  type: COLUMN_TYPES,
-  column: number,
-  row: number,
-  delta: number,
-  offset: number,
-  offsetTop: number
+export enum SORT_ORDER {
+  ASC,
+  DESC,
+  NO_SORT
 }

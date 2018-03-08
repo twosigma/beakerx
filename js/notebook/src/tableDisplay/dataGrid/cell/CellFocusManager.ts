@@ -17,9 +17,10 @@
 import {BeakerxDataGrid} from "../BeakerxDataGrid";
 import {ICellData} from "../interface/ICell";
 import {CellRenderer} from "@phosphor/datagrid";
-import {COLUMN_TYPES, default as DataGridColumn} from "../column/DataGridColumn";
+import DataGridColumn from "../column/DataGridColumn";
 import {DEFAULT_CELL_BACKGROUND, FOCUSED_CELL_BACKGROUND} from "../style/dataGridStyle";
 import {selectBodyColumnVisibility} from "../column/selectors";
+import {COLUMN_TYPES} from "../column/enums";
 
 export default class CellFocusManager {
   dataGrid: BeakerxDataGrid;

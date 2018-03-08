@@ -16,9 +16,10 @@
 
 import DataGridRow from "./DataGridRow";
 import { MapIterator, iter, toArray, filter } from '@phosphor/algorithm';
-import {COLUMN_TYPES, default as DataGridColumn, SORT_ORDER} from "../column/DataGridColumn";
+import DataGridColumn from "../column/DataGridColumn";
 import {ALL_TYPES} from "../dataTypes";
 import ColumnManager from "../column/ColumnManager";
+import {COLUMN_TYPES, SORT_ORDER} from "../column/enums";
 
 export default class RowManager {
   rowsIterator: MapIterator<any[], DataGridRow>;

@@ -15,7 +15,7 @@
  */
 
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
-import DataGridColumn, {COLUMN_TYPES} from "./DataGridColumn";
+import DataGridColumn from "./DataGridColumn";
 import {selectColumnPosition, selectColumnWidth} from "./selectors";
 
 export default class ColumnFilter {

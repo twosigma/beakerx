@@ -16,8 +16,9 @@
 
 import MenuItem from '../../../shared/interfaces/menuItemInterface';
 import { createFormatMenuItems } from './createFormatMenuItems';
-import DataGridColumn, {COLUMN_TYPES} from "../column/DataGridColumn";
+import DataGridColumn from "../column/DataGridColumn";
 import { selectBodyColumnStates } from "../column/selectors";
+import {COLUMN_TYPES} from "../column/enums";
 
 export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
 

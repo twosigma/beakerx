@@ -15,7 +15,7 @@
  */
 
 import {Action} from "@phosphor/datastore";
-import {COLUMN_TYPES} from "../column/DataGridColumn";
+import {COLUMN_TYPES} from "../column/enums";
 
 export default class DataGridAction extends Action<string> {
   payload: any;

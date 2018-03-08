@@ -15,7 +15,7 @@
  */
 
 import {BeakerxDataGrid} from "./BeakerxDataGrid";
-import DataGridColumn, {COLUMN_TYPES} from "./column/DataGridColumn";
+import DataGridColumn from "./column/DataGridColumn";
 import {HIGHLIGHTER_TYPE} from "./interface/IHighlighterState";
 import {DataGridHelpers} from "./dataGridHelpers";
 import disableKeyboardManager = DataGridHelpers.disableKeyboardManager;
@@ -25,6 +25,7 @@ import {ICellData} from "./interface/ICell";
 import {BeakerxDataStore} from "./store/dataStore";
 import {selectDoubleClickTag, selectHasDoubleClickAction} from "./model/selectors";
 import {selectColumnIndexByPosition} from "./column/selectors";
+import {COLUMN_TYPES} from "./column/enums";
 
 export default class EventManager {
   dataGrid: BeakerxDataGrid;

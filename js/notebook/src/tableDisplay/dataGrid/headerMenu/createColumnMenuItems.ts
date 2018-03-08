@@ -16,10 +16,11 @@
 
 import { createFormatMenuItems } from './createFormatMenuItems';
 import MenuItem from "../../../shared/interfaces/menuItemInterface";
-import DataGridColumn, {SORT_ORDER} from "../column/DataGridColumn";
+import DataGridColumn from "../column/DataGridColumn";
 import { CENTER, LEFT, RIGHT } from "../column/columnAlignment";
 import {HIGHLIGHTER_TYPE} from "../interface/IHighlighterState";
 import {selectBodyColumnVisibility} from "../column/selectors";
+import {SORT_ORDER} from "../column/enums";
 
 export function createColumnMenuItems(column: DataGridColumn): MenuItem[] {
   return [

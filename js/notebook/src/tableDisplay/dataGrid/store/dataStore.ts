@@ -17,7 +17,7 @@
 import {DataStore, combineReducers} from "@phosphor/datastore";
 import dataGridModelReducer from "../model/reducer";
 import IDataModelState from "../interface/IDataGridModelState";
-import columnReducer, {IColumnsState} from "../column/columnReducer";
+import columnReducer from "../column/columnReducer";
 import {
   selectInitialColumnAlignment,
   selectColumnNames,
@@ -30,9 +30,10 @@ import {
   selectStringFormatForType
 } from "../model/selectors";
 import {BeakerxDataGridModel} from "../model/BeakerxDataGridModel";
-import {COLUMN_TYPES, SORT_ORDER} from "../column/DataGridColumn";
 import {selectOutputColumnLimit} from "../column/selectors";
 import {getDisplayType, getTypeByName} from "../dataTypes";
+import {COLUMN_TYPES, SORT_ORDER} from "../column/enums";
+import {IColumnsState} from "../interface/IColumn";
 
 export interface IBeakerxDataGridState {
   model: IDataModelState,
@@ -49,18 +50,18 @@ export default function createStore(initialState: IDataModelState) {
 }
 
 function createInitialColumnsState(initialState: IDataModelState): IColumnsState {
-  const names = addColumnNamesState({ model: initialState, columns: {} });
-  const types = addColumnTypesState({ model: initialState, columns: {} });
-  const visibility = addColumnsVisibilityState({ model: initialState, columns: {} });
-  const positions = addColumnsPositions({ model: initialState, columns: {} });
-  const initialColumnsState: IColumnsState = {};
+  const initialColumnsState: IColumnsState = new Map();
+  const state = { model: initialState, columns: initialColumnsState };
+  const names = addColumnNamesState(state);
+  const types = addColumnTypesState(state);
+  const visibility = addColumnsVisibilityState(state);
+  const positions = addColumnsPositions(state);
 
   const addColumnState = (columnType: COLUMN_TYPES) => (name, index) => {
     let key = `${columnType}_${index}`;
     let dataType = getTypeByName(types[columnType][index]);
-    let state = { model: initialState, columns: {} };
 
-    initialColumnsState[key] = {
+    initialColumnsState.set(key, {
       name,
       index,
       dataType,
@@ -78,7 +79,7 @@ function createInitialColumnsState(initialState: IDataModelState): IColumnsState
         selectStringFormatForType(state),
         selectStringFormatForcolumn(state)[name]
       )
-    };
+    });
   };
 
   names[COLUMN_TYPES.index].forEach(addColumnState(COLUMN_TYPES.index));

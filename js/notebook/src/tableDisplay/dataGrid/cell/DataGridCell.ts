@@ -16,10 +16,10 @@
 
 import { CellRenderer } from "@phosphor/datagrid";
 import {ICellData} from "../interface/ICell";
-import {COLUMN_TYPES} from "../column/DataGridColumn";
 import {BeakerxDataGrid} from "../BeakerxDataGrid";
 import {DataGridHelpers} from "../dataGridHelpers";
 import findSectionIndex = DataGridHelpers.findSectionIndex;
+import {COLUMN_TYPES} from "../column/enums";
 
 export default class DataGridCell {
   static isHeaderCell(config: CellRenderer.ICellConfig) {

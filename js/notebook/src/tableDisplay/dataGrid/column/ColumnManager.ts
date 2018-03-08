@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import {COLUMN_TYPES, default as DataGridColumn, SORT_ORDER} from "./DataGridColumn";
+import DataGridColumn from "./DataGridColumn";
 import { ITriggerOptions } from "../headerMenu/HeaderMenu";
 import { CellRenderer } from "@phosphor/datagrid";
 import { chain, find } from '@phosphor/algorithm'
@@ -33,6 +33,7 @@ import {
 import {
   UPDATE_COLUMNS_FILTERS, UPDATE_COLUMNS_POSITION
 } from "./columnReducer";
+import {COLUMN_TYPES, SORT_ORDER} from "./enums";
 
 export interface IBkoColumnsChangedArgs {
   type: COLUMN_CHANGED_TYPES,

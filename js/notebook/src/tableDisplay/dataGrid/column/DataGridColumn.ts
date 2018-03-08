@@ -50,17 +50,7 @@ import {
   UPDATE_COLUMN_VISIBILITY, UPDATE_COLUMN_WIDTH
 } from "./columnReducer";
 import {BeakerxDataStore} from "../store/dataStore";
-
-export enum COLUMN_TYPES {
-  index,
-  body
-}
-
-export enum SORT_ORDER {
-  ASC,
-  DESC,
-  NO_SORT
-}
+import {COLUMN_TYPES, SORT_ORDER} from "./enums";
 
 export default class DataGridColumn {
   index: number;
@@ -138,7 +128,7 @@ export default class DataGridColumn {
       { value: displayType, columnIndex: this.index, columnType: this.type }
     ));
     this.assignFormatFn();
-    this.dataGrid.repaint();
+    this.dataGrid.setInitialSectionWidth(this);
   }
 
   setTimeDisplayType(timeUnit) {

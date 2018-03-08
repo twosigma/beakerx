@@ -17,7 +17,7 @@
 import { DataModel } from "@phosphor/datagrid";
 import { ALL_TYPES } from '../dataTypes';
 import { DataFormatter } from '../DataFormatter';
-import {COLUMN_TYPES, default as DataGridColumn} from "../column/DataGridColumn";
+import DataGridColumn from "../column/DataGridColumn";
 import IDataModelState from '../interface/IDataGridModelState';
 import { MapIterator, iter } from '@phosphor/algorithm';
 import { IColumn } from "../interface/IColumn";
@@ -26,15 +26,14 @@ import RowManager from "../row/RowManager";
 import DataGridRow from "../row/DataGridRow";
 import {BeakerxDataStore} from "../store/dataStore";
 import {
-  selectAlignmentForColumn, selectAlignmentForType,
   selectColumnsVisible,
   selectHasIndex,
-  selectModel,
   selectValues
 } from "./selectors";
 import DataGridAction from "../store/DataGridAction";
 import {UPDATE_MODEL_DATA} from "./reducer";
 import {selectBodyColumnVisibility, selectColumnIndexByPosition} from "../column/selectors";
+import {COLUMN_TYPES} from "../column/enums";
 
 export class BeakerxDataGridModel extends DataModel {
   store: BeakerxDataStore;

@@ -20,7 +20,7 @@ import { Widget } from "@phosphor/widgets";
 import { Signal } from '@phosphor/signaling';
 import { ICellData } from "./interface/ICell";
 import { CellRendererFactory } from "./cell/CellRendererFactory";
-import DataGridColumn, { COLUMN_TYPES } from "./column/DataGridColumn";
+import DataGridColumn from "./column/DataGridColumn";
 import IDataModelState from "./interface/IDataGridModelState";
 import HighlighterManager from "./highlighter/HighlighterManager";
 import IHihglighterState from "./interface/IHighlighterState";
@@ -51,6 +51,7 @@ import {
 import {selectColumnWidth} from "./column/selectors";
 import throttle = DataGridHelpers.throttle;
 import DataGridCell from "./cell/DataGridCell";
+import {COLUMN_TYPES} from "./column/enums";
 
 export class BeakerxDataGrid extends DataGrid {
   id: string;

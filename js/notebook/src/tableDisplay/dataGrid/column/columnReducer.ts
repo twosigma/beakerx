@@ -16,8 +16,8 @@
 
 import {Reducer} from "@phosphor/datastore";
 import {DataGridColumnAction, DataGridColumnsAction} from "../store/DataGridAction";
-import {COLUMN_TYPES} from "./DataGridColumn";
-import {IColumnState} from "../interface/IColumn";
+import {IColumnsState, IColumnState} from "../interface/IColumn";
+import {COLUMN_TYPES} from "./enums";
 
 export const UPDATE_COLUMNS_STATES = 'UPDATE_COLUMNS_STATES';
 export const UPDATE_COLUMN_STATE = 'UPDATE_COLUMNS_STATE';
@@ -34,10 +34,6 @@ export const UPDATE_COLUMN_FORMAT_FOR_TIMES = 'UPDATE_COLUMN_FORMAT_FOR_TIMES';
 export const UPDATE_COLUMN_DISPLAY_TYPE = 'UPDATE_COLUMN_DISPLAY_TYPE';
 export const UPDATE_COLUMN_SORT_ORDER = 'UPDATE_COLUMN_SORT_ORDER';
 export const UPDATE_COLUMN_WIDTH = 'UPDATE_COLUMN_WIDTH';
-
-export interface IColumnsState {
-  [key: string]: IColumnState
-}
 
 const reduceColumnsVisibility = reduceColumnsState('visible');
 const reduceColumnsPosition = reduceColumnsState('position');
@@ -112,12 +108,12 @@ function reduceColumnsState(property: string) {
     const bodyColumnValues = hasIndex ? value.slice(1) : value;
     const indexColumnValues = hasIndex ? value.slice(0, 1) : defaultValue;
 
-    const newState = {};
+    const newState = new Map<string, IColumnState>(state);
 
     indexColumnValues.forEach(updateColumnStateProperty(state, newState, property, COLUMN_TYPES.index));
     bodyColumnValues.forEach(updateColumnStateProperty(state, newState, property, COLUMN_TYPES.body));
 
-    return { ...state, ...newState };
+    return newState;
   };
 }
 
@@ -125,10 +121,10 @@ function updateColumnStateProperty(state, newState, property, columnType) {
   return (value, index) => {
     let key = `${columnType}_${index}`;
 
-    newState[key] = {
-      ...state[key],
+    newState.set(key, {
+      ...state.get(key),
       [property]: value
-    }
+    });
   };
 }
 
@@ -139,8 +135,11 @@ function reduceColumnState(state, action) {
 
   const { columnType, columnIndex, value } = action.payload;
   const key = `${columnType}_${columnIndex}`;
+  const newState = new Map<string, IColumnState>(state);
 
-  return { ...state, [key]: { ...state[key], ...value } };
+  newState.set(key, { ...state.get(key), ...value });
+
+  return newState;
 }
 
 function reduceColumnStateProperty(property: string) {
@@ -151,8 +150,11 @@ function reduceColumnStateProperty(property: string) {
 
     const { columnType, columnIndex, value } = action.payload;
     const key = `${columnType}_${columnIndex}`;
+    const newState = new Map<string, IColumnState>(state);
 
-    return { ...state, [key]: { ...state[key], [property]: value } };
+    newState.set(key, { ...state.get(key), [property]: value });
+
+    return newState;
   };
 }
 
@@ -163,10 +165,7 @@ function reduceColumnVisibility(state, action) {
     UPDATE_COLUMN_POSITION,
     {
       ...action.payload,
-      value: (
-        Object.keys(state)
-          .filter(key => key.indexOf(`${action.payload.columnType}`) === 0).length - 1
-      )
+      value: state.size - 2 // do not count the index column state
     }
   ));
 }
@@ -179,7 +178,6 @@ function reduceColumnPosition(state, action) {
 
   order.splice(lastPosition, 1);
   order.splice(value, 0, columnIndex);
-
   order.forEach((index, position) => { resultPositions[index] = position; });
 
   return reduceColumnsPosition(state, new DataGridColumnsAction(UPDATE_COLUMNS_POSITION, {
@@ -192,9 +190,11 @@ function reduceColumnPosition(state, action) {
 function createBodyColumnsOrderArray(state, columnType): number[] {
   const order: number[] = [];
 
-  Object.keys(state)
-    .filter((key) => key.indexOf(columnType) === 0)
-    .forEach((key: string) => order[state[key].position] = state[key].index);
+  state.forEach((columnState) => {
+    if (columnState.columnType === columnType) {
+      order[columnState.position] = columnState.index
+    }
+  });
 
   return order;
 }

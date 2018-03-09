@@ -46,6 +46,8 @@ export const selectStringFormatForColumn = (state) => selectModel(state).stringF
 export const selectStringFormatForTimes = (state) => selectModel(state).stringFormatForTimes;
 export const selectFormatForTimes = (state) => TIME_UNIT_FORMATS[selectStringFormatForTimes(state)];
 export const selectTimeStrings = (state) => selectModel(state).timeStrings;
+export const selectRendererForColumn = (state, column) => selectModel(state).rendererForColumn[column.name];
+export const selectRendererForType = (state, column) => selectModel(state).rendererForType[column.getDataTypeName()];
 export const selectTimeZone = (state) => selectModel(state).timeZone;
 export const selectInitialColumnAlignment = createSelector(
 [selectAlignmentForColumn, selectAlignmentForType, selectAlignmentByType],
@@ -102,3 +104,14 @@ export const selectInitialColumnPositions = createSelector(
 
   return result;
 });
+
+export const selectRenderer = createSelector(
+  [selectRendererForColumn, selectRendererForType],
+  (columnRenderer, typeRenderer) => {
+    if (columnRenderer) {
+      return columnRenderer;
+    }
+
+    return typeRenderer;
+  }
+);

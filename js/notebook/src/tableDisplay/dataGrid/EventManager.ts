@@ -124,7 +124,11 @@ export default class EventManager {
   }
 
   private handleHeaderClick(event: MouseEvent): void {
-    if (!this.dataGrid.isOverHeader(event) || event.target !== this.dataGrid['_canvas']) {
+    if (
+      !this.dataGrid.isOverHeader(event)
+      || event.buttons !== 0
+      || event.target !== this.dataGrid['_canvas']
+    ) {
       return;
     }
 

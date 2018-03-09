@@ -28,9 +28,9 @@ class HistogramPropertiesTest {
     KernelManager.register(kernel)
     val histogram = new Histogram
 
-    histogram.binCount shouldBe 0
-    histogram.binCount = 10
     histogram.binCount shouldBe 10
+    histogram.binCount = 20
+    histogram.binCount shouldBe 20
 
     histogram.color shouldBe empty
     histogram.color = Color.GREEN

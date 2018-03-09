@@ -49,6 +49,14 @@ public class HistogramTest extends AbstractChartTest<Histogram> {
   }
 
   @Test
+  public void defaultBinCountEquals10() {
+    //given
+    histogram = new Histogram();
+    //then
+    assertThat(histogram.getBinCount()).isEqualTo(10);
+  }
+
+  @Test
   public void createHistogramByEmptyConstructor_hasDisplayModeIsNotNull() {
     //given
     histogram = createWidget();
@@ -184,7 +192,7 @@ public class HistogramTest extends AbstractChartTest<Histogram> {
     assertThat(histogram.getColors()).isNotEmpty();
     LinkedHashMap model = getModelUpdate();
     assertThat(model.size()).isEqualTo(1);
-    List<String> actual = (List<String>)model.get(COLORS);
+    List<String> actual = (List<String>) model.get(COLORS);
     assertThat(actual.get(0)).startsWith("#");
   }
 
@@ -207,7 +215,7 @@ public class HistogramTest extends AbstractChartTest<Histogram> {
   @Test
   public void shouldSendCommMsgWhenLogYChange() {
     //given
-    AbstractChart chart =createWidget();
+    AbstractChart chart = createWidget();
     //when
     chart.setLogY(true);
     //then

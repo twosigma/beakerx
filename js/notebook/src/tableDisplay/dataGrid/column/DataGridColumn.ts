@@ -31,10 +31,10 @@ import {
   selectColumnDataType,
   selectColumnDataTypeName,
   selectColumnDisplayType,
-  selectColumnFilter, createInitialColumnStates,
+  selectColumnFilter,
   selectColumnHorizontalAlignment,
   selectColumnKeepTrigger, selectColumnPosition, selectColumnSortOrder,
-  selectColumnState, selectColumnVisible
+  selectColumnState, selectColumnVisible, selectColumnFormatForTimes
 } from "./selectors";
 import {DataGridColumnAction} from "../store/DataGridAction";
 import {
@@ -42,7 +42,7 @@ import {
   selectHasIndex,
   selectInitialColumnAlignment,
   selectStringFormatForColumn,
-  selectStringFormatForTimes,
+  selectFormatForTimes,
   selectStringFormatForType
 } from "../model/selectors";
 import {
@@ -258,7 +258,7 @@ export default class DataGridColumn {
   }
 
   getFormatForTimes() {
-    return createInitialColumnStates(this.store.state, this);
+    return selectColumnFormatForTimes(this.store.state, this);
   }
 
   getPosition() {
@@ -339,7 +339,7 @@ export default class DataGridColumn {
   }
 
   resetState() {
-    this.setTimeDisplayType(selectStringFormatForTimes(this.store.state));
+    this.setTimeDisplayType(selectFormatForTimes(this.store.state));
     this.setDisplayType(getDisplayType(
       this.getDataType(),
       selectStringFormatForType(this.store.state),

@@ -19,6 +19,7 @@ import IHihglighterState from "../interface/IHighlighterState";
 import {IBeakerxDataGridState} from "../store/dataStore";
 import {getAlignmentByChar, getAlignmentByType} from "../column/columnAlignment";
 import {ALL_TYPES} from "../dataTypes";
+import {TIME_UNIT_FORMATS} from "../../consts";
 
 export const selectModel = (state: IBeakerxDataGridState): IDataModelState => state.model;
 export const selectValues = (state: IBeakerxDataGridState) => selectModel(state).values;
@@ -42,6 +43,7 @@ export const selectContextMenuTags = (state: IBeakerxDataGridState) => selectMod
 export const selectStringFormatForType = (state: IBeakerxDataGridState) => selectModel(state).stringFormatForType;
 export const selectStringFormatForColumn = (state: IBeakerxDataGridState) => selectModel(state).stringFormatForColumn || {};
 export const selectStringFormatForTimes = (state: IBeakerxDataGridState) => selectModel(state).stringFormatForTimes;
+export const selectFormatForTimes = (state: IBeakerxDataGridState) => TIME_UNIT_FORMATS[selectStringFormatForTimes(state)];
 export const selectTimeStrings = (state: IBeakerxDataGridState) => selectModel(state).timeStrings;
 export const selectTimeZone = (state: IBeakerxDataGridState) => selectModel(state).timeZone;
 export const selectInitialColumnAlignment = (

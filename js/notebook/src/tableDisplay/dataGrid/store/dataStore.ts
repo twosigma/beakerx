@@ -27,7 +27,7 @@ import {
   selectHasIndex,
   selectInitialColumnPositions,
   selectStringFormatForColumn,
-  selectStringFormatForType, selectStringFormatForTimes
+  selectStringFormatForType, selectFormatForTimes
 } from "../model/selectors";
 import {BeakerxDataGridModel} from "../model/BeakerxDataGridModel";
 import {selectOutputColumnLimit} from "../column/selectors";
@@ -67,7 +67,7 @@ export function createInitialColumnsState(initialState: IDataModelState): IColum
       dataType,
       columnType,
       filter: null,
-      formatForTimes: selectStringFormatForTimes(state),
+      formatForTimes: selectFormatForTimes(state),
       sortOrder: SORT_ORDER.NO_SORT,
       horizontalAlignment: selectInitialColumnAlignment(state, dataType, name),
       keepTrigger: columnType === COLUMN_TYPES.index,

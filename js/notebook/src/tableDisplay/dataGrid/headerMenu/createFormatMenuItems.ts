@@ -74,7 +74,7 @@ export function createTimeSubitems(): MenuItem[] {
         return (
           displayType === ALL_TYPES.datetime ||
           displayType === ALL_TYPES.time
-        ) && TIME_UNIT_FORMATS[key] === column.getFormatForTimes()
+        ) && TIME_UNIT_FORMATS[key].format === column.getFormatForTimes().format
       },
       action: (column) => column.setTimeDisplayType(TIME_UNIT_FORMATS[key])
     };

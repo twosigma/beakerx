@@ -26,7 +26,7 @@ import {CellRenderer} from "@phosphor/datagrid";
 import {IColumnState} from "./interface/IColumn";
 import {
   selectColumnNames,
-  selectStringFormatForColumn, selectStringFormatForTimes,
+  selectStringFormatForColumn, selectFormatForTimes,
   selectStringFormatForType,
   selectTimeStrings,
   selectTimeZone
@@ -73,8 +73,8 @@ export class DataFormatter {
     return selectStringFormatForType(this.store.state);
   }
 
-  get stringFormatForTimes() {
-    return selectStringFormatForTimes(this.store.state);
+  get formatForTimes() {
+    return selectFormatForTimes(this.store.state);
   }
 
   get columnNames() {
@@ -218,12 +218,14 @@ export class DataFormatter {
     return parseFloat(config.value).toExponential(15);
   }
 
-  private datetime(config: CellRenderer.ICellConfig, stringFormatForTimes: string|null): string {
+  private datetime(config: CellRenderer.ICellConfig, formatForTimes: any): string {
     if (this.timeStrings) {
       return this.timeStrings[config.row];
     }
 
-    let format = stringFormatForTimes ? stringFormatForTimes : TIME_UNIT_FORMATS.DATETIME.format;
+    let format = formatForTimes && formatForTimes.format
+      ? formatForTimes.format
+      : TIME_UNIT_FORMATS.DATETIME.format;
 
     if (_.isObject(config.value) && config.value.type === 'Date') {
       return bkUtils.formatTimestamp(config.value.timestamp, this.timeZone, format);
@@ -237,7 +239,7 @@ export class DataFormatter {
   private getTimeFormatForColumn(columnState?: IColumnState) {
     return columnState && columnState.formatForTimes
       ? columnState.formatForTimes
-      : this.stringFormatForTimes;
+      : this.formatForTimes;
   }
 
   private datetimeWithFormat(formatForTimes?: any) {

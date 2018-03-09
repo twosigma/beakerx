@@ -30,7 +30,7 @@ describe('Testing of plot Actions ', function () {
 
   var cellIndex;
 
-  describe('(Groovy) onKey action ', function(){
+  describe('(Groovy) onKey action for Plot ', function(){
     var svgElement1;
 
     it('onKey "SHIFT" should change bar value ', function () {
@@ -39,7 +39,7 @@ describe('Testing of plot Actions ', function () {
       var height1 = Math.round(svgElement1.$('rect#i0_0').getAttribute('height'));
       svgElement1.$('rect#i0_0').click();
       browser.keys("Shift");
-      browser.keys('\uE000');;
+      browser.keys('\uE000');
       beakerxPO.kernelIdleIcon.waitForEnabled();
       var height2 = Math.round(svgElement1.$('rect#i0_0').getAttribute('height'));
       expect(height2).toBeGreaterThan(height1);
@@ -61,7 +61,7 @@ describe('Testing of plot Actions ', function () {
     });
   });
 
-  describe('(Groovy) onClick action', function(){
+  describe('(Groovy) onClick action for Plot ', function(){
     var svgElement2;
 
     it('Click on the bar should change its value ', function () {
@@ -91,7 +91,7 @@ describe('Testing of plot Actions ', function () {
     });
   });
 
-  describe('(Groovy) RightClickAndDrag action ', function(){
+  describe('(Groovy) RightClickAndDrag action for Plot ', function(){
 
     it('RightClickAndDrag action should zoom the plot ', function () {
       cellIndex += 1;
@@ -115,7 +115,7 @@ describe('Testing of plot Actions ', function () {
     });
   });
 
-  describe('(Groovy) RightClick action ', function(){
+  describe('(Groovy) RightClick action for Plot ', function(){
 
     it('RightClick action should not zoom the plot ', function () {
       beakerxPO.runCodeCellByIndex(cellIndex - 1);
@@ -133,6 +133,86 @@ describe('Testing of plot Actions ', function () {
       browser.$('ul.p-Menu-content').waitForEnabled();
       expect(browser.$('div.p-Menu-itemLabel=Save as SVG').isVisible()).toBeTruthy();
       expect(browser.$('div.p-Menu-itemLabel=Save as PNG').isVisible()).toBeTruthy();
+    });
+  });
+
+  describe('(Groovy) onClick action for Combined Plot ', function(){
+    var svgElements5, svgElements6;
+
+    it('Click on the bar should change its value ', function () {
+      cellIndex += 1;
+      svgElements5 = beakerxPO.runCellToGetSvgElements(cellIndex);
+      var height1 = Math.round(svgElements5[0].$('rect#i0_0').getAttribute('height'));
+      svgElements5[0].$('rect#i0_0').click();
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      var height2 = Math.round(svgElements5[0].$('rect#i0_0').getAttribute('height'));
+      expect(height2).toBeGreaterThan(height1);
+    });
+
+    it('Click on the bar should run the tag (by string name) ', function () {
+      svgElements5[1].$('rect#i0_0').click();
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      cellIndex += 1;
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /com.twosigma.beakerx.chart.xychart.Plot/);
+    });
+
+    it('The action details are available after click on the bar ', function () {
+      cellIndex += 1;
+      svgElements6 = beakerxPO.runCellToGetSvgElements(cellIndex);
+      svgElements6[0].$('rect#i0_1').click();
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      cellIndex += 1;
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /2:5/);
+    });
+
+    it('Click on the bar should run the tag (by closure) ', function () {
+      cellIndex += 1;
+      svgElements6[1].$('rect#i0_1').click();
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /com.twosigma.beakerx.chart.xychart.Plot/);
+    });
+  });
+
+  describe('(Groovy) onKey action for Combined Plot ', function(){
+    var svgElements7, svgElements8;
+
+    it('onKey "SHIFT" should change bar value ', function () {
+      cellIndex += 1;
+      svgElements7 = beakerxPO.runCellToGetSvgElements(cellIndex);
+      var height1 = Math.round(svgElements7[0].$('rect#i0_0').getAttribute('height'));
+      svgElements7[0].$('rect#i0_0').click();
+      browser.keys("Shift");
+      browser.keys('\uE000');
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      var height2 = Math.round(svgElements7[0].$('rect#i0_0').getAttribute('height'));
+      expect(height2).toBeGreaterThan(height1);
+    });
+
+    it('onKey "T" should run the tag (by string name) ', function () {
+      svgElements7[1].$('rect#i0_0').click();
+      browser.keys("t");
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      cellIndex += 1;
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /com.twosigma.beakerx.chart.xychart.Plot/);
+    });
+
+    it('The action details are available after onKey ', function () {
+      cellIndex += 1;
+      svgElements8 = beakerxPO.runCellToGetSvgElements(cellIndex);
+      svgElements8[0].$('rect#i0_1').click();
+      browser.keys("Shift");
+      browser.keys('\uE000');
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      cellIndex += 1;
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /2:5/);
+    });
+
+    it('onKey "U" should run the tag (by closure) ', function () {
+      cellIndex += 1;
+      svgElements8[1].$('rect#i0_1').click();
+      browser.keys("u");
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /com.twosigma.beakerx.chart.xychart.Plot/);
     });
   });
 

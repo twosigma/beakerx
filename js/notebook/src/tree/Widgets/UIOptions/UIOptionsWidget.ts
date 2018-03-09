@@ -46,7 +46,7 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
     </div>
     <div class="form-check">
       <input class="form-check-input" id="improve_fonts" name="improve_fonts" type="checkbox">
-      <label class="form-check-label" for="improve_fonts">Improve fonts</label>
+      <label class="form-check-label" for="improve_fonts">Customize fonts (Roboto Mono and Lato)</label>
     </div>
     <div class="form-check">
       <input class="form-check-input" id="show_publication" name="show_publication" type="checkbox">

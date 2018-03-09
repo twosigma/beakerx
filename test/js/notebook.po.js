@@ -94,5 +94,18 @@ var NotebookPageObject = function () {
     return $$('#complete > select > option');
   };
 
+  this.callDocAndGetItsTooltip = function(codeCell, codeStr){
+    codeCell.scroll();
+    codeCell.click('div.CodeMirror-code[role="presentation"]');
+    codeCell.keys(codeStr);
+    browser.keys('Shift');
+    browser.keys('Tab');
+    browser.keys('\uE000');
+    browser.waitUntil(function() {
+      return browser.isVisible('#tooltip');
+    }, 10000, 'doc tooltip is not visible');
+    return $('div#tooltip div.tooltiptext.smalltooltip');
+  };
+
 };
 module.exports = NotebookPageObject;

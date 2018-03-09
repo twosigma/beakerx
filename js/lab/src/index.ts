@@ -16,9 +16,10 @@
 
 import './global.env';
 import { IJupyterWidgetRegistry } from '@jupyter-widgets/base';
-import { JupyterLab } from '@jupyterlab/application';
+import { JupyterLab, JupyterLabPlugin } from '@jupyterlab/application';
 import BeakerxExtension from './plugin';
 import BeakerxTreeJupyterLabPlugin from "./tree";
+import RequirejsLoader from "./plugin/requirejs";
 
 const beakerx = require('../lib/index.js');
 
@@ -39,7 +40,17 @@ const beakerx_ext = {
 
 const tree_ext = BeakerxTreeJupyterLabPlugin;
 
+const requirejs_ext: JupyterLabPlugin<void> = {
+  id: 'beakerx:requirejs',
+  autoStart: true,
+  requires: [],
+  activate: (app: JupyterLab): Promise<void> => {
+    return RequirejsLoader.load();
+  }
+};
+
 export default [
+  requirejs_ext,
   beakerx_ext,
   tree_ext
 ];

@@ -82,6 +82,12 @@ function BeakerXPageObject() {
     return codeCell.$('#svgg');
   };
 
+  this.runCellToGetSvgElements = function (index) {
+    this.kernelIdleIcon.waitForEnabled();
+    var codeCell = this.runCodeCellByIndex(index);
+    return codeCell.$$('#svgg');
+  };
+
   this.runAndCheckOutputTextOfExecuteResult = function (cellIndex, expectedText) {
     this.runCellAndCheckTextHandleError(cellIndex, expectedText, this.getAllOutputsExecuteResult);
   };

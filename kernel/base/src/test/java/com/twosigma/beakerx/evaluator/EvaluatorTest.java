@@ -18,6 +18,7 @@ package com.twosigma.beakerx.evaluator;
 
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.jvm.classloader.BeakerxUrlClassLoader;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
@@ -91,6 +92,12 @@ public class EvaluatorTest extends BaseEvaluator {
   @Override
   public AutocompleteResult autocomplete(String code, int caretPosition) {
     return new AutocompleteResult(new ArrayList<>(), 0);
+  }
+
+
+  @Override
+  public InspectResult inspect(String code, int caretPosition) {
+    return new InspectResult("", 0);
   }
 
   @Override

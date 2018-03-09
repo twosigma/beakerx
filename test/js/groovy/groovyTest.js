@@ -138,4 +138,13 @@ describe('Groovy base tests. ', function () {
     });
   });
 
+  describe('(Groovy) Press "Shift + Tab" to display javadoc ', function(){
+    it('doc tooltip is not empty ', function(){
+      cellIndex += 1;
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      var tooltip = beakerxPO.callDocAndGetItsTooltip(codeCell, 'EasyForm');
+      expect(tooltip.getText()).toMatch(/com.twosigma.beakerx.easyform.EasyForm/);
+    });
+  });
+
 });

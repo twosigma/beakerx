@@ -40,14 +40,17 @@ export const selectDoubleClickTag = (state: IBeakerxDataGridState) => selectMode
 export const selectContextMenuItems = (state: IBeakerxDataGridState) => selectModel(state).contextMenuItems || [];
 export const selectContextMenuTags = (state: IBeakerxDataGridState) => selectModel(state).contextMenuTags || {};
 export const selectStringFormatForType = (state: IBeakerxDataGridState) => selectModel(state).stringFormatForType;
-export const selectStringFormatForcolumn = (state: IBeakerxDataGridState) => selectModel(state).stringFormatForColumn || {};
+export const selectStringFormatForColumn = (state: IBeakerxDataGridState) => selectModel(state).stringFormatForColumn || {};
+export const selectStringFormatForTimes = (state: IBeakerxDataGridState) => selectModel(state).stringFormatForTimes;
+export const selectTimeStrings = (state: IBeakerxDataGridState) => selectModel(state).timeStrings;
+export const selectTimeZone = (state: IBeakerxDataGridState) => selectModel(state).timeZone;
 export const selectInitialColumnAlignment = (
   state: IBeakerxDataGridState,
   dataType: ALL_TYPES,
   columnName: string
 ) => {
-  const alignmentForColumn = selectAlignmentForColumn(state)[ALL_TYPES[dataType]];
-  const alignmentForType = selectAlignmentForType(state)[columnName];
+  const alignmentForColumn = selectAlignmentForType(state)[ALL_TYPES[dataType]];
+  const alignmentForType = selectAlignmentForColumn(state)[columnName];
 
   if (alignmentForType) {
     return getAlignmentByChar(alignmentForType);

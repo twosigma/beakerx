@@ -21,7 +21,7 @@ import {IColumnOptions} from "../interface/IColumn";
 import { ICellData } from "../interface/ICell";
 import { CellRenderer, DataModel, TextRenderer } from "@phosphor/datagrid";
 import {ALL_TYPES, getDisplayType, isDoubleWithPrecision} from "../dataTypes";
-import { minmax, MapIterator } from '@phosphor/algorithm';
+import { minmax } from '@phosphor/algorithm';
 import { HIGHLIGHTER_TYPE } from "../interface/IHighlighterState";
 import ColumnManager, { COLUMN_CHANGED_TYPES, IBkoColumnsChangedArgs } from "./ColumnManager";
 import ColumnFilter from "./ColumnFilter";
@@ -31,7 +31,7 @@ import {
   selectColumnDataType,
   selectColumnDataTypeName,
   selectColumnDisplayType,
-  selectColumnFilter, selectColumnFormatForTimes,
+  selectColumnFilter, createInitialColumnStates,
   selectColumnHorizontalAlignment,
   selectColumnKeepTrigger, selectColumnPosition, selectColumnSortOrder,
   selectColumnState, selectColumnVisible
@@ -40,7 +40,10 @@ import {DataGridColumnAction} from "../store/DataGridAction";
 import {
   selectColumnsVisible,
   selectHasIndex,
-  selectInitialColumnAlignment, selectStringFormatForcolumn, selectStringFormatForType
+  selectInitialColumnAlignment,
+  selectStringFormatForColumn,
+  selectStringFormatForTimes,
+  selectStringFormatForType
 } from "../model/selectors";
 import {
   UPDATE_COLUMN_DISPLAY_TYPE,
@@ -48,7 +51,7 @@ import {
   UPDATE_COLUMN_HORIZONTAL_ALIGNMENT,
   UPDATE_COLUMN_POSITION, UPDATE_COLUMN_SORT_ORDER,
   UPDATE_COLUMN_VISIBILITY, UPDATE_COLUMN_WIDTH
-} from "./columnReducer";
+} from "./reducer";
 import {BeakerxDataStore} from "../store/dataStore";
 import {COLUMN_TYPES, SORT_ORDER} from "./enums";
 
@@ -255,7 +258,7 @@ export default class DataGridColumn {
   }
 
   getFormatForTimes() {
-    return selectColumnFormatForTimes(this.store.state, this);
+    return createInitialColumnStates(this.store.state, this);
   }
 
   getPosition() {
@@ -336,16 +339,18 @@ export default class DataGridColumn {
   }
 
   resetState() {
+    this.setTimeDisplayType(selectStringFormatForTimes(this.store.state));
     this.setDisplayType(getDisplayType(
       this.getDataType(),
       selectStringFormatForType(this.store.state),
-      selectStringFormatForcolumn(this.store.state)[this.name]
+      selectStringFormatForColumn(this.store.state)[this.name]
     ));
     this.setAlignment(selectInitialColumnAlignment(this.store.state, this.getDataType(), name));
     this.toggleVisibility(selectColumnsVisible(this.store.state)[this.name] !== false);
     this.resetHighlighters();
     this.resetFilter();
     this.move(this.index);
+    this.assignFormatFn();
     this.dataGrid.setInitialSectionWidth(this);
     this.dataGrid.updateWidgetWidth();
   }

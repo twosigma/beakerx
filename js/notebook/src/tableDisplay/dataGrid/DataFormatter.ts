@@ -24,35 +24,24 @@ import { DataGridHelpers } from './dataGridHelpers';
 import { TIME_UNIT_FORMATS } from '../consts';
 import {CellRenderer} from "@phosphor/datagrid";
 import {IColumnState} from "./interface/IColumn";
+import {
+  selectColumnNames,
+  selectStringFormatForColumn, selectStringFormatForTimes,
+  selectStringFormatForType,
+  selectTimeStrings,
+  selectTimeZone
+} from "./model/selectors";
+import {BeakerxDataStore} from "./store/dataStore";
 
 const bkUtils = require('../../shared/bkUtils');
-
-interface IFormatterOptions {
-  stringFormatForColumn?: any,
-  stringFormatForType?: any,
-  formatForTimes?: any,
-  timeStrings?: any,
-  timeZone?: any,
-  columnNames?: string[]
-}
 
 export const DEFAULT_TIME_FORMAT = 'YYYYMMDD HH:mm:ss.SSS ZZ';
 
 export class DataFormatter {
-  stringFormatForColumn: any;
-  stringFormatForType: any;
-  formatForTimes: any;
-  timeStrings: any;
-  timeZone: any;
-  columnNames: string[];
+  store: BeakerxDataStore;
 
-  constructor(options: IFormatterOptions) {
-    this.stringFormatForColumn = options.stringFormatForColumn || {};
-    this.stringFormatForType = options.stringFormatForType || {};
-    this.formatForTimes = options.formatForTimes || {};
-    this.timeStrings = options.formatForTimes;
-    this.timeZone = options.timeZone;
-    this.columnNames = options.columnNames || [];
+  constructor(store: BeakerxDataStore) {
+    this.store = store;
 
     this.handleNull = this.handleNull.bind(this);
     this.value = this.value.bind(this);
@@ -66,6 +55,30 @@ export class DataFormatter {
     this.datetime = this.datetime.bind(this);
     this.boolean = this.boolean.bind(this);
     this.html = this.html.bind(this);
+  }
+
+  get stringFormatForColumn() {
+    return selectStringFormatForColumn(this.store.state);
+  }
+
+  get timeStrings() {
+    return selectTimeStrings(this.store.state);
+  }
+
+  get timeZone() {
+    return selectTimeZone(this.store.state);
+  }
+
+  get stringFormatForType() {
+    return selectStringFormatForType(this.store.state);
+  }
+
+  get stringFormatForTimes() {
+    return selectStringFormatForTimes(this.store.state);
+  }
+
+  get columnNames() {
+    return selectColumnNames(this.store.state);
   }
   
   getFormatFnByDisplayType(displayType, columnState?: IColumnState): CellRenderer.ConfigFunc<string> {
@@ -122,7 +135,7 @@ export class DataFormatter {
     let formattedValue = config.value;
 
     if (!objectValue && stringFormatForColumn && stringFormatForColumn.type === 'value') {
-      return this.value;
+      return this.value(config);
     }
 
     if (objectValue) {
@@ -167,7 +180,7 @@ export class DataFormatter {
 
     let doubleValue = parseFloat(config.value);
     let colFormat = this.stringFormatForColumn[this.columnNames[config.column]];
-    let typeFormat = this.stringFormatForType.double;
+    let typeFormat = this.stringFormatForType['double'];
     let format = colFormat && colFormat.type === 'decimal' ? colFormat : typeFormat;
 
     if (!format || format.type !== 'decimal') {
@@ -205,14 +218,12 @@ export class DataFormatter {
     return parseFloat(config.value).toExponential(15);
   }
 
-  private datetime(config: CellRenderer.ICellConfig, formatForTimes: any): string {
+  private datetime(config: CellRenderer.ICellConfig, stringFormatForTimes: string|null): string {
     if (this.timeStrings) {
       return this.timeStrings[config.row];
     }
 
-    let format = _.isEmpty(formatForTimes)
-      ? TIME_UNIT_FORMATS.DATETIME.format
-      : formatForTimes.format;
+    let format = stringFormatForTimes ? stringFormatForTimes : TIME_UNIT_FORMATS.DATETIME.format;
 
     if (_.isObject(config.value) && config.value.type === 'Date') {
       return bkUtils.formatTimestamp(config.value.timestamp, this.timeZone, format);
@@ -224,9 +235,9 @@ export class DataFormatter {
   }
 
   private getTimeFormatForColumn(columnState?: IColumnState) {
-    return columnState && !_.isEmpty(columnState.formatForTimes)
+    return columnState && columnState.formatForTimes
       ? columnState.formatForTimes
-      : this.formatForTimes;
+      : this.stringFormatForTimes;
   }
 
   private datetimeWithFormat(formatForTimes?: any) {

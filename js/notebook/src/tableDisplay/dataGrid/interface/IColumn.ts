@@ -47,7 +47,7 @@ export interface IColumnState {
   displayType: ALL_TYPES|string,
   keepTrigger: boolean,
   horizontalAlignment: TextRenderer.HorizontalAlignment,
-  formatForTimes: any,
+  formatForTimes: string|null,
   visible: boolean,
   sortOrder: SORT_ORDER,
   filter: string|null,

@@ -102,7 +102,7 @@ export const selectColumnKeepTrigger = (state: IBeakerxDataGridState, column) =>
   selectColumnState(state, column).keepTrigger
 );
 
-export const selectColumnFormatForTimes = (state: IBeakerxDataGridState, column) => (
+export const createInitialColumnStates = (state: IBeakerxDataGridState, column) => (
   selectColumnState(state, column).formatForTimes
 );
 

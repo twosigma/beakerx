@@ -17,7 +17,7 @@
 import {DataStore, combineReducers} from "@phosphor/datastore";
 import dataGridModelReducer from "../model/reducer";
 import IDataModelState from "../interface/IDataGridModelState";
-import columnReducer from "../column/columnReducer";
+import columnReducer from "../column/reducer";
 import {
   selectInitialColumnAlignment,
   selectColumnNames,
@@ -26,14 +26,14 @@ import {
   selectColumnTypes,
   selectHasIndex,
   selectInitialColumnPositions,
-  selectStringFormatForcolumn,
-  selectStringFormatForType
+  selectStringFormatForColumn,
+  selectStringFormatForType, selectStringFormatForTimes
 } from "../model/selectors";
 import {BeakerxDataGridModel} from "../model/BeakerxDataGridModel";
 import {selectOutputColumnLimit} from "../column/selectors";
 import {getDisplayType, getTypeByName} from "../dataTypes";
 import {COLUMN_TYPES, SORT_ORDER} from "../column/enums";
-import {IColumnsState} from "../interface/IColumn";
+import {IColumnsState, IColumnState} from "../interface/IColumn";
 
 export interface IBeakerxDataGridState {
   model: IDataModelState,
@@ -49,8 +49,8 @@ export default function createStore(initialState: IDataModelState) {
   }), { model: initialState, columns: createInitialColumnsState(initialState) });
 }
 
-function createInitialColumnsState(initialState: IDataModelState): IColumnsState {
-  const initialColumnsState: IColumnsState = new Map();
+export function createInitialColumnsState(initialState: IDataModelState): IColumnsState {
+  const initialColumnsState: IColumnsState = new Map<string, IColumnState>();
   const state = { model: initialState, columns: initialColumnsState };
   const names = addColumnNamesState(state);
   const types = addColumnTypesState(state);
@@ -67,7 +67,7 @@ function createInitialColumnsState(initialState: IDataModelState): IColumnsState
       dataType,
       columnType,
       filter: null,
-      formatForTimes: {},
+      formatForTimes: selectStringFormatForTimes(state),
       sortOrder: SORT_ORDER.NO_SORT,
       horizontalAlignment: selectInitialColumnAlignment(state, dataType, name),
       keepTrigger: columnType === COLUMN_TYPES.index,
@@ -77,7 +77,7 @@ function createInitialColumnsState(initialState: IDataModelState): IColumnsState
       displayType: getDisplayType(
         dataType,
         selectStringFormatForType(state),
-        selectStringFormatForcolumn(state)[name]
+        selectStringFormatForColumn(state)[name]
       )
     });
   };

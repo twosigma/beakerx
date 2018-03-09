@@ -63,7 +63,7 @@ export class BeakerxDataGridModel extends DataModel {
 
   addProperties(store: BeakerxDataStore, columnManager: ColumnManager, rowManager: RowManager) {
     this.store = store;
-    this.dataFormatter = new DataFormatter(store.state.model);
+    this.dataFormatter = new DataFormatter(store);
     this.columnManager = columnManager;
     this.rowManager = rowManager;
     this.headerRowsCount = 1;
@@ -77,6 +77,7 @@ export class BeakerxDataGridModel extends DataModel {
 
   updateData(state: IDataModelState) {
     this.store.dispatch(new DataGridAction(UPDATE_MODEL_DATA, state));
+    this.columnManager.resetColumnStates();
     this._data = selectValues(this.store.state);
     this.rowManager.createRows(this._data, selectHasIndex(this.store.state));
     this.reset();

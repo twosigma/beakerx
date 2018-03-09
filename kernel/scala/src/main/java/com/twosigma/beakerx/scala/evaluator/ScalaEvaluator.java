@@ -105,9 +105,7 @@ public class ScalaEvaluator extends BaseEvaluator {
   @Override
   public void cancelExecution() {
     super.cancelExecution();
-    if (SparkVariable.getSparkContextManager() != null) {
-      SparkVariable.getSparkContextManager().cancelAllJobs();
-    }
+    SparkVariable.cancelAllJobs();
   }
 
   @Override

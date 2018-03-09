@@ -17,9 +17,9 @@ package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.kernel.KernelManager;
 import org.apache.spark.SparkConf;
-import org.apache.spark.SparkContext;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class SparkUI extends VBox {
 
@@ -27,8 +27,10 @@ public class SparkUI extends VBox {
 
   public static final String VIEW_NAME_VALUE = "SparkUIView";
   public static final String MODEL_NAME_VALUE = "SparkUIModel";
+  public static final String BEAKERX_ID = "beakerx.id";
 
-  private SparkContext sparkContext;
+  private SparkConf sparkConf;
+  private SparkContextManager sparkContextManager;
 
   public static SparkUI create(SparkConf sparkConf) {
     return new SparkUI(sparkConf);
@@ -36,7 +38,8 @@ public class SparkUI extends VBox {
 
   private SparkUI(SparkConf sparkConf) {
     super(new ArrayList<>());
-    sparkContext = createSparkContext(this, sparkConf.clone());
+    this.sparkConf = configureSparkConf(sparkConf.clone());
+    this.sparkContextManager = new SparkContextManager(this, this.sparkConf);
   }
 
   @Override
@@ -59,20 +62,12 @@ public class SparkUI extends VBox {
     return BeakerxWidget.VIEW_MODULE_VALUE;
   }
 
-  public SparkContext getSparkContext() {
-    return sparkContext;
-  }
-
-  private SparkContext createSparkContext(SparkUI sparkUI, SparkConf sparkConf) {
-    sparkConf = configureSparkConf(sparkConf);
-    return new SparkContextManager(sparkUI, sparkConf).getSparkContext();
-  }
-
   private SparkConf configureSparkConf(SparkConf sparkConf) {
     if (!isLocalSpark(sparkConf)) {
       sparkConf.set("spark.repl.class.outputDir", KernelManager.get().getOutDir());
     }
     sparkConf = configureExtraListeners(sparkConf);
+    sparkConf.set(BEAKERX_ID, UUID.randomUUID().toString());
     return sparkConf;
   }
 

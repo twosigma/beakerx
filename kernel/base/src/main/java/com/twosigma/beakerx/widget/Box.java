@@ -46,14 +46,25 @@ public abstract class Box extends ValueWidget<String> {
     return content;
   }
 
-  public void add(Widget widget){
+  public void add(Widget widget) {
     this.children.add(widget);
+    updateChildren();
+  }
+
+  public void removeDOMWidget(DOMWidget widget) {
+    widget.getLayout().setDisplayNone();
+    remove(widget);
+  }
+
+  public void remove(Widget widget) {
+    widget.close();
+    this.children.remove(widget);
     updateChildren();
   }
 
   private void updateChildren() {
     List<String> commIds = comIds();
-    sendUpdate(CHILDREN,commIds.toArray());
+    sendUpdate(CHILDREN, commIds.toArray());
   }
 
   private List<String> comIds() {

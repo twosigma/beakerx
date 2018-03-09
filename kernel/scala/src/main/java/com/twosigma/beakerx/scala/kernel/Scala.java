@@ -17,6 +17,7 @@ package com.twosigma.beakerx.scala.kernel;
 
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.kernel.Utils.uuid;
+import static com.twosigma.beakerx.scala.magic.command.SparkMagicCommand.SPARK;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -32,6 +33,7 @@ import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.scala.comm.ScalaCommOpenHandler;
 import com.twosigma.beakerx.scala.evaluator.ScalaEvaluator;
@@ -43,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.twosigma.beakerx.scala.magic.command.SparkMagicCommand;
 import scala.collection.JavaConverters;
 import scala.collection.Seq;
 
@@ -51,10 +54,12 @@ public class Scala extends Kernel {
   private Scala(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
     super(id, evaluator, kernelSocketsFactory);
     DisplayerDataMapper.register(converter);
+    registerCustomMagicCommands();
   }
 
   public Scala(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction, CacheFolderFactory cacheFolderFactory) {
     super(id, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory);
+    registerCustomMagicCommands();
   }
 
   @Override
@@ -105,6 +110,14 @@ public class Scala extends Kernel {
     HashMap<String, Object> kernelParameters = new HashMap<>();
     kernelParameters.put(IMPORTS, new ScalaDefaultVariables().getImports());
     return new EvaluatorParameters(kernelParameters);
+  }
+
+  private void registerCustomMagicCommands() {
+    registerMagicCommandType(
+            new MagicCommandType(
+                    SPARK,
+                    "<>",
+                    new SparkMagicCommand(this)));
   }
 
 }

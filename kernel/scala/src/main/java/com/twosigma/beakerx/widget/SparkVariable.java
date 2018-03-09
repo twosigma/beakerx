@@ -15,15 +15,36 @@
  */
 package com.twosigma.beakerx.widget;
 
+import org.apache.spark.SparkConf;
+import org.apache.spark.SparkContext;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.twosigma.beakerx.widget.SparkUI.BEAKERX_ID;
+
 public class SparkVariable {
 
-  private static SparkContextManager manager;
+  private static Map<String, SparkContextManager> manager = new HashMap<>();
+  private static SparkContext sparkContext;
 
-  public static void putSparkContextManager(SparkContextManager sparkContextManager) {
-    manager = sparkContextManager;
+  static void putSparkContextManager(SparkConf sparkConf, SparkContextManager sparkContextManager) {
+    manager.put(sparkConf.get(BEAKERX_ID), sparkContextManager);
   }
 
-  public static SparkContextManager getSparkContextManager() {
-    return manager;
+  public static SparkContextManager getSparkContextManager(SparkConf sparkConf) {
+    return manager.get(sparkConf.get(BEAKERX_ID));
+  }
+
+  static void putSparkContext(SparkContext sc) {
+    sparkContext = sc;
+  }
+
+  public static SparkContext getSparkContext() {
+    return sparkContext;
+  }
+
+  public static void cancelAllJobs() {
+    manager.values().forEach(SparkContextManager::cancelAllJobs);
   }
 }

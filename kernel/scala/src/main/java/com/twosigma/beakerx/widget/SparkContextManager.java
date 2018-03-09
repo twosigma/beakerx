@@ -15,6 +15,11 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.twosigma.beakerx.TryResult;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.message.Message;
 import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
 import org.apache.spark.scheduler.SparkListener;
@@ -31,33 +36,67 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.twosigma.beakerx.kernel.PlainCode.createSimpleEvaluationObject;
 import static java.util.Arrays.asList;
 
 public class SparkContextManager {
 
   private final SparkUI sparkUI;
-  private final SparkContext sparkContext;
+  private SparkContext sparkContext;
   private final SparkConf sparkConf;
   private Map<Integer, VBox> jobs = new HashMap<>();
   private Map<Integer, IntProgress> progressBars = new HashMap<>();
   private Map<Integer, Label> labels = new HashMap<>();
   private VBox jobPanel = null;
+  private Button connect;
+  private Label appStatus;
+  private Button disconnect;
+  private HBox statusPanel;
+
 
   public SparkContextManager(SparkUI sparkUI, SparkConf sparkConf) {
-    SparkVariable.putSparkContextManager(this);
+    SparkVariable.putSparkContextManager(sparkConf, this);
     this.sparkUI = sparkUI;
     this.sparkConf = sparkConf;
-    this.sparkContext = create(sparkConf);
+    this.connect = createConnectButton();
   }
 
-  public SparkContext getSparkContext() {
-    return sparkContext;
+  private Button createConnectButton() {
+    Button connect = new Button();
+    connect.setDescription("Connect");
+    connect.registerOnClick((content, message) -> initSparkContext(sparkConf, message));
+    sparkUI.add(connect);
+    return connect;
   }
 
-  private SparkContext create(SparkConf sparkConf) {
-    SparkContext sc = new SparkContext(sparkConf);
-    sc = addListener(sc);
-    return sc;
+  private void initSparkContext(SparkConf sparkConf, Message parentMessage) {
+    KernelFunctionality kernel = KernelManager.get();
+    try {
+      SparkContext sparkContext = new SparkContext(sparkConf);
+      sparkContext = addListener(sparkContext);
+      this.sparkContext = sparkContext;
+      SparkVariable.putSparkContext(this.sparkContext);
+      TryResult tryResult = initSparkContextInShell(kernel);
+      if (tryResult.isError()) {
+        sendError(parentMessage, kernel, tryResult.error());
+      }
+    } catch (Exception e) {
+      sendError(parentMessage, kernel, e.getMessage());
+    }
+  }
+
+  private TryResult initSparkContextInShell(KernelFunctionality kernel) {
+    String addSc = String.format(
+            "import com.twosigma.beakerx.widget.SparkVariable\n" +
+                    "var %s = SparkVariable.getSparkContext()\n",
+            "sc");
+    SimpleEvaluationObject seo = createSimpleEvaluationObject(addSc, kernel, new Message(), 1);
+    return kernel.executeCode(addSc, seo);
+  }
+
+  private void sendError(Message parentMessage, KernelFunctionality kernel, String message) {
+    SimpleEvaluationObject seo = createSimpleEvaluationObject("", kernel, parentMessage, 1);
+    seo.error(message);
   }
 
   private SparkContext addListener(SparkContext sc) {
@@ -101,24 +140,42 @@ public class SparkContextManager {
     return sc;
   }
 
-  private Label appStatus;
-  private Button disconnect;
-
   public void applicationStart() {
-    appStatus = new Label();
-    appStatus.setValue("Connected to " + sparkConf.get("spark.master"));
-    disconnect = new Button();
-    disconnect.registerOnClick((content, message) -> sparkContext.stop());
-    disconnect.setDescription("Disconnect");
-    HBox statusPanel = new HBox(Arrays.asList(uiLink(), disconnect, appStatus));
-    sparkUI.add(statusPanel);
+    sparkUI.removeDOMWidget(connect);
+    connect = null;
+    statusPanel = createStatusPanel();
   }
 
   public void applicationEnd() {
-    if (appStatus != null) {
-      appStatus.setValue("Disconnected");
-      disconnect.getLayout().setDisplayNone();
+    if (statusPanel != null) {
+      sparkUI.removeDOMWidget(statusPanel);
+      statusPanel = null;
+      this.connect = createConnectButton();
     }
+  }
+
+  private HBox createStatusPanel() {
+    appStatus = createAppStatus();
+    disconnect = createDisconnectButton();
+    HBox statusPanel = new HBox(Arrays.asList(uiLink(), disconnect, appStatus));
+    sparkUI.add(statusPanel);
+    return statusPanel;
+  }
+
+  private Label createAppStatus() {
+    Label appStatus = new Label();
+    appStatus.setValue("Connected to " + sparkConf.get("spark.master"));
+    return appStatus;
+  }
+
+  private Button createDisconnectButton() {
+    Button disconnect = new Button();
+    disconnect.registerOnClick((content, message) -> {
+      sparkContext.stop();
+      sparkContext = null;
+    });
+    disconnect.setDescription("Disconnect");
+    return disconnect;
   }
 
   private void startJob(int jobId) {

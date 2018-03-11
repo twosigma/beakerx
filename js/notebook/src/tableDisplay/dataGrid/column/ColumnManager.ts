@@ -32,7 +32,7 @@ import {
 } from "./selectors";
 import {
   UPDATE_COLUMNS_FILTERS, UPDATE_COLUMNS_POSITION
-} from "./columnReducer";
+} from "./reducer";
 import {COLUMN_TYPES, SORT_ORDER} from "./enums";
 
 export interface IBkoColumnsChangedArgs {
@@ -176,9 +176,9 @@ export default class ColumnManager {
   }
 
   takeColumnByCell(cellData: ICellData): DataGridColumn|null {
-    const columns = this.takeColumnsByCells(cellData, cellData);
+    const column = this.dataGrid.columnManager.getColumnByPosition(cellData.type, cellData.column);
 
-    return columns.length ? columns[0] : null;
+    return column ? column : null;
   }
 
   showAllColumns() {
@@ -204,6 +204,11 @@ export default class ColumnManager {
 
     this.dataGrid.resize();
     this.dataGrid.model.reset();
+  }
+
+  resetColumnStates() {
+    this.indexColumns.forEach(column => column.resetState());
+    this.bodyColumns.forEach(column => column.resetState());
   }
 
   setColumnsDataTypePrecission(precission: number) {

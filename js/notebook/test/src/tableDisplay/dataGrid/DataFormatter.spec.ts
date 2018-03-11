@@ -25,12 +25,13 @@ import columnOptionsMock from "./mock/columnOptionsMock";
 import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 import {ALL_TYPES} from "@beakerx/tableDisplay/dataGrid/dataTypes";
 import cellConfigMock from "./mock/cellConfigMock";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
 
 declare var require: Function;
 
 describe('DataFormatter', () => {
-  const dataFormatter = new DataFormatter({});
-  const columnDataMock = { dataType: ALL_TYPES.string, name: 'test' };
+  const dataStore = createStore(modelStateMock);
+  const dataFormatter = new DataFormatter(dataStore);
   const cellConfig = cellConfigMock;
 
   it('should implement getFormatFnByDisplayType method', () => {

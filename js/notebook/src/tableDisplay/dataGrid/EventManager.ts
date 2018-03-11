@@ -24,7 +24,6 @@ import throttle = DataGridHelpers.throttle;
 import {ICellData} from "./interface/ICell";
 import {BeakerxDataStore} from "./store/dataStore";
 import {selectDoubleClickTag, selectHasDoubleClickAction} from "./model/selectors";
-import {selectColumnIndexByPosition} from "./column/selectors";
 import {COLUMN_TYPES} from "./column/enums";
 
 export default class EventManager {
@@ -39,7 +38,7 @@ export default class EventManager {
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleDoubleClick = this.handleDoubleClick.bind(this);
     this.handleHeaderClick = this.handleHeaderClick.bind(this);
-    this.handleCellHover = throttle<MouseEvent, void>(this.handleCellHover.bind(this), 150);
+    this.handleCellHover = throttle<MouseEvent, void>(this.handleCellHover.bind(this), 250);
 
     this.dataGrid.node.removeEventListener('mouseout', this.handleMouseOut);
     this.dataGrid.node.addEventListener('mouseout', this.handleMouseOut);
@@ -71,7 +70,6 @@ export default class EventManager {
     document.removeEventListener('keydown', this.handleKeyDown);
   }
 
-  //@todo debounce it
   private handleCellHover(event: MouseEvent): void {
     const data = this.dataGrid.getCellData(event.clientX, event.clientY);
 
@@ -126,7 +124,11 @@ export default class EventManager {
   }
 
   private handleHeaderClick(event: MouseEvent): void {
-    if (!this.dataGrid.isOverHeader(event) || event.target !== this.dataGrid['_canvas']) {
+    if (
+      !this.dataGrid.isOverHeader(event)
+      || event.buttons !== 0
+      || event.target !== this.dataGrid['_canvas']
+    ) {
       return;
     }
 
@@ -136,10 +138,7 @@ export default class EventManager {
       return;
     }
 
-    const destColumn = this.dataGrid.columnManager.getColumnByIndex(
-      data.type,
-      selectColumnIndexByPosition(this.store.state, data.type, data.column)
-    );
+    const destColumn = this.dataGrid.columnManager.getColumnByPosition(data.type, data.column);
 
     destColumn.toggleSort();
   }

@@ -30,8 +30,9 @@ import {
   selectDataFontSize,
   selectFontColor,
   selectHeaderFontSize,
-  selectHeadersVertical
+  selectHeadersVertical, selectRenderer
 } from "../model/selectors";
+import IRenderer, {RENDERER_TYPE} from "../interface/IRenderer";
 
 export default class BeakerxCellRenderer extends TextRenderer {
   store: BeakerxDataStore;
@@ -107,9 +108,51 @@ export default class BeakerxCellRenderer extends TextRenderer {
       : dataFontColor;
   }
 
+  getRenderer(config: CellRenderer.ICellConfig): IRenderer|undefined {
+    const column = this.dataGrid.getColumn(config);
+    const renderer = selectRenderer(this.store.state, column);
+    const valueResolver = column.getValueResolver();
+
+    return {
+      ...renderer,
+      percent: (Math.abs(parseFloat(valueResolver(config.value))) / column.maxValue),
+      direction: valueResolver(config.value) > 0 ? 'RIGHT' : 'LEFT'
+    };
+  }
+
+  drawBackground(gc: GraphicsContext, config: CellRenderer.ICellConfig) {
+    super.drawBackground(gc, config);
+
+    const renderer = this.getRenderer(config);
+    const isHeaderCell = DataGridCell.isHeaderCell(config);
+
+    if (renderer && renderer.type === RENDERER_TYPE.DataBars && !isHeaderCell) {
+      const barWidth = config.width/2 * renderer.percent;
+
+      gc.fillStyle = '#6ba2c7';
+      gc.fillRect(
+        config.x + config.width/2 - (renderer.direction === 'RIGHT' ? 0 : barWidth),
+        config.y,
+        barWidth,
+        config.height - 1
+      );
+    }
+  }
+
   drawText(gc: GraphicsContext, config: CellRenderer.ICellConfig): void {
     // Resolve the font for the cell.
     let font = CellRenderer.resolveOption(this.font, config);
+    const renderer = this.getRenderer(config);
+    const isHeaderCell = DataGridCell.isHeaderCell(config);
+
+    if (
+      renderer
+      && renderer.type === RENDERER_TYPE.DataBars
+      && !renderer.includeText
+      && !isHeaderCell
+    ) {
+      return;
+    }
 
     // Bail if there is no font to draw.
     if (!font) {
@@ -189,7 +232,7 @@ export default class BeakerxCellRenderer extends TextRenderer {
       gc.clip();
     }
 
-    let verticalHeader = DataGridCell.isHeaderCell(config) && selectHeadersVertical(this.store.state);
+    let verticalHeader = isHeaderCell && selectHeadersVertical(this.store.state);
 
     // Set the gc state.
     gc.textBaseline = 'bottom';

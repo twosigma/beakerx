@@ -15,10 +15,13 @@
  */
 
 import {Reducer} from "@phosphor/datastore";
-import {DataGridColumnAction, DataGridColumnsAction} from "../store/DataGridAction";
+import {
+  default as DataGridAction,
+  DataGridColumnAction,
+  DataGridColumnsAction
+} from "../store/DataGridAction";
 import {IColumnsState, IColumnState} from "../interface/IColumn";
 import {COLUMN_TYPES} from "./enums";
-import {selectBodyColumnVisibility} from "./selectors";
 
 export const UPDATE_COLUMNS_STATES = 'UPDATE_COLUMNS_STATES';
 export const UPDATE_COLUMN_STATE = 'UPDATE_COLUMNS_STATE';
@@ -50,11 +53,11 @@ const reduceColumnWidth = reduceColumnStateProperty('width');
 
 const columnReducer: Reducer<IColumnsState> = (
   state: IColumnsState,
-  action: DataGridColumnAction|DataGridColumnsAction
+  action: DataGridColumnAction|DataGridColumnsAction|DataGridAction
 ): IColumnsState => {
   switch(action.type) {
     case UPDATE_COLUMNS_STATES:
-      return { ...state, ...action.payload.value };
+      return action.payload.value;
       
     case UPDATE_COLUMN_STATE:
       return reduceColumnState(state, action);

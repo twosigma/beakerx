@@ -95,7 +95,6 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
 
   showWarning: function(data) {
     var rowLength = data.rowLength;
-    var columnLength = data.columnNames.length;
     var rowLimit = data.rowLimit;
     var tmpl = '<div id="' + this.wrapperId + '">' +
       '<p class="ansired">Note: table is too big to display. ' +

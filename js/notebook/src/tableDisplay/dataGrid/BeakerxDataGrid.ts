@@ -80,7 +80,7 @@ export class BeakerxDataGrid extends DataGrid {
   constructor(options: DataGrid.IOptions, dataStore: BeakerxDataStore) {
     super(options);
 
-    //@todo this is hack to use private properties
+    //this is hack to use private DataGrid properties
     this.viewport = this['_viewport'];
     this.columnHeaderSections = this['_columnHeaderSections'];
     this.rowHeaderSections = this['_rowHeaderSections'];

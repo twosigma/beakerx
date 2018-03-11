@@ -20,8 +20,6 @@ import DataGridColumn from "../column/DataGridColumn";
 import {ALL_TYPES} from "../dataTypes";
 import ColumnManager from "../column/ColumnManager";
 import {COLUMN_TYPES, SORT_ORDER} from "../column/enums";
-import {GridLayout} from "@phosphor/widgets";
-import ICellConfig = GridLayout.ICellConfig;
 
 export default class RowManager {
   rowsIterator: MapIterator<any[], DataGridRow>;

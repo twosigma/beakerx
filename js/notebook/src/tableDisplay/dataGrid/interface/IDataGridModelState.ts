@@ -17,9 +17,6 @@
 import IHihglighterState from "./IHighlighterState";
 
 export default interface IDataModelState {
-  formatForTimes?: any;
-  timeStrings?: any;
-
   alignmentForColumn?: {},
   alignmentForType?: {},
   cellHighlighters: IHihglighterState[],
@@ -44,6 +41,7 @@ export default interface IDataModelState {
   stringFormatForType?: {},
   subtype?: string,
   timeZone?: string,
+  timeStrings?: any,
   tooManyRows?: boolean,
   tooltips: string[][],
   type?: string,

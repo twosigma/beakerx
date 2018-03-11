@@ -131,7 +131,7 @@ The code is organized into subdirectories as follows:
 
   * the compiled Java JARs.
 
-  There is a seperate python package (beakerx_magics) for the
+  There is a separate python package (beakerx_magics) for the
   `%%groovy` magic so it can always be loaded *without* loading the
   regular beakerx package (which would turn on display of pandas
   tables with our table widget).
@@ -153,7 +153,7 @@ The code is organized into subdirectories as follows:
 
   The lab subdirectory has the extension for Jupyter Lab (distributed
   by npm).  Notebook has two extensions, one for the widgets (which
-  are included in Lab as well, and are also seperately distributed
+  are included in Lab as well, and are also separately distributed
   with npm for embedded applications such as nbviewer), and one for
   the notebook application.  This adds a tab to the tree view with our
   options panel.  And for regular notebook pages the extension

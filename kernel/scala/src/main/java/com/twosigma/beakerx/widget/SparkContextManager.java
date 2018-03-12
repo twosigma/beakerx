@@ -35,11 +35,18 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.twosigma.beakerx.kernel.PlainCode.createSimpleEvaluationObject;
 import static java.util.Arrays.asList;
 
 public class SparkContextManager {
+
+  public static final String SPARK_MASTER = "spark.master";
+  public static final String SPARK_EXECUTOR_MEMORY = "spark.executor.memory";
+  public static final String SPARK_APP_NAME = "spark.app.name";
+  public static final String SPARK_CORES_MAX = "spark.cores.max";
+  public static final String SPARK_EXECUTOR_CORES = "spark.executor.cores";
 
   private final SparkUI sparkUI;
   private SparkContext sparkContext;
@@ -48,30 +55,88 @@ public class SparkContextManager {
   private Map<Integer, IntProgress> progressBars = new HashMap<>();
   private Map<Integer, Label> labels = new HashMap<>();
   private VBox jobPanel = null;
-  private Button connect;
   private Label appStatus;
   private Button disconnect;
   private HBox statusPanel;
-
+  private VBox sparkView;
+  private Text masterURL;
+  private Text executorMemory;
+  private Text sparkContextAlias;
+  private Text executorCores;
 
   public SparkContextManager(SparkUI sparkUI, SparkConf sparkConf) {
     SparkVariable.putSparkContextManager(sparkConf, this);
     this.sparkUI = sparkUI;
     this.sparkConf = sparkConf;
-    this.connect = createConnectButton();
+    this.sparkView = createSparkView();
+  }
+
+  private VBox createSparkView() {
+    this.masterURL = createMasterURL();
+    this.executorMemory = createExecutorMemory();
+    this.executorCores = createExecutorCores();
+    this.sparkContextAlias = sparkContextAlias();
+    Button connect = createConnectButton();
+    ArrayList<Widget> children = new ArrayList<>();
+    children.add(masterURL);
+    children.add(executorCores);
+    children.add(executorMemory);
+    children.add(sparkContextAlias);
+    children.add(connect);
+    VBox vBox = new VBox(children);
+    this.sparkUI.add(vBox);
+    return vBox;
+  }
+
+  private Text createExecutorCores() {
+    Text cores = new Text();
+    cores.setDescription("Executor cores");
+    if (this.sparkConf.contains(SPARK_EXECUTOR_CORES)) {
+      cores.setValue(this.sparkConf.get(SPARK_EXECUTOR_CORES));
+    } else {
+      cores.setValue("10");
+    }
+    return cores;
+  }
+
+  private Text sparkContextAlias() {
+    Text alias = new Text();
+    alias.setDescription("SparkContext alias");
+    alias.setValue("sc");
+    return alias;
+  }
+
+  private Text createExecutorMemory() {
+    Text masterURL = new Text();
+    masterURL.setDescription("Executor Memory");
+    if (this.sparkConf.contains(SPARK_EXECUTOR_MEMORY)) {
+      masterURL.setValue(this.sparkConf.get(SPARK_EXECUTOR_MEMORY));
+    } else {
+      masterURL.setValue("8g");
+    }
+    return masterURL;
+  }
+
+  private Text createMasterURL() {
+    Text masterURL = new Text();
+    masterURL.setDescription("Master URL");
+    if (this.sparkConf.contains(SPARK_MASTER)) {
+      masterURL.setValue(this.sparkConf.get(SPARK_MASTER));
+    }
+    return masterURL;
   }
 
   private Button createConnectButton() {
     Button connect = new Button();
     connect.setDescription("Connect");
     connect.registerOnClick((content, message) -> initSparkContext(sparkConf, message));
-    sparkUI.add(connect);
     return connect;
   }
 
   private void initSparkContext(SparkConf sparkConf, Message parentMessage) {
     KernelFunctionality kernel = KernelManager.get();
     try {
+      configureSparkConf(sparkConf);
       SparkContext sparkContext = new SparkContext(sparkConf);
       sparkContext = addListener(sparkContext);
       this.sparkContext = sparkContext;
@@ -85,11 +150,41 @@ public class SparkContextManager {
     }
   }
 
+  private void configureSparkConf(SparkConf sparkConf) {
+    if (!sparkConf.contains(SPARK_APP_NAME)) {
+      sparkConf.setAppName("beaker_" + UUID.randomUUID().toString());
+    }
+    if (masterURL.getValue() != null && !masterURL.getValue().isEmpty()) {
+      sparkConf.set(SPARK_MASTER, masterURL.getValue());
+    }
+    if (!isLocalSpark(sparkConf)) {
+      sparkConf.set("spark.repl.class.outputDir", KernelManager.get().getOutDir());
+    }
+    if (executorMemory.getValue() != null && !executorMemory.getValue().isEmpty()) {
+      sparkConf.set(SPARK_EXECUTOR_MEMORY, executorMemory.getValue());
+    }
+
+    if (executorCores.getValue() != null && !executorCores.getValue().isEmpty()) {
+      sparkConf.set(SPARK_EXECUTOR_CORES, executorCores.getValue());
+    }
+
+    if (!sparkConf.contains(SPARK_CORES_MAX)) {
+      sparkConf.set(SPARK_CORES_MAX, "100");
+    }
+  }
+
+  private static boolean isLocalSpark(SparkConf sparkConf) {
+    return sparkConf.contains(SPARK_MASTER) && sparkConf.get(SPARK_MASTER) != null && sparkConf.get("spark.master").startsWith("local");
+  }
+
   private TryResult initSparkContextInShell(KernelFunctionality kernel) {
+    if (sparkContextAlias.getValue() == null || sparkContextAlias.getValue().isEmpty()) {
+      throw new RuntimeException("SparkContext alias can not be empty");
+    }
     String addSc = String.format(
             "import com.twosigma.beakerx.widget.SparkVariable\n" +
                     "var %s = SparkVariable.getSparkContext()\n",
-            "sc");
+            sparkContextAlias.getValue());
     SimpleEvaluationObject seo = createSimpleEvaluationObject(addSc, kernel, new Message(), 1);
     return kernel.executeCode(addSc, seo);
   }
@@ -141,17 +236,25 @@ public class SparkContextManager {
   }
 
   public void applicationStart() {
-    sparkUI.removeDOMWidget(connect);
-    connect = null;
+    sparkUI.removeDOMWidget(sparkView);
+    sparkView = null;
     statusPanel = createStatusPanel();
   }
 
   public void applicationEnd() {
     if (statusPanel != null) {
+      clearSparkContextVariable();
       sparkUI.removeDOMWidget(statusPanel);
       statusPanel = null;
-      this.connect = createConnectButton();
+      this.sparkView = createSparkView();
     }
+  }
+
+  private void clearSparkContextVariable() {
+    KernelFunctionality kernel = KernelManager.get();
+    String addSc = String.format("var %s = null\n", sparkContextAlias.getValue());
+    SimpleEvaluationObject seo = createSimpleEvaluationObject(addSc, kernel, new Message(), 1);
+    kernel.executeCode(addSc, seo);
   }
 
   private HBox createStatusPanel() {

@@ -17,6 +17,7 @@ package com.twosigma.beakerx.scala.magic.command;
 
 import com.twosigma.beakerx.Display;
 import com.twosigma.beakerx.TryResult;
+import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
@@ -45,19 +46,32 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
   @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     SimpleEvaluationObject seo = createSimpleEvaluationObject(param.getCommandCodeBlock(), kernel, param.getCode().getMessage(), param.getExecutionCount());
+    if (param.getCommandCodeBlock().isEmpty()) {
+      InternalVariable.setValue(seo);
+      return createSparkUI(new SparkConf());
+    } else {
+      return createSparkUIBasedOnUserSparkConf(param, seo);
+    }
+  }
+
+  private MagicCommandOutcomeItem createSparkUIBasedOnUserSparkConf(MagicCommandExecutionParam param, SimpleEvaluationObject seo) {
     TryResult either = kernel.executeCode(param.getCommandCodeBlock(), seo);
     if (either.isResult()) {
       Object result = either.result();
       if (result instanceof SparkConf) {
         SparkConf sparkConf = (SparkConf) result;
-        SparkUI sparkUI = SparkUI.create(sparkConf);
-        Display.display(sparkUI);
-        return new MagicCommandOutput(MagicCommandOutput.Status.OK);
+        return createSparkUI(sparkConf);
       } else {
         return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Body of  " + SPARK + " magic command must return SparkConf object");
       }
     } else {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "There occurs problem during execution of " + SPARK + " : " + either.error());
     }
+  }
+
+  private MagicCommandOutcomeItem createSparkUI(SparkConf sparkConf) {
+    SparkUI sparkUI = SparkUI.create(sparkConf);
+    Display.display(sparkUI);
+    return new MagicCommandOutput(MagicCommandOutput.Status.OK);
   }
 }

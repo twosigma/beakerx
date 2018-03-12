@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.widget;
 
-import com.twosigma.beakerx.kernel.KernelManager;
 import org.apache.spark.SparkConf;
 
 import java.util.ArrayList;
@@ -63,16 +62,9 @@ public class SparkUI extends VBox {
   }
 
   private SparkConf configureSparkConf(SparkConf sparkConf) {
-    if (!isLocalSpark(sparkConf)) {
-      sparkConf.set("spark.repl.class.outputDir", KernelManager.get().getOutDir());
-    }
     sparkConf = configureExtraListeners(sparkConf);
     sparkConf.set(BEAKERX_ID, UUID.randomUUID().toString());
     return sparkConf;
-  }
-
-  private static boolean isLocalSpark(SparkConf sparkConf) {
-    return sparkConf.get("spark.master") != null && sparkConf.get("spark.master").startsWith("local");
   }
 
   private SparkConf configureExtraListeners(SparkConf sparkConf) {

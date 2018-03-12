@@ -18,6 +18,7 @@ package com.twosigma.beakerx.scala.evaluator;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.scala.kernel.ScalaKernelMock;
 
@@ -72,5 +73,42 @@ public class ScalaAutocompleteTest {
     //then
     Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
     Assertions.assertThat(autocomplete.getStartIndex()).isEqualTo(24);
+  }
+
+  @Test
+  public void autocomplete_namespaceShouldNotBeModified() {
+    final String input1 = "val xyzzy = 32\nval xyz";
+    //when
+    AutocompleteResult autocomplete1 = scalaEvaluator.autocomplete(input1, input1.length());
+    AutocompleteResult autocomplete2 = scalaEvaluator.autocomplete("xyz", 3);
+    //then
+    Assertions.assertThat(autocomplete2.getMatches()).isEmpty();
+  }
+
+  @Test
+  public void autocomplete_internalDeclarationsAreVisible() {
+    final String lines = "val xyzzy = 32\nxyz";
+    //when
+    AutocompleteResult autocomplete = scalaEvaluator.autocomplete(lines, lines.length());
+    //then
+    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+  }
+
+  @Test
+  public void autocomplete_interpretedResultsVisible() {
+    // This test needs a fresh ScalaEvaluator to modify without disturbing other tests
+    final ScalaEvaluator localEvaluator =
+        new ScalaEvaluator("id", "sid", null, cellExecutor(), new NoBeakerxObjectTestFactory(),
+            getTestTempFolderFactory(), EvaluatorTest.KERNEL_PARAMETERS);
+
+    try {
+      //when
+      localEvaluator.evaluate(new SimpleEvaluationObject(""), "val xyzzy = 32");
+      AutocompleteResult autocomplete = localEvaluator.autocomplete("xyz", 3);
+      //then
+      Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+    } finally {
+      localEvaluator.exit();
+    }
   }
 }

@@ -64,7 +64,6 @@ function BeakerXPageObject() {
   this.getSvgElementsByIndex = function (index) {
     var codeCell = this.getCodeCellByIndex(index);
     codeCell.scroll();
-    codeCell.click();
     return codeCell.$$('#svgg');
   };
 
@@ -145,7 +144,7 @@ function BeakerXPageObject() {
     browser.waitUntil(function () {
       var output = getTextElements(codeCell)[outputIndex];
       return output.isEnabled() && expectedText.test(output.getText());
-    }, 50000, 'expected output toMatch ' + expectedText);
+    }, 5000, 'expected output toMatch ' + expectedText);
   };
 
   this.plotLegendContainerIsEnabled = function (dtcontainer) {

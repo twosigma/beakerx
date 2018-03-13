@@ -74,6 +74,12 @@ jupyter labextension install @jupyter-widgets/jupyterlab-manager
 (cd js/lab; jupyter labextension install .)
 ```
 
+### Running with Docker
+
+```
+docker run -p 8888:8888 beakerx/beakerx
+```
+
 ### Update after Java change
 
 The kernels are installed to run out of the repo, so just a local
@@ -99,15 +105,9 @@ The Java unit tests are run with every build. See [test/README.md] for how to ru
 ## Groovy with Interactive Plotting and Tables:
 <img width="900" alt="screen shot" src="https://user-images.githubusercontent.com/963093/28300136-585f9f7c-6b4b-11e7-8827-b5807d3fc9a8.png">
 
-### Autotranslation from Python to JavaScript
+## Autotranslation from Python to JavaScript
 
 <img width="900" alt="screen shot" src="https://cloud.githubusercontent.com/assets/963093/21077947/261def64-bf2a-11e6-8518-4845caf75690.png">
-
-## Running with Docker
-
-```
-docker run -p 8888:8888 beakerx/beakerx
-```
 
 ## Architecture and Code Overview
 

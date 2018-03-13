@@ -16,14 +16,17 @@
 
 var BeakerXPageObject = require('../beakerx.po.js');
 var TableHelperObject = require('../table.helper.js');
+var PlotHelperObject = require('../plot.helper.js');
 var beakerxPO;
 var tableHelper;
+var plotHelper;
 
 describe('Tests for combination of code and magics. ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
     tableHelper = new TableHelperObject();
+    plotHelper = new PlotHelperObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/groovy/TablesawTest.ipynb');
   });
 
@@ -181,6 +184,72 @@ describe('Tests for combination of code and magics. ', function () {
       checkHeaderValues(dtContainer, [/labels/, /0/, /1/]);
       checkRowValues(dtContainer, 0, [/AL/, /12.0/, /32.0/]);
       checkRowValues(dtContainer, 1, [/AR/, /5.0/, /12.0/]);
+    });
+  });
+
+  describe('K-means clustering. ', function () {
+    it('Create table from "whiskey.csv" file. ', function () {
+      cellIndex += 1;
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      checkHeaderValues(dtContainer, [/Index/, /Column Name/, /Column Type/]);
+      checkRowValues(dtContainer, 0, [/0.0/, /RowID/, /SHORT_INT/]);
+      checkRowValues(dtContainer, 1, [/1.0/, /Distillery/, /CATEGORY/]);
+    });
+
+    it('Print claster formation. ', function () {
+      cellIndex += 1;
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      checkHeaderValues(dtContainer, [/Label/, /Cluster/]);
+      checkRowValues(dtContainer, 0, [/AnCnoc/, /0.0/]);
+      checkRowValues(dtContainer, 1, [/Auchentoshan/, /0.0/]);
+    });
+
+    it('Print centroids for each claster. ', function () {
+      cellIndex += 1;
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      checkHeaderValues(dtContainer, [/Cluster/, /Body/, /Sweetness/]);
+      checkRowValues(dtContainer, 0, [/0.0/, /1.333/, /2.400/]);
+      checkRowValues(dtContainer, 1, [/1.0/, /1.455/, /2.545/]);
+    });
+
+    it('Gets the distortion for our model. ', function () {
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /385.0489177/);
+    });
+
+    it('Should display line Plot. ', function () {
+      cellIndex += 1;
+      var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
+      expect(plotHelper.getLineByGIndex(svgElement, 0).getAttribute('d')).not.toBeNull();
+    });
+  });
+
+  describe('Play (Money)ball with Linear Regression. ', function () {
+    it('Should display points Plot. ', function () {
+      cellIndex += 1;
+      var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
+      expect(plotHelper.getAllPointsByGIndexAndType(svgElement, 0, 'rect').length).toBeGreaterThan(0);
+    });
+
+    it('Print the “winsModel”. ', function () {
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex,
+        /Residuals:\s*Min\s*1Q\s*Median\s*3Q\s*Max\s*-14.2662\s*-2.6511\s*0.1282\s*2.9365\s*11.6570/);
+    });
+
+    it('Print the “winsModel” for OBP and SLG. ', function () {
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex,
+        /Residuals:\s*Min\s*1Q\s*Median\s*3Q\s*Max\s*-70.8379\s*-17.1810\s*-1.0917\s*16.7812\s*90.0358/);
+    });
+
+    it('Should display Histogram. ', function () {
+      cellIndex += 1;
+      var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
+      expect(plotHelper.getAllGBarRects(svgElement, 0).length).toBeGreaterThan(10);
     });
   });
 

@@ -61,7 +61,7 @@ conda install -y -c conda-forge ipywidgets
 beakerx install
 ```
 
-### Build and Install for Lab
+### Build and Install for Jupyter Lab
 
 ```
 conda create -y -n labx 'python>=3' nodejs pandas openjdk maven

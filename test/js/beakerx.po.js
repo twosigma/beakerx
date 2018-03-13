@@ -144,7 +144,7 @@ function BeakerXPageObject() {
     browser.waitUntil(function () {
       var output = getTextElements(codeCell)[outputIndex];
       return output.isEnabled() && expectedText.test(output.getText());
-    }, 5000, 'expected output toMatch ' + expectedText);
+    }, 50000, 'expected output toMatch ' + expectedText);
   };
 
   this.plotLegendContainerIsEnabled = function (dtcontainer) {

@@ -22,8 +22,9 @@ issues and submitting pull requests.
 
 ## Issues
 
-First search and see if an appropriate issue already exists.  You can
-add your comments or reaction there.
+First [search](https://github.com/twosigma/beakerx/issues) and see if
+an appropriate issue already exists.  You can add your comments or
+reaction there.
 
 If you are reporting a bug:
 

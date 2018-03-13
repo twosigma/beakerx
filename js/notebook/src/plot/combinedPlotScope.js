@@ -217,9 +217,19 @@ define([
   };
 
   CombinedPlotScope.prototype.updatePlot = function() {
-    _.each(this.scopes, function(scope) {
-      scope.update();
-    });
+    this.resetChildScopes();
+
+    this.standardizeData();
+    this.preparePlotModels();
+    this.initLayout();
+    this.calcRange();
+    this.runChildCharts();
+  };
+
+  CombinedPlotScope.prototype.resetChildScopes = function() {
+    this.element.find('.combplot-plotcontainer').empty();
+    this.scopes = [];
+    this.childScopeNumber = 1;
   };
 
   CombinedPlotScope.prototype.calcRange = function() {

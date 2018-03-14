@@ -253,4 +253,28 @@ describe('Tests for combination of code and magics. ', function () {
     });
   });
 
+  describe('Using Quandl and Tablesaw. ', function () {
+    it('Output contains names of jars. ', function () {
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /quandl-core/);
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /quandl-tablesaw/);
+    });
+
+    it('Should display table. ', function () {
+      cellIndex += 1;
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      checkHeaderValues(dtContainer, [/Year/, /Max/, /Min/]);
+      checkRowValues(dtContainer, 0, [/1980/, /0.529/, /0.371/]);
+      checkRowValues(dtContainer, 1, [/1981/, /0.507/, /0.210/]);
+    });
+
+    it('Should display Plot with stems and line. ', function () {
+      cellIndex += 1;
+      var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
+      expect(plotHelper.getLineByGIndex(svgElement, 1).getAttribute('d')).not.toBeNull();
+      expect(plotHelper.getAllGStemLines(svgElement, 2).length).toBeGreaterThan(10);
+    });
+  });
+
 });

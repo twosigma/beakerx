@@ -20,6 +20,7 @@ var loadedModules = [
   require("./GridView"),
   require("./CyclingDisplayBox"),
   require("./SparkUI").default,
+  require("./SparkStateProgress").default,
   require("./HTMLPre").default
 ];
 

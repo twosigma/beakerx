@@ -52,11 +52,8 @@ public class SparkContextManager {
   private SparkContext sparkContext;
   private final SparkConf sparkConf;
   private Map<Integer, VBox> jobs = new HashMap<>();
-  private Map<Integer, IntProgress> progressBars = new HashMap<>();
-  private Map<Integer, Label> labels = new HashMap<>();
+  private Map<Integer, SparkStateProgress> progressBars = new HashMap<>();
   private VBox jobPanel = null;
-  private Label appStatus;
-  private Button disconnect;
   private HBox statusPanel;
   private VBox sparkView;
   private Text masterURL;
@@ -224,6 +221,7 @@ public class SparkContextManager {
       @Override
       public void onTaskStart(SparkListenerTaskStart taskStart) {
         super.onTaskStart(taskStart);
+        taskStart(taskStart.stageId(), taskStart.taskInfo().taskId());
       }
 
       @Override
@@ -258,8 +256,8 @@ public class SparkContextManager {
   }
 
   private HBox createStatusPanel() {
-    appStatus = createAppStatus();
-    disconnect = createDisconnectButton();
+    Label appStatus = createAppStatus();
+    Button disconnect = createDisconnectButton();
     HBox statusPanel = new HBox(Arrays.asList(uiLink(), disconnect, appStatus));
     sparkUI.add(statusPanel);
     return statusPanel;
@@ -306,30 +304,29 @@ public class SparkContextManager {
   }
 
   private void startStage(int stageId, int numTasks) {
-    IntProgress intProgress = new IntProgress(0, numTasks, 1);
-    intProgress.setBarStyle(IntProgress.BarStyle.INFO);
-    Label label = new Label();
-    label.setValue(intProgress.getValue() + "/" + intProgress.getMax());
+    SparkStateProgress intProgress = new SparkStateProgress(numTasks);
+    intProgress.init();
     VBox job = jobs.get(stageId);
-    HBox stageWithProgress = new HBox(asList(stageLink(stageId), intProgress, label));
+    HBox stageWithProgress = new HBox(asList(stageLink(stageId), intProgress));
     stageWithProgress.getLayout().setMargin("0 0 0 40px");
     job.add(stageWithProgress);
     progressBars.put(stageId, intProgress);
-    labels.put(stageId, label);
   }
 
   private void endStage(int stageId) {
-    IntProgress intProgress = progressBars.get(stageId);
-    intProgress.setBarStyle(IntProgress.BarStyle.SUCCESS);
     jobPanel.getLayout().setDisplayNone();
     jobPanel.close();
     jobPanel = null;
   }
 
+  private void taskStart(int stageId, long taskId) {
+    SparkStateProgress intProgress = progressBars.get(stageId);
+    intProgress.addActive();
+  }
+
   private void taskEnd(int stageId, long taskId) {
-    IntProgress intProgress = progressBars.get(stageId);
-    intProgress.setValue(intProgress.getValue() + 1);
-    labels.get(stageId).setValue(intProgress.getValue() + "/" + intProgress.getMax());
+    SparkStateProgress intProgress = progressBars.get(stageId);
+    intProgress.addDone();
   }
 
   private HTML uiLink() {

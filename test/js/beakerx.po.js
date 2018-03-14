@@ -143,7 +143,7 @@ function BeakerXPageObject() {
     codeCell.scroll();
     browser.waitUntil(function () {
       var output = getTextElements(codeCell)[outputIndex];
-      return output.isEnabled() && expectedText.test(output.getText());
+      return output != null && output.isEnabled() && expectedText.test(output.getText());
     }, 50000, 'expected output toMatch ' + expectedText);
   };
 

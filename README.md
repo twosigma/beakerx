@@ -24,14 +24,14 @@
 [![NPM version](https://badge.fury.io/js/beakerx.svg)](http://badge.fury.io/js/beakerx)
 [![PyPI Version](https://badge.fury.io/py/beakerx.svg)](http://badge.fury.io/py/beakerx)
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/beakerx/badges/version.svg)](https://anaconda.org/conda-forge/beakerx)
-[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/twosigma/beakerx/0.13.0?filepath=StartHere.ipynb)
+[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/twosigma/beakerx/0.14.0?filepath=StartHere.ipynb)
 
 BeakerX is a collection of JVM kernels and interactive widgets for
 plotting, tables, autotranslation, and other extensions to Jupyter
 Notebook.  BeakerX is in beta and under active development.
 
 The [documentation](https://github.com/twosigma/beakerx/blob/master/StartHere.ipynb) consists of tutorial notebooks on GitHub.
-You can try it in the cloud for free with [Binder](https://mybinder.org/v2/gh/twosigma/beakerx/0.13.0?filepath=StartHere.ipynb).
+You can try it in the cloud for free with [Binder](https://mybinder.org/v2/gh/twosigma/beakerx/0.14.0?filepath=StartHere.ipynb).
 
 BeakerX is the successor to the [Beaker Notebook (source code
 archive)](https://github.com/twosigma/beaker-notebook-archive).  It
@@ -61,7 +61,7 @@ conda install -y -c conda-forge ipywidgets
 beakerx install
 ```
 
-### Build and Install for Lab
+### Build and Install for Jupyter Lab
 
 ```
 conda create -y -n labx 'python>=3' nodejs pandas openjdk maven
@@ -72,6 +72,12 @@ conda install -y -c conda-forge jupyterlab
 beakerx install
 jupyter labextension install @jupyter-widgets/jupyterlab-manager
 (cd js/lab; jupyter labextension install .)
+```
+
+### Running with Docker
+
+```
+docker run -p 8888:8888 beakerx/beakerx
 ```
 
 ### Update after Java change
@@ -99,15 +105,9 @@ The Java unit tests are run with every build. See [test/README.md] for how to ru
 ## Groovy with Interactive Plotting and Tables:
 <img width="900" alt="screen shot" src="https://user-images.githubusercontent.com/963093/28300136-585f9f7c-6b4b-11e7-8827-b5807d3fc9a8.png">
 
-### Autotranslation from Python to JavaScript
+## Autotranslation from Python to JavaScript
 
 <img width="900" alt="screen shot" src="https://cloud.githubusercontent.com/assets/963093/21077947/261def64-bf2a-11e6-8518-4845caf75690.png">
-
-## Running with Docker
-
-```
-docker run -p 8888:8888 beakerx/beakerx
-```
 
 ## Architecture and Code Overview
 

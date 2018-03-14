@@ -61,6 +61,12 @@ function BeakerXPageObject() {
     return codeCell.$('#svgg');
   };
 
+  this.getSvgElementsByIndex = function (index) {
+    var codeCell = this.getCodeCellByIndex(index);
+    codeCell.scroll();
+    return codeCell.$$('#svgg');
+  };
+
   this.runCodeCellByIndex = function (index) {
     var codeCell = this.getCodeCellByIndex(index);
     codeCell.scroll();

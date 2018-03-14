@@ -145,6 +145,7 @@ describe('Testing of plot Actions ', function () {
       var height1 = Math.round(svgElements5[0].$('rect#i0_0').getAttribute('height'));
       svgElements5[0].$('rect#i0_0').click();
       beakerxPO.kernelIdleIcon.waitForEnabled();
+      svgElements5 = beakerxPO.getSvgElementsByIndex(cellIndex);
       var height2 = Math.round(svgElements5[0].$('rect#i0_0').getAttribute('height'));
       expect(height2).toBeGreaterThan(height1);
     });
@@ -161,6 +162,7 @@ describe('Testing of plot Actions ', function () {
       svgElements6 = beakerxPO.runCellToGetSvgElements(cellIndex);
       svgElements6[0].$('rect#i0_1').click();
       beakerxPO.kernelIdleIcon.waitForEnabled();
+      svgElements6 = beakerxPO.getSvgElementsByIndex(cellIndex);
       cellIndex += 1;
       beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /2:5/);
     });
@@ -184,6 +186,7 @@ describe('Testing of plot Actions ', function () {
       browser.keys("Shift");
       browser.keys('\uE000');
       beakerxPO.kernelIdleIcon.waitForEnabled();
+      svgElements7 = beakerxPO.getSvgElementsByIndex(cellIndex);
       var height2 = Math.round(svgElements7[0].$('rect#i0_0').getAttribute('height'));
       expect(height2).toBeGreaterThan(height1);
     });
@@ -192,6 +195,7 @@ describe('Testing of plot Actions ', function () {
       svgElements7[1].$('rect#i0_0').click();
       browser.keys("t");
       beakerxPO.kernelIdleIcon.waitForEnabled();
+      svgElements7 = beakerxPO.getSvgElementsByIndex(cellIndex);
       cellIndex += 1;
       beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /com.twosigma.beakerx.chart.xychart.Plot/);
     });
@@ -203,6 +207,7 @@ describe('Testing of plot Actions ', function () {
       browser.keys("Shift");
       browser.keys('\uE000');
       beakerxPO.kernelIdleIcon.waitForEnabled();
+      svgElements8 = beakerxPO.getSvgElementsByIndex(cellIndex);
       cellIndex += 1;
       beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /2:5/);
     });

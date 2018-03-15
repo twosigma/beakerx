@@ -16,7 +16,7 @@
 
 const widgets = require('./widgets');
 
-class SparkStateProgressModel extends widgets.HBoxModel {
+class SparkStateProgressModel extends widgets.VBoxModel {
     defaults() {
         return {
             ...super.defaults(),
@@ -29,7 +29,11 @@ class SparkStateProgressModel extends widgets.HBoxModel {
             state: {
                 done: 0,
                 active: 0,
-                numberOfTasks: 0
+                numberOfTasks: 0,
+                jobId: 0,
+                stageId: 0,
+                stageLink: "",
+                jobLink: ""
             },
             barDone_style: 'success',
             barActive_style: 'info',
@@ -38,7 +42,28 @@ class SparkStateProgressModel extends widgets.HBoxModel {
     }
 }
 
-class SparkStateProgressView extends widgets.HBoxView {
+class SparkStateProgressView extends widgets.VBoxView {
+
+    taggleButton: HTMLButtonElement;
+    jobPanel: HTMLDivElement;
+    stagePanel: HTMLDivElement;
+    jobLink: HTMLAnchorElement;
+    stageLink: HTMLAnchorElement;
+
+    progressPanel: HTMLDivElement;
+
+    progress: HTMLDivElement;
+    barDone: HTMLDivElement;
+    barActive: HTMLDivElement;
+    barWaiting: HTMLDivElement;
+    labelDone: HTMLLabelElement;
+    labelActive: HTMLLabelElement;
+    labelWaiting: HTMLLabelElement;
+    labelAll: HTMLLabelElement;
+    label1: HTMLLabelElement;
+    label2: HTMLLabelElement;
+    label3: HTMLLabelElement;
+
     initialize(parameters) {
         super.initialize(parameters);
     }
@@ -53,6 +78,12 @@ class SparkStateProgressView extends widgets.HBoxView {
 
     update() {
         let state = this.model.get('state');
+
+        this.jobLink.href = state.jobLink;
+        this.jobLink.innerHTML = "Spark Job " + state.jobId;
+        this.stageLink.href = state.stageLink;
+        this.stageLink.innerHTML = "Stage " + state.stageId;
+
         let max = state.numberOfTasks;
         let valueDone = state.done;
         let valueActive = state.active;
@@ -96,23 +127,51 @@ class SparkStateProgressView extends widgets.HBoxView {
         this.label3 = document.createElement('label');
         this.label3.innerHTML = "/";
 
-        this.el.appendChild(this.labelDone);
-        this.el.appendChild(this.label1);
-        this.el.appendChild(this.labelActive);
-        this.el.appendChild(this.label2);
-        this.el.appendChild(this.labelWaiting);
-        this.el.appendChild(this.label3);
-        this.el.appendChild(this.labelAll);
+        this.progressPanel.appendChild(this.labelDone);
+        this.progressPanel.appendChild(this.label1);
+        this.progressPanel.appendChild(this.labelActive);
+        this.progressPanel.appendChild(this.label2);
+        this.progressPanel.appendChild(this.labelWaiting);
+        this.progressPanel.appendChild(this.label3);
+        this.progressPanel.appendChild(this.labelAll);
     }
 
     private createProgress() {
-        this.el.classList.add('widget-hprogress');
-        this.el.classList.add('widget-inline-hbox');
+
+        this.el.classList.add('widget-inline-vbox');
+
+        this.taggleButton = document.createElement('button');
+        this.taggleButton.classList.add('fa-arrow-up');
+        this.taggleButton.classList.add('fa');
+        this.taggleButton.onclick = () => {
+            if (this.taggleButton.classList.contains("fa-arrow-down")) {
+                this.showProgress();
+            } else {
+                this.hideProgress();
+            }
+        };
+        this.jobPanel = document.createElement('div');
+        this.jobPanel.classList.add('widget-inline-vbox');
+        this.jobLink = document.createElement("a");
+        this.stagePanel = document.createElement('div');
+        this.stagePanel.classList.add('widget-inline-hbox');
+        this.stageLink = document.createElement("a");
+        this.progressPanel = document.createElement("div");
+        this.progressPanel.classList.add('widget-hprogress');
+        this.progressPanel.classList.add('widget-inline-hbox');
+
+        this.el.appendChild(this.taggleButton);
+        this.el.appendChild(this.jobPanel);
+        this.jobPanel.appendChild(this.jobLink);
+        this.jobPanel.appendChild(this.stagePanel);
+        this.stagePanel.appendChild(this.stageLink);
+        this.stagePanel.appendChild(this.progressPanel);
+
 
         this.progress = document.createElement('div');
         this.progress.classList.add('progress');
         this.progress.style.display = 'inline';
-        this.el.appendChild(this.progress);
+        this.progressPanel.appendChild(this.progress);
 
         this.barDone = document.createElement('div');
         this.barDone.setAttribute('title', "Done");
@@ -133,23 +192,27 @@ class SparkStateProgressView extends widgets.HBoxView {
         this.progress.appendChild(this.barWaiting);
     }
 
+    private hideProgress() {
+        this.taggleButton.classList.remove('fa-arrow-up');
+        this.taggleButton.classList.remove('fa');
+        this.taggleButton.classList.add('fa-arrow-down');
+        this.taggleButton.classList.add('fa');
+        this.jobPanel.style.display = "none"
+    }
+
+    private showProgress() {
+        this.taggleButton.classList.remove('fa-arrow-down');
+        this.taggleButton.classList.remove('fa');
+        this.taggleButton.classList.add('fa-arrow-up');
+        this.taggleButton.classList.add('fa');
+        this.jobPanel.style.display = "inline"
+    }
+
     set_bar_style() {
         this.set_mapped_classes(SparkStateProgressView.class_map, 'barDone_style', this.barDone);
         this.set_mapped_classes(SparkStateProgressView.class_map, 'barActive_style', this.barActive);
         this.set_mapped_classes(SparkStateProgressView.class_map, 'barWaiting', this.barWaiting);
     }
-
-    progress: HTMLDivElement;
-    barDone: HTMLDivElement;
-    barActive: HTMLDivElement;
-    barWaiting: HTMLDivElement;
-    labelDone: HTMLLabelElement;
-    labelActive: HTMLLabelElement;
-    labelWaiting: HTMLLabelElement;
-    labelAll: HTMLLabelElement;
-    label1: HTMLLabelElement;
-    label2: HTMLLabelElement;
-    label3: HTMLLabelElement;
 
     static class_map = {
         success: ['progress-bar-success'],

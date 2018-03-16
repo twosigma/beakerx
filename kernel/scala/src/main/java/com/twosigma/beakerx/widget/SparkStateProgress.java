@@ -19,17 +19,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class SparkStateProgress extends HBox {
+public class SparkStateProgress extends VBox {
 
   public static final String VIEW_NAME_VALUE = "SparkStateProgressView";
   public static final String MODEL_NAME_VALUE = "SparkStateProgressModel";
   private int active = 0;
   private int done = 0;
   private int numberOfTasks = 0;
+  private int jobId;
+  private int stageId;
+  private String jobLink;
+  private String stageLink;
 
-  public SparkStateProgress(int numberOfTasks) {
+  public SparkStateProgress(int numTasks, int jobId, int stageId, String jobLink, String stageLink) {
     super(new ArrayList<>());
-    this.numberOfTasks = numberOfTasks;
+    this.numberOfTasks = numTasks;
+    this.jobId = jobId;
+    this.stageId = stageId;
+    this.jobLink = jobLink;
+    this.stageLink = stageLink;
   }
 
   @Override
@@ -88,9 +96,17 @@ public class SparkStateProgress extends HBox {
 
   private synchronized void sendState() {
     HashMap<Object, Object> state = new HashMap<>();
+    state.put("jobId", this.jobId);
+    state.put("stageId", this.stageId);
+    state.put("stageLink", this.stageLink);
+    state.put("jobLink", this.jobLink);
     state.put("done", this.done);
     state.put("active", this.active);
     state.put("numberOfTasks", this.numberOfTasks);
     sendUpdate("state", state);
+  }
+
+  public void hide() {
+    sendUpdate("hide", true);
   }
 }

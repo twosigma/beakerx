@@ -51,7 +51,6 @@ public class SparkContextManager {
   private final SparkUI sparkUI;
   private SparkContext sparkContext;
   private final SparkConf sparkConf;
-  private Map<Integer, VBox> jobs = new HashMap<>();
   private Map<Integer, SparkStateProgress> progressBars = new HashMap<>();
   private VBox jobPanel = null;
   private HBox statusPanel;
@@ -197,13 +196,11 @@ public class SparkContextManager {
       @Override
       public void onJobStart(SparkListenerJobStart jobStart) {
         super.onJobStart(jobStart);
-        startJob(jobStart.jobId());
       }
 
       @Override
       public void onJobEnd(SparkListenerJobEnd jobEnd) {
         super.onJobEnd(jobEnd);
-        endJob(jobEnd.jobId());
       }
 
       @Override
@@ -279,44 +276,22 @@ public class SparkContextManager {
     return disconnect;
   }
 
-  private void startJob(int jobId) {
-    jobPanel = createJobPanel();
-    VBox job = createJob(jobId);
-    jobs.put(jobId, job);
-    jobPanel.add(job);
-    jobPanel.display();
-  }
-
-  private VBox createJobPanel() {
-    VBox jobPanel = new VBox(new ArrayList<>());
-    return jobPanel;
-  }
-
-  private VBox createJob(int jobId) {
-    HTML jobLink = jobLink(jobId);
-    List<Widget> jobItems = new ArrayList<>();
-    jobItems.add(jobLink);
-    return new VBox(jobItems);
-  }
-
-  private void endJob(int jobId) {
-
-  }
-
   private void startStage(int stageId, int numTasks) {
-    SparkStateProgress intProgress = new SparkStateProgress(numTasks);
+    SparkStateProgress intProgress = new SparkStateProgress(numTasks, stageId, stageId, jobLink(stageId), stageLink(stageId));
     intProgress.init();
-    VBox job = jobs.get(stageId);
-    HBox stageWithProgress = new HBox(asList(stageLink(stageId), intProgress));
-    stageWithProgress.getLayout().setMargin("0 0 0 40px");
-    job.add(stageWithProgress);
+    if (jobPanel != null) {
+      jobPanel.getLayout().setDisplayNone();
+      jobPanel.close();
+    }
+    jobPanel = new VBox(new ArrayList<>());
+    jobPanel.add(intProgress);
+    jobPanel.display();
     progressBars.put(stageId, intProgress);
   }
 
   private void endStage(int stageId) {
-    jobPanel.getLayout().setDisplayNone();
-    jobPanel.close();
-    jobPanel = null;
+    SparkStateProgress sparkStateProgress = progressBars.get(stageId);
+    sparkStateProgress.hide();
   }
 
   private void taskStart(int stageId, long taskId) {
@@ -341,27 +316,19 @@ public class SparkContextManager {
     }
   }
 
-  private HTML stageLink(int stageId) {
+  private String stageLink(int stageId) {
     if (sparkContext.uiWebUrl().isDefined()) {
-      HTML html = new HTML();
-      html.setValue("<a target=\"_blank\" href=\"" + sparkContext.uiWebUrl().get() + "/stages/stage/?id=" + stageId + "&attempt=0\">Stage " + stageId + "</a>");
-      return html;
+      return sparkContext.uiWebUrl().get() + "/stages/stage/?id=" + stageId+ "&attempt=0";
     } else {
-      HTML html = new HTML();
-      html.setValue("<a target=\"_blank\" href=\"\">Spark job " + stageId + "</a>");
-      return html;
+      return "";
     }
   }
 
-  private HTML jobLink(int jobId) {
+  private String jobLink(int jobId) {
     if (sparkContext.uiWebUrl().isDefined()) {
-      HTML html = new HTML();
-      html.setValue("<a target=\"_blank\" href=\"" + sparkContext.uiWebUrl().get() + "/jobs/job/?id=" + jobId + "\">Spark job " + jobId + "</a>");
-      return html;
+      return sparkContext.uiWebUrl().get() + "/jobs/job/?id=" + jobId;
     } else {
-      HTML html = new HTML();
-      html.setValue("<a target=\"_blank\" href=\"\">Spark job " + jobId + "</a>");
-      return html;
+      return "";
     }
   }
 

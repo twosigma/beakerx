@@ -142,7 +142,7 @@ The code is organized into subdirectories as follows:
   subdirectory for each language.
 
 * [docker](docker) configuration files for creating the Docker image.
-  There is a subdirectory [doc/base](doc/base) for an image with
+  There is a subdirectory [docker/base](docker/base) for an image with
   BeakerX's dependencies (the Ubuntu and conda packages).  The main
   image is built by compiling BeakerX and installing BeakerX in the
   base image.
@@ -176,15 +176,15 @@ The code is organized into subdirectories as follows:
   The main directory is [kernel/base](kernel/base) which has generic
   code for all the languages.  The base kernel has classes for
   Jupyter's Comm protocol (a layer over ZMQ), magics, the classpath
-  (including loading from maven), and the kernl parts of the widget
+  (including loading from maven), and the kernel parts of the widget
   APIs.
 
   There is also a subdirectory for each language which has the
-  evaluator for that language, plus scala has wrappers for the widgets
+  evaluator for that language. Scala has wrappers for the widgets
   so they have native types.
 
-* [test](test) The e2e tests, which are made with wdio (selenium,
-  chromedriver, jasmine).
+* [test](test) The e2e tests, which are made with
+  [webdriver](http://webdriver.io/) (selenium, chromedriver, jasmine).
 
 ## Contributing
 

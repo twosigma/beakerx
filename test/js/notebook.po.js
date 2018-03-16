@@ -107,14 +107,5 @@ var NotebookPageObject = function () {
     return $('div#tooltip div.tooltiptext.smalltooltip');
   };
 
-  this.getTableIndexMenu = function(dtContainer){
-    dtContainer.click('div.dtmenu');
-    browser.waitUntil(function(){
-      var menu = browser.$('div.bko-header-menu.bko-table-menu');
-      return menu != null && menu.isVisible();
-    }, 10000, 'index menu is not visible');
-    return browser.$('div.bko-header-menu.bko-table-menu');
-  };
-
 };
 module.exports = NotebookPageObject;

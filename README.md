@@ -24,14 +24,14 @@
 [![NPM version](https://badge.fury.io/js/beakerx.svg)](http://badge.fury.io/js/beakerx)
 [![PyPI Version](https://badge.fury.io/py/beakerx.svg)](http://badge.fury.io/py/beakerx)
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/beakerx/badges/version.svg)](https://anaconda.org/conda-forge/beakerx)
-[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/twosigma/beakerx/0.13.0?filepath=StartHere.ipynb)
+[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/twosigma/beakerx/0.14.0?filepath=StartHere.ipynb)
 
 BeakerX is a collection of JVM kernels and interactive widgets for
 plotting, tables, autotranslation, and other extensions to Jupyter
 Notebook.  BeakerX is in beta and under active development.
 
 The [documentation](https://github.com/twosigma/beakerx/blob/master/StartHere.ipynb) consists of tutorial notebooks on GitHub.
-You can try it in the cloud for free with [Binder](https://mybinder.org/v2/gh/twosigma/beakerx/0.13.0?filepath=StartHere.ipynb).
+You can try it in the cloud for free with [Binder](https://mybinder.org/v2/gh/twosigma/beakerx/0.14.0?filepath=StartHere.ipynb).
 
 BeakerX is the successor to the [Beaker Notebook (source code
 archive)](https://github.com/twosigma/beaker-notebook-archive).  It
@@ -61,7 +61,7 @@ conda install -y -c conda-forge ipywidgets
 beakerx install
 ```
 
-### Build and Install for Lab
+### Build and Install for Jupyter Lab
 
 ```
 conda create -y -n labx 'python>=3' nodejs pandas openjdk maven
@@ -72,6 +72,12 @@ conda install -y -c conda-forge jupyterlab
 beakerx install
 jupyter labextension install @jupyter-widgets/jupyterlab-manager
 (cd js/lab; jupyter labextension install .)
+```
+
+### Running with Docker
+
+```
+docker run -p 8888:8888 beakerx/beakerx
 ```
 
 ### Update after Java change
@@ -99,15 +105,9 @@ The Java unit tests are run with every build. See [test/README.md] for how to ru
 ## Groovy with Interactive Plotting and Tables:
 <img width="900" alt="screen shot" src="https://user-images.githubusercontent.com/963093/28300136-585f9f7c-6b4b-11e7-8827-b5807d3fc9a8.png">
 
-### Autotranslation from Python to JavaScript
+## Autotranslation from Python to JavaScript
 
 <img width="900" alt="screen shot" src="https://cloud.githubusercontent.com/assets/963093/21077947/261def64-bf2a-11e6-8518-4845caf75690.png">
-
-## Running with Docker
-
-```
-docker run -p 8888:8888 beakerx/beakerx
-```
 
 ## Architecture and Code Overview
 
@@ -131,7 +131,7 @@ The code is organized into subdirectories as follows:
 
   * the compiled Java JARs.
 
-  There is a seperate python package (beakerx_magics) for the
+  There is a separate python package (beakerx_magics) for the
   `%%groovy` magic so it can always be loaded *without* loading the
   regular beakerx package (which would turn on display of pandas
   tables with our table widget).
@@ -142,7 +142,7 @@ The code is organized into subdirectories as follows:
   subdirectory for each language.
 
 * [docker](docker) configuration files for creating the Docker image.
-  There is a subdirectory [doc/base](doc/base) for an image with
+  There is a subdirectory [docker/base](docker/base) for an image with
   BeakerX's dependencies (the Ubuntu and conda packages).  The main
   image is built by compiling BeakerX and installing BeakerX in the
   base image.
@@ -153,7 +153,7 @@ The code is organized into subdirectories as follows:
 
   The lab subdirectory has the extension for Jupyter Lab (distributed
   by npm).  Notebook has two extensions, one for the widgets (which
-  are included in Lab as well, and are also seperately distributed
+  are included in Lab as well, and are also separately distributed
   with npm for embedded applications such as nbviewer), and one for
   the notebook application.  This adds a tab to the tree view with our
   options panel.  And for regular notebook pages the extension
@@ -176,15 +176,15 @@ The code is organized into subdirectories as follows:
   The main directory is [kernel/base](kernel/base) which has generic
   code for all the languages.  The base kernel has classes for
   Jupyter's Comm protocol (a layer over ZMQ), magics, the classpath
-  (including loading from maven), and the kernl parts of the widget
+  (including loading from maven), and the kernel parts of the widget
   APIs.
 
   There is also a subdirectory for each language which has the
-  evaluator for that language, plus scala has wrappers for the widgets
+  evaluator for that language. Scala has wrappers for the widgets
   so they have native types.
 
-* [test](test) The e2e tests, which are made with wdio (selenium,
-  chromedriver, jasmine).
+* [test](test) The e2e tests, which are made with
+  [webdriver](http://webdriver.io/) (selenium, chromedriver, jasmine).
 
 ## Contributing
 

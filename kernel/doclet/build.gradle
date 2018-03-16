@@ -48,6 +48,7 @@ task jvmInspectJavaDoc(type: Javadoc) {
     options.docletpath = [file("../doclet/build/libs/doclet.jar")]
     options.addStringOption("subpackages", "com.twosigma.beakerx")
     options.addStringOption("sourcepath", "../base/src/main/java")
+    options.addStringOption("encoding", "UTF-8")
 }
 
 task moveInspectJson(type: Copy) {

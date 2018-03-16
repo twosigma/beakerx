@@ -122,6 +122,7 @@ class SparkStateProgressView extends widgets.VBoxView {
 
     private createJobLink(): HTMLAnchorElement {
         let jobLink: HTMLAnchorElement = document.createElement("a");
+        jobLink.setAttribute("target","_blank");
         return jobLink;
     }
 
@@ -137,6 +138,7 @@ class SparkStateProgressView extends widgets.VBoxView {
     private createStageLink(): HTMLAnchorElement {
         let stageLink: HTMLAnchorElement = document.createElement("a");
         stageLink.style.marginRight = "4px";
+        stageLink.setAttribute("target","_blank");
         return stageLink;
     }
 

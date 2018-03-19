@@ -143,7 +143,7 @@ function BeakerXPageObject() {
     codeCell.scroll();
     browser.waitUntil(function () {
       var output = getTextElements(codeCell)[outputIndex];
-      return output.isEnabled() && expectedText.test(output.getText());
+      return output != null && output.isEnabled() && expectedText.test(output.getText());
     }, 50000, 'expected output toMatch ' + expectedText);
   };
 
@@ -162,6 +162,15 @@ function BeakerXPageObject() {
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
     return codeCell.$('div.beaker-easyform-container');
+  };
+
+  this.getTableIndexMenu = function(dtContainer){
+    dtContainer.click('div.dtmenu');
+    browser.waitUntil(function(){
+      var menu = browser.$('div.bko-header-menu.bko-table-menu');
+      return menu != null && menu.isVisible();
+    }, 10000, 'index menu is not visible');
+    return browser.$('div.bko-header-menu.bko-table-menu');
   };
 
 };

@@ -89,6 +89,9 @@
   right: 10px;
   padding: 15px;
 }
+.bx-ui-options-widget .form-check-label {
+  margin-left: 10px;
+}
 
 .bx-sync-indicator-widget {
   padding: 15px;

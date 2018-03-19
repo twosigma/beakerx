@@ -47,10 +47,11 @@ public class PomFactory {
   private String configureDependency(Dependency dependency, String pomAsString) {
     return pomAsString.replace(
             "</dependencies>",
-                    "  <dependency>\n" +
+            "  <dependency>\n" +
                     "    <groupId>" + dependency.groupId + "</groupId>\n" +
                     "    <artifactId>" + dependency.artifactId + "</artifactId>\n" +
                     "    <version>" + dependency.version + "</version>\n" +
+                    "    <type>" + dependency.type + "</type>\n" +
                     "  </dependency>\n" +
                     "</dependencies>");
   }

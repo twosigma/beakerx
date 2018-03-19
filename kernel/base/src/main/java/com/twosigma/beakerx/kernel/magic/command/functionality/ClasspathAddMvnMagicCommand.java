@@ -28,7 +28,7 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
   public static final String ADD = "add";
   public static final String MVN = "mvn";
   public static final String CLASSPATH_ADD_MVN = CLASSPATH + " " + ADD + " " + MVN;
-  public static final String ADD_MVN_FORMAT_ERROR_MESSAGE = "Wrong command format, should be" + CLASSPATH_ADD_MVN + " group name version or " + CLASSPATH_ADD_MVN + " group:name:version";
+  public static final String ADD_MVN_FORMAT_ERROR_MESSAGE = "Wrong command format, should be" + CLASSPATH_ADD_MVN + " group name version [type] or " + CLASSPATH_ADD_MVN + " group:name:version:[type]";
 
   private MavenJarResolver.ResolverParams commandParams;
   private PomFactory pomFactory;
@@ -54,32 +54,58 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     String command = param.getCommand();
     String[] split = MagicCommandUtils.splitPath(command);
-    if (split.length != 6 && split.length != 4) {
+    if (!(isGradleFormat(split) || isMavenFormat(split))) {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, ADD_MVN_FORMAT_ERROR_MESSAGE);
     }
-
     commandParams.setRepos(kernel.getRepos().get());
     MavenJarResolver classpathAddMvnCommand = new MavenJarResolver(commandParams, pomFactory);
     MvnLoggerWidget progress = new MvnLoggerWidget(param.getCode().getMessage());
-    AddMvnCommandResult result;
-    if (split.length == 4) {
-      String[] valuesFromGradlePattern = split[3].split(":");
-      if (valuesFromGradlePattern.length != 3) {
-        return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, ADD_MVN_FORMAT_ERROR_MESSAGE);
-      }
-      result = retrieve(valuesFromGradlePattern[0], valuesFromGradlePattern[1], valuesFromGradlePattern[2], classpathAddMvnCommand, progress);
-    } else {
-      result = retrieve(split[3], split[4], split[5], classpathAddMvnCommand, progress);
-    }
-
+    AddMvnCommandResult result = retrieve(getDependency(split), classpathAddMvnCommand, progress);
     if (result.isJarRetrieved()) {
       return handleAddedJars(classpathAddMvnCommand.getPathToMavenRepo() + "/*");
     }
     return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, result.getErrorMessage());
   }
 
-  private AddMvnCommandResult retrieve(String groupId, String artifactId, String version, MavenJarResolver classpathAddMvnCommand, MvnLoggerWidget progress) {
-    return classpathAddMvnCommand.retrieve(groupId, artifactId, version, progress);
+  private MavenJarResolver.Dependency getDependency(String[] split) {
+    if (isGradleFormat(split)) {
+      String[] valuesFromGradlePattern = split[3].split(":");
+      return getDepForGradle(valuesFromGradlePattern);
+    } else {
+      return getDepForMaven(split);
+    }
+  }
+
+  private boolean isMavenFormat(String[] split) {
+    return split.length == 6 || split.length == 7;
+  }
+
+  private boolean isGradleFormat(String[] split) {
+    if (split.length == 4) {
+      String[] valuesFromGradlePattern = split[3].split(":");
+      return valuesFromGradlePattern.length == 3 || valuesFromGradlePattern.length == 4;
+    }
+    return false;
+  }
+
+  private MavenJarResolver.Dependency getDepForMaven(String[] split) {
+    if (split.length == 7) {
+      return new MavenJarResolver.Dependency(split[3], split[4], split[5], split[6]);
+    } else {
+      return new MavenJarResolver.Dependency(split[3], split[4], split[5]);
+    }
+  }
+
+  private MavenJarResolver.Dependency getDepForGradle(String[] valuesFromGradlePattern) {
+    if (valuesFromGradlePattern.length == 4) {
+      return new MavenJarResolver.Dependency(valuesFromGradlePattern[0], valuesFromGradlePattern[1], valuesFromGradlePattern[2], valuesFromGradlePattern[3]);
+    } else {
+      return new MavenJarResolver.Dependency(valuesFromGradlePattern[0], valuesFromGradlePattern[1], valuesFromGradlePattern[2]);
+    }
+  }
+
+  private AddMvnCommandResult retrieve(MavenJarResolver.Dependency dependency, MavenJarResolver classpathAddMvnCommand, MvnLoggerWidget progress) {
+    return classpathAddMvnCommand.retrieve(dependency, progress);
   }
 
 }

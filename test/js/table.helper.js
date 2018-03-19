@@ -39,6 +39,8 @@ var TableHelperObject = function () {
     return tblElement.$$('tr[role="row"]');
   };
 
+  /* For first row the index = 0
+     For first column the index = 1 */
   this.getCellOfTableBody = function(dtContainer, rowIndex, colIndex){
     var tblBody = this.getDataTablesScrollBody(dtContainer).$('tbody');
     return this.getAllRowsOfTable(tblBody)[rowIndex].$$('td.ui-selectee')[colIndex];

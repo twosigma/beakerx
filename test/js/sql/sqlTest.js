@@ -48,4 +48,12 @@ describe('SQL base tests ', function () {
     });
   });
 
+  describe('(SQL) Press "Shift + Tab" to display doc ', function(){
+    it('doc tooltip is not empty ', function(){
+      var codeCell = beakerxPO.getCodeCellByIndex(4);
+      var tooltip = beakerxPO.callDocAndGetItsTooltip(codeCell, 'Plot');
+      expect(tooltip.getText()).toMatch(/com.twosigma.beakerx.chart.xychart.Plot/);
+    });
+  });
+
 });

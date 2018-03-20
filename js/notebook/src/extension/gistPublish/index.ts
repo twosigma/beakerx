@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import * as $ from 'jquery/dist/jquery.js';
+import * as $ from 'jquery';
 import GistPublishModal from './gistPublishModal';
 
 const dialog = require('base/js/dialog');

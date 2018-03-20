@@ -25,7 +25,6 @@ import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
 import com.twosigma.beakerx.jvm.classloader.BeakerxUrlClassLoader;
-import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
@@ -56,7 +55,6 @@ public class ScalaEvaluator extends BaseEvaluator {
   private static boolean autoTranslationSetup = false;
   private BeakerxUrlClassLoader classLoader;
   private ScalaEvaluatorGlue shell;
-  private ScalaEvaluatorGlue acshell;
 
   public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, EvaluatorParameters evaluatorParameters) {
     this(id, sId, osp, new BeakerCellExecutor("scala"), new BeakerxObjectFactoryImpl(), new TempFolderFactoryImpl(), evaluatorParameters);
@@ -68,7 +66,6 @@ public class ScalaEvaluator extends BaseEvaluator {
     this.beakerxObjectFactory = beakerxObjectFactory;
     this.classLoader = newClassLoader();
     this.shell = createNewEvaluator();
-    this.acshell = newAutoCompleteEvaluator();
   }
 
   @Override
@@ -96,7 +93,6 @@ public class ScalaEvaluator extends BaseEvaluator {
   protected void doResetEnvironment() {
     this.classLoader = newClassLoader();
     this.shell = createNewEvaluator();
-    this.acshell = newAutoCompleteEvaluator();
     executorService.shutdown();
     executorService = Executors.newSingleThreadExecutor();
   }
@@ -119,15 +115,8 @@ public class ScalaEvaluator extends BaseEvaluator {
 
   @Override
   public AutocompleteResult autocomplete(String code, int caretPosition) {
-    int lineStart = 0;
-    String[] sv = code.substring(0, caretPosition).split("\n");
-    for (int i = 0; i < sv.length - 1; i++) {
-      acshell.evaluate2(sv[i]);
-      caretPosition -= sv[i].length() + 1;
-      lineStart += sv[i].length() + 1;
-    }
-    AutocompleteResult lineCompletion = acshell.autocomplete(sv[sv.length - 1], caretPosition);
-    return new AutocompleteResult(lineCompletion.getMatches(), lineCompletion.getStartIndex() + lineStart);
+    AutocompleteResult lineCompletion = shell.autocomplete(code, caretPosition);
+    return new AutocompleteResult(lineCompletion.getMatches(), lineCompletion.getStartIndex());
   }
 
   private String adjustImport(String imp) {
@@ -143,45 +132,6 @@ public class ScalaEvaluator extends BaseEvaluator {
     if (imp.endsWith(".*"))
       imp = imp.substring(0, imp.length() - 1) + "_";
     return imp;
-  }
-
-  private ScalaEvaluatorGlue newAutoCompleteEvaluator() {
-    logger.debug("creating new autocomplete evaluator");
-    String acloader_cp = createAutoCompleteClassLoader();
-    ScalaEvaluatorGlue acshell = new ScalaEvaluatorGlue(newAutoCompleteClassLoader(), acloader_cp, outDir);
-    if (!imports.isEmpty()) {
-      String[] strings = imports.getImportPaths().stream().map(importPath -> {
-        String trim = importPath.asString().trim();
-        return adjustImport(trim);
-      }).toArray(String[]::new);
-      acshell.addImports(strings);
-    }
-    // ensure object is created
-    NamespaceClient.getBeaker(sessionId);
-
-    String r = acshell.evaluate2(this.beakerxObjectFactory.create(this.sessionId));
-    if (r != null && !r.isEmpty()) {
-      logger.warn("ERROR creating beaker beaker: {}", r);
-    }
-    return acshell;
-  }
-
-  private ClassLoader newAutoCompleteClassLoader() {
-    logger.debug("creating new autocomplete loader");
-    DynamicClassLoaderSimple cl = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
-    cl.addJars(classPath.getPathsAsStrings());
-    cl.addDynamicDir(outDir);
-    return cl;
-  }
-
-  private String createAutoCompleteClassLoader() {
-    String acloader_cp = "";
-    for (int i = 0; i < classPath.size(); i++) {
-      acloader_cp += classPath.get(i);
-      acloader_cp += File.pathSeparatorChar;
-    }
-    acloader_cp += outDir;
-    return acloader_cp + File.pathSeparatorChar + System.getProperty("java.class.path");
   }
 
   private ScalaEvaluatorGlue createNewEvaluator() {

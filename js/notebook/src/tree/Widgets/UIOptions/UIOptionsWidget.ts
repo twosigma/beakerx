@@ -33,30 +33,42 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
   public readonly SHOW_PUBLICATION_SELECTOR = '#show_publication';
   public readonly AUTO_SAVE_SELECTOR = '#auto_save';
 
+  public readonly UI_OPTIONS = [
+    {
+      id: 'auto_close',
+      name: 'auto_close',
+      label: 'Auto close brackets',
+      isLabSupported: true,
+    },
+    {
+      id: 'wide_cells',
+      name: 'wide_cells',
+      label: 'Wide code cells',
+      isLabSupported: false,
+    },
+    {
+      id: 'improve_fonts',
+      name: 'improve_fonts',
+      label: 'Customize fonts (Roboto Mono and Lato)',
+      isLabSupported: false,
+    },
+    {
+      id: 'show_publication',
+      name: 'show_publication',
+      label: 'Show publication button and menu item',
+      isLabSupported: true,
+    },
+    {
+      id: 'auto_save',
+      name: 'auto_save',
+      label: 'Auto save notebooks',
+      isLabSupported: true,
+    },
+  ];
+
   public readonly HTML_ELEMENT_TEMPLATE = `
 <div id="ui_options">
-  <div class="form-group">
-    <div class="form-check">
-      <input class="form-check-input" id="auto_close" name="auto_close" type="checkbox">
-      <label class="form-check-label" for="auto_close">Auto close brackets</label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" id="wide_cells" name="wide_cells" type="checkbox">
-      <label class="form-check-label" for="wide_cells">Wide code cells</label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" id="improve_fonts" name="improve_fonts" type="checkbox">
-      <label class="form-check-label" for="improve_fonts">Improve fonts</label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" id="show_publication" name="show_publication" type="checkbox">
-      <label class="form-check-label" for="show_publication">Show publication button and menu item</label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" id="auto_save" name="auto_save" type="checkbox">
-      <label class="form-check-label" for="auto_save">Auto save notebooks</label>
-    </div>
-  </div>
+  <div class="form-group"></div>
 </div>
 `;
 
@@ -64,7 +76,7 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
     return $(this.node);
   }
 
-  constructor() {
+  constructor(isLab: boolean) {
     super();
 
     this.addClass('bx-ui-options-widget');
@@ -72,7 +84,7 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
     this.title.label = 'UI Options';
     this.title.closable = false;
 
-    $(this.HTML_ELEMENT_TEMPLATE).appendTo(this.node);
+    this.prepareNode(isLab);
 
     this.$node
       .find([
@@ -97,6 +109,38 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
 
   protected onActivateRequest(): void {
     this._updateSize();
+  }
+
+  private prepareNode(isLab: boolean) {
+    let wrapperElement = $(this.HTML_ELEMENT_TEMPLATE).find('.form-group');
+    for (let option of this.UI_OPTIONS) {
+      if (isLab && option.isLabSupported === false) {
+        continue;
+      }
+      wrapperElement.append(
+        this.createCheckbox(option)
+      );
+    }
+    wrapperElement.appendTo(this.node);
+  }
+
+  private  createCheckbox(checkboxDefinition) {
+    return       $('<div>', {
+      class: 'form-check'
+    }).append(
+      $('<input>', {
+        class: 'form-check-input',
+        id: checkboxDefinition.id,
+        name: checkboxDefinition.name,
+        type: 'checkbox',
+      }),
+
+      $('<label>', {
+        class: 'form-check-label',
+        for: checkboxDefinition.id,
+        text: checkboxDefinition.label,
+      }),
+    )
   }
 
   private _updateSize(): void {

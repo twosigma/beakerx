@@ -213,7 +213,7 @@ export default class BeakerxCellRenderer extends TextRenderer {
     // Compute the X position for the text.
     switch (hAlign) {
       case 'left':
-        textX = config.x + 2;
+        textX = config.x + (isHeaderCell ? 10 : 2);
         break;
       case 'center':
         textX = config.x + config.width / 2;

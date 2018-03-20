@@ -300,7 +300,9 @@ export class BeakerxDataGrid extends DataGrid {
     const nameSize = getStringSize(column.name, selectHeaderFontSize(this.store.state));
     const valueSize = getStringSize(value, selectDataFontSize(this.store.state));
     const nameSizeProp = selectHeadersVertical(this.store.state) ? 'height' : 'width';
-    const result = nameSize[nameSizeProp] > valueSize.width ? nameSize[nameSizeProp] : valueSize.width;
+
+    nameSize.width += 4; // Add space for the menu
+    const result = nameSize[nameSizeProp] > valueSize.width - 7 ? nameSize[nameSizeProp] : valueSize.width;
 
     return result > MIN_COLUMN_WIDTH ? result : MIN_COLUMN_WIDTH;
   }

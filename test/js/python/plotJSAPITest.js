@@ -59,7 +59,68 @@ describe('(Python) Plot API Tests', function () {
     });
 
     it('Plot has points', function () {
+      expect(plotHelper.getAllPointsByGIndexAndMultipleTypes(svgElement, 2, 'diamond', 'polygon').length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('Draw an area chart', function () {
+    it('Draw an area chart correctly', function () {
+      cellIndex += 1;
+      svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
+
+      expect(plotHelper.getAllAreas(svgElement).length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('Draw a band chart', function () {
+    it('Draw a band chart correctly', function () {
+      cellIndex += 1;
+      svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
+
+      expect(plotHelper.getAllConstBands(svgElement).length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('Draw a line chart and a band chart', function () {
+    it('Draw a line chart correctly', function () {
+      cellIndex += 1;
+      svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
+
+      expect(plotHelper.getAllLines(svgElement).length).toBeGreaterThan(0);
+    });
+
+    it('Draw a band chart correctly', function () {
+      svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
+
+      expect(plotHelper.getAllConstBands(svgElement).length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('Draw a plot', function () {
+    it('Draw a plot correctly', function () {
+      cellIndex += 1;
+      svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
+
       expect(plotHelper.getAllPointsByGIndexAndType(svgElement, 0, 'rect').length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('Draw a plot with XYStacker', function () {
+    it('Draw a plot with an XYStack correctly', function () {
+      cellIndex += 1;
+      svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
+
+      expect(plotHelper.getAllAreas(svgElement).length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('Draw two line charts', function () {
+    it('Draw two line charts correctly', function () {
+      cellIndex += 1;
+      svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
+
+      expect(svgElement.$('g#i0 > circle').isEnabled).toBeTruthy();
+      expect(svgElement.$('g#i1 > circle').isEnabled).toBeTruthy();
     });
   });
 });

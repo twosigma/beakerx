@@ -23,6 +23,7 @@ import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
 import com.twosigma.beakerx.groovy.autocomplete.GroovyAutocomplete;
 import com.twosigma.beakerx.groovy.autocomplete.GroovyClasspathScanner;
+import com.twosigma.beakerx.inspect.Inspect;
 import com.twosigma.beakerx.jvm.classloader.BeakerxUrlClassLoader;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
@@ -82,6 +83,7 @@ public class GroovyEvaluator extends BaseEvaluator {
     String cpp = createClasspath(classPath);
     cps = new GroovyClasspathScanner(cpp);
     gac = createGroovyAutocomplete(cps);
+    inspect = new Inspect();
     reloadClassloader();
     executorService.shutdown();
     executorService = Executors.newSingleThreadExecutor();

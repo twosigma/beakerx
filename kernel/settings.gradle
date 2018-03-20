@@ -21,6 +21,8 @@ include 'java'
 include 'clojure'
 include 'sql'
 
+include 'doclet'
+
 if (System.getProperty('includeCpp', 'false') == 'true') {
   include 'cpp'
 }

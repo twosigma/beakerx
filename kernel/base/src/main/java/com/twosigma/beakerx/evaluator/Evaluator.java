@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.evaluator;
 
+import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.kernel.AddImportStatus;
 import com.twosigma.beakerx.kernel.Repos;
@@ -44,6 +45,8 @@ public interface Evaluator {
   void setShellOptions(final EvaluatorParameters kernelParameters) throws IOException;
 
   AutocompleteResult autocomplete(String code, int caretPosition);
+
+  InspectResult inspect(String code, int caretPosition);
 
   void killAllThreads();
 

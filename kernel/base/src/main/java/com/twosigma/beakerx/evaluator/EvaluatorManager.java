@@ -17,6 +17,7 @@ package com.twosigma.beakerx.evaluator;
 
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.AddImportStatus;
 import com.twosigma.beakerx.kernel.Classpath;
@@ -57,6 +58,10 @@ public class EvaluatorManager {
 
   public AutocompleteResult autocomplete(String code, int caretPosition) {
     return evaluator.autocomplete(code, caretPosition);
+  }
+
+  public InspectResult inspect(String code, int caretPosition) {
+    return evaluator.inspect(code, caretPosition);
   }
 
   public void cancelExecution() {

@@ -18,6 +18,8 @@ package com.twosigma.beakerx.chart.xychart;
 
 import com.twosigma.beakerx.chart.ChartDetails;
 import com.twosigma.beakerx.chart.ChartToJson;
+import com.twosigma.beakerx.chart.actions.CombinedPlotActionObject;
+import com.twosigma.beakerx.chart.actions.GraphicsActionObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +30,6 @@ import static com.twosigma.beakerx.widget.BeakerxPlot.VIEW_NAME_VALUE;
 
 /**
  * CombinedPlot
- *
  */
 public class CombinedPlot extends ChartDetails {
   private int initWidth = 640;
@@ -41,7 +42,7 @@ public class CombinedPlot extends ChartDetails {
   private boolean yTickLabelsVisible = true;
   private boolean autoZoom = false;
 
-  public CombinedPlot(){
+  public CombinedPlot() {
     super();
     openComm();
   }
@@ -124,7 +125,7 @@ public class CombinedPlot extends ChartDetails {
       this.add(plot, weight);
     } else {
       throw new IllegalArgumentException(
-          "leftShift takes XYChart or List that hold a XYChart and weight");
+              "leftShift takes XYChart or List that hold a XYChart and weight");
     }
     return this;
   }
@@ -179,9 +180,17 @@ public class CombinedPlot extends ChartDetails {
   }
 
   @Override
+  protected void updateDetails(GraphicsActionObject info) {
+    CombinedPlotActionObject combinedPlotActionObject = (CombinedPlotActionObject) info;
+    XYChart xyChart = getSubplots().get(combinedPlotActionObject.getSubplotIndex());
+    xyChart.setDetails(info);
+  }
+
+  @Override
   protected Map serializeToJsonObject() {
     return ChartToJson.toJson(this);
   }
+
   @Override
   protected Map serializeToJsonObject(Object item) {
     return ChartToJson.toJson(item);

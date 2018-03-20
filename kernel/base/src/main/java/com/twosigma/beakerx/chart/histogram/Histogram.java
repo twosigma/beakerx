@@ -36,7 +36,7 @@ public class Histogram extends AbstractChart {
 
   private Integer rangeMin;
   private Integer rangeMax;
-  private int binCount;
+  private int binCount = 10;
   private boolean rightClose;
   private boolean cumulative;
   private boolean normed;

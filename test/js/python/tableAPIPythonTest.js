@@ -58,6 +58,11 @@ describe('Testing of table (python)', function () {
       checkHeaderValues(dtContainer, 'Key', 'Value');
     });
 
+    it('Table have index column menu. ', function () {
+      var dtContainer = beakerxPO.getDtContainerByIndex(cellIndex);
+      expect(beakerxPO.getTableIndexMenu(dtContainer)).not.toBe(null);
+    });
+
     it('Can use 2D Array of Integers parameter', function () {
       cellIndex += 1;
       var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
@@ -164,6 +169,18 @@ describe('Testing of table (python)', function () {
       var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
       expect(tableHelper.getCellOfTableBody(dtContainer, 0, 1).getText()).toMatch('24');
       expect(tableHelper.getCellOfTableBody(dtContainer, 1, 1).getText()).toMatch('36L');
+    });
+    it('Table have index column menu', function () {
+      var dtContainer = beakerxPO.getDtContainerByIndex(cellIndex);
+      expect(beakerxPO.getTableIndexMenu(dtContainer)).not.toBe(null);
+    });
+  });
+
+  describe("Use index in pandas DataFrame. ", function() {
+    it('Table have index column menu. ', function () {
+      cellIndex += 1;
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      expect(beakerxPO.getTableIndexMenu(dtContainer)).not.toBe(null);
     });
   });
 

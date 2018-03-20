@@ -219,6 +219,7 @@ export default class DataGridColumn {
     ));
     this.columnManager.updateColumnFilterNodes();
     this.columnManager.updateColumnMenuTriggers();
+    this.dataGrid.resize();
   }
 
   getState() {

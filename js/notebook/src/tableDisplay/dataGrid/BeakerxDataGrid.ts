@@ -31,7 +31,7 @@ import CellSelectionManager from "./cell/CellSelectionManager";
 import CellManager from "./cell/CellManager";
 import {DataGridHelpers} from "./dataGridHelpers";
 import EventManager from "./EventManager";
-import { IMessageHandler, Message } from '@phosphor/messaging';
+import { IMessageHandler, Message, MessageLoop } from '@phosphor/messaging';
 import CellFocusManager from "./cell/CellFocusManager";
 import {
   DEFAULT_GRID_BORDER_WIDTH,
@@ -52,6 +52,7 @@ import {selectColumnWidth} from "./column/selectors";
 import throttle = DataGridHelpers.throttle;
 import DataGridCell from "./cell/DataGridCell";
 import {COLUMN_TYPES} from "./column/enums";
+import ResizeMessage = Widget.ResizeMessage;
 
 export class BeakerxDataGrid extends DataGrid {
   id: string;
@@ -182,16 +183,13 @@ export class BeakerxDataGrid extends DataGrid {
   }
 
   updateWidgetWidth() {
-    const bodyRowCount = this.model.rowCount('body');
-    const scrollBarSpaceWidth = bodyRowCount > DEFAULT_PAGE_LENGTH ? 20 : 0;
-    const spacing = 2 * (DEFAULT_GRID_PADDING + DEFAULT_GRID_BORDER_WIDTH);
+    const spacing = 2 * (DEFAULT_GRID_PADDING + DEFAULT_GRID_BORDER_WIDTH) + 1;
+    const hasVScroll = !this['_vScrollBar'].isHidden;
+    const vScrollWidth = hasVScroll ? this['_vScrollBarMinWidth'] + 1 : 0;
+    const width = this.totalWidth + spacing + vScrollWidth;
 
-    this.node.style.width = `${this.totalWidth + scrollBarSpaceWidth + spacing}px`;
+    this.node.style.width = `${width}px`;
     this.fit();
-
-    setTimeout(() => {
-      this['_syncViewport']();
-    });
   }
 
   setInitialSectionWidth(column) {
@@ -215,14 +213,18 @@ export class BeakerxDataGrid extends DataGrid {
     this.rowManager.createFilterExpressionVars();
     this.store.changed.connect(throttle<void, void>(this.handleStateChanged.bind(this), 150));
 
+    this.installMessageHook();
     this.addHighlighterManager();
     this.addCellRenderers();
     this.setInitialSize();
   }
 
+  private installMessageHook() {
+    MessageLoop.installMessageHook(this.viewport, this.viewportResizeMessageHook.bind(this));
+  }
+
   private handleStateChanged() {
     this.model.reset();
-    this.resize();
   }
 
   private addHighlighterManager() {
@@ -319,5 +321,15 @@ export class BeakerxDataGrid extends DataGrid {
   private setSectionWidth(section, column: DataGridColumn, value: number) {
     this.resizeSection(section, column.index, value);
     column.setWidth(value);
+  }
+
+  private viewportResizeMessageHook(handler, msg) {
+    if (handler === this.viewport && msg.type === 'resize') {
+      setTimeout(() => {
+        this['_syncViewport']();
+      });
+    }
+
+    return true;
   }
 }

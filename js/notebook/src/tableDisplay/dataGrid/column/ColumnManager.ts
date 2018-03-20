@@ -31,7 +31,7 @@ import {
   selectIndexColumnNames
 } from "./selectors";
 import {
-  UPDATE_COLUMNS_FILTERS, UPDATE_COLUMNS_POSITION
+  UPDATE_COLUMNS_FILTERS, UPDATE_COLUMNS_POSITION, UPDATE_COLUMNS_VISIBILITY
 } from "./reducer";
 import {COLUMN_TYPES, SORT_ORDER} from "./enums";
 
@@ -182,7 +182,16 @@ export default class ColumnManager {
   }
 
   showAllColumns() {
-    this.bodyColumns.forEach((column) => column.show());
+    const columnNames = selectColumnNames(this.store.state);
+    const hasIndex = selectHasIndex(this.store.state);
+
+    this.store.dispatch(new DataGridColumnsAction(UPDATE_COLUMNS_VISIBILITY, {
+      hasIndex,
+      value: columnNames.map(() => true),
+      defaultValue: [0]
+    }));
+
+    this.dataGrid.resize();
   }
 
   resetColumnsAlignment() {

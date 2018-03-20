@@ -24,18 +24,36 @@ const CONFIG = {
   nbviewerBaseUrl: 'https://nbviewer.jupyter.org/'
 };
 
-export function registerFeature(panel: NotebookPanel) {
-  addActionButton(panel);
+export function registerFeature(panel: NotebookPanel, showPublication: boolean) {
+  if (showPublication) {
+    addActionButton(panel);
+  } else {
+    removeActionButton(panel);
+  }
 }
 
-export function addActionButton(panel: NotebookPanel): void {
+function addActionButton(panel: NotebookPanel): void {
   const action = {
     className: 'fa fa-share-alt',
     tooltip: 'Publish...',
     onClick: () => openPublishDialog(panel)
   };
 
-  panel.toolbar.insertItem(9,'publish', new ToolbarButton(action));
+  let button = new ToolbarButton(action);
+  button.id = 'bx-publishButton';
+
+  panel.toolbar.insertItem(9,'publish', button);
+}
+
+function removeActionButton(panel: NotebookPanel): void {
+  let iter = panel.toolbar.layout.iter();
+  let widget;
+  while (widget = iter.next()) {
+    if (widget instanceof ToolbarButton && widget.id == 'bx-publishButton') {
+      panel.toolbar.layout.removeWidget(widget);
+      break;
+    }
+  }
 }
 
 function openPublishDialog(panel: NotebookPanel) {

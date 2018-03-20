@@ -129,6 +129,16 @@ describe('Groovy base tests. ', function () {
     });
   });
 
+  describe('Display array as table. ', function () {
+    it('Output contains table. ', function () {
+      cellIndex += 1;
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      tableHelper.dataTablesIsEnabled(dtContainer);
+      expect(tableHelper.getCellOfTableHeader(dtContainer, 1).getText()).toMatch(/hours/);
+      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 1).getText()).toMatch(/10/);
+    });
+  });
+
   describe('(Groovy) Press "Tab" to autocomplete code ', function(){
     it('Autocomplete list is not empty ', function(){
       cellIndex += 1;

@@ -16,7 +16,7 @@
 
 exports.config = {
   specs: [
-    './js/python/plotJSAPITest.js'
+    './js/**/*.js'
   ],
   exclude: [],
   maxInstances: 1,

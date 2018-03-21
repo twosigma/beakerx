@@ -58,6 +58,11 @@ describe('Testing of table (python)', function () {
       checkHeaderValues(dtContainer, 'Key', 'Value');
     });
 
+    it('Table have index column menu. ', function () {
+      var dtContainer = beakerxPO.getDtContainerByIndex(cellIndex);
+      expect(beakerxPO.getTableIndexMenu(dtContainer)).not.toBe(null);
+    });
+
     it('Can use 2D Array of Integers parameter', function () {
       cellIndex += 1;
       var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
@@ -151,19 +156,50 @@ describe('Testing of table (python)', function () {
     it('Can use numbers as name of Array keys (2D Array parameter)', function () {
       cellIndex +=1 ;
       var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      checkRowValues(dtContainer, 0, '0', '10', '0\.1');
+      checkRowValues(dtContainer, 0, '0', '40', '0\.025');
       checkRowValues(dtContainer, 1, '1', '20',  '0\.05');
       checkTableRows(dtContainer, 2);
-      checkHeaderValues(dtContainer, '10', '0\.1');
+      checkHeaderValues(dtContainer, '40', '0\.025');
     });
   });
 
   describe("TableDisplay(pandas DataFrame)", function() {
     it('TableDisplay should display table from pandas dataFrame', function () {
       cellIndex += 1;
+      browser.log('browser'); // reset log
       var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
       expect(tableHelper.getCellOfTableBody(dtContainer, 0, 1).getText()).toMatch('24');
       expect(tableHelper.getCellOfTableBody(dtContainer, 1, 1).getText()).toMatch('36L');
+    });
+
+    it('Table have index column menu', function () {
+      var dtContainer = beakerxPO.getDtContainerByIndex(cellIndex);
+      expect(beakerxPO.getTableIndexMenu(dtContainer)).not.toBe(null);
+    });
+
+    it("Log doesn't have 'SEVERE' level errors. ", function () {
+      beakerxPO.checkBrowserLogError('SEVERE');
+    });
+  });
+
+  describe("Use index in pandas DataFrame. ", function() {
+    it('Table have index column menu. ', function () {
+      cellIndex += 1;
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      expect(beakerxPO.getTableIndexMenu(dtContainer)).not.toBe(null);
+    });
+  });
+
+  describe("Pandas read csv with index_col parameter. ", function() {
+    it('Should display table. ', function () {
+      cellIndex += 1;
+      browser.log('browser'); // reset log
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      expect(tableHelper.getAllRowsOfTableBody(dtContainer)[0].getText()).toMatch(/2.*b/);
+    });
+
+    it("Log doesn't have 'SEVERE' level errors. ", function () {
+      beakerxPO.checkBrowserLogError('SEVERE');
     });
   });
 

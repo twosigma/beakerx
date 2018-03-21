@@ -43,6 +43,7 @@ cmdclass['js'] = install_node_modules(
 )
 cmdclass['java'] = run_gradle(cmd='build')
 cmdclass['javadoc'] = run_gradle(cmd='base:javadoc')
+
 setup_args = dict(
     name                = 'beakerx',
     description         = 'BeakerX: Beaker Extensions for Jupyter Notebook',

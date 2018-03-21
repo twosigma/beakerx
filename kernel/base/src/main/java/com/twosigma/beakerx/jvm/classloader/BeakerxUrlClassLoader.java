@@ -59,4 +59,8 @@ public class BeakerxUrlClassLoader extends URLClassLoader {
     }
     return urlList;
   }
+
+  public Class<?> parseClass(String clazz) {
+    return null;
+  }
 }

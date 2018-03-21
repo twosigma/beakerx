@@ -15,17 +15,13 @@
  */
 package com.twosigma.beakerx.groovy.evaluator.autocomplete;
 
-import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.autocomplete.JVMEvaluatorAutocompleteImportTest;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
-import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-public class GroovyEvaluatorAutocompleteImportTest {
+public class GroovyEvaluatorAutocompleteImportTest extends JVMEvaluatorAutocompleteImportTest {
 
   private static BaseEvaluator groovyEvaluator;
 
@@ -39,35 +35,8 @@ public class GroovyEvaluatorAutocompleteImportTest {
     groovyEvaluator.exit();
   }
 
-  @Test
-  public void autocompleteForImport_autocompleteIsNotEmpty() throws Exception {
-    String code = "import java.awt.C";
-    //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
-    //then
-    assertThat(autocomplete.getMatches()).isNotEmpty();
-    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 1);
+  @Override
+  protected BaseEvaluator evaluator() {
+    return groovyEvaluator;
   }
-
-  @Test
-  public void shouldImportBoolean() throws Exception {
-    String code = "import java.lang.Boo";
-    //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
-    //then
-    assertThat(autocomplete.getMatches()).contains("Boolean");
-    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 3);
-  }
-
-  @Test
-  public void shouldAutocompleteToJavaIo() throws Exception {
-    String code = "import java.io.";
-    //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
-    //then
-    assertThat(autocomplete.getMatches()).isNotEmpty();
-
-    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
-  }
-
 }

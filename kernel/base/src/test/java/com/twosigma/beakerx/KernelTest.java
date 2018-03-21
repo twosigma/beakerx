@@ -20,6 +20,7 @@ import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorManager;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.handler.Handler;
+import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.AddImportStatus;
 import com.twosigma.beakerx.kernel.Classpath;
@@ -341,6 +342,11 @@ public class KernelTest implements KernelFunctionality {
   @Override
   public AutocompleteResult autocomplete(String code, int cursorPos) {
     return this.evaluatorManager.autocomplete(code, cursorPos);
+  }
+
+  @Override
+  public InspectResult inspect(String code, int cursorPos){
+    return this.evaluatorManager.inspect(code, cursorPos);
   }
 
   @Override

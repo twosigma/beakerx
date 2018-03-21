@@ -18,7 +18,6 @@ package com.twosigma.beakerx.groovy.evaluator.autocomplete;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
-import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -101,7 +100,7 @@ public class GroovyEvaluatorAutocompleteTest {
 
   @Test
   public void shouldReturnResultEqualToImport() throws Exception {
-    String code = "im";
+    String code = "imp";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
@@ -119,7 +118,7 @@ public class GroovyEvaluatorAutocompleteTest {
 
   @Test
   public void shouldReturnResultEqualToParamInt() throws Exception {
-    String code = "def paramInt = 10\n" +
+    String code = "int paramInt = 10\n" +
             "println par";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());

@@ -14,14 +14,28 @@
  *  limitations under the License.
  */
 
-export default interface IJVMOptions extends IDefaultJVMOptions {
-  other: IOtherJVMOptions;
-  properties: IPropertiesJVMOptions;
-}
+package com.twosigma.beakerx.doclet;
 
-export interface IDefaultJVMOptions {
-  heap_GB: number;
-}
+public class MethodInspect {
+    String methodName;
+    String javadoc;
+    String signature;
 
-export interface IOtherJVMOptions extends Array<any> {}
-export interface IPropertiesJVMOptions extends Array<{ name: string; value: string; }> {}
+    public MethodInspect(String methodName, String javadoc, String signature) {
+        this.methodName = methodName;
+        this.javadoc = javadoc;
+        this.signature = signature;
+    }
+
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public String getJavadoc() {
+        return javadoc;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+}

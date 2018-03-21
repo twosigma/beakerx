@@ -15,10 +15,12 @@
  */
 
 var widgets = require('./widgets');
+var BeakerXApi = require('./tree/Utils/BeakerXApi').default;
 var _ = require('underscore');
 var $ = require('jquery');
 
 var DataGridScope = require('./tableDisplay/dataGrid').DataGridScope;
+var TableScope = require('./tableDisplay/tableScope');
 
 require('datatables.net-dt/css/jquery.dataTables.css');
 require('datatables.net-colreorder-dt/css/colReorder.dataTables.css');
@@ -87,23 +89,17 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
   },
 
   initTableDisplay: function(data) {
-    this._currentScope = new DataGridScope({
-      element: this.el,
-      data: data,
-      widgetModel: this.model,
-      widgetView: this
+    var baseUrl = (Jupyter.notebook_list || Jupyter.notebook).base_url;
+    var api = new BeakerXApi(baseUrl);
+    var self = this;
+
+    api.loadSettings().then(function(settings) {
+      if (!settings || !settings.ui_options || !settings.ui_options.use_data_grid) {
+        self.initDatatablesTable(data);
+      } else {
+        self.initDataGridTable(data);
+      }
     });
-
-    this._currentScope.render();
-
-
-    // this._currentScope.setWidgetModel(this.model);
-    // this._currentScope.setModelData(data);
-    // this._currentScope.setElement(tmplElement.children('.dtcontainer'));
-    // this._currentScope.enableJupyterKeyHandler();
-    // this._currentScope.run();
-    // this._currentScope.initColumLimitModal();
-    // this._currentScope.setWidgetView(this);
   },
 
   showWarning: function(data) {
@@ -115,6 +111,33 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
       'The first 10000 rows are displayed as a preview.</p></div>';
     var tmplElement = $(tmpl);
     tmplElement.appendTo(this.$el);
+  },
+
+  initDataGridTable: function(data) {
+    this._currentScope = new DataGridScope({
+      element: this.el,
+      data: data,
+      widgetModel: this.model,
+      widgetView: this
+    });
+
+    this._currentScope.render();
+  },
+
+  initDatatablesTable: function(data) {
+    this._currentScope = new TableScope('wrap_'+this.model.model_id);
+    var tmpl = this._currentScope.buildTemplate();
+    var tmplElement = $(tmpl);
+
+    tmplElement.appendTo(this.$el);
+
+    this._currentScope.setWidgetModel(this.model);
+    this._currentScope.setModelData(data);
+    this._currentScope.setElement(tmplElement.children('.dtcontainer'));
+    this._currentScope.enableJupyterKeyHandler();
+    this._currentScope.run();
+    this._currentScope.initColumLimitModal();
+    this._currentScope.setWidgetView(this);
   }
 
 });

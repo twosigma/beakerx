@@ -14,11 +14,14 @@
  *  limitations under the License.
  */
 
-export default interface IUIOptions {
-  auto_close: boolean;
-  improve_fonts: boolean;
-  wide_cells: boolean;
-  show_publication: boolean;
-  auto_save: boolean;
-  use_data_grid: boolean;
+export default interface IJVMOptions extends IDefaultJVMOptions {
+  other: IOtherJVMOptions;
+  properties: IPropertiesJVMOptions;
 }
+
+export interface IDefaultJVMOptions {
+  heap_GB: number;
+}
+
+export interface IOtherJVMOptions extends Array<any> {}
+export interface IPropertiesJVMOptions extends Array<{ name: string; value: string; }> {}

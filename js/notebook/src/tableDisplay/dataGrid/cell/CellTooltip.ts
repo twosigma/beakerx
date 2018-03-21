@@ -25,7 +25,7 @@ export default class CellTooltip {
     this.node.style.position = 'absolute';
     this.node.style.visibility = 'visible';
     this.node.innerText = text;
-    this.node.classList.add('bko-tooltip');
+    this.node.classList.add('p-DataGrid-tooltip');
   }
 
   show(x: number, y: number): void {

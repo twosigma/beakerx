@@ -108,7 +108,7 @@ export const selectInitialColumnPositions = createSelector(
 export const selectRenderer = createSelector(
   [selectRendererForColumn, selectRendererForType],
   (columnRenderer, typeRenderer) => {
-    if (columnRenderer) {
+    if (columnRenderer || columnRenderer === null) {
       return columnRenderer;
     }
 

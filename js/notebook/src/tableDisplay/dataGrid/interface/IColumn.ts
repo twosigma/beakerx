@@ -53,4 +53,5 @@ export interface IColumnState {
   filter: string|null,
   position: number,
   width?: number
+  renderer?: number
 }

@@ -43,7 +43,7 @@ import {
   selectInitialColumnAlignment,
   selectStringFormatForColumn,
   selectFormatForTimes,
-  selectStringFormatForType
+  selectStringFormatForType, selectRenderer
 } from "../model/selectors";
 import {
   UPDATE_COLUMN_DISPLAY_TYPE,
@@ -54,6 +54,8 @@ import {
 } from "./reducer";
 import {BeakerxDataStore} from "../store/dataStore";
 import {COLUMN_TYPES, SORT_ORDER} from "./enums";
+import {UPDATE_COLUMN_RENDERER} from "../model/reducer";
+import {RENDERER_TYPE} from "../interface/IRenderer";
 
 export default class DataGridColumn {
   index: number;
@@ -266,6 +268,10 @@ export default class DataGridColumn {
     return selectColumnPosition(this.store.state, this);
   }
 
+  getRenderer() {
+    return selectRenderer(this.store.state, this);
+  }
+
   getHighlighter(highlighterType: HIGHLIGHTER_TYPE) {
     return this.dataGrid.highlighterManager.getColumnHighlighters(this, highlighterType);
   }
@@ -348,6 +354,7 @@ export default class DataGridColumn {
     ));
     this.setAlignment(selectInitialColumnAlignment(this.store.state, this.getDataType(), name));
     this.toggleVisibility(selectColumnsVisible(this.store.state)[this.name] !== false);
+    this.toggleDataBarsRenderer(false);
     this.resetHighlighters();
     this.resetFilter();
     this.move(this.index);
@@ -359,6 +366,17 @@ export default class DataGridColumn {
   destroy() {
     this.menu.destroy();
     this.dataTypeTooltip.hide();
+  }
+
+  toggleDataBarsRenderer(enable?: boolean) {
+    const renderer = this.getRenderer();
+    const enabled = enable === false || renderer && renderer.type === RENDERER_TYPE.DataBars;
+
+    this.store.dispatch(new DataGridColumnAction(UPDATE_COLUMN_RENDERER, {
+      columnType: this.type,
+      columnName: this.name,
+      value: enabled ? null : { type: RENDERER_TYPE.DataBars, includeText: true }
+    }));
   }
 
   private updateColumnFilter(filter: string) {

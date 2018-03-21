@@ -87,8 +87,8 @@ export function createColumnMenuItems(column: DataGridColumn): MenuItem[] {
     {
       title: 'Data Bars',
       shortcut: 'B',
-      isChecked: (column) => {},
-      action: (column) => {}
+      isChecked: (column) => !!column.getRenderer(),
+      action: (column) => column.toggleDataBarsRenderer()
     },
     {
       title: 'Color by unique',

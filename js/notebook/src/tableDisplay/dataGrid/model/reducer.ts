@@ -16,16 +16,27 @@
 
 import {Reducer} from "@phosphor/datastore";
 import IDataModelState from "../interface/IDataGridModelState";
-import DataGridAction from "../store/DataGridAction";
+import DataGridAction, {DataGridColumnAction} from "../store/DataGridAction";
 
 export const UPDATE_MODEL_DATA = 'UPDATE_MODEL_DATA';
+export const UPDATE_COLUMN_RENDERER = 'UPDATE_COLUMN_RENDERER';
 
 const dataGridModelReducer: Reducer<IDataModelState> = (
   state: IDataModelState,
-  action: DataGridAction
+  action: DataGridAction|DataGridColumnAction
 ): IDataModelState => {
-  if (action.type === UPDATE_MODEL_DATA) {
-    return { ...state, ...action.payload };
+  switch(action.type) {
+    case UPDATE_MODEL_DATA:
+      return { ...state, ...action.payload };
+
+    case UPDATE_COLUMN_RENDERER:
+      return {
+        ...state,
+        rendererForColumn: {
+          ...state.rendererForColumn,
+          [action.payload.columnName]: action.payload.value
+        }
+      }
   }
 
   return state;

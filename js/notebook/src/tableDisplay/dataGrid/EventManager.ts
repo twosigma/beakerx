@@ -173,6 +173,9 @@ export default class EventManager {
       case 'U':
         column && column.toggleHighlighter(HIGHLIGHTER_TYPE.uniqueEntries);
         break;
+      case 'B':
+        column && column.toggleDataBarsRenderer();
+        break;
     }
   }
 

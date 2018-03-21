@@ -45,6 +45,7 @@ export class DataGridColumnAction extends DataGridAction {
   payload: {
     columnType: COLUMN_TYPES,
     columnIndex: number,
+    columnName?: string,
     hasIndex?: boolean,
     value: any
   };

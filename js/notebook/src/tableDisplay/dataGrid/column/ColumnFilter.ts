@@ -152,8 +152,7 @@ export default class ColumnFilter {
 
     if (this.clearIcon) {
       this.clearIcon.addEventListener('mousedown', () => {
-        this.column.filter('');
-        this.filterInput.value = '';
+        this.column.columnManager.resetFilters();
       });
     }
 

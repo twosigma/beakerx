@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import * as _ from 'underscore';
+import _ from 'underscore';
 import * as $ from 'jquery';
 
 export default function plotModal(PlotScope: any) {

@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 import static com.twosigma.beakerx.evaluator.InternalVariable.getParentHeader;
 import static com.twosigma.beakerx.kernel.comm.Comm.DATA;
+import static com.twosigma.beakerx.kernel.comm.Comm.METADATA;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.DISPLAY_DATA;
 import static java.util.Collections.singletonList;
 
@@ -44,6 +45,7 @@ public class Display {
     HashMap<String, Object> data = new HashMap<>();
     result.forEach(x -> data.put(x.getMime().asString(), x.getData()));
     content.put(DATA, data);
+    content.put(METADATA,new HashMap<>());
     Message message = Comm.messageMessage(DISPLAY_DATA, Comm.Buffer.EMPTY, content, getParentHeader());
     KernelManager.get().publish(singletonList(message));
   }

@@ -15,9 +15,11 @@
  */
 
 var widgets = require('./widgets');
+var BeakerXApi = require('./tree/Utils/BeakerXApi').default;
 var _ = require('underscore');
 var $ = require('jquery');
 
+var DataGridScope = require('./tableDisplay/dataGrid').DataGridScope;
 var TableScope = require('./tableDisplay/tableScope');
 
 require('datatables.net-dt/css/jquery.dataTables.css');
@@ -87,6 +89,42 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
   },
 
   initTableDisplay: function(data) {
+    var baseUrl = (Jupyter.notebook_list || Jupyter.notebook).base_url;
+    var api = new BeakerXApi(baseUrl);
+    var self = this;
+
+    api.loadSettings().then(function(settings) {
+      if (!settings || !settings.ui_options || !settings.ui_options.use_data_grid) {
+        self.initDatatablesTable(data);
+      } else {
+        self.initDataGridTable(data);
+      }
+    });
+  },
+
+  showWarning: function(data) {
+    var rowLength = data.rowLength;
+    var rowLimit = data.rowLimit;
+    var tmpl = '<div id="' + this.wrapperId + '">' +
+      '<p class="ansired">Note: table is too big to display. ' +
+      'The limit is ' + rowLimit + ' rows, but this table has ' + rowLength + ' rows. ' +
+      'The first 10000 rows are displayed as a preview.</p></div>';
+    var tmplElement = $(tmpl);
+    tmplElement.appendTo(this.$el);
+  },
+
+  initDataGridTable: function(data) {
+    this._currentScope = new DataGridScope({
+      element: this.el,
+      data: data,
+      widgetModel: this.model,
+      widgetView: this
+    });
+
+    this._currentScope.render();
+  },
+
+  initDatatablesTable: function(data) {
     this._currentScope = new TableScope('wrap_'+this.model.model_id);
     var tmpl = this._currentScope.buildTemplate();
     var tmplElement = $(tmpl);
@@ -100,18 +138,6 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
     this._currentScope.run();
     this._currentScope.initColumLimitModal();
     this._currentScope.setWidgetView(this);
-  },
-
-  showWarning: function(data) {
-    var rowLength = data.rowLength;
-    var columnLength = data.columnNames.length;
-    var rowLimit = data.rowLimit;
-    var tmpl = '<div id="' + this.wrapperId + '">' +
-      '<p class="ansired">Note: table is too big to display. ' +
-      'The limit is ' + rowLimit + ' rows, but this table has ' + rowLength + ' rows. ' +
-      'The first 1000 rows are displayed as a preview.</p></div>';
-    var tmplElement = $(tmpl);
-    tmplElement.appendTo(this.$el);
   }
 
 });

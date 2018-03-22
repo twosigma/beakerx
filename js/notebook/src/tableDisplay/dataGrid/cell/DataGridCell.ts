@@ -20,6 +20,7 @@ import {BeakerxDataGrid} from "../BeakerxDataGrid";
 import {DataGridHelpers} from "../dataGridHelpers";
 import findSectionIndex = DataGridHelpers.findSectionIndex;
 import {COLUMN_TYPES} from "../column/enums";
+import ICellConfig = CellRenderer.ICellConfig;
 
 export default class DataGridCell {
   static isHeaderCell(config: CellRenderer.ICellConfig) {
@@ -49,7 +50,9 @@ export default class DataGridCell {
           delta: column.delta,
           type: COLUMN_TYPES.index,
           offset: dataGrid.getColumnOffset(column.index, COLUMN_TYPES.index),
-          offsetTop: dataGrid.headerHeight
+          offsetTop: dataGrid.headerHeight,
+          region: 'corner-header',
+          value: dataGrid.model.data('corner-header', 0, column.index)
         };
       }
 
@@ -65,21 +68,35 @@ export default class DataGridCell {
       pos += dataGrid.headerWidth;
     }
 
-    let row: { index: number, delta: number } | null = DataGridCell.findHoveredRowIndex(dataGrid, y);
+    const row: { index: number, delta: number } | null = DataGridCell.findHoveredRowIndex(dataGrid, y);
+    const rowIndex = row ? row.index : 0;
+    const region = columnType === COLUMN_TYPES.index ? 'row-header' : 'body';
+
     column = findSectionIndex(section, pos);
 
     if (column) {
       return {
+        region,
         column: column.index,
         delta: column.delta,
-        row: row ? row.index : 0,
+        row: rowIndex,
         type: columnType,
         offset: dataGrid.getColumnOffset(column.index, columnType),
-        offsetTop: row ? dataGrid.getRowOffset(row.index) + dataGrid.headerHeight : 0
+        offsetTop: row ? dataGrid.getRowOffset(row.index) + dataGrid.headerHeight : 0,
+        value: dataGrid.model.data(region, rowIndex, column.index),
       };
     }
 
     return null;
+  }
+
+  static isCellHovered(hoveredCell: ICellData, comparedCell: ICellData|ICellConfig): boolean {
+    return (
+      hoveredCell
+      && hoveredCell.row === comparedCell.row
+      && hoveredCell.column === comparedCell.column
+      && ((comparedCell.region === 'column-header' || comparedCell.region === 'body') && hoveredCell.type === COLUMN_TYPES.body)
+    )
   }
 
   static findHoveredRowIndex(dataGrid: BeakerxDataGrid, y: number) {

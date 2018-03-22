@@ -25,6 +25,7 @@ import {ICellData} from "./interface/ICell";
 import {BeakerxDataStore} from "./store/dataStore";
 import {selectDoubleClickTag, selectHasDoubleClickAction} from "./model/selectors";
 import {COLUMN_TYPES} from "./column/enums";
+import CellManager from "./cell/CellManager";
 
 export default class EventManager {
   dataGrid: BeakerxDataGrid;
@@ -38,16 +39,20 @@ export default class EventManager {
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleDoubleClick = this.handleDoubleClick.bind(this);
     this.handleHeaderClick = this.handleHeaderClick.bind(this);
+    this.handleBodyClick = this.handleBodyClick.bind(this);
+    this.handleClick = this.handleClick.bind(this);
     this.handleCellHover = throttle<MouseEvent, void>(this.handleCellHover.bind(this), 250);
 
     this.dataGrid.node.removeEventListener('mouseout', this.handleMouseOut);
     this.dataGrid.node.addEventListener('mouseout', this.handleMouseOut);
     this.dataGrid.node.removeEventListener('dblclick', this.handleDoubleClick);
     this.dataGrid.node.addEventListener('dblclick', this.handleDoubleClick);
-    this.dataGrid.node.removeEventListener('mouseup', this.handleHeaderClick);
-    this.dataGrid.node.addEventListener('mouseup', this.handleHeaderClick);
+    this.dataGrid.node.removeEventListener('mouseup', this.handleClick);
+    this.dataGrid.node.addEventListener('mouseup', this.handleClick);
     document.removeEventListener('keydown', this.handleKeyDown);
     document.addEventListener('keydown', this.handleKeyDown);
+
+    this.dataGrid.cellSelectionManager.bindEvents();
   }
 
   handleEvent(event: Event, parentHandler: Function): void {
@@ -68,6 +73,26 @@ export default class EventManager {
 
   destroy() {
     document.removeEventListener('keydown', this.handleKeyDown);
+  }
+
+  private handleClick(event: MouseEvent) {
+    this.handleHeaderClick(event);
+    this.handleBodyClick(event);
+  }
+
+  private handleBodyClick(event: MouseEvent) {
+    if (this.dataGrid.isOverHeader(event)) {
+      return;
+    }
+
+    const cellData = this.dataGrid.getCellData(event.clientX, event.clientY);
+    const hoveredCellData = this.dataGrid.cellManager.hoveredCellData;
+
+    if (!cellData || !hoveredCellData || !CellManager.cellsEqual(cellData, hoveredCellData)) {
+      return;
+    }
+
+    window.open(hoveredCellData.value);
   }
 
   private handleCellHover(event: MouseEvent): void {

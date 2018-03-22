@@ -23,7 +23,8 @@ const cellDataMock: ICellData = {
   type: COLUMN_TYPES.body,
   offset: 0,
   offsetTop: 0,
-  delta: 0
+  delta: 0,
+  value: 1
 };
 
 export default cellDataMock;

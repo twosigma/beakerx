@@ -35,8 +35,6 @@ export default class CellSelectionManager {
   constructor(dataGrid: BeakerxDataGrid) {
     this.enabled = false;
     this.dataGrid = dataGrid;
-
-    this.bindEvents();
   }
 
   setStartCell(cellData: ICellData) {
@@ -133,7 +131,7 @@ export default class CellSelectionManager {
     return this.isSelected(config) ? this.selectedCellColor : '';
   }
 
-  private bindEvents() {
+  bindEvents() {
     this.dataGrid.node.addEventListener('mouseup', this.handleMouseUp.bind(this));
     this.dataGrid.node.addEventListener('mousedown', this.handleMouseDown.bind(this));
     this.dataGrid.node.addEventListener('mousemove', this.handleBodyCellHover.bind(this));

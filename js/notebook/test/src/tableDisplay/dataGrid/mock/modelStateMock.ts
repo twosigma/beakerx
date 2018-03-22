@@ -37,7 +37,6 @@ let modelStateMock: IDataGridModelState = {
   contextMenuItems: [],
   contextMenuTags: {},
   doubleClickTag: null,
-  formatForTimes: null,
   headersVertical: false,
   rendererForColumn: {},
   rendererForType: {},

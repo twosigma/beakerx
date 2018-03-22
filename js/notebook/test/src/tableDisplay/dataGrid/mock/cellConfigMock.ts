@@ -21,8 +21,8 @@ const cellConfigMock: CellRenderer.ICellConfig = {
   value: 1,
   column: 0,
   row: 0,
-  height: 0,
-  width: 0,
+  height: 24,
+  width: 64,
   x: 0,
   y: 0,
   metadata: {}

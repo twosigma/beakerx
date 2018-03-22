@@ -18,6 +18,8 @@ import {SectionList} from "@phosphor/datagrid/lib/sectionlist";
 import {DEFAULT_DATA_FONT_SIZE} from "./style/dataGridStyle";
 
 export namespace DataGridHelpers {
+  const urlRegex = /((https?|ftp|file):\/\/|\/)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/i;
+
   const htmlCharactersReplacementMap = {
     '"': '&quot;',
     '&': '&amp;',
@@ -133,5 +135,9 @@ export namespace DataGridHelpers {
         lastRan = Date.now();
       }, limit - (Date.now() - lastRan))
     }
+  }
+
+  export function isUrl(url: string) {
+    return urlRegex.test(String(url));
   }
 }

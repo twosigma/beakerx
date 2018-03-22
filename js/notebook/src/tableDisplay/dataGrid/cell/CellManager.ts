@@ -19,12 +19,41 @@ import * as bkUtils from '../../../shared/bkUtils';
 import {IRangeCells} from "./CellSelectionManager";
 import {CellRenderer, DataModel} from "@phosphor/datagrid";
 import {COLUMN_TYPES} from "../column/enums";
+import {ICellData} from "../interface/ICell";
+import {DataGridHelpers} from "../dataGridHelpers";
+import throttle = DataGridHelpers.throttle;
+import isUrl = DataGridHelpers.isUrl;
 
 export default class CellManager {
   dataGrid: BeakerxDataGrid;
+  hoveredCellData: ICellData;
+
+  static cellsEqual(cellData: ICellData, secondCellData: ICellData): boolean {
+    return (
+      cellData && secondCellData
+      && cellData.row === secondCellData.row
+      && cellData.column === secondCellData.column
+      && cellData.type === secondCellData.type
+    );
+  }
 
   constructor(dataGrid: BeakerxDataGrid) {
     this.dataGrid = dataGrid;
+
+    this.dataGrid.cellHovered.connect(throttle(this.handleCellHovered, 100), this);
+  }
+
+  repaintRow(cellData) {
+    if(!cellData || isNaN(cellData.offset) || isNaN(cellData.offsetTop)) {
+      return;
+    }
+
+    this.dataGrid.repaint(
+      cellData.offset,
+      cellData.offsetTop,
+      this.dataGrid.bodyWidth,
+      this.dataGrid.baseRowSize
+    );
   }
 
   getSelectedCells() {
@@ -156,6 +185,32 @@ export default class CellManager {
       height: 0,
       ...options
     }
+  }
+
+  private handleCellHovered(sender: BeakerxDataGrid, cellData: ICellData) {
+    if (CellManager.cellsEqual(cellData, this.hoveredCellData)) {
+      return;
+    }
+
+    let value = cellData && cellData.value;
+    let oldCellData = null;
+
+    if (this.hoveredCellData) {
+      oldCellData = { ...this.hoveredCellData };
+    }
+
+    if (!isUrl(value)) {
+      this.hoveredCellData = null;
+      this.repaintRow(oldCellData);
+      this.dataGrid['_canvas'].style.cursor = 'auto';
+
+      return;
+    }
+
+    this.hoveredCellData = cellData;
+    this.repaintRow(oldCellData);
+    this.repaintRow(cellData);
+    this.dataGrid['_canvas'].style.cursor = 'pointer';
   }
 
   private getCSVFromCells(selectedOnly: boolean) {

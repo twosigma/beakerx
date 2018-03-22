@@ -33,6 +33,9 @@ import {
   selectHeadersVertical, selectRenderer
 } from "../model/selectors";
 import IRenderer, {RENDERER_TYPE} from "../interface/IRenderer";
+import {DataGridHelpers} from "../dataGridHelpers";
+import getStringSize = DataGridHelpers.getStringSize;
+import isUrl = DataGridHelpers.isUrl;
 
 export default class BeakerxCellRenderer extends TextRenderer {
   store: BeakerxDataStore;
@@ -137,6 +140,41 @@ export default class BeakerxCellRenderer extends TextRenderer {
         config.height - 1
       );
     }
+  }
+
+  drawTextUnderline(gc: GraphicsContext, textConfig, config) {
+    let { text, textX, textY, color } = textConfig;
+
+    if (!isUrl(text)) {
+      return;
+    }
+
+    let underlineEndX: number;
+    let textWidth: number = getStringSize(text, selectDataFontSize(this.store.state)).width - 8;
+    let hAlign = CellRenderer.resolveOption(this.horizontalAlignment, config);
+
+    // Compute the X position for the underline.
+    switch (hAlign) {
+      case 'left':
+        underlineEndX = Math.round(textX + textWidth);
+        break;
+      case 'center':
+        textX = config.x + config.width / 2 - textWidth/ 2;
+        underlineEndX = Math.round(textX + textWidth);
+        break;
+      case 'right':
+        underlineEndX = Math.round(textX - textWidth);
+        break;
+      default:
+        throw 'unreachable';
+    }
+
+    gc.beginPath();
+    gc.moveTo(textX, textY - 0.5);
+    gc.lineTo(underlineEndX, textY - 0.5);
+    gc.strokeStyle = color;
+    gc.lineWidth = 1.0;
+    gc.stroke();
   }
 
   drawText(gc: GraphicsContext, config: CellRenderer.ICellConfig): void {
@@ -250,6 +288,10 @@ export default class BeakerxCellRenderer extends TextRenderer {
 
     gc.font = font;
     gc.fillStyle = color;
+
+    if (DataGridCell.isCellHovered(this.dataGrid.cellManager.hoveredCellData, config)) {
+      this.drawTextUnderline(gc, { text, textX, textY, color }, config);
+    }
 
     // Draw the text for the cell.
     gc.fillText(text, textX, textY);

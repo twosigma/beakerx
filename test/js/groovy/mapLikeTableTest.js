@@ -31,19 +31,17 @@ describe('(Groovy) Testing Map Like Tables', function () {
     beakerxPO.closeAndHaltNotebook();
   });
 
-  function checkRowValues(dtContainer, rowIndex, cell1, cell2, cell3) {
-    expect(tableHelper.getCellOfTableBody(dtContainer, rowIndex, 0).getText()).toMatch(cell1);
-    expect(tableHelper.getCellOfTableBody(dtContainer, rowIndex, 1).getText()).toMatch(cell2);
-    expect(tableHelper.getCellOfTableBody(dtContainer, rowIndex, 2).getText()).toMatch(cell3);
+  function checkHeaderValues(dtContainer, headerCellIndex, value) {
+    var headers = tableHelper.getAllCellsOfTableHeader(dtContainer);
+
+    expect(headers[headerCellIndex].getText()).toMatch(value);
   }
 
-  function checkHeaderValues(dtContainer, value1, value2) {
-    expect(tableHelper.getCellOfTableHeader(dtContainer, 1).getText()).toMatch(value1);
-    expect(tableHelper.getCellOfTableHeader(dtContainer, 2).getText()).toMatch(value2);
-  }
+  function checkRowValues(dtContainer, rowCellIndex, value) {
+    var rows = tableHelper.getAllRowsOfTableBody(dtContainer
+    );
 
-  function checkTableRows(dtContainer, lenght) {
-    expect(tableHelper.getAllRowsOfTableBody(dtContainer).length).toEqual(lenght);
+    expect(rows[rowCellIndex].getText()).toBe(value);
   }
 
   var cellIndex;
@@ -53,53 +51,85 @@ describe('(Groovy) Testing Map Like Tables', function () {
       cellIndex = 0;
       var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
 
-      checkHeaderValues(dtContainer, 'Key', 'Value');
-      checkRowValues(dtContainer, 0, '0', 'x', '1');
-      checkRowValues(dtContainer, 1, '1', 'y', '2');
+      checkHeaderValues(dtContainer, 1, 'Key');
+      checkHeaderValues(dtContainer, 2, 'Value');
+
+      checkRowValues(dtContainer, 0, '0 x 1');
+      checkRowValues(dtContainer, 1, '1 y 2');
     });
 
     it('An ArrayList is rendered correctly', function () {
       cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
 
-      checkHeaderValues(dtContainer, 'x', 'y');
-      checkRowValues(dtContainer, 0, '0', '1', '2');
-      checkRowValues(dtContainer, 1, '1', '3', '4');
+      checkHeaderValues(dtContainer, 1, 'x');
+      checkHeaderValues(dtContainer, 2, 'y');
+
+      checkRowValues(dtContainer, 0, '0 1 2');
+      checkRowValues(dtContainer, 1, '1 3 4');
     });
 
     it('A Map is rendered correctly', function () {
       cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
 
-      checkHeaderValues(dtContainer, 'x', 'y');
-      checkRowValues(dtContainer, 0, '0', '1', '2');
-      checkRowValues(dtContainer, 1, '1', '3', '4');
+      checkHeaderValues(dtContainer, 1, 'x');
+      checkHeaderValues(dtContainer, 2, 'y');
+
+      checkRowValues(dtContainer, 0, '0 1 2');
+      checkRowValues(dtContainer, 1, '1 3 4');
     });
 
     it('A Map is rendered correctly', function () {
       cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
 
-      checkHeaderValues(dtContainer, 'test', 'test2');
-      checkRowValues(dtContainer, 0, '0', '1', '2');
-      checkRowValues(dtContainer, 1, '1', '2', '4');
-      checkRowValues(dtContainer, 2, '2', '3', '6');
+      checkHeaderValues(dtContainer, 1, 'test');
+      checkHeaderValues(dtContainer, 2, 'test2');
+
+      checkRowValues(dtContainer, 0, '0 1 2');
+      checkRowValues(dtContainer, 1, '1 2 4');
+      checkRowValues(dtContainer, 2, '2 3 6');
     });
 
     it('A List inside a List is rendered correctly', function () {
       cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
 
-      checkHeaderValues(dtContainer, 'Key', 'Value');
-      checkRowValues(dtContainer, 0, '0', '1', '[[1,2,3],[2,3,4]]');
+      checkHeaderValues(dtContainer, 1, 'Key');
+      checkHeaderValues(dtContainer, 2, 'Value');
+
+      checkRowValues(dtContainer, 0, '0 1 [[1,2,3],[2,3,4]]');
     });
 
     it('A Map inside a List is rendered correctly', function () {
       cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
 
-      checkHeaderValues(dtContainer, 'Key', 'Value');
-      checkRowValues(dtContainer, 0, '0', '1', '{"num1":1,"num2":2}');
+      checkHeaderValues(dtContainer, 1, 'Key');
+      checkHeaderValues(dtContainer, 2, 'Value');
+
+      checkRowValues(dtContainer, 0, '0 1 {"num1":1,"num2":2}');
+    });
+
+    it('Display a 3-column table', function () {
+      cellIndex += 1;
+      dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+
+      checkHeaderValues(dtContainer, 1, 'col1');
+      checkHeaderValues(dtContainer, 2, 'col2');
+      checkHeaderValues(dtContainer, 3, 'col3');
+
+      checkRowValues(dtContainer, 0, '0 This & that This / that This > that');
+
+    });
+
+    it('Display object is rendered correctly', function () {
+      cellIndex += 1;
+      dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+
+      checkHeaderValues(dtContainer, 1, 'myclass');
+      checkRowValues(dtContainer, 0, '0 {"value":"print this"}');
     });
   });
 });

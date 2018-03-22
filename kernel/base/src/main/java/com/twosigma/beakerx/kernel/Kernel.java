@@ -39,6 +39,7 @@ import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
 import com.twosigma.beakerx.message.Message;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -216,16 +217,6 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   @Override
-  public Repos getRepos() {
-    return this.evaluatorManager.getRepos();
-  }
-
-  @Override
-  public String addRepo(String name, String url) {
-    return this.evaluatorManager.addRepo(name, url);
-  }
-
-  @Override
   public Imports getImports() {
     return this.evaluatorManager.getImports();
   }
@@ -257,7 +248,7 @@ public abstract class Kernel implements KernelFunctionality {
 
   @Override
   public List<MagicCommandType> getMagicCommandTypes() {
-    return magicCommandTypes;
+    return new ArrayList<>(magicCommandTypes);
   }
 
   private void configureMagicCommands() {

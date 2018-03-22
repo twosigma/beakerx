@@ -43,6 +43,8 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import static com.twosigma.beakerx.kernel.magic.command.functionality.ClassPathAddMvnCellMagicCommand.CLASSPATH_ADD_MVN_CELL;
+
 public class ClasspathAddMvnDepsCellMagicCommandTest {
 
 
@@ -68,7 +70,7 @@ public class ClasspathAddMvnDepsCellMagicCommandTest {
   @Test
   public void handleAddDeps() throws Exception {
     //given
-    String allCode = "%%classpath add mvn\n"
+    String allCode = CLASSPATH_ADD_MVN_CELL + "\n"
             + "org.slf4j slf4j-api 1.7.5\n"
             + "com.google.code.gson gson 2.6.2";
     List<String> expected = Arrays.asList("slf4j-api-1.7.5.jar", "gson-2.6.2.jar");
@@ -77,7 +79,7 @@ public class ClasspathAddMvnDepsCellMagicCommandTest {
 
   @Test
   public void handleAddDepsMixedSyntax() throws Exception {
-    String allCode = "%%classpath add mvn\n"
+    String allCode = CLASSPATH_ADD_MVN_CELL + "\n"
             + "org.slf4j slf4j-api 1.7.5\n"
             + "com.google.code.gson:gson:2.6.2";
     List<String> expected = Arrays.asList("slf4j-api-1.7.5.jar", "gson-2.6.2.jar");

@@ -64,10 +64,6 @@ public interface Evaluator {
 
   Imports getImports();
 
-  Repos getRepos();
-
-  String addRepo(String name, String url);
-
   AddImportStatus addImport(ImportPath anImport);
 
   void removeImport(ImportPath anImport);

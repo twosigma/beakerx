@@ -17,6 +17,7 @@ package com.twosigma.beakerx.kernel.magic.command.functionality;
 
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandTypesFactory;
 import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver;
 import com.twosigma.beakerx.kernel.magic.command.PomFactory;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
@@ -72,7 +73,10 @@ public class ClassPathAddMvnCellMagicCommand extends ClasspathMagicCommand {
     if (!validateCommandLines(commandLines)) {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, MVN_CELL_FORMAT_ERROR_MESSAGE);
     }
-    commandParams.setRepos(kernel.getRepos().get());
+
+    ClasspathAddMvnMagicCommand mvnMagicCommand = MagicCommandTypesFactory.getClasspathAddMvnMagicCommand(kernel);
+    commandParams.setRepos(mvnMagicCommand.getRepos().get());
+
     List<MavenJarResolver.Dependency> dependencies =
             getDepsFromCommand(Arrays.copyOfRange(commandLines, 1, commandLines.length));
     MavenJarResolver mavenJarResolver = new MavenJarResolver(commandParams, pomFactory);

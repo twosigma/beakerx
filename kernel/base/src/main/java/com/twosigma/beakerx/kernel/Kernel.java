@@ -16,7 +16,6 @@
 package com.twosigma.beakerx.kernel;
 
 import static com.twosigma.beakerx.kernel.KernelSignalHandler.addSigIntHandler;
-import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
 import com.twosigma.beakerx.BeakerxDefaultDisplayers;
@@ -81,7 +80,7 @@ public abstract class Kernel implements KernelFunctionality {
     this.executionResultSender = new ExecutionResultSender(this);
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
     this.handlers = new KernelHandlers(this, getCommOpenHandler(this), getKernelInfoHandler(this));
-    configureMagicCommands();
+    createMagicCommands();
     DisplayerDataMapper.init();
     configureSignalHandler();
     initJvmRepr();
@@ -251,8 +250,12 @@ public abstract class Kernel implements KernelFunctionality {
     return new ArrayList<>(magicCommandTypes);
   }
 
-  private void configureMagicCommands() {
+  private void createMagicCommands() {
     this.magicCommandTypes = MagicCommandTypesFactory.createDefaults(this);
+    configureMagicCommands();
+  }
+
+  protected void configureMagicCommands() {
   }
 
   @Override

@@ -8,12 +8,7 @@
     <artifactId>magicCommandDownloader</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <repositories>
-        <repository>
-            <id>clojureRepo</id>
-            <url>https://clojars.org/repo</url>
-        </repository>
-    </repositories>
+    <repositories></repositories>
 
     <dependencies></dependencies>
 

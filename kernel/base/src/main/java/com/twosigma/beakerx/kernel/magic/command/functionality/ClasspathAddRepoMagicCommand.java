@@ -20,6 +20,7 @@ import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicComma
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandTypesFactory;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem.Status;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
@@ -48,7 +49,8 @@ public class ClasspathAddRepoMagicCommand implements MagicCommandFunctionality {
     String repoName = split[3];
     String urlName = split[4];
 
-    String result = kernel.addRepo(repoName, urlName);
+    ClasspathAddMvnMagicCommand mvnMagicCommand = MagicCommandTypesFactory.getClasspathAddMvnMagicCommand(kernel);
+    String result = mvnMagicCommand.addRepo(repoName, urlName);
     if (result.isEmpty()) {
       return new MagicCommandOutput(Status.OK);
     } else {
@@ -65,6 +67,6 @@ public class ClasspathAddRepoMagicCommand implements MagicCommandFunctionality {
   public boolean matchCommand(String command) {
     String[] commandParts = MagicCommandUtils.splitPath(command);
     return commandParts.length > 2 && commandParts[0].equals(CLASSPATH_PREFIX) &&
-      commandParts[1].equals(CONFIG) && commandParts[2].equals(RESOLVER);
+            commandParts[1].equals(CONFIG) && commandParts[2].equals(RESOLVER);
   }
 }

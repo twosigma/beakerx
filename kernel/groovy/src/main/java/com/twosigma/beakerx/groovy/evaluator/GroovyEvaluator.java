@@ -83,7 +83,6 @@ public class GroovyEvaluator extends BaseEvaluator {
     String cpp = createClasspath(classPath);
     cps = new GroovyClasspathScanner(cpp);
     gac = createGroovyAutocomplete(cps);
-    inspect = new Inspect();
     reloadClassloader();
     executorService.shutdown();
     executorService = Executors.newSingleThreadExecutor();

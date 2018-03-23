@@ -96,10 +96,6 @@ public class EvaluatorManager {
     return this.evaluator.getImports();
   }
 
-  public Repos getRepos() {
-    return this.evaluator.getRepos();
-  }
-
   public AddImportStatus addImport(ImportPath anImport) {
     return this.evaluator.addImport(anImport);
   }
@@ -114,10 +110,6 @@ public class EvaluatorManager {
 
   public Class<?> loadClass(String clazzName) throws ClassNotFoundException {
     return evaluator.loadClass(clazzName);
-  }
-
-  public String addRepo(String name, String url) {
-    return evaluator.addRepo(name, url);
   }
 
   public String getOutDir() {

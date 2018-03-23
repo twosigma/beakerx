@@ -173,6 +173,17 @@ function BeakerXPageObject() {
     return browser.$('div.bko-header-menu.bko-table-menu');
   };
 
+  this.checkBrowserLogError = function(log_level){
+    var i = 0;
+    var logMsgs = browser.log('browser').value;
+    while(i < logMsgs.length){
+      if(logMsgs[i].level == log_level){
+          expect(logMsgs[i].message).not.toMatch(/./);
+      }
+      i += 1;
+    }
+  };
+
 };
 
 module.exports = BeakerXPageObject;

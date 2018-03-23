@@ -16,81 +16,86 @@
 
 var PlotHelperObject = function () {
 
-  this.getPlotTitle = function(dtContainer){
+  this.getPlotTitle = function (dtContainer) {
     return dtContainer.$('#plotTitle');
   };
 
-  this.checkPlotTitle = function(dtContainer, textValue){
+  this.checkPlotTitle = function (dtContainer, textValue) {
     expect(this.getPlotTitle(dtContainer).getText()).toEqual(textValue);
   };
 
-  this.getXLabel = function(dtContainer){
+  this.getXLabel = function (dtContainer) {
     return dtContainer.$('#xlabel');
   };
 
-  this.checkXLabel = function(dtContainer, textValue){
+  this.checkXLabel = function (dtContainer, textValue) {
     expect(this.getXLabel(dtContainer).getText()).toEqual(textValue);
   };
 
-  this.getYLabel = function(dtContainer){
+  this.getYLabel = function (dtContainer) {
     return dtContainer.$('#ylabel');
   };
 
-  this.checkYLabel = function(dtContainer, textValue){
+  this.checkYLabel = function (dtContainer, textValue) {
     expect(this.getYLabel(dtContainer).getText()).toEqual(textValue);
   };
 
 
 
-  this.getAllGStemLines = function(svgElement, indexG){
+  this.getAllGStemLines = function (svgElement, indexG) {
     return svgElement.$('g#i' + indexG + '.plot-stem').$$('line.plot-resp.normal');
   };
 
-  this.getStemByGAndLineIndexes = function(svgElement, indexG, indexLine){
+  this.getStemByGAndLineIndexes = function (svgElement, indexG, indexLine) {
     return this.getAllGStemLines(svgElement, indexG)[indexLine];
   };
 
-  this.getAllGBarRects = function(svgElement, indexG){
+  this.getAllGBarRects = function (svgElement, indexG) {
     return svgElement.$('g#i' + indexG + '.plot-bar').$$('rect.plot-resp');
   };
 
-  this.getBarByGAndRectIndexes = function(svgElement, indexG, indexRect){
+  this.getBarByGAndRectIndexes = function (svgElement, indexG, indexRect) {
     return this.getAllGBarRects(svgElement, indexG)[indexRect];
   };
 
-  this.getGPointByGIndex = function(svgElement, indexG){
+  this.getGPointByGIndex = function (svgElement, indexG) {
     return svgElement.$('g#i' + indexG + '.plot-point');
   };
 
-  this.getAllPointsByGIndexAndType = function(svgElement, indexG, type){
+
+  this.getAllPointsByGIndexAndType = function (svgElement, indexG, type) {
     return this.getGPointByGIndex(svgElement, indexG).$$('g#' + type + ' > ' + type);
   };
 
-  this.getAllConstLines = function(svgElement){
+  this.getAllPointsByGIndexAndMultipleTypes = function (svgElement, indexG, type, subtype) {
+    return this.getGPointByGIndex(svgElement, indexG).$$('g#' + type + ' > ' + subtype);
+  };
+
+  this.getAllConstLines = function (svgElement) {
     return svgElement.$$('g.plot-constline > line');
   };
 
-  this.getAllTexts = function(svgElement){
+  this.getAllTexts = function (svgElement) {
     return svgElement.$$('g.plot-text > text');
   };
 
-  this.getAllRasters = function(svgElement){
+  this.getAllRasters = function (svgElement) {
     return svgElement.$$('g.plot-raster > image');
   };
 
-  this.getAllAreas = function(svgElement){
+  this.getAllAreas = function (svgElement) {
     return svgElement.$$('g > polygon.plot-area');
   };
 
-  this.getAllConstBands = function(svgElement){
+  this.getAllConstBands = function (svgElement) {
     return svgElement.$$('g.plot-constband > rect');
   };
 
-  this.getAllLines = function(svgElement){
+  this.getAllLines = function (svgElement) {
     return svgElement.$$('g > path.plot-line');
   };
 
-  this.getLineByGIndex = function(svgElement, indexG){
+  this.getLineByGIndex = function (svgElement, indexG) {
     return svgElement.$('g#i' + indexG + ' > path.plot-line');
   };
 

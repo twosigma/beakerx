@@ -25,7 +25,9 @@ export const DEFAULT_ALIGNMENT = LEFT;
 
 export const ALIGNMENTS_BY_TYPE = {
   'datetime': CENTER,
+  'time': CENTER,
   'integer': RIGHT,
+  'int64': RIGHT,
   'double': RIGHT
 };
 

@@ -105,8 +105,8 @@ describe('CellManager', () => {
     expect(cellManager).to.have.property('exportCellsTo');
     expect(cellManager.exportCellsTo).to.be.a('Function');
     const cells = cellManager.getSelectedCells();
-    const resultCsv = `"test","column"\n"1","2"\n`;
-    const resultTabs = `test\tcolumn\n1\t2\n`;
+    const resultCsv = `"test","column"\n"1",":)"\n`;
+    const resultTabs = `test\tcolumn\n1\t:)\n`;
 
     expect(cellManager.exportCellsTo(cells, 'csv')).to.equal(resultCsv);
     expect(cellManager.exportCellsTo(cells, 'tabs')).to.equal(resultTabs);
@@ -115,7 +115,7 @@ describe('CellManager', () => {
   it('should implement getCSVFromCells method', () => {
     expect(cellManager).to.have.property('getCSVFromCells');
     expect(cellManager.getCSVFromCells).to.be.a('Function');
-    const result = `"test","column"\n"1","2"\n`;
+    const result = `"test","column"\n"1",":)"\n`;
 
     expect(cellManager.getCSVFromCells(true)).to.equal(result);
   });

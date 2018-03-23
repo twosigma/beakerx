@@ -26,7 +26,6 @@ import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
-import com.twosigma.beakerx.kernel.Repos;
 
 import java.io.IOException;
 

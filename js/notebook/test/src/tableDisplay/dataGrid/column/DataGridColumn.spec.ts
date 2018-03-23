@@ -23,6 +23,8 @@ import IndexMenu from "@beakerx/tableDisplay/dataGrid/headerMenu/IndexMenu";
 import modelStateMock from "../mock/modelStateMock";
 import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
 import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
+import {ALIGNMENTS_BY_CHAR} from "@beakerx/tableDisplay/dataGrid/column/columnAlignment";
+import {ALL_TYPES} from "@beakerx/tableDisplay/dataGrid/dataTypes";
 
 declare var require: Function;
 
@@ -75,6 +77,16 @@ describe('DataGridColumn', () => {
 
       expect(stub.calledTwice).to.be.true;
       stub.restore();
+    });
+
+    it('should have the initial horizontalAlignment set', () => {
+      expect(bodyDataGridColumn.getAlignment()).to.equal(ALIGNMENTS_BY_CHAR.C);
+      expect(columnManager.bodyColumns[1].getAlignment()).to.equal(ALIGNMENTS_BY_CHAR.L);
+    });
+
+    it('should have the initial displayType set', () => {
+      expect(bodyDataGridColumn.getDisplayType()).to.equal(ALL_TYPES['formatted integer']);
+      expect(columnManager.bodyColumns[1].getDisplayType()).to.equal(ALL_TYPES.string);
     });
   });
 

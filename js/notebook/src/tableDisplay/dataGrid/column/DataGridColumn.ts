@@ -199,6 +199,10 @@ export default class DataGridColumn {
     this.toggleDataTooltip(true, data);
   }
 
+  getAlignment() {
+    return selectColumnHorizontalAlignment(this.store.state, this);
+  }
+
   setAlignment(horizontalAlignment: TextRenderer.HorizontalAlignment) {
     this.store.dispatch(new DataGridColumnAction(
       UPDATE_COLUMN_HORIZONTAL_ALIGNMENT,
@@ -226,10 +230,6 @@ export default class DataGridColumn {
 
   getState() {
     return selectColumnState(this.store.state, this);
-  }
-
-  getAlignment() {
-    return selectColumnHorizontalAlignment(this.store.state, this);
   }
 
   getVisible() {

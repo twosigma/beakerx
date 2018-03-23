@@ -52,12 +52,12 @@ public abstract class BaseEvaluator implements Evaluator {
   protected final String shellId;
   protected final String sessionId;
   protected String outDir;
-  protected Inspect inspect;
+  private Inspect inspect;
   protected Classpath classPath;
   protected Imports imports;
   private final CellExecutor executor;
   private Path tempFolder;
-  protected Repos repos;
+
   protected ExecutorService executorService;
 
   public BaseEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters) {
@@ -68,7 +68,6 @@ public abstract class BaseEvaluator implements Evaluator {
     outDir = getOrCreateFile(tempFolder.toString() + File.separator + "outDir").getPath();
     classPath = new Classpath();
     classPath.add(new PathToJar(outDir));
-    repos = new Repos();
     inspect = new Inspect();
     executorService = Executors.newSingleThreadExecutor();
     init(evaluatorParameters);
@@ -146,16 +145,6 @@ public abstract class BaseEvaluator implements Evaluator {
     return imports;
   }
 
-  @Override
-  public Repos getRepos() {
-    return repos;
-  }
-
-  @Override
-  public String addRepo(String name, String url) {
-    return repos.add(name, url);
-  }
-
   protected void init(EvaluatorParameters kernelParameters) {
     Map<String, Object> params = kernelParameters.getParams();
     initClasspath(params);
@@ -212,6 +201,7 @@ public abstract class BaseEvaluator implements Evaluator {
   @Override
   public void resetEnvironment() {
     executor.killAllThreads();
+    inspect = new Inspect();
     doResetEnvironment();
   }
 

@@ -16,7 +16,6 @@
 package com.twosigma.beakerx.kernel;
 
 import static com.twosigma.beakerx.kernel.KernelSignalHandler.addSigIntHandler;
-import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
 import com.twosigma.beakerx.BeakerxDefaultDisplayers;
@@ -39,6 +38,7 @@ import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
 import com.twosigma.beakerx.message.Message;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -80,7 +80,7 @@ public abstract class Kernel implements KernelFunctionality {
     this.executionResultSender = new ExecutionResultSender(this);
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
     this.handlers = new KernelHandlers(this, getCommOpenHandler(this), getKernelInfoHandler(this));
-    configureMagicCommands();
+    createMagicCommands();
     DisplayerDataMapper.init();
     configureSignalHandler();
     initJvmRepr();
@@ -216,16 +216,6 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   @Override
-  public Repos getRepos() {
-    return this.evaluatorManager.getRepos();
-  }
-
-  @Override
-  public String addRepo(String name, String url) {
-    return this.evaluatorManager.addRepo(name, url);
-  }
-
-  @Override
   public Imports getImports() {
     return this.evaluatorManager.getImports();
   }
@@ -257,11 +247,15 @@ public abstract class Kernel implements KernelFunctionality {
 
   @Override
   public List<MagicCommandType> getMagicCommandTypes() {
-    return magicCommandTypes;
+    return new ArrayList<>(magicCommandTypes);
   }
 
-  private void configureMagicCommands() {
+  private void createMagicCommands() {
     this.magicCommandTypes = MagicCommandTypesFactory.createDefaults(this);
+    configureMagicCommands();
+  }
+
+  protected void configureMagicCommands() {
   }
 
   @Override

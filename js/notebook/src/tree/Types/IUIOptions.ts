@@ -20,4 +20,5 @@ export default interface IUIOptions {
   wide_cells: boolean;
   show_publication: boolean;
   auto_save: boolean;
+  use_data_grid: boolean;
 }

@@ -48,7 +48,7 @@ public class TableDisplaySerializer extends ObservableTableDisplaySerializer<Tab
   public static final String CELL_HIGHLIGHTERS = "cellHighlighters";
   public static final String TOOLTIPS = "tooltips";
 
-  public int ROWS_LIMIT = 10000;
+  public int ROWS_LIMIT = 100000;
   @Override
   public void serialize(TableDisplay value,
                         JsonGenerator jgen,
@@ -86,7 +86,7 @@ public class TableDisplaySerializer extends ObservableTableDisplaySerializer<Tab
       jgen.writeObjectField(TIME_ZONE, value.getTimeZone());
       List<List<?>> values = value.getValues();
       if (values.size() > ROWS_LIMIT) {
-        jgen.writeObjectField(VALUES, values.subList(0, 1000));
+        jgen.writeObjectField(VALUES, values.subList(0, 10000));
         jgen.writeBooleanField("tooManyRows", true);
         jgen.writeObjectField("rowLength", values.size());
         jgen.writeObjectField("rowLimit", ROWS_LIMIT);

@@ -1,0 +1,173 @@
+/*
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+//Colors
+$alto: #DADADA;
+$gallery: #F0F0F0;
+$silver: #CDCDCD;
+$silverChalice: #A0A0A0;
+$highlightBlue: #39a9ed;
+
+$gridBackgroundColor: $gallery;
+$borderColor: $silverChalice;
+$buttonActive: $silver;
+$gridBorder: 1px solid $borderColor;
+$tooltipTransition: opacity 300ms ease-in-out 300ms;
+
+.p-DataGrid {
+  min-width: 64px;
+  max-width: 100%;
+  min-height: 330px;
+  padding: 20px;
+  border: 1px solid white;
+  font-family: "Lato", Helvetica, sans-serif;
+
+  .bko-menu {
+    opacity: 1;
+
+    &:hover {
+      background-color: $highlightBlue;
+      background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAWCAYAAADjGu3TAAAAI0lEQVQoFWP8DwQMWAATFjGwED0kcNmNW5xx1B/ogUPFiAIAYSAMFvNwTdIAAAAASUVORK5CYII=');
+    }
+
+    &.sorting_asc,
+    &.sorting_desc {
+      background-size: 18px;
+    }
+
+    &.sorting_asc {
+      background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAAAZ0lEQVQ4y2NgGLKgquEuFxBPAGI2ahhWCsS/gDibUoO0gPgxEP8H4ttArEyuQYxAPBdqEAxPBImTY5gjEL9DM+wTENuQahAvEO9DMwiGdwAxOymGJQLxTyD+jgWDxCMZRsEoGAVoAADeemwtPcZI2wAAAABJRU5ErkJggg==');
+
+      &:hover {
+        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAAANklEQVR42mNgGNLgPxBQzSAYoNSgrf9RwVaquIoi1wH1NfzHDqZSxVVkue4/EYBhFIyCUYAGABPAkfD1W4bSAAAAAElFTkSuQmCC");
+      }
+    }
+
+    &.sorting_desc {
+      background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAAAZUlEQVQ4y2NgGAWjYBSggaqGu5FA/BOIv2PBIPFEUgxjB+IdQPwfC94HxLykus4GiD+hGfQOiB3J8SojEE9EM2wuSJzcsFMG4ttQgx4DsRalkZENxL+AuJQaMcsGxBOAmGvopk8AVz1sLZgg0bsAAAAASUVORK5CYII=');
+
+      &:hover {
+        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAAAL0lEQVR42mNgGAWjYBSggf9EAKoZSI7rtuIwayrVvEtJ2KG7bivVIoNqsTu00ycAka+SJUKi7ZcAAAAASUVORK5CYII=");
+      }
+    }
+  }
+}
+
+.p-DataGrid-tooltip {
+  background-color: #ffffff;
+  box-shadow: 0 0 3px #333333;
+  border-radius: 3px;
+  padding: 5px 10px;
+  opacity: 0;
+  -webkit-transition: $tooltipTransition;
+  -moz-transition: $tooltipTransition;
+  -ms-transition: $tooltipTransition;
+  -o-transition: $tooltipTransition;
+  transition: $tooltipTransition;
+  font-family: "Lato", Helvetica, sans-serif;
+  z-index: 900;
+
+  &.visible {
+    opacity: 1;
+  }
+}
+
+.p-DataGrid-viewport {
+  border: $gridBorder;
+}
+
+.p-DataGrid-scrollCorner {
+  background-color: $gridBackgroundColor;
+  border-right: $gridBorder;
+  border-bottom: $gridBorder;
+}
+
+.p-DataGrid-scrollCorner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  background-color: $borderColor;
+}
+
+.p-ScrollBar {
+  &[data-orientation='horizontal'] {
+    min-height: 16px;
+    max-height: 16px;
+    min-width: 45px;
+    border-bottom: $gridBorder;
+    border-left: $gridBorder;
+    border-right: $gridBorder;
+
+    .p-ScrollBar-thumb {
+      height: 100%;
+      min-width: 15px;
+      border-left: $gridBorder;
+      border-right: $gridBorder;
+    }
+  }
+
+  &[data-orientation='vertical'] {
+    min-width: 16px;
+    max-width: 16px;
+    min-height: 45px;
+    border-right: $gridBorder;
+    border-top: $gridBorder;
+    border-bottom: $gridBorder;
+
+    .p-ScrollBar-thumb {
+      width: 100%;
+      min-height: 15px;
+      border-top: $gridBorder;
+      border-bottom: $gridBorder;
+    }
+  }
+}
+
+.p-ScrollBar-button {
+  background-color: $gridBackgroundColor;
+  background-position: center center;
+  min-height: 15px;
+  max-height: 15px;
+  min-width: 15px;
+  max-width: 15px;
+
+  &:hover {
+    background-color: $alto;
+  }
+
+  &.p-mod-active {
+    background-color: $buttonActive;
+  }
+}
+
+.p-ScrollBar-track {
+  background: $gridBackgroundColor;
+}
+
+.p-ScrollBar-thumb {
+  background: $silver;
+
+  &:hover {
+    background: $silver;
+  }
+
+  &.p-mod-active {
+    background: $silverChalice;
+  }
+}

@@ -69,12 +69,6 @@ public abstract class BeakerxWidget extends Widget {
     this.updateModel.update(MODEL_UPDATE, serializeToJsonObject());
   }
 
-  @Override
-  public void display() {
-    beforeDisplay();
-    super.display();
-  }
-
   private void enableModelUpdate() {
     updateModel = (action, item) -> sendUpdate(action, item);
   }
@@ -89,7 +83,8 @@ public abstract class BeakerxWidget extends Widget {
     super.activateWidgetInContainer();
   }
 
-  private void beforeDisplay() {
+  @Override
+  public void beforeDisplay() {
     enableModelUpdate();
     sendModel();
   }

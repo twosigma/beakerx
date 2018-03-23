@@ -23,8 +23,8 @@ define([
   var beakerObj = { //TODO MOCK - replace
     beakerObj: {
       prefs: {
-        outputColumnLimit: 50,
-        outputLineLimit: 1000,
+        outputColumnLimit: 500,
+        outputLineLimit: 100000,
         theme: {
           name: 'default',
           plotColors: [

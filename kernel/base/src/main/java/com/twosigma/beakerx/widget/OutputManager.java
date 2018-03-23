@@ -21,16 +21,19 @@ public class OutputManager {
   private static Output stderr;
   private static Output stdout;
 
-  public static void setOutput(Output out) {
+  public static Output setOutput(Output out) {
     output = out;
+    return output;
   }
 
-  public static void setStderr(Output out) {
+  public static Output setStandardError(Output out) {
     stderr = out;
+    return stderr;
   }
 
-  public static void setStdout(Output out) {
+  public static Output setStandardOutput(Output out) {
     stdout = out;
+    return stdout;
   }
 
   public static void clearStderr() {

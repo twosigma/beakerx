@@ -1,7 +1,7 @@
 {
-  "name": "beakerx-jupyterlab",
+  "name": "beakerx-jupyterlab-js",
   "version": "0.14.0",
-  "description": "BeakerX: Beaker Extensions for JupyterLab",
+  "description": "BeakerX: Beaker Extensions for JupyterLab - javascript MIME renderer extension",
   "author": "Two Sigma Open Source, LLC",
   "main": "dist/index.js",
   "license": "Apache-2.0",
@@ -10,7 +10,6 @@
     "url": ""
   },
   "keywords": [
-    "ipywidgets",
     "jupyterlab",
     "jupyterlab-extension"
   ],
@@ -20,26 +19,19 @@
     "prepublish": "npm run build:src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "dependencies": {
+    "@jupyterlab/rendermime": "^0.15.2",
+    "@jupyterlab/rendermime-interfaces": "^1.0.4"
+  },
   "devDependencies": {
-    "@jupyter-widgets/base": "^1.1.5",
-    "@jupyter-widgets/controls": "^1.1.2",
-    "@jupyter-widgets/output": "^1.0.10",
-    "@jupyterlab/application": "^0.15.2",
-    "@jupyterlab/codemirror": "^0.15.2",
-    "@jupyterlab/coreutils": "^1.0.4",
-    "@jupyterlab/docregistry": "^0.15.2",
-    "@jupyterlab/notebook": "^0.15.2",
-    "@jupyterlab/outputarea": "^0.15.2",
-    "@jupyterlab/services": "^1.1.2",
     "@types/node": "^8.0.56",
     "rimraf": "^2.6.2",
     "typescript": "~2.6.2"
   },
   "jupyterlab": {
-    "extension": "dist/index.js"
+    "mimeExtension": "dist/index.js"
   },
   "files": [
-    "dist/**/*.js",
-    "lib/*"
+    "dist/**/*.js"
   ]
 }

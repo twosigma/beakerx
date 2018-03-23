@@ -25,6 +25,7 @@ describe('Large Integers in Tables ', function () {
     beakerxPO = new BeakerXPageObject();
     tableHelper = new TableHelperObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/groovy/BigIntsTest.ipynb');
+    beakerxPO.openUIWindow();
   }, 2);
 
   afterAll(function () {
@@ -32,6 +33,12 @@ describe('Large Integers in Tables ', function () {
   });
 
   var cellIndex;
+
+  describe('UI options. ', function () {
+    it("Disable PhosphorJS DataGrid for TableDisplay Widget. ", function () {
+      beakerxPO.setDataGridForTable(false);
+    });
+  });
 
   describe('64-bit Longs ', function () {
     it('Should display 64-bit Longs values ', function () {

@@ -52,7 +52,6 @@ import {selectColumnWidth} from "./column/selectors";
 import throttle = DataGridHelpers.throttle;
 import DataGridCell from "./cell/DataGridCell";
 import {COLUMN_TYPES} from "./column/enums";
-import ResizeMessage = Widget.ResizeMessage;
 
 export class BeakerxDataGrid extends DataGrid {
   id: string;
@@ -74,7 +73,6 @@ export class BeakerxDataGrid extends DataGrid {
   focused: boolean;
   wrapperId: string;
 
-  headerCellHovered = new Signal<this, ICellData|null>(this);
   cellHovered = new Signal<this, ICellData|null>(this);
   commSignal = new Signal<this, {}>(this);
 
@@ -211,7 +209,7 @@ export class BeakerxDataGrid extends DataGrid {
 
     this.columnManager.addColumns();
     this.rowManager.createFilterExpressionVars();
-    this.store.changed.connect(throttle<void, void>(this.handleStateChanged.bind(this), 150));
+    this.store.changed.connect(throttle<void, void>(this.handleStateChanged.bind(this), 100));
 
     this.installMessageHook();
     this.addHighlighterManager();

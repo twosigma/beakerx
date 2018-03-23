@@ -21,11 +21,11 @@ import {DataGridHelpers} from "./dataGridHelpers";
 import disableKeyboardManager = DataGridHelpers.disableKeyboardManager;
 import enableKeyboardManager = DataGridHelpers.enableKeyboardManager;
 import throttle = DataGridHelpers.throttle;
-import {ICellData} from "./interface/ICell";
 import {BeakerxDataStore} from "./store/dataStore";
 import {selectDoubleClickTag, selectHasDoubleClickAction} from "./model/selectors";
 import {COLUMN_TYPES} from "./column/enums";
 import CellManager from "./cell/CellManager";
+import isUrl = DataGridHelpers.isUrl;
 
 export default class EventManager {
   dataGrid: BeakerxDataGrid;
@@ -41,7 +41,7 @@ export default class EventManager {
     this.handleHeaderClick = this.handleHeaderClick.bind(this);
     this.handleBodyClick = this.handleBodyClick.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.handleCellHover = throttle<MouseEvent, void>(this.handleCellHover.bind(this), 250);
+    this.handleCellHover = throttle<MouseEvent, void>(this.handleCellHover.bind(this), 100);
 
     this.dataGrid.node.removeEventListener('mouseout', this.handleMouseOut);
     this.dataGrid.node.addEventListener('mouseout', this.handleMouseOut);
@@ -92,28 +92,11 @@ export default class EventManager {
       return;
     }
 
-    window.open(hoveredCellData.value);
+    isUrl(hoveredCellData.value) && window.open(hoveredCellData.value);
   }
 
   private handleCellHover(event: MouseEvent): void {
     const data = this.dataGrid.getCellData(event.clientX, event.clientY);
-
-    this.handleBodyCellHover(data, event);
-    this.handleHeaderCellHover(data, event);
-  }
-
-  private handleHeaderCellHover(data: ICellData|null, event: MouseEvent) {
-    if (!this.dataGrid.isOverHeader(event)) {
-      return this.dataGrid.headerCellHovered.emit(null);
-    }
-
-    this.dataGrid.headerCellHovered.emit(data);
-  }
-
-  private handleBodyCellHover(data: ICellData|null, event: MouseEvent) {
-    if (this.dataGrid.isOverHeader(event)) {
-      return this.dataGrid.cellHovered.emit(null);
-    }
 
     this.dataGrid.cellHovered.emit(data);
   }
@@ -133,7 +116,7 @@ export default class EventManager {
       return;
     }
 
-    this.dataGrid.headerCellHovered.emit(null);
+    this.dataGrid.cellHovered.emit(null);
     this.dataGrid.node.classList.remove('bko-focused');
     this.dataGrid.focused = false;
     this.dataGrid.cellTooltipManager.hideTooltip();

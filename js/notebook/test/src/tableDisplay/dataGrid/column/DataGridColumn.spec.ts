@@ -44,7 +44,7 @@ describe('DataGridColumn', () => {
 
     it('should change the trigger state', () => {
       bodyDataGridColumn.handleHeaderCellHovered(
-        dataGrid, { type: COLUMN_TYPES.body, column: 0, row: 0, delta: 0, offset: 10, offsetTop: 10 }
+        dataGrid, { type: COLUMN_TYPES.body, column: 0, row: 0, delta: 0, offset: 10, offsetTop: 10, region: 'column-header' }
       );
 
       expect(bodyDataGridColumn.menu['triggerNode'].style.visibility).to.equal('visible');
@@ -91,7 +91,7 @@ describe('DataGridColumn', () => {
 
     it('should change the trigger state', () => {
       indexDataGridColumn.handleHeaderCellHovered(
-        dataGrid, { type: COLUMN_TYPES.index, column: 0, row: 0, delta: 0, offset: 0, offsetTop: 0 }
+        dataGrid, { type: COLUMN_TYPES.index, column: 0, row: 0, delta: 0, offset: 0, offsetTop: 0, region: 'corner-header' }
       );
       expect(indexDataGridColumn.menu['triggerNode'].style.visibility).to.equal('visible');
     });

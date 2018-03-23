@@ -31,7 +31,8 @@ default_config = """
             "improve_fonts": true,
             "wide_cells": true,
             "show_publication": true,
-            "auto_save": true
+            "auto_save": true,
+            "use_data_grid": true
         }
     }
 }

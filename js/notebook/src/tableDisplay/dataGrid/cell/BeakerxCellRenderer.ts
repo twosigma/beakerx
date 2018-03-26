@@ -209,11 +209,6 @@ export default class BeakerxCellRenderer extends TextRenderer {
     let format = this.format;
     let text = format(config);
 
-    // Bail if there is no text to draw.
-    if (!text) {
-      return;
-    }
-
     // Resolve the vertical and horizontal alignment.
     let vAlign = CellRenderer.resolveOption(this.verticalAlignment, config);
     let hAlign = CellRenderer.resolveOption(this.horizontalAlignment, config);

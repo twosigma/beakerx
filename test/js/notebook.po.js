@@ -18,10 +18,41 @@ var NotebookPageObject = function () {
 
   this.kernelIdleIcon = $('i.kernel_idle_icon');
 
-  this.runNotebookByUrl = function(url){
+  this.runNotebookByUrl = function (url) {
     console.log('jupyter notebook application')
     browser.url('http://127.0.0.1:8888/notebooks' + url);
     this.kernelIdleIcon.waitForEnabled();
+  };
+
+  this.runJupyterRoot = function () {
+    browser.url('http://127.0.0.1:8888/');
+    browser.pause(2000);
+    $$('ul#tabs > li')[3].waitForEnabled();
+  };
+
+  this.goToJVMOptions = function () {
+    $$('ul#tabs > li')[3].click();
+    $('ul.p-TabBar-content').waitForEnabled();
+  }
+
+  this.setHeapSize = function (value) {
+    var heapSizeInput = $('input#heap_GB');
+    heapSizeInput.setValue(value);
+  };
+
+  this.getPropertyFormGroupByIndex = function (index) {
+    var formGroups = $$('div.form-inline');
+    return formGroups[index];
+  };
+
+  this.addPropertyPair = function () {
+    var addPropertyButton = $('button#add_property_jvm_sett');
+    addPropertyButton.click();
+  };
+
+  this.setProperty = function (key, value) {
+    $('div.form-group > input[placeholder="name"]').setValue(key);
+    $('div.form-group > input[placeholder="value"]').setValue(value);
   };
 
   this.closeAndHaltNotebook = function () {
@@ -58,7 +89,7 @@ var NotebookPageObject = function () {
     browser.click('=Run All')
   };
 
-  this.clickDialogPublishButton = function(){
+  this.clickDialogPublishButton = function () {
     browser.$('button.btn.btn-default.btn-sm.btn-primary').click();
   };
 
@@ -78,30 +109,30 @@ var NotebookPageObject = function () {
     return codeCell.$$('div.output_subarea.output_error');
   };
 
-  this.getAllOutputsWidget = function(codeCell){
+  this.getAllOutputsWidget = function (codeCell) {
     return codeCell.$$('div.output_subarea.jupyter-widgets-view');
   };
 
-  this.callAutocompleteAndGetItsList = function(codeCell, codeStr){
+  this.callAutocompleteAndGetItsList = function (codeCell, codeStr) {
     codeCell.scroll();
     codeCell.click('div.CodeMirror-code[role="presentation"]');
     codeCell.keys(codeStr);
     browser.keys("Tab");
     browser.keys('\uE000');
-    browser.waitUntil(function() {
+    browser.waitUntil(function () {
       return browser.isVisible('#complete');
     }, 10000, 'autocomplete list is not visible');
     return $$('#complete > select > option');
   };
 
-  this.callDocAndGetItsTooltip = function(codeCell, codeStr){
+  this.callDocAndGetItsTooltip = function (codeCell, codeStr) {
     codeCell.scroll();
     codeCell.click('div.CodeMirror-code[role="presentation"]');
     codeCell.keys(codeStr);
     browser.keys('Shift');
     browser.keys('Tab');
     browser.keys('\uE000');
-    browser.waitUntil(function() {
+    browser.waitUntil(function () {
       return browser.isVisible('#tooltip');
     }, 10000, 'doc tooltip is not visible');
     return $('div#tooltip div.tooltiptext.smalltooltip');

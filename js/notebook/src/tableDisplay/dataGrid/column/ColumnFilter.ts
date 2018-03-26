@@ -17,6 +17,9 @@
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
 import DataGridColumn from "./DataGridColumn";
 import {selectColumnPosition, selectColumnWidth} from "./selectors";
+import {DataGridHelpers} from "../dataGridHelpers";
+import getEventKeyCode = DataGridHelpers.getEventKeyCode;
+import {KEYBOARD_KEYS} from "../event/enums";
 
 export default class ColumnFilter {
   dataGrid: BeakerxDataGrid;
@@ -25,7 +28,6 @@ export default class ColumnFilter {
   filterIcon: HTMLSpanElement;
   clearIcon: HTMLSpanElement;
   filterInput: HTMLInputElement;
-  debounceId: any;
   useSearch: boolean;
 
   static DEBOUNCE_TIME_IN_MS = 250;
@@ -34,6 +36,7 @@ export default class ColumnFilter {
     this.dataGrid = dataGrid;
     this.column = column;
 
+    this.filterHandler = this.filterHandler.bind(this);
     this.addInputNode(options);
   }
 
@@ -53,6 +56,7 @@ export default class ColumnFilter {
 
   hideInput() {
     this.filterNode.style.visibility = 'hidden';
+    this.filterInput.value = '';
   }
 
   updateInputNode() {
@@ -85,21 +89,24 @@ export default class ColumnFilter {
   }
 
   private filterHandler(event: KeyboardEvent) {
-    if (event.keyCode === 27 || event.keyCode === 13 || !this.filterInput) { return; }
+    const keyCode = getEventKeyCode(event);
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+
+    if (
+      keyCode === KEYBOARD_KEYS.Enter
+      || keyCode === KEYBOARD_KEYS.Escape
+      || !this.filterInput
+    ) {
+      return;
+    }
 
     if (this.useSearch) {
       return this.column.search(this.createExpression(this.filterInput.value));
     }
 
     this.column.filter(this.createExpression(this.filterInput.value));
-  }
-
-  private debouncedFilterHandler(event: KeyboardEvent) {
-    clearTimeout(this.debounceId);
-    this.debounceId = setTimeout(
-      () => this.filterHandler(event),
-      ColumnFilter.DEBOUNCE_TIME_IN_MS
-    );
   }
 
   private createExpression(value: string) {
@@ -146,16 +153,19 @@ export default class ColumnFilter {
   }
 
   private bindEvents() {
-    this.filterInput.addEventListener('mousedown', (event) => event.stopImmediatePropagation());
-    this.filterNode.addEventListener('mousedown', (event) => event.stopImmediatePropagation());
-    this.filterInput.addEventListener('keyup', this.debouncedFilterHandler.bind(this));
+    const handleMouseDown = (event) => {
+      this.dataGrid.setFocus(true);
+      event.stopImmediatePropagation();
+    };
+
+    this.filterInput.addEventListener('keyup', this.filterHandler);
+    this.filterInput.addEventListener('mousedown', handleMouseDown);
+    this.filterNode.addEventListener('mousedown', handleMouseDown);
 
     if (this.clearIcon) {
       this.clearIcon.addEventListener('mousedown', () => {
         this.column.columnManager.resetFilters();
       });
     }
-
-
   }
 }

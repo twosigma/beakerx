@@ -57,6 +57,7 @@ import {COLUMN_TYPES, SORT_ORDER} from "./enums";
 import {UPDATE_COLUMN_RENDERER} from "../model/reducer";
 import {RENDERER_TYPE} from "../interface/IRenderer";
 import DataGridCell from "../cell/DataGridCell";
+import {DataGridHelpers} from "../dataGridHelpers";
 
 export default class DataGridColumn {
   index: number;
@@ -153,22 +154,16 @@ export default class DataGridColumn {
   }
 
   search(filter: string) {
-    if (filter === this.getFilter()) {
-      return;
-    }
-
-    this.updateColumnFilter(filter);
-    this.dataGrid.rowManager.searchRows();
-    this.dataGrid.model.reset();
+    this.filter(filter, true);
   }
 
-  filter(filter: string) {
+  filter(filter: string, search?: boolean) {
     if (filter === this.getFilter()) {
       return;
     }
 
     this.updateColumnFilter(filter);
-    this.dataGrid.rowManager.filterRows();
+    search ? this.dataGrid.rowManager.searchRows() : this.dataGrid.rowManager.filterRows();
     this.dataGrid.model.reset();
   }
 

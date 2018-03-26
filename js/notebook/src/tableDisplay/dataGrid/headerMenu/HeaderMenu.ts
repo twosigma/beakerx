@@ -23,6 +23,9 @@ import MenuInterface from '../../../shared/interfaces/menuInterface';
 import DataGridColumn from "../column/DataGridColumn";
 import {selectColumnPosition} from "../column/selectors";
 import {SORT_ORDER} from "../column/enums";
+import {DataGridHelpers} from "../dataGridHelpers";
+import getEventKeyCode = DataGridHelpers.getEventKeyCode;
+import {KEYBOARD_KEYS} from "../event/enums";
 
 export interface ITriggerOptions {
   x: number,
@@ -231,7 +234,6 @@ export default abstract class HeaderMenu implements MenuInterface {
     this.triggerNode.classList.add('bko-menu');
     this.triggerNode.addEventListener('mousedown', (event) => {
       event.preventDefault();
-      event.stopPropagation();
 
       this.toggleMenu();
     });
@@ -290,7 +292,7 @@ export default abstract class HeaderMenu implements MenuInterface {
     input.addEventListener('keyup', (event: KeyboardEvent) => {
       event.stopImmediatePropagation();
 
-      if (event.keyCode === 27) {
+      if (getEventKeyCode(event) === KEYBOARD_KEYS.Escape) {
         menu.close();
 
         return;

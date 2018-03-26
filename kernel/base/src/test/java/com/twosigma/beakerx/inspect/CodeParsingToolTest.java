@@ -20,9 +20,9 @@ import org.junit.Test;
 
 public class CodeParsingToolTest {
 
-    private final static String CODE_METHOD = "display = new TableDisplay()\n" +
-            "display.test()\n" +
-            "csv = new CSV()\n" +
+    private final static String CODE_METHOD = "display = new TableDisplay()" + System.lineSeparator() +
+            "display.test()" + System.lineSeparator() +
+            "csv = new CSV()" + System.lineSeparator() +
             "csv.read(test)";
 
 
@@ -66,7 +66,7 @@ public class CodeParsingToolTest {
         String expected = "TableDisplay";
         //when
         String result = CodeParsingTool.getClassName(
-                "table = new TableDisplay(new CsvPlotReader(\"default\", new Reader(\"test\")).\n"
+                "table = new TableDisplay(new CsvPlotReader(\"default\", new Reader(\"test\"))." + System.lineSeparator()
                         + "table.test(\"test\")", 84, "test");
         //then
         Assertions.assertThat(result).isEqualTo(expected);
@@ -76,7 +76,7 @@ public class CodeParsingToolTest {
     public void getInspectObjectTest() {
         //given
         String code_1 = "table.setDoubleClickAction()";
-        String code_2 = "table = new TableDisplay(new CsvPlotReader().read('../resources/data/interest-rates.csv'))\"\n";
+        String code_2 = "table = new TableDisplay(new CsvPlotReader().read('../resources/data/interest-rates.csv'))\"" + System.lineSeparator();
         int pos_1 = 20; //on setDoubleClickAction
         int pos_2 = 50; //on read method
         String expected_1 = "table";
@@ -113,10 +113,10 @@ public class CodeParsingToolTest {
     @Test
     public void getClassOfInspectObjectTest() {
         //given
-        String code = "import com.twosigma.beakerx.table.*\n" +
-                "import com.twosigma.beakerx.table.format.TableDisplayStringFormat\n" +
-                "table = new TableDisplay(new CsvPlotReader().read('../resources/data/interest-rates.csv'))\n" +
-                "table.setDoubleClickAction()\n" +
+        String code = "import com.twosigma.beakerx.table.*" + System.lineSeparator() +
+                "import com.twosigma.beakerx.table.format.TableDisplayStringFormat" + System.lineSeparator() +
+                "table = new TableDisplay(new CsvPlotReader().read('../resources/data/interest-rates.csv'))" + System.lineSeparator() +
+                "table.setDoubleClickAction()" + System.lineSeparator() +
                 "CsvPlotReader().read";
         String inspectObject_1 = "CsvPlotReader";
         String inspectObject_2 = "table";
@@ -133,7 +133,7 @@ public class CodeParsingToolTest {
     @Test
     public void getClassOfInspectObjectWithDefTest() {
         //given
-        String code = "def display = new TableDisplay()\n" +
+        String code = "def display = new TableDisplay()" + System.lineSeparator() +
                 "display.setDoubleClickAction()";
         String inspectObject = "display";
         String expected = "TableDisplay";

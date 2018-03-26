@@ -48,7 +48,6 @@ public class ClasspathAddRepoMagicCommandTest {
     kernel.exit();
   }
 
-  @Test
   public void addMvnLocal() {
     //given
     String allCode = CLASSPATH_CONFIG_RESOLVER + " " + MVN_LOCAL;

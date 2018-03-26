@@ -137,7 +137,7 @@ class Table(BaseObject):
             if isinstance(value, int):
                 converted_value = value
             else:
-                converted_value = value.item()
+                converted_value = str(value)
         elif value_type == "int64":
             converted_value = value.astype('str')
         elif value_type == "string":

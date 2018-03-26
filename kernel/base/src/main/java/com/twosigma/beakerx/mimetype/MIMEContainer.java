@@ -123,9 +123,17 @@ public class MIMEContainer {
     return addMimeType(MIME.TEXT_HTML, code);
   }
 
+  public static MIMEContainer VimeoVideo(String id) {
+    return VimeoVideo(id, 400,300);
+  }
+
   public static MIMEContainer VimeoVideo(String id, Object width, int height) {
     String src = String.format("https://player.vimeo.com/video/%1$s", id);
     return IFrame(src, width, height);
+  }
+
+  public static MIMEContainer ScribdDocument(String id) {
+    return ScribdDocument(id, 400,300);
   }
 
   public static MIMEContainer ScribdDocument(String id, Object width, int height) {
@@ -134,8 +142,12 @@ public class MIMEContainer {
   }
 
   public static MIMEContainer YoutubeVideo(String id) {
+    return YoutubeVideo(id, 400, 300);
+  }
+
+  public static MIMEContainer YoutubeVideo(String id, Object width, int height) {
     String src = String.format("https://www.youtube.com/embed/%1$s", id);
-    return IFrame(src, 400, 300);
+    return IFrame(src, width, height);
   }
 
   public static MIMEContainer Video(String src) {

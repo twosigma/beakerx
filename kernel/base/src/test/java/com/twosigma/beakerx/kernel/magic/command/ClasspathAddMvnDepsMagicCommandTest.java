@@ -20,10 +20,12 @@ import com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathResetMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.message.Message;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,6 +45,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import static com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand.ADD_MVN_FORMAT_ERROR_MESSAGE;
+import static com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand.CLASSPATH_ADD_MVN;
+import static com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathResetMagicCommand.CLASSPATH_RESET;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -71,21 +75,21 @@ public class ClasspathAddMvnDepsMagicCommandTest {
   @Test
   public void handleClasspathAddMvnDep() throws Exception {
     //given
-    String allCode = "%classpath add mvn org.slf4j slf4j-api 1.7.5";
+    String allCode = CLASSPATH_ADD_MVN + " org.slf4j slf4j-api 1.7.5";
     handleClasspathAddMvnDep(allCode, "slf4j-api-1.7.5.jar");
   }
 
   @Test
   public void handleClasspathAddMvnDepUsingGradleSyntax() throws Exception {
     //given
-    String allCode = "%classpath add mvn com.google.code.gson:gson:2.6.2";
+    String allCode = CLASSPATH_ADD_MVN + " com.google.code.gson:gson:2.6.2";
     handleClasspathAddMvnDep(allCode, "gson-2.6.2.jar");
   }
 
   @Test
   public void unresolvedDependency() {
     //given
-    String allCode = "%classpath add mvn com.google.code.XXXX gson 2.6.2";
+    String allCode = CLASSPATH_ADD_MVN + " com.google.code.XXXX gson 2.6.2";
     MagicCommand command = new MagicCommand(new ClasspathAddMvnMagicCommand(kernel.mavenResolverParam, kernel), allCode);
     Code code = Code.createCode(allCode, singletonList(command), NO_ERRORS, new Message());
     //when
@@ -95,13 +99,37 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     String text = (String) stderr.get(0).getContent().get("text");
     assertThat(text).contains("Could not resolve dependencies for:");
     assertThat(text).contains("com.google.code.XXXX : gson : 2.6.2");
+  }
 
+  @Test
+  public void handleClasspathReset() throws Exception {
+    //given
+    String allCode = CLASSPATH_ADD_MVN + " com.google.code.gson:gson:2.6.2";
+    handleClasspathAddMvnDep(allCode, "gson-2.6.2.jar");
+    kernel.clearMessages();
+    ClasspathAddMvnMagicCommand mvnMagicCommand = MagicCommandTypesFactory.getClasspathAddMvnMagicCommand(kernel);
+    mvnMagicCommand.addRepo("jcenter", "jcenter");
+    //when
+    String resetCode = CLASSPATH_RESET;
+    ClasspathResetMagicCommand resetMagicCommand = MagicCommandTypesFactory.getClasspathResetMagicCommand(kernel);
+    MagicCommand command = new MagicCommand(resetMagicCommand, resetCode);
+    Code code = Code.createCode(resetCode, singletonList(command), NO_ERRORS, new Message());
+    code.execute(kernel, 1);
+    //then
+    List<Message> stderr = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());
+    String text = (String) stderr.get(0).getContent().get("text");
+    assertThat(text).contains("Reset done");
+    boolean cache = Files.exists(Paths.get(mvnMagicCommand.getCommandParams().getPathToCache()));
+    Assert.assertFalse(cache);
+    boolean jars = Files.exists(Paths.get(mvnMagicCommand.getCommandParams().getPathToNotebookJars()));
+    Assert.assertFalse(jars);
+    Assert.assertTrue(mvnMagicCommand.getRepos().get().isEmpty());
   }
 
   @Test
   public void wrongCommandFormat() {
     //given
-    String allCode = "%classpath add mvn com.google.code.XXXX gson";
+    String allCode = CLASSPATH_ADD_MVN + " com.google.code.XXXX gson";
     MagicCommand command = new MagicCommand(new ClasspathAddMvnMagicCommand(kernel.mavenResolverParam, kernel), allCode);
     Code code = Code.createCode(allCode, singletonList(command), NO_ERRORS, new Message());
     //when

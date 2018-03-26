@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -80,7 +81,7 @@ public class NamespaceClientTest {
   @Test
   public void setData_returnValue() throws Exception {
     //given
-    NamespaceClient curNamespaceClient = NamespaceClient.getBeaker("returnValue");
+    NamespaceClient curNamespaceClient = NamespaceClient.getBeaker(randomize("returnValue"));
     //when
     Object value = curNamespaceClient.set("x", new Integer(10));
     //then
@@ -91,7 +92,7 @@ public class NamespaceClientTest {
   @Test
   public void setData_setAutotranslationData() throws Exception {
     //given
-    NamespaceClient curNamespaceClient = NamespaceClient.getBeaker("setAutotranslationData");
+    NamespaceClient curNamespaceClient = NamespaceClient.getBeaker(randomize("setAutotranslationData"));
     //when
     curNamespaceClient.set("x", new Integer(10));
     //then
@@ -127,7 +128,7 @@ public class NamespaceClientTest {
             }}
     );
 
-    NamespaceClient curNamespaceClient = NamespaceClient.getBeaker("setBigInt");
+    NamespaceClient curNamespaceClient = NamespaceClient.getBeaker(randomize("setBigInt"));
     //when
     curNamespaceClient.set("table_with_longs", table);
     //then
@@ -138,20 +139,24 @@ public class NamespaceClientTest {
     assertThat(isJSONValid(state.get("value"))).isTrue();
   }
 
+  private String randomize(String text) {
+    return text + UUID.randomUUID();
+  }
+
   @Test
   public void setData_sendCommMessage() throws Exception {
     //given
-    NamespaceClient curNamespaceClient = NamespaceClient.getBeaker("sendCommMessage");
+    NamespaceClient curNamespaceClient = NamespaceClient.getBeaker(randomize("sendCommMessage"));
     //when
     curNamespaceClient.set("x", new Integer(10));
     //then
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
   }
 
-  public static boolean isJSONValid(Object jsonInString ) {
+  public static boolean isJSONValid(Object jsonInString) {
     try {
       final ObjectMapper mapper = new ObjectMapper();
-      mapper.readTree((String)jsonInString);
+      mapper.readTree((String) jsonInString);
       return true;
     } catch (IOException e) {
       return false;

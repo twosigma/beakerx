@@ -22,6 +22,7 @@ import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.magic.command.CodeFactory;
 import com.twosigma.beakerx.message.Message;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,6 +49,7 @@ public class ClasspathAddRepoMagicCommandTest {
     kernel.exit();
   }
 
+  @Test
   public void addMvnLocal() {
     //given
     String allCode = CLASSPATH_CONFIG_RESOLVER + " " + MVN_LOCAL;
@@ -57,7 +59,9 @@ public class ClasspathAddRepoMagicCommandTest {
     //then
     List<Message> std = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());
     String text = (String) std.get(0).getContent().get("text");
-    assertThat(text).contains(ADDED_NEW_REPO + MVN_LOCAL);
+    Assert.assertTrue(
+            "No \"" + ADDED_NEW_REPO + MVN_LOCAL + "\" in " + text,
+            text.contains(ADDED_NEW_REPO + MVN_LOCAL));
   }
 
   @Test

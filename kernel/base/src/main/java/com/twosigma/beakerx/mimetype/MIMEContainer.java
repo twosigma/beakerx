@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.net.URL;
+import java.util.HashMap;
 
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
@@ -132,22 +133,26 @@ public class MIMEContainer {
     return IFrame(src, width, height);
   }
 
-  public static MIMEContainer ScribdDocument(String id) {
-    return ScribdDocument(id, 400,300);
+  public static MIMEContainer ScribdDocument(String id, String ... params) {
+    return ScribdDocument(id, 400,300, params);
   }
 
-  public static MIMEContainer ScribdDocument(String id, Object width, int height) {
-    String src = String.format("https://www.scribd.com/embeds/%1$s/content", id);
-    return IFrame(src, width, height);
+  public static MIMEContainer ScribdDocument(String id, Object width, int height, String ... params) {
+    HashMap paramsMap = paramsToMap(params);
+    String src = String.format("https://www.scribd.com/embeds/%1$s/content%2$s", id, parseParams(paramsMap));
+    return IFrame(src, paramsMap.getOrDefault("width", width),
+            Integer.parseInt(paramsMap.getOrDefault("height", height).toString()));
   }
 
-  public static MIMEContainer YoutubeVideo(String id) {
-    return YoutubeVideo(id, 400, 300);
+  public static MIMEContainer YoutubeVideo(String id, String ... params) {
+    return YoutubeVideo(id, 400, 300, params);
   }
 
-  public static MIMEContainer YoutubeVideo(String id, Object width, int height) {
-    String src = String.format("https://www.youtube.com/embed/%1$s", id);
-    return IFrame(src, width, height);
+  public static MIMEContainer YoutubeVideo(String id, Object width, int height, String ... params) {
+    HashMap paramsMap = paramsToMap(params);
+    String src = String.format("https://www.youtube.com/embed/%1$s%2$s", id, parseParams(paramsMap));
+    return IFrame(src, paramsMap.getOrDefault("width", width),
+            Integer.parseInt(paramsMap.getOrDefault("height", height).toString()));
   }
 
   public static MIMEContainer Video(String src) {
@@ -204,6 +209,29 @@ public class MIMEContainer {
   @Override
   public int hashCode() {
     return reflectionHashCode(this);
+  }
+
+  private static HashMap<String, Object> paramsToMap(String ... params) {
+    HashMap<String, Object> paramsMap = new HashMap<>();
+    for (String param : params) {
+      String parts[] = param.split("=");
+      if (parts.length == 2){
+        paramsMap.put(parts[0], parts[1]);
+      }
+    }
+    return paramsMap;
+  }
+
+  private static String parseParams(HashMap paramsMap) {
+    StringBuilder sb = new StringBuilder();
+    for (Object key : paramsMap.keySet()){
+      if (key.equals("width") || key.equals("height")) {
+        continue;
+      }
+      sb.append("&").append(key.toString()).append("=").append(paramsMap.get(key).toString());
+    }
+    String result = sb.toString().replaceFirst("&", "?");
+    return result.length() > 0 ? result : "";
   }
 
 }

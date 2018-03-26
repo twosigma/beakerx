@@ -23,6 +23,8 @@ import IndexMenu from "@beakerx/tableDisplay/dataGrid/headerMenu/IndexMenu";
 import modelStateMock from "../mock/modelStateMock";
 import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
 import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
+import {ALIGNMENTS_BY_CHAR} from "@beakerx/tableDisplay/dataGrid/column/columnAlignment";
+import {ALL_TYPES} from "@beakerx/tableDisplay/dataGrid/dataTypes";
 
 declare var require: Function;
 
@@ -44,7 +46,7 @@ describe('DataGridColumn', () => {
 
     it('should change the trigger state', () => {
       bodyDataGridColumn.handleHeaderCellHovered(
-        dataGrid, { type: COLUMN_TYPES.body, column: 0, row: 0, delta: 0, offset: 10, offsetTop: 10 }
+        dataGrid, { type: COLUMN_TYPES.body, column: 0, row: 0, delta: 0, offset: 10, offsetTop: 10, region: 'column-header' }
       );
 
       expect(bodyDataGridColumn.menu['triggerNode'].style.visibility).to.equal('visible');
@@ -76,6 +78,16 @@ describe('DataGridColumn', () => {
       expect(stub.calledTwice).to.be.true;
       stub.restore();
     });
+
+    it('should have the initial horizontalAlignment set', () => {
+      expect(bodyDataGridColumn.getAlignment()).to.equal(ALIGNMENTS_BY_CHAR.C);
+      expect(columnManager.bodyColumns[1].getAlignment()).to.equal(ALIGNMENTS_BY_CHAR.L);
+    });
+
+    it('should have the initial displayType set', () => {
+      expect(bodyDataGridColumn.getDisplayType()).to.equal(ALL_TYPES['formatted integer']);
+      expect(columnManager.bodyColumns[1].getDisplayType()).to.equal(ALL_TYPES.string);
+    });
   });
 
   describe('DataGridColumn.type === "index"', () => {
@@ -91,7 +103,7 @@ describe('DataGridColumn', () => {
 
     it('should change the trigger state', () => {
       indexDataGridColumn.handleHeaderCellHovered(
-        dataGrid, { type: COLUMN_TYPES.index, column: 0, row: 0, delta: 0, offset: 0, offsetTop: 0 }
+        dataGrid, { type: COLUMN_TYPES.index, column: 0, row: 0, delta: 0, offset: 0, offsetTop: 0, region: 'corner-header' }
       );
       expect(indexDataGridColumn.menu['triggerNode'].style.visibility).to.equal('visible');
     });

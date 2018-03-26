@@ -90,7 +90,7 @@ export namespace DataGridHelpers {
     }
 
     // Compute the delta from the end of the list.
-    let delta = cursorPosition - (list.totalSize - 1);
+    let delta = cursorPosition - (list.totalSize);
     if (delta > 0) {
       return null;
     }
@@ -102,7 +102,7 @@ export namespace DataGridHelpers {
     }
 
     index = list.sectionIndex(cursorPosition);
-    delta = cursorPosition - (list.sectionOffset(index) - 1);
+    delta = cursorPosition - (list.sectionOffset(index));
 
     if (index >= 0) {
       return { index, delta };
@@ -134,6 +134,15 @@ export namespace DataGridHelpers {
         func.apply(context, args);
         lastRan = Date.now();
       }, limit - (Date.now() - lastRan))
+    }
+  }
+
+  export function debounce<A>(f:(a:A) => void, delay: number) {
+    let timer: number = null;
+
+    return (a: A) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => f(a), delay);
     }
   }
 

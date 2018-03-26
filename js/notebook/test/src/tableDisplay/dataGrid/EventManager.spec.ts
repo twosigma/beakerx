@@ -61,7 +61,7 @@ describe('EventManager', () => {
 
   it('should implement DataGrid event handlers', () => {
     expect(eventManager).to.have.property('handleHeaderClick');
-    expect(eventManager).to.have.property('handleHeaderCellHover');
+    expect(eventManager).to.have.property('handleCellHover');
   });
 
   it('should implement handleMouseDown event handler', () => {

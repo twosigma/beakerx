@@ -21,6 +21,7 @@ import DataGridColumn from "../column/DataGridColumn";
 import {DEFAULT_CELL_BACKGROUND, FOCUSED_CELL_BACKGROUND} from "../style/dataGridStyle";
 import {selectBodyColumnVisibility} from "../column/selectors";
 import {COLUMN_TYPES} from "../column/enums";
+import {KEYBOARD_KEYS} from "../event/enums";
 
 export default class CellFocusManager {
   dataGrid: BeakerxDataGrid;
@@ -37,16 +38,16 @@ export default class CellFocusManager {
 
   setFocusedCellByArrowKey(keyCode: number) {
     switch (keyCode) {
-      case 37: // left arrow
+      case KEYBOARD_KEYS.ArrowLeft:
         this.setLeftFocusedCell();
         break;
-      case 38: // up arrow
+      case KEYBOARD_KEYS.ArrowUp:
         this.setUpFocusedCell();
         break;
-      case 39: // right arrow
+      case KEYBOARD_KEYS.ArrowRight:
         this.setRightFocusedCell();
         break;
-      case 40: // down arrow
+      case KEYBOARD_KEYS.ArrowDown:
         this.setDownFocusedCell();
         break;
     }

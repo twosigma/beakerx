@@ -23,8 +23,8 @@ import {COLUMN_TYPES} from "../column/enums";
 import ICellConfig = CellRenderer.ICellConfig;
 
 export default class DataGridCell {
-  static isHeaderCell(config: CellRenderer.ICellConfig) {
-    return config.region === 'column-header' || config.region === 'corner-header';
+  static isHeaderCell(config: CellRenderer.ICellConfig|ICellData) {
+    return config && (config.region === 'column-header' || config.region === 'corner-header');
   }
 
   static getCellData(dataGrid: BeakerxDataGrid, clientX: number, clientY: number): ICellData|null {
@@ -76,13 +76,13 @@ export default class DataGridCell {
 
     if (column) {
       return {
-        region,
         column: column.index,
-        delta: column.delta,
         row: rowIndex,
+        delta: column.delta,
         type: columnType,
         offset: dataGrid.getColumnOffset(column.index, columnType),
         offsetTop: row ? dataGrid.getRowOffset(row.index) + dataGrid.headerHeight : 0,
+        region: y <= dataGrid.headerHeight ? 'column-header' : region,
         value: dataGrid.model.data(region, rowIndex, column.index),
       };
     }

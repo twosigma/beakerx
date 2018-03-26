@@ -19,6 +19,7 @@ import sys
 import json
 import nbformat
 import argparse
+import os
 from nbformat.v4 import new_notebook, new_code_cell, new_markdown_cell
 
 def setHeader(level, title):
@@ -84,7 +85,7 @@ def convertNotebook(notebook):
     with open(notebook, encoding='utf-8') as data_file:
         data = json.load(data_file)
     nb = parseBkr(data)
-    nbformat.write(nb, notebook.partition('.')[0] + '.ipynb')
+    nbformat.write(nb, os.path.splitext(notebook)[0] + '.ipynb')
 
 def main(args):
     for notebook in args.notebooks:

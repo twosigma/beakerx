@@ -21,7 +21,6 @@ import {CellRenderer, DataModel} from "@phosphor/datagrid";
 import {COLUMN_TYPES} from "../column/enums";
 import {ICellData} from "../interface/ICell";
 import {DataGridHelpers} from "../dataGridHelpers";
-import throttle = DataGridHelpers.throttle;
 import isUrl = DataGridHelpers.isUrl;
 
 export default class CellManager {
@@ -40,7 +39,7 @@ export default class CellManager {
   constructor(dataGrid: BeakerxDataGrid) {
     this.dataGrid = dataGrid;
 
-    this.dataGrid.cellHovered.connect(throttle(this.handleCellHovered, 100), this);
+    this.dataGrid.cellHovered.connect(this.handleCellHovered, this);
   }
 
   repaintRow(cellData) {
@@ -188,29 +187,30 @@ export default class CellManager {
   }
 
   private handleCellHovered(sender: BeakerxDataGrid, cellData: ICellData) {
-    if (CellManager.cellsEqual(cellData, this.hoveredCellData)) {
+    let cursor = this.dataGrid.viewport.node.style.cursor;
+
+    if (cursor.indexOf('resize') !== -1) {
       return;
     }
 
     let value = cellData && cellData.value;
-    let oldCellData = null;
+    this.updateViewportCursor(value);
 
-    if (this.hoveredCellData) {
-      oldCellData = { ...this.hoveredCellData };
-    }
-
-    if (!isUrl(value)) {
-      this.hoveredCellData = null;
-      this.repaintRow(oldCellData);
-      this.dataGrid['_canvas'].style.cursor = 'auto';
-
+    if (CellManager.cellsEqual(cellData, this.hoveredCellData)) {
       return;
     }
 
+    this.repaintRow(this.hoveredCellData);
+    cellData && this.repaintRow(cellData);
     this.hoveredCellData = cellData;
-    this.repaintRow(oldCellData);
-    this.repaintRow(cellData);
-    this.dataGrid['_canvas'].style.cursor = 'pointer';
+  }
+
+  private updateViewportCursor(value) {
+    if (isUrl(value)) {
+      this.dataGrid['_canvas'].style.cursor = 'pointer';
+    } else {
+      this.dataGrid['_canvas'].style.cursor = '';
+    }
   }
 
   private getCSVFromCells(selectedOnly: boolean) {

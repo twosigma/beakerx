@@ -16,6 +16,7 @@
 
 import {SectionList} from "@phosphor/datagrid/lib/sectionlist";
 import {DEFAULT_DATA_FONT_SIZE} from "./style/dataGridStyle";
+import {KEYBOARD_KEYS} from "./event/enums";
 
 export namespace DataGridHelpers {
   const urlRegex = /((https?|ftp|file):\/\/|\/)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/i;
@@ -61,6 +62,12 @@ export namespace DataGridHelpers {
     } catch (e) {}
   }
 
+  export function enableNotebookEditMode() {
+    try {
+      Jupyter.notebook.edit_mode();
+    } catch (e) {}
+  }
+
   export function getStringSize(value: string, fontSize: Number|null|undefined) {
     let spanEl: HTMLSpanElement = document.createElement('span');
     let width: number;
@@ -90,7 +97,7 @@ export namespace DataGridHelpers {
     }
 
     // Compute the delta from the end of the list.
-    let delta = cursorPosition - (list.totalSize - 1);
+    let delta = cursorPosition - (list.totalSize);
     if (delta > 0) {
       return null;
     }
@@ -102,7 +109,7 @@ export namespace DataGridHelpers {
     }
 
     index = list.sectionIndex(cursorPosition);
-    delta = cursorPosition - (list.sectionOffset(index) - 1);
+    delta = cursorPosition - (list.sectionOffset(index));
 
     if (index >= 0) {
       return { index, delta };
@@ -137,7 +144,28 @@ export namespace DataGridHelpers {
     }
   }
 
+  export function debounce<A>(f:(a:A) => void, delay: number) {
+    let timer: number = null;
+
+    return (a: A) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => f(a), delay);
+    }
+  }
+
   export function isUrl(url: string) {
     return urlRegex.test(String(url));
+  }
+
+  export function getEventKeyCode(event: KeyboardEvent) {
+    if (event.which || event.charCode || event.keyCode ) {
+      return event.which || event.charCode || event.keyCode;
+    }
+
+    if (event.code) {
+      return KEYBOARD_KEYS[event.code];
+    }
+
+    return event.key.charAt(0) || 0;
   }
 }

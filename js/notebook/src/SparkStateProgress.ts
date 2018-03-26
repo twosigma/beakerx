@@ -114,7 +114,7 @@ class SparkStateProgressView extends widgets.VBoxView {
       class: 'panel panel-default bx-spark-jobPanel'
     }).append(
       $('<div>', { class: 'panel-heading' }).append(jobLink),
-      $('<div>', { class: 'panel-body container bx-spark-stagePanel' }).append(stagePanel)
+      $('<div>', { class: 'panel-body container-fluid bx-spark-stagePanel' }).append(stagePanel)
     );
   }
 
@@ -133,8 +133,8 @@ class SparkStateProgressView extends widgets.VBoxView {
 
     return $('<div>', { class: 'row' }).append(
       $('<div>', { class: 'col-xs-2 text-right' }).append(stageLink),
-      $('<div>', { class: 'col-xs-8' }).append(progressBar),
-      $('<div>', { class: 'col-xs-2' }).append(progressLabels),
+      $('<div>', { class: 'col-xs-6' }).append(progressBar),
+      $('<div>', { class: 'col-xs-4' }).append(progressLabels),
     );
   }
 

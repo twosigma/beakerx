@@ -16,6 +16,7 @@
 
 import {SectionList} from "@phosphor/datagrid/lib/sectionlist";
 import {DEFAULT_DATA_FONT_SIZE} from "./style/dataGridStyle";
+import {KEYBOARD_KEYS} from "./event/enums";
 
 export namespace DataGridHelpers {
   const urlRegex = /((https?|ftp|file):\/\/|\/)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/i;
@@ -58,6 +59,12 @@ export namespace DataGridHelpers {
   export function enableKeyboardManager() {
     try {
       Jupyter.keyboard_manager.enabled = true;
+    } catch (e) {}
+  }
+
+  export function enableNotebookEditMode() {
+    try {
+      Jupyter.notebook.edit_mode();
     } catch (e) {}
   }
 
@@ -148,5 +155,17 @@ export namespace DataGridHelpers {
 
   export function isUrl(url: string) {
     return urlRegex.test(String(url));
+  }
+
+  export function getEventKeyCode(event: KeyboardEvent) {
+    if (event.which || event.charCode || event.keyCode ) {
+      return event.which || event.charCode || event.keyCode;
+    }
+
+    if (event.code) {
+      return KEYBOARD_KEYS[event.code];
+    }
+
+    return event.key.charAt(0) || 0;
   }
 }

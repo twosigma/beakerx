@@ -30,7 +30,7 @@ import RowManager from "./row/RowManager";
 import CellSelectionManager from "./cell/CellSelectionManager";
 import CellManager from "./cell/CellManager";
 import {DataGridHelpers} from "./dataGridHelpers";
-import EventManager from "./EventManager";
+import EventManager from "./event/EventManager";
 import { IMessageHandler, Message, MessageLoop } from '@phosphor/messaging';
 import CellFocusManager from "./cell/CellFocusManager";
 import {
@@ -52,6 +52,9 @@ import {selectColumnWidth} from "./column/selectors";
 import throttle = DataGridHelpers.throttle;
 import DataGridCell from "./cell/DataGridCell";
 import {COLUMN_TYPES} from "./column/enums";
+import disableKeyboardManager = DataGridHelpers.disableKeyboardManager;
+import enableKeyboardManager = DataGridHelpers.enableKeyboardManager;
+import enableNotebookEditMode = DataGridHelpers.enableNotebookEditMode;
 
 export class BeakerxDataGrid extends DataGrid {
   id: string;
@@ -75,6 +78,8 @@ export class BeakerxDataGrid extends DataGrid {
 
   cellHovered = new Signal<this, ICellData|null>(this);
   commSignal = new Signal<this, {}>(this);
+
+  static FOCUS_CSS_CLASS = 'bko-focused';
 
   constructor(options: DataGrid.IOptions, dataStore: BeakerxDataStore) {
     super(options);
@@ -192,6 +197,23 @@ export class BeakerxDataGrid extends DataGrid {
 
   setInitialSectionWidth(column) {
     this.setSectionWidth('column', column, this.getSectionWidth(column));
+  }
+
+  setFocus(focus: boolean) {
+    this.focused = focus;
+    enableNotebookEditMode();
+
+    if (focus) {
+      disableKeyboardManager();
+      this.node.classList.add(BeakerxDataGrid.FOCUS_CSS_CLASS);
+
+      return;
+    }
+
+    this.cellHovered.emit(null);
+    this.cellTooltipManager.hideTooltip();
+    this.node.classList.remove(BeakerxDataGrid.FOCUS_CSS_CLASS);
+    enableKeyboardManager();
   }
 
   private init(store: BeakerxDataStore) {

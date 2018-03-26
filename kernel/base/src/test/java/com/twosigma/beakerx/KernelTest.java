@@ -30,7 +30,6 @@ import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.PathToJar;
-import com.twosigma.beakerx.kernel.Repos;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandWhichThrowsException;
@@ -43,7 +42,7 @@ import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddDynam
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddJarMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddRepoMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathRemoveMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathResetMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathShowMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.HtmlAliasMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.HtmlMagicCommand;
@@ -136,9 +135,9 @@ public class KernelTest implements KernelFunctionality {
                     new ClasspathAddMvnMagicCommand(mavenResolverParam, this)),
             new MagicCommandType(ClassPathAddMvnCellMagicCommand.CLASSPATH_ADD_MVN_CELL, "<group name version>",
                     new ClassPathAddMvnCellMagicCommand(mavenResolverParam, this)),
+            addClasspathReset(this),
             addDynamic(this),
             addMagicCommandWhichThrowsException(),
-            new MagicCommandType(ClasspathRemoveMagicCommand.CLASSPATH_REMOVE, "<jar path>", new ClasspathRemoveMagicCommand(this)),
             new MagicCommandType(ClasspathShowMagicCommand.CLASSPATH_SHOW, "", new ClasspathShowMagicCommand(this)),
             new MagicCommandType(AddStaticImportMagicCommand.ADD_STATIC_IMPORT, "<classpath>", new AddStaticImportMagicCommand(this)),
             new MagicCommandType(AddImportMagicCommand.IMPORT, "<classpath>", new AddImportMagicCommand(this)),
@@ -149,6 +148,10 @@ public class KernelTest implements KernelFunctionality {
             new MagicCommandType(TimeItCellModeMagicCommand.TIMEIT_CELL, "", new TimeItCellModeMagicCommand(this)),
             new MagicCommandType(LoadMagicMagicCommand.LOAD_MAGIC, "", new LoadMagicMagicCommand(this))
     ));
+  }
+
+  private static MagicCommandType addClasspathReset(KernelFunctionality kernel) {
+    return new MagicCommandType(ClasspathResetMagicCommand.CLASSPATH_RESET, "", new ClasspathResetMagicCommand(kernel));
   }
 
   private static MagicCommandType addDynamic(KernelFunctionality kernel) {
@@ -225,16 +228,6 @@ public class KernelTest implements KernelFunctionality {
   @Override
   public Imports getImports() {
     return this.evaluatorManager.getImports();
-  }
-
-  @Override
-  public Repos getRepos() {
-    return evaluatorManager.getRepos();
-  }
-
-  @Override
-  public String addRepo(String name, String url) {
-    return evaluatorManager.addRepo(name, url);
   }
 
   @Override

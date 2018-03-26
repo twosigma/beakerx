@@ -135,6 +135,7 @@ public class Output extends DOMWidget {
   }
 
   public void display(Widget widget) {
+    widget.beforeDisplay();
     HashMap<String, Serializable> content = new HashMap<>();
     HashMap<String, Serializable> vendor = new HashMap<>();
     vendor.put(MODEL_ID, widget.getComm().getCommId());

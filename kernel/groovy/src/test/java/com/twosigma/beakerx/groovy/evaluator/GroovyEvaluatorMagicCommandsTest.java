@@ -52,7 +52,7 @@ public class GroovyEvaluatorMagicCommandsTest {
             "Demo demo = new Demo();\n" +
             "demo.getObjectTest()\n";
     TryResult seo = runCode(code);
-    assertThat(seo.error()).contains("MultipleCompilationErrorsException:");
+    assertThat(seo.error()).contains("unable to resolve class");
     //when
     PathToJar path = new PathToJar(SRC_TEST_RESOURCES + "demo.jar");
     groovyEvaluator.addJarsToClasspath(singletonList(path));

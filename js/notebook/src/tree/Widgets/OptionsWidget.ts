@@ -43,12 +43,9 @@ export default class OptionsWidget extends TabPanel {
     this._models.jvm = jvmOptionsWidget.model;
     this.addWidget(jvmOptionsWidget);
 
-    if (false === isLab) {
-      let uiOptionsWidget = new UIOptionsWidget();
-      this._models.ui = new UIOptionsModel(uiOptionsWidget);
-      this.addWidget(uiOptionsWidget);
-    }
-
+    let uiOptionsWidget = new UIOptionsWidget(isLab);
+    this._models.ui = new UIOptionsModel(uiOptionsWidget);
+    this.addWidget(uiOptionsWidget);
   }
 
   public get jvmOptionsModel(): JVMOptionsModel {

@@ -20,7 +20,6 @@ import { ContextMenu, Menu } from '@phosphor/widgets';
 import { CommandRegistry } from '@phosphor/commands';
 import { IDisposable } from '@phosphor/disposable';
 import MenuItem from "shared/interfaces/contextMenuItemInterface";
-import _ from 'underscore';
 import MenuInterface from '../shared/interfaces/menuInterface'
 
 interface addItem {
@@ -28,12 +27,13 @@ interface addItem {
 }
 
 export default abstract class BkoContextMenu implements MenuInterface {
+  event: MouseEvent;
+
   protected scope: any;
   protected commands: CommandRegistry;
   protected menuItems: Menu.IItem[] = [];
   protected inLab: boolean;
   protected disposables: IDisposable[] = [];
-  protected event: MouseEvent;
 
   public contextMenu: ContextMenu;
 
@@ -93,7 +93,7 @@ export default abstract class BkoContextMenu implements MenuInterface {
 
   protected createMenuItem(menuItem: MenuItem, menu: addItem): void {
     const subitems = (typeof menuItem.items == 'function') ? menuItem.items() : menuItem.items;
-    const hasSubitems = _.isArray(subitems) && subitems.length;
+    const hasSubitems = Array.isArray(subitems) && subitems.length;
 
     menuItem.separator && this.addSeparatorItem(menuItem, menu);
     !hasSubitems && this.menuItems.push(this.addMenuItem(menuItem, menu));

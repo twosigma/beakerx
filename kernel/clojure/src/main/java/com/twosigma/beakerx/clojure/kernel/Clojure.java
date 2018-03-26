@@ -36,6 +36,8 @@ import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandTypesFactory;
+import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 import jupyter.Displayer;
@@ -77,6 +79,13 @@ public class Clojure extends Kernel {
       ClojureEvaluator evaluator = new ClojureEvaluator(id, id, getKernelParameters());
       return new Clojure(id, evaluator, kernelSocketsFactory);
     });
+  }
+
+  @Override
+  protected void configureMagicCommands() {
+    super.configureMagicCommands();
+    ClasspathAddMvnMagicCommand mvnMagicCommand = MagicCommandTypesFactory.getClasspathAddMvnMagicCommand(this);
+    mvnMagicCommand.addRepo("clojureRepo", "https://clojars.org/repo");
   }
 
   @Override

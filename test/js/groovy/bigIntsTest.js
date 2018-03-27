@@ -36,7 +36,7 @@ describe('Large Integers in Tables ', function () {
 
   describe('UI options. ', function () {
     it("Disable PhosphorJS DataGrid for TableDisplay Widget. ", function () {
-      beakerxPO.setDataGridForTable(false);
+      beakerxPO.setDataGridForTable(false, false);
     });
   });
 

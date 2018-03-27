@@ -141,7 +141,7 @@ var LabPageObject = function () {
     browser.$$('li.p-TabBar-tab')[9].click();
   };
 
-  this.setDataGridForTable = function(isDataGrid){
+  this.setDataGridForTable = function(isDataGrid, closeUIWindow){
     browser.click('div.p-CommandPalette-itemLabel=BeakerX Options');
     var uiPanel = browser.$('div#beakerx-tree-widget');
     uiPanel.$$('li.p-TabBar-tab')[1].click();

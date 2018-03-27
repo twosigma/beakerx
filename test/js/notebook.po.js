@@ -112,7 +112,7 @@ var NotebookPageObject = function () {
     browser.window(browser.windowHandles().value[0]);
   };
 
-  this.setDataGridForTable = function(isDataGrid){
+  this.setDataGridForTable = function(isDataGrid, closeUIWindow){
     browser.window(browser.windowHandles().value[1]);
     browser.waitForEnabled('a#beakerx_tab');
     browser.click('a#beakerx_tab');
@@ -120,6 +120,9 @@ var NotebookPageObject = function () {
     var checkBox = browser.$('input#use_data_grid');
     if(checkBox.isSelected() ? !isDataGrid : isDataGrid){
       browser.click('input#use_data_grid');
+    }
+    if(closeUIWindow){
+      browser.window();
     }
     browser.window(browser.windowHandles().value[0]);
   };

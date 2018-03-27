@@ -25,6 +25,7 @@ describe('(Groovy) Testing Map Like Tables', function () {
     beakerxPO = new BeakerXPageObject();
     tableHelper = new TableHelperObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/groovy/MapLikeTableTest.ipynb');
+    beakerxPO.openUIWindow();
   });
 
   afterAll(function () {
@@ -33,7 +34,6 @@ describe('(Groovy) Testing Map Like Tables', function () {
 
   function checkHeaderValues(dtContainer, headerCellIndex, value) {
     var headers = tableHelper.getAllCellsOfTableHeader(dtContainer);
-
     expect(headers[headerCellIndex].getText()).toMatch(value);
   }
 
@@ -45,6 +45,12 @@ describe('(Groovy) Testing Map Like Tables', function () {
   }
 
   var cellIndex;
+
+  describe('UI options. ', function () {
+    it("Disable PhosphorJS DataGrid for TableDisplay Widget. ", function () {
+      beakerxPO.setDataGridForTable(false, false);
+    });
+  });
 
   describe('Table display', function () {
     it('A basic table is rendered correctly', function () {

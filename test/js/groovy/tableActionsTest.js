@@ -25,6 +25,7 @@ describe('Testing of table Actions ', function () {
     beakerxPO = new BeakerXPageObject();
     tableHelper = new TableHelperObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/groovy/TableActionsTest.ipynb');
+    beakerxPO.openUIWindow();
   }, 2);
 
   afterAll(function () {
@@ -37,6 +38,12 @@ describe('Testing of table Actions ', function () {
   };
 
   var cellIndex;
+
+  describe('UI options. ', function () {
+    it("Disable PhosphorJS DataGrid for TableDisplay Widget. ", function () {
+      beakerxPO.setDataGridForTable(false, false);
+    });
+  });
 
   describe('ContextMenuItem action ', function(){
     var rowIndex = 0;

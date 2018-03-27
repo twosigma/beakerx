@@ -18,7 +18,7 @@ import * as sinon from 'sinon';
 import { expect } from 'chai';
 import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
 import modelStateMock from "./mock/modelStateMock";
-import EventManager from "@beakerx/tableDisplay/dataGrid/EventManager";
+import EventManager from "@beakerx/tableDisplay/dataGrid/event/EventManager";
 import cellDataMock from "./mock/cellDataMock";
 import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
 
@@ -106,12 +106,13 @@ describe('EventManager', () => {
 
     const event = new KeyboardEvent('keydown', { key: 'ArrowUp', code: 'ArrowUp' });
 
+    dataGrid.setFocus(true);
     eventManager.handleKeyDown(event);
 
     expect(highlighterStub.calledOnce).to.be.true;
     expect(numStub.calledOnce).to.be.true;
     expect(arrowStub.calledOnce).to.be.true;
-    expect(columnStub.calledOnce).to.be.false
+    expect(columnStub.calledOnce).to.be.false;
 
     dataGrid.cellFocusManager.setFocusedCell(cellDataMock);
     eventManager.handleKeyDown(event);

@@ -64,6 +64,7 @@
     "webpack-merge": "^4.1.0"
   },
   "dependencies": {
+    "@jupyterlab/coreutils": "^1.0.10",
     "@phosphor/datagrid": "^0.1.5",
     "@phosphor/datastore": "^0.7.0",
     "@phosphor/widgets": "^1.5.0",

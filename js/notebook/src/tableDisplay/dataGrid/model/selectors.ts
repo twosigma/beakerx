@@ -21,6 +21,8 @@ import {ALL_TYPES} from "../dataTypes";
 import {TIME_UNIT_FORMATS} from "../../consts";
 import { createSelector } from 'reselect'
 
+export const DEFAULT_INDEX_COLUMN_NAME = 'index';
+
 export const selectModel = (state): IDataModelState => state.model;
 export const selectValues = (state) => selectModel(state).values;
 export const selectHasIndex = (state) => selectModel(state).hasIndex;
@@ -30,7 +32,8 @@ export const selectHeadersVertical = (state) => selectModel(state).headersVertic
 export const selectHeaderFontSize = (state) => selectModel(state).headerFontSize;
 export const selectDataFontSize = (state) => selectModel(state).dataFontSize;
 export const selectFontColor = (state) => selectModel(state).fontColor;
-export const selectColumnNames = (state) => selectModel(state).columnNames || [];
+export const selectRawColumnNames = (state) => selectModel(state).columnNames || [];
+export const selectColumnNames = createSelector(selectRawColumnNames, names => names.map(name => name !== null ? String(name) : null));
 export const selectColumnTypes = (state) => selectModel(state).types;
 export const selectColumnOrder = (state) => selectModel(state).columnOrder;
 export const selectColumnsVisible = (state) => selectModel(state).columnsVisible || {};
@@ -66,9 +69,10 @@ export const selectInitialColumnAlignment = createSelector(
 
 // Returns the map columnIndex => position
 export const selectInitialColumnPositions = createSelector(
-  [selectColumnOrder, selectColumnNames, selectColumnsVisible],
-  (columnOrder, columnNames, columnsVisible) => {
+  [selectColumnOrder, selectColumnNames, selectColumnsVisible, selectHasIndex],
+  (columnOrder, allColumnNames, columnsVisible, hasIndex) => {
   const hasInitialOrder = columnOrder && columnOrder.length > 0;
+  const columnNames = hasIndex ? allColumnNames.slice(1) : allColumnNames;
   const positions = columnNames.map((name, index) => index);
 
   if (hasInitialOrder) {
@@ -101,6 +105,10 @@ export const selectInitialColumnPositions = createSelector(
   positions.forEach((column: number, position: number) => {
     result[column] = position;
   });
+
+  if (hasIndex) {
+    result.unshift(0);
+  }
 
   return result;
 });

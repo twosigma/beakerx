@@ -43,7 +43,6 @@ export class BeakerxDataGridModel extends DataModel {
   headerRowsCount: number;
 
   static DEFAULT_INDEX_COLUMN_TYPE = ALL_TYPES[1]; // integer
-  static DEFAULT_INDEX_COLUMN_NAME = 'index';
 
   private _data: Array<any>;
 

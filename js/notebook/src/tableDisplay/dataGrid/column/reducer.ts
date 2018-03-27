@@ -188,11 +188,11 @@ function reduceColumnPosition(state, action) {
   order.splice(value, 0, columnIndex);
   order.forEach((index, position) => { resultPositions[index] = position; });
 
-  return reduceColumnsPosition(state, new DataGridColumnsAction(UPDATE_COLUMNS_POSITION, {
-    hasIndex,
-    value: resultPositions,
-    defaultValue: [0]
-  }));
+  const newState = new Map<string, IColumnState>(state);
+
+  resultPositions.forEach(updateColumnStateProperty(state, newState, 'position', COLUMN_TYPES.body));
+
+  return newState;
 }
 
 function createBodyColumnsOrderArray(state, columnType): number[] {

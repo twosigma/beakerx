@@ -27,7 +27,7 @@ import {
   selectHasIndex,
   selectInitialColumnPositions,
   selectStringFormatForColumn,
-  selectStringFormatForType, selectFormatForTimes
+  selectStringFormatForType, selectFormatForTimes, DEFAULT_INDEX_COLUMN_NAME
 } from "../model/selectors";
 import {BeakerxDataGridModel} from "../model/BeakerxDataGridModel";
 import {selectOutputColumnLimit} from "../column/selectors";
@@ -124,7 +124,7 @@ function addColumnNamesState(state: IBeakerxDataGridState) {
 
   return createColumnsState({
     value,
-    defaultValue: [BeakerxDataGridModel.DEFAULT_INDEX_COLUMN_NAME]
+    defaultValue: [DEFAULT_INDEX_COLUMN_NAME]
   }, state);
 }
 

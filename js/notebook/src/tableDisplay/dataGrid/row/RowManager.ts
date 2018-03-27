@@ -122,9 +122,9 @@ export default class RowManager {
 
     const agregationFn = (column: DataGridColumn) => {
       if (column.type === COLUMN_TYPES.index) {
-        this. expressionVars += `var ${column.name} = row.index;`;
+        this.expressionVars += `var col_${column.name} = row.index;`;
       } else {
-        this. expressionVars += `var ${column.name} = row.values[${column.index}];`;
+        this.expressionVars += `var col_${column.name} = row.values[${column.index}];`;
       }
     };
 

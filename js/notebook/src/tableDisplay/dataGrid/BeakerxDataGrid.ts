@@ -54,7 +54,6 @@ import DataGridCell from "./cell/DataGridCell";
 import {COLUMN_TYPES} from "./column/enums";
 import disableKeyboardManager = DataGridHelpers.disableKeyboardManager;
 import enableKeyboardManager = DataGridHelpers.enableKeyboardManager;
-import enableNotebookEditMode = DataGridHelpers.enableNotebookEditMode;
 
 export class BeakerxDataGrid extends DataGrid {
   id: string;

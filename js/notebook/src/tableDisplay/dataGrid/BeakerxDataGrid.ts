@@ -201,7 +201,6 @@ export class BeakerxDataGrid extends DataGrid {
 
   setFocus(focus: boolean) {
     this.focused = focus;
-    enableNotebookEditMode();
 
     if (focus) {
       disableKeyboardManager();

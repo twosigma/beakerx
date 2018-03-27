@@ -14,7 +14,21 @@
  *  limitations under the License.
  */
 
+import * as $ from "jquery";
+import "./shared/style/spark.scss";
+
 const widgets = require('./widgets');
+const accordion = require('jquery-ui/ui/widgets/accordion');
+
+interface IState {
+  done: number;
+  active: number;
+  numberOfTasks: number;
+  jobId: number;
+  stageId: number;
+  stageLink: string;
+  jobLink: string;
+}
 
 class SparkStateProgressModel extends widgets.VBoxModel {
   defaults() {
@@ -34,55 +48,105 @@ class SparkStateProgressModel extends widgets.VBoxModel {
         stageId: 0,
         stageLink: "",
         jobLink: ""
-      },
-      barDone_style: 'success',
-      barActive_style: 'info',
-      barWaiting: 'warning',
-      hide: false
+      }
     };
   }
 }
 
 class SparkStateProgressView extends widgets.VBoxView {
 
-  togglePanel: HTMLDivElement;
-  toggleButton: HTMLButtonElement;
-  jobPanel: HTMLDivElement;
-  stagePanel: HTMLDivElement;
-  jobLink: HTMLAnchorElement;
-  stageLink: HTMLAnchorElement;
-  progressPanel: HTMLDivElement;
-  progress: HTMLDivElement;
-  barDone: HTMLDivElement;
-  barActive: HTMLDivElement;
-  barWaiting: HTMLDivElement;
-  labelDone: HTMLLabelElement;
-  labelActive: HTMLLabelElement;
-  labelWaiting: HTMLLabelElement;
-  labelAll: HTMLLabelElement;
-  label1: HTMLLabelElement;
-  label2: HTMLLabelElement;
-  label3: HTMLLabelElement;
-
-  initialize(parameters) {
-    super.initialize(parameters);
-  }
-
   render() {
     super.render();
-    this.createSparkProgress();
-    this.update();
-    this.set_bar_style();
+    this.createWidget();
   }
 
   update() {
+    let progressBar = this.$el.find('.bx-spark-stageProgressBar');
+    let progressLabels = $(this.el).find('.bx-spark-stageProgressLabels');
+
     let state = this.model.get('state');
 
-    this.jobLink.href = state.jobLink;
-    this.jobLink.innerHTML = "Spark Job " + state.jobId;
-    this.stageLink.href = state.stageLink;
-    this.stageLink.innerHTML = "Stage " + state.stageId;
+    let max = state.numberOfTasks;
+    let valueDone = state.done;
+    let valueActive = state.active;
+    let valueWaiting = max - (valueDone + valueActive);
 
+    let percentDone = 100.0 * valueDone / max;
+    let percentActive = 100.0 * valueActive / max;
+    let percentWaiting = 100.0 - (percentDone + percentActive);
+
+    progressBar.find('.progress-bar-success').css({ width: `${percentDone}%` });
+    progressBar.find('.progress-bar-info').css({ width: `${percentActive}%` });
+    progressBar.find('.progress-bar-warning').css({ width: `${percentWaiting}%` });
+
+    progressLabels.find('.done').text(valueDone);
+    progressLabels.find('.active').text(valueActive);
+    progressLabels.find('.waiting').text(valueWaiting);
+    progressLabels.find('.all').text(max);
+
+    return super.update();
+  }
+
+  private createWidget(): void {
+    let widget: any = $('<div>', {
+      class: 'bx-spark-stateProgress'
+    }).append(
+      $('<h3>', { text: 'Spark Progress' }),
+      $('<div>').append(this.createJobPanel()),
+    );
+
+    widget.accordion({
+      active: 0,
+      collapsible: true,
+      heightStyle: "content",
+    });
+
+    widget.appendTo(this.el);
+  }
+
+  private createJobPanel(): JQuery<HTMLElement> {
+    let state: IState = this.model.get('state');
+
+    let jobLink = this.createJobLink(state);
+    let stagePanel = this.createStagePanel(state);
+
+    return $('<div>', {
+      class: 'panel panel-default bx-spark-jobPanel'
+    }).append(
+      $('<div>', { class: 'panel-heading' }).append(jobLink),
+      $('<div>', { class: 'panel-body container-fluid bx-spark-stagePanel' }).append(stagePanel)
+    );
+  }
+
+  private createJobLink(state: IState): JQuery<HTMLElement> {
+    return $('<a>', {
+      href: state.jobLink || '#',
+      target: '_blank',
+      text: `Spark Job ${state.jobId}`,
+    });
+  }
+
+  private createStagePanel(state: IState): JQuery<HTMLElement> {
+    let stageLink = this.createStageLink(state);
+    let progressBar = this.createStageProgressBar(state);
+    let progressLabels = this.createStageProgressLabels(state);
+
+    return $('<div>', { class: 'row' }).append(
+      $('<div>', { class: 'col-xs-2 text-right' }).append(stageLink),
+      $('<div>', { class: 'col-xs-6' }).append(progressBar),
+      $('<div>', { class: 'col-xs-4' }).append(progressLabels),
+    );
+  }
+
+  private createStageLink(state: IState): JQuery<HTMLElement> {
+    return $('<a>', {
+      href: state.stageLink || '#',
+      target: '_blank',
+      text: `Stage ${state.stageId}`,
+    });
+  }
+
+  private createStageProgressBar(state: IState): JQuery<HTMLElement> {
     let max = state.numberOfTasks;
     let valueDone = state.done;
     let valueActive = state.active;
@@ -91,183 +155,65 @@ class SparkStateProgressView extends widgets.VBoxView {
     let percentActive = 100.0 * valueActive / max;
     let percentWaiting = 100.0 - (percentDone + percentActive);
 
-    this.barDone.style.width = percentDone + '%';
-    this.barActive.style.width = percentActive + '%';
-    this.barWaiting.style.width = percentWaiting + '%';
-
-    this.labelDone.innerHTML = valueDone;
-    this.labelActive.innerHTML = valueActive;
-    this.labelWaiting.innerHTML = "" + (max - (valueDone + valueActive));
-    this.labelAll.innerHTML = max;
-
-    if (this.model.get('hide')) {
-        this.hideProgress();
-    }
-    return super.update();
+    return $('<div>', {
+      class: 'bx-spark-stageProgressBar progress',
+    }).append(
+      $('<div>', {
+        class: 'progress-bar progress-bar-success',
+        css: { width: `${percentDone}%` }
+      }),
+      $('<div>', {
+        class: 'progress-bar progress-bar-info',
+        css: { width: `${percentActive}%` }
+      }),
+      $('<div>', {
+        class: 'progress-bar progress-bar-warning',
+        css: { width: `${percentWaiting}%` }
+      }),
+    );
   }
 
-  private createSparkProgress() {
-    this.toggleButton = this.createToggleButton();
-    this.togglePanel = this.createTogglePanel(this.toggleButton);
-    this.el.appendChild(this.togglePanel);
+  private createStageProgressLabels(state: IState): JQuery<HTMLElement> {
+    let max = state.numberOfTasks;
+    let valueDone = state.done;
+    let valueActive = state.active;
+    let valueWaiting = max - (valueDone + valueActive);
 
-    this.stageLink = this.createStageLink();
-    this.progress = this.createProgress();
-    this.progressPanel = this.createProgressPanel(this.stageLink, this.progress);
-    this.stagePanel = this.createStagePanel(this.progressPanel);
-    this.jobLink = this.createJobLink();
-    this.jobPanel = this.createJobPanel(this.jobLink,this.stagePanel);
-    this.el.appendChild(this.jobPanel);
+    return $('<p>', {
+      class: 'bx-spark-stageProgressLabels',
+    }).append(
+      $('<span>', {
+        class: 'done label label-success',
+        title: "Done",
+        text: valueDone,
+      }),
+
+      " ",
+
+      $('<span>', {
+        class: 'active label label-info',
+        title: "Active",
+        text: valueActive,
+      }),
+
+      " ",
+
+      $('<span>', {
+        class: 'waiting label label-warning',
+        title: "Waiting",
+        text: valueWaiting,
+      }),
+
+      " ",
+
+      $('<span>', {
+        class: 'all label label-default',
+        title: "All tasks",
+        text: max,
+      }),
+    );
   }
 
-  private createJobLink(): HTMLAnchorElement {
-    let jobLink: HTMLAnchorElement = document.createElement("a");
-    jobLink.setAttribute("target","_blank");
-    return jobLink;
-  }
-
-  private createStagePanel(progressPanel: HTMLDivElement): HTMLDivElement {
-    let stagePanel: HTMLDivElement = document.createElement('div');
-    stagePanel.classList.add('widget-inline-hbox');
-    stagePanel.style.marginLeft = "40px";
-    stagePanel.style.display = 'block';
-    stagePanel.appendChild(progressPanel);
-    return stagePanel;
-  }
-
-  private createStageLink(): HTMLAnchorElement {
-    let stageLink: HTMLAnchorElement = document.createElement("a");
-    stageLink.style.marginRight = "4px";
-    stageLink.setAttribute("target","_blank");
-    return stageLink;
-  }
-
-  private createJobPanel(jobLink: HTMLAnchorElement,stagePanel: HTMLDivElement): HTMLDivElement {
-    let jobPanel = document.createElement('div');
-    jobPanel.style.marginLeft = "30px";
-    jobPanel.appendChild(jobLink);
-    jobPanel.appendChild(stagePanel);
-    return jobPanel;
-  }
-
-  private createLabels(progressPanel: HTMLDivElement) {
-    this.labelDone = document.createElement('label');
-    this.labelDone.setAttribute('title', "Done");
-    this.labelDone.style.color = "#4CAF50";
-    this.labelDone.style.marginLeft = "4px";
-
-    this.labelActive = document.createElement('label');
-    this.labelActive.setAttribute('title', "Active");
-    this.labelActive.style.color = "#00BCD4";
-
-    this.labelWaiting = document.createElement('label');
-    this.labelWaiting.setAttribute('title', "Waiting");
-    this.labelWaiting.style.color = "#FF9800";
-
-    this.labelAll = document.createElement('label');
-    this.labelAll.setAttribute('title', "All tasks");
-    this.label1 = document.createElement('label');
-    this.label1.innerHTML = "/";
-    this.label2 = document.createElement('label');
-    this.label2.innerHTML = "/";
-    this.label3 = document.createElement('label');
-    this.label3.innerHTML = "/";
-
-    progressPanel.appendChild(this.labelDone);
-    progressPanel.appendChild(this.label1);
-    progressPanel.appendChild(this.labelActive);
-    progressPanel.appendChild(this.label2);
-    progressPanel.appendChild(this.labelWaiting);
-    progressPanel.appendChild(this.label3);
-    progressPanel.appendChild(this.labelAll);
-  }
-
-  private createProgress(): HTMLDivElement {
-    let progress: HTMLDivElement = document.createElement('div');
-    progress.classList.add('progress');
-    progress.style.display = 'inline';
-
-    this.barDone = document.createElement('div');
-    this.barDone.setAttribute('title', "Done");
-    this.barDone.classList.add('progress-bar');
-    this.barDone.style.height = '100%';
-    progress.appendChild(this.barDone);
-
-    this.barActive = document.createElement('div');
-    this.barActive.setAttribute('title', "Active");
-    this.barActive.classList.add('progress-bar');
-    this.barActive.style.height = '100%';
-    progress.appendChild(this.barActive);
-
-    this.barWaiting = document.createElement('div');
-    this.barWaiting.setAttribute('title', "Waiting");
-    this.barWaiting.classList.add('progress-bar');
-    this.barWaiting.style.height = '100%';
-    progress.appendChild(this.barWaiting);
-    return progress;
-  }
-
-  private createTogglePanel(toggleButton: HTMLButtonElement): HTMLDivElement {
-    let togglePanel: HTMLDivElement = document.createElement('div');
-    togglePanel.appendChild(toggleButton);
-    return togglePanel;
-  }
-
-  private createProgressPanel(stageLink: HTMLAnchorElement, progress: HTMLDivElement): HTMLDivElement {
-    let progressPanel: HTMLDivElement = document.createElement("div");
-    progressPanel.classList.add('widget-hprogress');
-    progressPanel.classList.add('widget-inline-hbox');
-    progressPanel.style.display = 'inline-flex';
-
-    progressPanel.appendChild(stageLink);
-    progressPanel.appendChild(progress);
-    this.createLabels(progressPanel);
-    return progressPanel;
-  }
-
-  private createToggleButton(): HTMLButtonElement {
-    let toggleButton: HTMLButtonElement = document.createElement('button');
-    toggleButton.classList.add('fa-arrow-up');
-    toggleButton.innerHTML = "  Result";
-    toggleButton.classList.add('fa');
-    toggleButton.onclick = () => {
-      if (toggleButton.classList.contains("fa-arrow-down")) {
-        this.showProgress();
-      } else {
-        this.hideProgress();
-      }
-    };
-    return toggleButton;
-  }
-
-  private hideProgress() {
-    this.toggleButton.classList.remove('fa-arrow-up');
-    this.toggleButton.classList.remove('fa');
-    this.toggleButton.classList.add('fa-arrow-down');
-    this.toggleButton.classList.add('fa');
-    this.jobPanel.style.display = "none"
-  }
-
-  private showProgress() {
-    this.toggleButton.classList.remove('fa-arrow-down');
-    this.toggleButton.classList.remove('fa');
-    this.toggleButton.classList.add('fa-arrow-up');
-    this.toggleButton.classList.add('fa');
-    this.jobPanel.style.display = "inline"
-  }
-
-  set_bar_style() {
-    this.set_mapped_classes(SparkStateProgressView.class_map, 'barDone_style', this.barDone);
-    this.set_mapped_classes(SparkStateProgressView.class_map, 'barActive_style', this.barActive);
-    this.set_mapped_classes(SparkStateProgressView.class_map, 'barWaiting', this.barWaiting);
-  }
-
-  static class_map = {
-    success: ['progress-bar-success'],
-    info: ['progress-bar-info'],
-    warning: ['progress-bar-warning'],
-    danger: ['progress-bar-danger']
-  };
 }
 
 export default {

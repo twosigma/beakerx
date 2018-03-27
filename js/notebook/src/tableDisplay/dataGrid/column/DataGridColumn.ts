@@ -56,6 +56,7 @@ import {BeakerxDataStore} from "../store/dataStore";
 import {COLUMN_TYPES, SORT_ORDER} from "./enums";
 import {UPDATE_COLUMN_RENDERER} from "../model/reducer";
 import {RENDERER_TYPE} from "../interface/IRenderer";
+import DataGridCell from "../cell/DataGridCell";
 
 export default class DataGridColumn {
   index: number;
@@ -182,21 +183,25 @@ export default class DataGridColumn {
   }
 
   connectToHeaderCellHovered() {
-    this.dataGrid.headerCellHovered.connect(this.handleHeaderCellHovered);
+    this.dataGrid.cellHovered.connect(this.handleHeaderCellHovered);
   }
 
   handleHeaderCellHovered(sender: BeakerxDataGrid, data: ICellData) {
     const column = data && this.columnManager.getColumnByPosition(data.type, data.column);
 
-    if(!data || column !== this) {
-      this.menu.hideTrigger();
+    if (!data || column !== this || !DataGridCell.isHeaderCell(data)) {
       this.toggleDataTooltip(false);
+      this.menu.hideTrigger();
 
       return;
     }
 
     this.menu.showTrigger();
     this.toggleDataTooltip(true, data);
+  }
+
+  getAlignment() {
+    return selectColumnHorizontalAlignment(this.store.state, this);
   }
 
   setAlignment(horizontalAlignment: TextRenderer.HorizontalAlignment) {
@@ -226,10 +231,6 @@ export default class DataGridColumn {
 
   getState() {
     return selectColumnState(this.store.state, this);
-  }
-
-  getAlignment() {
-    return selectColumnHorizontalAlignment(this.store.state, this);
   }
 
   getVisible() {

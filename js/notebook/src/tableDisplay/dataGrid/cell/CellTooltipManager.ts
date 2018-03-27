@@ -20,6 +20,8 @@ import CellTooltip from "./CellTooltip";
 import {DEFAULT_GRID_PADDING} from "../style/dataGridStyle";
 import {selectColumnIndexByPosition} from "../column/selectors";
 import {COLUMN_TYPES} from "../column/enums";
+import {DataGridHelpers} from "../dataGridHelpers";
+import DataGridCell from "./DataGridCell";
 
 export default class CellTooltipManager {
   dataGrid: BeakerxDataGrid;
@@ -46,7 +48,7 @@ export default class CellTooltipManager {
 
   handleCellHovered(sender: BeakerxDataGrid, data: ICellData) {
     if (!data || data.type === COLUMN_TYPES.index) {
-      return this.tooltip.hide();
+      return this.hideTooltip();
     }
 
     if (this.isShown(data)) {

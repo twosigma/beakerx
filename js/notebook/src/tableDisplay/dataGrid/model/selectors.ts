@@ -52,12 +52,12 @@ export const selectTimeZone = (state) => selectModel(state).timeZone;
 export const selectInitialColumnAlignment = createSelector(
 [selectAlignmentForColumn, selectAlignmentForType, selectAlignmentByType],
 (alignmentForColumn, alignmentForType, alignmentByType) => {
-    if (alignmentForType) {
-      return getAlignmentByChar(alignmentForType);
-    }
-
     if (alignmentForColumn) {
       return getAlignmentByChar(alignmentForColumn);
+    }
+
+    if (alignmentForType) {
+      return getAlignmentByChar(alignmentForType);
     }
 
     return alignmentByType;

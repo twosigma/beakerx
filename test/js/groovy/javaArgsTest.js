@@ -22,7 +22,7 @@ describe('(Groovy) Java Properties and Heap Size tests', function () {
     beakerxPO = new BeakerXPageObject();
     beakerxPO.runJupyterRoot();
     beakerxPO.goToJVMOptions();
-    beakerxPO.setHeapSize('4');
+    beakerxPO.setHeapSize('5');
 
     if (!beakerxPO.getPropertyFormGroupByIndex(0)) {
       beakerxPO.addPropertyPair();
@@ -45,7 +45,7 @@ describe('(Groovy) Java Properties and Heap Size tests', function () {
 
       var output = beakerxPO.runCodeCellByIndex(cellIndex);
 
-      expect(output.$('.output_subarea').getText()).toBe('3.817865216');
+      expect(parseFloat(output.$('.output_subarea').getText()).toFixed(1)).toBe('3.8');
     });
 
     it('Correct property is set', function () {

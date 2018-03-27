@@ -82,8 +82,9 @@ export const selectColumnState = (
   column
 ) => selectColumnStateByKey(state, `${column.type}_${column.index}`);
 
-export const selectColumnDataTypeName = (state: IBeakerxDataGridState, column) => (
-  selectColumnState(state, column).dataTypeName
+export const selectColumnDataTypeName = createSelector(
+  [selectColumnState],
+  (state) => state.dataTypeName || ALL_TYPES[state.dataType]
 );
 
 export const selectColumnVisible = (state: IBeakerxDataGridState, column) => (

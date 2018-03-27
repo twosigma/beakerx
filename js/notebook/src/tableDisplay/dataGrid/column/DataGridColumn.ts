@@ -72,6 +72,7 @@ export default class DataGridColumn {
   minValue: any;
   maxValue: any;
   dataTypeTooltip: CellTooltip;
+  longestStringValue: string;
 
   constructor(options: IColumnOptions, dataGrid: BeakerxDataGrid, columnManager: ColumnManager) {
     this.index = options.index;
@@ -295,11 +296,22 @@ export default class DataGridColumn {
   getValueResolver(): Function {
     const dataType = this.getDataType();
 
-    if(dataType === ALL_TYPES.datetime || dataType === ALL_TYPES.time) {
-      return this.dateValueResolver;
-    }
+    switch (dataType) {
+      case ALL_TYPES.datetime:
+      case ALL_TYPES.time:
+        return this.dateValueResolver;
 
-    return this.defaultValueResolver;
+      case ALL_TYPES.double:
+      case ALL_TYPES['double with precision']:
+        return this.doubleValueResolver;
+
+      case ALL_TYPES.integer:
+      case ALL_TYPES.int64:
+        return this.integerValueResolver;
+
+      default:
+        return this.defaultValueResolver;
+    }
   }
 
   move(destination: number) {
@@ -326,9 +338,18 @@ export default class DataGridColumn {
   addMinMaxValues() {
     let valueResolver = this.getValueResolver();
     let valuesIterator = this.dataGrid.model.getColumnValuesIterator(this);
+    let dataType = this.getDataType();
     let minMax = minmax(valuesIterator, (a:any, b:any) => {
       let value1 = valueResolver(a);
       let value2 = valueResolver(b);
+
+      if (dataType === ALL_TYPES.string || dataType === ALL_TYPES['formatted integer'] || dataType === ALL_TYPES.html) {
+        let longer = a.length > b.length ? a : b;
+
+        if (!this.longestStringValue || this.longestStringValue.length < longer.length) {
+          this.longestStringValue = longer;
+        }
+      }
 
       if (value1 === value2) {
         return 0;
@@ -398,6 +419,14 @@ export default class DataGridColumn {
 
   private defaultValueResolver(value) {
     return value;
+  }
+
+  private doubleValueResolver(value) {
+    return parseFloat(value);
+  }
+
+  private integerValueResolver(value) {
+    return parseInt(value);
   }
 
   private onColumnsChanged(sender: ColumnManager, args: IBkoColumnsChangedArgs) {

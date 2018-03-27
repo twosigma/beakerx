@@ -19,7 +19,7 @@ import RowManager from "@beakerx/tableDisplay/dataGrid/row/RowManager";
 import {BeakerxDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
 import modelStateMock from "../mock/modelStateMock";
 import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
-import {SORT_ORDER} from "@beakerx/tableDisplay/dataGrid/column/enums";
+import {COLUMN_TYPES, SORT_ORDER} from "@beakerx/tableDisplay/dataGrid/column/enums";
 
 describe('RowManager', () => {
   const values = [[1,2,3,4], [5,6,7,8]];
@@ -31,6 +31,7 @@ describe('RowManager', () => {
 
   describe('hasIndex = false', () => {
     const rowManager = dataGrid.rowManager;
+    const column = dataGrid.columnManager.getColumnByName('test');
 
     it('should have rows property', () => {
       expect(rowManager).to.have.property('rows');
@@ -39,10 +40,8 @@ describe('RowManager', () => {
 
     it('should implement sort valueResolvers', () => {
       expect(rowManager).to.have.property('defaultValueResolver');
-      expect(rowManager).to.have.property('dateValueResolver');
       expect(rowManager).to.have.property('indexValueResolver');
       expect(typeof rowManager.defaultValueResolver).to.equal('function');
-      expect(typeof rowManager.dateValueResolver).to.equal('function');
       expect(typeof rowManager.indexValueResolver).to.equal('function');
     });
 
@@ -52,7 +51,8 @@ describe('RowManager', () => {
     });
 
     it('should sort rows', () => {
-      rowManager.sortRows(0, SORT_ORDER.DESC);
+      const column = dataGrid.columnManager.getColumnByName('test');
+      rowManager.sortRows(column, SORT_ORDER.DESC);
 
       expect(rowManager.getRow(0).values[0]).to.equal(5);
       expect(rowManager.getRow(1).values[0]).to.equal(1);
@@ -91,7 +91,8 @@ describe('RowManager', () => {
     });
 
     it('should sort rows', () => {
-      rowManager.sortRows(0, SORT_ORDER.DESC);
+      const column = dataGrid.columnManager.getColumnByIndex(COLUMN_TYPES.body, 0);
+      rowManager.sortRows(column, SORT_ORDER.DESC);
 
       expect(rowManager.getRow(0).values[0]).to.equal(6);
       expect(rowManager.getRow(1).values[0]).to.equal(2);

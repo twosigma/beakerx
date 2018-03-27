@@ -25,6 +25,7 @@ describe('Testing of table (python)', function () {
     beakerxPO = new BeakerXPageObject();
     tableHelper = new TableHelperObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/python/TableAPIPythonTest.ipynb');
+    beakerxPO.openUIWindow();
   });
 
   afterAll(function () {
@@ -47,6 +48,12 @@ describe('Testing of table (python)', function () {
   }
 
   var cellIndex;
+
+  describe('UI options. ', function () {
+    it("Disable PhosphorJS DataGrid for TableDisplay Widget. ", function () {
+      beakerxPO.setDataGridForTable(false, false);
+    });
+  });
 
   describe("Data types for TableDisplay", function(){
 

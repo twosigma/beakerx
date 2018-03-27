@@ -28,6 +28,7 @@ describe('Publish plot groovy notebook js', function () {
     plotHelper = new PlotHelperObject();
     tableHelper = new TableHelperObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/nbviewer/PlotNbviewerTest.ipynb');
+    beakerxPO.openUIWindow();
   }, 2);
 
   afterAll(function () {
@@ -41,6 +42,12 @@ describe('Publish plot groovy notebook js', function () {
       return (dtContainers.length > 10) ;
     }, 60000, 'expected 11 cells outputs are not exist');
   }
+
+  describe('UI options. ', function () {
+    it("Disable PhosphorJS DataGrid for TableDisplay Widget. ", function () {
+      beakerxPO.setDataGridForTable(false, true);
+    });
+  });
 
   describe('Run all cells on local notebook', function () {
     it('(local notebook) should run all cells ', function () {

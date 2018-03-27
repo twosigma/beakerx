@@ -25,10 +25,17 @@ describe('SQL base tests ', function () {
     beakerxPO = new BeakerXPageObject();
     tableHelper = new TableHelperObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/sql/SQLTest.ipynb');
+    beakerxPO.openUIWindow();
   }, 2);
 
   afterAll(function () {
     beakerxPO.closeAndHaltNotebook();
+  });
+
+  describe('UI options. ', function () {
+    it("Disable PhosphorJS DataGrid for TableDisplay Widget. ", function () {
+      beakerxPO.setDataGridForTable(false, false);
+    });
   });
 
   describe('Create and select table (H2 database) ', function () {

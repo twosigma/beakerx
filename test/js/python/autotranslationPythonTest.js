@@ -41,15 +41,10 @@ describe('Autotranslation Python to JavaScript and D3 ', function () {
   };
 
   describe('(Python kernel) Init data on python ', function(){
-    it('Output contains data table ', function(){
+    it("Cell doesn't have output ", function(){
       cellIndex = 0;
-      beakerxPO.runCodeCellByIndex(cellIndex);
-      waitTableElement(cellIndex);
-      var dtContainer = beakerxPO.getDtContainerByIndex(cellIndex);
-      expect(tableHelper.getCellOfTableHeader(dtContainer, 1).getText()).toMatch(/radius/);
-      expect(tableHelper.getCellOfTableHeader(dtContainer, 2).getText()).toMatch(/color/);
-      expect(tableHelper.getCellOfTableBody(dtContainer, 1, 1).getText()).toMatch(/10/);
-      expect(tableHelper.getCellOfTableBody(dtContainer, 1, 2).getText()).toMatch(/20/);
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      expect(beakerxPO.getAllOutputAreaChildren(codeCell).length).toBe(0);
     });
   });
 

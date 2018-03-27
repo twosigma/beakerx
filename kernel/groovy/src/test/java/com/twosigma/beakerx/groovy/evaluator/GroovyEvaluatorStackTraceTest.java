@@ -59,7 +59,7 @@ public class GroovyEvaluatorStackTraceTest {
     //then
     assertThat(evaluate.isError()).isTrue();
     System.out.println(evaluate.error());
-    assertThat(evaluate.error()).startsWith("unable to resolve class IntSlider  @ line 1, column 1.");
+    assertThat(evaluate.error()).contains("unable to resolve class IntSlider");
   }
 
 //  @Test

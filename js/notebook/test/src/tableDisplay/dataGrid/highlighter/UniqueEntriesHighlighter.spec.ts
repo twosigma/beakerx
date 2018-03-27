@@ -26,7 +26,7 @@ import { HIGHLIGHTER_TYPE } from "@beakerx/tableDisplay/dataGrid/interface/IHigh
 import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
 
 describe('UniqueEntriesHighlighter', () => {
-  const dataStore = createStore(modelStateMock);
+  const dataStore = createStore({ ...modelStateMock, types: ['double', 'double']});
   const dataGrid = new BeakerxDataGrid({}, dataStore);
   const column = new DataGridColumn(
     columnOptionsMock,

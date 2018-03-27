@@ -313,7 +313,7 @@ export class BeakerxDataGrid extends DataGrid {
   private getSectionWidth(column) {
     const value = String(column.formatFn(this.cellManager.createCellConfig({
       region: 'body',
-      value: column.maxValue,
+      value: column.longestStringValue || column.maxValue,
       column: column.index,
       row: 0,
     })));

@@ -71,7 +71,7 @@ export default abstract class HeaderMenu implements MenuInterface {
     this.triggerNode.style.left = `${this.dataGrid.getColumnOffset(
       selectColumnPosition(this.dataGrid.store.state, this.column),
       this.column.type
-    )}px`;
+    ) - this.dataGrid.scrollX}px`;
   }
 
   showTrigger(): void {

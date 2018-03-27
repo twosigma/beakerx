@@ -68,23 +68,21 @@ export default class RowManager {
     this.sortedBy = column;
 
     if (column.type === COLUMN_TYPES.index || sortOrder === SORT_ORDER.NO_SORT) {
-      return this.sortRows(column.index, sortOrder, this.indexValueResolver);
+      return this.sortRows(column, sortOrder, this.indexValueResolver);
     }
 
-    if (column.getDataType() === ALL_TYPES.datetime || column.getDataType() === ALL_TYPES.time) {
-      return this.sortRows(column.index, sortOrder, this.dateValueResolver);
-    }
-
-    return this.sortRows(column.index, sortOrder);
+    return this.sortRows(column, sortOrder);
   }
 
-  sortRows(columnIndex: number, sortOrder: SORT_ORDER, valueResolver?: Function): void {
+  sortRows(column: DataGridColumn, sortOrder: SORT_ORDER, valueResolver?: Function): void {
     const shouldReverse = sortOrder === SORT_ORDER.DESC;
     const resolverFn = valueResolver ? valueResolver : this.defaultValueResolver;
+    const columnValueResolver = column.getValueResolver();
+    const columnIndex = column.index;
 
     this.rows = this.rows.sort((row1, row2) => {
-      let value1 = resolverFn(row1, columnIndex);
-      let value2 = resolverFn(row2, columnIndex);
+      let value1 = columnValueResolver(resolverFn(row1, columnIndex));
+      let value2 = columnValueResolver(resolverFn(row2, columnIndex));
       let result = 0;
 
       if (value1 > value2) {
@@ -107,10 +105,6 @@ export default class RowManager {
 
   defaultValueResolver(row: DataGridRow, columnIndex: number) {
     return row.values[columnIndex];
-  }
-
-  dateValueResolver(row, columnIndex: number) {
-    return row.values[columnIndex].timestamp;
   }
 
   indexValueResolver(row, columnIndex: number) {

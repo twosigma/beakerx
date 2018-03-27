@@ -43,4 +43,14 @@ describe('DataGridHelpers', () => {
     expect(DataGridHelpers.truncateString(testObject)).to.equal(testObject);
   });
 
+  it('should implement isUrl method', () => {
+    expect(DataGridHelpers.isUrl('testString')).to.be.false;
+    expect(DataGridHelpers.isUrl('a/b')).to.be.false;
+    expect(DataGridHelpers.isUrl('/a/b')).to.be.false;
+    expect(DataGridHelpers.isUrl('//a/b')).to.be.false;
+    expect(DataGridHelpers.isUrl('www.a.b')).to.be.false;
+    expect(DataGridHelpers.isUrl('http://a/b')).to.be.true;
+    expect(DataGridHelpers.isUrl('ftp://a/b')).to.be.true;
+  });
+
 });

@@ -893,6 +893,7 @@ define([
         context.drawImage(image, 0, 0, canvas.width, canvas.height);
         download(canvas.toDataURL("image/png"), fileName);
         context.clearRect(0, 0, canvas.width, canvas.height);
+        image.remove();
       };
 
       image.src = imgsrc;

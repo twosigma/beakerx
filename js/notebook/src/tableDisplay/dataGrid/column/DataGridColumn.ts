@@ -57,7 +57,6 @@ import {COLUMN_TYPES, SORT_ORDER} from "./enums";
 import {UPDATE_COLUMN_RENDERER} from "../model/reducer";
 import {RENDERER_TYPE} from "../interface/IRenderer";
 import DataGridCell from "../cell/DataGridCell";
-import {DataGridHelpers} from "../dataGridHelpers";
 
 export default class DataGridColumn {
   index: number;

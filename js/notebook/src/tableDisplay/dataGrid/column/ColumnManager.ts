@@ -15,7 +15,7 @@
  */
 
 import DataGridColumn from "./DataGridColumn";
-import { ITriggerOptions } from "../headerMenu/HeaderMenu";
+import {default as HeaderMenu, ITriggerOptions} from "../headerMenu/HeaderMenu";
 import { CellRenderer } from "@phosphor/datagrid";
 import { chain, find } from '@phosphor/algorithm'
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
@@ -42,8 +42,7 @@ export interface IBkoColumnsChangedArgs {
 }
 
 export enum COLUMN_CHANGED_TYPES {
-  'columnSort',
-  'columnMove'
+  'columnSort'
 }
 
 export default class ColumnManager {
@@ -259,18 +258,11 @@ export default class ColumnManager {
   }
 
   private addColumn(name, index, type) {
-    let menuOptions: ITriggerOptions = {
-      x: this.dataGrid.getColumnOffset(index, type),
-      y: 0,
-      width: this.dataGrid.baseColumnHeaderSize,
-      height: this.dataGrid.baseColumnHeaderSize
-    };
-
     let column = new DataGridColumn({
-      index,
       name,
-      menuOptions,
+      index,
       type,
+      menuOptions: { x: this.dataGrid.getColumnOffset(index, type), y: 0 },
     }, this.dataGrid, this);
 
     this.columns[type].push(column);

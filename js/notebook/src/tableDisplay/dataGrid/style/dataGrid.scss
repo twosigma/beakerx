@@ -41,6 +41,7 @@ $sortDescendingIconWhite: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4
 
   .bko-menu {
     opacity: 1;
+    padding: 0;
 
     &:hover {
       background-color: $highlightBlue;
@@ -50,7 +51,7 @@ $sortDescendingIconWhite: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4
     &.sorting_asc,
     &.sorting_desc {
       background-size: 8px;
-      background-position: 1px center;
+      background-position: 3px center;
     }
 
     &.sorting_asc {

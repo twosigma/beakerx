@@ -118,7 +118,7 @@ export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
         dataGrid.columnManager.resetFilters();
         dataGrid.columnManager.showAllColumns();
         dataGrid.columnManager.resetColumnsAlignment();
-        dataGrid.columnManager.resetColumnsOrder();
+        dataGrid.columnManager.resetColumnPositions();
         dataGrid.setInitialSize();
       }
     }

@@ -23,6 +23,13 @@ import {ICellData} from "../interface/ICell";
 import {DataGridHelpers} from "../dataGridHelpers";
 import isUrl = DataGridHelpers.isUrl;
 
+interface ICellDataOptions {
+  row: number,
+  column: number,
+  value: any,
+  region: DataModel.CellRegion
+}
+
 export default class CellManager {
   dataGrid: BeakerxDataGrid;
   hoveredCellData: ICellData;
@@ -170,19 +177,18 @@ export default class CellManager {
   };
 
   createCellConfig(
-    options: { row: number, column: number, value: any, region: DataModel.CellRegion }
+    { row = 0, column = 0, value = 0, region = 'body' }: ICellDataOptions|ICellData
   ): CellRenderer.ICellConfig {
     return {
-      region: '',
-      row: 0,
-      column: 0,
-      value: 0,
+      row,
+      column,
+      region,
+      value,
       x: 0,
       y: 0,
       metadata: {},
       width: 0,
-      height: 0,
-      ...options
+      height: 0
     }
   }
 

@@ -26,10 +26,12 @@ import throttle = DataGridHelpers.throttle;
 import isUrl = DataGridHelpers.isUrl;
 import getEventKeyCode = DataGridHelpers.getEventKeyCode;
 import {KEYBOARD_KEYS} from "./enums";
+import {ICellData} from "../interface/ICell";
 
 export default class EventManager {
   dataGrid: BeakerxDataGrid;
   store: BeakerxDataStore;
+  pressData: ICellData|null;
 
   constructor(dataGrid: BeakerxDataGrid) {
     this.store = dataGrid.store;
@@ -40,15 +42,15 @@ export default class EventManager {
     this.handleDoubleClick = this.handleDoubleClick.bind(this);
     this.handleHeaderClick = this.handleHeaderClick.bind(this);
     this.handleBodyClick = this.handleBodyClick.bind(this);
-    this.handleClick = this.handleClick.bind(this);
+    this.handleMouseUp = this.handleMouseUp.bind(this);
     this.handleCellHover = throttle<MouseEvent, void>(this.handleCellHover.bind(this), 100);
 
     this.dataGrid.node.removeEventListener('mouseout', this.handleMouseOut);
     this.dataGrid.node.addEventListener('mouseout', this.handleMouseOut);
     this.dataGrid.node.removeEventListener('dblclick', this.handleDoubleClick);
     this.dataGrid.node.addEventListener('dblclick', this.handleDoubleClick);
-    this.dataGrid.node.removeEventListener('mouseup', this.handleClick);
-    this.dataGrid.node.addEventListener('mouseup', this.handleClick);
+    this.dataGrid.node.removeEventListener('mouseup', this.handleMouseUp);
+    this.dataGrid.node.addEventListener('mouseup', this.handleMouseUp);
     this.dataGrid['_vScrollBar'].node.addEventListener('mousedown', this.handleMouseDown);
     this.dataGrid['_hScrollBar'].node.addEventListener('mousedown', this.handleMouseDown);
     this.dataGrid['_scrollCorner'].node.addEventListener('mousedown', this.handleMouseDown);
@@ -78,9 +80,15 @@ export default class EventManager {
     document.removeEventListener('keydown', this.handleKeyDown);
   }
 
-  private handleClick(event: MouseEvent) {
+  setPressData(data) {
+    this.pressData = data;
+  }
+
+  private handleMouseUp(event: MouseEvent) {
     this.handleHeaderClick(event);
     this.handleBodyClick(event);
+    this.setPressData(null);
+    this.toggleGrabbing(false);
   }
 
   private handleBodyClick(event: MouseEvent) {
@@ -105,11 +113,30 @@ export default class EventManager {
   }
 
   private handleMouseDown(event: MouseEvent): void {
-    if (event.button !== 0) {
+    if (event.buttons !== 1) {
       return;
     }
 
     !this.dataGrid.focused && this.dataGrid.setFocus(true);
+
+    if (!this.isHeaderClicked(event)) {
+      return;
+    }
+
+    const data = this.dataGrid.getCellData(event.clientX, event.clientY);
+
+    if (data.region === 'corner-header') {
+      return;
+    }
+
+    this.setPressData(data);
+    this.toggleGrabbing(true);
+  }
+
+  private toggleGrabbing(enable: boolean) {
+    enable
+      ? this.dataGrid.node.classList.add('grabbing')
+      : this.dataGrid.node.classList.remove('grabbing');
   }
 
   private handleMouseOut(event: MouseEvent): void {
@@ -133,11 +160,7 @@ export default class EventManager {
   }
 
   private handleHeaderClick(event: MouseEvent): void {
-    if (
-      !this.dataGrid.isOverHeader(event)
-      || event.buttons !== 0
-      || event.target !== this.dataGrid['_canvas']
-    ) {
+    if (!this.isHeaderClicked(event)) {
       return;
     }
 
@@ -150,6 +173,14 @@ export default class EventManager {
     const destColumn = this.dataGrid.columnManager.getColumnByPosition(data.type, data.column);
 
     destColumn.toggleSort();
+  }
+
+  private isHeaderClicked(event) {
+    return (
+      this.dataGrid.isOverHeader(event)
+      && event.buttons === 1
+      && event.target === this.dataGrid['_canvas']
+    );
   }
 
   private handleKeyDown(event: KeyboardEvent): void {

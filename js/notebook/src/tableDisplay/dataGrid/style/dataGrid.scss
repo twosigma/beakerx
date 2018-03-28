@@ -35,6 +35,13 @@ $tooltipTransition: opacity 300ms ease-in-out 300ms;
   border: 1px solid white;
   font-family: "Lato", Helvetica, sans-serif;
 
+  &.grabbing * {
+    cursor: move !important;
+    cursor: grabbing !important;
+    cursor: -moz-grabbing !important;
+    cursor: -webkit-grabbing !important;
+  }
+
   .bko-menu {
     opacity: 1;
 

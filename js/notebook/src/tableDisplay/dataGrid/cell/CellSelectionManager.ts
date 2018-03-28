@@ -157,7 +157,11 @@ export default class CellSelectionManager {
   }
 
   private handleBodyCellHover(event: MouseEvent) {
-    if (event.buttons !== 1 || this.dataGrid.isOverHeader(event)) {
+    if (
+      event.buttons !== 1
+      || this.dataGrid.eventManager.pressData
+      || this.dataGrid.isOverHeader(event)
+    ) {
       return;
     }
 
@@ -171,7 +175,7 @@ export default class CellSelectionManager {
   }
 
   private handleMouseUp(event: MouseEvent) {
-    if (this.dataGrid.isOverHeader(event)) {
+    if (this.dataGrid.isOverHeader(event) || this.dataGrid.eventManager.pressData) {
       return;
     }
 

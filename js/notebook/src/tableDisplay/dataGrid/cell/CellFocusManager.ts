@@ -50,6 +50,12 @@ export default class CellFocusManager {
       case KEYBOARD_KEYS.ArrowDown:
         this.setDownFocusedCell();
         break;
+      case KEYBOARD_KEYS.PageUp:
+        this.setPageUpFocusedCell();
+        break;
+      case KEYBOARD_KEYS.PageDown:
+        this.setPageDownFocusedCell();
+        break;
     }
 
     this.dataGrid.repaint();
@@ -126,4 +132,13 @@ export default class CellFocusManager {
     });
   }
 
+  private setPageUpFocusedCell() {
+    // TODO move by page
+    this.setUpFocusedCell();
+  }
+
+  private setPageDownFocusedCell() {
+    // TODO move by page
+    this.setDownFocusedCell();
+  }
 }

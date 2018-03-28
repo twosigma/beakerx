@@ -64,6 +64,11 @@ $tooltipTransition: opacity 300ms ease-in-out 300ms;
       }
     }
   }
+
+  .rows-to-display-menu {
+    position: absolute;
+    bottom: 0;
+  }
 }
 
 .p-DataGrid-tooltip {

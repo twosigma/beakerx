@@ -22,7 +22,7 @@ import MenuItem from '../../../shared/interfaces/menuItemInterface';
 import MenuInterface from '../../../shared/interfaces/menuInterface';
 import DataGridColumn from "../column/DataGridColumn";
 import {selectColumnPosition} from "../column/selectors";
-import {SORT_ORDER} from "../column/enums";
+import {COLUMN_TYPES, SORT_ORDER} from "../column/enums";
 import {DataGridHelpers} from "../dataGridHelpers";
 import getEventKeyCode = DataGridHelpers.getEventKeyCode;
 import {KEYBOARD_KEYS} from "../event/enums";
@@ -68,10 +68,12 @@ export default abstract class HeaderMenu implements MenuInterface {
   protected abstract buildMenu(): void
 
   updateTriggerPosition() {
+    const scrollCompensation = this.column.type !== COLUMN_TYPES.index ? this.dataGrid.scrollX : 0;
+
     this.triggerNode.style.left = `${this.dataGrid.getColumnOffset(
       selectColumnPosition(this.dataGrid.store.state, this.column),
       this.column.type
-    ) - this.dataGrid.scrollX}px`;
+    ) - scrollCompensation}px`;
   }
 
   showTrigger(): void {

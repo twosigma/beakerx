@@ -15,9 +15,7 @@
  */
 package com.twosigma.beakerx.kernel;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.reflect.ClassPath;
-
+import com.twosigma.beakerx.util.ClassPath;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -26,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 import static com.twosigma.beakerx.kernel.AddImportStatus.ADDED;
 import static com.twosigma.beakerx.kernel.AddImportStatus.EXISTS;
 
@@ -172,8 +170,7 @@ public class Imports {
   private boolean isValidImportWithWildcard(String importToCheck, ClassLoader classLoader) {
     try {
       String packageWithoutWildcard = importToCheck.substring(0, importToCheck.lastIndexOf("."));
-      ImmutableSet<ClassPath.ClassInfo> topLevelClasses = ClassPath.from(classLoader).getTopLevelClasses(packageWithoutWildcard);
-      return !topLevelClasses.isEmpty();
+      return ClassPath.from(classLoader).packageExists(packageWithoutWildcard);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

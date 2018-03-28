@@ -15,14 +15,16 @@
  */
 package com.twosigma.beakerx.mimetype;
 
-import com.google.common.io.ByteStreams;
-import com.google.common.io.Files;
+import com.twosigma.beakerx.util.ByteStreams;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
@@ -124,7 +126,7 @@ public class MIMEContainer {
   }
 
   public static MIMEContainer VimeoVideo(String id) {
-    return VimeoVideo(id, 400,300);
+    return VimeoVideo(id, 400, 300);
   }
 
   public static MIMEContainer VimeoVideo(String id, Object width, int height) {
@@ -133,7 +135,7 @@ public class MIMEContainer {
   }
 
   public static MIMEContainer ScribdDocument(String id) {
-    return ScribdDocument(id, 400,300);
+    return ScribdDocument(id, 400, 300);
   }
 
   public static MIMEContainer ScribdDocument(String id, Object width, int height) {
@@ -183,8 +185,8 @@ public class MIMEContainer {
     if (isValidURL(data.toString())) {
       bytes = ByteStreams.toByteArray((new URL(data.toString()).openStream()));
     } else if (exists(data.toString())) {
-      File imgFile = new File(data.toString());
-      bytes = Files.toByteArray(imgFile);
+      Path path = Paths.get(data.toString());
+      bytes = Files.readAllBytes(path);
     } else {
       throw new FileNotFoundException(data.toString() + " doesn't exist. ");
     }

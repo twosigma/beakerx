@@ -28,7 +28,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 
 public class HashedMessageAuthenticationCode {
 
@@ -39,7 +39,7 @@ public class HashedMessageAuthenticationCode {
   private SecretKeySpec spec;
 
   public HashedMessageAuthenticationCode(String key) {
-    checkNotNull(key, "No key specified");
+    checkNotNull(key);
     logger.debug("Using signing hmac: {}", key);
     spec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), TYPE);
   }

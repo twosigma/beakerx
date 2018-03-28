@@ -17,7 +17,7 @@ package com.twosigma.beakerx.kernel;
 
 import com.twosigma.beakerx.socket.KernelSocketsZMQ;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 
 public class KernelSocketsFactoryImpl implements KernelSocketsFactory {
 

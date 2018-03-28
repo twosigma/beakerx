@@ -15,8 +15,8 @@
  */
 package com.twosigma.beakerx.kernel;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
+import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
+import static com.twosigma.beakerx.util.Preconditions.checkState;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;

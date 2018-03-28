@@ -15,13 +15,12 @@
  */
 package org.abstractmeta.toolbox.compilation.compiler.impl;
 
-
-import com.google.common.io.Files;
 import org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler;
 import org.abstractmeta.toolbox.compilation.compiler.registry.JavaFileObjectRegistry;
 import org.abstractmeta.toolbox.compilation.compiler.registry.impl.JavaFileObjectRegistryImpl;
 import org.abstractmeta.toolbox.compilation.compiler.util.ClassPathUtil;
 import org.abstractmeta.toolbox.compilation.compiler.util.URIUtil;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -223,7 +222,7 @@ public class JavaSourceCompilerImpl implements JavaSourceCompiler {
         }
       }
       try {
-        Files.write(JavaCodeFileObject.class.cast(javaFileObject).getByteCode(), compiledClassFile);
+        FileUtils.writeByteArrayToFile(compiledClassFile, JavaCodeFileObject.class.cast(javaFileObject).getByteCode());
       } catch (IOException e) {
         throw new IllegalStateException("Failed to write to file " + compiledClassFile, e);
       }

@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.kernel.magic.command;
 
-import com.google.common.base.Preconditions;
+import com.twosigma.beakerx.util.Preconditions;
 import com.twosigma.beakerx.kernel.commands.MavenInvocationSilentOutputHandler;
 import com.twosigma.beakerx.kernel.commands.MavenJarResolverSilentLogger;
 import com.twosigma.beakerx.kernel.magic.command.functionality.MvnLoggerWidget;

@@ -53,7 +53,7 @@ export default class EventManager {
     this.dataGrid['_hScrollBar'].node.addEventListener('mousedown', this.handleMouseDown);
     this.dataGrid['_scrollCorner'].node.addEventListener('mousedown', this.handleMouseDown);
     document.removeEventListener('keydown', this.handleKeyDown);
-    document.addEventListener('keydown', this.handleKeyDown);
+    document.addEventListener('keydown', this.handleKeyDown, true);
 
     this.dataGrid.cellSelectionManager.bindEvents();
   }

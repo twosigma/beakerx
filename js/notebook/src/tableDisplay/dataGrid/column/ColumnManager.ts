@@ -136,7 +136,6 @@ export default class ColumnManager {
     this.bodyColumns.forEach(resetFilterFn);
     this.indexColumns.forEach(resetFilterFn);
     this.dataGrid.rowManager.filterRows();
-    this.dataGrid.repaint();
   }
 
   showFilters(column?: DataGridColumn) {

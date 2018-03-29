@@ -32,7 +32,7 @@ describe('ColumnFilter', () => {
     type: COLUMN_TYPES.body,
     index: 0,
     name: 'index',
-    menuOptions: { x: 0, y: 0, height: 20, width: 20 }
+    menuOptions: { x: 0, y: 0 }
   }, dataGrid, columnManager);
   const columnFilter = bodyDataGridColumn.columnFilter;
 
@@ -53,20 +53,20 @@ describe('ColumnFilter', () => {
 
   it('should show the filter input', () => {
     columnFilter.showFilterInput(false);
-    expect(columnFilter.filterNode.style.visibility).to.equal('visible');
+    expect(columnFilter.filterWidget.isHidden).to.be.false;
     expect(columnFilter.filterIcon.classList.contains('fa-filter')).to.be.true;
     expect(columnFilter.useSearch).to.be.false;
   });
 
   it('should show the search input', () => {
     columnFilter.showSearchInput(false);
-    expect(columnFilter.filterNode.style.visibility).to.equal('visible');
+    expect(columnFilter.filterWidget.isHidden).to.be.false;
     expect(columnFilter.filterIcon.classList.contains('fa-search')).to.be.true;
     expect(columnFilter.useSearch).to.be.true;
   });
 
   it('should hide the input', () => {
     columnFilter.hideInput();
-    expect(columnFilter.filterNode.style.visibility).to.equal('hidden');
+    expect(columnFilter.filterWidget.isHidden).to.be.true;
   });
 });

@@ -382,6 +382,7 @@ export default class DataGridColumn {
   destroy() {
     this.menu.destroy();
     this.dataTypeTooltip.hide();
+    this.columnFilter.destroy();
   }
 
   toggleDataBarsRenderer(enable?: boolean) {

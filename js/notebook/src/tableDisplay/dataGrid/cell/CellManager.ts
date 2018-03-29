@@ -50,7 +50,12 @@ export default class CellManager {
   }
 
   repaintRow(cellData) {
-    if(!cellData || isNaN(cellData.offset) || isNaN(cellData.offsetTop)) {
+    if(
+      !cellData
+      || isNaN(cellData.offset)
+      || isNaN(cellData.offsetTop)
+      || this.dataGrid.columnPosition.isDragging()
+    ) {
       return;
     }
 
@@ -195,7 +200,7 @@ export default class CellManager {
   private handleCellHovered(sender: BeakerxDataGrid, cellData: ICellData) {
     let cursor = this.dataGrid.viewport.node.style.cursor;
 
-    if (cursor.indexOf('resize') !== -1) {
+    if (cursor.indexOf('resize') !== -1 || this.dataGrid.columnPosition.isDragging()) {
       return;
     }
 

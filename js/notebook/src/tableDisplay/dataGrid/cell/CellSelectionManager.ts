@@ -131,14 +131,8 @@ export default class CellSelectionManager {
     return this.isSelected(config) ? this.selectedCellColor : '';
   }
 
-  bindEvents() {
-    this.dataGrid.node.addEventListener('mouseup', this.handleMouseUp.bind(this));
-    this.dataGrid.node.addEventListener('mousedown', this.handleMouseDown.bind(this));
-    this.dataGrid.node.addEventListener('mousemove', this.handleBodyCellHover.bind(this));
-  }
-
-  private handleMouseDown(event: MouseEvent) {
-    if (this.dataGrid.isOverHeader(event)) {
+  handleMouseDown(event: MouseEvent) {
+    if (this.dataGrid.isOverHeader(event) || this.dataGrid.columnPosition.isDragging()) {
       return;
     }
 
@@ -156,10 +150,10 @@ export default class CellSelectionManager {
     this.setStartCell(cellData);
   }
 
-  private handleBodyCellHover(event: MouseEvent) {
+  handleBodyCellHover(event: MouseEvent) {
     if (
       event.buttons !== 1
-      || this.dataGrid.eventManager.pressData
+      || this.dataGrid.columnPosition.isDragging()
       || this.dataGrid.isOverHeader(event)
     ) {
       return;
@@ -174,8 +168,8 @@ export default class CellSelectionManager {
     }
   }
 
-  private handleMouseUp(event: MouseEvent) {
-    if (this.dataGrid.isOverHeader(event) || this.dataGrid.eventManager.pressData) {
+  handleMouseUp(event: MouseEvent) {
+    if (this.dataGrid.isOverHeader(event) || this.dataGrid.columnPosition.isDragging()) {
       return;
     }
 

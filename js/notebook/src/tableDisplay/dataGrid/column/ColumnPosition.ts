@@ -22,15 +22,29 @@ import {DataGridColumnsAction} from "../store/DataGridAction";
 import {BeakerxDataStore} from "../store/dataStore";
 import {COLUMN_TYPES} from "./enums";
 import {selectColumnIndexByPosition} from "./selectors";
+import {DEFAULT_HIGHLIGHT_COLOR} from "../style/dataGridStyle";
 
 export default class ColumnPosition {
   dataGrid: BeakerxDataGrid;
   store: BeakerxDataStore;
+  grabbedCellData: ICellData|null;
+  dropCellData: ICellData|null;
 
   constructor(dataGrid: BeakerxDataGrid) {
     this.dataGrid = dataGrid;
     this.store = dataGrid.store;
     this.dataGrid.cellHovered.connect(this.handleCellHovered, this);
+  }
+
+  stopDragging() {
+    this.grabbedCellData = null;
+    this.dropCellData = null;
+    this.toggleGrabbing(false);
+    this.dataGrid.repaint();
+  }
+
+  isDragging() {
+    return !!this.grabbedCellData;
   }
 
   reset() {
@@ -53,8 +67,37 @@ export default class ColumnPosition {
     return this.dataGrid.columnManager.getColumnByIndex(columnType, columnIndex);
   }
 
+  grabColumn(data: ICellData) {
+    this.grabbedCellData = data;
+    this.toggleGrabbing(true);
+  }
+
+  dropColumn() {
+    if (!this.grabbedCellData || !this.dropCellData) {
+      return this.stopDragging();
+    }
+
+    this.moveColumn(this.grabbedCellData);
+    this.stopDragging();
+  }
+
+  private moveColumn(data: ICellData) {
+    const column = this.dataGrid.columnManager.getColumnByPosition(data.type, data.column);
+
+    column.move(this.dropCellData.column);
+
+    this.grabbedCellData = null;
+    this.dropCellData = null;
+  }
+
+  private toggleGrabbing(enable: boolean) {
+    enable
+      ? this.dataGrid.node.classList.add('grabbing')
+      : this.dataGrid.node.classList.remove('grabbing');
+  }
+
   private handleCellHovered(sender: BeakerxDataGrid, data: ICellData|null) {
-    const pressData = this.dataGrid.eventManager.pressData;
+    const pressData = this.grabbedCellData;
 
     if (
       !data
@@ -65,10 +108,8 @@ export default class ColumnPosition {
       return;
     }
 
-    this.dataGrid.eventManager.setPressData(data);
-    const srcColumn = this.dataGrid.columnManager.getColumnByPosition(pressData.type, pressData.column);
-    const destPosition = data.column;
-
-    srcColumn.move(destPosition);
+    this.dropCellData && this.dataGrid.colorizeColumnBorder(this.dropCellData.column, this.dataGrid.style.gridLineColor);
+    this.dataGrid.colorizeColumnBorder(data.column, DEFAULT_HIGHLIGHT_COLOR);
+    this.dropCellData = data;
   }
 }

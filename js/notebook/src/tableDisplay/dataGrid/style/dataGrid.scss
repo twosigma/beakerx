@@ -37,6 +37,7 @@ $tooltipTransition: opacity 300ms ease-in-out 300ms;
 
   &.grabbing * {
     cursor: move !important;
+    cursor: pointer !important;
     cursor: grabbing !important;
     cursor: -moz-grabbing !important;
     cursor: -webkit-grabbing !important;

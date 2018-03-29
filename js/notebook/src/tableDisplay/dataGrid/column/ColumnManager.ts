@@ -34,7 +34,6 @@ import {
   UPDATE_COLUMNS_FILTERS, UPDATE_COLUMNS_VISIBILITY
 } from "./reducer";
 import {COLUMN_TYPES, SORT_ORDER} from "./enums";
-import ColumnPosition from "./ColumnPosition";
 
 export interface IBkoColumnsChangedArgs {
   type: COLUMN_CHANGED_TYPES,
@@ -49,13 +48,11 @@ export enum COLUMN_CHANGED_TYPES {
 export default class ColumnManager {
   store: BeakerxDataStore;
   dataGrid: BeakerxDataGrid;
-  columnPosition: ColumnPosition;
   columns: IColumns = {};
   columnsChanged = new Signal<this, IBkoColumnsChangedArgs>(this);
 
   constructor(dataGrid: BeakerxDataGrid) {
     this.dataGrid = dataGrid;
-    this.columnPosition = new ColumnPosition(dataGrid);
     this.store = this.dataGrid.store;
   }
 
@@ -98,7 +95,7 @@ export default class ColumnManager {
   }
 
   getColumnByPosition(columnType: COLUMN_TYPES, position: number) {
-    return this.columnPosition.getColumnByPosition(columnType, position);
+    return this.dataGrid.columnPosition.getColumnByPosition(columnType, position);
   }
 
   getColumnByName(columnName: string): DataGridColumn|undefined {
@@ -202,7 +199,7 @@ export default class ColumnManager {
   }
 
   resetColumnPositions() {
-    this.columnPosition.reset();
+    this.dataGrid.columnPosition.reset();
   }
 
   resetColumnStates() {

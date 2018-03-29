@@ -173,6 +173,7 @@ export class BeakerxDataGrid extends DataGrid {
   }
 
   resize(args?: any): void {
+    this.updateWidgetHeight();
     this.resizeHeader();
     this.resizeSections();
     this.updateWidgetWidth();
@@ -199,6 +200,10 @@ export class BeakerxDataGrid extends DataGrid {
     this.fit();
   }
 
+  updateWidgetHeight() {
+    this.node.style.minHeight = `${this.getWidgetHeight()}px`;
+  }
+
   setInitialSectionWidth(column) {
     this.setSectionWidth('column', column, this.getSectionWidth(column));
   }
@@ -209,6 +214,7 @@ export class BeakerxDataGrid extends DataGrid {
     if (focus) {
       disableKeyboardManager();
       this.node.classList.add(BeakerxDataGrid.FOCUS_CSS_CLASS);
+      this.node.focus();
 
       return;
     }
@@ -232,10 +238,6 @@ export class BeakerxDataGrid extends DataGrid {
     this.canvasGC.lineTo(x - 0.5, height);
     this.canvasGC.strokeStyle = color;
     this.canvasGC.stroke();
-  }
-
-  updateWidgetHeight() {
-    this.node.style.minHeight = `${this.getWidgetHeight()}px`;
   }
 
   private init(store: BeakerxDataStore) {
@@ -375,5 +377,12 @@ export class BeakerxDataGrid extends DataGrid {
     }
 
     return true;
+  }
+
+  onAfterAttach(msg) {
+    super.onAfterAttach(msg);
+
+    this.columnManager.bodyColumns.forEach(column => column.columnFilter.attach(this.viewport.node));
+    this.columnManager.indexColumns.forEach(column => column.columnFilter.attach(this.viewport.node));
   }
 }

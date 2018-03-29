@@ -37,7 +37,11 @@ var NotebookPageObject = function () {
 
   this.setHeapSize = function (value) {
     var heapSizeInput = $('input#heap_GB');
+    var heapSizeResult = $('span.result-text');
+
     heapSizeInput.setValue(value);
+    heapSizeResult.waitForExist();
+    browser.pause(2500);
   };
 
   this.getPropertyFormGroupByIndex = function (index) {
@@ -50,9 +54,16 @@ var NotebookPageObject = function () {
     addPropertyButton.click();
   };
 
+  this.removeProperty = function () {
+    var deleteButton = $('button > i.fa-times');
+    deleteButton.click();
+    browser.pause(2000);
+  }
+
   this.setProperty = function (key, value) {
     $('div.form-group > input[placeholder="name"]').setValue(key);
     $('div.form-group > input[placeholder="value"]').setValue(value);
+    browser.pause(2000);
   };
 
   this.closeAndHaltNotebook = function () {

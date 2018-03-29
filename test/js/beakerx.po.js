@@ -18,6 +18,8 @@ var NotebookPageObject = require('./notebook.po.js').prototype;
 var LabPageObject = require('./lab.po.js').prototype;
 
 var env = require('../tmp.config.js');
+var path = require('path');
+var fs = require('fs');
 
 function BeakerXPageObject() {
   if ('lab' == env.config.cur_app) {
@@ -92,6 +94,12 @@ function BeakerXPageObject() {
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
     return codeCell.$$('#svgg');
+  };
+
+  this.runCellToGetCanvas = function (index) {
+    this.kernelIdleIcon.waitForEnabled();
+    var codeCell = this.runCodeCellByIndex(index);
+    return codeCell.$('canvas');
   };
 
   this.runAndCheckOutputTextOfExecuteResult = function (cellIndex, expectedText) {
@@ -182,6 +190,40 @@ function BeakerXPageObject() {
       }
       i += 1;
     }
+  };
+
+  this.createTableImage = function (imageDataStr, imgDir, fileName){
+    var dirPath = path.join(__dirname, '../resources/img', imgDir);
+    if(!fs.existsSync(dirPath)){
+      fs.mkdirSync(dirPath);
+    };
+    var absFileName = path.join(dirPath, fileName);
+    var stream = fs.createWriteStream(absFileName);
+    stream.write(new Buffer(imageDataStr, 'base64'));
+    stream.end();
+  };
+
+  this.getCanvasImageData = function(canvas, width, height, x, y){
+    var sx = (x !== undefined)? x : 0;
+    var sy = (y !== undefined)? y : 0;
+    var result = browser.execute(function(cnv, sx, sy, width, height){
+      var ctx = cnv.getContext("2d");
+      var imgData = ctx.getImageData(sx, sy, width, height);
+      var bufferCanvas = document.createElement('canvas');
+      bufferCanvas.width  = width;
+      bufferCanvas.height = height;
+      bufferCanvas.getContext('2d').putImageData(imgData, 0, 0);
+      return bufferCanvas.toDataURL('image/png').substring(22);
+    }, canvas.value, sx, sy, width, height);
+    return result;
+  };
+
+  this.checkImageData = function(imageDataStr, imgDir, fileName){
+    var absFileName = path.join(__dirname, '../resources/img', imgDir, fileName);
+    var bitmap = fs.readFileSync(absFileName);
+    var expectedDataStr = new Buffer(bitmap).toString('base64');
+    expect(expectedDataStr.length).toEqual(imageDataStr.length);
+    expect(expectedDataStr).toEqual(imageDataStr);
   };
 
 };

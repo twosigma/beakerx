@@ -33,34 +33,33 @@ describe('Large Integers in Tables ', function () {
   });
 
   var cellIndex;
+  var imageDir = 'groovy/bigInts';
 
   describe('UI options. ', function () {
-    it("Disable PhosphorJS DataGrid for TableDisplay Widget. ", function () {
-      beakerxPO.setDataGridForTable(false, false);
+    it("Use PhosphorJS DataGrid for TableDisplay Widget. ", function () {
+      beakerxPO.setDataGridForTable(true, false);
     });
   });
 
   describe('64-bit Longs ', function () {
     it('Should display 64-bit Longs values ', function () {
       cellIndex = 0;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      tableHelper.dataTablesIsEnabled(dtContainer);
-      expect(tableHelper.getAllRowsOfTableBody(dtContainer).length).toEqual(3);
-      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 1).getText()).toEqual('1234567890000007');
-      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 2).getText()).toEqual('1234567890000077');
-      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 3).getText()).toMatch(/14.600/);
+      var fileName = 'cell1_case1.png';
+      var width = 360, height = 90;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, fileName)
     });
   });
 
   describe('BigNums (arbitrary precision) ', function () {
     it('Should display bignums values ', function () {
-      cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      tableHelper.dataTablesIsEnabled(dtContainer);
-      expect(tableHelper.getAllRowsOfTableBody(dtContainer).length).toEqual(3);
-      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 1).getText()).toEqual('1987654321000007');
-      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 2).getText()).toEqual('1544407407417059829');
-      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 3).getText()).toMatch(/3.351/);
+      cellIndex += 2;
+      var fileName = 'cell2_case1.png';
+      var width = 360, height = 90;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, fileName)
     });
   });
 

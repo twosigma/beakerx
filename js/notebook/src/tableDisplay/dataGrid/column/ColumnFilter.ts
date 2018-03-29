@@ -20,10 +20,13 @@ import {selectColumnPosition, selectColumnWidth} from "./selectors";
 import {DataGridHelpers} from "../dataGridHelpers";
 import getEventKeyCode = DataGridHelpers.getEventKeyCode;
 import {KEYBOARD_KEYS} from "../event/enums";
+import {Widget} from "@phosphor/widgets";
+import throttle = DataGridHelpers.throttle;
 
 export default class ColumnFilter {
   dataGrid: BeakerxDataGrid;
   column: DataGridColumn;
+  filterWidget: Widget;
   filterNode: HTMLElement;
   filterIcon: HTMLSpanElement;
   clearIcon: HTMLSpanElement;
@@ -34,7 +37,7 @@ export default class ColumnFilter {
     this.dataGrid = dataGrid;
     this.column = column;
 
-    this.filterHandler = this.filterHandler.bind(this);
+    this.filterHandler = throttle(this.filterHandler.bind(this), 100);
     this.addInputNode(options);
   }
 
@@ -53,13 +56,22 @@ export default class ColumnFilter {
   }
 
   hideInput() {
-    this.filterNode.style.visibility = 'hidden';
+    this.filterWidget.setHidden(true);
     this.filterInput.value = '';
   }
 
   updateInputNode() {
     this.filterNode.style.width = `${selectColumnWidth(this.dataGrid.store.state, this.column)}px`;
     this.updateInputPosition();
+  }
+
+  destroy() {
+    this.filterWidget.isAttached && this.filterWidget.dispose();
+  }
+
+  attach(node: HTMLElement) {
+    Widget.attach(this.filterWidget, node);
+    this.bindEvents();
   }
 
   private updateInputPosition() {
@@ -74,12 +86,11 @@ export default class ColumnFilter {
   private showInput(shouldFocus: boolean): void {
     this.updateInputNode();
 
-    if (this.filterNode.style.visibility === 'visible') {
+    if (this.filterWidget.isVisible) {
       return;
     }
 
-    this.filterNode.style.visibility = 'visible';
-    this.dataGrid.viewport.node.appendChild(this.filterNode);
+    this.filterWidget.setHidden(false);
 
     if (shouldFocus) {
       this.filterInput.focus();
@@ -126,28 +137,28 @@ export default class ColumnFilter {
   }
 
   private addInputNode(options: { x, y, width, height }): void {
-    const filterNode = document.createElement('div');
+    this.filterWidget = new Widget();
+    this.filterNode = this.filterWidget.node;
 
-    filterNode.innerHTML = `<div class="input-clear">
+    this.filterNode.innerHTML = `<div class="input-clear">
       <span class="fa filter-icon fa-filter"></span>
       <input class="filter-input" type="text" title='filter with an expression with a variable defined for each column and $ means the current column.  eg "$ > 5"'>
       <span class="fa fa-times clear-filter"></span>
     </div>`;
 
-    filterNode.classList.add('input-clear-growing');
-    filterNode.style.width = `${options.width}px`;
-    filterNode.style.height = `${options.height}px`;
-    filterNode.style.left = `${options.x}px`;
-    filterNode.style.top = `${options.y}px`;
-    filterNode.style.position = 'absolute';
+    this.filterNode.classList.add('input-clear-growing');
+    this.filterNode.style.width = `${options.width}px`;
+    this.filterNode.style.height = `${this.dataGrid.baseRowSize}px`;
+    this.filterNode.style.left = `${options.x}px`;
+    this.filterNode.style.top = `${options.y}px`;
+    this.filterNode.style.position = 'absolute';
 
-    this.filterNode = filterNode;
     this.filterIcon = this.filterNode.querySelector('.filter-icon') || new HTMLSpanElement();
     this.filterInput = this.filterNode.querySelector('input') || new HTMLInputElement();
     this.clearIcon = this.filterNode.querySelector('.clear-filter') || new HTMLSpanElement();
-    this.filterInput.style.height = `${options.height}px`;
+    this.filterInput.style.height = `${this.dataGrid.baseRowSize}px`;
 
-    this.bindEvents();
+    this.filterWidget.setHidden(true);
   }
 
   private bindEvents() {
@@ -156,7 +167,7 @@ export default class ColumnFilter {
       event.stopImmediatePropagation();
     };
 
-    this.filterInput.addEventListener('keyup', this.filterHandler);
+    this.filterInput.addEventListener('keyup', this.filterHandler, true);
     this.filterInput.addEventListener('mousedown', handleMouseDown);
     this.filterNode.addEventListener('mousedown', handleMouseDown);
 

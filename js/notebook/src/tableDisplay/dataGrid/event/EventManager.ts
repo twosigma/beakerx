@@ -54,7 +54,7 @@ export default class EventManager {
     this.dataGrid['_hScrollBar'].node.addEventListener('mousedown', this.handleMouseDown);
     this.dataGrid['_scrollCorner'].node.addEventListener('mousedown', this.handleMouseDown);
     document.removeEventListener('keydown', this.handleKeyDown);
-    document.addEventListener('keydown', this.handleKeyDown);
+    document.addEventListener('keydown', this.handleKeyDown, true);
   }
 
   handleEvent(event: Event, parentHandler: Function): void {
@@ -175,7 +175,7 @@ export default class EventManager {
   private isHeaderClicked(event) {
     return (
       this.dataGrid.isOverHeader(event)
-      && event.buttons === 1
+      && event.button === 0
       && event.target === this.dataGrid['_canvas']
     );
   }

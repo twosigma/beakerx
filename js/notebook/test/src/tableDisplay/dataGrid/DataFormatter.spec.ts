@@ -115,7 +115,7 @@ describe('DataFormatter', () => {
 
     it('should return given value', () => {
       expect(stringFormatFn({ ...cellConfig, value: 1 })).to.equal(1);
-      expect(stringFormatFn({ ...cellConfig, value: null })).to.equal(null);
+      expect(stringFormatFn({ ...cellConfig, value: null })).to.equal('');
       expect(stringFormatFn({ ...cellConfig, value: '' })).to.equal('');
       expect(stringFormatFn({ ...cellConfig, value: 0 })).to.equal(0);
       expect(stringFormatFn({ ...cellConfig, value: false })).to.equal(false);

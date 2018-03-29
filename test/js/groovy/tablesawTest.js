@@ -28,6 +28,7 @@ describe('Tests for combination of code and magics. ', function () {
     tableHelper = new TableHelperObject();
     plotHelper = new PlotHelperObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/groovy/TablesawTest.ipynb');
+    beakerxPO.openUIWindow();
   });
 
   afterAll(function () {
@@ -55,6 +56,12 @@ describe('Tests for combination of code and magics. ', function () {
       checkTableHead(dtContainer, i, headers[i - 1]);
     };
   };
+
+  describe('UI options. ', function () {
+    it("Disable PhosphorJS DataGrid for TableDisplay Widget. ", function () {
+      beakerxPO.setDataGridForTable(false, false);
+    });
+  });
 
   describe('Import tablesaw jars. ', function () {
     it('Output contains names of jars. ', function () {

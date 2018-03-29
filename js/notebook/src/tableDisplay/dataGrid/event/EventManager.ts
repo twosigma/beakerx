@@ -49,6 +49,9 @@ export default class EventManager {
     this.dataGrid.node.addEventListener('dblclick', this.handleDoubleClick);
     this.dataGrid.node.removeEventListener('mouseup', this.handleClick);
     this.dataGrid.node.addEventListener('mouseup', this.handleClick);
+    this.dataGrid['_vScrollBar'].node.addEventListener('mousedown', this.handleMouseDown);
+    this.dataGrid['_hScrollBar'].node.addEventListener('mousedown', this.handleMouseDown);
+    this.dataGrid['_scrollCorner'].node.addEventListener('mousedown', this.handleMouseDown);
     document.removeEventListener('keydown', this.handleKeyDown);
     document.addEventListener('keydown', this.handleKeyDown);
 
@@ -102,11 +105,11 @@ export default class EventManager {
   }
 
   private handleMouseDown(event: MouseEvent): void {
-    if (event.buttons !== 1) {
+    if (event.button !== 0) {
       return;
     }
 
-    this.dataGrid.setFocus(true);
+    !this.dataGrid.focused && this.dataGrid.setFocus(true);
   }
 
   private handleMouseOut(event: MouseEvent): void {

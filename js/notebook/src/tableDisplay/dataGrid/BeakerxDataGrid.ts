@@ -24,7 +24,6 @@ import DataGridColumn from "./column/DataGridColumn";
 import IDataModelState from "./interface/IDataGridModelState";
 import HighlighterManager from "./highlighter/HighlighterManager";
 import IHihglighterState from "./interface/IHighlighterState";
-import {DEFAULT_PAGE_LENGTH} from "../consts";
 import ColumnManager from "./column/ColumnManager";
 import RowManager from "./row/RowManager";
 import CellSelectionManager from "./cell/CellSelectionManager";
@@ -54,7 +53,6 @@ import DataGridCell from "./cell/DataGridCell";
 import {COLUMN_TYPES} from "./column/enums";
 import disableKeyboardManager = DataGridHelpers.disableKeyboardManager;
 import enableKeyboardManager = DataGridHelpers.enableKeyboardManager;
-import enableNotebookEditMode = DataGridHelpers.enableNotebookEditMode;
 
 export class BeakerxDataGrid extends DataGrid {
   id: string;
@@ -187,7 +185,9 @@ export class BeakerxDataGrid extends DataGrid {
 
   updateWidgetWidth() {
     const spacing = 2 * (DEFAULT_GRID_PADDING + DEFAULT_GRID_BORDER_WIDTH) + 1;
-    const hasVScroll = !this['_vScrollBar'].isHidden;
+    const hasVScroll = (
+      this.rowManager.rowsToShow !== -1 && this.rowManager.rowsToShow <= this.model.rowCount('body')
+    );
     const vScrollWidth = hasVScroll ? this['_vScrollBarMinWidth'] + 1 : 0;
     const width = this.totalWidth + spacing + vScrollWidth;
 
@@ -201,7 +201,6 @@ export class BeakerxDataGrid extends DataGrid {
 
   setFocus(focus: boolean) {
     this.focused = focus;
-    enableNotebookEditMode();
 
     if (focus) {
       disableKeyboardManager();
@@ -214,6 +213,10 @@ export class BeakerxDataGrid extends DataGrid {
     this.cellTooltipManager.hideTooltip();
     this.node.classList.remove(BeakerxDataGrid.FOCUS_CSS_CLASS);
     enableKeyboardManager();
+  }
+
+  updateWidgetHeight() {
+    this.node.style.minHeight = `${this.getWidgetHeight()}px`;
   }
 
   private init(store: BeakerxDataStore) {
@@ -265,14 +268,13 @@ export class BeakerxDataGrid extends DataGrid {
 
   private getWidgetHeight() {
     const bodyRowCount = this.model.rowCount('body');
-    const rowCount = DEFAULT_PAGE_LENGTH < bodyRowCount ? DEFAULT_PAGE_LENGTH : bodyRowCount;
+    const rowsToShow = this.rowManager.rowsToShow;
+    const rowCount = rowsToShow < bodyRowCount && rowsToShow !== -1 ? rowsToShow : bodyRowCount;
+    const hasHScroll = !this['_hScrollBar'].isHidden;
+    const scrollBarHeight = hasHScroll ? this['_hScrollBarMinHeight'] : 0;
     const spacing = 2 * (DEFAULT_GRID_PADDING + DEFAULT_GRID_BORDER_WIDTH);
 
-    return rowCount * this.baseRowSize + this.headerHeight + spacing;
-  }
-
-  private updateWidgetHeight() {
-    this.node.style.minHeight = `${this.getWidgetHeight()}px`;
+    return rowCount * this.baseRowSize + this.headerHeight + spacing + scrollBarHeight;
   }
 
   private setInitialSectionWidths() {
@@ -313,7 +315,7 @@ export class BeakerxDataGrid extends DataGrid {
   private getSectionWidth(column) {
     const value = String(column.formatFn(this.cellManager.createCellConfig({
       region: 'body',
-      value: column.maxValue,
+      value: column.longestStringValue || column.maxValue,
       column: column.index,
       row: 0,
     })));

@@ -34,3 +34,7 @@ To run tests for jupyter notebook use argument `nb`:
 ```
 
 By default, a notebook server runs locally at 127.0.0.1:8888 and is accessible only from localhost. 
+
+To prepare image file as expected result:
+ - use function `createTableImage()` instead of `checkImageData()` on the same code line of test script
+ - run the tests as usual

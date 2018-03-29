@@ -28,6 +28,7 @@ describe('Groovy base tests. ', function () {
     plotHelper = new PlotHelperObject();
     tableHelper = new TableHelperObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/groovy/GroovyTest.ipynb');
+    beakerxPO.openUIWindow();
   }, 2);
 
   afterAll(function () {
@@ -35,6 +36,12 @@ describe('Groovy base tests. ', function () {
   });
 
   var cellIndex;
+
+  describe('UI options. ', function () {
+    it("Disable PhosphorJS DataGrid for TableDisplay Widget. ", function () {
+      beakerxPO.setDataGridForTable(false, false);
+    });
+  });
 
   describe('Define local and global variables. ', function () {
     it('Execute result output contains "2". ', function () {

@@ -15,7 +15,7 @@
  */
 
 import {IBeakerxDataGridState} from "../store/dataStore";
-import {selectColumnNames} from "../model/selectors";
+import {DEFAULT_INDEX_COLUMN_NAME, selectColumnNames, selectHasIndex} from "../model/selectors";
 import {find} from "@phosphor/algorithm";
 import {IColumnsState, IColumnState} from "../interface/IColumn";
 import {ALL_TYPES} from "../dataTypes";
@@ -61,13 +61,13 @@ export const selectIndexColumnStates = createSelector(
 ));
 
 export const selectBodyColumnNames = createSelector(
-  [selectBodyColumnStates],
-  (bodyColumnStates) => bodyColumnStates.map(state => state.name)
+  [selectColumnNames, selectHasIndex],
+  (columnNames, hasIndex) => hasIndex ? columnNames.slice(1) : columnNames
 );
 
 export const selectIndexColumnNames = createSelector(
-  [selectIndexColumnStates],
-  (bodyColumnStates) => bodyColumnStates.map(state => state.name)
+  [selectColumnNames, selectHasIndex],
+  (columnNames, hasIndex) => hasIndex && columnNames[0] !== null ? [columnNames[0]] : [DEFAULT_INDEX_COLUMN_NAME]
 );
 
 export const selectBodyColumnVisibility = createSelector(
@@ -82,8 +82,9 @@ export const selectColumnState = (
   column
 ) => selectColumnStateByKey(state, `${column.type}_${column.index}`);
 
-export const selectColumnDataTypeName = (state: IBeakerxDataGridState, column) => (
-  selectColumnState(state, column).dataTypeName
+export const selectColumnDataTypeName = createSelector(
+  [selectColumnState],
+  (state) => state.dataTypeName || ALL_TYPES[state.dataType]
 );
 
 export const selectColumnVisible = (state: IBeakerxDataGridState, column) => (
@@ -134,7 +135,7 @@ export const selectColumnIndexByPosition = createSelector(
   (states, columnType, position): number => {
     const columnState: IColumnState = find(states,(stateItem: IColumnState) => (
       stateItem.columnType === columnType && stateItem.position === position
-    )) || defaultState;
+    ));
 
     return columnState.index;
   }

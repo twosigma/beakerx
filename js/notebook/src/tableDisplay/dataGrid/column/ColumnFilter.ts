@@ -30,8 +30,6 @@ export default class ColumnFilter {
   filterInput: HTMLInputElement;
   useSearch: boolean;
 
-  static DEBOUNCE_TIME_IN_MS = 250;
-
   constructor(dataGrid: BeakerxDataGrid, column: DataGridColumn, options: { x, y, width, height }) {
     this.dataGrid = dataGrid;
     this.column = column;
@@ -118,7 +116,7 @@ export default class ColumnFilter {
   }
 
   private createFilterExpression(value: string): string {
-    return value.replace('$', `${this.column.name}`);
+    return value.replace('$', `col_${this.column.name}`);
   }
 
   private createSearchExpression(value: string) {

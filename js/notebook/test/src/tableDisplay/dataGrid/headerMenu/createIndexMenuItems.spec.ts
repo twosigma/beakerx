@@ -47,7 +47,7 @@ describe('createIndexMenuItems', () => {
     let indexMenuItems = createIndexMenuItems(column);
 
     expect(indexMenuItems).to.be.an.instanceof(Array);
-    expect(indexMenuItems).to.have.length(12);
+    expect(indexMenuItems).to.have.length(13);
   });
 
 });

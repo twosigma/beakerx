@@ -36,10 +36,11 @@ describe('Groovy base tests. ', function () {
   });
 
   var cellIndex;
+  var imageDir = 'groovy/groovy';
 
   describe('UI options. ', function () {
-    it("Disable PhosphorJS DataGrid for TableDisplay Widget. ", function () {
-      beakerxPO.setDataGridForTable(false, false);
+    it("Use PhosphorJS DataGrid for TableDisplay Widget. ", function () {
+      beakerxPO.setDataGridForTable(true, false);
     });
   });
 
@@ -129,20 +130,26 @@ describe('Groovy base tests. ', function () {
 
     it('Output contains table. ', function () {
       cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      tableHelper.dataTablesIsEnabled(dtContainer);
-      expect(tableHelper.getAllRowsOfTableBody(dtContainer)[0].getText())
-        .toMatch(/"text.plain":"5"/);
+      var fileName = 'cell10_case1.png';
+      var width = 410, height = 43;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      // beakerxPO.createTableImage(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      cellIndex += 1;
     });
   });
 
   describe('Display array as table. ', function () {
     it('Output contains table. ', function () {
       cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      tableHelper.dataTablesIsEnabled(dtContainer);
-      expect(tableHelper.getCellOfTableHeader(dtContainer, 1).getText()).toMatch(/hours/);
-      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 1).getText()).toMatch(/10/);
+      var fileName = 'cell11_case1.png';
+      var width = 90, height = 43;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      // beakerxPO.createTableImage(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      cellIndex += 1;
     });
   });
 

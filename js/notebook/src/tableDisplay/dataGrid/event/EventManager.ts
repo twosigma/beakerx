@@ -175,7 +175,7 @@ export default class EventManager {
   private isHeaderClicked(event) {
     return (
       this.dataGrid.isOverHeader(event)
-      && event.buttons === 1
+      && event.button === 0
       && event.target === this.dataGrid['_canvas']
     );
   }

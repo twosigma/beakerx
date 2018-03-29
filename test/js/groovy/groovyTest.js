@@ -16,17 +16,14 @@
 
 var BeakerXPageObject = require('../beakerx.po.js');
 var PlotHelperObject = require('../plot.helper.js');
-var TableHelperObject = require('../table.helper.js');
 var beakerxPO;
 var plotHelper;
-var tableHelper;
 
 describe('Groovy base tests. ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
     plotHelper = new PlotHelperObject();
-    tableHelper = new TableHelperObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/groovy/GroovyTest.ipynb');
     beakerxPO.openUIWindow();
   }, 2);
@@ -134,7 +131,6 @@ describe('Groovy base tests. ', function () {
       var width = 410, height = 43;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      // beakerxPO.createTableImage(imageData.value, imageDir, fileName);
       beakerxPO.checkImageData(imageData.value, imageDir, fileName);
       cellIndex += 1;
     });
@@ -147,7 +143,18 @@ describe('Groovy base tests. ', function () {
       var width = 90, height = 43;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      // beakerxPO.createTableImage(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      cellIndex += 1;
+    });
+  });
+
+  describe('Display array with null value. ', function () {
+    it('Output contains table. ', function () {
+      cellIndex += 1;
+      var fileName = 'cell12_case1.png';
+      var width = 130, height = 65;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, fileName);
       cellIndex += 1;
     });

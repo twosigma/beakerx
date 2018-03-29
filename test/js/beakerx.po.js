@@ -204,6 +204,9 @@ function BeakerXPageObject() {
   };
 
   this.getCanvasImageData = function(canvas, width, height, x, y){
+    if(canvas == null || canvas.value == null) {
+      return { value: 'null' };
+    }
     var sx = (x !== undefined)? x : 0;
     var sy = (y !== undefined)? y : 0;
     var result = browser.execute(function(cnv, sx, sy, width, height){

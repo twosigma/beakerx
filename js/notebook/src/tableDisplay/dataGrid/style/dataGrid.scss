@@ -70,6 +70,11 @@ $sortDescendingIconWhite: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4
       }
     }
   }
+
+  .rows-to-display-menu {
+    position: absolute;
+    bottom: 0;
+  }
 }
 
 .p-DataGrid-tooltip {

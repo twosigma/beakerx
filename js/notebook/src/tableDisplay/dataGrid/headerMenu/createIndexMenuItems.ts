@@ -19,6 +19,7 @@ import { createFormatMenuItems } from './createFormatMenuItems';
 import DataGridColumn from "../column/DataGridColumn";
 import { selectBodyColumnStates } from "../column/selectors";
 import {COLUMN_TYPES} from "../column/enums";
+import {DEFAULT_PAGE_LENGTH, scopeData} from "../../consts";
 
 export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
 
@@ -49,6 +50,20 @@ export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
     return items;
   };
 
+  const createRowsToShowSubmenu = (): MenuItem[] => {
+    const items: MenuItem[] = [];
+
+    scopeData.rowsToDisplayMenu[0].forEach((item, index) => {
+      items.push({
+        title: `${scopeData.rowsToDisplayMenu[1][index]}`,
+        isChecked: () => item === dataGrid.rowManager.rowsToShow,
+        action: () => dataGrid.rowManager.setRowsToShow(item)
+      })
+    });
+
+    return items;
+  };
+
   return [
     {
       title: 'Show All Columns',
@@ -72,6 +87,10 @@ export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
       title: 'Format',
       separator: true,
       items: createFormatMenuItems(column)
+    },
+    {
+      title: 'Rows to Show',
+      items: createRowsToShowSubmenu
     },
     {
       title: 'Clear selection',
@@ -115,6 +134,7 @@ export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
         dataGrid.highlighterManager.removeHighlighters();
         dataGrid.cellSelectionManager.clear();
         dataGrid.rowManager.resetSorting();
+        dataGrid.rowManager.setRowsToShow(DEFAULT_PAGE_LENGTH);
         dataGrid.columnManager.resetFilters();
         dataGrid.columnManager.showAllColumns();
         dataGrid.columnManager.resetColumnsAlignment();

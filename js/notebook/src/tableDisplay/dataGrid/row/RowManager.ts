@@ -17,9 +17,9 @@
 import DataGridRow from "./DataGridRow";
 import { MapIterator, iter, toArray, filter } from '@phosphor/algorithm';
 import DataGridColumn from "../column/DataGridColumn";
-import {ALL_TYPES} from "../dataTypes";
 import ColumnManager from "../column/ColumnManager";
 import {COLUMN_TYPES, SORT_ORDER} from "../column/enums";
+import {DEFAULT_PAGE_LENGTH} from "../../consts";
 
 export default class RowManager {
   rowsIterator: MapIterator<any[], DataGridRow>;
@@ -28,9 +28,11 @@ export default class RowManager {
   expressionVars: string;
   sortedBy: DataGridColumn;
   columnManager: ColumnManager;
+  rowsToShow: number;
 
   constructor(data: any[], hasIndex: boolean, columnManager: ColumnManager) {
     this.columnManager = columnManager;
+    this.rowsToShow = DEFAULT_PAGE_LENGTH;
     this.createRows(data, hasIndex);
 
     this.evaluateSearchExpression = this.evaluateSearchExpression.bind(this);
@@ -203,5 +205,11 @@ export default class RowManager {
     return columnType === COLUMN_TYPES.body
       ? this.getRow(row).values[columnIndex]
       : this.getRow(row).index;
+  }
+
+  setRowsToShow(rows) {
+    this.rowsToShow = rows;
+    this.columnManager.dataGrid.updateWidgetHeight();
+    this.columnManager.dataGrid.updateWidgetWidth();
   }
 }

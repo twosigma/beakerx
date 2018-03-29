@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import {CellRenderer, DataGrid} from "@phosphor/datagrid";
+import {CellRenderer, DataGrid, GraphicsContext} from "@phosphor/datagrid";
 import { BeakerxDataGridModel } from "./model/BeakerxDataGridModel";
 import { Widget } from "@phosphor/widgets";
 import { Signal } from '@phosphor/signaling';
@@ -34,7 +34,7 @@ import { IMessageHandler, Message, MessageLoop } from '@phosphor/messaging';
 import CellFocusManager from "./cell/CellFocusManager";
 import {
   DEFAULT_GRID_BORDER_WIDTH,
-  DEFAULT_GRID_PADDING, DEFAULT_ROW_HEIGHT,
+  DEFAULT_GRID_PADDING, DEFAULT_HIGHLIGHT_COLOR, DEFAULT_ROW_HEIGHT,
   MIN_COLUMN_WIDTH
 } from "./style/dataGridStyle";
 import CellTooltipManager from "./cell/CellTooltipManager";
@@ -53,6 +53,7 @@ import DataGridCell from "./cell/DataGridCell";
 import {COLUMN_TYPES} from "./column/enums";
 import disableKeyboardManager = DataGridHelpers.disableKeyboardManager;
 import enableKeyboardManager = DataGridHelpers.enableKeyboardManager;
+import ColumnPosition from "./column/ColumnPosition";
 
 export class BeakerxDataGrid extends DataGrid {
   id: string;
@@ -65,12 +66,14 @@ export class BeakerxDataGrid extends DataGrid {
   viewport: Widget;
   highlighterManager: HighlighterManager;
   columnManager: ColumnManager;
+  columnPosition: ColumnPosition;
   rowManager: RowManager;
   cellSelectionManager: CellSelectionManager;
   cellManager: CellManager;
   eventManager: EventManager;
   cellFocusManager: CellFocusManager;
   cellTooltipManager: CellTooltipManager;
+  canvasGC: GraphicsContext;
   focused: boolean;
   wrapperId: string;
 
@@ -88,6 +91,7 @@ export class BeakerxDataGrid extends DataGrid {
     this.rowHeaderSections = this['_rowHeaderSections'];
     this.rowSections = this['_rowSections'];
     this.columnSections = this['_columnSections'];
+    this.canvasGC = this['_canvasGC'];
 
     this.baseRowSize = DEFAULT_ROW_HEIGHT;
     this.baseColumnHeaderSize = DEFAULT_ROW_HEIGHT;
@@ -95,7 +99,7 @@ export class BeakerxDataGrid extends DataGrid {
     this.setSectionWidth = this.setSectionWidth.bind(this);
     this.setInitialSectionWidth = this.setInitialSectionWidth.bind(this);
     this.resizeSectionWidth = this.resizeSectionWidth.bind(this);
-    this.resize = throttle(this.resize.bind(this), 150);
+    this.resize = throttle(this.resize, 150, this);
     this.init(dataStore);
   }
 
@@ -215,6 +219,21 @@ export class BeakerxDataGrid extends DataGrid {
     enableKeyboardManager();
   }
 
+  colorizeColumnBorder(column: number, color: string) {
+    let sectionSize = this.columnSections.sectionSize(column);
+    let sectionOffset = this.columnSections.sectionOffset(column);
+    let x = sectionOffset + sectionSize + this.rowHeaderSections.totalSize - this.scrollX;
+    let height = this.totalHeight;
+
+    this.canvasGC.beginPath();
+    this.canvasGC.lineWidth = 1;
+
+    this.canvasGC.moveTo(x - 0.5, 0);
+    this.canvasGC.lineTo(x - 0.5, height);
+    this.canvasGC.strokeStyle = color;
+    this.canvasGC.stroke();
+  }
+
   updateWidgetHeight() {
     this.node.style.minHeight = `${this.getWidgetHeight()}px`;
   }
@@ -223,6 +242,7 @@ export class BeakerxDataGrid extends DataGrid {
     this.id = 'grid_' + bkUtils.generateId(6);
     this.store = store;
     this.columnManager = new ColumnManager(this);
+    this.columnPosition = new ColumnPosition(this);
     this.rowManager = new RowManager(selectValues(store.state), selectHasIndex(store.state), this.columnManager);
     this.cellSelectionManager = new CellSelectionManager(this);
     this.cellManager = new CellManager(this);
@@ -234,7 +254,7 @@ export class BeakerxDataGrid extends DataGrid {
 
     this.columnManager.addColumns();
     this.rowManager.createFilterExpressionVars();
-    this.store.changed.connect(throttle<void, void>(this.handleStateChanged.bind(this), 100));
+    this.store.changed.connect(throttle<void, void>(this.handleStateChanged, 100, this));
 
     this.installMessageHook();
     this.addHighlighterManager();

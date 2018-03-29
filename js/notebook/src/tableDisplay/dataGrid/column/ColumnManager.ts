@@ -31,7 +31,7 @@ import {
   selectIndexColumnNames
 } from "./selectors";
 import {
-  UPDATE_COLUMNS_FILTERS, UPDATE_COLUMNS_POSITION, UPDATE_COLUMNS_VISIBILITY
+  UPDATE_COLUMNS_FILTERS, UPDATE_COLUMNS_VISIBILITY
 } from "./reducer";
 import {COLUMN_TYPES, SORT_ORDER} from "./enums";
 
@@ -95,9 +95,7 @@ export default class ColumnManager {
   }
 
   getColumnByPosition(columnType: COLUMN_TYPES, position: number) {
-    const columnIndex = selectColumnIndexByPosition(this.store.state, columnType, position);
-
-    return this.getColumnByIndex(columnType, columnIndex);
+    return this.dataGrid.columnPosition.getColumnByPosition(columnType, position);
   }
 
   getColumnByName(columnName: string): DataGridColumn|undefined {
@@ -175,7 +173,7 @@ export default class ColumnManager {
   }
 
   takeColumnByCell(cellData: ICellData): DataGridColumn|null {
-    const column = this.dataGrid.columnManager.getColumnByPosition(cellData.type, cellData.column);
+    const column = this.getColumnByPosition(cellData.type, cellData.column);
 
     return column ? column : null;
   }
@@ -200,18 +198,8 @@ export default class ColumnManager {
     this.dataGrid.model.reset();
   }
 
-  resetColumnsOrder() {
-    const columnNames = selectColumnNames(this.store.state);
-    const hasIndex = selectHasIndex(this.store.state);
-
-    this.store.dispatch(new DataGridColumnsAction(UPDATE_COLUMNS_POSITION, {
-      hasIndex,
-      value: columnNames.map((index, order) => order),
-      defaultValue: [0]
-    }));
-
-    this.dataGrid.resize();
-    this.dataGrid.model.reset();
+  resetColumnPositions() {
+    this.dataGrid.columnPosition.reset();
   }
 
   resetColumnStates() {
@@ -274,5 +262,4 @@ export default class ColumnManager {
 
     Signal.disconnectAll(this);
   }
-
 }

@@ -117,13 +117,11 @@ export namespace DataGridHelpers {
     return null;
   }
 
-  export function throttle<T, U>(func: Function, limit: number): (T) => U|undefined {
+  export function throttle<T, U>(func: Function, limit: number, context = this): (T) => U|undefined {
     let lastFunc;
     let lastRan;
 
-    return function(...args: T[]): U|undefined {
-      const context = this;
-
+    return (...args: T[]): U|undefined => {
       if (!lastRan) {
         func.apply(context, args);
         lastRan = Date.now();

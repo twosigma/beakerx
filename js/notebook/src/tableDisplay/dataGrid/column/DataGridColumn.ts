@@ -343,7 +343,9 @@ export default class DataGridColumn {
       let value2 = valueResolver(b);
 
       if (dataType === ALL_TYPES.string || dataType === ALL_TYPES['formatted integer'] || dataType === ALL_TYPES.html) {
-        let longer = a.length > b.length ? a : b;
+        let aLength = a ? a.length : 0;
+        let bLength = b ? b.length : 0;
+        let longer = aLength > bLength ? a : b;
 
         if (!this.longestStringValue || this.longestStringValue.length < longer.length) {
           this.longestStringValue = longer;

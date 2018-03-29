@@ -29,7 +29,7 @@ import {ALL_TYPES} from "@beakerx/tableDisplay/dataGrid/dataTypes";
 declare var require: Function;
 
 describe('DataGridColumn', () => {
-  const dataStore = createStore(modelStateMock);
+  const dataStore = createStore({ ...modelStateMock, values: [[null, 1], [1, null]]});
   const dataGrid = new BeakerxDataGrid({}, dataStore);
   const columnManager = dataGrid.columnManager;
 

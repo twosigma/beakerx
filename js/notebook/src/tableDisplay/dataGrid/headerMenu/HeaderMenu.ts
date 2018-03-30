@@ -139,8 +139,8 @@ export default abstract class HeaderMenu implements MenuInterface {
       menuItem.separator && menu.addItem({ type: 'separator' });
 
       if (!hasSubitems) {
-        this.addCommand(menuItem, menu);
-        menu.addItem({command: menuItem.title});
+        let command = this.addCommand(menuItem, menu);
+        menu.addItem({ command });
 
         continue;
       }
@@ -149,8 +149,10 @@ export default abstract class HeaderMenu implements MenuInterface {
     }
   }
 
-  addCommand(menuItem: MenuItem, menu: Menu): void {
-    this.commands.addCommand(menuItem.title, {
+  addCommand(menuItem: MenuItem, menu: Menu): string {
+    const commandId = menuItem.id || menuItem.title;
+
+    this.commands.addCommand(commandId, {
       label: menuItem.title,
       usage: menuItem.tooltip || '',
       iconClass: () => {
@@ -176,9 +178,11 @@ export default abstract class HeaderMenu implements MenuInterface {
       this.commands.addKeyBinding({
         keys: [menuItem.shortcut],
         selector: 'body',
-        command: menuItem.title
+        command: commandId
       });
     }
+
+    return commandId;
   }
 
   createSubmenu(menuItem: MenuItem, subitems: MenuItem[]): Menu {
@@ -238,8 +242,6 @@ export default abstract class HeaderMenu implements MenuInterface {
   }
 
   protected getMenuPosition(trigger: any) {
-    // const triggerHeight = trigger.height || 20;
-    const viewportRect = this.viewport.node.getBoundingClientRect();
     const triggerRectObject = trigger.getBoundingClientRect();
 
     return {

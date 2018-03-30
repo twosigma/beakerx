@@ -31,6 +31,7 @@ export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
     columnsStates.forEach((state) => {
       items.push({
         title: state.name,
+        id: `column_${state.name}`,
         isChecked: () => {
           let column = dataGrid.columnManager.getColumnByName(state.name);
 
@@ -56,6 +57,7 @@ export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
     scopeData.rowsToDisplayMenu[0].forEach((item, index) => {
       items.push({
         title: `${scopeData.rowsToDisplayMenu[1][index]}`,
+        id: `rows_${scopeData.rowsToDisplayMenu[1][index]}`,
         isChecked: () => item === dataGrid.rowManager.rowsToShow,
         action: () => dataGrid.rowManager.setRowsToShow(item)
       })

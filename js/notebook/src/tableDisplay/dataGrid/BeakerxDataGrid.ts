@@ -97,6 +97,7 @@ export class BeakerxDataGrid extends DataGrid {
     this.baseColumnHeaderSize = DEFAULT_ROW_HEIGHT;
 
     this.setSectionWidth = this.setSectionWidth.bind(this);
+    this.updateColumnWidth = this.updateColumnWidth.bind(this);
     this.setInitialSectionWidth = this.setInitialSectionWidth.bind(this);
     this.resizeSectionWidth = this.resizeSectionWidth.bind(this);
     this.resize = throttle(this.resize, 150, this);
@@ -111,11 +112,8 @@ export class BeakerxDataGrid extends DataGrid {
     super.messageHook(handler, msg);
 
     if (handler === this.viewport && msg.type === 'section-resize-request') {
-      this.columnSections['_sections'].forEach(({ index, size }) => {
-        let columnOnPosition = this.columnManager.getColumnByPosition(COLUMN_TYPES.body, index);
-
-        columnOnPosition.setWidth(size);
-      });
+      this.columnSections['_sections'].forEach(this.updateColumnWidth(COLUMN_TYPES.body));
+      this.rowHeaderSections['_sections'].forEach(this.updateColumnWidth(COLUMN_TYPES.index));
       this.updateWidgetWidth();
       this.updateWidgetHeight();
     }
@@ -205,7 +203,9 @@ export class BeakerxDataGrid extends DataGrid {
   }
 
   setInitialSectionWidth(column) {
-    this.setSectionWidth('column', column, this.getSectionWidth(column));
+    const section = column.type === COLUMN_TYPES.body ? 'column' : 'row-header';
+
+    this.setSectionWidth(section, column, this.getSectionWidth(column));
   }
 
   setFocus(focus: boolean) {
@@ -264,6 +264,14 @@ export class BeakerxDataGrid extends DataGrid {
     this.setInitialSize();
   }
 
+  private updateColumnWidth(columnType: COLUMN_TYPES): Function {
+    return ({ index, size }) => {
+      let columnOnPosition = this.columnManager.getColumnByPosition(columnType, index);
+
+      columnOnPosition.setWidth(size);
+    }
+  }
+
   private installMessageHook() {
     MessageLoop.installMessageHook(this.viewport, this.viewportResizeMessageHook.bind(this));
   }
@@ -301,7 +309,7 @@ export class BeakerxDataGrid extends DataGrid {
 
   private setInitialSectionWidths() {
     this.columnManager.bodyColumns.forEach(this.setInitialSectionWidth);
-    this.resizeIndexColumn();
+    this.columnManager.indexColumns.forEach(this.setInitialSectionWidth);
   }
 
   private resizeSections() {
@@ -336,7 +344,7 @@ export class BeakerxDataGrid extends DataGrid {
 
   private getSectionWidth(column) {
     const value = String(column.formatFn(this.cellManager.createCellConfig({
-      region: 'body',
+      region: column.type === COLUMN_TYPES.body ? 'body' : 'row-header',
       value: column.longestStringValue || column.maxValue,
       column: column.index,
       row: 0,
@@ -349,19 +357,6 @@ export class BeakerxDataGrid extends DataGrid {
     const result = nameSize[nameSizeProp] > valueSize.width - 7 ? nameSize[nameSizeProp] : valueSize.width;
 
     return result > MIN_COLUMN_WIDTH ? result : MIN_COLUMN_WIDTH;
-  }
-
-  private resizeIndexColumn() {
-    const valueCharLength = this.model.rowCount('body');
-    const name = this.columnManager.getColumnByIndex(COLUMN_TYPES.index, 0).name;
-    const value = name.length > valueCharLength ? name : String(valueCharLength);
-    const nameSizeProp = selectHeadersVertical(this.store.state) ? 'height' : 'width';
-    const nameSize = getStringSize(name, selectHeaderFontSize(this.store.state));
-    const valueSize = getStringSize(value, selectDataFontSize(this.store.state));
-    const result = (nameSize[nameSizeProp] > valueSize.width ? nameSize[nameSizeProp]: valueSize.width) + 10;
-    const column = this.columnManager.getColumnByIndex(COLUMN_TYPES.index, 0);
-
-    this.setSectionWidth('row-header', column, result);
   }
 
   private setSectionWidth(section, column: DataGridColumn, value: number) {

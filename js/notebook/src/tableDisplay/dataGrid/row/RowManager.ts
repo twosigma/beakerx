@@ -20,6 +20,7 @@ import DataGridColumn from "../column/DataGridColumn";
 import ColumnManager from "../column/ColumnManager";
 import {COLUMN_TYPES, SORT_ORDER} from "../column/enums";
 import {DEFAULT_PAGE_LENGTH} from "../../consts";
+import ColumnFilter from "../column/ColumnFilter";
 
 export default class RowManager {
   rowsIterator: MapIterator<any[], DataGridRow>;
@@ -117,10 +118,12 @@ export default class RowManager {
     this.expressionVars = '';
 
     const agregationFn = (column: DataGridColumn) => {
+      let prefix = ColumnFilter.getColumnNameVarPrefix(column.name);
+
       if (column.type === COLUMN_TYPES.index) {
-        this.expressionVars += `var col_${column.name} = row.index;`;
+        this.expressionVars += `var ${prefix}${column.name} = row.index;`;
       } else {
-        this.expressionVars += `var col_${column.name} = row.values[${column.index}];`;
+        this.expressionVars += `var ${prefix}${column.name} = row.values[${column.index}];`;
       }
     };
 

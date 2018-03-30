@@ -15,7 +15,6 @@
  */
 
 import DataGridColumn from "./DataGridColumn";
-import {default as HeaderMenu, ITriggerOptions} from "../headerMenu/HeaderMenu";
 import { CellRenderer } from "@phosphor/datagrid";
 import { chain, find } from '@phosphor/algorithm'
 import { BeakerxDataGrid } from "../BeakerxDataGrid";

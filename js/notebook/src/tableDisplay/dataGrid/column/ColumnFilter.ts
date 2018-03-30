@@ -33,11 +33,15 @@ export default class ColumnFilter {
   filterInput: HTMLInputElement;
   useSearch: boolean;
 
+  static getColumnNameVarPrefix(value: any) {
+    return isNaN(value) ? '' : 'col_';
+  }
+
   constructor(dataGrid: BeakerxDataGrid, column: DataGridColumn, options: { x, y, width, height }) {
     this.dataGrid = dataGrid;
     this.column = column;
 
-    this.filterHandler = throttle(this.filterHandler.bind(this), 100);
+    this.filterHandler = this.filterHandler.bind(this);
     this.addInputNode(options);
   }
 
@@ -126,12 +130,12 @@ export default class ColumnFilter {
     return this.createFilterExpression(value);
   }
 
-  private createFilterExpression(value: string): string {
-    return value.replace('$', `col_${this.column.name}`);
+  private createFilterExpression(value: any): string {
+    return value.replace('$', `${ColumnFilter.getColumnNameVarPrefix(value)}${this.column.name}`);
   }
 
-  private createSearchExpression(value: string) {
-    const expression = `String($).indexOf("${String(value)}") !== -1`;
+  private createSearchExpression(value: any) {
+    const expression = `String(${ColumnFilter.getColumnNameVarPrefix(value)}$).indexOf("${String(value)}") !== -1`;
 
     return this.createFilterExpression(expression);
   }
@@ -167,14 +171,14 @@ export default class ColumnFilter {
       event.stopImmediatePropagation();
     };
 
-    this.filterInput.addEventListener('keyup', this.filterHandler, true);
-    this.filterInput.addEventListener('mousedown', handleMouseDown);
-    this.filterNode.addEventListener('mousedown', handleMouseDown);
+    this.filterInput.addEventListener('keyup', throttle(this.filterHandler, 100), true);
+    this.filterInput.addEventListener('mousedown', handleMouseDown, true);
+    this.filterNode.addEventListener('mousedown', handleMouseDown, true);
 
     if (this.clearIcon) {
       this.clearIcon.addEventListener('mousedown', () => {
         this.column.columnManager.resetFilters();
-      });
+      }, true);
     }
   }
 }

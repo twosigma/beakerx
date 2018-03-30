@@ -18,8 +18,6 @@ from beakerx.utils import *
 from beakerx.tabledisplay.tableitems import *
 from pandas import DataFrame, RangeIndex, MultiIndex
 from ipykernel.comm import Comm
-import math
-import numpy
 import types
 
 
@@ -76,12 +74,12 @@ class Table(BaseObject):
             for key in element.keys():
                 if key not in self.columnNames:
                     self.columnNames.append(key)
-                    column_type = self.convert_type(type(element[key]), element[key])
+                    column_type = self.convert_type(type(element[key]))
                     self.types.append(column_type)
                     types_map[key] = column_type
                 elif types_map[key] != "string":
                     type_for_key = types_map[key]
-                    column_type = self.convert_type(type(element[key]), element[key])
+                    column_type = self.convert_type(type(element[key]))
                     if type_for_key != column_type:
                         self.types[self.columnNames.index(key)] = "string"
                         types_map[key] = "string"
@@ -89,8 +87,7 @@ class Table(BaseObject):
             row = []
             for columnName in self.columnNames:
                 value = element.get(columnName, "")
-                value_type = types_map.get(columnName)
-
+                value_type = types_map.get(columnName);
                 row.append(self.convert_value(value, value_type))
             self.values.append(row)
 
@@ -101,8 +98,7 @@ class Table(BaseObject):
 
         column = None
         for column in self.columnNames:
-            column_type = self.convert_type(args[0].dtypes[column].name,
-                                            args[0][column].get_values()[0])
+            column_type = self.convert_type(args[0].dtypes[column].name)
             self.types.append(column_type)
             types_map[column] = column_type
         for index in range(len(args[0])):
@@ -110,11 +106,9 @@ class Table(BaseObject):
             for columnName in self.columnNames:
                 value = args[0][columnName].get_values()[index]
                 value_type = types_map.get(columnName)
-
                 row.append(self.convert_value(value, value_type))
             if not isinstance(args[0].index, RangeIndex):
-                row[:0] = [
-                    self.convert_value(args[0].index.get_values()[index], type(args[0].index.get_values()[index]))]
+                row[:0] = [str(args[0].index.get_values()[index])]
             self.values.append(row)
 
         if not isinstance(args[0].index, RangeIndex) and column is not None:
@@ -123,59 +117,28 @@ class Table(BaseObject):
                 self.columnNames[:0] = [', '.join(args[0].index.names)]
             else:
                 self.columnNames[:0] = [args[0].index.name]
-            self.types[:0] = [self.convert_type("", args[0][column].get_values()[0])]
+            self.types[:0] = [self.convert_type("")]
 
     @staticmethod
     def convert_value(value, value_type):
-        if value == "":
-            converted_value = value
-        elif value_type == "time":
-            converted_value = DateType(value)
-        elif value_type == "double":
-            converted_value = value.astype('str')
-        elif value_type == "integer":
-            if isinstance(value, int):
-                converted_value = value
-            else:
-                converted_value = str(value)
-        elif value_type == "int64":
-            converted_value = value.astype('str')
-        elif value_type == "string":
-            if isinstance(value, float):
-                if math.isnan(value):
-                    converted_value = ""
-                else:
-                    converted_value = str(value)
-            else:
-                converted_value = str(value)
-
+        if value_type == "time":
+            return DateType(value)
         else:
-            converted_value = str(value)
-        return converted_value
+            return str(value)
 
     @staticmethod
-    def convert_type(object_type, value):
-        if value == "":
-            return "string"
-        if isinstance(value, float):
-            if math.isnan(value):
-                return "string"
-        if object_type == "float64":
+    def convert_type(object_type):
+        type_name = str(object_type)
+        if "float" in type_name:
             return "double"
-        if object_type == "int64":
-            if value > numpy.iinfo(numpy.int32).max or value < numpy.iinfo(numpy.int32).min:
-                return "int64"
-            else:
-                return "integer"
-        if object_type == "uint64":
-            return "int64"
-        if isinstance(value, int):
+        elif "int" in type_name:
             return "integer"
-        if "datetime" in str(object_type):
+        elif "datetime" in type_name:
             return "time"
-        if isinstance(value, str):
+        elif "bool" in type_name:
+            return "boolean"
+        else:
             return "string"
-        return "string"
 
 
 class TableDisplay(BeakerxDOMWidget):

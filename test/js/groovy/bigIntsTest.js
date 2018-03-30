@@ -15,15 +15,12 @@
  */
 
 var BeakerXPageObject = require('../beakerx.po.js');
-var TableHelperObject = require('../table.helper.js');
 var beakerxPO;
-var tableHelper;
 
 describe('Large Integers in Tables ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    tableHelper = new TableHelperObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/groovy/BigIntsTest.ipynb');
     beakerxPO.openUIWindow();
   }, 2);
@@ -48,7 +45,7 @@ describe('Large Integers in Tables ', function () {
       var width = 360, height = 90;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName)
+      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
     });
   });
 
@@ -59,7 +56,7 @@ describe('Large Integers in Tables ', function () {
       var width = 360, height = 90;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName)
+      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
     });
   });
 

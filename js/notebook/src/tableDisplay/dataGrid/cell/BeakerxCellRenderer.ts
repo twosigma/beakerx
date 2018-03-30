@@ -23,7 +23,7 @@ import {
   DEFAULT_CELL_BACKGROUND,
   DEFAULT_DATA_FONT_COLOR,
   DEFAULT_DATA_FONT_SIZE,
-  DEFAULT_HEADER_FONT_COLOR, formatColor
+  DEFAULT_HEADER_FONT_COLOR, DEFAULT_HIGHLIGHT_COLOR, formatColor
 } from "../style/dataGridStyle";
 import {BeakerxDataStore} from "../store/dataStore";
 import {
@@ -132,7 +132,7 @@ export default class BeakerxCellRenderer extends TextRenderer {
     if (renderer && renderer.type === RENDERER_TYPE.DataBars && !isHeaderCell) {
       const barWidth = config.width/2 * renderer.percent;
 
-      gc.fillStyle = '#6ba2c7';
+      gc.fillStyle = DEFAULT_HIGHLIGHT_COLOR;
       gc.fillRect(
         config.x + config.width/2 - (renderer.direction === 'RIGHT' ? 0 : barWidth),
         config.y,

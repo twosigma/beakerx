@@ -139,6 +139,7 @@ export default class RowManager {
 
     if (!this.filterExpression) {
       this.rows = toArray(this.rowsIterator.clone());
+      this.columnManager.dataGrid.resize();
 
       return;
     }
@@ -153,6 +154,7 @@ export default class RowManager {
         (row) => evalFn ? evalFn(row, formatFns) : this.evaluateFilterExpression(row, formatFns)
       ));
       this.sortedBy && this.sortByColumn(this.sortedBy);
+      this.columnManager.dataGrid.resize();
     } catch (e) {}
   }
 

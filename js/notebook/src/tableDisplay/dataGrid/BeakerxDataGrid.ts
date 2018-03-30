@@ -97,6 +97,7 @@ export class BeakerxDataGrid extends DataGrid {
     this.baseColumnHeaderSize = DEFAULT_ROW_HEIGHT;
 
     this.setSectionWidth = this.setSectionWidth.bind(this);
+    this.updateColumnWidth = this.updateColumnWidth.bind(this);
     this.setInitialSectionWidth = this.setInitialSectionWidth.bind(this);
     this.resizeSectionWidth = this.resizeSectionWidth.bind(this);
     this.resize = throttle(this.resize, 150, this);
@@ -111,11 +112,8 @@ export class BeakerxDataGrid extends DataGrid {
     super.messageHook(handler, msg);
 
     if (handler === this.viewport && msg.type === 'section-resize-request') {
-      this.columnSections['_sections'].forEach(({ index, size }) => {
-        let columnOnPosition = this.columnManager.getColumnByPosition(COLUMN_TYPES.body, index);
-
-        columnOnPosition.setWidth(size);
-      });
+      this.columnSections['_sections'].forEach(this.updateColumnWidth(COLUMN_TYPES.body));
+      this.rowHeaderSections['_sections'].forEach(this.updateColumnWidth(COLUMN_TYPES.index));
       this.updateWidgetWidth();
       this.updateWidgetHeight();
     }
@@ -264,6 +262,14 @@ export class BeakerxDataGrid extends DataGrid {
     this.addHighlighterManager();
     this.addCellRenderers();
     this.setInitialSize();
+  }
+
+  private updateColumnWidth(columnType: COLUMN_TYPES): Function {
+    return ({ index, size }) => {
+      let columnOnPosition = this.columnManager.getColumnByPosition(columnType, index);
+
+      columnOnPosition.setWidth(size);
+    }
   }
 
   private installMessageHook() {

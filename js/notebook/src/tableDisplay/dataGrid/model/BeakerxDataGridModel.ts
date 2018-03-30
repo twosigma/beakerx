@@ -95,7 +95,7 @@ export class BeakerxDataGridModel extends DataModel {
   data(region: DataModel.CellRegion, row: number, position: number): any {
     const columnType = DataGridColumn.getColumnTypeByRegion(region);
     const index = selectColumnIndexByPosition(this.store.state, columnType, position);
-    const dataGridRow = this.rowManager.getRow(row);
+    const dataGridRow = this.rowManager.getRow(row) || { index: row, values: [] };
 
     if (region === 'row-header') {
       return dataGridRow.index;

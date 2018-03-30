@@ -122,7 +122,7 @@ export class BeakerxDataGridModel extends DataModel {
   }
 
   getColumnValuesIterator(column: IColumn): MapIterator<number, number> {
-    if (!selectHasIndex(this.store.state) && column.type === COLUMN_TYPES.index) {
+    if (column.type === COLUMN_TYPES.index) {
       return new MapIterator<DataGridRow, any>(iter(this.rowManager.rows), (row) => row.index);
     }
 

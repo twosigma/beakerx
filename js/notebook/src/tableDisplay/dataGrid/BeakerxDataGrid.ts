@@ -205,7 +205,9 @@ export class BeakerxDataGrid extends DataGrid {
   }
 
   setInitialSectionWidth(column) {
-    this.setSectionWidth('column', column, this.getSectionWidth(column));
+    const section = column.type === COLUMN_TYPES.body ? 'column' : 'row-header';
+
+    this.setSectionWidth(section, column, this.getSectionWidth(column));
   }
 
   setFocus(focus: boolean) {
@@ -301,7 +303,7 @@ export class BeakerxDataGrid extends DataGrid {
 
   private setInitialSectionWidths() {
     this.columnManager.bodyColumns.forEach(this.setInitialSectionWidth);
-    this.resizeIndexColumn();
+    this.columnManager.indexColumns.forEach(this.setInitialSectionWidth);
   }
 
   private resizeSections() {
@@ -336,7 +338,7 @@ export class BeakerxDataGrid extends DataGrid {
 
   private getSectionWidth(column) {
     const value = String(column.formatFn(this.cellManager.createCellConfig({
-      region: 'body',
+      region: column.type === COLUMN_TYPES.body ? 'body' : 'row-header',
       value: column.longestStringValue || column.maxValue,
       column: column.index,
       row: 0,
@@ -349,19 +351,6 @@ export class BeakerxDataGrid extends DataGrid {
     const result = nameSize[nameSizeProp] > valueSize.width - 7 ? nameSize[nameSizeProp] : valueSize.width;
 
     return result > MIN_COLUMN_WIDTH ? result : MIN_COLUMN_WIDTH;
-  }
-
-  private resizeIndexColumn() {
-    const valueCharLength = this.model.rowCount('body');
-    const name = this.columnManager.getColumnByIndex(COLUMN_TYPES.index, 0).name;
-    const value = name.length > valueCharLength ? name : String(valueCharLength);
-    const nameSizeProp = selectHeadersVertical(this.store.state) ? 'height' : 'width';
-    const nameSize = getStringSize(name, selectHeaderFontSize(this.store.state));
-    const valueSize = getStringSize(value, selectDataFontSize(this.store.state));
-    const result = (nameSize[nameSizeProp] > valueSize.width ? nameSize[nameSizeProp]: valueSize.width) + 10;
-    const column = this.columnManager.getColumnByIndex(COLUMN_TYPES.index, 0);
-
-    this.setSectionWidth('row-header', column, result);
   }
 
   private setSectionWidth(section, column: DataGridColumn, value: number) {

@@ -84,7 +84,7 @@ class ScalaInterpreter(settings: Settings, out: JPrintWriter) extends IMain(sett
       override lazy val individualSymbols: List[Symbol] = importableSymbolsWithRenames map (_._1)
       override lazy val wildcardSymbols: List[Symbol] =
         if (importsWildcard) importableTargetMembers else Nil
-
+      override lazy val individualNames: List[Name] = importableSymbolsWithRenames map (_._2)
     }
 
   }

@@ -49,7 +49,7 @@ import {
   UPDATE_COLUMN_DISPLAY_TYPE,
   UPDATE_COLUMN_FILTER, UPDATE_COLUMN_FORMAT_FOR_TIMES,
   UPDATE_COLUMN_HORIZONTAL_ALIGNMENT,
-  UPDATE_COLUMN_POSITION, UPDATE_COLUMN_SORT_ORDER,
+  UPDATE_COLUMN_SORT_ORDER,
   UPDATE_COLUMN_VISIBILITY, UPDATE_COLUMN_WIDTH
 } from "./reducer";
 import {BeakerxDataStore} from "../store/dataStore";
@@ -314,16 +314,7 @@ export default class DataGridColumn {
   }
 
   move(destination: number) {
-    this.store.dispatch(new DataGridColumnAction(
-      UPDATE_COLUMN_POSITION,
-      {
-        value: destination,
-        columnType: this.type,
-        columnIndex: this.index,
-        hasIndex: selectHasIndex(this.store.state)
-      })
-    );
-
+    this.dataGrid.columnPosition.setPosition(this, destination);
     this.menu.hideTrigger();
     this.dataGrid.resize();
   }
@@ -384,7 +375,6 @@ export default class DataGridColumn {
   destroy() {
     this.menu.destroy();
     this.dataTypeTooltip.hide();
-    this.columnFilter.destroy();
   }
 
   toggleDataBarsRenderer(enable?: boolean) {
@@ -412,6 +402,7 @@ export default class DataGridColumn {
       columnType: this.type,
       hasIndex: selectHasIndex(this.store.state)
     }));
+    this.dataGrid.columnPosition.updateAll();
     this.dataGrid.resize();
   }
 

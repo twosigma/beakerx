@@ -68,10 +68,6 @@ export default class ColumnFilter {
     this.updateInputPosition();
   }
 
-  destroy() {
-    this.filterWidget.isAttached && this.filterWidget.dispose();
-  }
-
   attach(node: HTMLElement) {
     Widget.attach(this.filterWidget, node);
     this.bindEvents();

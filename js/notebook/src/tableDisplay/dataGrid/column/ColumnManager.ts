@@ -186,7 +186,7 @@ export default class ColumnManager {
       defaultValue: [0]
     }));
 
-    this.dataGrid.resize();
+    this.dataGrid.columnPosition.updateAll();
   }
 
   resetColumnsAlignment() {

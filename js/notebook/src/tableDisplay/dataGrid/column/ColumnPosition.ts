@@ -16,13 +16,15 @@
 
 import {BeakerxDataGrid} from "../BeakerxDataGrid";
 import {ICellData} from "../interface/ICell";
-import {selectColumnNames, selectHasIndex} from "../model/selectors";
-import {UPDATE_COLUMNS_POSITION} from "./reducer";
-import {DataGridColumnsAction} from "../store/DataGridAction";
+import {selectColumnNames, selectColumnOrder, selectHasIndex} from "../model/selectors";
+import {UPDATE_COLUMN_POSITIONS} from "./reducer";
+import {DataGridColumnAction, DataGridColumnsAction} from "../store/DataGridAction";
 import {BeakerxDataStore} from "../store/dataStore";
 import {COLUMN_TYPES} from "./enums";
-import {selectColumnIndexByPosition} from "./selectors";
+import {selectColumnIndexByPosition, selectIndexColumnNames} from "./selectors";
 import {DEFAULT_HIGHLIGHT_COLOR} from "../style/dataGridStyle";
+import {UPDATE_COLUMN_ORDER} from "../model/reducer";
+import DataGridColumn from "./DataGridColumn";
 
 export default class ColumnPosition {
   dataGrid: BeakerxDataGrid;
@@ -48,12 +50,11 @@ export default class ColumnPosition {
   }
 
   reset() {
-    const columnNames = selectColumnNames(this.store.state);
     const hasIndex = selectHasIndex(this.store.state);
 
-    this.store.dispatch(new DataGridColumnsAction(UPDATE_COLUMNS_POSITION, {
+    this.store.dispatch(new DataGridColumnsAction(UPDATE_COLUMN_POSITIONS, {
       hasIndex,
-      value: columnNames.map((index, order) => order),
+      value: selectColumnNames(this.store.state),
       defaultValue: [0]
     }));
 
@@ -81,11 +82,43 @@ export default class ColumnPosition {
     this.stopDragging();
   }
 
+  setPosition(column: DataGridColumn, position: number) {
+    this.store.dispatch(new DataGridColumnAction(
+      UPDATE_COLUMN_ORDER,
+      {
+        value: position,
+        columnType: column.type,
+        columnName: column.name,
+        columnIndex: column.index,
+        hasIndex: selectHasIndex(this.store.state)
+      })
+    );
+
+    this.updateAll();
+  }
+
+  updateAll() {
+    let order = selectColumnOrder(this.store.state);
+
+    if (!order || !order.length) {
+      order = selectColumnNames(this.store.state);
+    }
+
+    this.store.dispatch(new DataGridColumnsAction(
+      UPDATE_COLUMN_POSITIONS,
+      {
+        value: order,
+        hasIndex: selectHasIndex(this.store.state),
+        defaultValue: selectIndexColumnNames(this.store.state)
+      })
+    );
+    this.dataGrid.resize();
+  }
+
   private moveColumn(data: ICellData) {
     const column = this.dataGrid.columnManager.getColumnByPosition(data.type, data.column);
 
-    column.move(this.dropCellData.column);
-
+    this.setPosition(column, this.dropCellData.column);
     this.grabbedCellData = null;
     this.dropCellData = null;
   }

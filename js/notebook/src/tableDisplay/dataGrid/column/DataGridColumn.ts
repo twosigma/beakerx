@@ -403,7 +403,6 @@ export default class DataGridColumn {
       hasIndex: selectHasIndex(this.store.state)
     }));
     this.dataGrid.columnPosition.updateAll();
-    this.dataGrid.resize();
   }
 
   private dateValueResolver(value) {

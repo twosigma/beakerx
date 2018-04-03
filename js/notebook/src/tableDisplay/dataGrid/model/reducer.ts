@@ -66,7 +66,7 @@ function reduceColumnPosition(state, action: DataGridColumnAction) {
 
 function getColumnOrderArray(state): string[] {
   const columnOrder = state.columnOrder;
-  const order = [...state.columnNames];
+  const order = state.columnNames.map(name => name !== null ? String(name) : null);
 
   columnOrder.reverse().forEach((name) => {
     const columnPosition = order.indexOf(name);

@@ -112,6 +112,7 @@ export default class ColumnPosition {
         defaultValue: selectIndexColumnNames(this.store.state)
       })
     );
+    this.dataGrid.resize();
   }
 
   private moveColumn(data: ICellData) {

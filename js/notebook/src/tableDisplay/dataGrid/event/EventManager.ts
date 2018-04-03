@@ -43,6 +43,7 @@ export default class EventManager {
     this.handleBodyClick = this.handleBodyClick.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.handleCellHover = throttle<MouseEvent, void>(this.handleCellHover, 100, this);
+    this.handleWindowResize = throttle<Event, void>(this.handleWindowResize, 200, this);
 
     this.dataGrid.node.removeEventListener('mouseout', this.handleMouseOut);
     this.dataGrid.node.addEventListener('mouseout', this.handleMouseOut);
@@ -55,6 +56,7 @@ export default class EventManager {
     this.dataGrid['_scrollCorner'].node.addEventListener('mousedown', this.handleMouseDown);
     document.removeEventListener('keydown', this.handleKeyDown);
     document.addEventListener('keydown', this.handleKeyDown, true);
+    window.addEventListener('resize', this.handleWindowResize);
   }
 
   handleEvent(event: Event, parentHandler: Function): void {
@@ -75,6 +77,11 @@ export default class EventManager {
 
   destroy() {
     document.removeEventListener('keydown', this.handleKeyDown);
+    window.removeEventListener('resize', this.handleWindowResize);
+  }
+
+  private handleWindowResize(event) {
+    this.dataGrid.resize();
   }
 
   private handleMouseUp(event: MouseEvent) {

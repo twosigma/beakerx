@@ -27,6 +27,8 @@ export const FOCUSED_CELL_BACKGROUND = 'rgb(200, 200, 200)';
 export const DEFAULT_DATA_FONT_SIZE = 13;
 export const DEFAULT_HEADER_FONT_COLOR = '#515A5A';
 export const DEFAULT_DATA_FONT_COLOR = '#000000';
+export const DEFAULT_HIGHLIGHT_COLOR = '#6ba2c7';
+export const DEFAULT_BORDER_COLOR = '#D4D0D0';
 export const DEFAULT_GRID_PADDING = 20;
 export const DEFAULT_GRID_BORDER_WIDTH = 1;
 export const MIN_COLUMN_WIDTH = 40;
@@ -80,5 +82,6 @@ export const silverStripeStyle: DataGrid.IStyle = {
   ...DataGrid.defaultStyle,
   voidColor: '#ffffff',
   headerBackgroundColor: '#E6E6E6',
-  rowBackgroundColor: i => i % 2 === 0 ? '#f9f9f9' : ''
+  rowBackgroundColor: i => i % 2 === 0 ? '#f9f9f9' : '',
+  gridLineColor: DEFAULT_BORDER_COLOR
 };

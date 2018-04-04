@@ -26,8 +26,7 @@ import {COLUMN_TYPES} from "./enums";
 export const UPDATE_COLUMNS_STATES = 'UPDATE_COLUMNS_STATES';
 export const UPDATE_COLUMN_STATE = 'UPDATE_COLUMNS_STATE';
 export const UPDATE_COLUMNS_VISIBILITY = 'UPDATE_COLUMNS_VISIBILITY';
-export const UPDATE_COLUMNS_POSITION = 'UPDATE_COLUMNS_POSITION';
-export const UPDATE_COLUMN_POSITION = 'UPDATE_COLUMN_POSITION';
+export const UPDATE_COLUMN_POSITIONS = 'UPDATE_COLUMN_POSITIONS';
 export const UPDATE_COLUMNS_TYPES = 'UPDATE_COLUMNS_TYPES';
 export const UPDATE_COLUMNS_NAMES = 'UPDATE_COLUMNS_NAMES';
 export const UPDATE_COLUMN_VISIBILITY = 'UPDATE_COLUMN_VISIBILITY';
@@ -40,7 +39,6 @@ export const UPDATE_COLUMN_SORT_ORDER = 'UPDATE_COLUMN_SORT_ORDER';
 export const UPDATE_COLUMN_WIDTH = 'UPDATE_COLUMN_WIDTH';
 
 const reduceColumnsVisibility = reduceColumnsState('visible');
-const reduceColumnsPosition = reduceColumnsState('position');
 const reduceColumnsNames = reduceColumnsState('name');
 const reduceColumnsTypes = reduceColumnsState('dataTypeName');
 const reduceColumnsFilters = reduceColumnsState('filter');
@@ -66,13 +64,10 @@ const columnReducer: Reducer<IColumnsState> = (
       return reduceColumnsVisibility(state, action);
 
     case UPDATE_COLUMN_VISIBILITY:
-      return reduceColumnVisibility(state, action);
+      return reduceColumnStateProperty('visible')(state, action);
 
-    case UPDATE_COLUMNS_POSITION:
-      return reduceColumnsPosition(state, action);
-
-    case UPDATE_COLUMN_POSITION:
-      return reduceColumnPosition(state, action);
+    case UPDATE_COLUMN_POSITIONS:
+      return reduceColumnPositions(state, action);
 
     case UPDATE_COLUMNS_TYPES:
       return reduceColumnsTypes(state, action);
@@ -162,49 +157,37 @@ function reduceColumnStateProperty(property: string) {
   };
 }
 
-function reduceColumnVisibility(state, action) {
-  const newState: IColumnsState = reduceColumnStateProperty('visible')(state, action);
-  const visibleStates: IColumnState[] = Array.from(newState.values()).filter(
-    columnState => columnState.columnType === COLUMN_TYPES.body && columnState.visible
+function reduceColumnPositions(state: IColumnsState, action: DataGridColumnsAction) {
+  const { value, hasIndex } = action.payload;
+  const stateArray = Array.from(state.values());
+  const order = [...value];
+  const hiddenStates: IColumnState[] = stateArray.filter(
+    columnState => columnState.visible === false
   );
 
-  // Move column to the end or behind the visible columns
-  return reduceColumnPosition(newState, new DataGridColumnAction(
-    UPDATE_COLUMN_POSITION,
-    {
-      ...action.payload,
-      value: action.payload.value ? visibleStates.length - 1 : visibleStates.length
-    }
-  ));
-}
+  // Move hidden columns outside the visible range
+  hiddenStates.forEach((state, index) => {
+    let position = order.indexOf(state.name);
 
-function reduceColumnPosition(state, action) {
-  const { columnType, columnIndex, value, hasIndex } = action.payload;
-  const order = createBodyColumnsOrderArray(state, columnType);
-  const lastPosition = order.indexOf(columnIndex);
-  const resultPositions: number[] = [];
-
-  order.splice(lastPosition, 1);
-  order.splice(value, 0, columnIndex);
-  order.forEach((index, position) => { resultPositions[index] = position; });
-
-  return reduceColumnsPosition(state, new DataGridColumnsAction(UPDATE_COLUMNS_POSITION, {
-    hasIndex,
-    value: resultPositions,
-    defaultValue: [0]
-  }));
-}
-
-function createBodyColumnsOrderArray(state, columnType): number[] {
-  const order: number[] = [];
-
-  state.forEach((columnState) => {
-    if (columnState.columnType === columnType) {
-      order[columnState.position] = columnState.index
+    if (position !== -1) {
+      order.splice(position, 1);
+      order.splice(stateArray.length - index, 0, state.name);
     }
   });
 
-  return order;
+  // const bodyColumnsOrder = hasIndex ? order.slice(1) : order;
+  const newState = new Map<string, IColumnState>(state);
+
+  newState.forEach((columnState, key, map) => {
+    if (columnState.columnType === COLUMN_TYPES.body) {
+      map.set(key, {
+        ...columnState,
+        position: hasIndex ? order.indexOf(columnState.name) - 1 : order.indexOf(columnState.name)
+      });
+    }
+  });
+
+  return newState;
 }
 
 export default columnReducer;

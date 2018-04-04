@@ -21,6 +21,8 @@ import {ALL_TYPES} from "../dataTypes";
 import {TIME_UNIT_FORMATS} from "../../consts";
 import { createSelector } from 'reselect'
 
+export const DEFAULT_INDEX_COLUMN_NAME = 'index';
+
 export const selectModel = (state): IDataModelState => state.model;
 export const selectValues = (state) => selectModel(state).values;
 export const selectHasIndex = (state) => selectModel(state).hasIndex;
@@ -30,7 +32,8 @@ export const selectHeadersVertical = (state) => selectModel(state).headersVertic
 export const selectHeaderFontSize = (state) => selectModel(state).headerFontSize;
 export const selectDataFontSize = (state) => selectModel(state).dataFontSize;
 export const selectFontColor = (state) => selectModel(state).fontColor;
-export const selectColumnNames = (state) => selectModel(state).columnNames || [];
+export const selectRawColumnNames = (state) => selectModel(state).columnNames || [];
+export const selectColumnNames = createSelector(selectRawColumnNames, names => names.map(name => name !== null ? String(name) : null));
 export const selectColumnTypes = (state) => selectModel(state).types;
 export const selectColumnOrder = (state) => selectModel(state).columnOrder;
 export const selectColumnsVisible = (state) => selectModel(state).columnsVisible || {};
@@ -66,41 +69,43 @@ export const selectInitialColumnAlignment = createSelector(
 
 // Returns the map columnIndex => position
 export const selectInitialColumnPositions = createSelector(
-  [selectColumnOrder, selectColumnNames, selectColumnsVisible],
-  (columnOrder, columnNames, columnsVisible) => {
+  [selectColumnOrder, selectColumnNames, selectColumnsVisible, selectHasIndex],
+  (columnOrder, allColumnNames, columnsVisible, hasIndex) => {
   const hasInitialOrder = columnOrder && columnOrder.length > 0;
-  const positions = columnNames.map((name, index) => index);
+  const columnNames = hasIndex ? allColumnNames.slice(1) : allColumnNames;
+  const order = [...columnNames];
 
   if (hasInitialOrder) {
     columnOrder.reverse().forEach((name) => {
-      const columnIndex = columnNames.indexOf(name);
+      const columnPosition = order.indexOf(name);
 
-      if (columnIndex === -1) {
+      if (columnPosition === -1) {
         return true;
       }
 
-      const columnPosition = positions.indexOf(columnIndex);
-
-      positions.splice(columnPosition, 1);
-      positions.unshift(columnIndex);
+      order.splice(columnPosition, 1);
+      order.unshift(name);
     });
   }
 
-  Object.keys(columnsVisible).forEach((name, index) => {
+  Object.keys(columnsVisible).forEach((name) => {
     if (columnsVisible[name] === false) {
-      let columnIndex = columnNames.indexOf(name);
-      let indexToRemove = positions.indexOf(columnIndex);
-      let removed = positions.splice(indexToRemove, 1)[0];
+      let indexToRemove = order.indexOf(name);
+      let removed = order.splice(indexToRemove, 1)[0];
 
-      positions.push(removed);
+      order.push(removed);
     }
   });
 
   const result: number[] = [];
 
-  positions.forEach((column: number, position: number) => {
-    result[column] = position;
+  order.forEach((name: string, position: number) => {
+    result[columnNames.indexOf(name)] = position;
   });
+
+  if (hasIndex) {
+    result.unshift(0);
+  }
 
   return result;
 });

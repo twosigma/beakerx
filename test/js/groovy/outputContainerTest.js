@@ -22,6 +22,7 @@ describe('(Groovy) Output Containers ', function () {
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/groovy/OutputContainersTest.ipynb');
+    beakerxPO.openUIWindow();
   });
 
   afterAll(function () {
@@ -37,6 +38,12 @@ describe('(Groovy) Output Containers ', function () {
   function widgetTableIsVisible(widget){
     return widget.isVisible('div.bko-table');
   }
+
+  describe('UI options. ', function () {
+    it("Disable PhosphorJS DataGrid for TableDisplay Widget. ", function () {
+      beakerxPO.setDataGridForTable(false, false);
+    });
+  });
 
   describe('(Groovy) OutputCell.HIDDEN ', function() {
     it("Cell doesn't have output", function () {

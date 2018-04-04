@@ -38,7 +38,7 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
     {
       id: 'auto_close',
       name: 'auto_close',
-      label: 'Auto close brackets',
+      label: 'Autoclose brackets',
       isLabSupported: true,
     },
     {
@@ -62,13 +62,13 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
     {
       id: 'auto_save',
       name: 'auto_save',
-      label: 'Auto save notebooks',
+      label: 'Autosave notebooks',
       isLabSupported: true,
     },
     {
       id: 'use_data_grid',
       name: 'use_data_grid',
-      label: 'Use PhosphorJS DataGrid for TableDisplay Widget',
+      label: 'New table widget',
       isLabSupported: true,
     },
   ];

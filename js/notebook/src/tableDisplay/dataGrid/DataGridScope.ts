@@ -70,7 +70,7 @@ export class DataGridScope {
     this.dataGrid.columnManager.resetFilters();
     this.dataGrid.columnManager.showAllColumns();
     this.dataGrid.columnManager.resetColumnsAlignment();
-    this.dataGrid.columnManager.resetColumnsOrder();
+    this.dataGrid.columnManager.resetColumnPositions();
   }
 
   connectToCommSignal() {

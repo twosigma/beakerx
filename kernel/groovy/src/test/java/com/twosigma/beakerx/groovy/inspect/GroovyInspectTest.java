@@ -61,10 +61,9 @@ public class GroovyInspectTest {
     @Test
     public void evaluateInspectFooWoBracketCaretAtEnd() throws Exception {
         //given
-        String code = "import com.twosigma.beakerx.table.*\n" +
-                "import com.twosigma.beakerx.table.format.TableDisplayStringFormat\n" +
-                "\n" +
-                "csv = new CsvPlotReader()\n" +
+        String code = "import com.twosigma.beakerx.table.*" + System.lineSeparator() +
+                "import com.twosigma.beakerx.table.format.TableDisplayStringFormat" + System.lineSeparator() +
+                "csv = new CsvPlotReader()" + System.lineSeparator() +
                 "csv.re\0ad";
         String expected = METHOD_CSV_PLOT_READER_READ;
 
@@ -78,9 +77,8 @@ public class GroovyInspectTest {
     @Test
     public void evaluateInspectOnClassName() throws Exception {
         //given
-        String code = "import com.twosigma.beakerx.table.*\n" +
-                "import com.twosigma.beakerx.table.format.TableDisplayStringFormat\n" +
-                "\n" +
+        String code = "import com.twosigma.beakerx.table.*" + System.lineSeparator() +
+                "import com.twosigma.beakerx.table.format.TableDisplayStringFormat"  + System.lineSeparator() +
                 "csv = new CsvPlot\0Reader()";
         String expected = CLASS_CSV_PLOT_READER;
         //when
@@ -92,10 +90,9 @@ public class GroovyInspectTest {
     @Test
     public void evaluateInspectFooWBracketCaretInBracket() throws Exception {
         //given
-        String code = "import com.twosigma.beakerx.table.*\n" +
-                "import com.twosigma.beakerx.table.format.TableDisplayStringFormat\n" +
-                "\n" +
-                "csv = new CsvPlotReader()\n" +
+        String code = "import com.twosigma.beakerx.table.*" + System.lineSeparator() +
+                "import com.twosigma.beakerx.table.format.TableDisplayStringFormat"  + System.lineSeparator() +
+                "csv = new CsvPlotReader()" + System.lineSeparator() +
                 "csv.read(\0)";
         String expected = METHOD_CSV_PLOT_READER_READ;
         //when
@@ -108,10 +105,10 @@ public class GroovyInspectTest {
     @Test
     public void evaluateInspectFooWoSimpleInitCaretInFooName() throws Exception {
         //given
-        String code = "import com.twosigma.beakerx.table.*\n" +
-                "import com.twosigma.beakerx.table.format.TableDisplayStringFormat\n" +
-                "\n" +
-                "table = new TableDisplay(new CsvPlotReader().read('../resources/data/interest-rates.csv'))\n" +
+        String code = "import com.twosigma.beakerx.table.*"  + System.lineSeparator() +
+                "import com.twosigma.beakerx.table.format.TableDisplayStringFormat"  + System.lineSeparator() +
+                "table = new TableDisplay(new CsvPlotReader().read('../resources/data/interest-rates.csv'))" +
+                System.lineSeparator() +
                 "table.setDoubleCli\0ckAction()";
         String expected = METHOD_TABLE_DISPLAY_SETDBLCLICK;
         //when
@@ -124,9 +121,8 @@ public class GroovyInspectTest {
     @Test
     public void evaluateInspectClassNameWithoutNew() throws Exception {
         //given
-        String code = "import com.twosigma.beakerx.table.*\n" +
-                "import com.twosigma.beakerx.table.format.TableDisplayStringFormat\n" +
-                "\n" +
+        String code = "import com.twosigma.beakerx.table.*"  + System.lineSeparator() +
+                "import com.twosigma.beakerx.table.format.TableDisplayStringFormat"  + System.lineSeparator() +
                 "table = new TableDisplay(new CsvPlotReader().read('ar\0gs'))";
         String expected = METHOD_CSV_PLOT_READER_READ;
         //when
@@ -139,10 +135,10 @@ public class GroovyInspectTest {
     @Test
     public void evaluateInspectClassNameInsideConstructor() throws Exception {
         //given
-        String code = "import com.twosigma.beakerx.table.*\n" +
-                "import com.twosigma.beakerx.table.format.TableDisplayStringFormat\n" +
-                "\n" +
-                "display = new TableDisplay(new CsvPlot\0Reader().read(\"../resources/data/interest-rates.csv\"))\n" +
+        String code = "import com.twosigma.beakerx.table.*" + System.lineSeparator() +
+                "import com.twosigma.beakerx.table.format.TableDisplayStringFormat" + System.lineSeparator() +
+                "display = new TableDisplay(new CsvPlot\0Reader().read(\"../resources/data/interest-rates.csv\"))" +
+                System.lineSeparator() +
                 "display.setStringFormatForColumn(\"test\")";
         String expected = CLASS_CSV_PLOT_READER;
         //when
@@ -154,7 +150,7 @@ public class GroovyInspectTest {
     @Test
     public void evaluateInspectOnVariableWithDefKeyword() throws Exception {
         //given
-        String code = "def display = new TableDisplay()\n" +
+        String code = "def display = new TableDisplay()" + System.lineSeparator() +
                 "dis\0play.setDoubleClickAction()";
         String expected = CLASS_TABLE_DISPLAY;
         //when
@@ -166,7 +162,7 @@ public class GroovyInspectTest {
     @Test
     public void evaluateInspectOnMethodVarWithDefKeyword() throws Exception {
         //given
-        String code = "def display = new TableDisplay()\n" +
+        String code = "def display = new TableDisplay()" + System.lineSeparator() +
                 "display.setDoubleCli\0ckAction()";
         String expected = METHOD_TABLE_DISPLAY_SETDBLCLICK;
         //when

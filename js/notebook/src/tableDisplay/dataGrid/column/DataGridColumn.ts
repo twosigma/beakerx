@@ -49,7 +49,7 @@ import {
   UPDATE_COLUMN_DISPLAY_TYPE,
   UPDATE_COLUMN_FILTER, UPDATE_COLUMN_FORMAT_FOR_TIMES,
   UPDATE_COLUMN_HORIZONTAL_ALIGNMENT,
-  UPDATE_COLUMN_POSITION, UPDATE_COLUMN_SORT_ORDER,
+  UPDATE_COLUMN_SORT_ORDER,
   UPDATE_COLUMN_VISIBILITY, UPDATE_COLUMN_WIDTH
 } from "./reducer";
 import {BeakerxDataStore} from "../store/dataStore";
@@ -71,6 +71,7 @@ export default class DataGridColumn {
   minValue: any;
   maxValue: any;
   dataTypeTooltip: CellTooltip;
+  longestStringValue: string;
 
   constructor(options: IColumnOptions, dataGrid: BeakerxDataGrid, columnManager: ColumnManager) {
     this.index = options.index;
@@ -153,22 +154,16 @@ export default class DataGridColumn {
   }
 
   search(filter: string) {
-    if (filter === this.getFilter()) {
-      return;
-    }
-
-    this.updateColumnFilter(filter);
-    this.dataGrid.rowManager.searchRows();
-    this.dataGrid.model.reset();
+    this.filter(filter, true);
   }
 
-  filter(filter: string) {
+  filter(filter: string, search?: boolean) {
     if (filter === this.getFilter()) {
       return;
     }
 
     this.updateColumnFilter(filter);
-    this.dataGrid.rowManager.filterRows();
+    search ? this.dataGrid.rowManager.searchRows() : this.dataGrid.rowManager.filterRows();
     this.dataGrid.model.reset();
   }
 
@@ -300,24 +295,26 @@ export default class DataGridColumn {
   getValueResolver(): Function {
     const dataType = this.getDataType();
 
-    if(dataType === ALL_TYPES.datetime || dataType === ALL_TYPES.time) {
-      return this.dateValueResolver;
-    }
+    switch (dataType) {
+      case ALL_TYPES.datetime:
+      case ALL_TYPES.time:
+        return this.dateValueResolver;
 
-    return this.defaultValueResolver;
+      case ALL_TYPES.double:
+      case ALL_TYPES['double with precision']:
+        return this.doubleValueResolver;
+
+      case ALL_TYPES.integer:
+      case ALL_TYPES.int64:
+        return this.integerValueResolver;
+
+      default:
+        return this.defaultValueResolver;
+    }
   }
 
   move(destination: number) {
-    this.store.dispatch(new DataGridColumnAction(
-      UPDATE_COLUMN_POSITION,
-      {
-        value: destination,
-        columnType: this.type,
-        columnIndex: this.index,
-        hasIndex: selectHasIndex(this.store.state)
-      })
-    );
-
+    this.dataGrid.columnPosition.setPosition(this, destination);
     this.menu.hideTrigger();
     this.dataGrid.resize();
   }
@@ -331,9 +328,20 @@ export default class DataGridColumn {
   addMinMaxValues() {
     let valueResolver = this.getValueResolver();
     let valuesIterator = this.dataGrid.model.getColumnValuesIterator(this);
+    let dataType = this.getDataType();
     let minMax = minmax(valuesIterator, (a:any, b:any) => {
       let value1 = valueResolver(a);
       let value2 = valueResolver(b);
+
+      if (dataType === ALL_TYPES.string || dataType === ALL_TYPES['formatted integer'] || dataType === ALL_TYPES.html) {
+        let aLength = a ? a.length : 0;
+        let bLength = b ? b.length : 0;
+        let longer = aLength > bLength ? a : b;
+
+        if (!this.longestStringValue || this.longestStringValue.length < longer.length) {
+          this.longestStringValue = longer;
+        }
+      }
 
       if (value1 === value2) {
         return 0;
@@ -394,7 +402,7 @@ export default class DataGridColumn {
       columnType: this.type,
       hasIndex: selectHasIndex(this.store.state)
     }));
-    this.dataGrid.resize();
+    this.dataGrid.columnPosition.updateAll();
   }
 
   private dateValueResolver(value) {
@@ -403,6 +411,14 @@ export default class DataGridColumn {
 
   private defaultValueResolver(value) {
     return value;
+  }
+
+  private doubleValueResolver(value) {
+    return parseFloat(value);
+  }
+
+  private integerValueResolver(value) {
+    return parseInt(value);
   }
 
   private onColumnsChanged(sender: ColumnManager, args: IBkoColumnsChangedArgs) {

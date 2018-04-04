@@ -59,7 +59,7 @@ public class Inspect {
         Path workingDirectory = null;
         try {
             workingDirectory= Paths.get(
-                    BeakerxWidget.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()
+                    BeakerxWidget.class.getProtectionDomain().getCodeSource().getLocation().toURI()
             ).getParent().getParent();
         } catch (URISyntaxException e) {
             e.printStackTrace();

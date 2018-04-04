@@ -73,37 +73,34 @@ export const selectInitialColumnPositions = createSelector(
   (columnOrder, allColumnNames, columnsVisible, hasIndex) => {
   const hasInitialOrder = columnOrder && columnOrder.length > 0;
   const columnNames = hasIndex ? allColumnNames.slice(1) : allColumnNames;
-  const positions = columnNames.map((name, index) => index);
+  const order = [...columnNames];
 
   if (hasInitialOrder) {
     columnOrder.reverse().forEach((name) => {
-      const columnIndex = columnNames.indexOf(name);
+      const columnPosition = order.indexOf(name);
 
-      if (columnIndex === -1) {
+      if (columnPosition === -1) {
         return true;
       }
 
-      const columnPosition = positions.indexOf(columnIndex);
-
-      positions.splice(columnPosition, 1);
-      positions.unshift(columnIndex);
+      order.splice(columnPosition, 1);
+      order.unshift(name);
     });
   }
 
-  Object.keys(columnsVisible).forEach((name, index) => {
+  Object.keys(columnsVisible).forEach((name) => {
     if (columnsVisible[name] === false) {
-      let columnIndex = columnNames.indexOf(name);
-      let indexToRemove = positions.indexOf(columnIndex);
-      let removed = positions.splice(indexToRemove, 1)[0];
+      let indexToRemove = order.indexOf(name);
+      let removed = order.splice(indexToRemove, 1)[0];
 
-      positions.push(removed);
+      order.push(removed);
     }
   });
 
   const result: number[] = [];
 
-  positions.forEach((column: number, position: number) => {
-    result[column] = position;
+  order.forEach((name: string, position: number) => {
+    result[columnNames.indexOf(name)] = position;
   });
 
   if (hasIndex) {

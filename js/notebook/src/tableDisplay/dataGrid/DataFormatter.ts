@@ -132,7 +132,7 @@ export class DataFormatter {
   private string(config: CellRenderer.ICellConfig) {
     const objectValue = _.isObject(config.value);
     const stringFormatForColumn = this.stringFormatForColumn[this.columnNames[config.column]];
-    let formattedValue = config.value;
+    let formattedValue = config.value !== null ? config.value : '';
 
     if (!objectValue && stringFormatForColumn && stringFormatForColumn.type === 'value') {
       return this.value(config);

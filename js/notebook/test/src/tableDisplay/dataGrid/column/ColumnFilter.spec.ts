@@ -15,12 +15,11 @@
  */
 
 import { expect } from 'chai';
+import * as sinon from 'sinon';
 import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
-import DataGridColumn from '@beakerx/tableDisplay/dataGrid/column/DataGridColumn';
 import modelStateMock from "../mock/modelStateMock";
 import ColumnFilter from "@beakerx/tableDisplay/dataGrid/column/ColumnFilter";
 import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
-import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
 
 declare var require: Function;
 
@@ -28,12 +27,7 @@ describe('ColumnFilter', () => {
   const dataStore = createStore(modelStateMock);
   const dataGrid = new BeakerxDataGrid({}, dataStore);
   const columnManager = dataGrid.columnManager;
-  const bodyDataGridColumn = new DataGridColumn({
-    type: COLUMN_TYPES.body,
-    index: 0,
-    name: 'index',
-    menuOptions: { x: 0, y: 0, height: 20, width: 20 }
-  }, dataGrid, columnManager);
+  const bodyDataGridColumn = columnManager.bodyColumns[0];
   const columnFilter = bodyDataGridColumn.columnFilter;
 
   it('should be an instance of ColumnFilter', () => {
@@ -53,20 +47,35 @@ describe('ColumnFilter', () => {
 
   it('should show the filter input', () => {
     columnFilter.showFilterInput(false);
-    expect(columnFilter.filterNode.style.visibility).to.equal('visible');
+    expect(columnFilter.filterWidget.isHidden).to.be.false;
     expect(columnFilter.filterIcon.classList.contains('fa-filter')).to.be.true;
     expect(columnFilter.useSearch).to.be.false;
   });
 
   it('should show the search input', () => {
     columnFilter.showSearchInput(false);
-    expect(columnFilter.filterNode.style.visibility).to.equal('visible');
+    expect(columnFilter.filterWidget.isHidden).to.be.false;
     expect(columnFilter.filterIcon.classList.contains('fa-search')).to.be.true;
     expect(columnFilter.useSearch).to.be.true;
   });
 
   it('should hide the input', () => {
     columnFilter.hideInput();
-    expect(columnFilter.filterNode.style.visibility).to.equal('hidden');
+    expect(columnFilter.filterWidget.isHidden).to.be.true;
+  });
+
+  it('should filter rows', () => {
+    const event = new KeyboardEvent('keyup', { key: '0', code: 'Digit0' });
+
+    expect(dataGrid.model.rowCount('body')).to.equal(2);
+
+    columnFilter.useSearch = false;
+    columnFilter.filterInput.value = '$>0';
+    columnFilter['filterHandler'](event);
+
+    expect(dataGrid.model.rowCount('body')).to.equal(1);
+
+    columnManager.resetFilters();
+    expect(dataGrid.model.rowCount('body')).to.equal(2);
   });
 });

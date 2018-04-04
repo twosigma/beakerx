@@ -15,15 +15,12 @@
  */
 
 var BeakerXPageObject = require('../beakerx.po.js');
-var TableHelperObject = require('../table.helper.js');
 var beakerxPO;
-var tableHelper;
 
 describe('(Groovy) Testing Map Like Tables', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    tableHelper = new TableHelperObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/groovy/MapLikeTableTest.ipynb');
     beakerxPO.openUIWindow();
   });
@@ -32,110 +29,94 @@ describe('(Groovy) Testing Map Like Tables', function () {
     beakerxPO.closeAndHaltNotebook();
   });
 
-  function checkHeaderValues(dtContainer, headerCellIndex, value) {
-    var headers = tableHelper.getAllCellsOfTableHeader(dtContainer);
-    expect(headers[headerCellIndex].getText()).toMatch(value);
-  }
-
-  function checkRowValues(dtContainer, rowCellIndex, value) {
-    var rows = tableHelper.getAllRowsOfTableBody(dtContainer
-    );
-
-    expect(rows[rowCellIndex].getText()).toBe(value);
-  }
-
   var cellIndex;
+  var imageDir = 'groovy/mapLikeTable';
 
   describe('UI options. ', function () {
-    it("Disable PhosphorJS DataGrid for TableDisplay Widget. ", function () {
-      beakerxPO.setDataGridForTable(false, false);
+    it("Use PhosphorJS DataGrid for TableDisplay Widget. ", function () {
+      beakerxPO.setDataGridForTable(true, false);
     });
   });
 
-  describe('Table display', function () {
-    it('A basic table is rendered correctly', function () {
+  describe('Table display ', function () {
+    it('A basic table is rendered correctly ', function () {
       cellIndex = 0;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-
-      checkHeaderValues(dtContainer, 1, 'Key');
-      checkHeaderValues(dtContainer, 2, 'Value');
-
-      checkRowValues(dtContainer, 0, '0 x 1');
-      checkRowValues(dtContainer, 1, '1 y 2');
+      var fileName = 'cell1_case1.png';
+      var width = 130, height = 65;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      cellIndex += 1;
     });
 
-    it('An ArrayList is rendered correctly', function () {
+    it('An ArrayList is rendered correctly ', function () {
       cellIndex += 1;
-      dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-
-      checkHeaderValues(dtContainer, 1, 'x');
-      checkHeaderValues(dtContainer, 2, 'y');
-
-      checkRowValues(dtContainer, 0, '0 1 2');
-      checkRowValues(dtContainer, 1, '1 3 4');
+      var fileName = 'cell2_case1.png';
+      var width = 130, height = 65;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      cellIndex += 1;
     });
 
-    it('A Map is rendered correctly', function () {
+    it('A Map is rendered correctly ', function () {
       cellIndex += 1;
-      dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-
-      checkHeaderValues(dtContainer, 1, 'x');
-      checkHeaderValues(dtContainer, 2, 'y');
-
-      checkRowValues(dtContainer, 0, '0 1 2');
-      checkRowValues(dtContainer, 1, '1 3 4');
+      var fileName = 'cell3_case1.png';
+      var width = 130, height = 65;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      cellIndex += 1;
     });
 
-    it('A Map is rendered correctly', function () {
+    it('A Map is rendered correctly ', function () {
       cellIndex += 1;
-      dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-
-      checkHeaderValues(dtContainer, 1, 'test');
-      checkHeaderValues(dtContainer, 2, 'test2');
-
-      checkRowValues(dtContainer, 0, '0 1 2');
-      checkRowValues(dtContainer, 1, '1 2 4');
-      checkRowValues(dtContainer, 2, '2 3 6');
+      var fileName = 'cell4_case1.png';
+      var width = 130, height = 90;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      cellIndex += 1;
     });
 
-    it('A List inside a List is rendered correctly', function () {
+    it('A List inside a List is rendered correctly ', function () {
       cellIndex += 1;
-      dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-
-      checkHeaderValues(dtContainer, 1, 'Key');
-      checkHeaderValues(dtContainer, 2, 'Value');
-
-      checkRowValues(dtContainer, 0, '0 1 [[1,2,3],[2,3,4]]');
+      var fileName = 'cell5_case1.png';
+      var width = 180, height = 43;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      cellIndex += 1;
     });
 
-    it('A Map inside a List is rendered correctly', function () {
+    it('A Map inside a List is rendered correctly ', function () {
       cellIndex += 1;
-      dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-
-      checkHeaderValues(dtContainer, 1, 'Key');
-      checkHeaderValues(dtContainer, 2, 'Value');
-
-      checkRowValues(dtContainer, 0, '0 1 {"num1":1,"num2":2}');
+      var fileName = 'cell6_case1.png';
+      var width = 210, height = 43;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      cellIndex += 1;
     });
 
-    it('Display a 3-column table', function () {
+    it('Table with "&", "/", ">" values ', function () {
       cellIndex += 1;
-      dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-
-      checkHeaderValues(dtContainer, 1, 'col1');
-      checkHeaderValues(dtContainer, 2, 'col2');
-      checkHeaderValues(dtContainer, 3, 'col3');
-
-      checkRowValues(dtContainer, 0, '0 This & that This / that This > that');
-
+      var fileName = 'cell7_case1.png';
+      var width = 250, height = 43;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      cellIndex += 1;
     });
 
-    it('Display object is rendered correctly', function () {
+    it('Display object is rendered correctly ', function () {
       cellIndex += 1;
-      dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-
-      checkHeaderValues(dtContainer, 1, 'myclass');
-      checkRowValues(dtContainer, 0, '0 {"value":"print this"}');
+      var fileName = 'cell8_case1.png';
+      var width = 155, height = 43;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      cellIndex += 1;
     });
   });
 });

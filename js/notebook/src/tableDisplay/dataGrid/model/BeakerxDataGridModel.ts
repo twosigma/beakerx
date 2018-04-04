@@ -95,7 +95,7 @@ export class BeakerxDataGridModel extends DataModel {
   data(region: DataModel.CellRegion, row: number, position: number): any {
     const columnType = DataGridColumn.getColumnTypeByRegion(region);
     const index = selectColumnIndexByPosition(this.store.state, columnType, position);
-    const dataGridRow = this.rowManager.getRow(row);
+    const dataGridRow = this.rowManager.getRow(row) || { index: row, values: [] };
 
     if (region === 'row-header') {
       return dataGridRow.index;
@@ -122,7 +122,7 @@ export class BeakerxDataGridModel extends DataModel {
   }
 
   getColumnValuesIterator(column: IColumn): MapIterator<number, number> {
-    if (!selectHasIndex(this.store.state) && column.type === COLUMN_TYPES.index) {
+    if (column.type === COLUMN_TYPES.index) {
       return new MapIterator<DataGridRow, any>(iter(this.rowManager.rows), (row) => row.index);
     }
 

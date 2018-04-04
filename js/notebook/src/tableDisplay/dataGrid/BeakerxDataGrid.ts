@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import {CellRenderer, DataGrid} from "@phosphor/datagrid";
+import {CellRenderer, DataGrid, GraphicsContext} from "@phosphor/datagrid";
 import { BeakerxDataGridModel } from "./model/BeakerxDataGridModel";
 import { Widget } from "@phosphor/widgets";
 import { Signal } from '@phosphor/signaling';
@@ -24,7 +24,6 @@ import DataGridColumn from "./column/DataGridColumn";
 import IDataModelState from "./interface/IDataGridModelState";
 import HighlighterManager from "./highlighter/HighlighterManager";
 import IHihglighterState from "./interface/IHighlighterState";
-import {DEFAULT_PAGE_LENGTH} from "../consts";
 import ColumnManager from "./column/ColumnManager";
 import RowManager from "./row/RowManager";
 import CellSelectionManager from "./cell/CellSelectionManager";
@@ -35,7 +34,7 @@ import { IMessageHandler, Message, MessageLoop } from '@phosphor/messaging';
 import CellFocusManager from "./cell/CellFocusManager";
 import {
   DEFAULT_GRID_BORDER_WIDTH,
-  DEFAULT_GRID_PADDING, DEFAULT_ROW_HEIGHT,
+  DEFAULT_GRID_PADDING, DEFAULT_HIGHLIGHT_COLOR, DEFAULT_ROW_HEIGHT,
   MIN_COLUMN_WIDTH
 } from "./style/dataGridStyle";
 import CellTooltipManager from "./cell/CellTooltipManager";
@@ -54,6 +53,7 @@ import DataGridCell from "./cell/DataGridCell";
 import {COLUMN_TYPES} from "./column/enums";
 import disableKeyboardManager = DataGridHelpers.disableKeyboardManager;
 import enableKeyboardManager = DataGridHelpers.enableKeyboardManager;
+import ColumnPosition from "./column/ColumnPosition";
 
 export class BeakerxDataGrid extends DataGrid {
   id: string;
@@ -66,12 +66,14 @@ export class BeakerxDataGrid extends DataGrid {
   viewport: Widget;
   highlighterManager: HighlighterManager;
   columnManager: ColumnManager;
+  columnPosition: ColumnPosition;
   rowManager: RowManager;
   cellSelectionManager: CellSelectionManager;
   cellManager: CellManager;
   eventManager: EventManager;
   cellFocusManager: CellFocusManager;
   cellTooltipManager: CellTooltipManager;
+  canvasGC: GraphicsContext;
   focused: boolean;
   wrapperId: string;
 
@@ -89,14 +91,16 @@ export class BeakerxDataGrid extends DataGrid {
     this.rowHeaderSections = this['_rowHeaderSections'];
     this.rowSections = this['_rowSections'];
     this.columnSections = this['_columnSections'];
+    this.canvasGC = this['_canvasGC'];
 
     this.baseRowSize = DEFAULT_ROW_HEIGHT;
     this.baseColumnHeaderSize = DEFAULT_ROW_HEIGHT;
 
     this.setSectionWidth = this.setSectionWidth.bind(this);
+    this.updateColumnWidth = this.updateColumnWidth.bind(this);
     this.setInitialSectionWidth = this.setInitialSectionWidth.bind(this);
     this.resizeSectionWidth = this.resizeSectionWidth.bind(this);
-    this.resize = throttle(this.resize.bind(this), 150);
+    this.resize = throttle(this.resize, 150, this);
     this.init(dataStore);
   }
 
@@ -108,11 +112,8 @@ export class BeakerxDataGrid extends DataGrid {
     super.messageHook(handler, msg);
 
     if (handler === this.viewport && msg.type === 'section-resize-request') {
-      this.columnSections['_sections'].forEach(({ index, size }) => {
-        let columnOnPosition = this.columnManager.getColumnByPosition(COLUMN_TYPES.body, index);
-
-        columnOnPosition.setWidth(size);
-      });
+      this.columnSections['_sections'].forEach(this.updateColumnWidth(COLUMN_TYPES.body));
+      this.rowHeaderSections['_sections'].forEach(this.updateColumnWidth(COLUMN_TYPES.index));
       this.updateWidgetWidth();
       this.updateWidgetHeight();
     }
@@ -170,6 +171,7 @@ export class BeakerxDataGrid extends DataGrid {
   }
 
   resize(args?: any): void {
+    this.updateWidgetHeight();
     this.resizeHeader();
     this.resizeSections();
     this.updateWidgetWidth();
@@ -186,7 +188,9 @@ export class BeakerxDataGrid extends DataGrid {
 
   updateWidgetWidth() {
     const spacing = 2 * (DEFAULT_GRID_PADDING + DEFAULT_GRID_BORDER_WIDTH) + 1;
-    const hasVScroll = !this['_vScrollBar'].isHidden;
+    const hasVScroll = (
+      this.rowManager.rowsToShow !== -1 && this.rowManager.rowsToShow <= this.model.rowCount('body')
+    );
     const vScrollWidth = hasVScroll ? this['_vScrollBarMinWidth'] + 1 : 0;
     const width = this.totalWidth + spacing + vScrollWidth;
 
@@ -194,8 +198,14 @@ export class BeakerxDataGrid extends DataGrid {
     this.fit();
   }
 
+  updateWidgetHeight() {
+    this.node.style.minHeight = `${this.getWidgetHeight()}px`;
+  }
+
   setInitialSectionWidth(column) {
-    this.setSectionWidth('column', column, this.getSectionWidth(column));
+    const section = column.type === COLUMN_TYPES.body ? 'column' : 'row-header';
+
+    this.setSectionWidth(section, column, this.getSectionWidth(column));
   }
 
   setFocus(focus: boolean) {
@@ -204,6 +214,7 @@ export class BeakerxDataGrid extends DataGrid {
     if (focus) {
       disableKeyboardManager();
       this.node.classList.add(BeakerxDataGrid.FOCUS_CSS_CLASS);
+      this.node.focus();
 
       return;
     }
@@ -214,10 +225,26 @@ export class BeakerxDataGrid extends DataGrid {
     enableKeyboardManager();
   }
 
+  colorizeColumnBorder(column: number, color: string) {
+    let sectionSize = this.columnSections.sectionSize(column);
+    let sectionOffset = this.columnSections.sectionOffset(column);
+    let x = sectionOffset + sectionSize + this.rowHeaderSections.totalSize - this.scrollX;
+    let height = this.totalHeight;
+
+    this.canvasGC.beginPath();
+    this.canvasGC.lineWidth = 1;
+
+    this.canvasGC.moveTo(x - 0.5, 0);
+    this.canvasGC.lineTo(x - 0.5, height);
+    this.canvasGC.strokeStyle = color;
+    this.canvasGC.stroke();
+  }
+
   private init(store: BeakerxDataStore) {
     this.id = 'grid_' + bkUtils.generateId(6);
     this.store = store;
     this.columnManager = new ColumnManager(this);
+    this.columnPosition = new ColumnPosition(this);
     this.rowManager = new RowManager(selectValues(store.state), selectHasIndex(store.state), this.columnManager);
     this.cellSelectionManager = new CellSelectionManager(this);
     this.cellManager = new CellManager(this);
@@ -229,12 +256,20 @@ export class BeakerxDataGrid extends DataGrid {
 
     this.columnManager.addColumns();
     this.rowManager.createFilterExpressionVars();
-    this.store.changed.connect(throttle<void, void>(this.handleStateChanged.bind(this), 100));
+    this.store.changed.connect(throttle<void, void>(this.handleStateChanged, 100, this));
 
     this.installMessageHook();
     this.addHighlighterManager();
     this.addCellRenderers();
     this.setInitialSize();
+  }
+
+  private updateColumnWidth(columnType: COLUMN_TYPES): Function {
+    return ({ index, size }) => {
+      let columnOnPosition = this.columnManager.getColumnByPosition(columnType, index);
+
+      columnOnPosition.setWidth(size);
+    }
   }
 
   private installMessageHook() {
@@ -263,19 +298,18 @@ export class BeakerxDataGrid extends DataGrid {
 
   private getWidgetHeight() {
     const bodyRowCount = this.model.rowCount('body');
-    const rowCount = DEFAULT_PAGE_LENGTH < bodyRowCount ? DEFAULT_PAGE_LENGTH : bodyRowCount;
+    const rowsToShow = this.rowManager.rowsToShow;
+    const rowCount = rowsToShow < bodyRowCount && rowsToShow !== -1 ? rowsToShow : bodyRowCount;
+    const hasHScroll = !this['_hScrollBar'].isHidden;
+    const scrollBarHeight = hasHScroll ? this['_hScrollBarMinHeight'] : 0;
     const spacing = 2 * (DEFAULT_GRID_PADDING + DEFAULT_GRID_BORDER_WIDTH);
 
-    return rowCount * this.baseRowSize + this.headerHeight + spacing;
-  }
-
-  private updateWidgetHeight() {
-    this.node.style.minHeight = `${this.getWidgetHeight()}px`;
+    return rowCount * this.baseRowSize + this.headerHeight + spacing + scrollBarHeight;
   }
 
   private setInitialSectionWidths() {
     this.columnManager.bodyColumns.forEach(this.setInitialSectionWidth);
-    this.resizeIndexColumn();
+    this.columnManager.indexColumns.forEach(this.setInitialSectionWidth);
   }
 
   private resizeSections() {
@@ -310,7 +344,7 @@ export class BeakerxDataGrid extends DataGrid {
 
   private getSectionWidth(column) {
     const value = String(column.formatFn(this.cellManager.createCellConfig({
-      region: 'body',
+      region: column.type === COLUMN_TYPES.body ? 'body' : 'row-header',
       value: column.longestStringValue || column.maxValue,
       column: column.index,
       row: 0,
@@ -323,19 +357,6 @@ export class BeakerxDataGrid extends DataGrid {
     const result = nameSize[nameSizeProp] > valueSize.width - 7 ? nameSize[nameSizeProp] : valueSize.width;
 
     return result > MIN_COLUMN_WIDTH ? result : MIN_COLUMN_WIDTH;
-  }
-
-  private resizeIndexColumn() {
-    const valueCharLength = this.model.rowCount('body');
-    const name = this.columnManager.getColumnByIndex(COLUMN_TYPES.index, 0).name;
-    const value = name.length > valueCharLength ? name : String(valueCharLength);
-    const nameSizeProp = selectHeadersVertical(this.store.state) ? 'height' : 'width';
-    const nameSize = getStringSize(name, selectHeaderFontSize(this.store.state));
-    const valueSize = getStringSize(value, selectDataFontSize(this.store.state));
-    const result = (nameSize[nameSizeProp] > valueSize.width ? nameSize[nameSizeProp]: valueSize.width) + 10;
-    const column = this.columnManager.getColumnByIndex(COLUMN_TYPES.index, 0);
-
-    this.setSectionWidth('row-header', column, result);
   }
 
   private setSectionWidth(section, column: DataGridColumn, value: number) {
@@ -351,5 +372,12 @@ export class BeakerxDataGrid extends DataGrid {
     }
 
     return true;
+  }
+
+  onAfterAttach(msg) {
+    super.onAfterAttach(msg);
+
+    this.columnManager.bodyColumns.forEach(column => column.columnFilter.attach(this.viewport.node));
+    this.columnManager.indexColumns.forEach(column => column.columnFilter.attach(this.viewport.node));
   }
 }

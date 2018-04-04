@@ -19,9 +19,12 @@ import com.twosigma.beakerx.util.ByteStreams;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,6 +34,9 @@ import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCod
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 public class MIMEContainer {
+
+  private static final int DEFAULT_IFRAME_WIDTH = 400;
+  private static final int DEFAULT_IFRAME_HEIGHT = 300;
 
   public static final MIMEContainer HIDDEN = addMimeType(MIME.HIDDEN);
 
@@ -125,31 +131,38 @@ public class MIMEContainer {
     return addMimeType(MIME.TEXT_HTML, code);
   }
 
-  public static MIMEContainer VimeoVideo(String id) {
-    return VimeoVideo(id, 400, 300);
-  }
-
-  public static MIMEContainer VimeoVideo(String id, Object width, int height) {
-    String src = String.format("https://player.vimeo.com/video/%1$s", id);
+  private static MIMEContainer IFrame(String srcTemplate, String id, HashMap params) {
+    Object width = params.getOrDefault("width", DEFAULT_IFRAME_WIDTH);
+    Integer height = Integer.parseInt(params.getOrDefault("height", DEFAULT_IFRAME_HEIGHT).toString());
+    String src = String.format(srcTemplate, id, parseParams(params));
     return IFrame(src, width, height);
   }
 
-  public static MIMEContainer ScribdDocument(String id) {
-    return ScribdDocument(id, 400, 300);
+  public static MIMEContainer VimeoVideo(String id, String ... params) {
+    HashMap paramsAsMap = paramsToMap(params);
+    return VimeoVideo(paramsAsMap, id);
   }
 
-  public static MIMEContainer ScribdDocument(String id, Object width, int height) {
-    String src = String.format("https://www.scribd.com/embeds/%1$s/content", id);
-    return IFrame(src, width, height);
+  public static MIMEContainer VimeoVideo(HashMap params, String id) {
+    return IFrame("https://player.vimeo.com/video/%1$s", id, params);
   }
 
-  public static MIMEContainer YoutubeVideo(String id) {
-    return YoutubeVideo(id, 400, 300);
+  public static MIMEContainer YoutubeVideo(String id, String ... params) {
+    HashMap paramsAsMap = paramsToMap(params);
+    return YoutubeVideo(paramsAsMap, id);
   }
 
-  public static MIMEContainer YoutubeVideo(String id, Object width, int height) {
-    String src = String.format("https://www.youtube.com/embed/%1$s", id);
-    return IFrame(src, width, height);
+  public static MIMEContainer YoutubeVideo(HashMap params, String id) {
+    return IFrame("https://www.youtube.com/embed/%1$s%2$s", id, params);
+  }
+
+  public static MIMEContainer ScribdDocument(String id, String ... params) {
+    HashMap paramsAsMap = paramsToMap(params);
+    return ScribdDocument(paramsAsMap, id);
+  }
+
+  public static MIMEContainer ScribdDocument(HashMap params, String id) {
+    return IFrame("https://www.scribd.com/embeds/%1$s/content%2$s", id, params);
   }
 
   public static MIMEContainer Video(String src) {
@@ -206,6 +219,31 @@ public class MIMEContainer {
   @Override
   public int hashCode() {
     return reflectionHashCode(this);
+  }
+
+  private static HashMap<String, Object> paramsToMap(String ... params) {
+    HashMap<String, Object> paramsMap = new HashMap<>();
+    for (String param : params) {
+      String parts[] = param.split("=");
+      if (parts.length == 2){
+        paramsMap.put(parts[0], parts[1]);
+      }
+    }
+    return paramsMap;
+  }
+
+  private static String parseParams(HashMap paramsMap) {
+    List iframeParamKeys = Arrays.asList("width", "height", "id");
+
+    StringBuilder sb = new StringBuilder();
+    for (Object key : paramsMap.keySet()){
+      if (iframeParamKeys.contains(key)){
+        continue;
+      }
+      sb.append("&").append(key.toString()).append("=").append(paramsMap.get(key).toString());
+    }
+    String result = sb.toString().replaceFirst("&", "?");
+    return result.length() > 0 ? result : "";
   }
 
 }

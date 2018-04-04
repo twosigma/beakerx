@@ -49,7 +49,7 @@ import {
   UPDATE_COLUMN_DISPLAY_TYPE,
   UPDATE_COLUMN_FILTER, UPDATE_COLUMN_FORMAT_FOR_TIMES,
   UPDATE_COLUMN_HORIZONTAL_ALIGNMENT,
-  UPDATE_COLUMN_POSITION, UPDATE_COLUMN_SORT_ORDER,
+  UPDATE_COLUMN_SORT_ORDER,
   UPDATE_COLUMN_VISIBILITY, UPDATE_COLUMN_WIDTH
 } from "./reducer";
 import {BeakerxDataStore} from "../store/dataStore";
@@ -57,7 +57,6 @@ import {COLUMN_TYPES, SORT_ORDER} from "./enums";
 import {UPDATE_COLUMN_RENDERER} from "../model/reducer";
 import {RENDERER_TYPE} from "../interface/IRenderer";
 import DataGridCell from "../cell/DataGridCell";
-import {DataGridHelpers} from "../dataGridHelpers";
 
 export default class DataGridColumn {
   index: number;
@@ -315,16 +314,7 @@ export default class DataGridColumn {
   }
 
   move(destination: number) {
-    this.store.dispatch(new DataGridColumnAction(
-      UPDATE_COLUMN_POSITION,
-      {
-        value: destination,
-        columnType: this.type,
-        columnIndex: this.index,
-        hasIndex: selectHasIndex(this.store.state)
-      })
-    );
-
+    this.dataGrid.columnPosition.setPosition(this, destination);
     this.menu.hideTrigger();
     this.dataGrid.resize();
   }
@@ -344,7 +334,9 @@ export default class DataGridColumn {
       let value2 = valueResolver(b);
 
       if (dataType === ALL_TYPES.string || dataType === ALL_TYPES['formatted integer'] || dataType === ALL_TYPES.html) {
-        let longer = a.length > b.length ? a : b;
+        let aLength = a ? a.length : 0;
+        let bLength = b ? b.length : 0;
+        let longer = aLength > bLength ? a : b;
 
         if (!this.longestStringValue || this.longestStringValue.length < longer.length) {
           this.longestStringValue = longer;
@@ -410,7 +402,7 @@ export default class DataGridColumn {
       columnType: this.type,
       hasIndex: selectHasIndex(this.store.state)
     }));
-    this.dataGrid.resize();
+    this.dataGrid.columnPosition.updateAll();
   }
 
   private dateValueResolver(value) {

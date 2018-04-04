@@ -20,6 +20,7 @@ import DataGridAction, {DataGridColumnAction} from "../store/DataGridAction";
 
 export const UPDATE_MODEL_DATA = 'UPDATE_MODEL_DATA';
 export const UPDATE_COLUMN_RENDERER = 'UPDATE_COLUMN_RENDERER';
+export const UPDATE_COLUMN_ORDER = 'UPDATE_COLUMN_ORDER';
 
 const dataGridModelReducer: Reducer<IDataModelState> = (
   state: IDataModelState,
@@ -36,10 +37,49 @@ const dataGridModelReducer: Reducer<IDataModelState> = (
           ...state.rendererForColumn,
           [action.payload.columnName]: action.payload.value
         }
-      }
+      };
+
+    case UPDATE_COLUMN_ORDER:
+      return reduceColumnPosition(state, action);
   }
 
   return state;
 };
+
+function reduceColumnPosition(state, action: DataGridColumnAction) {
+  const { columnName, value, hasIndex } = action.payload;
+  const columnOrder = getColumnOrderArray(state);
+  const lastPosition = columnOrder.indexOf(columnName);
+  const newPosition = hasIndex ? value + 1 : value;
+
+  if (lastPosition !== -1) {
+    columnOrder.splice(lastPosition, 1);
+  }
+
+  columnOrder.splice(newPosition, 0, columnName);
+
+  return {
+    ...state,
+    columnOrder
+  };
+}
+
+function getColumnOrderArray(state): string[] {
+  const columnOrder = state.columnOrder;
+  const order = state.columnNames.map(name => name !== null ? String(name) : null);
+
+  columnOrder.reverse().forEach((name) => {
+    const columnPosition = order.indexOf(name);
+
+    if (columnPosition === -1) {
+      return true;
+    }
+
+    order.splice(columnPosition, 1);
+    order.unshift(name);
+  });
+
+  return order;
+}
 
 export default dataGridModelReducer;

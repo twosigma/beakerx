@@ -2516,8 +2516,8 @@ define([
     self.canvas.width = svg.getAttribute("width") * scale;
     self.canvas.height = svg.getAttribute("height") * scale;
 
-    var imgsrc = 'data:image/svg+xml;base64,' +
-                 btoa(unescape(encodeURIComponent(plotUtils.convertToXHTML(svg.outerHTML))));
+    var html = plotUtils.convertToXHTML(svg.outerHTML);
+    var imgsrc = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html)));
     var fileName = _.isEmpty(self.stdmodel.title) ? 'plot' : self.stdmodel.title;
     plotUtils.drawPng(self.canvas, imgsrc, fileName + ".png");
   };
@@ -2529,58 +2529,9 @@ define([
     var legendContainer = self.jqlegendcontainer.find("#plotLegend");
     var containerLeftMargin = parseFloat(self.jqcontainer.css("margin-left"));
 
-    var W = plotUtils.outerWidth(self.jqcontainer) + containerLeftMargin + 1;//add 1 because jQuery round size
-    var H = plotUtils.outerHeight(self.jqcontainer) + titleOuterHeight + 1;
-    var legendW = plotUtils.getActualCss(legendContainer, 'outerWidth', true) || 0;
-    var legendH = plotUtils.getActualCss(legendContainer, 'outerHeight', true) || 0;
-    var legendPosition = self.stdmodel.legendPosition;
+    var W = plotUtils.outerWidth(self.jqlegendcontainer);
+    var H = plotUtils.outerHeight(self.jqlegendcontainer);
 
-    if (!legendPosition.position) {
-      if (legendPosition.x + legendW > W) {
-        W += legendPosition.x + legendW - W;
-      }
-      if ((legendPosition.y + legendH) > H) {
-        H += legendPosition.y + legendH - H;
-      }
-    }
-
-    if (legendPosition.position === "LEFT") {
-      plotUtils.translateChildren(svg, legendW + margin, 0);
-      W += legendW + margin;
-    }
-    if (legendPosition.position === "RIGHT") {
-      W += legendW + margin;
-    }
-    if (legendPosition.position === "BOTTOM") {
-      H += legendH + margin;
-    }
-    if (legendPosition.position === "TOP") {
-      plotUtils.translateChildren(svg, 0, legendH + margin);
-      H += legendH + margin;
-    }
-    if (isHorizontal) {
-      if (["TOP_LEFT", "TOP_RIGHT"].indexOf(legendPosition.position) !== -1) {
-        plotUtils.translateChildren(svg, 0, legendH + margin);
-        H += legendH + margin;
-      }
-      if (["BOTTOM_LEFT", "BOTTOM_RIGHT"].indexOf(legendPosition.position) !== -1) {
-        H += legendH + margin;
-      }
-      if (legendPosition.position !== "LEFT") {
-        plotUtils.translateChildren(svg, containerLeftMargin, 0);
-      }
-    } else {
-      if (["TOP_LEFT", "BOTTOM_LEFT"].indexOf(legendPosition.position) !== -1) {
-        plotUtils.translateChildren(svg, legendW + margin, 0);
-        W += legendW + margin;
-      }
-      if (["TOP_RIGHT", "BOTTOM_RIGHT"].indexOf(legendPosition.position) !== -1) {
-        W += legendW + margin;
-      }
-      if (["LEFT", "TOP_LEFT", "BOTTOM_LEFT"].indexOf(legendPosition.position) < 0) {
-        plotUtils.translateChildren(svg, containerLeftMargin, 0);
-      }
-    }
     svg.setAttribute("width", W);
     svg.setAttribute("height", H);
     $(svg).css("width", W);

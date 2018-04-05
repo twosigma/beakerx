@@ -32,6 +32,7 @@ export function createFormatMenuItems(column: DataGridColumn) {
 
     let item: MenuItem = {
       title: obj.name,
+      id: `format_${obj.name}`,
       isChecked: (column) => column.getDisplayType() === obj.type
     };
 
@@ -52,6 +53,7 @@ export function createPrecisionSubitems(column: DataGridColumn): MenuItem[] {
   scopeData.allPrecissions.forEach((precision) => {
     let item = {
       title: `${precision}`,
+      id: `precision_${precision}`,
       isChecked: (column) => `4.${precision}` === column.getDisplayType(),
       action: (column) => column.setDisplayType(`4.${precision}`)
     };
@@ -68,6 +70,7 @@ export function createTimeSubitems(): MenuItem[] {
   Object.keys(TIME_UNIT_FORMATS).forEach((key) => {
     let item = {
       title: TIME_UNIT_FORMATS[key].title,
+      id: `timeunit_${TIME_UNIT_FORMATS[key].title}`,
       isChecked: (column) => {
         const displayType = column.getDisplayType();
 

@@ -39,6 +39,14 @@ $sortDescendingIconWhite: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4
   border: 1px solid white;
   font-family: "Lato", Helvetica, sans-serif;
 
+  &.grabbing * {
+    cursor: move !important;
+    cursor: pointer !important;
+    cursor: grabbing !important;
+    cursor: -moz-grabbing !important;
+    cursor: -webkit-grabbing !important;
+  }
+
   .bko-menu {
     opacity: 1;
     padding: 0;
@@ -69,6 +77,11 @@ $sortDescendingIconWhite: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4
         background-image: $sortDescendingIconWhite;
       }
     }
+  }
+
+  .rows-to-display-menu {
+    position: absolute;
+    bottom: 0;
   }
 }
 

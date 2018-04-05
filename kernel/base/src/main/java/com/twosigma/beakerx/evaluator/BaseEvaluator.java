@@ -95,6 +95,10 @@ public abstract class BaseEvaluator implements Evaluator {
 
   public abstract ClassLoader getClassLoader();
 
+  public ClassLoader getClassLoaderForImport() {
+    return getClassLoader();
+  }
+
   @Override
   public List<Path> addJarsToClasspath(List<PathToJar> paths) {
     LinkedList<Path> addedPaths = Lists.newLinkedList();
@@ -117,7 +121,7 @@ public abstract class BaseEvaluator implements Evaluator {
 
   @Override
   public AddImportStatus addImport(ImportPath anImport) {
-    AddImportStatus add = imports.add(anImport, getClassLoader());
+    AddImportStatus add = imports.add(anImport, getClassLoaderForImport());
     if (AddImportStatus.ADDED.equals(add)) {
       addImportToClassLoader(anImport);
     }

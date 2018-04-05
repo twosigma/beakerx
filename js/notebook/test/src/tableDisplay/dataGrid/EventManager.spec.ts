@@ -98,7 +98,7 @@ describe('EventManager', () => {
   it('should implement handleKeyDown event handler', () => {
     const highlighterStub = sinon.stub(eventManager, 'handleHighlighterKeyDown');
     const numStub = sinon.stub(eventManager, 'handleNumKeyDown');
-    const arrowStub = sinon.stub(eventManager, 'handleArrowKeyDown');
+    const navigationStub = sinon.stub(eventManager, 'handleNavigationKeyDown');
     const columnStub = sinon.stub(dataGrid.columnManager, 'takeColumnByCell');
 
     expect(eventManager).to.have.property('handleKeyDown');
@@ -111,7 +111,7 @@ describe('EventManager', () => {
 
     expect(highlighterStub.calledOnce).to.be.true;
     expect(numStub.calledOnce).to.be.true;
-    expect(arrowStub.calledOnce).to.be.true;
+    expect(navigationStub.calledOnce).to.be.true;
     expect(columnStub.calledOnce).to.be.false;
 
     dataGrid.cellFocusManager.setFocusedCell(cellDataMock);
@@ -119,12 +119,12 @@ describe('EventManager', () => {
 
     expect(highlighterStub.calledTwice).to.be.true;
     expect(numStub.calledTwice).to.be.true;
-    expect(arrowStub.calledTwice).to.be.true;
+    expect(navigationStub.calledTwice).to.be.true;
     expect(columnStub.calledOnce).to.be.true;
 
     highlighterStub.restore();
     numStub.restore();
-    arrowStub.restore();
+    navigationStub.restore();
     columnStub.restore();
   });
 

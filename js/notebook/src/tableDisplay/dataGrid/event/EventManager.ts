@@ -205,7 +205,7 @@ export default class EventManager {
 
     this.handleHighlighterKeyDown(code, column);
     this.handleNumKeyDown(code, event.shiftKey, column);
-    this.handleArrowKeyDown(code);
+    this.handleNavigationKeyDown(code);
   }
 
   private handleHighlighterKeyDown(code: number, column: DataGridColumn|null) {
@@ -222,12 +222,20 @@ export default class EventManager {
     }
   }
 
-  private handleArrowKeyDown(code: number) {
-    if (code < KEYBOARD_KEYS.ArrowLeft || code > KEYBOARD_KEYS.ArrowDown) {
+  private handleNavigationKeyDown(code: number) {
+    let navigationKeyCodes = [
+      KEYBOARD_KEYS.ArrowLeft,
+      KEYBOARD_KEYS.ArrowRight,
+      KEYBOARD_KEYS.ArrowDown,
+      KEYBOARD_KEYS.ArrowUp,
+      KEYBOARD_KEYS.PageUp,
+      KEYBOARD_KEYS.PageDown,
+    ];
+    if (-1 === navigationKeyCodes.indexOf(code)) {
       return;
     }
 
-    this.dataGrid.cellFocusManager.setFocusedCellByArrowKey(code);
+    this.dataGrid.cellFocusManager.setFocusedCellByNavigationKey(code);
   }
 
   private handleNumKeyDown(code: number, shiftKey: boolean, column: DataGridColumn|null) {

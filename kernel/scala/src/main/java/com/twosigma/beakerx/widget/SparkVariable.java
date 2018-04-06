@@ -17,6 +17,7 @@ package com.twosigma.beakerx.widget;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
+import org.apache.spark.sql.SparkSession;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,13 +28,14 @@ public class SparkVariable {
 
   private static Map<String, SparkContextManager> manager = new HashMap<>();
   private static SparkContext sparkContext;
+  private static SparkSession sparkSession;
 
   static void putSparkContextManager(SparkConf sparkConf, SparkContextManager sparkContextManager) {
     manager.put(sparkConf.get(BEAKERX_ID), sparkContextManager);
   }
 
-  public static SparkContextManager getSparkContextManager(SparkConf sparkConf) {
-    return manager.get(sparkConf.get(BEAKERX_ID));
+  public static SparkContextManager getSparkContextManager(String BEAKERX_ID) {
+    return manager.get(BEAKERX_ID);
   }
 
   static void putSparkContext(SparkContext sc) {
@@ -46,5 +48,13 @@ public class SparkVariable {
 
   public static void cancelAllJobs() {
     manager.values().forEach(SparkContextManager::cancelAllJobs);
+  }
+
+  public static void putSparkSession(SparkSession sSession) {
+    sparkSession = sSession;
+  }
+
+  public static SparkSession getSparkSession() {
+    return sparkSession;
   }
 }

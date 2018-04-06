@@ -29,16 +29,18 @@ import org.apache.spark.scheduler.SparkListenerStageCompleted;
 import org.apache.spark.scheduler.SparkListenerStageSubmitted;
 import org.apache.spark.scheduler.SparkListenerTaskEnd;
 import org.apache.spark.scheduler.SparkListenerTaskStart;
+import org.apache.spark.sql.SparkSession;
+import scala.Tuple2;
+import scala.collection.Iterator;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import static com.twosigma.beakerx.kernel.PlainCode.createSimpleEvaluationObject;
-import static java.util.Arrays.asList;
 
 public class SparkContextManager {
 
@@ -49,8 +51,6 @@ public class SparkContextManager {
   public static final String SPARK_EXECUTOR_CORES = "spark.executor.cores";
 
   private final SparkUI sparkUI;
-  private SparkContext sparkContext;
-  private final SparkConf sparkConf;
   private Map<Integer, SparkStateProgress> progressBars = new HashMap<>();
   private VBox jobPanel = null;
   private HBox statusPanel;
@@ -58,37 +58,66 @@ public class SparkContextManager {
   private Text masterURL;
   private Text executorMemory;
   private Text sparkContextAlias;
+  private Text sparkSessionAlias;
   private Text executorCores;
 
-  public SparkContextManager(SparkUI sparkUI, SparkConf sparkConf) {
-    SparkVariable.putSparkContextManager(sparkConf, this);
+  private SparkSession.Builder sparkSessionBuilder;
+
+  public SparkContextManager(SparkUI sparkUI, SparkSession.Builder sparkSessionBuilder) {
     this.sparkUI = sparkUI;
-    this.sparkConf = sparkConf;
-    this.sparkView = createSparkView();
+    this.sparkSessionBuilder = sparkSessionBuilder;
+    SparkVariable.putSparkContextManager(getSparkConf(), this);
+    createSparkView();
   }
 
-  private VBox createSparkView() {
+  private SparkConf createSparkConf() {
+    SparkConf sparkConf = new SparkConf();
+    try {
+      Field options = this.sparkSessionBuilder.getClass().getDeclaredField("org$apache$spark$sql$SparkSession$Builder$$options");
+      options.setAccessible(true);
+      Iterator iterator = ((scala.collection.mutable.HashMap) options.get(this.sparkSessionBuilder)).iterator();
+      while (iterator.hasNext()) {
+        Tuple2 x = (Tuple2) iterator.next();
+        sparkConf.set((String) (x)._1, (String) (x)._2);
+      }
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+    return sparkConf;
+  }
+
+  private SparkConf getSparkConf() {
+    return createSparkConf();
+  }
+
+  private SparkContext sparkContext() {
+    return sparkSessionBuilder.getOrCreate().sparkContext();
+  }
+
+  private void createSparkView() {
     this.masterURL = createMasterURL();
     this.executorMemory = createExecutorMemory();
     this.executorCores = createExecutorCores();
     this.sparkContextAlias = sparkContextAlias();
+    this.sparkSessionAlias = sparkSessionAlias();
     Button connect = createConnectButton();
     ArrayList<Widget> children = new ArrayList<>();
     children.add(masterURL);
     children.add(executorCores);
     children.add(executorMemory);
     children.add(sparkContextAlias);
+    children.add(sparkSessionAlias);
     children.add(connect);
     VBox vBox = new VBox(children);
     this.sparkUI.add(vBox);
-    return vBox;
+    this.sparkView = vBox;
   }
 
   private Text createExecutorCores() {
     Text cores = new Text();
     cores.setDescription("Executor cores");
-    if (this.sparkConf.contains(SPARK_EXECUTOR_CORES)) {
-      cores.setValue(this.sparkConf.get(SPARK_EXECUTOR_CORES));
+    if (getSparkConf().contains(SPARK_EXECUTOR_CORES)) {
+      cores.setValue(getSparkConf().get(SPARK_EXECUTOR_CORES));
     } else {
       cores.setValue("10");
     }
@@ -102,11 +131,18 @@ public class SparkContextManager {
     return alias;
   }
 
+  private Text sparkSessionAlias() {
+    Text alias = new Text();
+    alias.setDescription("SparkSession alias");
+    alias.setValue("spark");
+    return alias;
+  }
+
   private Text createExecutorMemory() {
     Text masterURL = new Text();
     masterURL.setDescription("Executor Memory");
-    if (this.sparkConf.contains(SPARK_EXECUTOR_MEMORY)) {
-      masterURL.setValue(this.sparkConf.get(SPARK_EXECUTOR_MEMORY));
+    if (getSparkConf().contains(SPARK_EXECUTOR_MEMORY)) {
+      masterURL.setValue(getSparkConf().get(SPARK_EXECUTOR_MEMORY));
     } else {
       masterURL.setValue("8g");
     }
@@ -116,8 +152,8 @@ public class SparkContextManager {
   private Text createMasterURL() {
     Text masterURL = new Text();
     masterURL.setDescription("Master URL");
-    if (this.sparkConf.contains(SPARK_MASTER)) {
-      masterURL.setValue(this.sparkConf.get(SPARK_MASTER));
+    if (getSparkConf().contains(SPARK_MASTER)) {
+      masterURL.setValue(getSparkConf().get(SPARK_MASTER));
     }
     return masterURL;
   }
@@ -125,28 +161,51 @@ public class SparkContextManager {
   private Button createConnectButton() {
     Button connect = new Button();
     connect.setDescription("Connect");
-    connect.registerOnClick((content, message) -> initSparkContext(sparkConf, message));
+    connect.registerOnClick((content, message) -> initSparkContext(message));
     return connect;
   }
 
-  private void initSparkContext(SparkConf sparkConf, Message parentMessage) {
+  private void initSparkContext(Message parentMessage) {
     KernelFunctionality kernel = KernelManager.get();
     try {
-      configureSparkConf(sparkConf);
-      SparkContext sparkContext = new SparkContext(sparkConf);
-      sparkContext = addListener(sparkContext);
-      this.sparkContext = sparkContext;
-      SparkVariable.putSparkContext(this.sparkContext);
-      TryResult tryResult = initSparkContextInShell(kernel);
-      if (tryResult.isError()) {
-        sendError(parentMessage, kernel, tryResult.error());
+      SparkConf sparkConf = configureSparkConf(getSparkConf());
+      sparkSessionBuilder.config(sparkConf);
+      SparkSession sparkSession = sparkSessionBuilder.getOrCreate();
+      addListener(sparkContext());
+      SparkVariable.putSparkContext(sparkContext());
+      SparkVariable.putSparkSession(sparkSession);
+      TryResult tryResultSparkContext = initSparkContextInShell(kernel);
+      if (tryResultSparkContext.isError()) {
+        sendError(parentMessage, kernel, tryResultSparkContext.error());
       }
     } catch (Exception e) {
       sendError(parentMessage, kernel, e.getMessage());
     }
   }
 
-  private void configureSparkConf(SparkConf sparkConf) {
+  private TryResult initSparkContextInShell(KernelFunctionality kernel) {
+    if (sparkContextAlias.getValue() == null || sparkContextAlias.getValue().isEmpty()) {
+      throw new RuntimeException("SparkContext alias can not be empty");
+    }
+    if (sparkSessionAlias.getValue() == null || sparkSessionAlias.getValue().isEmpty()) {
+      throw new RuntimeException("SparkContext alias can not be empty");
+    }
+    String addSc = String.format(
+            "import com.twosigma.beakerx.widget.SparkVariable\n" +
+                    "var %s = SparkVariable.getSparkContext()\n" +
+                    "var %s = SparkVariable.getSparkSession()\n",
+            sparkContextAlias.getValue(), sparkSessionAlias.getValue());
+
+    SimpleEvaluationObject seo = createSimpleEvaluationObject(addSc, kernel, new Message(), 1);
+    return kernel.executeCode(addSc, seo);
+  }
+
+  private void sendError(Message parentMessage, KernelFunctionality kernel, String message) {
+    SimpleEvaluationObject seo = createSimpleEvaluationObject("", kernel, parentMessage, 1);
+    seo.error(message);
+  }
+
+  private SparkConf configureSparkConf(SparkConf sparkConf) {
     if (!sparkConf.contains(SPARK_APP_NAME)) {
       sparkConf.setAppName("beaker_" + UUID.randomUUID().toString());
     }
@@ -167,27 +226,11 @@ public class SparkContextManager {
     if (!sparkConf.contains(SPARK_CORES_MAX)) {
       sparkConf.set(SPARK_CORES_MAX, "100");
     }
+    return sparkConf;
   }
 
   private static boolean isLocalSpark(SparkConf sparkConf) {
     return sparkConf.contains(SPARK_MASTER) && sparkConf.get(SPARK_MASTER) != null && sparkConf.get("spark.master").startsWith("local");
-  }
-
-  private TryResult initSparkContextInShell(KernelFunctionality kernel) {
-    if (sparkContextAlias.getValue() == null || sparkContextAlias.getValue().isEmpty()) {
-      throw new RuntimeException("SparkContext alias can not be empty");
-    }
-    String addSc = String.format(
-            "import com.twosigma.beakerx.widget.SparkVariable\n" +
-                    "var %s = SparkVariable.getSparkContext()\n",
-            sparkContextAlias.getValue());
-    SimpleEvaluationObject seo = createSimpleEvaluationObject(addSc, kernel, new Message(), 1);
-    return kernel.executeCode(addSc, seo);
-  }
-
-  private void sendError(Message parentMessage, KernelFunctionality kernel, String message) {
-    SimpleEvaluationObject seo = createSimpleEvaluationObject("", kernel, parentMessage, 1);
-    seo.error(message);
   }
 
   private SparkContext addListener(SparkContext sc) {
@@ -238,18 +281,10 @@ public class SparkContextManager {
 
   public void applicationEnd() {
     if (statusPanel != null) {
-      clearSparkContextVariable();
       sparkUI.removeDOMWidget(statusPanel);
       statusPanel = null;
-      this.sparkView = createSparkView();
+      createSparkView();
     }
-  }
-
-  private void clearSparkContextVariable() {
-    KernelFunctionality kernel = KernelManager.get();
-    String addSc = String.format("var %s = null\n", sparkContextAlias.getValue());
-    SimpleEvaluationObject seo = createSimpleEvaluationObject(addSc, kernel, new Message(), 1);
-    kernel.executeCode(addSc, seo);
   }
 
   private HBox createStatusPanel() {
@@ -262,16 +297,13 @@ public class SparkContextManager {
 
   private Label createAppStatus() {
     Label appStatus = new Label();
-    appStatus.setValue("Connected to " + sparkConf.get("spark.master"));
+    appStatus.setValue("Connected to " + getSparkConf().get("spark.master"));
     return appStatus;
   }
 
   private Button createDisconnectButton() {
     Button disconnect = new Button();
-    disconnect.registerOnClick((content, message) -> {
-      sparkContext.stop();
-      sparkContext = null;
-    });
+    disconnect.registerOnClick((content, message) -> sparkContext().stop());
     disconnect.setDescription("Disconnect");
     return disconnect;
   }
@@ -305,9 +337,9 @@ public class SparkContextManager {
   }
 
   private HTML uiLink() {
-    if (sparkContext.uiWebUrl().isDefined()) {
+    if (sparkContext().uiWebUrl().isDefined()) {
       HTML html = new HTML();
-      html.setValue("<a target=\"_blank\" href=\"" + sparkContext.uiWebUrl().get() + "\">Spark UI" + "</a>");
+      html.setValue("<a target=\"_blank\" href=\"" + sparkContext().uiWebUrl().get() + "\">Spark UI" + "</a>");
       return html;
     } else {
       HTML html = new HTML();
@@ -317,24 +349,24 @@ public class SparkContextManager {
   }
 
   private String stageLink(int stageId) {
-    if (sparkContext.uiWebUrl().isDefined()) {
-      return sparkContext.uiWebUrl().get() + "/stages/stage/?id=" + stageId+ "&attempt=0";
+    if (sparkContext().uiWebUrl().isDefined()) {
+      return sparkContext().uiWebUrl().get() + "/stages/stage/?id=" + stageId + "&attempt=0";
     } else {
       return "";
     }
   }
 
   private String jobLink(int jobId) {
-    if (sparkContext.uiWebUrl().isDefined()) {
-      return sparkContext.uiWebUrl().get() + "/jobs/job/?id=" + jobId;
+    if (sparkContext().uiWebUrl().isDefined()) {
+      return sparkContext().uiWebUrl().get() + "/jobs/job/?id=" + jobId;
     } else {
       return "";
     }
   }
 
   public void cancelAllJobs() {
-    if (this.sparkContext != null) {
-      this.sparkContext.cancelAllJobs();
+    if (sparkContext() != null) {
+      sparkContext().cancelAllJobs();
     }
   }
 }

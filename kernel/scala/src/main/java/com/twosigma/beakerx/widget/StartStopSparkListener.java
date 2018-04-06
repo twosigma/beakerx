@@ -20,7 +20,11 @@ import org.apache.spark.scheduler.SparkListener;
 import org.apache.spark.scheduler.SparkListenerApplicationEnd;
 import org.apache.spark.scheduler.SparkListenerApplicationStart;
 
+import static com.twosigma.beakerx.widget.SparkUI.BEAKERX_ID;
+
 public class StartStopSparkListener extends SparkListener {
+
+  public static final String START_STOP_SPARK_LISTENER = "com.twosigma.beakerx.widget.StartStopSparkListener";
 
   private SparkConf sparkConf;
 
@@ -31,14 +35,14 @@ public class StartStopSparkListener extends SparkListener {
   @Override
   public void onApplicationStart(SparkListenerApplicationStart applicationStart) {
     super.onApplicationStart(applicationStart);
-    SparkContextManager sparkContextManager = SparkVariable.getSparkContextManager(this.sparkConf);
+    SparkContextManager sparkContextManager = SparkVariable.getSparkContextManager(this.sparkConf.get(BEAKERX_ID));
     sparkContextManager.applicationStart();
   }
 
   @Override
   public void onApplicationEnd(SparkListenerApplicationEnd applicationEnd) {
     super.onApplicationEnd(applicationEnd);
-    SparkContextManager sparkContextManager = SparkVariable.getSparkContextManager(this.sparkConf);
+    SparkContextManager sparkContextManager = SparkVariable.getSparkContextManager(this.sparkConf.get(BEAKERX_ID));
     sparkContextManager.applicationEnd();
   }
 }

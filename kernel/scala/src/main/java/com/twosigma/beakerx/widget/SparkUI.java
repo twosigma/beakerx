@@ -16,29 +16,32 @@
 package com.twosigma.beakerx.widget;
 
 import org.apache.spark.SparkConf;
+import org.apache.spark.sql.SparkSession;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
+import static com.twosigma.beakerx.widget.StartStopSparkListener.START_STOP_SPARK_LISTENER;
+
 public class SparkUI extends VBox {
 
   public static final String SPARK_EXTRA_LISTENERS = "spark.extraListeners";
-
   public static final String VIEW_NAME_VALUE = "SparkUIView";
   public static final String MODEL_NAME_VALUE = "SparkUIModel";
   public static final String BEAKERX_ID = "beakerx.id";
 
-  private SparkConf sparkConf;
-  private SparkContextManager sparkContextManager;
-
   public static SparkUI create(SparkConf sparkConf) {
-    return new SparkUI(sparkConf);
+    return new SparkUI(SparkSession.builder().config(sparkConf));
   }
 
-  private SparkUI(SparkConf sparkConf) {
+  public static SparkUI create(SparkSession.Builder spaBuilder) {
+    return new SparkUI(spaBuilder);
+  }
+
+  private SparkUI(SparkSession.Builder builder) {
     super(new ArrayList<>());
-    this.sparkConf = configureSparkConf(sparkConf.clone());
-    this.sparkContextManager = new SparkContextManager(this, this.sparkConf);
+    SparkSession.Builder sparkSessionBuilder = configureSparkSessionBuilder(builder);
+    new SparkContextManager(this, sparkSessionBuilder);
   }
 
   @Override
@@ -61,18 +64,9 @@ public class SparkUI extends VBox {
     return BeakerxWidget.VIEW_MODULE_VALUE;
   }
 
-  private SparkConf configureSparkConf(SparkConf sparkConf) {
-    sparkConf = configureExtraListeners(sparkConf);
-    sparkConf.set(BEAKERX_ID, UUID.randomUUID().toString());
-    return sparkConf;
-  }
-
-  private SparkConf configureExtraListeners(SparkConf sparkConf) {
-    String listeners = "";
-    if (sparkConf.contains(SPARK_EXTRA_LISTENERS)) {
-      listeners = sparkConf.get(SPARK_EXTRA_LISTENERS) + ",";
-    }
-    sparkConf.set(SPARK_EXTRA_LISTENERS, listeners + "com.twosigma.beakerx.widget.StartStopSparkListener");
-    return sparkConf;
+  private SparkSession.Builder configureSparkSessionBuilder(SparkSession.Builder builder) {
+    builder.config(SPARK_EXTRA_LISTENERS, START_STOP_SPARK_LISTENER);
+    builder.config(BEAKERX_ID, UUID.randomUUID().toString());
+    return builder;
   }
 }

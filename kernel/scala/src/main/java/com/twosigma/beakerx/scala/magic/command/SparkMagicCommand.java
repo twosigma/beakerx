@@ -26,6 +26,7 @@ import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 import com.twosigma.beakerx.widget.SparkUI;
 import org.apache.spark.SparkConf;
+import org.apache.spark.sql.SparkSession;
 
 import static com.twosigma.beakerx.kernel.PlainCode.createSimpleEvaluationObject;
 
@@ -50,28 +51,38 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
       InternalVariable.setValue(seo);
       return createSparkUI(new SparkConf());
     } else {
-      return createSparkUIBasedOnUserSparkConf(param, seo);
+      return createSparkUIBasedOnUserSparkConfiguration(param, seo);
     }
   }
 
-  private MagicCommandOutcomeItem createSparkUIBasedOnUserSparkConf(MagicCommandExecutionParam param, SimpleEvaluationObject seo) {
+  private MagicCommandOutcomeItem createSparkUIBasedOnUserSparkConfiguration(MagicCommandExecutionParam param, SimpleEvaluationObject seo) {
     TryResult either = kernel.executeCode(param.getCommandCodeBlock(), seo);
     if (either.isResult()) {
       Object result = either.result();
       if (result instanceof SparkConf) {
-        SparkConf sparkConf = (SparkConf) result;
-        return createSparkUI(sparkConf);
+        return createSparkUI((SparkConf) result);
+      } else if (result instanceof SparkSession.Builder) {
+        return createSparkUI((SparkSession.Builder) result);
       } else {
-        return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Body of  " + SPARK + " magic command must return SparkConf object");
+        return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Body of  " + SPARK + " magic command must return SparkConf object or SparkSession.Builder object");
       }
     } else {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "There occurs problem during execution of " + SPARK + " : " + either.error());
     }
   }
 
-  private MagicCommandOutcomeItem createSparkUI(SparkConf sparkConf) {
-    SparkUI sparkUI = SparkUI.create(sparkConf);
+  private MagicCommandOutcomeItem createSparkUI(SparkSession.Builder spaBuilder) {
+    SparkUI sparkUI = SparkUI.create(spaBuilder);
+    return displaySparkUI(sparkUI);
+  }
+
+  private MagicCommandOutcomeItem displaySparkUI(SparkUI sparkUI) {
     Display.display(sparkUI);
     return new MagicCommandOutput(MagicCommandOutput.Status.OK);
+  }
+
+  private MagicCommandOutcomeItem createSparkUI(SparkConf sparkConf) {
+    SparkUI sparkUI = SparkUI.create(sparkConf);
+    return displaySparkUI(sparkUI);
   }
 }

@@ -36,7 +36,7 @@ export default class CellFocusManager {
     this.focusedCellData = cellData;
   }
 
-  setFocusedCellByArrowKey(keyCode: number) {
+  setFocusedCellByNavigationKey(keyCode: number) {
     switch (keyCode) {
       case KEYBOARD_KEYS.ArrowLeft:
         this.setLeftFocusedCell();
@@ -49,6 +49,12 @@ export default class CellFocusManager {
         break;
       case KEYBOARD_KEYS.ArrowDown:
         this.setDownFocusedCell();
+        break;
+      case KEYBOARD_KEYS.PageUp:
+        this.setPageUpFocusedCell();
+        break;
+      case KEYBOARD_KEYS.PageDown:
+        this.setPageDownFocusedCell();
         break;
     }
 
@@ -99,12 +105,12 @@ export default class CellFocusManager {
     });
   }
 
-  private setUpFocusedCell() {
+  private setUpFocusedCell(moveBy: number = 1) {
     if (!this.focusedCellData) {
       return;
     }
 
-    const row = this.focusedCellData.row - 1;
+    const row = this.focusedCellData.row - moveBy;
 
     this.setFocusedCell({
       ...this.focusedCellData,
@@ -112,12 +118,12 @@ export default class CellFocusManager {
     });
   }
 
-  private setDownFocusedCell() {
+  private setDownFocusedCell(moveBy: number = 1) {
     if (!this.focusedCellData) {
       return;
     }
 
-    const row = this.focusedCellData.row + 1;
+    const row = this.focusedCellData.row + moveBy;
     const rowCount = this.dataGrid.model.rowCount('body');
 
     this.setFocusedCell({
@@ -126,4 +132,11 @@ export default class CellFocusManager {
     });
   }
 
+  private setPageUpFocusedCell() {
+    this.setUpFocusedCell(this.dataGrid.rowManager.rowsToShow);
+  }
+
+  private setPageDownFocusedCell() {
+    this.setDownFocusedCell(this.dataGrid.rowManager.rowsToShow);
+  }
 }

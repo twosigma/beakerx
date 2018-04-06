@@ -69,6 +69,10 @@ function BeakerXPageObject() {
     return codeCell.$$('#svgg');
   };
 
+  this.getTableDisplayByIndex = function (index) {
+    return this.getCodeCellByIndex(index).$('div.beaker-table-display');
+  };
+
   this.runCodeCellByIndex = function (index) {
     var codeCell = this.getCodeCellByIndex(index);
     codeCell.scroll();
@@ -173,7 +177,7 @@ function BeakerXPageObject() {
   };
 
   this.getTableIndexMenu = function(dtContainer){
-    dtContainer.click('div.dtmenu');
+    dtContainer.click('span.bko-column-header-menu');
     browser.waitUntil(function(){
       var menu = browser.$('div.bko-header-menu.bko-table-menu');
       return menu != null && menu.isVisible();

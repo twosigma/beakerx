@@ -15,15 +15,12 @@
  */
 
 var BeakerXPageObject = require('../beakerx.po.js');
-var TableHelperObject = require('../table.helper.js');
 var beakerxPO;
-var tableHelper;
 
 describe('Testing of table Actions ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    tableHelper = new TableHelperObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/groovy/TableActionsTest.ipynb');
     beakerxPO.openUIWindow();
   }, 2);

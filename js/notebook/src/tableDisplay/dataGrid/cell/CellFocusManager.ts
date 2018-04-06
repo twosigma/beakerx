@@ -89,6 +89,8 @@ export default class CellFocusManager {
       type: COLUMN_TYPES.body,
       column: nextColumn > lastColumnIndex ? lastColumnIndex : nextColumn
     });
+
+    this.scrollIfNeeded("right");
   }
 
   private setLeftFocusedCell() {
@@ -103,6 +105,8 @@ export default class CellFocusManager {
       type: prevColumn < 0 ? COLUMN_TYPES.index : COLUMN_TYPES.body,
       column: prevColumn < 0 ? 0 : prevColumn
     });
+
+    this.scrollIfNeeded("left");
   }
 
   private setUpFocusedCell(moveBy: number = 1) {
@@ -116,6 +120,8 @@ export default class CellFocusManager {
       ...this.focusedCellData,
       row: row < 0 ? 0 : row
     });
+
+    this.scrollIfNeeded("up");
   }
 
   private setDownFocusedCell(moveBy: number = 1) {
@@ -124,12 +130,14 @@ export default class CellFocusManager {
     }
 
     const row = this.focusedCellData.row + moveBy;
-    const rowCount = this.dataGrid.model.rowCount('body');
+    const rowCount = this.dataGrid.model.rowCount('body') - 1;
 
     this.setFocusedCell({
       ...this.focusedCellData,
       row: row > rowCount ? rowCount : row
     });
+
+    this.scrollIfNeeded("down");
   }
 
   private setPageUpFocusedCell() {
@@ -139,4 +147,40 @@ export default class CellFocusManager {
   private setPageDownFocusedCell() {
     this.setDownFocusedCell(this.dataGrid.rowManager.rowsToShow);
   }
+
+  private scrollIfNeeded(direction: "up" | "right" | "down" | "left") {
+    let rowOffset = this.dataGrid.rowSections.sectionOffset(this.focusedCellData.row);
+    let rowSize = this.dataGrid.rowSections.sectionSize(this.focusedCellData.row);
+    let columnOffset = this.dataGrid.columnSections.sectionOffset(this.focusedCellData.column);
+    let columnSize = this.dataGrid.columnSections.sectionSize(this.focusedCellData.column);
+
+    let scrollToX = this.dataGrid.scrollX;
+    let scrollToY = this.dataGrid.scrollY;
+
+    let needsScrolling: boolean = false;
+
+    switch (direction) {
+      case "down":
+        needsScrolling = rowOffset + rowSize > this.dataGrid.pageHeight + scrollToY;
+        scrollToY = rowOffset;
+        break;
+      case "up":
+        needsScrolling = rowOffset < scrollToY;
+        scrollToY = rowOffset;
+        break;
+      case "right":
+        needsScrolling = columnOffset + columnSize > this.dataGrid.pageWidth + scrollToX;
+        scrollToX = columnOffset;
+        break;
+      case "left":
+        needsScrolling = columnOffset < scrollToX;
+        scrollToX = columnOffset;
+        break;
+    }
+
+    if (needsScrolling) {
+      this.dataGrid.scrollTo(scrollToX, scrollToY);
+    }
+  }
+
 }

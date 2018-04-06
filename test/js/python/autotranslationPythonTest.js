@@ -15,15 +15,12 @@
  */
 
 var BeakerXPageObject = require('../beakerx.po.js');
-var TableHelperObject = require('../table.helper.js');
 var beakerxPO;
-var tableHelper;
 
 describe('Autotranslation Python to JavaScript and D3 ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    tableHelper = new TableHelperObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/python/AutoTranslationPythonTest.ipynb');
   });
 
@@ -32,13 +29,6 @@ describe('Autotranslation Python to JavaScript and D3 ', function () {
   });
 
   var cellIndex;
-
-  function waitTableElement(cellIndex) {
-    browser.waitUntil(function () {
-      var dtContainer = beakerxPO.getDtContainerByIndex(cellIndex);
-      return dtContainer.isEnabled() && tableHelper.getDataTablesScrollBody(dtContainer).isEnabled();
-    }, 50000);
-  };
 
   describe('(Python kernel) Init data on python ', function(){
     it("Cell doesn't have output ", function(){

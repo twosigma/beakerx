@@ -32,7 +32,7 @@ describe('SQL base tests ', function () {
   var imageDir = 'sql/sql';
 
   describe('UI options. ', function () {
-    it("Disable PhosphorJS DataGrid for TableDisplay Widget. ", function () {
+    it("Use PhosphorJS DataGrid for TableDisplay Widget. ", function () {
       beakerxPO.setDataGridForTable(true, false);
     });
   });

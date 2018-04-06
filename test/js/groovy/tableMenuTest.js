@@ -38,7 +38,9 @@ describe('Testing of table Actions ', function () {
     });
   });
 
-  describe('Index Table menu ', function () {
+  describe('Show/Hide menu Items ', function () {
+    var maxWidth;
+
     it('Should display table ', function () {
       cellIndex = 0;
       var width = 685, height = 312;
@@ -48,9 +50,46 @@ describe('Testing of table Actions ', function () {
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell1_case1.png');
     });
 
-    it('Table has index menu. ', function () {
+    it('Hide All Columns', function(){
       var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
-      expect(beakerxPO.getTableIndexMenu(tblDisplay)).not.toBe(null);
+      maxWidth = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
+      var tableMenu = beakerxPO.getTableIndexMenu(tblDisplay);
+      tableMenu.click('[data-command="Hide All Columns"]');
+      var minWidth = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
+      expect(maxWidth).toBeGreaterThan(minWidth);
+    });
+
+    it('Show All Columns', function(){
+      var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
+      var width_1 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
+      var tableMenu = beakerxPO.getTableIndexMenu(tblDisplay);
+      tableMenu.click('[data-command="Show All Columns"]');
+      var width_2 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
+      expect(width_2).toBeGreaterThan(width_1);
+      expect(maxWidth).toEqual(width_2);
+    });
+
+    var subMenu;
+
+    it('Hide "m3" column', function(){
+      var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
+      var width_1 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
+      var tblSubMenu = beakerxPO.getTableIndexSubMenu(beakerxPO.getTableIndexMenu(tblDisplay), 0);
+      subMenu = tblSubMenu.$$('li');
+      expect(subMenu.length).toEqual(11);
+      expect(subMenu[0].getText()).toEqual('m3');
+      subMenu[0].click('div.fa.fa-check');
+      var width_2 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
+      expect(width_1).toBeGreaterThan(width_2);
+    });
+
+    it('Hide all columns by checking submenu items', function(){
+      var width_1 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
+      for(var i = 1; i < subMenu.length; i += 1){
+        subMenu[i].click('div.fa.fa-check');
+      }
+      var width_2 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
+      expect(width_1).toBeGreaterThan(width_2);
     });
   });
 

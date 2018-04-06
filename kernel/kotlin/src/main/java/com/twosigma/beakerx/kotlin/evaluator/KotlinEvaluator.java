@@ -22,7 +22,7 @@ import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
-import com.twosigma.beakerx.jvm.classloader.BeakerxUrlClassLoader;
+import com.twosigma.beakerx.jvm.classloader.BeakerUrlClassLoader;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
@@ -49,7 +49,7 @@ public class KotlinEvaluator extends BaseEvaluator {
   private ClasspathScanner cps;
   private ReplInterpreter repl;
   private ReplClassLoader loader = null;
-  private BeakerxUrlClassLoader kotlinClassLoader;
+  private BeakerUrlClassLoader kotlinClassLoader;
 
   public KotlinEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters) {
     this(id, sId, new BeakerCellExecutor("kotlin"), new TempFolderFactoryImpl(), evaluatorParameters);

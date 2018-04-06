@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.kernel;
 
-import com.twosigma.beakerx.jvm.classloader.BeakerxUrlClassLoader;
+import com.twosigma.beakerx.jvm.classloader.BeakerUrlClassLoader;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,12 +26,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ImportsTest {
 
   private Imports imports;
-  private BeakerxUrlClassLoader urlClassLoader;
+  private BeakerUrlClassLoader urlClassLoader;
 
   @Before
   public void setUp() throws Exception {
     imports = new Imports(new ArrayList<>());
-    urlClassLoader = new BeakerxUrlClassLoader();
+    urlClassLoader = new BeakerUrlClassLoader();
   }
 
   @Test

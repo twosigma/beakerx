@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.javash;
 
-import com.twosigma.beakerx.jvm.classloader.BeakerxUrlClassLoader;
+import com.twosigma.beakerx.jvm.classloader.BeakerUrlClassLoader;
 import com.twosigma.beakerx.kernel.PathToJar;
 
 import java.net.URL;
@@ -25,14 +25,14 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
 
-public class JavaBeakerxUrlClassLoader extends URLClassLoader {
+public class JavaBeakerUrlClassLoader extends URLClassLoader {
 
-  private BeakerxUrlClassLoader beakerxUrlClassLoader;
+  private BeakerUrlClassLoader beakerxUrlClassLoader;
   private JavaInternalUrlClassLoader javaURLClassLoader;
 
-  public JavaBeakerxUrlClassLoader(ClassLoader systemClassLoader, PathToJar pathToJar) {
+  public JavaBeakerUrlClassLoader(ClassLoader systemClassLoader, PathToJar pathToJar) {
     super(new URL[0]);
-    beakerxUrlClassLoader = new BeakerxUrlClassLoader(this.getURLs(), systemClassLoader);
+    beakerxUrlClassLoader = new BeakerUrlClassLoader(this.getURLs(), systemClassLoader);
     javaURLClassLoader = new JavaInternalUrlClassLoader(beakerxUrlClassLoader, new URL[0]);
     javaURLClassLoader.addJar(pathToJar);
   }
@@ -72,13 +72,13 @@ public class JavaBeakerxUrlClassLoader extends URLClassLoader {
     return javaURLClassLoader;
   }
 
-  static class JavaInternalUrlClassLoader extends BeakerxUrlClassLoader {
+  static class JavaInternalUrlClassLoader extends BeakerUrlClassLoader {
 
     private static final List<String> excludedClasses = singletonList("slf4j");
 
-    private BeakerxUrlClassLoader external;
+    private BeakerUrlClassLoader external;
 
-    public JavaInternalUrlClassLoader(BeakerxUrlClassLoader external, URL[] urls) {
+    public JavaInternalUrlClassLoader(BeakerUrlClassLoader external, URL[] urls) {
       super(urls, null);
       this.external = external;
     }

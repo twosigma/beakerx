@@ -37,7 +37,7 @@ public class DynamicClassLoaderSimple extends ClassLoader {
 
   private final static Logger logger = LoggerFactory.getLogger(DynamicClassLoaderSimple.class.getName());
 
-  private BeakerxUrlClassLoader myloader = new BeakerxUrlClassLoader(new URL[0], null);
+  private BeakerUrlClassLoader myloader = new BeakerUrlClassLoader(new URL[0], null);
   private String outDir;
   protected final Map<String, Class<?>> classes;
 

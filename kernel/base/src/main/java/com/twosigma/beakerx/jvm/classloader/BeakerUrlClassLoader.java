@@ -24,17 +24,17 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class BeakerxUrlClassLoader extends URLClassLoader {
+public class BeakerUrlClassLoader extends URLClassLoader {
 
-  public BeakerxUrlClassLoader(URL[] urls, ClassLoader parent) {
+  public BeakerUrlClassLoader(URL[] urls, ClassLoader parent) {
     super(urls, parent);
   }
 
-  public BeakerxUrlClassLoader(ClassLoader parent) {
+  public BeakerUrlClassLoader(ClassLoader parent) {
     this(new URL[0], parent);
   }
 
-  public BeakerxUrlClassLoader() {
+  public BeakerUrlClassLoader() {
     this(ClassLoader.getSystemClassLoader());
   }
 

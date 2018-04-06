@@ -19,7 +19,7 @@ package com.twosigma.beakerx.evaluator;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.inspect.InspectResult;
-import com.twosigma.beakerx.jvm.classloader.BeakerxUrlClassLoader;
+import com.twosigma.beakerx.jvm.classloader.BeakerUrlClassLoader;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.CacheFolderFactory;
@@ -48,7 +48,7 @@ public class EvaluatorTest extends BaseEvaluator {
   private Classpath classpath = new Classpath();
   private Imports imports = new Imports(new ArrayList<>());
   private int resetEnvironmentCounter = 0;
-  private BeakerxUrlClassLoader loader = new BeakerxUrlClassLoader(Thread.currentThread().getContextClassLoader());
+  private BeakerUrlClassLoader loader = new BeakerUrlClassLoader(Thread.currentThread().getContextClassLoader());
 
   public EvaluatorTest() {
     this("idEvaluatorTest", "sIdEvaluatorTest", TestBeakerCellExecutor.cellExecutor(), KERNEL_PARAMETERS);

@@ -162,7 +162,7 @@ export default class CellFocusManager {
     switch (direction) {
       case "down":
         needsScrolling = rowOffset + rowSize > this.dataGrid.pageHeight + scrollToY;
-        scrollToY = rowOffset;
+        scrollToY = rowOffset - this.dataGrid.pageHeight + rowSize;
         break;
       case "up":
         needsScrolling = rowOffset < scrollToY;
@@ -170,7 +170,7 @@ export default class CellFocusManager {
         break;
       case "right":
         needsScrolling = columnOffset + columnSize > this.dataGrid.pageWidth + scrollToX;
-        scrollToX = columnOffset;
+        scrollToX = columnOffset - this.dataGrid.pageWidth + columnSize;
         break;
       case "left":
         needsScrolling = columnOffset < scrollToX;

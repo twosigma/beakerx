@@ -19,6 +19,7 @@ import {BeakerxDataGrid} from "../BeakerxDataGrid";
 import DataGridContextMenu from "./DataGridContextMenu";
 import {selectContextMenuItems, selectContextMenuTags} from "../model/selectors";
 import {selectColumnIndexByPosition} from "../column/selectors";
+import ColumnManager from "../column/ColumnManager";
 
 export default function createCellContextMenuItems(
   dataGrid: BeakerxDataGrid,
@@ -54,7 +55,7 @@ export default function createCellContextMenuItems(
           event: 'CONTEXT_MENU_CLICK',
           itemKey : item,
           row : data.row,
-          column : selectColumnIndexByPosition(dataGrid.store.state, data.type, data.column)
+          column : selectColumnIndexByPosition(dataGrid.store.state, ColumnManager.createPositionFromCell(data))
         });
       }
     }));
@@ -82,7 +83,7 @@ export default function createCellContextMenuItems(
             actionType: 'CONTEXT_MENU_CLICK',
             contextMenuItem: name,
             row: data.row,
-            col: selectColumnIndexByPosition(dataGrid.store.state, data.type, data.column)
+            col: selectColumnIndexByPosition(dataGrid.store.state, ColumnManager.createPositionFromCell(data))
           };
 
           dataGrid.commSignal.emit({

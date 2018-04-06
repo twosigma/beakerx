@@ -19,9 +19,9 @@ import {ICellData} from "../interface/ICell";
 import {CellRenderer} from "@phosphor/datagrid";
 import DataGridColumn from "../column/DataGridColumn";
 import {DEFAULT_CELL_BACKGROUND, FOCUSED_CELL_BACKGROUND} from "../style/dataGridStyle";
-import {selectBodyColumnVisibility} from "../column/selectors";
-import {COLUMN_TYPES} from "../column/enums";
+import {selectVisibleBodyColumns} from "../column/selectors";
 import {KEYBOARD_KEYS} from "../event/enums";
+import {selectColumnsFrozenNames} from "../model/selectors";
 
 export default class CellFocusManager {
   dataGrid: BeakerxDataGrid;
@@ -62,13 +62,17 @@ export default class CellFocusManager {
   }
 
   getFocussedCellBackground(config: CellRenderer.ICellConfig): string {
-    const cellType = DataGridColumn.getColumnTypeByRegion(config.region);
+    const cellType = DataGridColumn.getColumnTypeByRegion(config.region, config.column);
 
     if (!this.focusedCellData || cellType !== this.focusedCellData.type) {
       return DEFAULT_CELL_BACKGROUND;
     }
 
-    return config.row === this.focusedCellData.row && config.column === this.focusedCellData.column
+    return (
+      config.row === this.focusedCellData.row
+      && config.column === this.focusedCellData.column
+      && config.region === this.focusedCellData.region
+    )
       ? FOCUSED_CELL_BACKGROUND
       : DEFAULT_CELL_BACKGROUND;
   }
@@ -78,16 +82,25 @@ export default class CellFocusManager {
       return;
     }
 
-    const nextColumn = this.focusedCellData.type === COLUMN_TYPES.body
-      ? this.focusedCellData.column + 1
-      : this.focusedCellData.column;
-    const lastColumnIndex = selectBodyColumnVisibility(this.dataGrid.store.state)
-      .filter(visible => visible).length - 1;
+    let columnsFrozen = selectColumnsFrozenNames(this.dataGrid.store.state);
+    let nextColumn = this.focusedCellData.column + 1;
+    let region = this.focusedCellData.region;
+    const lastColumnIndex = selectVisibleBodyColumns(this.dataGrid.store.state).length - 1 - columnsFrozen.length;
+
+    if (this.focusedCellData.region === 'row-header' && nextColumn > columnsFrozen.length) {
+      region = lastColumnIndex > -1 ? 'body' : 'row-header';
+      nextColumn = lastColumnIndex > -1 ? 0 : nextColumn - 1;
+    }
+
+    if (nextColumn > lastColumnIndex && region === 'body') {
+      nextColumn = lastColumnIndex;
+    }
 
     this.setFocusedCell({
       ...this.focusedCellData,
-      type: COLUMN_TYPES.body,
-      column: nextColumn > lastColumnIndex ? lastColumnIndex : nextColumn
+      region,
+      type: DataGridColumn.getColumnTypeByRegion(region, nextColumn),
+      column: nextColumn
     });
   }
 
@@ -96,12 +109,22 @@ export default class CellFocusManager {
       return;
     }
 
-    const prevColumn = this.focusedCellData.column - 1;
+    let region = this.focusedCellData.region;
+    let prevColumn = this.focusedCellData.column - 1;
+    let columnsFrozen = selectColumnsFrozenNames(this.dataGrid.store.state);
+
+    if (prevColumn < 0 && this.focusedCellData.region !== 'row-header') {
+      prevColumn = columnsFrozen.length;
+      region = 'row-header';
+    }
+
+    prevColumn = prevColumn < 0 ? 0 : prevColumn;
 
     this.setFocusedCell({
       ...this.focusedCellData,
-      type: prevColumn < 0 ? COLUMN_TYPES.index : COLUMN_TYPES.body,
-      column: prevColumn < 0 ? 0 : prevColumn
+      region,
+      type: DataGridColumn.getColumnTypeByRegion(region, prevColumn),
+      column: prevColumn
     });
   }
 

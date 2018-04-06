@@ -22,7 +22,7 @@ export default interface IDataModelState {
   cellHighlighters: IHihglighterState[],
   columnNames: string[],
   columnOrder: string[],
-  columnsFrozen?: {}, //@todo
+  columnsFrozen?: {},
   columnsFrozenRight?: {}, //feature is dropped
   columnsVisible: {},
   contextMenuItems?: string[],
@@ -34,8 +34,8 @@ export default interface IDataModelState {
   hasIndex: boolean,
   headerFontSize?: number|null,
   headersVertical?: boolean,
-  rendererForColumn?: {}, //@todo Needs the DataBars highlighter
-  rendererForType?: {}, //@todo Needs the DataBars highlighter
+  rendererForColumn?: {},
+  rendererForType?: {},
   stringFormatForColumn: {},
   stringFormatForTimes?: string|null,
   stringFormatForType?: {},

@@ -57,16 +57,16 @@ describe('DataGridColumn', () => {
       expect(bodyDataGridColumn.move).to.be.a('Function');
 
       bodyDataGridColumn.move(1);
-      expect(bodyDataGridColumn.getPosition()).to.equal(1);
+      expect(bodyDataGridColumn.getPosition().value).to.equal(1);
 
       bodyDataGridColumn.hide();
-      expect(bodyDataGridColumn.getPosition()).to.equal(1);
-      expect(columnManager.bodyColumns[1].getPosition()).to.equal(0);
+      expect(bodyDataGridColumn.getPosition().value).to.equal(1);
+      expect(columnManager.bodyColumns[1].getPosition().value).to.equal(0);
 
       bodyDataGridColumn.show();
       bodyDataGridColumn.move(0);
 
-      expect(bodyDataGridColumn.getPosition()).to.equal(0);
+      expect(bodyDataGridColumn.getPosition().value).to.equal(0);
     });
 
     it('should call toggleVisibility', () => {

@@ -38,7 +38,7 @@ describe('dataGridScope', () => {
     assert.throws(
       () => { new DataGridScope({ ...scopeOptions, data: {} }); },
       Error,
-      "Cannot read property 'iter' of undefined"
+      "Cannot read property 'slice' of undefined"
     );
   });
 

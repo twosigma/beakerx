@@ -17,6 +17,7 @@
 import {SectionList} from "@phosphor/datagrid/lib/sectionlist";
 import {DEFAULT_DATA_FONT_SIZE} from "./style/dataGridStyle";
 import {KEYBOARD_KEYS} from "./event/enums";
+import DataGridColumn from "./column/DataGridColumn";
 
 export namespace DataGridHelpers {
   const urlRegex = /((https?|ftp|file):\/\/)(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[A-Z0-9+&@#/%=~_|$])/i;
@@ -164,5 +165,16 @@ export namespace DataGridHelpers {
     }
 
     return event.key.charAt(0) || 0;
+  }
+
+  export function sortColumnsByPositionCallback(columnA: DataGridColumn, columnB: DataGridColumn) {
+    let positionA = columnA.getPosition();
+    let positionB = columnB.getPosition();
+
+    if (positionA.region === positionB.region) {
+      return positionA.value - positionB.value;
+    }
+
+    return positionA.region === 'row-header' ? -1 : 1;
   }
 }

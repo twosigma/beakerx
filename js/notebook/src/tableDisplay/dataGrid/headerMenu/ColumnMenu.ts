@@ -19,14 +19,6 @@ import HeaderMenu, { ITriggerOptions } from "./HeaderMenu";
 import DataGridColumn from "../column/DataGridColumn";
 
 export default class ColumnMenu extends HeaderMenu {
-
-  constructor(
-    column: DataGridColumn,
-    triggerOptions: ITriggerOptions,
-  ) {
-    super(column, triggerOptions);
-  }
-
   protected buildMenu(): void {
     this.menu.addClass('bko-table-menu');
     this.menu.addClass('dropdown');

@@ -20,6 +20,8 @@ import {getAlignmentByChar, getAlignmentByType} from "../column/columnAlignment"
 import {ALL_TYPES} from "../dataTypes";
 import {TIME_UNIT_FORMATS} from "../../consts";
 import { createSelector } from 'reselect'
+import {IColumnPosition} from "../interface/IColumn";
+import {DataModel} from "@phosphor/datagrid";
 
 export const DEFAULT_INDEX_COLUMN_NAME = 'index';
 
@@ -33,10 +35,31 @@ export const selectHeaderFontSize = (state) => selectModel(state).headerFontSize
 export const selectDataFontSize = (state) => selectModel(state).dataFontSize;
 export const selectFontColor = (state) => selectModel(state).fontColor;
 export const selectRawColumnNames = (state) => selectModel(state).columnNames || [];
-export const selectColumnNames = createSelector(selectRawColumnNames, names => names.map(name => name !== null ? String(name) : null));
+export const selectColumnsFrozen = (state) => selectModel(state).columnsFrozen || {};
+export const selectColumnsFrozenNames = createSelector(
+  [selectColumnsFrozen],
+  (columnsFrozen): string[] => Object.keys(columnsFrozen).filter(key => columnsFrozen[key])
+);
+export const selectColumnsFrozenCount = (state) => selectColumnsFrozenNames(state).length;
+export const selectIsColumnFrozen = createSelector(
+  [selectColumnsFrozenNames, (state, column) => column],
+  (columnsFrozen, column) => columnsFrozen.indexOf(column.name) !== -1
+);
+export const selectColumnNames = createSelector(selectRawColumnNames,names => names.map(name => name !== null ? String(name) : null));
+export const selectBodyColumnNames = createSelector(
+  [selectColumnNames, selectHasIndex],
+  (columnNames, hasIndex) => hasIndex ? columnNames.slice(1) : columnNames
+);
 export const selectColumnTypes = (state) => selectModel(state).types;
 export const selectColumnOrder = (state) => selectModel(state).columnOrder;
 export const selectColumnsVisible = (state) => selectModel(state).columnsVisible || {};
+export const selectColumnVisible = createSelector(
+  [selectColumnsVisible, selectColumnOrder, (state, column) => column],
+  (columnsVisible, columnsOrder, column) => (
+    columnsVisible[column.name] !== false
+    && (columnsOrder.length === 0 || columnsOrder.indexOf(column.name) !== -1)
+  )
+);
 export const selectAlignmentForColumn = (state, dataType, columnName) => (selectModel(state).alignmentForColumn || {})[columnName];
 export const selectAlignmentForType = (state, dataType) => (selectModel(state).alignmentForType || {})[ALL_TYPES[dataType]];
 export const selectAlignmentByType = (state, dataType) => getAlignmentByType(dataType);
@@ -67,17 +90,31 @@ export const selectInitialColumnAlignment = createSelector(
   }
 );
 
+export const selectVisibleColumnsFrozenCount = createSelector(
+  [selectColumnsFrozenNames, selectColumnsVisible],
+  (columnsFrozenNames, columnsVisible) => columnsFrozenNames
+    .filter(name => columnsVisible[name] !== false)
+    .length
+);
+
 // Returns the map columnIndex => position
 export const selectInitialColumnPositions = createSelector(
-  [selectColumnOrder, selectColumnNames, selectColumnsVisible, selectHasIndex],
-  (columnOrder, allColumnNames, columnsVisible, hasIndex) => {
+  [selectColumnOrder, selectColumnNames, selectColumnsVisible, selectHasIndex, selectColumnsFrozenNames],
+  (columnOrder, allColumnNames, columnsVisible, hasIndex, columnsFrozenNames) => {
   const hasInitialOrder = columnOrder && columnOrder.length > 0;
   const columnNames = hasIndex ? allColumnNames.slice(1) : allColumnNames;
   const order = [...columnNames];
+  const reversedOrder = [...columnOrder].reverse();
+  const frozenColumnsOrder = [];
 
   if (hasInitialOrder) {
-    columnOrder.reverse().forEach((name) => {
+    reversedOrder.forEach((name) => {
       const columnPosition = order.indexOf(name);
+      const frozenColumnIndex = columnsFrozenNames.indexOf(name);
+
+      if (frozenColumnIndex !== -1) {
+        frozenColumnsOrder.unshift(name);
+      }
 
       if (columnPosition === -1) {
         return true;
@@ -97,14 +134,34 @@ export const selectInitialColumnPositions = createSelector(
     }
   });
 
-  const result: number[] = [];
+  columnsFrozenNames.forEach((name, index) => {
+    let frozenColumnIndex = order.indexOf(name);
 
-  order.forEach((name: string, position: number) => {
-    result[columnNames.indexOf(name)] = position;
+    if (frozenColumnIndex !== -1) {
+      order.splice(frozenColumnIndex, 1);
+    }
+
+    if (frozenColumnsOrder.indexOf(name) === -1) {
+      frozenColumnsOrder.push(name);
+    }
+  });
+
+  const result: IColumnPosition[] = [];
+
+  columnNames.forEach((name: string, index: number) => {
+    let value = order.indexOf(name);
+    let region: DataModel.ColumnRegion = 'body';
+
+    if (value === -1) {
+      value = frozenColumnsOrder.indexOf(name) + 1;
+      region = 'row-header';
+    }
+
+    result[index] = { value, region };
   });
 
   if (hasIndex) {
-    result.unshift(0);
+    result.unshift({ value: 0, region: 'row-header' });
   }
 
   return result;

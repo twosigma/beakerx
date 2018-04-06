@@ -49,7 +49,7 @@ export default abstract class HeaderMenu implements MenuInterface {
   static DEFAULT_TRIGGER_HEIGHT: number = 24;
   static DEFAULT_TRIGGER_WIDTH: number = 14;
 
-  constructor(column: DataGridColumn, triggerOptions: ITriggerOptions) {
+  constructor(column: DataGridColumn) {
     this.commands = new CommandRegistry();
     this.menu = new Menu({ commands: this.commands });
     this.viewport = column.dataGrid.viewport;
@@ -59,7 +59,7 @@ export default abstract class HeaderMenu implements MenuInterface {
 
     this.handleKeydownEvent = this.handleKeydownEvent.bind(this);
 
-    this.addTrigger(triggerOptions);
+    this.addTrigger();
     this.buildMenu();
     this.attachTriggerToMenu();
   }
@@ -67,11 +67,12 @@ export default abstract class HeaderMenu implements MenuInterface {
   protected abstract buildMenu(): void
 
   updateTriggerPosition() {
-    const scrollCompensation = this.column.type !== COLUMN_TYPES.index ? this.dataGrid.scrollX : 0;
+    const columnPosition = this.column.getPosition();
+    const scrollCompensation = columnPosition.region !== 'row-header' ? this.dataGrid.scrollX : 0;
 
     this.triggerNode.style.left = `${this.dataGrid.getColumnOffset(
-      selectColumnPosition(this.dataGrid.store.state, this.column),
-      this.column.type
+      columnPosition.value,
+      columnPosition.region
     ) - scrollCompensation}px`;
   }
 
@@ -223,14 +224,13 @@ export default abstract class HeaderMenu implements MenuInterface {
     this.triggerNode.classList.remove(this.TRIGGER_CLASS_SORTING_DESC);
   }
 
-  protected addTrigger({ x, y }):void {
+  protected addTrigger():void {
     this.triggerNode = document.createElement('span');
 
     this.triggerNode.style.height = `${HeaderMenu.DEFAULT_TRIGGER_HEIGHT}px`;
     this.triggerNode.style.width = `${HeaderMenu.DEFAULT_TRIGGER_WIDTH}px`;
     this.triggerNode.style.position = 'absolute';
-    this.triggerNode.style.left = `${x}px`;
-    this.triggerNode.style.top = `${y}px`;
+    this.triggerNode.style.top = '0px';
     this.triggerNode.style.cursor = 'pointer';
     this.triggerNode.classList.add('bko-column-header-menu');
     this.triggerNode.classList.add('bko-menu');

@@ -74,12 +74,13 @@ export default class ColumnFilter {
   }
 
   private updateInputPosition() {
-    const position = this.dataGrid.getColumnOffset(
-      selectColumnPosition(this.dataGrid.store.state, this.column),
-      this.column.type
+    const position = this.column.getPosition();
+    const offset = this.dataGrid.getColumnOffset(
+      position.value,
+      position.region
     );
 
-    this.filterNode.style.left = `${position}px`;
+    this.filterNode.style.left = `${offset}px`;
   }
 
   private showInput(shouldFocus: boolean): void {

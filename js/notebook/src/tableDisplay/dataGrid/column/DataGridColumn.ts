@@ -25,7 +25,6 @@ import { minmax } from '@phosphor/algorithm';
 import { HIGHLIGHTER_TYPE } from "../interface/IHighlighterState";
 import ColumnManager, { COLUMN_CHANGED_TYPES, IBkoColumnsChangedArgs } from "./ColumnManager";
 import ColumnFilter from "./ColumnFilter";
-import {ITriggerOptions} from "../headerMenu/HeaderMenu";
 import CellTooltip from "../cell/CellTooltip";
 import {
   selectColumnDataType,
@@ -34,7 +33,7 @@ import {
   selectColumnFilter,
   selectColumnHorizontalAlignment,
   selectColumnKeepTrigger, selectColumnPosition, selectColumnSortOrder,
-  selectColumnState, selectColumnVisible, selectColumnFormatForTimes
+  selectColumnState, selectColumnFormatForTimes
 } from "./selectors";
 import {DataGridColumnAction} from "../store/DataGridAction";
 import {
@@ -43,18 +42,21 @@ import {
   selectInitialColumnAlignment,
   selectStringFormatForColumn,
   selectFormatForTimes,
-  selectStringFormatForType, selectRenderer
+  selectStringFormatForType, selectRenderer, selectIsColumnFrozen, selectColumnVisible
 } from "../model/selectors";
 import {
   UPDATE_COLUMN_DISPLAY_TYPE,
   UPDATE_COLUMN_FILTER, UPDATE_COLUMN_FORMAT_FOR_TIMES,
   UPDATE_COLUMN_HORIZONTAL_ALIGNMENT,
   UPDATE_COLUMN_SORT_ORDER,
-  UPDATE_COLUMN_VISIBILITY, UPDATE_COLUMN_WIDTH
+  UPDATE_COLUMN_WIDTH
 } from "./reducer";
 import {BeakerxDataStore} from "../store/dataStore";
 import {COLUMN_TYPES, SORT_ORDER} from "./enums";
-import {UPDATE_COLUMN_RENDERER} from "../model/reducer";
+import {
+  UPDATE_COLUMN_FROZEN, UPDATE_COLUMN_RENDERER,
+  UPDATE_COLUMN_VISIBLE
+} from "../model/reducer";
 import {RENDERER_TYPE} from "../interface/IRenderer";
 import DataGridCell from "../cell/DataGridCell";
 
@@ -84,16 +86,16 @@ export default class DataGridColumn {
     this.handleHeaderCellHovered = this.handleHeaderCellHovered.bind(this);
 
     this.assignFormatFn();
-    this.createMenu(options.menuOptions);
-    this.addColumnFilter(options.menuOptions);
+    this.createMenu();
+    this.addColumnFilter();
     this.addDataTypeTooltip();
     this.connectToHeaderCellHovered();
     this.connectToColumnsChanged();
     this.addMinMaxValues();
   }
 
-  static getColumnTypeByRegion(region: DataModel.CellRegion) {
-    if (region === 'row-header' || region === 'corner-header') {
+  static getColumnTypeByRegion(region: DataModel.CellRegion, position: number) {
+    if ((region === 'row-header' || region === 'corner-header') && position === 0) {
       return COLUMN_TYPES.index;
     }
 
@@ -105,24 +107,27 @@ export default class DataGridColumn {
       .getFormatFnByDisplayType(this.getDisplayType(), this.getState());
   }
 
-  createMenu(menuOptions: ITriggerOptions): void {
+  createMenu(): void {
     if (this.type === COLUMN_TYPES.index) {
-      this.menu = new IndexMenu(this, menuOptions);
+      this.menu = new IndexMenu(this);
 
       return;
     }
 
-    this.menu = new ColumnMenu(this, menuOptions);
+    this.menu = new ColumnMenu(this);
   }
 
-  addColumnFilter(menuOptions) {
+  addColumnFilter() {
+    const columnPosition = this.getPosition();
+
     this.columnFilter = new ColumnFilter(
       this.dataGrid,
       this,
       {
-        ...menuOptions,
+        x: this.dataGrid.getColumnOffset(columnPosition.value, columnPosition.region),
         y: this.dataGrid.baseColumnHeaderSize - 1,
-        width: this.dataGrid.columnSections.sectionSize(this.index)
+        width: this.dataGrid.columnSections.sectionSize(this.index),
+        height: this.dataGrid.baseRowSize
       }
     );
   }
@@ -132,8 +137,11 @@ export default class DataGridColumn {
       UPDATE_COLUMN_DISPLAY_TYPE,
       { value: displayType, columnIndex: this.index, columnType: this.type }
     ));
+
+    const position = this.getPosition();
+
     this.assignFormatFn();
-    this.dataGrid.setInitialSectionWidth(this);
+    this.dataGrid.setInitialSectionWidth({ index: position.value }, position.region, this.type);
   }
 
   setTimeDisplayType(timeUnit) {
@@ -182,7 +190,7 @@ export default class DataGridColumn {
   }
 
   handleHeaderCellHovered(sender: BeakerxDataGrid, data: ICellData) {
-    const column = data && this.columnManager.getColumnByPosition(data.type, data.column);
+    const column = data && this.columnManager.getColumnByPosition(ColumnManager.createPositionFromCell(data));
 
     if (!data || column !== this || !DataGridCell.isHeaderCell(data)) {
       this.toggleDataTooltip(false);
@@ -368,7 +376,9 @@ export default class DataGridColumn {
     this.resetFilter();
     this.move(this.index);
     this.assignFormatFn();
-    this.dataGrid.setInitialSectionWidth(this);
+
+    const position = this.getPosition();
+    this.dataGrid.setInitialSectionWidth(this, position.region, this.type);
     this.dataGrid.updateWidgetWidth();
   }
 
@@ -388,6 +398,20 @@ export default class DataGridColumn {
     }));
   }
 
+  isFrozen() {
+    return selectIsColumnFrozen(this.store.state, this);
+  }
+
+  toggleColumnFrozen() {
+    this.store.dispatch(new DataGridColumnAction(UPDATE_COLUMN_FROZEN, {
+      columnType: this.type,
+      columnName: this.name,
+      value: !this.isFrozen()
+    }));
+
+    this.dataGrid.columnPosition.updateAll();
+  }
+
   private updateColumnFilter(filter: string) {
     this.store.dispatch(new DataGridColumnAction(
       UPDATE_COLUMN_FILTER,
@@ -396,10 +420,11 @@ export default class DataGridColumn {
   }
 
   private toggleVisibility(value) {
-    this.store.dispatch(new DataGridColumnAction(UPDATE_COLUMN_VISIBILITY, {
+    this.store.dispatch(new DataGridColumnAction(UPDATE_COLUMN_VISIBLE, {
       value,
       columnIndex: this.index,
       columnType: this.type,
+      columnName: this.name,
       hasIndex: selectHasIndex(this.store.state)
     }));
     this.dataGrid.columnPosition.updateAll();

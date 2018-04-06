@@ -24,7 +24,7 @@ import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
-import com.twosigma.beakerx.jvm.classloader.BeakerUrlClassLoader;
+import com.twosigma.beakerx.jvm.classloader.BeakerXUrlClassLoader;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
@@ -53,7 +53,7 @@ public class ScalaEvaluator extends BaseEvaluator {
   private BeakerxObjectFactory beakerxObjectFactory;
   private final Provider<BeakerObjectConverter> objectSerializerProvider;
   private static boolean autoTranslationSetup = false;
-  private BeakerUrlClassLoader classLoader;
+  private BeakerXUrlClassLoader classLoader;
   private ScalaEvaluatorGlue shell;
 
   public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, EvaluatorParameters evaluatorParameters) {
@@ -175,9 +175,9 @@ public class ScalaEvaluator extends BaseEvaluator {
    * Scala uses multiple classloaders and (unfortunately) cannot fallback to the java one while compiling scala code so we
    * have to build our DynamicClassLoader and also build a proper classpath for the compiler classloader.
    */
-  private BeakerUrlClassLoader newClassLoader() {
+  private BeakerXUrlClassLoader newClassLoader() {
     logger.debug("creating new loader");
-    BeakerUrlClassLoader cl = new BeakerUrlClassLoader(ClassLoader.getSystemClassLoader());
+    BeakerXUrlClassLoader cl = new BeakerXUrlClassLoader(ClassLoader.getSystemClassLoader());
     cl.addPathToJars(getClasspath().getPaths());
     return cl;
   }

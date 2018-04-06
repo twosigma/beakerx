@@ -21,7 +21,7 @@ import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
-import com.twosigma.beakerx.javash.JavaBeakerUrlClassLoader;
+import com.twosigma.beakerx.javash.JavaBeakerXUrlClassLoader;
 import com.twosigma.beakerx.javash.autocomplete.JavaAutocomplete;
 import com.twosigma.beakerx.javash.autocomplete.JavaClasspathScanner;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -42,7 +42,7 @@ public class JavaEvaluator extends BaseEvaluator {
   private final String packageId;
   private JavaClasspathScanner cps;
   private JavaAutocomplete jac;
-  private JavaBeakerUrlClassLoader loader = null;
+  private JavaBeakerXUrlClassLoader loader = null;
 
   public JavaEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters) {
     this(id, sId, new BeakerCellExecutor("javash"), new TempFolderFactoryImpl(), evaluatorParameters);
@@ -130,13 +130,13 @@ public class JavaEvaluator extends BaseEvaluator {
     return packageId;
   }
 
-  private JavaBeakerUrlClassLoader newClassLoader() {
-    JavaBeakerUrlClassLoader loader = new JavaBeakerUrlClassLoader(ClassLoader.getSystemClassLoader(),new PathToJar(outDir));
+  private JavaBeakerXUrlClassLoader newClassLoader() {
+    JavaBeakerXUrlClassLoader loader = new JavaBeakerXUrlClassLoader(ClassLoader.getSystemClassLoader(),new PathToJar(outDir));
     loader.addInitPathToJars(getClasspath().getPaths());
     return loader;
   }
 
-  public JavaBeakerUrlClassLoader getJavaClassLoader() {
+  public JavaBeakerXUrlClassLoader getJavaClassLoader() {
     return loader;
   }
 }

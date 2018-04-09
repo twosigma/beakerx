@@ -27,6 +27,7 @@ import isUrl = DataGridHelpers.isUrl;
 import getEventKeyCode = DataGridHelpers.getEventKeyCode;
 import {KEYBOARD_KEYS} from "./enums";
 import { Signal } from '@phosphor/signaling';
+import ColumnManager from "../column/ColumnManager";
 
 export default class EventManager {
   dataGrid: BeakerxDataGrid;
@@ -135,7 +136,7 @@ export default class EventManager {
 
     const data = this.dataGrid.getCellData(event.clientX, event.clientY);
 
-    if (data.region === 'corner-header') {
+    if (data.region === 'corner-header' && data.column === 0) {
       return;
     }
 
@@ -174,7 +175,7 @@ export default class EventManager {
       return;
     }
 
-    const destColumn = this.dataGrid.columnManager.getColumnByPosition(data.type, data.column);
+    const destColumn = this.dataGrid.columnManager.getColumnByPosition(ColumnManager.createPositionFromCell(data));
 
     destColumn.toggleSort();
   }

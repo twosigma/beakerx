@@ -157,12 +157,14 @@ export default class ColumnPosition {
       return;
     }
 
-    this.dropCellData && this.dataGrid.colorizeColumnBorder(
-      this.dropCellData.column,
-      this.dataGrid.style.gridLineColor,
-      this.dropCellData.region
-    );
-    this.dataGrid.colorizeColumnBorder(data.column, DEFAULT_HIGHLIGHT_COLOR, data.region);
     this.dropCellData = data;
+    this.dataGrid.repaint();
+
+    // const side = (
+    //   !this.dropCellData && data.delta < sectionSize
+    //   || this.dropCellData && this.dropCellData.column < pressData.column
+    // ) ? 'left': 'right';
+
+    // this.dataGrid.colorizeColumnBorder(data, DEFAULT_HIGHLIGHT_COLOR, side);
   }
 }

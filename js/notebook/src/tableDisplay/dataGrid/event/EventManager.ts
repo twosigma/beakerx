@@ -76,6 +76,14 @@ export default class EventManager {
     parentHandler.call(this.dataGrid, event);
   }
 
+  isOverHeader(event: MouseEvent) {
+    let rect = this.dataGrid.viewport.node.getBoundingClientRect();
+    let x = event.clientX - rect.left;
+    let y = event.clientY - rect.top;
+
+    return x < (this.dataGrid.bodyWidth + this.dataGrid.rowHeaderSections.totalSize) && y < this.dataGrid.headerHeight;
+  }
+
   destroy() {
     document.removeEventListener('keydown', this.handleKeyDown);
     window.removeEventListener('resize', this.handleWindowResize);
@@ -97,7 +105,7 @@ export default class EventManager {
   }
 
   private handleBodyClick(event: MouseEvent) {
-    if (this.dataGrid.isOverHeader(event) || this.dataGrid.columnPosition.isDragging()) {
+    if (this.isOverHeader(event) || this.dataGrid.columnPosition.isDragging()) {
       return;
     }
 
@@ -165,7 +173,7 @@ export default class EventManager {
   }
 
   private handleHeaderClick(event: MouseEvent): void {
-    if (!this.isHeaderClicked(event)) {
+    if (!this.isHeaderClicked(event) || this.dataGrid.columnPosition.dropCellData) {
       return;
     }
 
@@ -182,7 +190,7 @@ export default class EventManager {
 
   private isHeaderClicked(event) {
     return (
-      this.dataGrid.isOverHeader(event)
+      this.isOverHeader(event)
       && event.button === 0
       && event.target === this.dataGrid['_canvas']
     );
@@ -257,7 +265,7 @@ export default class EventManager {
     event.stopPropagation();
     event.preventDefault();
 
-    if (this.dataGrid.isOverHeader(event)) {
+    if (this.isOverHeader(event)) {
       return;
     }
 

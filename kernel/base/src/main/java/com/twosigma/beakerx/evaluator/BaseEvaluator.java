@@ -57,6 +57,7 @@ public abstract class BaseEvaluator implements Evaluator {
   protected Imports imports;
   private final CellExecutor executor;
   private Path tempFolder;
+  protected EvaluatorParameters evaluatorParameters;
 
   protected ExecutorService executorService;
 
@@ -70,6 +71,7 @@ public abstract class BaseEvaluator implements Evaluator {
     classPath.add(new PathToJar(outDir));
     inspect = new Inspect();
     executorService = Executors.newSingleThreadExecutor();
+    this.evaluatorParameters = evaluatorParameters;
     init(evaluatorParameters);
   }
 

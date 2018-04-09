@@ -32,6 +32,8 @@ import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.PathToJar;
+import com.twosigma.beakerx.scala.spark.Implicit;
+import com.twosigma.beakerx.scala.spark.SparkImplicit;
 import com.twosigma.beakerx.scala.serializers.ScalaCollectionDeserializer;
 import com.twosigma.beakerx.scala.serializers.ScalaCollectionSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaListOfPrimitiveTypeMapsSerializer;
@@ -148,6 +150,9 @@ public class ScalaEvaluator extends BaseEvaluator {
     if (!getImports().isEmpty()) {
       addImportsToShell(shell, getImports().getImportPaths());
     }
+    if (evaluatorParameters.getParams().containsKey(SparkImplicit.IMPLICIT())){
+      addImplicit(shell,evaluatorParameters.getParams().get(SparkImplicit.IMPLICIT()));
+    }
     logger.debug("creating beaker object");
     // ensure object is created
     NamespaceClient.getBeaker(getSessionId());
@@ -156,6 +161,13 @@ public class ScalaEvaluator extends BaseEvaluator {
       logger.warn("ERROR creating beaker object: {}", r);
     }
     return shell;
+  }
+
+  private void addImplicit(ScalaEvaluatorGlue shell, Object o) {
+    if(o instanceof Implicit){
+      Implicit scalaImplicit = (Implicit) o;
+      shell.evaluate2(scalaImplicit.codeAsString());
+    }
   }
 
   private void addImportsToShell(ScalaEvaluatorGlue shell, List<ImportPath> importsPaths) {

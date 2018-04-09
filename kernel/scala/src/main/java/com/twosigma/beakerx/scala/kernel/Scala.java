@@ -35,6 +35,8 @@ import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.scala.spark.SparkDisplayers;
+import com.twosigma.beakerx.scala.spark.SparkImplicit;
 import com.twosigma.beakerx.scala.comm.ScalaCommOpenHandler;
 import com.twosigma.beakerx.scala.evaluator.ScalaEvaluator;
 import com.twosigma.beakerx.scala.handler.ScalaKernelInfoHandler;
@@ -53,7 +55,6 @@ public class Scala extends Kernel {
 
   private Scala(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
     super(id, evaluator, kernelSocketsFactory);
-    DisplayerDataMapper.register(converter);
     registerCustomMagicCommands();
   }
 
@@ -80,8 +81,7 @@ public class Scala extends Kernel {
               getKernelParameters());//TODO check what to put, need for autotranslation
 
       //js.setupAutoTranslation(); -- uncomment
-      KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
-              new KernelConfigurationFile(args));
+      KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(new KernelConfigurationFile(args));
       return new Scala(id, se, kernelSocketsFactory);
     });
   }
@@ -109,6 +109,7 @@ public class Scala extends Kernel {
   public static EvaluatorParameters getKernelParameters() {
     HashMap<String, Object> kernelParameters = new HashMap<>();
     kernelParameters.put(IMPORTS, new ScalaDefaultVariables().getImports());
+    kernelParameters.put(SparkImplicit.IMPLICIT(), new SparkImplicit());
     return new EvaluatorParameters(kernelParameters);
   }
 
@@ -118,6 +119,12 @@ public class Scala extends Kernel {
                     SPARK,
                     "<>",
                     new SparkMagicCommand(this)));
+  }
+
+  @Override
+  protected void configureJvmRepr() {
+    SparkDisplayers.register();
+    DisplayerDataMapper.register(converter);
   }
 
 }

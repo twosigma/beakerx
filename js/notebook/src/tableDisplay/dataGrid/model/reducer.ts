@@ -119,7 +119,7 @@ function reduceColumnVisible(state, action: DataGridColumnAction): IDataModelSta
 }
 
 function reduceColumnOrder(state, action: DataGridColumnAction) {
-  const { columnName, value, hasIndex } = action.payload;
+  const { columnName, value } = action.payload;
   const columnOrder = getColumnOrderArray(state);
   const columnVisible = state.columnsVisible;
 

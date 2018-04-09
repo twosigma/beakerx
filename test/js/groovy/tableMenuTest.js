@@ -29,6 +29,11 @@ describe('Testing of table Actions ', function () {
     beakerxPO.closeAndHaltNotebook();
   });
 
+  function getSubMenu(cellIndex, commandIndex){
+    var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
+    return beakerxPO.getTableIndexSubMenu(beakerxPO.getTableIndexMenu(tblDisplay), commandIndex);
+  };
+
   var cellIndex;
   var imageDir = 'groovy/tableMenu';
 
@@ -50,7 +55,7 @@ describe('Testing of table Actions ', function () {
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell1_case1.png');
     });
 
-    it('Hide All Columns', function(){
+    it('Hide All Columns', function () {
       var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
       maxWidth = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
       var tableMenu = beakerxPO.getTableIndexMenu(tblDisplay);
@@ -59,7 +64,7 @@ describe('Testing of table Actions ', function () {
       expect(maxWidth).toBeGreaterThan(minWidth);
     });
 
-    it('Show All Columns', function(){
+    it('Show All Columns', function () {
       var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
       var width_1 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
       var tableMenu = beakerxPO.getTableIndexMenu(tblDisplay);
@@ -71,11 +76,9 @@ describe('Testing of table Actions ', function () {
 
     var subMenu;
 
-    it('Hide "m3" column', function(){
-      var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
+    it('Hide "m3" column', function () {
       var width_1 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
-      var tblSubMenu = beakerxPO.getTableIndexSubMenu(beakerxPO.getTableIndexMenu(tblDisplay), 0);
-      subMenu = tblSubMenu.$$('li');
+      subMenu = getSubMenu(cellIndex, 0).$$('li');
       expect(subMenu.length).toEqual(11);
       expect(subMenu[0].getText()).toEqual('m3');
       subMenu[0].click('div.fa.fa-check');
@@ -83,13 +86,90 @@ describe('Testing of table Actions ', function () {
       expect(width_1).toBeGreaterThan(width_2);
     });
 
-    it('Hide all columns by checking submenu items', function(){
+    it('Hide all columns by checking submenu items', function () {
       var width_1 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
       for(var i = 1; i < subMenu.length; i += 1){
         subMenu[i].click('div.fa.fa-check');
       }
       var width_2 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
       expect(width_1).toBeGreaterThan(width_2);
+    });
+  });
+
+  describe('Menu option "Format"', function () {
+    var width = 150, height = 150;
+
+    it('Should format index column to "date"', function () {
+      cellIndex += 2;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      var subMenu = getSubMenu(cellIndex, 1).$$('li');
+      expect(subMenu.length).toEqual(9);
+      subMenu[4].click();
+
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell2_case1.png');
+    });
+
+    it('Should format index column to "formatted integer"', function () {
+      var subMenu = getSubMenu(cellIndex, 1).$$('li');
+      subMenu[2].click();
+
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell2_case2.png');
+    });
+  });
+
+  describe('Menu option "Rows to show"', function () {
+    it('Select "show 10 rows"', function () {
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      var hight_1 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'height'));
+      var subMenu = getSubMenu(cellIndex, 2).$$('li');
+      expect(subMenu.length).toEqual(5);
+      subMenu[0].click();
+
+      var hight_2 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'height'));
+      expect(hight_1).toBeGreaterThan(hight_2);
+    });
+
+    it('Select "show All rows"', function () {
+      var hight_1 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'height'));
+      var subMenu = getSubMenu(cellIndex, 2).$$('li');
+      subMenu[4].click();
+
+      var hight_2 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'height'));
+      expect(hight_2).toBeGreaterThan(hight_1);
+    });
+  });
+
+  describe('Menu option "Clear selection"', function () {
+    var width = 250, height = 150;
+
+    it('Should select values', function () {
+      cellIndex += 3;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      codeCell.leftClick('canvas', 60, 60);
+      browser.keys('Shift');
+      codeCell.leftClick('canvas', 120, 120);
+      browser.keys('\uE000');
+
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell3_case1.png');
+    });
+
+    it('Should clear selection', function () {
+      var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
+      var tableMenu = beakerxPO.getTableIndexMenu(tblDisplay);
+      tableMenu.click('[data-command="Clear selection"]');
+
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell3_case2.png');
     });
   });
 

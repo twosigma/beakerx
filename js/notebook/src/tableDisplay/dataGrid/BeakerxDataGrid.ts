@@ -231,7 +231,7 @@ export class BeakerxDataGrid extends DataGrid {
     }
 
     this.canvasGC.beginPath();
-    this.canvasGC.lineWidth = 1;
+    this.canvasGC.lineWidth = 3;
 
     this.canvasGC.moveTo(x - 0.5, 0);
     this.canvasGC.lineTo(x - 0.5, height);

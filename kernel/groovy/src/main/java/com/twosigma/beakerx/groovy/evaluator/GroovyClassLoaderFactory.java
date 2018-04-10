@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.groovy.evaluator;
 
-import com.twosigma.beakerx.jvm.classloader.BeakerxUrlClassLoader;
+import com.twosigma.beakerx.jvm.classloader.BeakerXUrlClassLoader;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
@@ -92,8 +92,8 @@ public class GroovyClassLoaderFactory {
     }
   }
 
-  public static BeakerxUrlClassLoader newParentClassLoader(Classpath classpath) {
-    BeakerxUrlClassLoader loader = new BeakerxUrlClassLoader(ClassLoader.getSystemClassLoader());
+  public static BeakerXUrlClassLoader newParentClassLoader(Classpath classpath) {
+    BeakerXUrlClassLoader loader = new BeakerXUrlClassLoader(ClassLoader.getSystemClassLoader());
     loader.addPathToJars(classpath.getPaths());
     return loader;
   }

@@ -24,17 +24,17 @@ import java.util.List;
 
 import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 
-public class BeakerxUrlClassLoader extends URLClassLoader {
+public class BeakerXUrlClassLoader extends URLClassLoader {
 
-  public BeakerxUrlClassLoader(URL[] urls, ClassLoader parent) {
+  public BeakerXUrlClassLoader(URL[] urls, ClassLoader parent) {
     super(urls, parent);
   }
 
-  public BeakerxUrlClassLoader(ClassLoader parent) {
+  public BeakerXUrlClassLoader(ClassLoader parent) {
     this(new URL[0], parent);
   }
 
-  public BeakerxUrlClassLoader() {
+  public BeakerXUrlClassLoader() {
     this(ClassLoader.getSystemClassLoader());
   }
 

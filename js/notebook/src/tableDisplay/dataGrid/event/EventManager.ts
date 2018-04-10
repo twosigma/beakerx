@@ -28,6 +28,7 @@ import getEventKeyCode = DataGridHelpers.getEventKeyCode;
 import {KEYBOARD_KEYS} from "./enums";
 import { Signal } from '@phosphor/signaling';
 import ColumnManager from "../column/ColumnManager";
+import {ICellData} from "../interface/ICell";
 
 export default class EventManager {
   dataGrid: BeakerxDataGrid;
@@ -204,9 +205,10 @@ export default class EventManager {
       return;
     }
 
+    this.handleEnterKeyDown(code, event.shiftKey, focusedCell);
     this.handleHighlighterKeyDown(code, column);
     this.handleNumKeyDown(code, event.shiftKey, column);
-    this.handleNavigationKeyDown(code);
+    this.handleNavigationKeyDown(code, event);
   }
 
   private handleHighlighterKeyDown(code: number, column: DataGridColumn|null) {
@@ -223,7 +225,19 @@ export default class EventManager {
     }
   }
 
-  private handleNavigationKeyDown(code: number) {
+  private handleEnterKeyDown(code: number, shiftKey: boolean, cellData: ICellData) {
+    if (code !== KEYBOARD_KEYS.Enter || !cellData) {
+      return;
+    }
+
+    if (!shiftKey || !this.dataGrid.cellSelectionManager.startCellData) {
+      this.dataGrid.cellSelectionManager.setStartCell(cellData);
+    }
+
+    this.dataGrid.cellSelectionManager.handleCellInteraction(cellData);
+  }
+
+  private handleNavigationKeyDown(code: number, event: KeyboardEvent) {
     let navigationKeyCodes = [
       KEYBOARD_KEYS.ArrowLeft,
       KEYBOARD_KEYS.ArrowRight,
@@ -237,6 +251,12 @@ export default class EventManager {
     }
 
     this.dataGrid.cellFocusManager.setFocusedCellByNavigationKey(code);
+
+    if (event.shiftKey) {
+      this.dataGrid.cellSelectionManager.setEndCell(
+        this.dataGrid.cellFocusManager.focusedCellData
+      );
+    }
   }
 
   private handleNumKeyDown(code: number, shiftKey: boolean, column: DataGridColumn|null) {

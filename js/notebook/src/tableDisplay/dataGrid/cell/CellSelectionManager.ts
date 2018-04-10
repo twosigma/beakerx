@@ -194,11 +194,16 @@ export default class CellSelectionManager {
       return;
     }
 
-    const cellData = this.dataGrid.getCellData(event.clientX, event.clientY);
-    if (cellData) {
-      this.setEndCell(cellData);
-      this.enable();
-      this.dataGrid.repaint();
+    this.handleCellInteraction(this.dataGrid.getCellData(event.clientX, event.clientY));
+  }
+
+  handleCellInteraction(data: ICellData) {
+    if (!data) {
+      return;
     }
+
+    this.setEndCell(data);
+    this.enable();
+    this.dataGrid.repaint();
   }
 }

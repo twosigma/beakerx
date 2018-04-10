@@ -41,10 +41,10 @@ export default class ColumnPosition {
   constructor(dataGrid: BeakerxDataGrid) {
     this.dataGrid = dataGrid;
     this.store = dataGrid.store;
-    this.dataGrid.cellHovered.connect(this.handleCellHovered, this);
   }
 
   stopDragging() {
+    this.dataGrid.cellHovered.disconnect(this.handleCellHovered, this);
     this.grabbedCellData = null;
     this.dropCellData = null;
     this.toggleGrabbing(false);
@@ -77,6 +77,7 @@ export default class ColumnPosition {
   }
 
   grabColumn(data: ICellData) {
+    this.dataGrid.cellHovered.connect(this.handleCellHovered, this);
     this.grabbedCellData = data;
     this.toggleGrabbing(true);
   }

@@ -46,10 +46,11 @@ export default class EventManager {
     this.handleCellHover = throttle<MouseEvent, void>(this.handleCellHover, 100, this);
     this.handleWindowResize = throttle<Event, void>(this.handleWindowResize, 200, this);
 
+    this.dataGrid.node.onselectstart = () => false;
     this.dataGrid.node.removeEventListener('mouseout', this.handleMouseOut);
     this.dataGrid.node.addEventListener('mouseout', this.handleMouseOut);
-    this.dataGrid.node.removeEventListener('dblclick', this.handleDoubleClick);
-    this.dataGrid.node.addEventListener('dblclick', this.handleDoubleClick);
+    this.dataGrid.node.removeEventListener('dblclick', this.handleDoubleClick, true);
+    this.dataGrid.node.addEventListener('dblclick', this.handleDoubleClick, true);
     this.dataGrid.node.removeEventListener('mouseup', this.handleMouseUp);
     this.dataGrid.node.addEventListener('mouseup', this.handleMouseUp);
     this.dataGrid['_vScrollBar'].node.addEventListener('mousedown', this.handleMouseDown);
@@ -152,10 +153,13 @@ export default class EventManager {
   }
 
   private handleMouseOut(event: MouseEvent): void {
-    if (event.toElement && (
-      this.dataGrid.node.contains(event.toElement)
-      || event.toElement.classList.contains('bko-menu')
-      || event.toElement.closest('.bko-table-menu')
+    const relatedTarget = event.relatedTarget as HTMLElement;
+
+    if (relatedTarget && (
+      this.dataGrid.node.contains(relatedTarget)
+      || relatedTarget === this.dataGrid.node
+      || relatedTarget.classList.contains('bko-menu')
+      || relatedTarget.closest('.bko-table-menu')
     )) {
       return;
     }
@@ -262,7 +266,7 @@ export default class EventManager {
   }
 
   private handleDoubleClick(event: MouseEvent) {
-    event.stopPropagation();
+    event.stopImmediatePropagation();
     event.preventDefault();
 
     if (this.isOverHeader(event)) {

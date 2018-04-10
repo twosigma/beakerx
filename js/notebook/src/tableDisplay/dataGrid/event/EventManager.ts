@@ -46,10 +46,11 @@ export default class EventManager {
     this.handleCellHover = throttle<MouseEvent, void>(this.handleCellHover, 100, this);
     this.handleWindowResize = throttle<Event, void>(this.handleWindowResize, 200, this);
 
+    this.dataGrid.node.onselectstart = () => false;
     this.dataGrid.node.removeEventListener('mouseout', this.handleMouseOut);
     this.dataGrid.node.addEventListener('mouseout', this.handleMouseOut);
-    this.dataGrid.node.removeEventListener('dblclick', this.handleDoubleClick);
-    this.dataGrid.node.addEventListener('dblclick', this.handleDoubleClick);
+    this.dataGrid.node.removeEventListener('dblclick', this.handleDoubleClick, true);
+    this.dataGrid.node.addEventListener('dblclick', this.handleDoubleClick, true);
     this.dataGrid.node.removeEventListener('mouseup', this.handleMouseUp);
     this.dataGrid.node.addEventListener('mouseup', this.handleMouseUp);
     this.dataGrid['_vScrollBar'].node.addEventListener('mousedown', this.handleMouseDown);
@@ -76,6 +77,14 @@ export default class EventManager {
     parentHandler.call(this.dataGrid, event);
   }
 
+  isOverHeader(event: MouseEvent) {
+    let rect = this.dataGrid.viewport.node.getBoundingClientRect();
+    let x = event.clientX - rect.left;
+    let y = event.clientY - rect.top;
+
+    return x < (this.dataGrid.bodyWidth + this.dataGrid.rowHeaderSections.totalSize) && y < this.dataGrid.headerHeight;
+  }
+
   destroy() {
     document.removeEventListener('keydown', this.handleKeyDown);
     window.removeEventListener('resize', this.handleWindowResize);
@@ -97,7 +106,7 @@ export default class EventManager {
   }
 
   private handleBodyClick(event: MouseEvent) {
-    if (this.dataGrid.isOverHeader(event) || this.dataGrid.columnPosition.isDragging()) {
+    if (this.isOverHeader(event) || this.dataGrid.columnPosition.isDragging()) {
       return;
     }
 
@@ -144,10 +153,13 @@ export default class EventManager {
   }
 
   private handleMouseOut(event: MouseEvent): void {
-    if (event.toElement && (
-      this.dataGrid.node.contains(event.toElement)
-      || event.toElement.classList.contains('bko-menu')
-      || event.toElement.closest('.bko-table-menu')
+    const relatedTarget = event.relatedTarget as HTMLElement;
+
+    if (relatedTarget && (
+      this.dataGrid.node.contains(relatedTarget)
+      || relatedTarget === this.dataGrid.node
+      || relatedTarget.classList.contains('bko-menu')
+      || relatedTarget.closest('.bko-table-menu')
     )) {
       return;
     }
@@ -165,7 +177,7 @@ export default class EventManager {
   }
 
   private handleHeaderClick(event: MouseEvent): void {
-    if (!this.isHeaderClicked(event)) {
+    if (!this.isHeaderClicked(event) || this.dataGrid.columnPosition.dropCellData) {
       return;
     }
 
@@ -182,7 +194,7 @@ export default class EventManager {
 
   private isHeaderClicked(event) {
     return (
-      this.dataGrid.isOverHeader(event)
+      this.isOverHeader(event)
       && event.button === 0
       && event.target === this.dataGrid['_canvas']
     );
@@ -254,10 +266,10 @@ export default class EventManager {
   }
 
   private handleDoubleClick(event: MouseEvent) {
-    event.stopPropagation();
+    event.stopImmediatePropagation();
     event.preventDefault();
 
-    if (this.dataGrid.isOverHeader(event)) {
+    if (this.isOverHeader(event)) {
       return;
     }
 

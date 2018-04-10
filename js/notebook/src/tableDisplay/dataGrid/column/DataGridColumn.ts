@@ -141,7 +141,7 @@ export default class DataGridColumn {
     const position = this.getPosition();
 
     this.assignFormatFn();
-    this.dataGrid.setInitialSectionWidth({ index: position.value }, position.region, this.type);
+    this.dataGrid.dataGridResize.setInitialSectionWidth({ index: position.value }, position.region, this.type);
   }
 
   setTimeDisplayType(timeUnit) {
@@ -322,7 +322,7 @@ export default class DataGridColumn {
   }
 
   move(destination: number) {
-    this.dataGrid.columnPosition.setPosition(this, destination);
+    this.dataGrid.columnPosition.setPosition(this, { ...this.getPosition(), value: destination });
     this.menu.hideTrigger();
     this.dataGrid.resize();
   }
@@ -378,8 +378,8 @@ export default class DataGridColumn {
     this.assignFormatFn();
 
     const position = this.getPosition();
-    this.dataGrid.setInitialSectionWidth(this, position.region, this.type);
-    this.dataGrid.updateWidgetWidth();
+    this.dataGrid.dataGridResize.setInitialSectionWidth(this, position.region, this.type);
+    this.dataGrid.dataGridResize.updateWidgetWidth();
   }
 
   destroy() {

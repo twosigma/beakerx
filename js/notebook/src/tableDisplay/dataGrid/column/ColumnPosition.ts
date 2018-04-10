@@ -25,7 +25,6 @@ import {UPDATE_COLUMN_POSITIONS} from "./reducer";
 import {DataGridColumnAction, DataGridColumnsAction} from "../store/DataGridAction";
 import {BeakerxDataStore} from "../store/dataStore";
 import {selectColumnIndexByPosition} from "./selectors";
-import {DEFAULT_HIGHLIGHT_COLOR} from "../style/dataGridStyle";
 import {UPDATE_COLUMN_ORDER} from "../model/reducer";
 import DataGridColumn from "./DataGridColumn";
 import {IColumnPosition} from "../interface/IColumn";
@@ -41,10 +40,10 @@ export default class ColumnPosition {
   constructor(dataGrid: BeakerxDataGrid) {
     this.dataGrid = dataGrid;
     this.store = dataGrid.store;
-    this.dataGrid.cellHovered.connect(this.handleCellHovered, this);
   }
 
   stopDragging() {
+    this.dataGrid.cellHovered.disconnect(this.handleCellHovered, this);
     this.grabbedCellData = null;
     this.dropCellData = null;
     this.toggleGrabbing(false);
@@ -77,6 +76,7 @@ export default class ColumnPosition {
   }
 
   grabColumn(data: ICellData) {
+    this.dataGrid.cellHovered.connect(this.handleCellHovered, this);
     this.grabbedCellData = data;
     this.toggleGrabbing(true);
   }
@@ -90,7 +90,7 @@ export default class ColumnPosition {
     this.stopDragging();
   }
 
-  setPosition(column: DataGridColumn, position: number) {
+  setPosition(column: DataGridColumn, position: IColumnPosition) {
     this.store.dispatch(new DataGridColumnAction(
       UPDATE_COLUMN_ORDER,
       {
@@ -130,11 +130,11 @@ export default class ColumnPosition {
     const column = this.dataGrid.columnManager.getColumnByPosition(ColumnManager.createPositionFromCell(data));
     let destination = this.dropCellData.column;
 
-    if (this.dropCellData.region !== 'corner-header') {
+    if (this.dropCellData.region !== 'corner-header' && this.dropCellData.region !== 'row-header') {
       destination += frozenColumnscount;
     }
 
-    this.setPosition(column, destination);
+    this.setPosition(column, ColumnManager.createPositionFromCell({ ...this.dropCellData, column: destination }));
     this.grabbedCellData = null;
     this.dropCellData = null;
   }
@@ -157,12 +157,7 @@ export default class ColumnPosition {
       return;
     }
 
-    this.dropCellData && this.dataGrid.colorizeColumnBorder(
-      this.dropCellData.column,
-      this.dataGrid.style.gridLineColor,
-      this.dropCellData.region
-    );
-    this.dataGrid.colorizeColumnBorder(data.column, DEFAULT_HIGHLIGHT_COLOR, data.region);
     this.dropCellData = data;
+    this.dataGrid.repaint();
   }
 }

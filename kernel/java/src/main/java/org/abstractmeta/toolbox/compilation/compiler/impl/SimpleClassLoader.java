@@ -16,11 +16,10 @@
 package org.abstractmeta.toolbox.compilation.compiler.impl;
 
 
+import com.twosigma.beakerx.util.ByteStreams;
 import org.abstractmeta.toolbox.compilation.compiler.registry.JavaFileObjectRegistry;
 import org.abstractmeta.toolbox.compilation.compiler.util.URIUtil;
-import com.google.common.io.ByteStreams;
-import com.google.common.io.Closeables;
-import com.google.common.io.Files;
+import org.assertj.core.util.Closeables;
 
 import javax.tools.JavaFileObject;
 import javax.tools.StandardLocation;
@@ -28,6 +27,9 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -115,7 +117,8 @@ public class SimpleClassLoader extends ClassLoader {
             File classFile = new File(classDirectory, qualifiedClassName.replace('.', '/') + ".class");
             if (classFile.exists()) {
                 try {
-                    byte[] byteCode = Files.toByteArray(classFile);
+                    Path path = Paths.get(classFile.getPath());
+                    byte[] byteCode = Files.readAllBytes(path);
                     return defineClass(qualifiedClassName, byteCode, 0, byteCode.length);
                 } catch (IOException e) {
                     throw new IllegalStateException("Failed to read class file " + classFile, e);

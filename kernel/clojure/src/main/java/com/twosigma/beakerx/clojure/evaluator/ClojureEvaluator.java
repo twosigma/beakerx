@@ -21,8 +21,6 @@ import clojure.lang.Namespace;
 import clojure.lang.RT;
 import clojure.lang.Symbol;
 import clojure.lang.Var;
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.clojure.autocomplete.ClojureAutocomplete;
@@ -36,11 +34,14 @@ import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.PathToJar;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -174,7 +175,13 @@ public class ClojureEvaluator extends BaseEvaluator {
 
   private String initScriptSource() throws IOException {
     URL url = this.getClass().getClassLoader().getResource("init_clojure_script.txt");
-    return Resources.toString(url, Charsets.UTF_8);
+    File myFile = null;
+    try {
+      myFile = new File(url.toURI());
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
+    }
+    return FileUtils.readFileToString(myFile, "UTF-8");
   }
 
 }

@@ -15,8 +15,7 @@
  */
 package com.twosigma.beakerx.mimetype;
 
-import com.google.common.io.ByteStreams;
-import com.google.common.io.Files;
+import com.twosigma.beakerx.util.ByteStreams;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -26,6 +25,9 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
@@ -196,8 +198,8 @@ public class MIMEContainer {
     if (isValidURL(data.toString())) {
       bytes = ByteStreams.toByteArray((new URL(data.toString()).openStream()));
     } else if (exists(data.toString())) {
-      File imgFile = new File(data.toString());
-      bytes = Files.toByteArray(imgFile);
+      Path path = Paths.get(data.toString());
+      bytes = Files.readAllBytes(path);
     } else {
       throw new FileNotFoundException(data.toString() + " doesn't exist. ");
     }

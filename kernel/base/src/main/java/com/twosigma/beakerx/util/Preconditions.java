@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,29 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.kernel;
+package com.twosigma.beakerx.util;
 
-import java.util.HashMap;
-import java.util.Map;
+public class Preconditions {
 
-public class Repos {
-
-  protected Map<String, String> repoNameWithURL;
-
-  public Repos() {
-    this.repoNameWithURL = new HashMap<>();
-  }
-
-  public String add(String name, String url) {
-    if (!repoNameWithURL.containsKey(name)) {
-      repoNameWithURL.put(name, url);
-      return name;
+  public static <T> T checkNotNull(T reference) {
+    if (reference == null) {
+      throw new NullPointerException();
     }
-
-    return "";
+    return reference;
   }
 
-  public Map<String, String> get() {
-    return repoNameWithURL;
+  public static void checkState(boolean expression) {
+    if (!expression) {
+      throw new IllegalStateException();
+    }
   }
+
 }

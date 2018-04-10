@@ -17,7 +17,6 @@
 var BeakerXPageObject = require('../beakerx.po.js');
 var PlotHelperObject = require('../plot.helper.js');
 var beakerxPO;
-var plotHelper;
 
 describe('Tests for combination of code and magics. ', function () {
 
@@ -36,7 +35,7 @@ describe('Tests for combination of code and magics. ', function () {
   var imageDir = 'groovy/tablesaw';
 
   describe('UI options. ', function () {
-    it("Disable PhosphorJS DataGrid for TableDisplay Widget. ", function () {
+    it("Use new table widget. ", function () {
       beakerxPO.setDataGridForTable(true, false);
     });
   });

@@ -33,7 +33,7 @@ describe('Large Integers in Tables ', function () {
   var imageDir = 'groovy/bigInts';
 
   describe('UI options. ', function () {
-    it("Use PhosphorJS DataGrid for TableDisplay Widget. ", function () {
+    it("Use new table widget. ", function () {
       beakerxPO.setDataGridForTable(true, false);
     });
   });

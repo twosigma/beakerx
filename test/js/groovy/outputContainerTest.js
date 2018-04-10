@@ -36,12 +36,12 @@ describe('(Groovy) Output Containers ', function () {
   }
 
   function widgetTableIsVisible(widget){
-    return widget.isVisible('div.bko-table');
+    return widget.isVisible('div.p-Widget.p-DataGrid-viewport');
   }
 
   describe('UI options. ', function () {
-    it("Disable PhosphorJS DataGrid for TableDisplay Widget. ", function () {
-      beakerxPO.setDataGridForTable(false, false);
+    it("Use new table widget. ", function () {
+      beakerxPO.setDataGridForTable(true, false);
     });
   });
 

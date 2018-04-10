@@ -25,7 +25,7 @@ var NotebookPageObject = function () {
   };
 
   this.runJupyterRoot = function () {
-    browser.url('http://127.0.0.1:8888/');
+    browser.url('http://127.0.0.1:8888/tree/');
     browser.pause(2000);
     $$('ul#tabs > li')[3].waitForEnabled();
   };

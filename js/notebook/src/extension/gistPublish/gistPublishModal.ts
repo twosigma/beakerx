@@ -34,13 +34,27 @@ export default class GistPublishModal {
     const modalContent = GistPublishModal.createModalContent();
     const personalAccessTokenInput = modalContent.querySelector('input');
     const form = modalContent.querySelector('form');
+    const formGroup = modalContent.querySelector('.form-group');
+    const errorNode = GistPublishModal.createErrorIconNode();
 
     const submitHandler = (event) => {
       const personalAccessToken = personalAccessTokenInput ? personalAccessTokenInput.value : '';
 
       event.preventDefault();
+
+      if (!personalAccessToken || !personalAccessTokenInput.checkValidity()) {
+        personalAccessTokenInput.focus();
+        formGroup.classList.add('has-error');
+        formGroup.appendChild(errorNode);
+
+        return false;
+      }
+
       submitCallback(personalAccessToken);
+      formGroup.contains(errorNode) && formGroup.removeChild(errorNode);
+      formGroup.classList.remove('has-error');
       GistPublishModal.storePersonalAccessToken(personalAccessToken);
+      modal.modal('hide');
     };
 
     if (personalAccessTokenInput && form) {
@@ -62,11 +76,20 @@ export default class GistPublishModal {
     });
 
     if (form) {
-      form.onsubmit = (event) => {
-        modal.modal('hide');
-        submitHandler(event);
-      }
+      form.onsubmit = submitHandler
     }
+  }
+
+  static createErrorIconNode() {
+    const errorNode = document.createElement('span');
+
+    errorNode.classList.add('fa');
+    errorNode.classList.add('fa-remove');
+    errorNode.classList.add('form-control-feedback');
+    errorNode.style.fontSize = '18px';
+    errorNode.style.lineHeight = '32px';
+
+    return errorNode;
   }
 
   static createModalContent(): HTMLElement {

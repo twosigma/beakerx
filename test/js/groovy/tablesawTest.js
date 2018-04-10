@@ -15,12 +15,14 @@
  */
 
 var BeakerXPageObject = require('../beakerx.po.js');
+var PlotHelperObject = require('../plot.helper.js');
 var beakerxPO;
 
 describe('Tests for combination of code and magics. ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
+    plotHelper = new PlotHelperObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/groovy/TablesawTest.ipynb');
     beakerxPO.openUIWindow();
   });

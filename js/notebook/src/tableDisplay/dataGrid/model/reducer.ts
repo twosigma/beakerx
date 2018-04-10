@@ -18,7 +18,7 @@ import {Reducer} from "@phosphor/datastore";
 import IDataModelState from "../interface/IDataGridModelState";
 import DataGridAction, {DataGridColumnAction} from "../store/DataGridAction";
 import {
-  selectColumnNames, selectColumnOrder, selectColumnsFrozen,
+  selectColumnNames, selectColumnOrder, selectColumnsFrozen, selectColumnsFrozenNames,
   selectColumnsVisible
 } from "./selectors";
 
@@ -119,9 +119,11 @@ function reduceColumnVisible(state, action: DataGridColumnAction): IDataModelSta
 }
 
 function reduceColumnOrder(state, action: DataGridColumnAction) {
-  const { columnName, value } = action.payload;
+  const { columnName, value: position } = action.payload;
   const columnOrder = getColumnOrderArray(state);
   const columnVisible = state.columnsVisible;
+  const columnsFrozenen = selectColumnsFrozen({ model: state });
+  let destination = position.value;
 
   Object.keys(columnVisible).forEach(name => {
     if (columnVisible[name] !== false) {
@@ -142,7 +144,23 @@ function reduceColumnOrder(state, action: DataGridColumnAction) {
     columnOrder.splice(lastPosition, 1);
   }
 
-  columnOrder.splice(value, 0, columnName);
+  if (destination > 0 && (position.region === 'row-header' || position.region === 'corner-header')) {
+    let frozenCounter = 0;
+
+    columnOrder.forEach((name, index) => {
+      if (columnsFrozenen[name] !== true) {
+        return true;
+      }
+
+      frozenCounter += 1;
+
+      if (frozenCounter === destination) {
+        destination = index
+      }
+    });
+  }
+
+  columnOrder.splice(destination, 0, columnName);
 
   return {
     ...state,

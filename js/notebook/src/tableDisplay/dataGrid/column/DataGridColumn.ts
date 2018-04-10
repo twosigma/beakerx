@@ -322,7 +322,7 @@ export default class DataGridColumn {
   }
 
   move(destination: number) {
-    this.dataGrid.columnPosition.setPosition(this, destination);
+    this.dataGrid.columnPosition.setPosition(this, { ...this.getPosition(), value: destination });
     this.menu.hideTrigger();
     this.dataGrid.resize();
   }

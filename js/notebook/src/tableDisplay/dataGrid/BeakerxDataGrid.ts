@@ -216,7 +216,7 @@ export class BeakerxDataGrid extends DataGrid {
 
   colorizeColumnBorder(data: ICellData, color: string, side?: 'left'|'right') {
     const { column, region } = data;
-    let sectionList = region === 'corner-header' ? this.rowHeaderSections : this.columnSections;
+    let sectionList = region === 'corner-header' || region === 'row-header' ? this.rowHeaderSections : this.columnSections;
     let sectionSize = sectionList.sectionSize(column);
     let sectionOffset = sectionList.sectionOffset(column);
     let x = sectionOffset;
@@ -226,7 +226,7 @@ export class BeakerxDataGrid extends DataGrid {
       x += sectionSize;
     }
 
-    if (region !== 'corner-header') {
+    if (region !== 'corner-header' && region !== 'row-header') {
       x = x + this.rowHeaderSections.totalSize - this.scrollX;
     }
 

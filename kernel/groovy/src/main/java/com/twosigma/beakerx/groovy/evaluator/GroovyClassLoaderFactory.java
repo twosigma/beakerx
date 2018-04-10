@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.groovy.evaluator;
 
-import com.google.common.base.Joiner;
 import com.twosigma.beakerx.jvm.classloader.BeakerXUrlClassLoader;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
@@ -33,7 +32,7 @@ public class GroovyClassLoaderFactory {
   private static final String STATIC_WORD_WITH_SPACE = "static ";
   private static final String DOT_STAR_POSTFIX = ".*";
 
-  public static GroovyClassLoader newEvaluator(Imports imports, Classpath classpath, String outDir, ImportCustomizer icz,ClassLoader parent) {
+  public static GroovyClassLoader newEvaluator(Imports imports, Classpath classpath, String outDir, ImportCustomizer icz, ClassLoader parent) {
 
     try {
       Class.forName("org.codehaus.groovy.control.customizers.ImportCustomizer");
@@ -50,7 +49,7 @@ public class GroovyClassLoaderFactory {
 
     icz = addImportsCustomizer(icz, imports);
     CompilerConfiguration config = new CompilerConfiguration().addCompilationCustomizers(icz);
-    String acloader_cp = Joiner.on(File.pathSeparatorChar).join(classpath.getPathsAsStrings());
+    String acloader_cp = String.join(File.pathSeparatorChar + "", classpath.getPathsAsStrings());
     config.setClasspath(acloader_cp);
     return new GroovyClassLoader(parent, config);
   }

@@ -16,7 +16,7 @@
 
 package com.twosigma.beakerx.jvm.classloader;
 
-import com.google.common.io.ByteStreams;
+import com.twosigma.beakerx.util.ByteStreams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

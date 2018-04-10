@@ -26,7 +26,7 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.Callable;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
 
 class KotlinCodeRunner implements Callable<TryResult> {

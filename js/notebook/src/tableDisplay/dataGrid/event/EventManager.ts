@@ -27,6 +27,7 @@ import isUrl = DataGridHelpers.isUrl;
 import getEventKeyCode = DataGridHelpers.getEventKeyCode;
 import {KEYBOARD_KEYS} from "./enums";
 import { Signal } from '@phosphor/signaling';
+import ColumnManager from "../column/ColumnManager";
 
 export default class EventManager {
   dataGrid: BeakerxDataGrid;
@@ -135,7 +136,7 @@ export default class EventManager {
 
     const data = this.dataGrid.getCellData(event.clientX, event.clientY);
 
-    if (data.region === 'corner-header') {
+    if (data.region === 'corner-header' && data.column === 0) {
       return;
     }
 
@@ -174,7 +175,7 @@ export default class EventManager {
       return;
     }
 
-    const destColumn = this.dataGrid.columnManager.getColumnByPosition(data.type, data.column);
+    const destColumn = this.dataGrid.columnManager.getColumnByPosition(ColumnManager.createPositionFromCell(data));
 
     destColumn.toggleSort();
   }
@@ -205,7 +206,7 @@ export default class EventManager {
 
     this.handleHighlighterKeyDown(code, column);
     this.handleNumKeyDown(code, event.shiftKey, column);
-    this.handleArrowKeyDown(code);
+    this.handleNavigationKeyDown(code);
   }
 
   private handleHighlighterKeyDown(code: number, column: DataGridColumn|null) {
@@ -222,12 +223,20 @@ export default class EventManager {
     }
   }
 
-  private handleArrowKeyDown(code: number) {
-    if (code < KEYBOARD_KEYS.ArrowLeft || code > KEYBOARD_KEYS.ArrowDown) {
+  private handleNavigationKeyDown(code: number) {
+    let navigationKeyCodes = [
+      KEYBOARD_KEYS.ArrowLeft,
+      KEYBOARD_KEYS.ArrowRight,
+      KEYBOARD_KEYS.ArrowDown,
+      KEYBOARD_KEYS.ArrowUp,
+      KEYBOARD_KEYS.PageUp,
+      KEYBOARD_KEYS.PageDown,
+    ];
+    if (-1 === navigationKeyCodes.indexOf(code)) {
       return;
     }
 
-    this.dataGrid.cellFocusManager.setFocusedCellByArrowKey(code);
+    this.dataGrid.cellFocusManager.setFocusedCellByNavigationKey(code);
   }
 
   private handleNumKeyDown(code: number, shiftKey: boolean, column: DataGridColumn|null) {

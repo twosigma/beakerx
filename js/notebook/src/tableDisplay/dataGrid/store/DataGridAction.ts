@@ -31,7 +31,9 @@ export class DataGridColumnsAction extends DataGridAction {
   payload: {
     value: any,
     hasIndex?: boolean,
-    defaultValue?: any
+    defaultValue?: any,
+    columnsFrozenNames?: string[],
+    columnsVisible?: {},
   };
 
   constructor(type: string, payload: any) {

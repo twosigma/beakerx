@@ -69,6 +69,15 @@ function BeakerXPageObject() {
     return codeCell.$$('#svgg');
   };
 
+  this.getTableDisplayByIndex = function (index) {
+    return this.getCodeCellByIndex(index).$('div.beaker-table-display');
+  };
+
+  this.getDataGridCssPropertyByIndex = function (index, cssProperty) {
+    var tblDisplay = this.getTableDisplayByIndex(index);
+    return tblDisplay.$('div.p-DataGrid-viewport').getCssProperty(cssProperty).value;
+  };
+
   this.runCodeCellByIndex = function (index) {
     var codeCell = this.getCodeCellByIndex(index);
     codeCell.scroll();
@@ -173,12 +182,21 @@ function BeakerXPageObject() {
   };
 
   this.getTableIndexMenu = function(dtContainer){
-    dtContainer.click('div.dtmenu');
+    dtContainer.click('span.bko-column-header-menu');
     browser.waitUntil(function(){
       var menu = browser.$('div.bko-header-menu.bko-table-menu');
       return menu != null && menu.isVisible();
     }, 10000, 'index menu is not visible');
     return browser.$('div.bko-header-menu.bko-table-menu');
+  };
+
+  this.getTableIndexSubMenu = function(tblMenu, index){
+    tblMenu.$$('[data-type="submenu"]')[index].click();
+    browser.waitUntil(function(){
+      var menu = browser.$('div.dropdown-submenu.bko-table-menu');
+      return menu != null && menu.isVisible();
+    }, 10000, 'index sub menu is not visible');
+    return browser.$('div.dropdown-submenu.bko-table-menu');
   };
 
   this.checkBrowserLogError = function(log_level){

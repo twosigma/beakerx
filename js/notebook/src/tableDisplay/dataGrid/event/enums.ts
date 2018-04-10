@@ -22,6 +22,8 @@ export enum KEYBOARD_KEYS {
   ArrowUp = 38,
   ArrowRight = 39,
   ArrowDown = 40,
+  PageUp = 33,
+  PageDown = 34,
   Digit0 = 48,
   Digit1 = 49,
   Digit2 = 50,
@@ -32,6 +34,6 @@ export enum KEYBOARD_KEYS {
   Digit7 = 55,
   Digit8 = 56,
   Digit9 = 57,
-  Escape = 13,
-  Enter = 27,
+  Escape = 27,
+  Enter = 13,
 }

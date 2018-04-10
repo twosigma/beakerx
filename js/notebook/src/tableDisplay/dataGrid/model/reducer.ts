@@ -17,10 +17,18 @@
 import {Reducer} from "@phosphor/datastore";
 import IDataModelState from "../interface/IDataGridModelState";
 import DataGridAction, {DataGridColumnAction} from "../store/DataGridAction";
+import {
+  selectColumnNames, selectColumnOrder, selectColumnsFrozen,
+  selectColumnsVisible
+} from "./selectors";
 
 export const UPDATE_MODEL_DATA = 'UPDATE_MODEL_DATA';
 export const UPDATE_COLUMN_RENDERER = 'UPDATE_COLUMN_RENDERER';
 export const UPDATE_COLUMN_ORDER = 'UPDATE_COLUMN_ORDER';
+export const UPDATE_COLUMN_FROZEN = 'UPDATE_COLUMN_FROZEN';
+export const UPDATE_COLUMN_VISIBLE = 'UPDATE_COLUMN_VISIBLE';
+export const UPDATE_COLUMNS_VISIBLE = 'UPDATE_COLUMNS_VISIBLE';
+export const RESET_COLUMNS_ORDER = 'RESET_COLUMNS_ORDER';
 
 const dataGridModelReducer: Reducer<IDataModelState> = (
   state: IDataModelState,
@@ -40,23 +48,101 @@ const dataGridModelReducer: Reducer<IDataModelState> = (
       };
 
     case UPDATE_COLUMN_ORDER:
-      return reduceColumnPosition(state, action);
+      return reduceColumnOrder(state, action);
+
+    case RESET_COLUMNS_ORDER:
+      return resetColumnsOrder(state, action);
+
+    case UPDATE_COLUMN_FROZEN:
+      return reduceColumnFrozen(state, action);
+
+    case UPDATE_COLUMN_VISIBLE:
+      return reduceColumnVisible(state, action);
+
+    case UPDATE_COLUMNS_VISIBLE:
+      return reduceColumnsVisible(state, action);
   }
 
   return state;
 };
 
-function reduceColumnPosition(state, action: DataGridColumnAction) {
-  const { columnName, value, hasIndex } = action.payload;
+function reduceColumnFrozen(state, action: DataGridColumnAction) {
+  const { columnName, value } = action.payload;
+  const columnsFrozen = selectColumnsFrozen({ model: state });
+
+  return {
+    ...state,
+    columnsFrozen: {
+      ...columnsFrozen,
+      [columnName]: value
+    }
+  };
+}
+
+function reduceColumnsVisible(state, action) {
+  const columnOrder = [...state.columnOrder];
+
+  if (columnOrder.length > 0) {
+    Object.keys(action.payload.value).forEach((name, index) => {
+      if (columnOrder.indexOf(name) !== -1 || !action.payload.value[name]) {
+        return true;
+      }
+
+      index < columnOrder.length
+        ? columnOrder.splice(index, 0, name)
+        : columnOrder.push(name);
+    });
+  }
+
+  return { ...state, columnOrder, columnsVisible: action.payload.value };
+}
+
+function reduceColumnVisible(state, action: DataGridColumnAction): IDataModelState {
+  const { columnName, columnIndex, value } = action.payload;
+  const columnsVisible = selectColumnsVisible({ model: state });
+  const columnOrder = [...selectColumnOrder({ model: state })];
+
+  if (value && columnOrder.length > 0 && columnOrder.indexOf(columnName) === -1) {
+    let position = columnIndex <= columnOrder.length ? columnIndex : columnOrder.length - 1;
+
+    columnOrder.splice(position, 0, columnName);
+  }
+
+  return {
+    ...state,
+    columnOrder,
+    columnsVisible: {
+      ...columnsVisible,
+      [columnName]: value
+    }
+  };
+}
+
+function reduceColumnOrder(state, action: DataGridColumnAction) {
+  const { columnName, value } = action.payload;
   const columnOrder = getColumnOrderArray(state);
+  const columnVisible = state.columnsVisible;
+
+  Object.keys(columnVisible).forEach(name => {
+    if (columnVisible[name] !== false) {
+      return true;
+    }
+
+    let position = columnOrder.indexOf(name);
+
+    if (position !== -1) {
+      columnOrder.splice(position, 1);
+      columnOrder.push(name);
+    }
+  });
+
   const lastPosition = columnOrder.indexOf(columnName);
-  const newPosition = hasIndex ? value + 1 : value;
 
   if (lastPosition !== -1) {
     columnOrder.splice(lastPosition, 1);
   }
 
-  columnOrder.splice(newPosition, 0, columnName);
+  columnOrder.splice(value, 0, columnName);
 
   return {
     ...state,
@@ -64,22 +150,33 @@ function reduceColumnPosition(state, action: DataGridColumnAction) {
   };
 }
 
-function getColumnOrderArray(state): string[] {
-  const columnOrder = state.columnOrder;
-  const order = state.columnNames.map(name => name !== null ? String(name) : null);
+function resetColumnsOrder(state, action) {
+  const columnOrder = [...state.columnOrder];
 
-  columnOrder.reverse().forEach((name) => {
-    const columnPosition = order.indexOf(name);
+  if (action.payload.value) {
+    return { ...state, columnOrder: [] };
+  }
 
-    if (columnPosition === -1) {
-      return true;
+  state.columnNames.forEach((name, index) => {
+    if (columnOrder.indexOf(name) === -1) {
+      columnOrder.splice(index, 0, name);
     }
-
-    order.splice(columnPosition, 1);
-    order.unshift(name);
   });
 
-  return order;
+  return {
+    ...state,
+    columnOrder
+  }
+}
+
+function getColumnOrderArray(state): string[] {
+  const columnOrder = state.columnOrder;
+
+  if (columnOrder.length > 0) {
+    return [...columnOrder];
+  }
+
+  return [...selectColumnNames({ model: state })];
 }
 
 export default dataGridModelReducer;

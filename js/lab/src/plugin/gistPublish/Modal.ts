@@ -35,7 +35,12 @@ export default class Modal extends Dialog<any> {
       return;
     }
 
-    this.submitHandler && this.submitHandler(event);
+    for (let buttonNode of this['_buttonNodes']) {
+      if (buttonNode.contains(event.target as HTMLElement)) {
+        this.submitHandler && this.submitHandler(event);
+        break;
+      }
+    }
   }
 
   protected _evtKeydown(event: KeyboardEvent): void {

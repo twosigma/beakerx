@@ -25,8 +25,8 @@
   },
   "scripts": {
     "build": "yarn run build:dev",
-    "build:prod": "yarn run test && webpack --config webpack.prod.js && yarn run build-lab-extension",
-    "build:dev": "yarn run test && webpack --config webpack.dev.js && yarn run build-lab-extension",
+    "build:prod": "webpack --config webpack.prod.js && yarn run build-lab-extension",
+    "build:dev": "webpack --config webpack.dev.js && yarn run build-lab-extension",
     "build-lab-extension": "cd ../lab && npm install",
     "prepublish": "yarn run build:prod",
     "test": "TS_NODE_PROJECT=test mocha",

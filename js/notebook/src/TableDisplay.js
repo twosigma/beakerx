@@ -95,6 +95,7 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
 
     try {
       var coreutils = require('@jupyterlab/coreutils');
+      coreutils.PageConfig.getOption('pageUrl');
       baseUrl = coreutils.PageConfig.getBaseUrl();
     } catch(e) {
       baseUrl = '/';

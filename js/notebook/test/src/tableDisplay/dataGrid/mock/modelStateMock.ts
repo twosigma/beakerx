@@ -44,7 +44,7 @@ let modelStateMock: IDataGridModelState = {
   stringFormatForType: {},
   subtype: 'Tabledisplay',
   timeStrings: null,
-  timeZone: null,
+  timeZone: 'UTC',
   tooManyRows: false,
   type: 'Tabledisplay',
 };

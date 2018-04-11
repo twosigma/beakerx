@@ -34,6 +34,27 @@ describe('Testing of table Actions ', function () {
     return beakerxPO.getTableIndexSubMenu(beakerxPO.getTableIndexMenu(tblDisplay), commandIndex);
   };
 
+  function getTableColumnMenu(cellIndex){
+    var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
+    tblDisplay.moveToObject('canvas', 50, 10);
+    tblDisplay.leftClick('canvas', 50, 10);
+    browser.waitUntil(function(){
+      var menu = browser.$('ul.dropdown-menu.bko-table-menu-content');
+      return menu != null && menu.isVisible();
+    }, 10000, 'column menu is not visible');
+    return browser.$('ul.dropdown-menu.bko-table-menu-content');
+  };
+
+  function checkColumnMenu(cellIndex, codeCell, menuName, fileName){
+    var colMenu = getTableColumnMenu(cellIndex);
+    colMenu.click('[data-command="' + menuName + '"]');
+
+    var canvas = codeCell.$('canvas');
+    var imageData = beakerxPO.getCanvasImageData(canvas, 250, 150);
+    beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+  };
+
+
   var cellIndex;
   var imageDir = 'groovy/tableMenu';
 
@@ -170,6 +191,80 @@ describe('Testing of table Actions ', function () {
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell3_case2.png');
+    });
+  });
+
+  describe('Menu option "Hide column"', function () {
+    it('Should hide column', function () {
+      var width = 250, height = 150;
+      cellIndex += 3;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var colMenu = getTableColumnMenu(cellIndex);
+      colMenu.click('[data-command="Hide column"]');
+
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell4_case1.png');
+    });
+  });
+
+  describe('Menu option "Sort Ascending"', function () {
+    it('Should sort column', function () {
+      var width = 250, height = 150;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var colMenu = getTableColumnMenu(cellIndex);
+      colMenu.click('[data-command="Sort Ascending"]');
+
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell4_case2.png');
+    });
+  });
+
+  describe('Menu option "Sort Descending"', function () {
+    it('Should sort column', function () {
+      var width = 250, height = 150;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var colMenu = getTableColumnMenu(cellIndex);
+      colMenu.click('[data-command="Sort Descending"]');
+
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell4_case3.png');
+    });
+  });
+
+  describe('Menu option "Sort Descending"', function () {
+    it('Should display column without sorting', function () {
+      var width = 250, height = 150;
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      var colMenu = getTableColumnMenu(cellIndex);
+      colMenu.click('[data-command="No Sort"]');
+
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell4_case4.png');
+    });
+  });
+
+  describe('Menu option "Align Left"', function () {
+    it('Should align to the left', function () {
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      checkColumnMenu(cellIndex, codeCell, 'Align Left', 'cell4_case5.png');
+    });
+  });
+
+  describe('Menu option "Align Center"', function () {
+    it('Should align to the center', function () {
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      checkColumnMenu(cellIndex, codeCell, 'Align Center', 'cell4_case6.png');
+    });
+  });
+
+  describe('Menu option "Align Right"', function () {
+    it('Should align to the right', function () {
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      checkColumnMenu(cellIndex, codeCell, 'Align Right', 'cell4_case7.png');
     });
   });
 

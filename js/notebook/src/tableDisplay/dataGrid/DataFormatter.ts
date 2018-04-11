@@ -32,6 +32,7 @@ import {
   selectTimeZone
 } from "./model/selectors";
 import {BeakerxDataStore} from "./store/dataStore";
+import formatTimestamp = DataGridHelpers.formatTimestamp;
 
 const bkUtils = require('../../shared/bkUtils');
 
@@ -228,12 +229,12 @@ export class DataFormatter {
       : TIME_UNIT_FORMATS.DATETIME.format;
 
     if (_.isObject(config.value) && config.value.type === 'Date') {
-      return bkUtils.formatTimestamp(config.value.timestamp, this.timeZone, format);
+      return formatTimestamp(config.value.timestamp, this.timeZone, format);
     }
 
     let milli = config.value * 1000;
 
-    return bkUtils.formatTimestamp(milli, this.timeZone, format);
+    return formatTimestamp(milli, this.timeZone, format);
   }
 
   private getTimeFormatForColumn(columnState?: IColumnState) {

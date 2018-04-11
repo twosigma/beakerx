@@ -125,7 +125,7 @@ def _uninstall_kernels():
 def _install_magics():
     log.info("installing groovy magic for python...")
     dir_path = os.path.join(sys.prefix, 'etc', 'ipython')
-    pathlib.Path(dir_path).mkdir(parents=True, exist_ok=True)
+    os.makedirs(dir_path, exist_ok=True)
     with open(os.path.join(dir_path, 'ipython_config.py'), 'w+') as ipython_config:
         ipython_config.write("c = get_config()\n")
         ipython_config.write("c.InteractiveShellApp.extensions = ['beakerx_magics.groovy_magic']\n")

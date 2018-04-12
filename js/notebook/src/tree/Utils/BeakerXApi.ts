@@ -25,7 +25,7 @@ function getCookie(name) {
 
 export default class BeakerXApi {
 
-  private readonly DEFAULT_SETTINGS: IApiSettingsResponse = {
+  readonly DEFAULT_SETTINGS: IApiSettingsResponse = {
     jvm_options: {
       heap_GB: null,
       other: [],
@@ -97,6 +97,7 @@ export default class BeakerXApi {
 
     return merged;
   }
+
   public saveSettings(data): Promise<any> {
     return new Promise<any>((resolve, reject) => {
 

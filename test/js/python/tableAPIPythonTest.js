@@ -15,15 +15,12 @@
  */
 
 var BeakerXPageObject = require('../beakerx.po.js');
-var TableHelperObject = require('../table.helper.js');
 var beakerxPO;
-var tableHelper;
 
 describe('Testing of table (python)', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    tableHelper = new TableHelperObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/python/TableAPIPythonTest.ipynb');
     beakerxPO.openUIWindow();
   });
@@ -32,26 +29,12 @@ describe('Testing of table (python)', function () {
     beakerxPO.closeAndHaltNotebook();
   });
 
-  function checkRowValues(dtContainer, rowIndex, cell1, cell2, cell3){
-      expect(tableHelper.getCellOfTableBody(dtContainer, rowIndex, 0).getText()).toMatch(cell1);
-      expect(tableHelper.getCellOfTableBody(dtContainer, rowIndex, 1).getText()).toMatch(cell2);
-      expect(tableHelper.getCellOfTableBody(dtContainer, rowIndex, 2).getText()).toMatch(cell3);
-  }
-
-  function checkHeaderValues(dtContainer, value1, value2){
-    expect(tableHelper.getCellOfTableHeader(dtContainer, 1).getText()).toMatch(value1);
-    expect(tableHelper.getCellOfTableHeader(dtContainer, 2).getText()).toMatch(value2);
-  }
-
-  function checkTableRows(dtContainer, lenght){
-    expect(tableHelper.getAllRowsOfTableBody(dtContainer).length).toEqual(lenght);
-  }
-
   var cellIndex;
+  var imageDir = 'python/tableAPI';
 
   describe('UI options. ', function () {
-    it("Disable PhosphorJS DataGrid for TableDisplay Widget. ", function () {
-      beakerxPO.setDataGridForTable(false, false);
+    it("Use new table widget. ", function () {
+      beakerxPO.setDataGridForTable(true, false);
     });
   });
 
@@ -59,129 +42,127 @@ describe('Testing of table (python)', function () {
 
     it('Can use Array of Integers parameter', function () {
       cellIndex = 0;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      checkRowValues(dtContainer, 0, '0', 'a', '100');
-      checkTableRows(dtContainer, 3);
-      checkHeaderValues(dtContainer, 'Key', 'Value');
+      var width = 120, height = 90;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell1_case1.png');
     });
 
     it('Table have index column menu. ', function () {
-      var dtContainer = beakerxPO.getDtContainerByIndex(cellIndex);
-      expect(beakerxPO.getTableIndexMenu(dtContainer)).not.toBe(null);
+      var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
+      expect(beakerxPO.getTableIndexMenu(tblDisplay)).not.toBe(null);
     });
 
     it('Can use 2D Array of Integers parameter', function () {
-      cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      checkRowValues(dtContainer, 0, '0', '1', '');
-      checkTableRows(dtContainer, 2);
+      cellIndex += 2;
+      var width = 120, height = 65;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell2_case1.png');
     });
 
     it('Can use Array of Decimals parameter', function () {
-      cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      checkRowValues(dtContainer, 0, '0', 'a', '0\.1');
-      checkTableRows(dtContainer, 3);
-      checkHeaderValues(dtContainer, 'Key', 'Value');
+      cellIndex += 2;
+      var width = 120, height = 90;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell3_case1.png');
     });
 
     it('Can use 2D Array of Decimals parameter', function () {
-      cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      checkRowValues(dtContainer, 0, '0', '0\.1', '');
-      checkTableRows(dtContainer, 2);
+      cellIndex += 2;
+      var width = 128, height = 65;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell4_case1.png');
     });
 
     it('Can use Array of Strings parameter', function () {
-      cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      checkRowValues(dtContainer, 0, '0', 'a', 'a a a');
-      checkTableRows(dtContainer, 3);
-      checkHeaderValues(dtContainer, 'Key', 'Value');
+      cellIndex += 2;
+      var width = 130, height = 90;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell5_case1.png');
     });
 
     it('Can use 2D Array of Strings parameter', function () {
-      cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      checkRowValues(dtContainer, 0, '0', 'a', '');
-      checkTableRows(dtContainer, 2);
+      cellIndex += 2;
+      var width = 110, height = 65;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell6_case1.png');
     });
 
     it('Can use Array of Integer Arrays parameter', function () {
-      cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      checkRowValues(dtContainer, 0, '0', 'a', '[1, 2, 3]');
-      checkTableRows(dtContainer, 3);
-      checkHeaderValues(dtContainer, 'Key', 'Value');
+      cellIndex += 2;
+      var width = 128, height = 90;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell7_case1.png');
     });
 
     it('Can use 2D Array of Integer Arrays parameter', function () {
-      cellIndex +=1 ;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      checkRowValues(dtContainer, 0, '0', '[1,2,3]', '');
-      checkTableRows(dtContainer, 2);
+      cellIndex += 2;
+      var width = 180, height = 65;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell8_case1.png');
     });
 
     it('Can use 2D Array of Integer,Decimal,String,Array Arrays parameter', function () {
-      cellIndex +=1 ;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      checkRowValues(dtContainer, 0, '0', '100', '200');
-      checkRowValues(dtContainer, 1, '1', '0\.1', '0\.05');
-      checkRowValues(dtContainer, 2, '2', 'a a a', 'b b b');
-      checkRowValues(dtContainer, 3, '3', '[1,2,3]', '[10,20,30]');
-      checkTableRows(dtContainer, 4);
+      cellIndex += 2;
+      var width = 220, height = 115;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell9_case1.png');
     });
 
     it('Can use [Integer,Decimal,String,Array] parameter', function () {
-      cellIndex +=1 ;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      checkRowValues(dtContainer, 0, '0', 'a', '100');
-      checkRowValues(dtContainer, 1, '1', 'b',  '0\.05');
-      checkRowValues(dtContainer, 2, '2', 'c', 'c c c');
-      checkRowValues(dtContainer, 3, '3', 'd', '[1,2,3]');
-      checkTableRows(dtContainer, 4);
-      checkHeaderValues(dtContainer, 'Key', 'Value');
+      cellIndex += 2;
+      var width = 128, height = 115;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell10_case1.png');
     });
 
     it('Can use 2D Arrays of [Integer,Decimal,String,Array] parameter', function () {
-      cellIndex +=1 ;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      checkRowValues(dtContainer, 0, '0', '10', '0\.1');
-      checkRowValues(dtContainer, 1, '1', '100',  '0\.05');
-      checkTableRows(dtContainer, 2);
+      cellIndex += 2;
+      var width = 220, height = 65;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell11_case1.png');
     });
 
     it('Can use numbers as name of Array keys (Array parameter)', function () {
-      cellIndex +=1 ;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      checkRowValues(dtContainer, 0, '0', '10', '20');
-      checkRowValues(dtContainer, 1, '1', '0\.1', '0\.05');
-      checkTableRows(dtContainer, 4);
-      checkHeaderValues(dtContainer, 'Key', 'Value');
+      cellIndex += 2;
+      var width = 125, height = 115;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell12_case1.png');
     });
 
     it('Can use numbers as name of Array keys (2D Array parameter)', function () {
-      cellIndex +=1 ;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      checkRowValues(dtContainer, 0, '0', '40', '0\.025');
-      checkRowValues(dtContainer, 1, '1', '20',  '0\.05');
-      checkTableRows(dtContainer, 2);
-      checkHeaderValues(dtContainer, '40', '0\.025');
+      cellIndex += 2;
+      var width = 250, height = 65;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell13_case1.png');
     });
   });
 
   describe("TableDisplay(pandas DataFrame)", function() {
     it('TableDisplay should display table from pandas dataFrame', function () {
-      cellIndex += 1;
+      cellIndex += 2;
       browser.log('browser'); // reset log
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 1).getText()).toMatch('24');
-      expect(tableHelper.getCellOfTableBody(dtContainer, 1, 1).getText()).toMatch('36L');
+      var width = 100, height = 65;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell14_case1.png');
     });
 
     it('Table have index column menu', function () {
-      var dtContainer = beakerxPO.getDtContainerByIndex(cellIndex);
-      expect(beakerxPO.getTableIndexMenu(dtContainer)).not.toBe(null);
+      var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
+      expect(beakerxPO.getTableIndexMenu(tblDisplay)).not.toBe(null);
     });
 
     it("Log doesn't have 'SEVERE' level errors. ", function () {
@@ -191,9 +172,10 @@ describe('Testing of table (python)', function () {
 
   describe("Use index in pandas DataFrame. ", function() {
     it('Table have index column menu. ', function () {
-      cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      expect(beakerxPO.getTableIndexMenu(dtContainer)).not.toBe(null);
+      cellIndex += 2;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
+      expect(beakerxPO.getTableIndexMenu(tblDisplay)).not.toBe(null);
     });
   });
 
@@ -201,8 +183,10 @@ describe('Testing of table (python)', function () {
     it('Should display table. ', function () {
       cellIndex += 1;
       browser.log('browser'); // reset log
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      expect(tableHelper.getAllRowsOfTableBody(dtContainer)[0].getText()).toMatch(/2.*b/);
+      var width = 70, height = 42;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell15_case1.png');
     });
 
     it("Log doesn't have 'SEVERE' level errors. ", function () {
@@ -212,165 +196,62 @@ describe('Testing of table (python)', function () {
 
   describe('Pandas read csv ', function(){
     it('Should display table ', function() {
-      cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      var headers = tableHelper.getAllCellsOfTableHeader(dtContainer);
-      expect(headers.length).toEqual(12);
-      expect(headers[1].getText()).toMatch(/m3/);
-      expect(headers[8].getText()).toMatch(/time/);
-      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 1).getText()).toMatch(/7.898/);
-      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 8).getText()).toMatch(/1990-01-30 19:00:00/);
-      expect(dtContainer.$('div.bko-table-selector').isEnabled()).toBeTruthy();
-      expect(dtContainer.$('div.bko-table-pagenum').isEnabled()).toBeTruthy();
-      expect(dtContainer.$('div.bko-table-use-pagination').isEnabled()).toBeTruthy();
+      cellIndex += 2;
+      var width = 650, height = 90;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell16_case1.png');
     });
   });
 
   describe('Set alignment provider for "m3" column ', function () {
-    var dtContainer2;
-
-    it('Column "y30" has default alignment equals "right" ', function() {
-      cellIndex += 1;
-      dtContainer2 = beakerxPO.runCellToGetDtContainer(cellIndex);
-      expect(tableHelper.getCellOfTableHeader(dtContainer2, 1).getText()).toMatch(/m3/);
-      expect(tableHelper.getCellOfTableBody(dtContainer2, 0, 1).getAttribute('class')).toMatch(/dtcenter/);
-    });
-
-    it('Column "m3" has center alignment ', function() {
-      expect(tableHelper.getCellOfTableHeader(dtContainer2, 1).getText()).toMatch(/m3/);
-      expect(tableHelper.getCellOfTableBody(dtContainer2, 0, 1).getAttribute('class')).toMatch(/dtcenter/);
+    it('Should display formatted table ', function() {
+      cellIndex += 2;
+      var width = 650, height = 90;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell17_case1.png');
     });
   });
 
-  describe('Set renderer for "y10" column ', function () {
-    var dtContainer2;
-
-    it('Column "y10" has bar element ', function() {
-      dtContainer2 = beakerxPO.getDtContainerByIndex(cellIndex);
-      expect(tableHelper.getCellOfTableHeader(dtContainer2, 6).getText()).toMatch(/y10/);
-      expect(tableHelper.getCellOfTableBody(dtContainer2, 0, 6).$('.dt-bar-data-cell').isEnabled()).toBeTruthy();
-    });
-
-    it('Column "y10" doesn\'t have text element ', function() {
-      expect(tableHelper.getCellOfTableBody(dtContainer2, 0, 6).$('.dt-cell-text').isVisible()).toBeFalsy();
+  describe('Set string format for times, type and column ', function () {
+    it('Should display formatted table ', function() {
+      cellIndex += 2;
+      var width = 500, height = 90;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell18_case1.png');
     });
   });
 
-  describe('Set renderer for "double" type ', function () {
-    var dtContainer2;
-
-    it('Column "y3" has bar element ', function() {
-      dtContainer2 = beakerxPO.getDtContainerByIndex(cellIndex);
-      expect(tableHelper.getCellOfTableHeader(dtContainer2, 7).getText()).toMatch(/y3/);
-      expect(tableHelper.getCellOfTableBody(dtContainer2, 0, 7).isExisting('.dt-bar-data-cell')).toBeTruthy();
-    });
-
-    it('Column "time" doesn\'t have bar element ', function() {
-      expect(tableHelper.getCellOfTableHeader(dtContainer2, 8).getText()).toMatch(/time/);
-      expect(tableHelper.getCellOfTableBody(dtContainer2, 0, 8).isExisting('.dt-bar-data-cell')).toBeFalsy();
-    });
-  });
-
-  describe('Set string format for times ', function () {
-    it('Column "time" display date by "DAYS" format ', function() {
-      cellIndex += 1;
-      var dtContainer3 = beakerxPO.runCellToGetDtContainer(cellIndex);
-      expect(tableHelper.getCellOfTableHeader(dtContainer3, 8).getText()).toMatch(/time/);
-      expect(tableHelper.getCellOfTableBody(dtContainer3, 0, 8).getText()).toMatch('19900330');
-    });
-  });
-
-  describe('Set string format for "double" type ', function () {
-    it('Column "y30" display 4 digits after decimal point ', function() {
-      var dtContainer3 = beakerxPO.getDtContainerByIndex(cellIndex);
-      expect(tableHelper.getCellOfTableHeader(dtContainer3, 2).getText()).toMatch(/y30/);
-      expect(tableHelper.getCellOfTableBody(dtContainer3, 0, 2).getText()).toMatch(/\d.\d{3}/);
-    });
-  });
-
-  describe('Set string format for "y3" column ', function () {
-    it('Column "y3" display only integer part of number ', function() {
-      var dtContainer3 = beakerxPO.getDtContainerByIndex(cellIndex);
-      expect(tableHelper.getCellOfTableHeader(dtContainer3, 1).getText()).toMatch(/m3/);
-      expect(tableHelper.getCellOfTableBody(dtContainer3, 0, 1).getText()).toMatch(/\d{1}/);
-    });
-  });
-
-  describe('Hide "y30" column ', function () {
-    it('"y30" column is not visible ', function (){
-      cellIndex += 1;
-      var dtContainer4 = beakerxPO.runCellToGetDtContainer(cellIndex);
-      var headers = tableHelper.getAllCellsOfTableHeader(dtContainer4);
-      expect(headers.length).toEqual(11);
-      expect(headers[1].getText()).toMatch(/m3/);
-      expect(headers[2].getText()).not.toMatch(/y30/);
-      expect(headers[3].getText()).toMatch(/m6/);
-    });
-  });
-
-  describe('Set column frozen ', function () {
-    it('Column "y1" is fixed to left ', function() {
-      var dtContainer4 = beakerxPO.getDtContainerByIndex(cellIndex);
-      expect(tableHelper.getCellOfTableHeader(dtContainer4, 2).getText()).toMatch(/y1/);
-      expect(tableHelper.getCellOfTableHeader(dtContainer4, 2).getAttribute('class'))
-        .toMatch(/left-fix-col-separator/);
-    });
-  });
-
-  describe('Set column frozen to right ', function () {
-    it('Column "y10" is fixed to right ', function() {
-      var dtContainer4 = beakerxPO.getDtContainerByIndex(cellIndex);
-      expect(tableHelper.getCellOfTableHeader(dtContainer4, 5).getText()).toMatch(/y10/);
-      expect(tableHelper.getCellOfTableHeader(dtContainer4, 5).getAttribute('class'))
-        .toMatch(/right-fix-col-separator/);
+  describe('Set column visible ', function () {
+    it('Should display formatted table ', function() {
+      cellIndex += 2;
+      var width = 550, height = 90;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell19_case1.png');
     });
   });
 
   describe('Set column order ', function () {
-    it('Table columns is ordered ', function (){
-      cellIndex += 1;
-      var dtContainer5 = beakerxPO.runCellToGetDtContainer(cellIndex);
-      var headers = tableHelper.getAllCellsOfTableHeader(dtContainer5);
-      expect(headers.length).toEqual(6);
-      expect(headers[1].getText()).toMatch(/m3/);
-      expect(headers[2].getText()).toMatch(/y1/);
-      expect(headers[3].getText()).toMatch(/y10/);
-      expect(headers[4].getText()).toMatch(/time/);
-      expect(headers[5].getText()).toMatch(/y2/);
+    it('Should display formatted table ', function() {
+      cellIndex += 2;
+      var width = 410, height = 90;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell20_case1.png');
     });
   });
 
-  function getBackColorForCell(cell){
-    return cell.getCssProperty('background-color').value;
-  }
-
-  describe('Add cell highlighter for row ', function () {
-    var dtContainer5;
-
-    it('Column cells with different values have different back colors ', function (){
-      cellIndex += 1;
-      dtContainer5 = beakerxPO.runCellToGetDtContainer(cellIndex);
-      expect(tableHelper.getCellOfTableHeader(dtContainer5, 1).getText()).toMatch(/m3/);
-      var cell_0_1 = tableHelper.getCellOfTableBody(dtContainer5, 0, 1);
-      var cell_1_1 = tableHelper.getCellOfTableBody(dtContainer5, 1, 1);
-      expect(cell_0_1.getText()).not.toEqual(cell_1_1.getText());
-      expect(getBackColorForCell(cell_0_1)).not.toEqual(getBackColorForCell(cell_1_1));
-    });
-
-    it('Column cells with one value have the same back colors ', function (){
-      var cell_1_1 = tableHelper.getCellOfTableBody(dtContainer5, 1, 1);
-      var cell_2_1 = tableHelper.getCellOfTableBody(dtContainer5, 2, 1);
-      expect(cell_1_1.getText()).toEqual(cell_2_1.getText());
-      expect(getBackColorForCell(cell_1_1)).toEqual(getBackColorForCell(cell_2_1));
-    });
-
-    it('Row cells have the same back colors ', function (){
-      var cell_0_2 = tableHelper.getCellOfTableBody(dtContainer5, 0, 2);
-      var cell_0_3 = tableHelper.getCellOfTableBody(dtContainer5, 0, 3);
-      expect(getBackColorForCell(cell_0_2)).toEqual(getBackColorForCell(cell_0_3));
-      var cell_1_2 = tableHelper.getCellOfTableBody(dtContainer5, 1, 2);
-      var cell_1_3 = tableHelper.getCellOfTableBody(dtContainer5, 1, 3);
-      expect(getBackColorForCell(cell_1_2)).toEqual(getBackColorForCell(cell_1_3));
+  describe('Add CellHighlighter ', function () {
+    it('Should display formatted table ', function() {
+      cellIndex += 2;
+      var width = 440, height = 90;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell21_case1.png');
     });
   });
+
 });

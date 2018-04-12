@@ -50,13 +50,22 @@ export default class CellSelectionManager {
       return null;
     }
 
+    if (this.startCellData.region === 'row-header' && this.endCellData.region !== 'row-header') {
+      return {
+        startCell: this.startCellData,
+        endCell: this.endCellData,
+      }
+    }
+
+    if (this.startCellData.region !== 'row-header' && this.endCellData.region === 'row-header') {
+      return {
+        startCell: this.endCellData,
+        endCell: this.startCellData,
+      }
+    }
+
     let startCell = this.startCellData.column < this.endCellData.column ? this.startCellData : this.endCellData;
     let endCell = this.startCellData.column < this.endCellData.column ? this.endCellData : this.startCellData;
-
-    if(startCell.column === endCell.column && startCell.type !== endCell.type) {
-      startCell = this.startCellData.type < this.endCellData.type ? this.startCellData : this.endCellData;
-      endCell = this.startCellData.type < this.endCellData.type ? this.endCellData : this.startCellData;
-    }
 
     return {
       startCell,
@@ -89,18 +98,30 @@ export default class CellSelectionManager {
   }
 
   isBetweenColumns(config: ICellConfig) {
-    const constcolumnsRange = this.getColumnsRangeCells();
+    const columnsRange = this.getColumnsRangeCells();
 
-    if(!constcolumnsRange) {
+    if(!columnsRange) {
       return false;
     }
 
-    const colType = DataGridColumn.getColumnTypeByRegion(config.region);
+    if (
+      config.region !== columnsRange.startCell.region && config.region === 'row-header'
+      || config.region !== columnsRange.endCell.region && config.region === 'body'
+    ) {
+      return false;
+    }
+
+    if (config.region === columnsRange.startCell.region && config.region !== columnsRange.endCell.region) {
+      return config.column >= columnsRange.startCell.column;
+    }
+
+    if (config.region === columnsRange.endCell.region && config.region !== columnsRange.startCell.region) {
+      return config.column <= columnsRange.endCell.column;
+    }
 
     return (
-      (colType === constcolumnsRange.startCell.type || colType === constcolumnsRange.endCell.type) &&
-      config.column >= constcolumnsRange.startCell.column &&
-      config.column <= constcolumnsRange.endCell.column
+      config.column >= columnsRange.startCell.column &&
+      config.column <= columnsRange.endCell.column
     );
   }
 
@@ -132,7 +153,7 @@ export default class CellSelectionManager {
   }
 
   handleMouseDown(event: MouseEvent) {
-    if (this.dataGrid.isOverHeader(event) || this.dataGrid.columnPosition.isDragging()) {
+    if (this.dataGrid.eventManager.isOverHeader(event) || this.dataGrid.columnPosition.isDragging()) {
       return;
     }
 
@@ -154,7 +175,7 @@ export default class CellSelectionManager {
     if (
       event.buttons !== 1
       || this.dataGrid.columnPosition.isDragging()
-      || this.dataGrid.isOverHeader(event)
+      || this.dataGrid.eventManager.isOverHeader(event)
     ) {
       return;
     }
@@ -169,15 +190,20 @@ export default class CellSelectionManager {
   }
 
   handleMouseUp(event: MouseEvent) {
-    if (this.dataGrid.isOverHeader(event) || this.dataGrid.columnPosition.isDragging()) {
+    if (this.dataGrid.eventManager.isOverHeader(event) || this.dataGrid.columnPosition.isDragging()) {
       return;
     }
 
-    const cellData = this.dataGrid.getCellData(event.clientX, event.clientY);
-    if (cellData) {
-      this.setEndCell(cellData);
-      this.enable();
-      this.dataGrid.repaint();
+    this.handleCellInteraction(this.dataGrid.getCellData(event.clientX, event.clientY));
+  }
+
+  handleCellInteraction(data: ICellData) {
+    if (!data) {
+      return;
     }
+
+    this.setEndCell(data);
+    this.enable();
+    this.dataGrid.repaint();
   }
 }

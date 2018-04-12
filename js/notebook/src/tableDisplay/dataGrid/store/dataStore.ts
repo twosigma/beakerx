@@ -21,16 +21,13 @@ import columnReducer from "../column/reducer";
 import {
   selectInitialColumnAlignment,
   selectColumnNames,
-  selectColumnOrder,
-  selectColumnsVisible,
   selectColumnTypes,
   selectHasIndex,
   selectInitialColumnPositions,
   selectStringFormatForColumn,
-  selectStringFormatForType, selectFormatForTimes, DEFAULT_INDEX_COLUMN_NAME
+  selectStringFormatForType, selectFormatForTimes, DEFAULT_INDEX_COLUMN_NAME,
 } from "../model/selectors";
 import {BeakerxDataGridModel} from "../model/BeakerxDataGridModel";
-import {selectOutputColumnLimit} from "../column/selectors";
 import {getDisplayType, getTypeByName} from "../dataTypes";
 import {COLUMN_TYPES, SORT_ORDER} from "../column/enums";
 import {IColumnsState, IColumnState} from "../interface/IColumn";
@@ -54,7 +51,6 @@ export function createInitialColumnsState(initialState: IDataModelState): IColum
   const state = { model: initialState, columns: initialColumnsState };
   const names = addColumnNamesState(state);
   const types = addColumnTypesState(state);
-  const visibility = addColumnsVisibilityState(state);
   const positions = addColumnsPositions(state);
 
   const addColumnState = (columnType: COLUMN_TYPES) => (name, index) => {
@@ -72,7 +68,6 @@ export function createInitialColumnsState(initialState: IDataModelState): IColum
       horizontalAlignment: selectInitialColumnAlignment(state, dataType, name),
       keepTrigger: columnType === COLUMN_TYPES.index,
       position: positions[columnType][index],
-      visible: visibility[columnType][index],
       dataTypeName: types[columnType][index],
       displayType: getDisplayType(
         dataType,
@@ -88,34 +83,10 @@ export function createInitialColumnsState(initialState: IDataModelState): IColum
   return initialColumnsState;
 }
 
-function addColumnsVisibilityState(state: IBeakerxDataGridState) {
-  const columnOrder = selectColumnOrder(state);
-  const columnsVisible = selectColumnsVisible(state);
-  const columnNames = selectColumnNames(state);
-  const hasInitialOrder = columnOrder && columnOrder.length > 0;
-  const outputColumnLimit = selectOutputColumnLimit(state);
-  const addVisibilityStateItem = (name, index) => {
-    if (index >= outputColumnLimit) {
-      return false;
-    }
-
-    if (hasInitialOrder) {
-      return columnOrder.indexOf(name) !== -1;
-    }
-
-    return columnsVisible[name] !== undefined ? columnsVisible[name] : true;
-  };
-
-  return createColumnsState({
-    value: columnNames.map(addVisibilityStateItem),
-    defaultValue: [true]
-  }, state);
-}
-
 function addColumnsPositions(state: IBeakerxDataGridState) {
   return createColumnsState({
     value: selectInitialColumnPositions(state),
-    defaultValue: [0]
+    defaultValue: [{ region: 'row-header', value: 0 }]
   }, state);
 }
 

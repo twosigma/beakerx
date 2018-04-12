@@ -14,14 +14,11 @@
  *  limitations under the License.
  */
 
-import IDataModelState from "../interface/IDataGridModelState";
-import IHihglighterState from "../interface/IHighlighterState";
-import {getAlignmentByChar, getAlignmentByType} from "../column/columnAlignment";
-import {ALL_TYPES} from "../dataTypes";
-import {TIME_UNIT_FORMATS} from "../../consts";
-import { createSelector } from 'reselect'
-
-export const DEFAULT_INDEX_COLUMN_NAME = 'index';
+import {TIME_UNIT_FORMATS} from "../../../consts";
+import {getAlignmentByType} from "../../column/columnAlignment";
+import {ALL_TYPES} from "../../dataTypes";
+import IDataModelState from "../../interface/IDataGridModelState";
+import IHihglighterState from "../../interface/IHighlighterState"
 
 export const selectModel = (state): IDataModelState => state.model;
 export const selectValues = (state) => selectModel(state).values;
@@ -33,10 +30,6 @@ export const selectHeaderFontSize = (state) => selectModel(state).headerFontSize
 export const selectDataFontSize = (state) => selectModel(state).dataFontSize;
 export const selectFontColor = (state) => selectModel(state).fontColor;
 export const selectRawColumnNames = (state) => selectModel(state).columnNames || [];
-export const selectColumnNames = createSelector(selectRawColumnNames, names => names.map(name => name !== null ? String(name) : null));
-export const selectColumnTypes = (state) => selectModel(state).types;
-export const selectColumnOrder = (state) => selectModel(state).columnOrder;
-export const selectColumnsVisible = (state) => selectModel(state).columnsVisible || {};
 export const selectAlignmentForColumn = (state, dataType, columnName) => (selectModel(state).alignmentForColumn || {})[columnName];
 export const selectAlignmentForType = (state, dataType) => (selectModel(state).alignmentForType || {})[ALL_TYPES[dataType]];
 export const selectAlignmentByType = (state, dataType) => getAlignmentByType(dataType);
@@ -52,71 +45,7 @@ export const selectTimeStrings = (state) => selectModel(state).timeStrings;
 export const selectRendererForColumn = (state, column) => selectModel(state).rendererForColumn[column.name];
 export const selectRendererForType = (state, column) => selectModel(state).rendererForType[column.getDataTypeName()];
 export const selectTimeZone = (state) => selectModel(state).timeZone;
-export const selectInitialColumnAlignment = createSelector(
-[selectAlignmentForColumn, selectAlignmentForType, selectAlignmentByType],
-(alignmentForColumn, alignmentForType, alignmentByType) => {
-    if (alignmentForColumn) {
-      return getAlignmentByChar(alignmentForColumn);
-    }
-
-    if (alignmentForType) {
-      return getAlignmentByChar(alignmentForType);
-    }
-
-    return alignmentByType;
-  }
-);
-
-// Returns the map columnIndex => position
-export const selectInitialColumnPositions = createSelector(
-  [selectColumnOrder, selectColumnNames, selectColumnsVisible, selectHasIndex],
-  (columnOrder, allColumnNames, columnsVisible, hasIndex) => {
-  const hasInitialOrder = columnOrder && columnOrder.length > 0;
-  const columnNames = hasIndex ? allColumnNames.slice(1) : allColumnNames;
-  const order = [...columnNames];
-
-  if (hasInitialOrder) {
-    columnOrder.reverse().forEach((name) => {
-      const columnPosition = order.indexOf(name);
-
-      if (columnPosition === -1) {
-        return true;
-      }
-
-      order.splice(columnPosition, 1);
-      order.unshift(name);
-    });
-  }
-
-  Object.keys(columnsVisible).forEach((name) => {
-    if (columnsVisible[name] === false) {
-      let indexToRemove = order.indexOf(name);
-      let removed = order.splice(indexToRemove, 1)[0];
-
-      order.push(removed);
-    }
-  });
-
-  const result: number[] = [];
-
-  order.forEach((name: string, position: number) => {
-    result[columnNames.indexOf(name)] = position;
-  });
-
-  if (hasIndex) {
-    result.unshift(0);
-  }
-
-  return result;
-});
-
-export const selectRenderer = createSelector(
-  [selectRendererForColumn, selectRendererForType],
-  (columnRenderer, typeRenderer) => {
-    if (columnRenderer || columnRenderer === null) {
-      return columnRenderer;
-    }
-
-    return typeRenderer;
-  }
-);
+export const selectColumnTypes = (state) => selectModel(state).types;
+export const selectColumnOrder = (state) => selectModel(state).columnOrder;
+export const selectColumnsVisible = (state) => selectModel(state).columnsVisible || {};
+export const selectColumnsFrozen = (state) => selectModel(state).columnsFrozen || {};

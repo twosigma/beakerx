@@ -22,19 +22,19 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 
-public class BeakerxUrlClassLoader extends URLClassLoader {
+public class BeakerXUrlClassLoader extends URLClassLoader {
 
-  public BeakerxUrlClassLoader(URL[] urls, ClassLoader parent) {
+  public BeakerXUrlClassLoader(URL[] urls, ClassLoader parent) {
     super(urls, parent);
   }
 
-  public BeakerxUrlClassLoader(ClassLoader parent) {
+  public BeakerXUrlClassLoader(ClassLoader parent) {
     this(new URL[0], parent);
   }
 
-  public BeakerxUrlClassLoader() {
+  public BeakerXUrlClassLoader() {
     this(ClassLoader.getSystemClassLoader());
   }
 
@@ -62,5 +62,11 @@ public class BeakerxUrlClassLoader extends URLClassLoader {
 
   public Class<?> parseClass(String clazz) {
     return null;
+  }
+
+
+  @Override
+  public Package getPackage(String name) {
+    return super.getPackage(name);
   }
 }

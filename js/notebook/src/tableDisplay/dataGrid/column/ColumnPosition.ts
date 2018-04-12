@@ -16,15 +16,20 @@
 
 import {BeakerxDataGrid} from "../BeakerxDataGrid";
 import {ICellData} from "../interface/ICell";
-import {selectColumnNames, selectColumnOrder, selectHasIndex} from "../model/selectors";
+import {
+  selectColumnNames, selectColumnOrder, selectColumnsFrozenCount, selectColumnsFrozenNames,
+  selectColumnsVisible,
+  selectHasIndex
+} from "../model/selectors";
 import {UPDATE_COLUMN_POSITIONS} from "./reducer";
 import {DataGridColumnAction, DataGridColumnsAction} from "../store/DataGridAction";
 import {BeakerxDataStore} from "../store/dataStore";
-import {COLUMN_TYPES} from "./enums";
-import {selectColumnIndexByPosition, selectIndexColumnNames} from "./selectors";
-import {DEFAULT_HIGHLIGHT_COLOR} from "../style/dataGridStyle";
+import {selectColumnIndexByPosition} from "./selectors";
 import {UPDATE_COLUMN_ORDER} from "../model/reducer";
 import DataGridColumn from "./DataGridColumn";
+import {IColumnPosition} from "../interface/IColumn";
+import ColumnManager from "./ColumnManager";
+import {COLUMN_TYPES} from "./enums";
 
 export default class ColumnPosition {
   dataGrid: BeakerxDataGrid;
@@ -35,10 +40,10 @@ export default class ColumnPosition {
   constructor(dataGrid: BeakerxDataGrid) {
     this.dataGrid = dataGrid;
     this.store = dataGrid.store;
-    this.dataGrid.cellHovered.connect(this.handleCellHovered, this);
   }
 
   stopDragging() {
+    this.dataGrid.cellHovered.disconnect(this.handleCellHovered, this);
     this.grabbedCellData = null;
     this.dropCellData = null;
     this.toggleGrabbing(false);
@@ -54,21 +59,24 @@ export default class ColumnPosition {
 
     this.store.dispatch(new DataGridColumnsAction(UPDATE_COLUMN_POSITIONS, {
       hasIndex,
-      value: selectColumnNames(this.store.state),
-      defaultValue: [0]
+      columnsFrozenNames: selectColumnsFrozenNames(this.store.state),
+      columnsVisible: selectColumnsVisible(this.store.state),
+      value: selectColumnNames(this.store.state)
     }));
 
     this.dataGrid.resize();
     this.dataGrid.model.reset();
   }
 
-  getColumnByPosition(columnType: COLUMN_TYPES, position: number) {
-    const columnIndex = selectColumnIndexByPosition(this.store.state, columnType, position);
+  getColumnByPosition(position: IColumnPosition) {
+    const columnIndex = selectColumnIndexByPosition(this.store.state, position);
+    const columnType = position.region === 'row-header' && position.value === 0 ? COLUMN_TYPES.index : COLUMN_TYPES.body;
 
     return this.dataGrid.columnManager.getColumnByIndex(columnType, columnIndex);
   }
 
   grabColumn(data: ICellData) {
+    this.dataGrid.cellHovered.connect(this.handleCellHovered, this);
     this.grabbedCellData = data;
     this.toggleGrabbing(true);
   }
@@ -82,7 +90,7 @@ export default class ColumnPosition {
     this.stopDragging();
   }
 
-  setPosition(column: DataGridColumn, position: number) {
+  setPosition(column: DataGridColumn, position: IColumnPosition) {
     this.store.dispatch(new DataGridColumnAction(
       UPDATE_COLUMN_ORDER,
       {
@@ -109,16 +117,24 @@ export default class ColumnPosition {
       {
         value: order,
         hasIndex: selectHasIndex(this.store.state),
-        defaultValue: selectIndexColumnNames(this.store.state)
+        columnsFrozenNames: selectColumnsFrozenNames(this.store.state),
+        columnsVisible: selectColumnsVisible(this.store.state),
       })
     );
+
     this.dataGrid.resize();
   }
 
   private moveColumn(data: ICellData) {
-    const column = this.dataGrid.columnManager.getColumnByPosition(data.type, data.column);
+    const frozenColumnscount = selectColumnsFrozenCount(this.store.state);
+    const column = this.dataGrid.columnManager.getColumnByPosition(ColumnManager.createPositionFromCell(data));
+    let destination = this.dropCellData.column;
 
-    this.setPosition(column, this.dropCellData.column);
+    if (this.dropCellData.region !== 'corner-header' && this.dropCellData.region !== 'row-header') {
+      destination += frozenColumnscount;
+    }
+
+    this.setPosition(column, ColumnManager.createPositionFromCell({ ...this.dropCellData, column: destination }));
     this.grabbedCellData = null;
     this.dropCellData = null;
   }
@@ -141,8 +157,7 @@ export default class ColumnPosition {
       return;
     }
 
-    this.dropCellData && this.dataGrid.colorizeColumnBorder(this.dropCellData.column, this.dataGrid.style.gridLineColor);
-    this.dataGrid.colorizeColumnBorder(data.column, DEFAULT_HIGHLIGHT_COLOR);
     this.dropCellData = data;
+    this.dataGrid.repaint();
   }
 }

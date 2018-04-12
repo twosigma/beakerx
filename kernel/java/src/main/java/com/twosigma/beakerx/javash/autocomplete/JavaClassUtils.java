@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.javash.autocomplete;
 
 import com.twosigma.beakerx.autocomplete.ClassUtils;
-import com.twosigma.beakerx.jvm.classloader.BeakerxUrlClassLoader;
+import com.twosigma.beakerx.jvm.classloader.BeakerXUrlClassLoader;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +24,7 @@ import java.util.Optional;
 public class JavaClassUtils extends ClassUtils {
 
   private JavaClasspathScanner classpathscanner;
-  private BeakerxUrlClassLoader classLoader;
+  private BeakerXUrlClassLoader classLoader;
 
   public JavaClassUtils(JavaClasspathScanner cps, ClassLoader l) {
     super(l);
@@ -44,7 +44,7 @@ public class JavaClassUtils extends ClassUtils {
     if (fname != null) {
       try {
         if (classLoader == null)
-          classLoader = new BeakerxUrlClassLoader(loader != null ? loader : getClass().getClassLoader());
+          classLoader = new BeakerXUrlClassLoader(loader != null ? loader : getClass().getClassLoader());
         Class<?> clazz = classLoader.parseClass(fname);
         return clazz;
       } catch (Exception e) {

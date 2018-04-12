@@ -21,8 +21,6 @@ import clojure.lang.Namespace;
 import clojure.lang.RT;
 import clojure.lang.Symbol;
 import clojure.lang.Var;
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.clojure.autocomplete.ClojureAutocomplete;
@@ -39,9 +37,10 @@ import com.twosigma.beakerx.kernel.PathToJar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -163,7 +162,7 @@ public class ClojureEvaluator extends BaseEvaluator {
       clearClojureNamespace(ns);
       clojureLoadString = RT.var(ns, String.format("%1$s_%2$s", loadFunctionPrefix, shellId));
       clojure.lang.Compiler.load(new StringReader(clojureInitScript));
-    } catch (IOException e) {
+    } catch (Exception e) {
       logger.error(e.getMessage());
     }
   }
@@ -172,9 +171,16 @@ public class ClojureEvaluator extends BaseEvaluator {
     Namespace.remove(Symbol.intern(null, ns));
   }
 
-  private String initScriptSource() throws IOException {
-    URL url = this.getClass().getClassLoader().getResource("init_clojure_script.txt");
-    return Resources.toString(url, Charsets.UTF_8);
+  private String initScriptSource() throws Exception {
+    InputStream in = this.getClass().getResourceAsStream("/init_clojure_script.txt");
+    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+    StringBuilder result = new StringBuilder("");
+    String line;
+    while ((line = reader.readLine()) != null) {
+      result.append(line).append(System.lineSeparator());
+    }
+    in.close();
+    return result.toString();
   }
 
 }

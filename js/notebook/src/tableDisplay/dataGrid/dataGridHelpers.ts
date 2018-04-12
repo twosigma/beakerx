@@ -17,6 +17,8 @@
 import {SectionList} from "@phosphor/datagrid/lib/sectionlist";
 import {DEFAULT_DATA_FONT_SIZE} from "./style/dataGridStyle";
 import {KEYBOARD_KEYS} from "./event/enums";
+import DataGridColumn from "./column/DataGridColumn";
+import * as moment from 'moment-timezone/builds/moment-timezone-with-data';
 
 export namespace DataGridHelpers {
   const urlRegex = /((https?|ftp|file):\/\/)(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[A-Z0-9+&@#/%=~_|$])/i;
@@ -164,5 +166,36 @@ export namespace DataGridHelpers {
     }
 
     return event.key.charAt(0) || 0;
+  }
+
+  export function sortColumnsByPositionCallback(columnA: DataGridColumn, columnB: DataGridColumn) {
+    let positionA = columnA.getPosition();
+    let positionB = columnB.getPosition();
+
+    if (positionA.region === positionB.region) {
+      return positionA.value - positionB.value;
+    }
+
+    return positionA.region === 'row-header' ? -1 : 1;
+  }
+
+  export function applyTimezone(timestamp, tz) {
+    const time = moment(timestamp);
+
+    if (!tz) {
+      return time;
+    }
+
+    if (tz.startsWith("GMT")) {
+      time.utcOffset(tz);
+    } else {
+      time.tz(tz);
+    }
+
+    return time;
+  }
+
+  export function formatTimestamp(timestamp, tz, format) {
+    return applyTimezone(timestamp, tz).format(format);
   }
 }

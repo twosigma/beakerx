@@ -291,9 +291,9 @@ describe('DataFormatter', () => {
 
     it('should return formatted datetime', () => {
       expect(datetimeFormatFn({ ...cellConfig, value: { timestamp: 1516697673043, type: 'Date' }}))
-        .to.equal('20180123 09:54:33.043 +0100');
+        .to.equal('20180123 08:54:33.043 +0000');
 
-      expect(datetimeFormatFn({ ...cellConfig, value: 1516703121 })).to.equal('20180123 11:25:21.000 +0100');
+      expect(datetimeFormatFn({ ...cellConfig, value: 1516703121 })).to.equal('20180123 10:25:21.000 +0000');
     });
 
     it('should return Invalid date', () => {

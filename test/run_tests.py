@@ -33,7 +33,6 @@ def returnConfFile(extension):
 
 if os.path.exists(returnConfFile('')):
     os.rename(returnConfFile(''), returnConfFile('.bak'))
-    os.remove(returnConfFile(''))
 
 #define target test app
 try:
@@ -107,4 +106,3 @@ if result:
 #restore backup beakerx.json conf file
 if os.path.exists(returnConfFile('.bak')):
     os.rename(returnConfFile('.bak'), returnConfFile(''))
-    os.remove(returnConfFile('.bak'))

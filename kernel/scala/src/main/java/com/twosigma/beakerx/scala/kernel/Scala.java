@@ -19,8 +19,6 @@ import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.kernel.Utils.uuid;
 import static com.twosigma.beakerx.scala.magic.command.SparkMagicCommand.SPARK;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.twosigma.beakerx.DisplayerDataMapper;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
@@ -42,6 +40,8 @@ import com.twosigma.beakerx.scala.evaluator.ScalaEvaluator;
 import com.twosigma.beakerx.scala.handler.ScalaKernelInfoHandler;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,14 +90,14 @@ public class Scala extends Kernel {
 
   private static Object asJava(Object scalaObject) {
     if (scalaObject instanceof scala.collection.Seq) {
-      List objects = Lists.newArrayList(
-              JavaConverters.asJavaCollectionConverter((Seq<?>) scalaObject).asJavaCollection());
+      List objects = new ArrayList(Arrays.asList(
+              JavaConverters.asJavaCollectionConverter((Seq<?>) scalaObject).asJavaCollection()));
 
       return objects.stream().map(Scala::asJava).collect(Collectors.toList());
     } else if (scalaObject instanceof scala.collection.immutable.Map) {
       @SuppressWarnings("unchecked")
       scala.collection.immutable.Map<Object, Object> map = (scala.collection.immutable.Map<Object, Object>) scalaObject;
-      Map<Object, Object> objects = Maps.newHashMap(JavaConverters.mapAsJavaMapConverter(map).asJava());
+      Map<Object, Object> objects = new HashMap<>(JavaConverters.mapAsJavaMapConverter(map).asJava());
 
       return objects.entrySet().stream()
               .collect(Collectors.toMap(incomingMap -> asJava(incomingMap.getKey()), incomingMap -> asJava(incomingMap.getValue())));

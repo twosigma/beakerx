@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.evaluator;
 
-import com.google.common.collect.Lists;
 import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.inspect.Inspect;
 import com.twosigma.beakerx.inspect.InspectResult;
@@ -29,7 +28,6 @@ import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
-import com.twosigma.beakerx.kernel.Repos;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -97,9 +95,13 @@ public abstract class BaseEvaluator implements Evaluator {
 
   public abstract ClassLoader getClassLoader();
 
+  public ClassLoader getClassLoaderForImport() {
+    return getClassLoader();
+  }
+
   @Override
   public List<Path> addJarsToClasspath(List<PathToJar> paths) {
-    LinkedList<Path> addedPaths = Lists.newLinkedList();
+    LinkedList<Path> addedPaths = new LinkedList<>();
     paths.forEach(path -> {
       if (addJarToClasspath(path)) {
         addedPaths.add(Paths.get(path.getPath()));
@@ -119,7 +121,7 @@ public abstract class BaseEvaluator implements Evaluator {
 
   @Override
   public AddImportStatus addImport(ImportPath anImport) {
-    AddImportStatus add = imports.add(anImport, getClassLoader());
+    AddImportStatus add = imports.add(anImport, getClassLoaderForImport());
     if (AddImportStatus.ADDED.equals(add)) {
       addImportToClassLoader(anImport);
     }

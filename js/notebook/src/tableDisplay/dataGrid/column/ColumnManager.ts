@@ -15,24 +15,25 @@
  */
 
 import DataGridColumn from "./DataGridColumn";
-import { CellRenderer } from "@phosphor/datagrid";
+import {CellRenderer, DataModel} from "@phosphor/datagrid";
 import { chain, find } from '@phosphor/algorithm'
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
 import { Signal } from '@phosphor/signaling';
 import {ICellData} from "../interface/ICell";
-import {IColumns} from "../interface/IColumn";
+import {IColumnPosition, IColumns} from "../interface/IColumn";
 import {BeakerxDataStore} from "../store/dataStore";
-import {selectColumnNames, selectHasIndex} from "../model/selectors";
-import {DataGridColumnsAction} from "../store/DataGridAction";
 import {
-  selectBodyColumnNames,
-  selectColumnIndexByPosition,
-  selectIndexColumnNames
-} from "./selectors";
-import {
-  UPDATE_COLUMNS_FILTERS, UPDATE_COLUMNS_VISIBILITY
-} from "./reducer";
+  selectColumnNames, selectHasIndex, selectBodyColumnNames, selectIndexColumnNames
+} from "../model/selectors";
+import {default as DataGridAction, DataGridColumnsAction} from "../store/DataGridAction";
+import {selectColumnIndexByPosition} from "./selectors";
+import {UPDATE_COLUMNS_FILTERS} from "./reducer";
 import {COLUMN_TYPES, SORT_ORDER} from "./enums";
+import CellRegion = DataModel.CellRegion;
+import ICellConfig = CellRenderer.ICellConfig;
+import {DataGridHelpers} from "../dataGridHelpers";
+import sortColumnsByPositionCallback = DataGridHelpers.sortColumnsByPositionCallback;
+import {RESET_COLUMNS_ORDER, UPDATE_COLUMNS_VISIBLE} from "../model/reducer";
 
 export interface IBkoColumnsChangedArgs {
   type: COLUMN_CHANGED_TYPES,
@@ -53,6 +54,18 @@ export default class ColumnManager {
   constructor(dataGrid: BeakerxDataGrid) {
     this.dataGrid = dataGrid;
     this.store = this.dataGrid.store;
+  }
+
+  static createPositionFromCell(config: ICellConfig|ICellData): IColumnPosition {
+    let region = ColumnManager.getColumnRegionByCell(config);
+
+    return { region, value: config.column };
+  }
+
+  static getColumnRegionByCell(
+    config: ICellConfig|ICellData|{ region: CellRegion }
+  ): DataModel.ColumnRegion {
+    return config.region === 'row-header' || config.region === 'corner-header' ? 'row-header' : 'body'
   }
 
   get bodyColumns() {
@@ -83,8 +96,11 @@ export default class ColumnManager {
   }
 
   getColumn(config: CellRenderer.ICellConfig): DataGridColumn {
-    const columnType = DataGridColumn.getColumnTypeByRegion(config.region);
-    const columnIndex = selectColumnIndexByPosition(this.store.state, columnType, config.column);
+    const columnType = DataGridColumn.getColumnTypeByRegion(config.region, config.column);
+    const columnIndex = selectColumnIndexByPosition(
+      this.store.state,
+      ColumnManager.createPositionFromCell(config)
+    );
 
     return this.columns[columnType][columnIndex];
   }
@@ -93,8 +109,8 @@ export default class ColumnManager {
     return this.columns[columnType][index];
   }
 
-  getColumnByPosition(columnType: COLUMN_TYPES, position: number) {
-    return this.dataGrid.columnPosition.getColumnByPosition(columnType, position);
+  getColumnByPosition(position: IColumnPosition) {
+    return this.dataGrid.columnPosition.getColumnByPosition(position);
   }
 
   getColumnByName(columnName: string): DataGridColumn|undefined {
@@ -158,9 +174,23 @@ export default class ColumnManager {
 
     if (endCell.type !== COLUMN_TYPES.index) {
       result = this.bodyColumns
-        .map(column => this.columns[column.type][selectColumnIndexByPosition(this.store.state, column.type, column.index)])
-        .filter(column => column.getVisible())
-        .slice(startCell.column, endCell.column + 1);
+        .filter(column => {
+          let position = column.getPosition();
+
+          if (!column.getVisible()) {
+            return false;
+          }
+
+          if (startCell.region === endCell.region) {
+            return position.value >= startCell.column && position.value <= endCell.column;
+          }
+
+          return (
+            position.region === 'row-header' && position.value >= startCell.column
+            || position.region === 'body' && position.value <= endCell.column
+          );
+        })
+        .sort(sortColumnsByPositionCallback);
     }
 
     if (startCell.type === COLUMN_TYPES.index) {
@@ -171,7 +201,7 @@ export default class ColumnManager {
   }
 
   takeColumnByCell(cellData: ICellData): DataGridColumn|null {
-    const column = this.getColumnByPosition(cellData.type, cellData.column);
+    const column = this.getColumnByPosition(ColumnManager.createPositionFromCell(cellData));
 
     return column ? column : null;
   }
@@ -180,12 +210,13 @@ export default class ColumnManager {
     const columnNames = selectColumnNames(this.store.state);
     const hasIndex = selectHasIndex(this.store.state);
 
-    this.store.dispatch(new DataGridColumnsAction(UPDATE_COLUMNS_VISIBILITY, {
+    this.store.dispatch(new DataGridColumnsAction(UPDATE_COLUMNS_VISIBLE, {
       hasIndex,
-      value: columnNames.map(() => true),
+      value: columnNames.reduce((acc, name) => { acc[name] = true; return acc; }, {}),
       defaultValue: [0]
     }));
 
+    this.store.dispatch(new DataGridAction(RESET_COLUMNS_ORDER, { value: false }));
     this.dataGrid.columnPosition.updateAll();
   }
 
@@ -223,10 +254,14 @@ export default class ColumnManager {
 
   private showFilterInputs(useSearch: boolean, column?: DataGridColumn) {
     const methodToCall = useSearch ? 'showSearchInput' : 'showFilterInput';
-    const showInputsFn = columnItem => columnItem.columnFilter[methodToCall](
-      column === columnItem,
-      this.dataGrid.getColumnOffset(columnItem.index, columnItem.type)
-    );
+    const showInputsFn = columnItem => {
+      const position = columnItem.getPosition();
+
+      columnItem.columnFilter[methodToCall](
+        column === columnItem,
+        this.dataGrid.getColumnOffset(position.value, position.region)
+      );
+    };
 
     this.dataGrid.model.setFilterHeaderVisible(true);
     this.bodyColumns.forEach(showInputsFn);
@@ -247,8 +282,7 @@ export default class ColumnManager {
     let column = new DataGridColumn({
       name,
       index,
-      type,
-      menuOptions: { x: this.dataGrid.getColumnOffset(index, type), y: 0 },
+      type
     }, this.dataGrid, this);
 
     this.columns[type].push(column);

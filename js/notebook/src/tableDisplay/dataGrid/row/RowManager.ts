@@ -214,7 +214,7 @@ export default class RowManager {
 
   setRowsToShow(rows) {
     this.rowsToShow = rows;
-    this.columnManager.dataGrid.updateWidgetHeight();
-    this.columnManager.dataGrid.updateWidgetWidth();
+    this.columnManager.dataGrid.dataGridResize.updateWidgetHeight();
+    this.columnManager.dataGrid.dataGridResize.updateWidgetWidth();
   }
 }

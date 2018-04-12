@@ -125,7 +125,7 @@ export const selectColumnIndexByPosition = createSelector(
 );
 
 export const selectOutputColumnLimit = (state: IBeakerxDataGridState) => (
-  beakerx.prefs && beakerx.prefs.outputColumnLimit
-    ? beakerx.prefs.outputColumnLimit
+  window.beakerx && window.beakerx.prefs && window.beakerx.prefs.outputColumnLimit
+    ? window.beakerx.prefs.outputColumnLimit
     : selectColumnNames(state).length
 );

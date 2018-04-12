@@ -476,6 +476,10 @@ export default class DataGridColumn {
   private toggleDataTooltip(show: boolean, data?: ICellData) {
     const rect = this.dataGrid.node.getBoundingClientRect();
 
+    if (data && !this.dataTypeTooltip.node.innerText) {
+      this.dataTypeTooltip.node.innerText = typeof data.value;
+    }
+
     if (show && data) {
       return this.dataTypeTooltip.show(
         Math.ceil(rect.left + data.offset + 20),

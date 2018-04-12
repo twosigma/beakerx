@@ -72,7 +72,7 @@ export const selectColumnState = (
 
 export const selectColumnDataTypeName = createSelector(
   [selectColumnState],
-  (state) => state.dataTypeName || ALL_TYPES[state.dataType]
+  (state) => state.dataTypeName
 );
 
 export const selectColumnHorizontalAlignment = (state: IBeakerxDataGridState, column) => (

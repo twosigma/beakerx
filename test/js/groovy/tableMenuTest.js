@@ -31,13 +31,19 @@ describe('Testing of table Actions ', function () {
 
   function getSubMenu(cellIndex, commandIndex){
     var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
-    return beakerxPO.getTableIndexSubMenu(beakerxPO.getTableIndexMenu(tblDisplay), commandIndex);
+    return beakerxPO.getTableIndexSubMenu(beakerxPO.getTableIndexMenu(tblDisplay), commandIndex)[0];
   };
 
-  function getTableColumnMenu(cellIndex){
+  function getTableColumnMenu(cellIndex, x, y){
+    if(!x) {
+      x = 50;
+    }
+    if(!y) {
+      y = 10;
+    }
     var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
-    tblDisplay.moveToObject('canvas', 50, 10);
-    tblDisplay.leftClick('canvas', 50, 10);
+    tblDisplay.moveToObject('canvas', x, y);
+    tblDisplay.leftClick('canvas', x, y);
     browser.waitUntil(function(){
       var menu = browser.$('ul.dropdown-menu.bko-table-menu-content');
       return menu != null && menu.isVisible();
@@ -54,6 +60,14 @@ describe('Testing of table Actions ', function () {
     beakerxPO.checkImageData(imageData.value, imageDir, fileName);
   };
 
+  function createColumnMenu(cellIndex, codeCell, menuName, fileName){
+    var colMenu = getTableColumnMenu(cellIndex);
+    colMenu.click('[data-command="' + menuName + '"]');
+
+    var canvas = codeCell.$('canvas');
+    var imageData = beakerxPO.getCanvasImageData(canvas, 250, 150);
+    beakerxPO.createTableImage(imageData.value, imageDir, fileName);
+  };
 
   var cellIndex;
   var imageDir = 'groovy/tableMenu';
@@ -194,77 +208,122 @@ describe('Testing of table Actions ', function () {
     });
   });
 
-  describe('Menu option "Hide column"', function () {
+  describe('Column menu option "Hide column"', function () {
     it('Should hide column', function () {
-      var width = 250, height = 150;
       cellIndex += 3;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var colMenu = getTableColumnMenu(cellIndex);
-      colMenu.click('[data-command="Hide column"]');
-
-      var canvas = codeCell.$('canvas');
-      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell4_case1.png');
+      checkColumnMenu(cellIndex, codeCell, 'Hide column', 'cell4_case1.png');
     });
   });
 
-  describe('Menu option "Sort Ascending"', function () {
+  describe('Column menu option "Sort Ascending"', function () {
     it('Should sort column', function () {
-      var width = 250, height = 150;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var colMenu = getTableColumnMenu(cellIndex);
-      colMenu.click('[data-command="Sort Ascending"]');
-
-      var canvas = codeCell.$('canvas');
-      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell4_case2.png');
+      checkColumnMenu(cellIndex, codeCell, 'Sort Ascending', 'cell4_case2.png');
     });
   });
 
-  describe('Menu option "Sort Descending"', function () {
+  describe('Column menu option "Sort Descending"', function () {
     it('Should sort column', function () {
-      var width = 250, height = 150;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var colMenu = getTableColumnMenu(cellIndex);
-      colMenu.click('[data-command="Sort Descending"]');
-
-      var canvas = codeCell.$('canvas');
-      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell4_case3.png');
+      checkColumnMenu(cellIndex, codeCell, 'Sort Descending', 'cell4_case3.png');
     });
   });
 
-  describe('Menu option "Sort Descending"', function () {
+  describe('Column menu option "Sort Descending"', function () {
     it('Should display column without sorting', function () {
-      var width = 250, height = 150;
       var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
-      var colMenu = getTableColumnMenu(cellIndex);
-      colMenu.click('[data-command="No Sort"]');
-
-      var canvas = codeCell.$('canvas');
-      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell4_case4.png');
+      checkColumnMenu(cellIndex, codeCell, 'No Sort', 'cell4_case4.png');
     });
   });
 
-  describe('Menu option "Align Left"', function () {
+  describe('Column menu option "Align Left"', function () {
     it('Should align to the left', function () {
       var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
       checkColumnMenu(cellIndex, codeCell, 'Align Left', 'cell4_case5.png');
     });
   });
 
-  describe('Menu option "Align Center"', function () {
+  describe('Column menu option "Align Center"', function () {
     it('Should align to the center', function () {
       var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
       checkColumnMenu(cellIndex, codeCell, 'Align Center', 'cell4_case6.png');
     });
   });
 
-  describe('Menu option "Align Right"', function () {
+  describe('Column menu option "Align Right"', function () {
     it('Should align to the right', function () {
       var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
       checkColumnMenu(cellIndex, codeCell, 'Align Right', 'cell4_case7.png');
+    });
+  });
+
+  describe('Column menu option "Heatmap"', function () {
+    it('Should display Heatmap in column', function () {
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      checkColumnMenu(cellIndex, codeCell, 'Heatmap', 'cell4_case8.png');
+    });
+  });
+
+  describe('Column menu option "Data Bars"', function () {
+    it('Should display Data Bars in column', function () {
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      checkColumnMenu(cellIndex, codeCell, 'Data Bars', 'cell4_case9.png');
+    });
+  });
+
+  describe('Column menu option "Color by unique"', function () {
+    it('Should display Color by unique in column', function () {
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      checkColumnMenu(cellIndex, codeCell, 'Color by unique', 'cell4_case10.png');
+    });
+  });
+
+  describe('Column menu option "Reset formatting"', function () {
+    it('Should reset formatting for column', function () {
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      checkColumnMenu(cellIndex, codeCell, 'Reset formatting', 'cell4_case11.png');
+    });
+  });
+
+  describe('Column menu option "Fix Left"', function () {
+    it('Should Fix Left column', function () {
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      checkColumnMenu(cellIndex, codeCell, 'Fix Left', 'cell4_case12.png');
+    });
+  });
+
+  describe('Column menu option "Move column to front"', function () {
+    it('Should move column to front', function () {
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var colMenu = getTableColumnMenu(cellIndex, 230, 10);
+      colMenu.click('[data-command="Move column to front"]');
+
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, 250, 150);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell4_case13.png');
+    });
+  });
+
+  describe('Column menu option "Move column to end"', function () {
+    it('Should move column to end', function () {
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      checkColumnMenu(cellIndex, codeCell, 'Move column to end', 'cell4_case14.png');
+    });
+  });
+
+  describe('Column menu option "Format double with precision is 2"', function () {
+    it('Should format double with precision is 2', function () {
+      cellIndex += 5;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var colMenu = getTableColumnMenu(cellIndex);
+      var subMenu1 = beakerxPO.getTableIndexSubMenu(colMenu, 0)[0];
+      var subMenu2 = beakerxPO.getTableIndexSubMenu(subMenu1, 0)[1];
+      subMenu2.click('li[data-command="precision_2"]');
+
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, 250, 150);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell5_case1.png');
     });
   });
 

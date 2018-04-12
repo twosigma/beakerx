@@ -39,6 +39,10 @@ export default class DataGridCell {
     let x = clientX - rect.left;
     let y = clientY - rect.top;
 
+    if (x > dataGrid.headerWidth + dataGrid.bodyWidth || y > dataGrid.headerHeight + dataGrid.bodyHeight) {
+      return null;
+    }
+
     // Test for a match in the corner header first.
     if (x <= dataGrid.headerWidth && y <= dataGrid.headerHeight) {
       if (x <= dataGrid.headerWidth) {

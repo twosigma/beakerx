@@ -109,6 +109,10 @@ The Java unit tests are run with every build. See [test/README.md] for how to ru
 
 <img width="900" alt="screen shot" src="https://cloud.githubusercontent.com/assets/963093/21077947/261def64-bf2a-11e6-8518-4845caf75690.png">
 
+## Interactive Tables
+
+<img width="900" alt="screen shot" src="https://user-images.githubusercontent.com/963093/38704584-d1fc16d8-3e74-11e8-95d5-c916bd44d10b.png">
+
 ## Architecture and Code Overview
 
 BeakerX is a collection of kernels and extensions for Jupyter.

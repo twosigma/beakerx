@@ -19,7 +19,7 @@ from datetime import datetime
 from dateutil import parser
 from enum import Enum
 import pytz
-from pandas._libs.tslib import Timestamp
+from pandas import Timestamp
 
 current_milli_time = lambda: int(round(time.time() * 1000))
 

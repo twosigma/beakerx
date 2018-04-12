@@ -56,11 +56,6 @@ export const selectBodyColumnStates = createSelector(
       .sort((state1, state2) => state1.index - state2.index)
   ));
 
-export const selectIndexColumnNames = createSelector(
-  [selectColumnNames, selectHasIndex],
-  (columnNames, hasIndex) => hasIndex && columnNames[0] !== null ? [columnNames[0]] : [DEFAULT_INDEX_COLUMN_NAME]
-);
-
 export const selectVisibleBodyColumns = createSelector(
   [selectBodyColumnStates, selectColumnsVisible, selectColumnOrder],
   (bodyColumnStates, columnsVisible, columnOrder) => (bodyColumnStates.filter(

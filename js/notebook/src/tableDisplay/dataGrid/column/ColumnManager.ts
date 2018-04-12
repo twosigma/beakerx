@@ -23,22 +23,17 @@ import {ICellData} from "../interface/ICell";
 import {IColumnPosition, IColumns} from "../interface/IColumn";
 import {BeakerxDataStore} from "../store/dataStore";
 import {
-  selectColumnNames, selectHasIndex, selectBodyColumnNames
+  selectColumnNames, selectHasIndex, selectBodyColumnNames, selectIndexColumnNames
 } from "../model/selectors";
 import {default as DataGridAction, DataGridColumnsAction} from "../store/DataGridAction";
-import {
-  selectColumnIndexByPosition,
-  selectIndexColumnNames
-} from "./selectors";
-import {
-  UPDATE_COLUMNS_FILTERS, UPDATE_COLUMNS_VISIBILITY
-} from "./reducer";
+import {selectColumnIndexByPosition} from "./selectors";
+import {UPDATE_COLUMNS_FILTERS} from "./reducer";
 import {COLUMN_TYPES, SORT_ORDER} from "./enums";
 import CellRegion = DataModel.CellRegion;
 import ICellConfig = CellRenderer.ICellConfig;
 import {DataGridHelpers} from "../dataGridHelpers";
 import sortColumnsByPositionCallback = DataGridHelpers.sortColumnsByPositionCallback;
-import {RESET_COLUMNS_ORDER, UPDATE_COLUMN_VISIBLE, UPDATE_COLUMNS_VISIBLE} from "../model/reducer";
+import {RESET_COLUMNS_ORDER, UPDATE_COLUMNS_VISIBLE} from "../model/reducer";
 
 export interface IBkoColumnsChangedArgs {
   type: COLUMN_CHANGED_TYPES,

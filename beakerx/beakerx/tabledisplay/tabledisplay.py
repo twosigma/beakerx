@@ -108,7 +108,9 @@ class Table(BaseObject):
                 value_type = types_map.get(columnName)
                 row.append(self.convert_value(value, value_type))
             if not isinstance(args[0].index, RangeIndex):
-                row[:0] = [str(args[0].index.get_values()[index])]
+                index_type = self.convert_type(args[0].index.dtype)
+                index_values = args[0].index.get_values()[index]
+                row[:0] = [self.convert_value(index_values, index_type)]
             self.values.append(row)
 
         if not isinstance(args[0].index, RangeIndex) and column is not None:
@@ -117,7 +119,7 @@ class Table(BaseObject):
                 self.columnNames[:0] = [', '.join(args[0].index.names)]
             else:
                 self.columnNames[:0] = [args[0].index.name]
-            self.types[:0] = [self.convert_type("")]
+            self.types[:0] = [self.convert_type(args[0].index.dtype)]
 
     @staticmethod
     def convert_value(value, value_type):

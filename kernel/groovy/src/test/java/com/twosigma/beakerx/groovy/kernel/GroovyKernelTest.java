@@ -26,6 +26,7 @@ import com.twosigma.beakerx.kernel.magic.command.CodeFactory;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.OutputManager;
 import org.junit.Test;
 
 import java.io.Serializable;
@@ -87,6 +88,7 @@ public class GroovyKernelTest extends KernelExecutionTest {
     //then
     verifyOutputWidgetResult();
     verifyIfStreamMsgIsEarlierThanResult();
+    OutputManager.setOutput(null);
   }
 
   private void simulateSendingUpdateMessageFromUI(String outputCommId) {

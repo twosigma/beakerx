@@ -18,9 +18,7 @@ import { ITriggerOptions } from "@beakerx/tableDisplay/dataGrid/headerMenu/Heade
 
 const menuOptionsMock: ITriggerOptions = {
   x: 0,
-  y: 0,
-  width: 20,
-  height: 20
+  y: 0
 };
 
 export default menuOptionsMock;

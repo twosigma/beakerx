@@ -39,11 +39,11 @@ describe('ColumnPosition', () => {
     expect(columnPosition).to.be.an.instanceof(ColumnPosition);
   });
 
-  it('should implement method grabColumn', () => {
-    expect(columnPosition).to.have.property('grabColumn');
-    expect(columnPosition.grabColumn).to.be.a('function');
+  it('should implement method startDragging', () => {
+    expect(columnPosition).to.have.property('startDragging');
+    expect(columnPosition.startDragging).to.be.a('function');
 
-    columnPosition.grabColumn(cellDataMock);
+    columnPosition.startDragging(cellDataMock);
     expect(columnPosition.grabbedCellData).to.equal(cellDataMock);
     expect(columnPosition.isDragging()).to.be.true;
     columnPosition.stopDragging();
@@ -57,7 +57,7 @@ describe('ColumnPosition', () => {
     const stub = sinon.stub(columnPosition, 'moveColumn');
     const dropData = { ...cellDataMock, column: 1 };
 
-    columnPosition.grabColumn(cellDataMock);
+    columnPosition.startDragging(cellDataMock);
     columnPosition.dropCellData = dropData;
     columnPosition.dropColumn();
 
@@ -82,7 +82,7 @@ describe('ColumnPosition', () => {
     const column1 = dataGrid.columnManager.getColumnByName('column1');
     const dropData = { ...cellDataMock, column: 1 };
 
-    columnPosition.grabColumn(cellDataMock);
+    columnPosition.startDragging(cellDataMock);
     columnPosition.dropCellData = dropData;
     columnPosition.dropColumn();
 

@@ -31,7 +31,42 @@ describe('Testing of table Actions ', function () {
 
   function getSubMenu(cellIndex, commandIndex){
     var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
-    return beakerxPO.getTableIndexSubMenu(beakerxPO.getTableIndexMenu(tblDisplay), commandIndex);
+    return beakerxPO.getTableIndexSubMenu(beakerxPO.getTableIndexMenu(tblDisplay), commandIndex)[0];
+  };
+
+  function getTableColumnMenu(cellIndex, x, y){
+    if(!x) {
+      x = 50;
+    }
+    if(!y) {
+      y = 10;
+    }
+    var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
+    tblDisplay.moveToObject('canvas', x, y);
+    tblDisplay.leftClick('canvas', x, y);
+    browser.waitUntil(function(){
+      var menu = browser.$('ul.dropdown-menu.bko-table-menu-content');
+      return menu != null && menu.isVisible();
+    }, 10000, 'column menu is not visible');
+    return browser.$('ul.dropdown-menu.bko-table-menu-content');
+  };
+
+  function checkColumnMenu(cellIndex, codeCell, menuName, fileName){
+    var colMenu = getTableColumnMenu(cellIndex);
+    colMenu.click('[data-command="' + menuName + '"]');
+
+    var canvas = codeCell.$('canvas');
+    var imageData = beakerxPO.getCanvasImageData(canvas, 250, 150);
+    beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+  };
+
+  function createColumnMenu(cellIndex, codeCell, menuName, fileName){
+    var colMenu = getTableColumnMenu(cellIndex);
+    colMenu.click('[data-command="' + menuName + '"]');
+
+    var canvas = codeCell.$('canvas');
+    var imageData = beakerxPO.getCanvasImageData(canvas, 250, 150);
+    beakerxPO.createTableImage(imageData.value, imageDir, fileName);
   };
 
   var cellIndex;
@@ -170,6 +205,156 @@ describe('Testing of table Actions ', function () {
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell3_case2.png');
+    });
+  });
+
+  describe('Column menu option "Hide column"', function () {
+    it('Should hide column', function () {
+      cellIndex += 3;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      checkColumnMenu(cellIndex, codeCell, 'Hide column', 'cell4_case1.png');
+    });
+  });
+
+  describe('Column menu option "Sort Ascending"', function () {
+    it('Should sort column', function () {
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      checkColumnMenu(cellIndex, codeCell, 'Sort Ascending', 'cell4_case2.png');
+    });
+  });
+
+  describe('Column menu option "Sort Descending"', function () {
+    it('Should sort column', function () {
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      checkColumnMenu(cellIndex, codeCell, 'Sort Descending', 'cell4_case3.png');
+    });
+  });
+
+  describe('Column menu option "No Sort"', function () {
+    it('Should display column without sorting', function () {
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      checkColumnMenu(cellIndex, codeCell, 'No Sort', 'cell4_case4.png');
+    });
+  });
+
+  describe('Column menu option "Align Left"', function () {
+    it('Should align to the left', function () {
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      checkColumnMenu(cellIndex, codeCell, 'Align Left', 'cell4_case5.png');
+    });
+  });
+
+  describe('Column menu option "Align Center"', function () {
+    it('Should align to the center', function () {
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      checkColumnMenu(cellIndex, codeCell, 'Align Center', 'cell4_case6.png');
+    });
+  });
+
+  describe('Column menu option "Align Right"', function () {
+    it('Should align to the right', function () {
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      checkColumnMenu(cellIndex, codeCell, 'Align Right', 'cell4_case7.png');
+    });
+  });
+
+  describe('Column menu option "Heatmap"', function () {
+    it('Should display Heatmap in column', function () {
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      checkColumnMenu(cellIndex, codeCell, 'Heatmap', 'cell4_case8.png');
+    });
+  });
+
+  describe('Column menu option "Data Bars"', function () {
+    it('Should display Data Bars in column', function () {
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      checkColumnMenu(cellIndex, codeCell, 'Data Bars', 'cell4_case9.png');
+    });
+  });
+
+  describe('Column menu option "Color by unique"', function () {
+    it('Should display Color by unique in column', function () {
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      checkColumnMenu(cellIndex, codeCell, 'Color by unique', 'cell4_case10.png');
+    });
+  });
+
+  describe('Column menu option "Reset formatting"', function () {
+    it('Should reset formatting for column', function () {
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      checkColumnMenu(cellIndex, codeCell, 'Reset formatting', 'cell4_case11.png');
+    });
+  });
+
+  describe('Column menu option "Fix Left"', function () {
+    it('Should Fix Left column', function () {
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      checkColumnMenu(cellIndex, codeCell, 'Fix Left', 'cell4_case12.png');
+    });
+  });
+
+  describe('Column menu option "Move column to front"', function () {
+    it('Should move column to front', function () {
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var colMenu = getTableColumnMenu(cellIndex, 230, 10);
+      colMenu.click('[data-command="Move column to front"]');
+
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, 250, 150);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell4_case13.png');
+    });
+  });
+
+  describe('Column menu option "Move column to end"', function () {
+    it('Should move column to end', function () {
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      checkColumnMenu(cellIndex, codeCell, 'Move column to end', 'cell4_case14.png');
+    });
+  });
+
+  describe('Column menu option "Format double with precision is 2"', function () {
+    it('Should format double with precision is 2', function () {
+      cellIndex += 5;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var colMenu = getTableColumnMenu(cellIndex);
+      var subMenu1 = beakerxPO.getTableIndexSubMenu(colMenu, 0)[0];
+      var subMenu2 = beakerxPO.getTableIndexSubMenu(subMenu1, 0)[1];
+      subMenu2.click('li[data-command="precision_2"]');
+
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, 250, 150);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell5_case1.png');
+    });
+  });
+
+  describe('Column menu option "Search for Substring"', function () {
+    it('Should select values with "9"', function () {
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var colMenu = getTableColumnMenu(cellIndex);
+      colMenu.click('[data-command="Search for Substring"]');
+
+      var input = codeCell.$$('div.p-Widget.input-clear-growing')[0].$('input');
+      input.click();
+      browser.keys('9');
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, 250, 115);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell5_case2.png');
+    });
+  });
+
+  describe('Index menu option "Search for Substring"', function () {
+    it('Should select index with "9"', function () {
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
+      var tableMenu = beakerxPO.getTableIndexMenu(tblDisplay);
+      tableMenu.click('[data-command="Search for Substring"]');
+
+      var input = codeCell.$$('div.p-Widget.input-clear-growing')[11].$('input');
+      input.click();
+      browser.keys('9');
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, 250, 65);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell5_case3.png');
     });
   });
 

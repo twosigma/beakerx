@@ -196,7 +196,7 @@ function BeakerXPageObject() {
       var menu = browser.$('div.dropdown-submenu.bko-table-menu');
       return menu != null && menu.isVisible();
     }, 10000, 'index sub menu is not visible');
-    return browser.$('div.dropdown-submenu.bko-table-menu');
+    return browser.$$('div.dropdown-submenu.bko-table-menu');
   };
 
   this.checkBrowserLogError = function(log_level){

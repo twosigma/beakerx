@@ -31,6 +31,8 @@ import {IColumnPosition} from "../interface/IColumn";
 import ColumnManager from "./ColumnManager";
 import {COLUMN_TYPES} from "./enums";
 import {DEFAULT_BORDER_COLOR} from "../style/dataGridStyle";
+import {DataGridHelpers} from "../dataGridHelpers";
+import throttle = DataGridHelpers.throttle;
 
 const DATA_GRID_PADDING: number = 20;
 
@@ -40,12 +42,14 @@ export default class ColumnPosition {
   grabbedCellData: ICellData|null;
   dropCellData: ICellData|null;
   draggableHeaderCanvas: HTMLCanvasElement;
+  draggableHeaderOffsetLeft: number|null;
 
   constructor(dataGrid: BeakerxDataGrid) {
     this.dataGrid = dataGrid;
     this.store = dataGrid.store;
     this.draggableHeaderCanvas = document.createElement('canvas');
-    this.draggableHeaderCanvas.classList.add('bko-dragged-header')
+    this.draggableHeaderCanvas.classList.add('bko-dragged-header');
+    this.moveDraggedHeader = this.moveDraggedHeader.bind(this);
   }
 
   startDragging(data: ICellData) {
@@ -62,6 +66,7 @@ export default class ColumnPosition {
     this.toggleGrabbing(false);
     this.dataGrid.node.contains(this.draggableHeaderCanvas) && this.dataGrid.node.removeChild(this.draggableHeaderCanvas);
     this.dataGrid.repaint();
+    this.draggableHeaderOffsetLeft = null;
   }
 
   isDragging() {
@@ -134,9 +139,17 @@ export default class ColumnPosition {
   }
 
   moveDraggedHeader(event: MouseEvent) {
+    if (!this.isDragging()) {
+      return true;
+    }
+
     let rect = this.dataGrid.viewport.node.getBoundingClientRect();
     let newX = event.clientX - rect.left;
     let newY = event.clientY - rect.top;
+
+    if (this.draggableHeaderOffsetLeft !== null) {
+      newX -= this.draggableHeaderOffsetLeft;
+    }
 
     this.draggableHeaderCanvas.style.left = `${newX}px`;
     this.draggableHeaderCanvas.style.top = `${newY}px`;
@@ -187,6 +200,7 @@ export default class ColumnPosition {
       sectionHeight
     );
 
+    this.draggableHeaderOffsetLeft = data.delta - DATA_GRID_PADDING;
     this.dataGrid.node.appendChild(this.draggableHeaderCanvas);
   }
 
@@ -199,7 +213,7 @@ export default class ColumnPosition {
       || pressData.column === data.column
       || pressData.type !== data.type
     ) {
-      return;
+      return true;
     }
 
     this.dropCellData = data;

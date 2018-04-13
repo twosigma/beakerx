@@ -58,7 +58,8 @@ export default class DataGridCell {
           offset: dataGrid.getColumnOffset(column.index, ColumnManager.getColumnRegionByCell({ region: 'corner-header' })),
           offsetTop: dataGrid.headerHeight,
           region: 'corner-header',
-          value: dataGrid.model.data('corner-header', 0, column.index)
+          value: dataGrid.model.data('corner-header', 0, column.index),
+          width: dataGrid.rowHeaderSections.sectionSize(column.index)
         };
       }
 
@@ -91,6 +92,7 @@ export default class DataGridCell {
         offsetTop: row ? dataGrid.getRowOffset(row.index) + dataGrid.headerHeight : 0,
         region: y <= dataGrid.headerHeight ? 'column-header' : region,
         value: dataGrid.model.data(region, rowIndex, column.index),
+        width: section.sectionSize(column.index),
       };
     }
 

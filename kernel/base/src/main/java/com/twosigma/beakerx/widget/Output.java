@@ -134,6 +134,10 @@ public class Output extends DOMWidget {
     display(content);
   }
 
+  public void display(List<MIMEContainer> mimeContainers) {
+    mimeContainers.forEach(this::display);
+  }
+
   public void display(Widget widget) {
     widget.beforeDisplay();
     HashMap<String, Serializable> content = new HashMap<>();
@@ -149,6 +153,12 @@ public class Output extends DOMWidget {
     list.add(getComm().createMessage(DISPLAY_DATA, Comm.Buffer.EMPTY, new Comm.Data(content)));
     list.add(getComm().createUpdateMessage(MSG_ID, ""));
     getComm().publish(list);
+  }
+
+  @Override
+  public void display() {
+    beforeDisplay();
+    sendDisplay();
   }
 
 }

@@ -110,7 +110,7 @@ describe('DataFormatter', () => {
 
     it('should convert to date', () => {
       expect(stringFormatFn({ ...cellConfig, value: { timestamp: 1516697673043, type: 'Date' }}))
-        .to.equal('20180123 09:54:33.043 +0100');
+        .to.equal('20180123 03:54:33.043 -0500');
     });
 
     it('should return given value', () => {

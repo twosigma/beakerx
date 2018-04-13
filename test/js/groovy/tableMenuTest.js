@@ -230,7 +230,7 @@ describe('Testing of table Actions ', function () {
     });
   });
 
-  describe('Column menu option "Sort Descending"', function () {
+  describe('Column menu option "No Sort"', function () {
     it('Should display column without sorting', function () {
       var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
       checkColumnMenu(cellIndex, codeCell, 'No Sort', 'cell4_case4.png');
@@ -324,6 +324,37 @@ describe('Testing of table Actions ', function () {
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, 250, 150);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell5_case1.png');
+    });
+  });
+
+  describe('Column menu option "Search for Substring"', function () {
+    it('Should select values with "9"', function () {
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var colMenu = getTableColumnMenu(cellIndex);
+      colMenu.click('[data-command="Search for Substring"]');
+
+      var input = codeCell.$$('div.p-Widget.input-clear-growing')[0].$('input');
+      input.click();
+      browser.keys('9');
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, 250, 115);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell5_case2.png');
+    });
+  });
+
+  describe('Index menu option "Search for Substring"', function () {
+    it('Should select index with "9"', function () {
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
+      var tableMenu = beakerxPO.getTableIndexMenu(tblDisplay);
+      tableMenu.click('[data-command="Search for Substring"]');
+
+      var input = codeCell.$$('div.p-Widget.input-clear-growing')[11].$('input');
+      input.click();
+      browser.keys('9');
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, 250, 65);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell5_case3.png');
     });
   });
 

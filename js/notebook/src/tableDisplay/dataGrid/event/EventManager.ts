@@ -44,6 +44,7 @@ export default class EventManager {
     this.handleHeaderClick = this.handleHeaderClick.bind(this);
     this.handleBodyClick = this.handleBodyClick.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
+    this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleCellHover = throttle<MouseEvent, void>(this.handleCellHover, 100, this);
     this.handleWindowResize = throttle<Event, void>(this.handleWindowResize, 200, this);
 
@@ -65,7 +66,7 @@ export default class EventManager {
   handleEvent(event: Event, parentHandler: Function): void {
     switch (event.type) {
       case 'mousemove':
-        this.handleCellHover(event as MouseEvent);
+        this.handleMouseMove(event as MouseEvent);
         break;
       case 'mousedown':
         this.handleMouseDown(event as MouseEvent);
@@ -121,12 +122,17 @@ export default class EventManager {
     isUrl(hoveredCellData.value) && window.open(hoveredCellData.value);
   }
 
-  private handleCellHover(event: MouseEvent): void {
-    const data = this.dataGrid.getCellData(event.clientX, event.clientY);
-
+  private handleMouseMove(event: MouseEvent) {
     if (event.buttons !== 1) {
       this.dataGrid.columnPosition.stopDragging();
     }
+
+    this.dataGrid.columnPosition.moveDraggedHeader(event);
+    this.handleCellHover(event);
+  }
+
+  private handleCellHover(event: MouseEvent): void {
+    const data = this.dataGrid.getCellData(event.clientX, event.clientY);
 
     this.dataGrid.cellHovered.emit(data);
     this.dataGrid.cellSelectionManager.handleBodyCellHover(event);
@@ -150,7 +156,7 @@ export default class EventManager {
       return;
     }
 
-    this.dataGrid.columnPosition.grabColumn(data);
+    this.dataGrid.columnPosition.startDragging(data);
   }
 
   private handleMouseOut(event: MouseEvent): void {

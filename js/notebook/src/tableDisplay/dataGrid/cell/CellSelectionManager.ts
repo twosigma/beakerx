@@ -18,7 +18,6 @@ import {CellRenderer} from "@phosphor/datagrid";
 import ICellConfig = CellRenderer.ICellConfig;
 import {ICellData} from "../interface/ICell";
 import {BeakerxDataGrid} from "../BeakerxDataGrid";
-import DataGridColumn from "../column/DataGridColumn";
 
 export interface IRangeCells {
   startCell: ICellData,

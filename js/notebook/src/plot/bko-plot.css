@@ -310,12 +310,19 @@
   padding: 0.5em;
 }
 
+.svg-export {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.svg-export.improveFonts {
+  font-family: "Lato", Helvetica, sans-serif;
+}
+
 .improveFonts .plot-plotcontainer,
 .improveFonts .plot-label,
 .improveFonts .plot-xylabel,
 .improveFonts .plot-legend-label,
 .improveFonts .plot-title,
-.improveFonts .svg-export,
 .improveFonts .heatmap-tooltip {
   font-family: "Lato", Helvetica, sans-serif;
 }

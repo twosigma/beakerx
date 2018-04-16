@@ -2451,7 +2451,11 @@ define([
       .node()
       .cloneNode(true);
     svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    svg.setAttribute('class', 'svg-export');
+    if (document.body.classList.contains('improveFonts')) {
+      svg.setAttribute('class', 'svg-export improveFonts');
+    } else {
+      svg.setAttribute('class', 'svg-export');
+    }
 
     var plotTitle = self.jqplottitle;
     var titleOuterHeight = plotUtils.getActualCss(plotTitle, 'outerHeight', true);

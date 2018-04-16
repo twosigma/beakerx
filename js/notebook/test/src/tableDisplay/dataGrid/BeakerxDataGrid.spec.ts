@@ -17,19 +17,19 @@
 import * as sinon from 'sinon';
 import { expect } from 'chai';
 import { Widget } from "@phosphor/widgets";
-import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
-import { BeakerxDataGridModel } from "@beakerx/tableDisplay/dataGrid/model/BeakerxDataGridModel";
+import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
+import { BeakerXDataGridModel } from "@beakerx/tableDisplay/dataGrid/model/BeakerXDataGridModel";
 import modelStateMock from "./mock/modelStateMock";
 import ColumnManager from "@beakerx/tableDisplay/dataGrid/column/ColumnManager";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 
-describe('BeakerxDataGrid', () => {
+describe('BeakerXDataGrid', () => {
   let dataGrid;
   let dataStore;
 
   before(() => {
     dataStore = createStore(modelStateMock);
-    dataGrid = new BeakerxDataGrid({}, dataStore);
+    dataGrid = new BeakerXDataGrid({}, dataStore);
   });
 
   after(() => {
@@ -40,8 +40,8 @@ describe('BeakerxDataGrid', () => {
     expect(dataGrid.columnManager).to.be.an.instanceof(ColumnManager);
   });
 
-  it('should have the model property of type BeakerxDataGridModel', () => {
-    expect(dataGrid.model).to.be.an.instanceof(BeakerxDataGridModel);
+  it('should have the model property of type BeakerXDataGridModel', () => {
+    expect(dataGrid.model).to.be.an.instanceof(BeakerXDataGridModel);
   });
 
   it('should have the viewport set', () => {

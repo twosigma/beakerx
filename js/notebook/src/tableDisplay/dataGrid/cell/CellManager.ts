@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import {BeakerxDataGrid} from "../BeakerxDataGrid";
+import {BeakerXDataGrid} from "../BeakerXDataGrid";
 import * as bkUtils from '../../../shared/bkUtils';
 import {IRangeCells} from "./CellSelectionManager";
 import {CellRenderer, DataModel} from "@phosphor/datagrid";
@@ -31,7 +31,7 @@ interface ICellDataOptions {
 }
 
 export default class CellManager {
-  dataGrid: BeakerxDataGrid;
+  dataGrid: BeakerXDataGrid;
   hoveredCellData: ICellData;
 
   static cellsEqual(cellData: ICellData, secondCellData: ICellData): boolean {
@@ -43,7 +43,7 @@ export default class CellManager {
     );
   }
 
-  constructor(dataGrid: BeakerxDataGrid) {
+  constructor(dataGrid: BeakerXDataGrid) {
     this.dataGrid = dataGrid;
 
     this.dataGrid.cellHovered.connect(this.handleCellHovered, this);
@@ -197,7 +197,7 @@ export default class CellManager {
     }
   }
 
-  private handleCellHovered(sender: BeakerxDataGrid, cellData: ICellData) {
+  private handleCellHovered(sender: BeakerXDataGrid, cellData: ICellData) {
     let cursor = this.dataGrid.viewport.node.style.cursor;
 
     if (cursor.indexOf('resize') !== -1 || this.dataGrid.columnPosition.isDragging()) {

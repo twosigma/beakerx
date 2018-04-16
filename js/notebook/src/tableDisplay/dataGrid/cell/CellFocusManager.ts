@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import {BeakerxDataGrid} from "../BeakerxDataGrid";
+import {BeakerXDataGrid} from "../BeakerXDataGrid";
 import {ICellData} from "../interface/ICell";
 import {CellRenderer} from "@phosphor/datagrid";
 import DataGridColumn from "../column/DataGridColumn";
@@ -24,10 +24,10 @@ import {KEYBOARD_KEYS} from "../event/enums";
 import {selectColumnsFrozenNames} from "../model/selectors";
 
 export default class CellFocusManager {
-  dataGrid: BeakerxDataGrid;
+  dataGrid: BeakerXDataGrid;
   focusedCellData: ICellData|null;
 
-  constructor(dataGrid: BeakerxDataGrid) {
+  constructor(dataGrid: BeakerXDataGrid) {
     this.dataGrid = dataGrid;
     this.focusedCellData = null;
   }

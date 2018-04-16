@@ -20,12 +20,12 @@ import {
   createPrecisionSubitems,
   createTimeSubitems
 } from '@beakerx/tableDisplay/dataGrid/headerMenu/createFormatMenuItems';
-import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import { scopeData, TIME_UNIT_FORMATS } from '@beakerx/tableDisplay/consts';
 import menuOptionsMock from "../mock/menuOptionsMock";
 import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 import modelStateMock from "../mock/modelStateMock";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
 
 describe('createFormatMenuItems', () => {
@@ -35,7 +35,7 @@ describe('createFormatMenuItems', () => {
 
   before(() => {
     dataStore = createStore(modelStateMock);
-    dataGrid = new BeakerxDataGrid({}, dataStore);
+    dataGrid = new BeakerXDataGrid({}, dataStore);
     column = new DataGridColumn({
       index: 0,
       type: COLUMN_TYPES.index,

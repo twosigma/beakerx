@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { BeakerxDataGrid } from "../BeakerxDataGrid";
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import DataGridColumn from "./DataGridColumn";
 import {selectColumnPosition, selectColumnWidth} from "./selectors";
 import {DataGridHelpers} from "../dataGridHelpers";
@@ -24,7 +24,7 @@ import {Widget} from "@phosphor/widgets";
 import throttle = DataGridHelpers.throttle;
 
 export default class ColumnFilter {
-  dataGrid: BeakerxDataGrid;
+  dataGrid: BeakerXDataGrid;
   column: DataGridColumn;
   filterWidget: Widget;
   filterNode: HTMLElement;
@@ -37,7 +37,7 @@ export default class ColumnFilter {
     return isNaN(columnName) ? '' : 'col_';
   }
 
-  constructor(dataGrid: BeakerxDataGrid, column: DataGridColumn, options: { x, y, width, height }) {
+  constructor(dataGrid: BeakerXDataGrid, column: DataGridColumn, options: { x, y, width, height }) {
     this.dataGrid = dataGrid;
     this.column = column;
 

@@ -16,7 +16,7 @@
 
 import {CellRenderer, DataModel} from "@phosphor/datagrid";
 import {ICellData} from "../interface/ICell";
-import {BeakerxDataGrid} from "../BeakerxDataGrid";
+import {BeakerXDataGrid} from "../BeakerXDataGrid";
 import {DataGridHelpers} from "../dataGridHelpers";
 import findSectionIndex = DataGridHelpers.findSectionIndex;
 import {COLUMN_TYPES} from "../column/enums";
@@ -29,7 +29,7 @@ export default class DataGridCell {
     return config && (config.region === 'column-header' || config.region === 'corner-header');
   }
 
-  static getCellData(dataGrid: BeakerxDataGrid, clientX: number, clientY: number): ICellData|null {
+  static getCellData(dataGrid: BeakerXDataGrid, clientX: number, clientY: number): ICellData|null {
     if (!dataGrid.viewport) {
       return null;
     }
@@ -108,7 +108,7 @@ export default class DataGridCell {
     )
   }
 
-  static findHoveredRowIndex(dataGrid: BeakerxDataGrid, y: number) {
+  static findHoveredRowIndex(dataGrid: BeakerXDataGrid, y: number) {
     // Convert the position into unscrolled coordinates.
     let pos = y + dataGrid.scrollY - dataGrid.headerHeight;
 

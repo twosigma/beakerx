@@ -15,12 +15,12 @@
  */
 
 import MenuItem from '../../../shared/interfaces/contextMenuItemInterface';
-import {BeakerxDataGrid} from "../BeakerxDataGrid";
+import {BeakerXDataGrid} from "../BeakerXDataGrid";
 import DataGridContextMenu from "./DataGridContextMenu";
 import {selectHeadersVertical} from "../model/selectors";
 
 export default function createHeaderContextMenuItems(
-  dataGrid: BeakerxDataGrid,
+  dataGrid: BeakerXDataGrid,
   contextMenu: DataGridContextMenu
 ): MenuItem[] {
   const selector = `#${dataGrid.wrapperId} canvas`;

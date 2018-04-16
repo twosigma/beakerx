@@ -20,7 +20,7 @@ import IHihglighterState, {
 } from "../interface/IHighlighterState";
 import Highlighter from "./Highlighter";
 import HighlighterFactory from "./HighlighterFactory";
-import { BeakerxDataGrid } from "../BeakerxDataGrid";
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import { each, iter, filter, toArray } from "@phosphor/algorithm";
 import { CellRenderer } from "@phosphor/datagrid";
 import {DEFAULT_CELL_BACKGROUND} from "../style/dataGridStyle";
@@ -28,9 +28,9 @@ import {DEFAULT_CELL_BACKGROUND} from "../style/dataGridStyle";
 export default class HighlighterManager {
   highlightersState: IHihglighterState[];
   highlighters: Highlighter[];
-  dataGrid: BeakerxDataGrid;
+  dataGrid: BeakerXDataGrid;
 
-  constructor(dataGrid: BeakerxDataGrid, highlightersState: IHihglighterState[]) {
+  constructor(dataGrid: BeakerXDataGrid, highlightersState: IHihglighterState[]) {
     this.dataGrid = dataGrid;
     this.highlightersState = [...highlightersState];
     this.highlighters = [];

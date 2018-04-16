@@ -16,7 +16,7 @@
 
 import { DEFAULT_ALIGNMENT } from "../column/columnAlignment";
 import {CellRenderer, GraphicsContext, TextRenderer} from "@phosphor/datagrid";
-import { BeakerxDataGrid } from "../BeakerxDataGrid";
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import DataGridCell from "./DataGridCell";
 import {
   darken,
@@ -25,7 +25,7 @@ import {
   DEFAULT_DATA_FONT_SIZE,
   DEFAULT_HEADER_FONT_COLOR, DEFAULT_HIGHLIGHT_COLOR, formatColor
 } from "../style/dataGridStyle";
-import {BeakerxDataStore} from "../store/dataStore";
+import {BeakerXDataStore} from "../store/BeakerXDataStore";
 import {
   selectDataFontSize,
   selectFontColor,
@@ -37,16 +37,16 @@ import {DataGridHelpers} from "../dataGridHelpers";
 import getStringSize = DataGridHelpers.getStringSize;
 import isUrl = DataGridHelpers.isUrl;
 
-export default class BeakerxCellRenderer extends TextRenderer {
-  store: BeakerxDataStore;
-  dataGrid: BeakerxDataGrid;
+export default class BeakerXCellRenderer extends TextRenderer {
+  store: BeakerXDataStore;
+  dataGrid: BeakerXDataGrid;
   backgroundColor: CellRenderer.ConfigOption<string>;
   horizontalAlignment: CellRenderer.ConfigOption<TextRenderer.HorizontalAlignment>;
   format: TextRenderer.FormatFunc;
   font: CellRenderer.ConfigOption<string>;
   textColor: CellRenderer.ConfigOption<string>;
 
-  constructor(dataGrid: BeakerxDataGrid, options?: TextRenderer.IOptions) {
+  constructor(dataGrid: BeakerXDataGrid, options?: TextRenderer.IOptions) {
     super(options);
     
     this.store = dataGrid.store;

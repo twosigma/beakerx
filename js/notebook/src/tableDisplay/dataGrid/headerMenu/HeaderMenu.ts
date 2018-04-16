@@ -16,7 +16,7 @@
 
 import { CommandRegistry } from '@phosphor/commands';
 import { Widget } from '@phosphor/widgets';
-import { BeakerxDataGrid } from "../BeakerxDataGrid";
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import Menu from './BkoMenu';
 import MenuItem from '../../../shared/interfaces/menuItemInterface';
 import MenuInterface from '../../../shared/interfaces/menuInterface';
@@ -39,7 +39,7 @@ export default abstract class HeaderMenu implements MenuInterface {
   protected menu: Menu;
   protected viewport: Widget;
   protected triggerNode: HTMLElement;
-  protected dataGrid: BeakerxDataGrid;
+  protected dataGrid: BeakerXDataGrid;
   protected column: DataGridColumn;
 
   private TRIGGER_CLASS_OPENED: string = 'opened';

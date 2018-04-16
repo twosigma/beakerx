@@ -16,7 +16,7 @@
 
 import ColumnMenu from "../headerMenu/ColumnMenu";
 import IndexMenu from "../headerMenu/IndexMenu";
-import { BeakerxDataGrid } from "../BeakerxDataGrid";
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import {IColumnOptions} from "../interface/IColumn";
 import { ICellData } from "../interface/ICell";
 import { CellRenderer, DataModel, TextRenderer } from "@phosphor/datagrid";
@@ -51,7 +51,7 @@ import {
   UPDATE_COLUMN_SORT_ORDER,
   UPDATE_COLUMN_WIDTH
 } from "./reducer";
-import {BeakerxDataStore} from "../store/dataStore";
+import {BeakerXDataStore} from "../store/BeakerXDataStore";
 import {COLUMN_TYPES, SORT_ORDER} from "./enums";
 import {
   UPDATE_COLUMN_FROZEN, UPDATE_COLUMN_RENDERER,
@@ -65,8 +65,8 @@ export default class DataGridColumn {
   name: string;
   type: COLUMN_TYPES;
   menu: ColumnMenu|IndexMenu;
-  dataGrid: BeakerxDataGrid;
-  store: BeakerxDataStore;
+  dataGrid: BeakerXDataGrid;
+  store: BeakerXDataStore;
   columnManager: ColumnManager;
   columnFilter: ColumnFilter;
   formatFn: CellRenderer.ConfigFunc<string>;
@@ -75,7 +75,7 @@ export default class DataGridColumn {
   dataTypeTooltip: CellTooltip;
   longestStringValue: string;
 
-  constructor(options: IColumnOptions, dataGrid: BeakerxDataGrid, columnManager: ColumnManager) {
+  constructor(options: IColumnOptions, dataGrid: BeakerXDataGrid, columnManager: ColumnManager) {
     this.index = options.index;
     this.name = options.name;
     this.type = options.type;
@@ -187,7 +187,7 @@ export default class DataGridColumn {
     this.dataGrid.cellHovered.connect(this.handleHeaderCellHovered, this);
   }
 
-  handleHeaderCellHovered(sender: BeakerxDataGrid, data: ICellData) {
+  handleHeaderCellHovered(sender: BeakerXDataGrid, data: ICellData) {
     const column = data && this.columnManager.getColumnByPosition(ColumnManager.createPositionFromCell(data));
 
     if (!data || column !== this || !DataGridCell.isHeaderCell(data)) {

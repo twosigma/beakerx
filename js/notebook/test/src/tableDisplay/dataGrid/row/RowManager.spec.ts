@@ -16,9 +16,9 @@
 
 import { expect } from 'chai';
 import RowManager from "@beakerx/tableDisplay/dataGrid/row/RowManager";
-import {BeakerxDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import {BeakerXDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import modelStateMock from "../mock/modelStateMock";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 import {COLUMN_TYPES, SORT_ORDER} from "@beakerx/tableDisplay/dataGrid/column/enums";
 
 describe('RowManager', () => {
@@ -27,7 +27,7 @@ describe('RowManager', () => {
   const types = ['double', 'double', 'double', 'double'];
   const modelState = { ...modelStateMock, values, columnNames, types };
   const dataStore = createStore(modelState);
-  const dataGrid = new BeakerxDataGrid({}, dataStore);
+  const dataGrid = new BeakerXDataGrid({}, dataStore);
 
   describe('hasIndex = false', () => {
     const rowManager = dataGrid.rowManager;
@@ -77,7 +77,7 @@ describe('RowManager', () => {
 
   describe('hasIndex = true', () => {
     const dataStore = createStore({ ...modelState, hasIndex: true });
-    const dataGrid = new BeakerxDataGrid({}, dataStore);
+    const dataGrid = new BeakerXDataGrid({}, dataStore);
     const rowManager = dataGrid.rowManager;
 
     it('should have rows property', () => {

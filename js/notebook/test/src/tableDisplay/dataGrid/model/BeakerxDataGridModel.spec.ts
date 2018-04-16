@@ -15,16 +15,16 @@
  */
 
 import { expect } from 'chai';
-import { BeakerxDataGridModel } from '../../../../../src/tableDisplay/dataGrid/model/BeakerxDataGridModel';
+import { BeakerXDataGridModel } from '../../../../../src/tableDisplay/dataGrid/model/BeakerXDataGridModel';
 import { DataModel } from "@phosphor/datagrid";
 import modelStateMock from "../mock/modelStateMock";
-import {BeakerxDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import {BeakerXDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 
-describe('BeakerxDataGridModel', () => {
-  describe('BeakerxDataGridModel.hasIndex === false', () => {
+describe('BeakerXDataGridModel', () => {
+  describe('BeakerXDataGridModel.hasIndex === false', () => {
     const dataStore = createStore(modelStateMock);
-    const dataGrid = new BeakerxDataGrid({}, dataStore);
+    const dataGrid = new BeakerXDataGrid({}, dataStore);
     const beakerxDataGridModel = dataGrid.model;
 
     it('should be instance of DataModel', () => {
@@ -61,12 +61,12 @@ describe('BeakerxDataGridModel', () => {
     });
   });
 
-  describe('BeakerxDataGridModel.hasIndex === true', () => {
+  describe('BeakerXDataGridModel.hasIndex === true', () => {
     const dataStore = createStore({
       ...modelStateMock,
       hasIndex: true
     });
-    const dataGrid = new BeakerxDataGrid({}, dataStore);
+    const dataGrid = new BeakerXDataGrid({}, dataStore);
     const beakerxDataGridModel = dataGrid.model;
 
     it('should return proper data', () => {

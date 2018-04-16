@@ -23,7 +23,7 @@ import { IColumn } from "../interface/IColumn";
 import ColumnManager from "../column/ColumnManager";
 import RowManager from "../row/RowManager";
 import DataGridRow from "../row/DataGridRow";
-import {BeakerxDataStore} from "../store/dataStore";
+import {BeakerXDataStore} from "../store/BeakerXDataStore";
 import {
   selectColumnsFrozenCount,
   selectColumnsVisible,
@@ -38,8 +38,8 @@ import {
 } from "../column/selectors";
 import {COLUMN_TYPES} from "../column/enums";
 
-export class BeakerxDataGridModel extends DataModel {
-  store: BeakerxDataStore;
+export class BeakerXDataGridModel extends DataModel {
+  store: BeakerXDataStore;
   dataFormatter: DataFormatter;
   columnManager: ColumnManager;
   rowManager: RowManager;
@@ -49,7 +49,7 @@ export class BeakerxDataGridModel extends DataModel {
 
   private _data: Array<any>;
 
-  constructor(store: BeakerxDataStore, columnManager: ColumnManager, rowManager: RowManager) {
+  constructor(store: BeakerXDataStore, columnManager: ColumnManager, rowManager: RowManager) {
     super();
 
     this.addProperties(store, columnManager, rowManager);
@@ -63,7 +63,7 @@ export class BeakerxDataGridModel extends DataModel {
     super.emitChanged(args);
   }
 
-  addProperties(store: BeakerxDataStore, columnManager: ColumnManager, rowManager: RowManager) {
+  addProperties(store: BeakerXDataStore, columnManager: ColumnManager, rowManager: RowManager) {
     this.store = store;
     this.dataFormatter = new DataFormatter(store);
     this.columnManager = columnManager;

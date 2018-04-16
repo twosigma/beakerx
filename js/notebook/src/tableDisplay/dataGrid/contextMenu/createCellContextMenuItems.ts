@@ -15,14 +15,14 @@
  */
 
 import MenuItem from '../../../shared/interfaces/contextMenuItemInterface';
-import {BeakerxDataGrid} from "../BeakerxDataGrid";
+import {BeakerXDataGrid} from "../BeakerXDataGrid";
 import DataGridContextMenu from "./DataGridContextMenu";
 import {selectContextMenuItems, selectContextMenuTags} from "../model/selectors";
 import {selectColumnIndexByPosition} from "../column/selectors";
 import ColumnManager from "../column/ColumnManager";
 
 export default function createCellContextMenuItems(
-  dataGrid: BeakerxDataGrid,
+  dataGrid: BeakerXDataGrid,
   contextMenu: DataGridContextMenu
 ): MenuItem[] {
   const selector = `#${dataGrid.wrapperId} canvas`;

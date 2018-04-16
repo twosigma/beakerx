@@ -16,10 +16,10 @@
 
 import { expect } from 'chai';
 import * as sinon from 'sinon';
-import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import modelStateMock from "../mock/modelStateMock";
 import ColumnPosition from "@beakerx/tableDisplay/dataGrid/column/ColumnPosition";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 import cellDataMock from "../mock/cellDataMock";
 
 declare var require: Function;
@@ -32,7 +32,7 @@ describe('ColumnPosition', () => {
     values: [[1,2,3],[1,3,2]],
     columnsFrozen: { column: true }
   });
-  const dataGrid = new BeakerxDataGrid({}, dataStore);
+  const dataGrid = new BeakerXDataGrid({}, dataStore);
   const columnPosition = dataGrid.columnPosition;
 
   it('should be an instance of ColumnFilter', () => {

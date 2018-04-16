@@ -310,8 +310,8 @@
   padding: 0.5em;
 }
 
-.svg-export {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+.svg-export .plot-legendcheckbox {
+  display: none;
 }
 
 .svg-export.improveFonts {

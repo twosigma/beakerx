@@ -22,6 +22,8 @@ import BeakerxExtension from './plugin';
 import BeakerxTreeJupyterLabPlugin from "./tree";
 import RequirejsLoader from "./plugin/requirejs";
 
+import { themeLightPlugin, themeDarkPlugin } from "./theme/index";
+
 const beakerx = require('../lib/index.js');
 
 const beakerx_ext = {
@@ -50,8 +52,13 @@ const requirejs_ext: JupyterLabPlugin<void> = {
   }
 };
 
+const beakerx_theme_light_ext = themeLightPlugin;
+const beakerx_theme_dark_ext = themeDarkPlugin;
+
 export default [
   requirejs_ext,
   beakerx_ext,
-  tree_ext
+  tree_ext,
+  beakerx_theme_light_ext,
+  beakerx_theme_dark_ext,
 ];

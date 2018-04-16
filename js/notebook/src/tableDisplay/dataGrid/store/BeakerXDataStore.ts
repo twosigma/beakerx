@@ -27,17 +27,17 @@ import {
   selectStringFormatForColumn,
   selectStringFormatForType, selectFormatForTimes, DEFAULT_INDEX_COLUMN_NAME,
 } from "../model/selectors";
-import {BeakerxDataGridModel} from "../model/BeakerxDataGridModel";
+import {BeakerXDataGridModel} from "../model/BeakerXDataGridModel";
 import {getDisplayType, getTypeByName} from "../dataTypes";
 import {COLUMN_TYPES, SORT_ORDER} from "../column/enums";
 import {IColumnsState, IColumnState} from "../interface/IColumn";
 
-export interface IBeakerxDataGridState {
+export interface IBeakerXDataGridState {
   model: IDataModelState,
   columns: IColumnsState
 }
 
-export type BeakerxDataStore = DataStore<IBeakerxDataGridState>;
+export type BeakerXDataStore = DataStore<IBeakerXDataGridState>;
 
 export default function createStore(initialState: IDataModelState) {
   return new DataStore(combineReducers({
@@ -83,14 +83,14 @@ export function createInitialColumnsState(initialState: IDataModelState): IColum
   return initialColumnsState;
 }
 
-function addColumnsPositions(state: IBeakerxDataGridState) {
+function addColumnsPositions(state: IBeakerXDataGridState) {
   return createColumnsState({
     value: selectInitialColumnPositions(state),
     defaultValue: [{ region: 'row-header', value: 0 }]
   }, state);
 }
 
-function addColumnNamesState(state: IBeakerxDataGridState) {
+function addColumnNamesState(state: IBeakerXDataGridState) {
   const value = selectColumnNames(state);
 
   return createColumnsState({
@@ -99,12 +99,12 @@ function addColumnNamesState(state: IBeakerxDataGridState) {
   }, state);
 }
 
-function addColumnTypesState(state: IBeakerxDataGridState) {
+function addColumnTypesState(state: IBeakerXDataGridState) {
   const value = selectColumnTypes(state);
 
   return createColumnsState({
     value,
-    defaultValue: [BeakerxDataGridModel.DEFAULT_INDEX_COLUMN_TYPE]
+    defaultValue: [BeakerXDataGridModel.DEFAULT_INDEX_COLUMN_TYPE]
   }, state);
 }
 

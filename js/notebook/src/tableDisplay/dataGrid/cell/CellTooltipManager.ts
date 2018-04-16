@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import {BeakerxDataGrid} from "../BeakerxDataGrid";
+import {BeakerXDataGrid} from "../BeakerXDataGrid";
 import {ICellData} from "../interface/ICell";
 import CellTooltip from "./CellTooltip";
 import {DEFAULT_GRID_PADDING} from "../style/dataGridStyle";
@@ -24,12 +24,12 @@ import ColumnManager from "../column/ColumnManager";
 import DataGridCell from "./DataGridCell";
 
 export default class CellTooltipManager {
-  dataGrid: BeakerxDataGrid;
+  dataGrid: BeakerXDataGrid;
   tooltips: string[][];
   tooltip: CellTooltip;
   lastData: ICellData;
 
-  constructor(dataGrid: BeakerxDataGrid, tooltips: string[][]) {
+  constructor(dataGrid: BeakerXDataGrid, tooltips: string[][]) {
     this.tooltips = tooltips;
     this.dataGrid = dataGrid;
 
@@ -46,7 +46,7 @@ export default class CellTooltipManager {
     this.tooltip && this.tooltip.hide();
   }
 
-  handleCellHovered(sender: BeakerxDataGrid, data: ICellData) {
+  handleCellHovered(sender: BeakerXDataGrid, data: ICellData) {
     if (!data || data.type === COLUMN_TYPES.index || DataGridCell.isHeaderCell(data)) {
       return this.hideTooltip();
     }

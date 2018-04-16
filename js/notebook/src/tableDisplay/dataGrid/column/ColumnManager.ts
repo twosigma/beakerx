@@ -17,11 +17,11 @@
 import DataGridColumn from "./DataGridColumn";
 import {CellRenderer, DataModel} from "@phosphor/datagrid";
 import { chain, find } from '@phosphor/algorithm'
-import { BeakerxDataGrid } from "../BeakerxDataGrid";
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import { Signal } from '@phosphor/signaling';
 import {ICellData} from "../interface/ICell";
 import {IColumnPosition, IColumns} from "../interface/IColumn";
-import {BeakerxDataStore} from "../store/dataStore";
+import {BeakerXDataStore} from "../store/BeakerXDataStore";
 import {
   selectColumnNames, selectHasIndex, selectBodyColumnNames, selectIndexColumnNames
 } from "../model/selectors";
@@ -46,12 +46,12 @@ export enum COLUMN_CHANGED_TYPES {
 }
 
 export default class ColumnManager {
-  store: BeakerxDataStore;
-  dataGrid: BeakerxDataGrid;
+  store: BeakerXDataStore;
+  dataGrid: BeakerXDataGrid;
   columns: IColumns = {};
   columnsChanged = new Signal<this, IBkoColumnsChangedArgs>(this);
 
-  constructor(dataGrid: BeakerxDataGrid) {
+  constructor(dataGrid: BeakerXDataGrid) {
     this.dataGrid = dataGrid;
     this.store = this.dataGrid.store;
   }

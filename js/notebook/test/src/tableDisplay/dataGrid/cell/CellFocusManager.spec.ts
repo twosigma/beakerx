@@ -15,7 +15,7 @@
  */
 
 import { expect } from 'chai';
-import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import modelStateMock from "../mock/modelStateMock";
 import CellFocusManager from "@beakerx/tableDisplay/dataGrid/cell/CellFocusManager";
 import cellDataMock from "../mock/cellDataMock";
@@ -24,7 +24,7 @@ import {
   DEFAULT_CELL_BACKGROUND,
   FOCUSED_CELL_BACKGROUND
 } from "@beakerx/tableDisplay/dataGrid/style/dataGridStyle";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
 import {KEYBOARD_KEYS} from "@beakerx/tableDisplay/dataGrid/event/enums";
 
@@ -36,7 +36,7 @@ describe('CellFocusManager', () => {
 
   before(() => {
     dataStore = createStore(modelStateMock);
-    dataGrid = new BeakerxDataGrid({}, dataStore);
+    dataGrid = new BeakerXDataGrid({}, dataStore);
     cellFocusManager = dataGrid.cellFocusManager;
   });
 

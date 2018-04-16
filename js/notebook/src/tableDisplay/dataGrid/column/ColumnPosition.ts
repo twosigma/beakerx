@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import {BeakerxDataGrid} from "../BeakerxDataGrid";
+import {BeakerXDataGrid} from "../BeakerXDataGrid";
 import {ICellData} from "../interface/ICell";
 import {
   selectColumnNames, selectColumnOrder, selectColumnsFrozenCount, selectColumnsFrozenNames,
@@ -23,23 +23,36 @@ import {
 } from "../model/selectors";
 import {UPDATE_COLUMN_POSITIONS} from "./reducer";
 import {DataGridColumnAction, DataGridColumnsAction} from "../store/DataGridAction";
-import {BeakerxDataStore} from "../store/dataStore";
+import {BeakerXDataStore} from "../store/BeakerXDataStore";
 import {selectColumnIndexByPosition} from "./selectors";
 import {UPDATE_COLUMN_ORDER} from "../model/reducer";
 import DataGridColumn from "./DataGridColumn";
 import {IColumnPosition} from "../interface/IColumn";
 import ColumnManager from "./ColumnManager";
 import {COLUMN_TYPES} from "./enums";
+import {DEFAULT_BORDER_COLOR} from "../style/dataGridStyle";
+
+const DATA_GRID_PADDING: number = 20;
 
 export default class ColumnPosition {
-  dataGrid: BeakerxDataGrid;
-  store: BeakerxDataStore;
+  dataGrid: BeakerXDataGrid;
+  store: BeakerXDataStore;
   grabbedCellData: ICellData|null;
   dropCellData: ICellData|null;
+  draggableHeaderCanvas: HTMLCanvasElement;
 
-  constructor(dataGrid: BeakerxDataGrid) {
+  constructor(dataGrid: BeakerXDataGrid) {
     this.dataGrid = dataGrid;
     this.store = dataGrid.store;
+    this.draggableHeaderCanvas = document.createElement('canvas');
+    this.draggableHeaderCanvas.classList.add('bko-dragged-header')
+  }
+
+  startDragging(data: ICellData) {
+    this.dataGrid.cellHovered.connect(this.handleCellHovered, this);
+    this.grabbedCellData = data;
+    this.toggleGrabbing(true);
+    this.attachDraggableHeader(data);
   }
 
   stopDragging() {
@@ -47,6 +60,7 @@ export default class ColumnPosition {
     this.grabbedCellData = null;
     this.dropCellData = null;
     this.toggleGrabbing(false);
+    this.dataGrid.node.contains(this.draggableHeaderCanvas) && this.dataGrid.node.removeChild(this.draggableHeaderCanvas);
     this.dataGrid.repaint();
   }
 
@@ -73,12 +87,6 @@ export default class ColumnPosition {
     const columnType = position.region === 'row-header' && position.value === 0 ? COLUMN_TYPES.index : COLUMN_TYPES.body;
 
     return this.dataGrid.columnManager.getColumnByIndex(columnType, columnIndex);
-  }
-
-  grabColumn(data: ICellData) {
-    this.dataGrid.cellHovered.connect(this.handleCellHovered, this);
-    this.grabbedCellData = data;
-    this.toggleGrabbing(true);
   }
 
   dropColumn() {
@@ -125,6 +133,15 @@ export default class ColumnPosition {
     this.dataGrid.resize();
   }
 
+  moveDraggedHeader(event: MouseEvent) {
+    let rect = this.dataGrid.viewport.node.getBoundingClientRect();
+    let newX = event.clientX - rect.left;
+    let newY = event.clientY - rect.top;
+
+    this.draggableHeaderCanvas.style.left = `${newX}px`;
+    this.draggableHeaderCanvas.style.top = `${newY}px`;
+  }
+
   private moveColumn(data: ICellData) {
     const frozenColumnscount = selectColumnsFrozenCount(this.store.state);
     const column = this.dataGrid.columnManager.getColumnByPosition(ColumnManager.createPositionFromCell(data));
@@ -145,7 +162,35 @@ export default class ColumnPosition {
       : this.dataGrid.node.classList.remove('grabbing');
   }
 
-  private handleCellHovered(sender: BeakerxDataGrid, data: ICellData|null) {
+  private attachDraggableHeader(data) {
+    const widthSection = data.region === 'corner-header' ? this.dataGrid.rowHeaderSections : this.dataGrid.columnSections;
+    const sectionWidth = widthSection.sectionSize(data.column) - 1;
+    const sectionHeight = this.dataGrid.columnHeaderSections.sectionSize(data.row) - 1;
+
+    this.draggableHeaderCanvas.setAttribute('width', `${sectionWidth}px`);
+    this.draggableHeaderCanvas.setAttribute('height',  `${sectionHeight}px`);
+    this.draggableHeaderCanvas.style.border = `1px solid ${DEFAULT_BORDER_COLOR}`;
+    this.draggableHeaderCanvas.style.left = `${data.offset + DATA_GRID_PADDING}px`;
+    this.draggableHeaderCanvas.style.top = `${data.offsetTop + DATA_GRID_PADDING}px`;
+
+    const ctx = this.draggableHeaderCanvas.getContext('2d');
+
+    ctx.drawImage(
+      this.dataGrid['_canvas'],
+      data.offset,
+      data.offsetTop,
+      sectionWidth,
+      sectionHeight,
+      0,
+      0,
+      sectionWidth,
+      sectionHeight
+    );
+
+    this.dataGrid.node.appendChild(this.draggableHeaderCanvas);
+  }
+
+  private handleCellHovered(sender: BeakerXDataGrid, data: ICellData|null) {
     const pressData = this.grabbedCellData;
 
     if (

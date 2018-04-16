@@ -19,11 +19,11 @@ import { CellRenderer } from "@phosphor/datagrid";
 import DataGridColumn from "../column/DataGridColumn";
 import { find } from "@phosphor/algorithm";
 import {DEFAULT_CELL_BACKGROUND} from "../style/dataGridStyle";
-import {BeakerxDataGridModel} from "../model/BeakerxDataGridModel";
+import {BeakerXDataGridModel} from "../model/BeakerXDataGridModel";
 
 export default class Highlighter {
   column: DataGridColumn;
-  model: BeakerxDataGridModel;
+  model: BeakerXDataGridModel;
   state: IHihglighterState;
 
   constructor(column: DataGridColumn, state: IHihglighterState) {

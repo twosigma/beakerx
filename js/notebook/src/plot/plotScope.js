@@ -49,6 +49,7 @@ define([
 ) {
 
   var CONTEXT_MENU_DEBOUNCE_TIME = 350;
+  var QUICK_ZOOM_DEBOUNCE_TIME = 50;
 
   function PlotScope(wrapperId) {
     this.wrapperId = wrapperId;
@@ -1821,29 +1822,30 @@ define([
     var self = this;
 
     if (self.interactMode === "locate") {
-
       // trigger 'show' for save-as context menu
-      if (_.isMatch(self.mousep1, self.mousep2)
-          && self.saveAsMenuContainer
-          && self.saveAsMenuContainer.contextMenu) {
-
+      if (
+        _.isMatch(self.mousep1, self.mousep2)
+        && self.saveAsMenuContainer
+        && self.saveAsMenuContainer.contextMenu
+      ) {
         var mousePosition = d3.mouse(document.body);
-        self.saveAsMenuContainer.contextMenu({x: mousePosition[0], y: mousePosition[1]});
 
-      // draw rectangle for zoom-area and update chart
-      } else {
+        self.saveAsMenuContainer.contextMenu({x: mousePosition[0], y: mousePosition[1]});
+      } else if(self.shouldStartBoxZooming()) {
+        // draw rectangle for zoom-area and update chart
         self.locateFocus();
         self.locateBox = null;
         self.update();
         self.interactMode = "zoom";
+      } else {
+        self.locateBox = null;
       }
 
       self.enableZoomWheel();
 
-      var locateBox = self.getLocateBoxCoords();
       var isDispatchedAsSecond = self.zoomEventsDispatchOrder.indexOf('contextMenu') !== -1;
 
-      if (isDispatchedAsSecond && self.contexteMenuEvent && locateBox.w <= 1 && locateBox.h <= 1) {
+      if (isDispatchedAsSecond && self.contexteMenuEvent && !self.shouldStartBoxZooming()) {
         self.jqcontainer[0] && self.jqcontainer[0].dispatchEvent(self.contexteMenuEvent);
       }
 
@@ -1856,6 +1858,14 @@ define([
     }
 
     self.jqsvg.css("cursor", "auto");
+  };
+
+  PlotScope.prototype.shouldStartBoxZooming = function() {
+    return (
+      Math.abs(this.mousep1.x - this.mousep2.x) > 10
+      && Math.abs(this.mousep1.y - this.mousep2.y) > 10
+      && moment() - this.zoomStarted > QUICK_ZOOM_DEBOUNCE_TIME
+    );
   };
 
   PlotScope.prototype.fixFocus = function(focus) {
@@ -2451,7 +2461,11 @@ define([
       .node()
       .cloneNode(true);
     svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    svg.setAttribute('class', 'svg-export');
+    if (document.body.classList.contains('improveFonts')) {
+      svg.setAttribute('class', 'svg-export improveFonts');
+    } else {
+      svg.setAttribute('class', 'svg-export');
+    }
 
     var plotTitle = self.jqplottitle;
     var titleOuterHeight = plotUtils.getActualCss(plotTitle, 'outerHeight', true);

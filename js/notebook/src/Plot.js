@@ -24,8 +24,6 @@ var plotApi = require('./plot/plotApi');
 var OUTUPT_POINTS_LIMIT = 1000000;
 var OUTUPT_POINTS_PREVIEW_NUMBER = 10000;
 
-window.d3 = d3;
-
 var PlotModel = widgets.DOMWidgetModel.extend({
   defaults: function() {
     return _.extend({}, widgets.DOMWidgetModel.prototype.defaults.apply(this), {

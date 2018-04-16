@@ -21,13 +21,16 @@ global.window = new jsdom.JSDOM().window;
 global.document = window.document;
 global.Element = window.Element;
 global.HTMLElement = window.HTMLElement;
+global.HTMLCanvasElement = window.HTMLCanvasElement;
 global.HTMLSpanElement = window.HTMLSpanElement;
 global.HTMLInputElement = window.HTMLInputElement;
 global.MouseEvent = window.MouseEvent;
 global.KeyboardEvent = window.KeyboardEvent;
 
 window.HTMLCanvasElement.prototype.getContext = function() {
-  return {};
+  return {
+    drawImage: function() {}
+  };
 };
 
 global.navigator = window.navigator;

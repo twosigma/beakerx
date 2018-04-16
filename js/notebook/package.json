@@ -1,6 +1,6 @@
 {
   "name": "beakerx",
-  "version": "0.15.0",
+  "version": "0.15.2",
   "description": "BeakerX: Beaker Extensions for Jupyter",
   "author": "Two Sigma Open Source, LLC",
   "main": "src/index.js",
@@ -25,12 +25,12 @@
   },
   "scripts": {
     "build": "yarn run build:dev",
-    "build:prod": "webpack --config webpack.prod.js && yarn run build-lab-extension",
-    "build:dev": "webpack --config webpack.dev.js && yarn run build-lab-extension",
+    "build:prod": "yarn run test && webpack --config webpack.prod.js && yarn run build-lab-extension",
+    "build:dev": "yarn run test && webpack --config webpack.dev.js && yarn run build-lab-extension",
     "build-lab-extension": "cd ../lab && npm install",
     "prepublish": "yarn run build:prod",
-    "test": "TS_NODE_PROJECT=test mocha",
-    "coverage": "TS_NODE_PROJECT=test nyc mocha",
+    "test": "TZ=America/New_York TS_NODE_PROJECT=test mocha --reporter=min",
+    "coverage": "TZ=America/New_York TS_NODE_PROJECT=test nyc mocha",
     "stats": "webpack --env production --profile --json > stats.json"
   },
   "devDependencies": {

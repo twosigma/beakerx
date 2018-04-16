@@ -198,14 +198,14 @@ export default class ColumnPosition {
     this.draggableHeaderCanvas.setAttribute('height',  `${sectionHeight}px`);
     this.draggableHeaderCanvas.style.border = `1px solid ${DEFAULT_BORDER_COLOR}`;
     this.draggableHeaderCanvas.style.left = `${data.offset + DATA_GRID_PADDING}px`;
-    this.draggableHeaderCanvas.style.top = `${data.offsetTop + DATA_GRID_PADDING}px`;
+    this.draggableHeaderCanvas.style.top = `${DATA_GRID_PADDING}px`;
 
     const ctx = this.draggableHeaderCanvas.getContext('2d');
 
     ctx.drawImage(
       this.dataGrid['_canvas'],
       data.offset,
-      data.offsetTop,
+      0,
       sectionWidth,
       sectionHeight,
       0,

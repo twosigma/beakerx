@@ -48,7 +48,6 @@ import enableKeyboardManager = DataGridHelpers.enableKeyboardManager;
 import ColumnPosition from "./column/ColumnPosition";
 import {SectionList} from "@phosphor/datagrid/lib/sectionlist";
 import ColumnRegion = DataModel.ColumnRegion;
-import CellRegion = DataModel.CellRegion;
 import {DataGridResize} from "./DataGridResize";
 
 export class BeakerXDataGrid extends DataGrid {

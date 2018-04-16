@@ -83,13 +83,11 @@ export default class DataGridColumn {
     this.store = dataGrid.store;
     this.columnManager = columnManager;
 
-    this.handleHeaderCellHovered = this.handleHeaderCellHovered.bind(this);
-
     this.assignFormatFn();
     this.createMenu();
     this.addColumnFilter();
     this.addDataTypeTooltip();
-    this.connectToHeaderCellHovered();
+    this.connectToCellHovered();
     this.connectToColumnsChanged();
     this.addMinMaxValues();
   }
@@ -182,11 +180,11 @@ export default class DataGridColumn {
   }
 
   connectToColumnsChanged() {
-    this.columnManager.columnsChanged.connect(this.onColumnsChanged.bind(this));
+    this.columnManager.columnsChanged.connect(this.onColumnsChanged, this);
   }
 
-  connectToHeaderCellHovered() {
-    this.dataGrid.cellHovered.connect(this.handleHeaderCellHovered);
+  connectToCellHovered() {
+    this.dataGrid.cellHovered.connect(this.handleHeaderCellHovered, this);
   }
 
   handleHeaderCellHovered(sender: BeakerXDataGrid, data: ICellData) {

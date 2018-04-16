@@ -26,4 +26,5 @@ export interface ICellData {
   offsetTop: number,
   region?: DataModel.CellRegion,
   value?: any,
+  width?: number,
 }

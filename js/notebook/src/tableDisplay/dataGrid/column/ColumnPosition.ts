@@ -31,8 +31,11 @@ import {IColumnPosition} from "../interface/IColumn";
 import ColumnManager from "./ColumnManager";
 import {COLUMN_TYPES} from "./enums";
 import {DEFAULT_BORDER_COLOR} from "../style/dataGridStyle";
+import {DataGridHelpers} from "../dataGridHelpers";
+import throttle = DataGridHelpers.throttle;
 
 const DATA_GRID_PADDING: number = 20;
+const DRAG_START_DEBOUNCE_TIME: number = 150;
 
 export default class ColumnPosition {
   dataGrid: BeakerXDataGrid;
@@ -40,28 +43,33 @@ export default class ColumnPosition {
   grabbedCellData: ICellData|null;
   dropCellData: ICellData|null;
   draggableHeaderCanvas: HTMLCanvasElement;
+  draggableHeaderOffsetLeft: number|null;
+  dragStartTimeoutId: number;
 
   constructor(dataGrid: BeakerXDataGrid) {
     this.dataGrid = dataGrid;
     this.store = dataGrid.store;
     this.draggableHeaderCanvas = document.createElement('canvas');
-    this.draggableHeaderCanvas.classList.add('bko-dragged-header')
+    this.draggableHeaderCanvas.classList.add('bko-dragged-header');
+    this.moveDraggedHeader = this.moveDraggedHeader.bind(this);
   }
 
   startDragging(data: ICellData) {
-    this.dataGrid.cellHovered.connect(this.handleCellHovered, this);
-    this.grabbedCellData = data;
-    this.toggleGrabbing(true);
-    this.attachDraggableHeader(data);
+    this.debounceDragStart(data);
   }
 
   stopDragging() {
+    if (!this.isDragging()) {
+      return clearTimeout(this.dragStartTimeoutId);
+    }
+
     this.dataGrid.cellHovered.disconnect(this.handleCellHovered, this);
     this.grabbedCellData = null;
     this.dropCellData = null;
     this.toggleGrabbing(false);
     this.dataGrid.node.contains(this.draggableHeaderCanvas) && this.dataGrid.node.removeChild(this.draggableHeaderCanvas);
     this.dataGrid.repaint();
+    this.draggableHeaderOffsetLeft = null;
   }
 
   isDragging() {
@@ -134,12 +142,33 @@ export default class ColumnPosition {
   }
 
   moveDraggedHeader(event: MouseEvent) {
+    if (!this.isDragging()) {
+      return true;
+    }
+
     let rect = this.dataGrid.viewport.node.getBoundingClientRect();
     let newX = event.clientX - rect.left;
     let newY = event.clientY - rect.top;
 
+    if (this.draggableHeaderOffsetLeft !== null) {
+      newX -= this.draggableHeaderOffsetLeft;
+    }
+
     this.draggableHeaderCanvas.style.left = `${newX}px`;
     this.draggableHeaderCanvas.style.top = `${newY}px`;
+  }
+
+  private debounceDragStart(data) {
+    this.dragStartTimeoutId = setTimeout(() => {
+      this.handleDragStart(data);
+    }, DRAG_START_DEBOUNCE_TIME);
+  }
+
+  private handleDragStart(data) {
+    this.dataGrid.cellHovered.connect(this.handleCellHovered, this);
+    this.grabbedCellData = data;
+    this.toggleGrabbing(true);
+    this.attachDraggableHeader(data);
   }
 
   private moveColumn(data: ICellData) {
@@ -152,8 +181,6 @@ export default class ColumnPosition {
     }
 
     this.setPosition(column, ColumnManager.createPositionFromCell({ ...this.dropCellData, column: destination }));
-    this.grabbedCellData = null;
-    this.dropCellData = null;
   }
 
   private toggleGrabbing(enable: boolean) {
@@ -171,14 +198,14 @@ export default class ColumnPosition {
     this.draggableHeaderCanvas.setAttribute('height',  `${sectionHeight}px`);
     this.draggableHeaderCanvas.style.border = `1px solid ${DEFAULT_BORDER_COLOR}`;
     this.draggableHeaderCanvas.style.left = `${data.offset + DATA_GRID_PADDING}px`;
-    this.draggableHeaderCanvas.style.top = `${data.offsetTop + DATA_GRID_PADDING}px`;
+    this.draggableHeaderCanvas.style.top = `${DATA_GRID_PADDING}px`;
 
     const ctx = this.draggableHeaderCanvas.getContext('2d');
 
     ctx.drawImage(
       this.dataGrid['_canvas'],
       data.offset,
-      data.offsetTop,
+      0,
       sectionWidth,
       sectionHeight,
       0,
@@ -187,6 +214,7 @@ export default class ColumnPosition {
       sectionHeight
     );
 
+    this.draggableHeaderOffsetLeft = data.delta - DATA_GRID_PADDING;
     this.dataGrid.node.appendChild(this.draggableHeaderCanvas);
   }
 
@@ -199,7 +227,7 @@ export default class ColumnPosition {
       || pressData.column === data.column
       || pressData.type !== data.type
     ) {
-      return;
+      return true;
     }
 
     this.dropCellData = data;

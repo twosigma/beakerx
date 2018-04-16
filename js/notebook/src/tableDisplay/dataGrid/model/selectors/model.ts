@@ -43,7 +43,7 @@ export const selectStringFormatForTimes = (state) => selectModel(state).stringFo
 export const selectFormatForTimes = (state) => TIME_UNIT_FORMATS[selectStringFormatForTimes(state)];
 export const selectTimeStrings = (state) => selectModel(state).timeStrings;
 export const selectRendererForColumn = (state, column) => selectModel(state).rendererForColumn[column.name];
-export const selectRendererForType = (state, column) => selectModel(state).rendererForType[column.getDataTypeName()];
+export const selectRendererForType = (state, column) => selectModel(state).rendererForType[column.getDataTypeName() || ALL_TYPES[column.getDataType()]];
 export const selectTimeZone = (state) => selectModel(state).timeZone;
 export const selectColumnTypes = (state) => selectModel(state).types;
 export const selectColumnOrder = (state) => selectModel(state).columnOrder;

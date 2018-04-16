@@ -21,6 +21,7 @@ import {DEFAULT_GRID_PADDING} from "../style/dataGridStyle";
 import {selectColumnIndexByPosition} from "../column/selectors";
 import {COLUMN_TYPES} from "../column/enums";
 import ColumnManager from "../column/ColumnManager";
+import DataGridCell from "./DataGridCell";
 
 export default class CellTooltipManager {
   dataGrid: BeakerXDataGrid;
@@ -46,7 +47,7 @@ export default class CellTooltipManager {
   }
 
   handleCellHovered(sender: BeakerXDataGrid, data: ICellData) {
-    if (!data || data.type === COLUMN_TYPES.index) {
+    if (!data || data.type === COLUMN_TYPES.index || DataGridCell.isHeaderCell(data)) {
       return this.hideTooltip();
     }
 

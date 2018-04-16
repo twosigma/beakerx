@@ -35,6 +35,7 @@ import {DataGridHelpers} from "../dataGridHelpers";
 import throttle = DataGridHelpers.throttle;
 
 const DATA_GRID_PADDING: number = 20;
+const DRAG_START_DEBOUNCE_TIME: number = 150;
 
 export default class ColumnPosition {
   dataGrid: BeakerxDataGrid;
@@ -43,6 +44,7 @@ export default class ColumnPosition {
   dropCellData: ICellData|null;
   draggableHeaderCanvas: HTMLCanvasElement;
   draggableHeaderOffsetLeft: number|null;
+  dragStartTimeoutId: number;
 
   constructor(dataGrid: BeakerxDataGrid) {
     this.dataGrid = dataGrid;
@@ -53,13 +55,14 @@ export default class ColumnPosition {
   }
 
   startDragging(data: ICellData) {
-    this.dataGrid.cellHovered.connect(this.handleCellHovered, this);
-    this.grabbedCellData = data;
-    this.toggleGrabbing(true);
-    this.attachDraggableHeader(data);
+    this.debounceDragStart(data);
   }
 
   stopDragging() {
+    if (!this.isDragging()) {
+      return clearTimeout(this.dragStartTimeoutId);
+    }
+
     this.dataGrid.cellHovered.disconnect(this.handleCellHovered, this);
     this.grabbedCellData = null;
     this.dropCellData = null;
@@ -155,6 +158,19 @@ export default class ColumnPosition {
     this.draggableHeaderCanvas.style.top = `${newY}px`;
   }
 
+  private debounceDragStart(data) {
+    this.dragStartTimeoutId = setTimeout(() => {
+      this.handleDragStart(data);
+    }, DRAG_START_DEBOUNCE_TIME);
+  }
+
+  private handleDragStart(data) {
+    this.dataGrid.cellHovered.connect(this.handleCellHovered, this);
+    this.grabbedCellData = data;
+    this.toggleGrabbing(true);
+    this.attachDraggableHeader(data);
+  }
+
   private moveColumn(data: ICellData) {
     const frozenColumnscount = selectColumnsFrozenCount(this.store.state);
     const column = this.dataGrid.columnManager.getColumnByPosition(ColumnManager.createPositionFromCell(data));
@@ -165,8 +181,6 @@ export default class ColumnPosition {
     }
 
     this.setPosition(column, ColumnManager.createPositionFromCell({ ...this.dropCellData, column: destination }));
-    this.grabbedCellData = null;
-    this.dropCellData = null;
   }
 
   private toggleGrabbing(enable: boolean) {

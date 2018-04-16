@@ -31,7 +31,7 @@ import {
   selectTimeStrings,
   selectTimeZone
 } from "./model/selectors";
-import {BeakerxDataStore} from "./store/dataStore";
+import {BeakerXDataStore} from "./store/BeakerXDataStore";
 import formatTimestamp = DataGridHelpers.formatTimestamp;
 
 const bkUtils = require('../../shared/bkUtils');
@@ -39,9 +39,9 @@ const bkUtils = require('../../shared/bkUtils');
 export const DEFAULT_TIME_FORMAT = 'YYYYMMDD HH:mm:ss.SSS ZZ';
 
 export class DataFormatter {
-  store: BeakerxDataStore;
+  store: BeakerXDataStore;
 
-  constructor(store: BeakerxDataStore) {
+  constructor(store: BeakerXDataStore) {
     this.store = store;
 
     this.handleNull = this.handleNull.bind(this);

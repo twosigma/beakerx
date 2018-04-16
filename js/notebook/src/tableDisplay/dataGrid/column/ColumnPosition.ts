@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import {BeakerxDataGrid} from "../BeakerxDataGrid";
+import {BeakerXDataGrid} from "../BeakerXDataGrid";
 import {ICellData} from "../interface/ICell";
 import {
   selectColumnNames, selectColumnOrder, selectColumnsFrozenCount, selectColumnsFrozenNames,
@@ -23,7 +23,7 @@ import {
 } from "../model/selectors";
 import {UPDATE_COLUMN_POSITIONS} from "./reducer";
 import {DataGridColumnAction, DataGridColumnsAction} from "../store/DataGridAction";
-import {BeakerxDataStore} from "../store/dataStore";
+import {BeakerXDataStore} from "../store/BeakerXDataStore";
 import {selectColumnIndexByPosition} from "./selectors";
 import {UPDATE_COLUMN_ORDER} from "../model/reducer";
 import DataGridColumn from "./DataGridColumn";
@@ -35,13 +35,13 @@ import {DEFAULT_BORDER_COLOR} from "../style/dataGridStyle";
 const DATA_GRID_PADDING: number = 20;
 
 export default class ColumnPosition {
-  dataGrid: BeakerxDataGrid;
-  store: BeakerxDataStore;
+  dataGrid: BeakerXDataGrid;
+  store: BeakerXDataStore;
   grabbedCellData: ICellData|null;
   dropCellData: ICellData|null;
   draggableHeaderCanvas: HTMLCanvasElement;
 
-  constructor(dataGrid: BeakerxDataGrid) {
+  constructor(dataGrid: BeakerXDataGrid) {
     this.dataGrid = dataGrid;
     this.store = dataGrid.store;
     this.draggableHeaderCanvas = document.createElement('canvas');
@@ -190,7 +190,7 @@ export default class ColumnPosition {
     this.dataGrid.node.appendChild(this.draggableHeaderCanvas);
   }
 
-  private handleCellHovered(sender: BeakerxDataGrid, data: ICellData|null) {
+  private handleCellHovered(sender: BeakerXDataGrid, data: ICellData|null) {
     const pressData = this.grabbedCellData;
 
     if (

@@ -14,11 +14,11 @@
  *  limitations under the License.
  */
 
-import {BeakerxDataGrid} from "../BeakerxDataGrid";
+import {BeakerXDataGrid} from "../BeakerXDataGrid";
 import DataGridColumn from "../column/DataGridColumn";
 import {HIGHLIGHTER_TYPE} from "../interface/IHighlighterState";
 import {DataGridHelpers} from "../dataGridHelpers";
-import {BeakerxDataStore} from "../store/dataStore";
+import {BeakerXDataStore} from "../store/BeakerXDataStore";
 import {selectDoubleClickTag, selectHasDoubleClickAction} from "../model/selectors";
 import {COLUMN_TYPES} from "../column/enums";
 import CellManager from "../cell/CellManager";
@@ -31,10 +31,10 @@ import ColumnManager from "../column/ColumnManager";
 import {ICellData} from "../interface/ICell";
 
 export default class EventManager {
-  dataGrid: BeakerxDataGrid;
-  store: BeakerxDataStore;
+  dataGrid: BeakerXDataGrid;
+  store: BeakerXDataStore;
 
-  constructor(dataGrid: BeakerxDataGrid) {
+  constructor(dataGrid: BeakerXDataGrid) {
     this.store = dataGrid.store;
     this.dataGrid = dataGrid;
     this.handleKeyDown = this.handleKeyDown.bind(this);

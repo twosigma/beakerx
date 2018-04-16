@@ -15,18 +15,18 @@
  */
 
 import { expect } from 'chai';
-import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import HighlighterManager from "@beakerx/tableDisplay/dataGrid/highlighter/HighlighterManager";
 import highlighterStateMock from "../mock/highlighterStateMock";
 import modelStateMock from "../mock/modelStateMock";
 import HeatmapHighlighter from "@beakerx/tableDisplay/dataGrid/highlighter/HeatmapHighlighter";
 import cellConfigMock from "../mock/cellConfigMock";
 import {HIGHLIGHTER_TYPE} from "@beakerx/tableDisplay/dataGrid/interface/IHighlighterState";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 
 describe('HighlighterManager', () => {
   const dataStore = createStore(modelStateMock);
-  const dataGrid = new BeakerxDataGrid({}, dataStore);
+  const dataGrid = new BeakerXDataGrid({}, dataStore);
   const highlighterManager = new HighlighterManager(dataGrid, [highlighterStateMock]);
   const highlighter = highlighterManager.highlighters[0];
 

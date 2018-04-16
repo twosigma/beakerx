@@ -310,6 +310,10 @@
   padding: 0.5em;
 }
 
+.svg-export .plot-legendcheckbox {
+  display: none;
+}
+
 .improveFonts .plot-plotcontainer,
 .improveFonts .plot-label,
 .improveFonts .plot-xylabel,

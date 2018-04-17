@@ -57,7 +57,7 @@ export default class HighlighterManager {
     }
 
     const highlighter = this.cachedHighlighters.get(
-      this.getHighlighterKey(column.index, state.type)
+      this.getHighlighterKey(column, state.type)
     );
 
     if (highlighter) {
@@ -77,7 +77,7 @@ export default class HighlighterManager {
     } else {
       this.highlighters.push(highlighter);
       this.cachedHighlighters.set(
-        this.getHighlighterKey(highlighter.column.index, highlighter.state.type),
+        this.getHighlighterKey(highlighter.column, highlighter.state.type),
         highlighter
       );
     }
@@ -105,7 +105,7 @@ export default class HighlighterManager {
   addColumnHighlighter(column, highlighterType: HIGHLIGHTER_TYPE) {
     this.removeColumnHighlighter(column, highlighterType);
 
-    const highlighter = this.cachedHighlighters.get(this.getHighlighterKey(column.index, highlighterType));
+    const highlighter = this.cachedHighlighters.get(this.getHighlighterKey(column, highlighterType));
 
     this.registerHighlighter(highlighter || HighlighterFactory.getHighlighter({
       ...HighlighterFactory.defaultHighlighterState,
@@ -155,7 +155,7 @@ export default class HighlighterManager {
     return background;
   }
 
-  private getHighlighterKey(columnIndex: number, highlighterType: string): string {
-    return `${columnIndex}_${highlighterType}`;
+  private getHighlighterKey(column: DataGridColumn, highlighterType: string): string {
+    return `${column.index}_${column.type}_${highlighterType}`;
   }
 }

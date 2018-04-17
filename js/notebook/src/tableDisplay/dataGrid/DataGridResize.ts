@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import {BeakerxDataGrid} from "./BeakerxDataGrid";
+import {BeakerXDataGrid} from "./BeakerXDataGrid";
 import { IMessageHandler, Message, MessageLoop } from '@phosphor/messaging';
 import {selectDataFontSize, selectHeaderFontSize, selectHeadersVertical} from "./model/selectors";
 import {
@@ -30,9 +30,9 @@ import {DataGridHelpers} from "./dataGridHelpers";
 import getStringSize = DataGridHelpers.getStringSize;
 
 export class DataGridResize {
-  dataGrid: BeakerxDataGrid;
+  dataGrid: BeakerXDataGrid;
 
-  constructor(dataGrid: BeakerxDataGrid) {
+  constructor(dataGrid: BeakerXDataGrid) {
     this.dataGrid = dataGrid;
 
     this.setSectionWidth = this.setSectionWidth.bind(this);

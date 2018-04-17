@@ -17,11 +17,11 @@
 import * as sinon from 'sinon';
 import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 import {expect} from "chai";
-import {BeakerxDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import {BeakerXDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import modelStateMock from "../mock/modelStateMock";
 import ColumnManager from "@beakerx/tableDisplay/dataGrid/column/ColumnManager";
 import cellConfigMock from "../mock/cellConfigMock";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
 
 describe('ColumnManager', () => {
@@ -31,7 +31,7 @@ describe('ColumnManager', () => {
 
   before(() => {
     dataStore = createStore(modelStateMock);
-    dataGrid = new BeakerxDataGrid({}, dataStore);
+    dataGrid = new BeakerXDataGrid({}, dataStore);
     columnManager = dataGrid.columnManager;
   });
 

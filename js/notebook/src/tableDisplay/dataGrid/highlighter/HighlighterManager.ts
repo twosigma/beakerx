@@ -24,16 +24,19 @@ import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import { each, iter, filter, toArray } from "@phosphor/algorithm";
 import { CellRenderer } from "@phosphor/datagrid";
 import {DEFAULT_CELL_BACKGROUND} from "../style/dataGridStyle";
+import DataGridColumn from "../column/DataGridColumn";
 
 export default class HighlighterManager {
   highlightersState: IHihglighterState[];
   highlighters: Highlighter[];
   dataGrid: BeakerXDataGrid;
+  cachedHighlighters: Map<string, Highlighter>;
 
   constructor(dataGrid: BeakerXDataGrid, highlightersState: IHihglighterState[]) {
     this.dataGrid = dataGrid;
     this.highlightersState = [...highlightersState];
     this.highlighters = [];
+    this.cachedHighlighters = new Map();
 
     this.createHighlighter = this.createHighlighter.bind(this);
     this.registerHighlighter = this.registerHighlighter.bind(this);
@@ -53,6 +56,14 @@ export default class HighlighterManager {
       return;
     }
 
+    const highlighter = this.cachedHighlighters.get(
+      this.getHighlighterKey(column.index, state.type)
+    );
+
+    if (highlighter) {
+      return this.registerHighlighter(highlighter);
+    }
+
     this.registerHighlighter(HighlighterFactory.getHighlighter(state, column));
   }
 
@@ -65,13 +76,19 @@ export default class HighlighterManager {
       this.highlighters.unshift(highlighter);
     } else {
       this.highlighters.push(highlighter);
+      this.cachedHighlighters.set(
+        this.getHighlighterKey(highlighter.column.index, highlighter.state.type),
+        highlighter
+      );
     }
   }
 
   unregisterHighlighter(highlighter: Highlighter) {
     const index = this.highlighters.indexOf(highlighter);
 
-    index !== -1 && this.highlighters.splice(index, 1);
+    if (index !== -1) {
+      this.highlighters.splice(index, 1);
+    }
   }
 
   getColumnHighlighters(column, highlighterType?: HIGHLIGHTER_TYPE): Highlighter[] {
@@ -87,7 +104,10 @@ export default class HighlighterManager {
 
   addColumnHighlighter(column, highlighterType: HIGHLIGHTER_TYPE) {
     this.removeColumnHighlighter(column, highlighterType);
-    this.registerHighlighter(HighlighterFactory.getHighlighter({
+
+    const highlighter = this.cachedHighlighters.get(this.getHighlighterKey(column.index, highlighterType));
+
+    this.registerHighlighter(highlighter || HighlighterFactory.getHighlighter({
       ...HighlighterFactory.defaultHighlighterState,
       type: highlighterType,
       style: HIGHLIGHTER_STYLE.SINGLE_COLUMN,
@@ -133,5 +153,9 @@ export default class HighlighterManager {
     );
 
     return background;
+  }
+
+  private getHighlighterKey(columnIndex: number, highlighterType: string): string {
+    return `${columnIndex}_${highlighterType}`;
   }
 }

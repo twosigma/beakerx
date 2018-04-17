@@ -16,11 +16,38 @@
 
 @import './fonts.css';
 
-.combplot-plotcontainer {
-    background-color: var(--jp-layout-color0);
-    color: var(--jp-content-font-color0);
+body {
+  background-color: var(--jp-layout-color3);
 }
 
+pre {
+  background-color: var(--jp-layout-color2);
+  color: var(--jp-content-font-color2);
+}
+
+.plot-plotcontainer,
+.combplot-plotcontainer {
+  background-color: var(--jp-layout-color2);
+  fill: var(--jp-content-font-color2);
+}
+
+.plot-coverbox,
 .combplot-plotcoverbox {
-    fill: var(--jp-layout-color0);
+  fill: var(--jp-layout-color2);
+}
+
+.plot-title {
+  color: var(--jp-content-font-color2);
+}
+
+.plot-legend {
+  background-color: var(--jp-layout-color2);
+  color: var(--jp-content-font-color2);
+  border-color: var(--jp-border-color2);
+}
+
+.plot-gridline-base,
+.plot-gridline,
+.plot-tick {
+  stroke: var(--jp-border-color0);
 }

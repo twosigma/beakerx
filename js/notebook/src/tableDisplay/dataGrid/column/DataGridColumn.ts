@@ -479,7 +479,7 @@ export default class DataGridColumn {
     if (show && data) {
       return this.dataTypeTooltip.show(
         Math.ceil(rect.left + data.offset + 20),
-        Math.ceil(rect.top - 10)
+        Math.ceil(window.pageYOffset + rect.top - 10)
       );
     }
 

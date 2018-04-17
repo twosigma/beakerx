@@ -59,14 +59,14 @@ export default class BkoMenu extends Menu {
 
     const itemNode = this.parentMenu.contentNode.children[this.parentMenu.activeIndex];
     const itemOffset = itemNode.getBoundingClientRect().top;
-    this.node.style.top = `${itemOffset}px`;
+    this.node.style.top = `${window.pageYOffset + itemOffset}px`;
 
     this.show();
     const rect = this.node.getBoundingClientRect();
     const clientHeight = window.innerHeight || document.documentElement.clientHeight;
 
     if (rect.bottom > clientHeight) {
-      this.node.style.top = `${itemOffset - (rect.bottom - clientHeight)}px`;
+      this.node.style.top = `${window.pageYOffset + itemOffset - (rect.bottom - clientHeight)}px`;
     }
   }
 

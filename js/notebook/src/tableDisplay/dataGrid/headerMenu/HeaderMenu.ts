@@ -244,7 +244,7 @@ export default abstract class HeaderMenu implements MenuInterface {
     const triggerRectObject = trigger.getBoundingClientRect();
 
     return {
-      top: triggerRectObject.bottom,
+      top: window.pageYOffset + triggerRectObject.bottom,
       left: triggerRectObject.left
     };
   }
@@ -252,10 +252,10 @@ export default abstract class HeaderMenu implements MenuInterface {
   protected correctPosition(trigger: any) {
     const menuRectObject = this.menu.node.getBoundingClientRect();
     const triggerRectObject = trigger.getBoundingClientRect();
+    const outOfViewportPartSize = triggerRectObject.bottom + menuRectObject.height - window.innerHeight;
 
-    if (triggerRectObject.bottom + menuRectObject.height > window.innerHeight) {
-      this.menu.node.style.top = '';
-      this.menu.node.style.bottom = '10px';
+    if (outOfViewportPartSize > 0) {
+      this.menu.node.style.top = `${window.pageYOffset + triggerRectObject.bottom - outOfViewportPartSize - 10}px`;
     }
 
     if (menuRectObject.top < triggerRectObject.bottom && menuRectObject.left <= triggerRectObject.right) {

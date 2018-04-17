@@ -100,7 +100,7 @@ a local build should suffice:
 
 ### Run Tests
 
-The Java unit tests are run with every build. See [test/README.md] for how to run the e2e tests.
+The Java and TypeScript unit tests are run with every build. See [test/README.md] for how to run the e2e tests.
 
 ## Groovy with Interactive Plotting and Tables:
 <img width="900" alt="screen shot" src="https://user-images.githubusercontent.com/963093/28300136-585f9f7c-6b4b-11e7-8827-b5807d3fc9a8.png">
@@ -122,6 +122,9 @@ The code is organized into subdirectories as follows:
 
   * a customized KernelSpec to allow BeakerX to configure the JVMs
     started to run the kernels,
+
+  * a server extension for the javadoc, settings, and version
+    endpoints,
   
   * the beakerx command line program, which has the bkr2ipynb
     converter as well as install and uninstall functions,
@@ -160,21 +163,13 @@ The code is organized into subdirectories as follows:
   are included in Lab as well, and are also separately distributed
   with npm for embedded applications such as nbviewer), and one for
   the notebook application.  This adds a tab to the tree view with our
-  options panel.  And for regular notebook pages the extension
-  handles:
+  options panel.
 
-  * running initialization cells,
-  
-  * publication,
-  
-  * autotranslation,
-  
-  * the getCodeCells and runByTag APIs,
-  
-  * callbacks for table and plot actions,
-  
-  * UI customizations such as changing the fonts, allowing wide code
-    cells, and disabling autosave.
+  And for regular notebook pages the extension handles: running
+  initialization cells, publication, autotranslation, the getCodeCells
+  and runByTag APIs, callbacks for table and plot actions, UI
+  customizations such as changing the fonts, allowing wide code cells,
+  and disabling autosave.
 
 * [kernel](kernel) The Java implementation of the kernels is here.
   The main directory is [kernel/base](kernel/base) which has generic

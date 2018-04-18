@@ -64,28 +64,37 @@ export default class UniqueEntriesHighlighter extends Highlighter {
     let hueRatio = this.column.index / selectColumnNames(this.column.store.state).length;
     let saturationRatio = initialSaturationRatio;
     let lightnessRatio = initialLightnessRatio;
-    let hueStepCount = 0;
     let saturationStepCount = 0;
     let lightnessStepCount = 0;
+    let hueValues = [];
 
     return () => {
       hueRatio += goldenRatioConjugate;
       hueRatio %= 1;
-      hueStepCount += 1;
 
-      if (hueStepCount >= MAX_HUE_VALUE && saturationStepCount < DEFAULT_HSL_COMPONENT_STEPS_COUNT) {
+      let hue = Math.round(hueRatio * MAX_HUE_VALUE);
+      let repeated = hueValues.indexOf(hue) !== -1;
+
+      if (!repeated) {
+        hueValues.push(hue);
+      }
+
+      if (repeated && saturationStepCount < DEFAULT_HSL_COMPONENT_STEPS_COUNT) {
         saturationRatio += goldenRatioConjugate;
         saturationRatio %= 1;
         saturationStepCount += 1;
       }
 
-      if (hueStepCount >= MAX_HUE_VALUE * DEFAULT_HSL_COMPONENT_STEPS_COUNT && lightnessStepCount < DEFAULT_HSL_COMPONENT_STEPS_COUNT) {
+      if ((
+          repeated && saturationStepCount > DEFAULT_HSL_COMPONENT_STEPS_COUNT
+          || saturationStepCount > DEFAULT_HSL_COMPONENT_STEPS_COUNT
+        ) && lightnessStepCount < DEFAULT_HSL_COMPONENT_STEPS_COUNT
+      ) {
         lightnessRatio += goldenRatioConjugate;
         lightnessRatio %= 1;
         lightnessStepCount += 1;
       }
 
-      let hue = hueRatio * MAX_HUE_VALUE;
       let saturation = MIN_SATURATION_VALUE + saturationRatio * DEFAULT_HSL_COMPONENT_STEPS_COUNT;
       let lightness = MIN_LIGHTNESS_VALUE + lightnessRatio * DEFAULT_HSL_COMPONENT_STEPS_COUNT;
 

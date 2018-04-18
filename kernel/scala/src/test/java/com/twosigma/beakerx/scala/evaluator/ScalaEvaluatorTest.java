@@ -123,7 +123,7 @@ public class ScalaEvaluatorTest {
   }
 
   @Test
-  public void newShellAndTheSameClassLoaderWhenAddJars() throws Exception {
+  public void newShellWhenAddJars() throws Exception {
     //given
     ScalaEvaluatorGlue shell = scalaEvaluator.getShell();
     ClassLoader classLoader = scalaEvaluator.getClassLoader();
@@ -131,9 +131,9 @@ public class ScalaEvaluatorTest {
     scalaEvaluator.addJarsToClasspath(singletonList(new PathToJar(DEMO_JAR)));
     //then
     assertThat(scalaEvaluator.getShell()).isNotEqualTo(shell);
-    //assertThat(scalaEvaluator.getClassLoader()).isEqualTo(classLoader);
-    //have to introduce native lib problem to solve input output problem
-    assertThat(scalaEvaluator.getClassLoader()).isNotEqualTo(classLoader);
+    assertThat(scalaEvaluator.getClassLoader()).isEqualTo(classLoader);
+    assertThat(shell.interpreter().lastRequest().lineRep().lineId())
+            .isEqualTo(scalaEvaluator.getShell().interpreter().lastRequest().lineRep().lineId());
   }
 }
 

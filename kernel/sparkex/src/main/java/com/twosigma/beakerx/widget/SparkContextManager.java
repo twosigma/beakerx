@@ -170,7 +170,7 @@ public class SparkContextManager {
     try {
       SparkConf sparkConf = configureSparkConf(getSparkConf());
       sparkSessionBuilder.config(sparkConf);
-      SparkSession sparkSession = sparkSessionBuilder.getOrCreate();
+      SparkSession sparkSession = getSparkSession();
       addListener(sparkContext());
       SparkVariable.putSparkContext(sparkContext());
       SparkVariable.putSparkSession(sparkSession);
@@ -181,6 +181,10 @@ public class SparkContextManager {
     } catch (Exception e) {
       sendError(parentMessage, kernel, e.getMessage());
     }
+  }
+
+  private SparkSession getSparkSession() {
+    return sparkSessionBuilder.getOrCreate();
   }
 
   private TryResult initSparkContextInShell(KernelFunctionality kernel) {

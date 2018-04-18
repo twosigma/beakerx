@@ -20,6 +20,7 @@ import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.PlainCode;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
@@ -27,8 +28,6 @@ import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 import com.twosigma.beakerx.widget.SparkUI;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
-
-import static com.twosigma.beakerx.kernel.PlainCode.createSimpleEvaluationObject;
 
 public class SparkMagicCommand implements MagicCommandFunctionality {
 
@@ -46,7 +45,7 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
 
   @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
-    SimpleEvaluationObject seo = createSimpleEvaluationObject(param.getCommandCodeBlock(), kernel, param.getCode().getMessage(), param.getExecutionCount());
+    SimpleEvaluationObject seo = PlainCode.createSimpleEvaluationObject(param.getCommandCodeBlock(), kernel, param.getCode().getMessage(), param.getExecutionCount());
     if (param.getCommandCodeBlock().isEmpty()) {
       InternalVariable.setValue(seo);
       return createSparkUI(new SparkConf());

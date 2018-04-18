@@ -50,8 +50,11 @@ public class ClasspathAddJarMagicCommand extends ClasspathMagicCommand {
     if (split.length != 4) {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, WRONG_FORMAT_MSG + CLASSPATH_ADD_JAR);
     }
-
     String path = split[3];
+    return addJar(path);
+  }
+
+  public MagicCommandOutcomeItem addJar(String path) {
     ErrorData errorData = isValidPath(path);
 
     if (errorData.hasError()) {

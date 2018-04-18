@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,24 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-include 'base'
-include 'groovy'
-include 'kotlin'
-include 'scala'
-include 'java'
-include 'clojure'
-include 'sql'
-include 'sparkex'
-include 'doclet'
+package com.twosigma.beakerx.scala.magic.command;
 
-if (System.getProperty('includeCpp', 'false') == 'true') {
-  include 'cpp'
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
+
+public interface SparkexJarService {
+  MagicCommandOutcomeItem addSparkexJar(KernelFunctionality kernel);
 }
-
-// uncomment when demo projects have to be rebuild
-//include 'demoProjects'
-//include 'demoProjects:loadMagicJarDemo'
-//include 'demoProjects:demo'
-//include 'demoProjects:BeakerXClasspathTest'
-
-

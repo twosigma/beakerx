@@ -169,6 +169,10 @@ public class KernelSocketsZMQ extends KernelSockets {
           break;
         }
       }
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    } catch (Error e) {
+      logger.error(e.toString());
     } finally {
       close();
     }

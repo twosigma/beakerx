@@ -32,8 +32,6 @@ import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.PathToJar;
-import com.twosigma.beakerx.scala.spark.Implicit;
-import com.twosigma.beakerx.scala.spark.SparkImplicit;
 import com.twosigma.beakerx.scala.serializers.ScalaCollectionDeserializer;
 import com.twosigma.beakerx.scala.serializers.ScalaCollectionSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaListOfPrimitiveTypeMapsSerializer;
@@ -42,7 +40,6 @@ import com.twosigma.beakerx.scala.serializers.ScalaMapSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaPrimitiveTypeListOfListSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaPrimitiveTypeMapSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaTableDeSerializer;
-import com.twosigma.beakerx.widget.SparkVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +75,7 @@ public class ScalaEvaluator extends BaseEvaluator {
 
   @Override
   protected void addJarToClassLoader(PathToJar pathToJar) {
-    classLoader.addJar(pathToJar);
+    this.classLoader.addJar(pathToJar);
   }
 
   @Override
@@ -88,8 +85,7 @@ public class ScalaEvaluator extends BaseEvaluator {
 
   @Override
   protected void doReloadEvaluator() {
-    this.classLoader = newClassLoader();
-    this.shell = createNewEvaluator();
+    this.shell = createNewEvaluator(shell);
   }
 
   @Override
@@ -103,7 +99,7 @@ public class ScalaEvaluator extends BaseEvaluator {
   @Override
   public void cancelExecution() {
     super.cancelExecution();
-    SparkVariable.cancelAllJobs();
+    //SparkVariable.cancelAllJobs();
   }
 
   @Override
@@ -143,15 +139,24 @@ public class ScalaEvaluator extends BaseEvaluator {
     return imp;
   }
 
+  private ScalaEvaluatorGlue createNewEvaluator(ScalaEvaluatorGlue shell) {
+    ScalaEvaluatorGlue newEvaluator = createNewEvaluator();
+    setLineId(newEvaluator,shell.interpreter().lastRequest().lineRep().lineId());
+    return newEvaluator;
+  }
+
+  private void setLineId(ScalaEvaluatorGlue newEvaluator,int lines) {
+    for (int i = newEvaluator.interpreter().lastRequest().lineRep().lineId(); i < lines; i++) {
+      newEvaluator.evaluate2("\"\"");
+    }
+  }
+
   private ScalaEvaluatorGlue createNewEvaluator() {
     logger.debug("creating new evaluator");
     String loader_cp = createLoaderCp();
     ScalaEvaluatorGlue shell = new ScalaEvaluatorGlue(this.classLoader, loader_cp, getOutDir());
     if (!getImports().isEmpty()) {
       addImportsToShell(shell, getImports().getImportPaths());
-    }
-    if (evaluatorParameters.getParams().containsKey(SparkImplicit.IMPLICIT())){
-      addImplicit(shell,evaluatorParameters.getParams().get(SparkImplicit.IMPLICIT()));
     }
     logger.debug("creating beaker object");
     // ensure object is created
@@ -161,13 +166,6 @@ public class ScalaEvaluator extends BaseEvaluator {
       logger.warn("ERROR creating beaker object: {}", r);
     }
     return shell;
-  }
-
-  private void addImplicit(ScalaEvaluatorGlue shell, Object o) {
-    if(o instanceof Implicit){
-      Implicit scalaImplicit = (Implicit) o;
-      shell.evaluate2(scalaImplicit.codeAsString());
-    }
   }
 
   private void addImportsToShell(ScalaEvaluatorGlue shell, List<ImportPath> importsPaths) {

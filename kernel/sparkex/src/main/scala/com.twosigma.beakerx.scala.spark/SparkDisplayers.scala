@@ -15,10 +15,9 @@
  */
 package com.twosigma.beakerx.scala.spark
 
-import java.util.{HashMap, Map}
-
 import com.twosigma.beakerx.mimetype.MIMEContainer
 import jupyter.{Displayer, Displayers}
+import java.util.{HashMap, Map}
 
 object SparkDisplayers {
 

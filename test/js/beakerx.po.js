@@ -234,7 +234,7 @@ function BeakerXPageObject() {
       bufferCanvas.width  = width;
       bufferCanvas.height = height;
       bufferCanvas.getContext('2d').putImageData(imgData, 0, 0);
-      return bufferCanvas.toDataURL('image/png').substring(22);
+      return bufferCanvas.toDataURL('image/png').replace(/data:image\/png;base64,/, "");
     }, canvas.value, sx, sy, width, height);
     return result;
   };

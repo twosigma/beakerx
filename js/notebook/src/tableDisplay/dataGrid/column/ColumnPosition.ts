@@ -193,21 +193,25 @@ export default class ColumnPosition {
     const widthSection = data.region === 'corner-header' ? this.dataGrid.rowHeaderSections : this.dataGrid.columnSections;
     const sectionWidth = widthSection.sectionSize(data.column) - 1;
     const sectionHeight = this.dataGrid.columnHeaderSections.sectionSize(data.row) - 1;
+    const dpiRatio =  this.dataGrid['_dpiRatio'];
 
-    this.draggableHeaderCanvas.setAttribute('width', `${sectionWidth}px`);
-    this.draggableHeaderCanvas.setAttribute('height',  `${sectionHeight}px`);
+    this.draggableHeaderCanvas.width = sectionWidth * dpiRatio;
+    this.draggableHeaderCanvas.height = sectionHeight * dpiRatio;
+    this.draggableHeaderCanvas.style.width = `${sectionWidth}px`;
+    this.draggableHeaderCanvas.style.height = `${sectionHeight}px`;
     this.draggableHeaderCanvas.style.border = `1px solid ${DEFAULT_BORDER_COLOR}`;
     this.draggableHeaderCanvas.style.left = `${data.offset + DATA_GRID_PADDING}px`;
     this.draggableHeaderCanvas.style.top = `${DATA_GRID_PADDING}px`;
 
     const ctx = this.draggableHeaderCanvas.getContext('2d');
 
+    ctx.scale(dpiRatio, dpiRatio);
     ctx.drawImage(
       this.dataGrid['_canvas'],
-      data.offset,
+      data.offset * dpiRatio,
       0,
-      sectionWidth,
-      sectionHeight,
+      sectionWidth * dpiRatio,
+      sectionHeight * dpiRatio,
       0,
       0,
       sectionWidth,

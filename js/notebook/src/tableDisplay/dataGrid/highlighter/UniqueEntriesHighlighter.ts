@@ -67,15 +67,11 @@ export default class UniqueEntriesHighlighter extends Highlighter {
     let hueStepCount = 0;
     let saturationStepCount = 0;
     let lightnessStepCount = 0;
-    let hueRatioArray = [];
 
     return () => {
       hueRatio += goldenRatioConjugate;
       hueRatio %= 1;
       hueStepCount += 1;
-
-      hueRatioArray.indexOf(hueRatio) !== -1 && console.log(hueRatio);
-      hueRatioArray.push(hueRatio);
 
       if (hueStepCount >= MAX_HUE_VALUE && saturationStepCount < DEFAULT_HSL_COMPONENT_STEPS_COUNT) {
         saturationRatio += goldenRatioConjugate;

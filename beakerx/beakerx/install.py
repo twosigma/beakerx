@@ -128,7 +128,10 @@ def _install_magics():
     os.makedirs(dir_path, exist_ok=True)
     with open(os.path.join(dir_path, 'ipython_config.py'), 'w+') as ipython_config:
         ipython_config.write("c = get_config()\n")
-        ipython_config.write("c.InteractiveShellApp.extensions = ['beakerx_magics.groovy_magic']\n")
+        ipython_config.write("c.InteractiveShellApp.extensions = ["
+                             "'beakerx_magics.magic_kernel_comm',\n"
+                             "'beakerx_magics.groovy_magic'\n"
+                             "]\n")
 
 def _set_conf_privileges():
     config_path = os.path.join(paths.jupyter_config_dir(), 'beakerx.json')

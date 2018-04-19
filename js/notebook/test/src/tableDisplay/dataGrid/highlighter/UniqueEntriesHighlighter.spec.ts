@@ -53,9 +53,9 @@ describe('UniqueEntriesHighlighter', () => {
 
   it('should return proper backgroud color', () => {
     expect(uniqueEntriesHighlighter.getBackgroundColor(cellConfigMock))
-      .to.include('75%, 85%)');
+      .to.include('85%, 85%)');
     expect(uniqueEntriesHighlighter.getBackgroundColor({ ...cellConfigMock, value: 0 }))
-      .to.include('75%, 85%)');
+      .to.include('85%, 85%)');
     expect(uniqueEntriesHighlighter.getBackgroundColor({ ...cellConfigMock, value: 0.5 }))
       .to.equal('');
   });

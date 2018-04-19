@@ -29,7 +29,8 @@ global.KeyboardEvent = window.KeyboardEvent;
 
 window.HTMLCanvasElement.prototype.getContext = function() {
   return {
-    drawImage: function() {}
+    drawImage: function() {},
+    scale: function() {}
   };
 };
 

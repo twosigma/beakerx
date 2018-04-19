@@ -13,3 +13,4 @@
 # limitations under the License.
 
 from .groovy_magic import *
+from .magic_kernel_comm import *

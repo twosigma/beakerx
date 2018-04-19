@@ -241,12 +241,11 @@ function BeakerXPageObject() {
   };
 
   this.checkImageData = function(imageData, imgDir, fileName){
-    var mismatchPercentage = 10;
+    var mismatchPercentage = 1;
     var absFileName = path.join(__dirname, '../resources/img', imgDir, fileName);
     var file1 = fs.readFileSync(absFileName);
     var file2 =  new Buffer(imageData, 'base64')
     resemble(file1).compareTo(file2).ignoreAntialiasing().onComplete(function(data){
-      console.log(data);
       expect(data.misMatchPercentage).toBeLessThan(mismatchPercentage);
     });
   };

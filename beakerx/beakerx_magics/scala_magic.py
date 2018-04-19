@@ -17,23 +17,23 @@ from .kernel_magic import KernelMagics
 
 
 @magics_class
-class GroovyMagics(KernelMagics):
+class ScalaMagics(KernelMagics):
 
     def __init__(self, shell):
-        super(GroovyMagics, self).__init__(shell)
+        super(ScalaMagics, self).__init__(shell)
 
     def start(self):
-        super(GroovyMagics, self).start('groovy')
+        super(ScalaMagics, self).start('scala')
 
     @cell_magic
-    def groovy(self, line, cell):
+    def scala(self, line, cell):
         return self.run_cell(line, cell)
 
 
 def load_ipython_extension(ipython):
-    ipython.register_magics(GroovyMagics)
+    ipython.register_magics(ScalaMagics)
 
 
 if __name__ == '__main__':
     ip = get_ipython()
-    ip.register_magics(GroovyMagics)
+    ip.register_magics(ScalaMagics)

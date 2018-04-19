@@ -12,5 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from .kernel_magic import *
+from .clojure_magic import *
 from .groovy_magic import *
-from .magic_kernel_comm import *
+from .java_magic import *
+from .kotlin_magic import *
+from .scala_magic import *
+from .sql_magic import *

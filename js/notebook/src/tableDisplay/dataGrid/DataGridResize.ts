@@ -109,7 +109,7 @@ export class DataGridResize {
     const value = this.dataGrid.columnSections.sectionSize(position) + space;
     const minValue = this.getSectionWidth(column);
 
-    this.dataGrid.resizeSection('column', position, value < minValue ? minValue : value);
+    this.setSectionWidth('column', column, value < minValue ? minValue : value);
   }
 
   updateColumnWidth(region: ColumnRegion): Function {

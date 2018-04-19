@@ -57,7 +57,6 @@ public class SparkContextManager {
   private VBox sparkView;
   private Text masterURL;
   private Text executorMemory;
-  private Text sparkContextAlias;
   private Text sparkSessionAlias;
   private Text executorCores;
 
@@ -98,14 +97,12 @@ public class SparkContextManager {
     this.masterURL = createMasterURL();
     this.executorMemory = createExecutorMemory();
     this.executorCores = createExecutorCores();
-    this.sparkContextAlias = sparkContextAlias();
     this.sparkSessionAlias = sparkSessionAlias();
     Button connect = createConnectButton();
     ArrayList<Widget> children = new ArrayList<>();
     children.add(masterURL);
     children.add(executorCores);
     children.add(executorMemory);
-    children.add(sparkContextAlias);
     children.add(sparkSessionAlias);
     children.add(connect);
     VBox vBox = new VBox(children);
@@ -122,13 +119,6 @@ public class SparkContextManager {
       cores.setValue("10");
     }
     return cores;
-  }
-
-  private Text sparkContextAlias() {
-    Text alias = new Text();
-    alias.setDescription("SparkContext alias");
-    alias.setValue("sc");
-    return alias;
   }
 
   private Text sparkSessionAlias() {
@@ -189,17 +179,13 @@ public class SparkContextManager {
   }
 
   private TryResult initSparkContextInShell(KernelFunctionality kernel) {
-    if (sparkContextAlias.getValue() == null || sparkContextAlias.getValue().isEmpty()) {
-      throw new RuntimeException("SparkContext alias can not be empty");
-    }
     if (sparkSessionAlias.getValue() == null || sparkSessionAlias.getValue().isEmpty()) {
       throw new RuntimeException("SparkContext alias can not be empty");
     }
     String addSc = String.format(
             "import com.twosigma.beakerx.widget.SparkVariable\n" +
-                    "var %s = SparkVariable.getSparkContext()\n" +
                     "var %s = SparkVariable.getSparkSession()\n",
-            sparkContextAlias.getValue(), sparkSessionAlias.getValue());
+            sparkSessionAlias.getValue());
 
     SimpleEvaluationObject seo = createSimpleEvaluationObject(addSc, kernel, new Message(), 1);
     return kernel.executeCode(addSc, seo);

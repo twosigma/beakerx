@@ -35,9 +35,10 @@ const DEFAULT_RESIZE_SECTION_SIZE_IN_PX = 6;
 
 export class DataGridResize {
   dataGrid: BeakerXDataGrid;
-  resizeRect: Widget;
   resizeStartRect: { width: number, height: number, x: number, y: number };
   resizeMode: 'h'|'v'|'both'|null;
+  resizing: boolean = false;
+  resized: boolean = false;
 
   constructor(dataGrid: BeakerXDataGrid) {
     this.dataGrid = dataGrid;
@@ -48,8 +49,8 @@ export class DataGridResize {
     this.resizeSectionWidth = this.resizeSectionWidth.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
+    this.fillEmptySpaceResizeFn = this.fillEmptySpaceResizeFn.bind(this);
 
-    this.setResizeRect();
     this.installMessageHook();
   }
 
@@ -104,12 +105,11 @@ export class DataGridResize {
 
   fillEmptyDataGridSpace() {
     const space = this.dataGrid.node.clientWidth - this.dataGrid.totalWidth - 2 * DEFAULT_GRID_PADDING - this.dataGrid['_vScrollBar'].node.clientWidth;
-    const position = this.dataGrid.columnSections.sectionCount - 1;
-    const column = this.dataGrid.columnManager.getColumnByPosition({ value: position, region: 'body' });
-    const value = this.dataGrid.columnSections.sectionSize(position) + space;
-    const minValue = this.getSectionWidth(column);
+    const value = Math.round(space / (this.dataGrid.columnSections.sectionCount + this.dataGrid.rowHeaderSections.sectionCount));
 
-    this.setSectionWidth('column', column, value < minValue ? minValue : value);
+    this.dataGrid.columnSections['_sections'].forEach(this.fillEmptySpaceResizeFn('body', value));
+    this.dataGrid.rowHeaderSections['_sections'].forEach(this.fillEmptySpaceResizeFn('row-header', value));
+    this.resized = true;
   }
 
   updateColumnWidth(region: ColumnRegion): Function {
@@ -120,7 +120,7 @@ export class DataGridResize {
     }
   }
 
-  attachResizeRect(event: MouseEvent) {
+  startResizing(event: MouseEvent) {
     if (!this.dataGrid.node.parentElement) {
       return;
     }
@@ -128,35 +128,27 @@ export class DataGridResize {
     const width = this.dataGrid.viewport.node.clientWidth + this.dataGrid['_vScrollBar'].node.clientWidth + 3;
     const height = this.dataGrid.viewport.node.clientHeight + this.dataGrid['_hScrollBar'].node.clientHeight + 3;
 
-    this.resizeRect.node.style.height = `${height}px`;
-    this.resizeRect.node.style.width = `${width}px`;
     this.resizeStartRect = { width, height, x: event.clientX, y: event.clientY };
+    this.resizing = true;
 
-    if (!this.resizeRect.isAttached) {
-      Widget.attach(this.resizeRect, this.dataGrid.node.parentElement);
-    }
-
-    this.resizeRect.node.addEventListener('mousedown', this.captureEvent, true);
-    this.resizeRect.node.addEventListener('mousemove', this.handleMouseMove, true);
-    this.dataGrid.node.parentElement.addEventListener('mouseup', this.handleMouseUp, true);
     this.dataGrid.node.parentElement.addEventListener('mousemove', this.handleMouseMove, true);
+    this.dataGrid.node.parentElement.addEventListener('mouseup', this.handleMouseUp, true);
+    document.body.addEventListener('mouseup', this.handleMouseUp, true);
   }
 
-  detachResizeRect() {
-    this.resizeRect.isAttached && Widget.detach(this.resizeRect);
+  stopResizing() {
+    this.resizing = false;
 
     this.resizeMode = null;
     this.dataGrid.node.parentElement.removeEventListener('mousemove', this.handleMouseMove, true);
-    this.dataGrid.node.parentElement.addEventListener('mouseup', this.handleMouseUp, true);
+    this.dataGrid.node.parentElement.removeEventListener('mouseup', this.handleMouseUp, true);
+    document.body.removeEventListener('mouseup', this.handleMouseUp, true);
 
-    this.resizeRect.node.style.cursor = 'auto';
-    this.dataGrid.node.style.cursor = 'auto';
-    this.dataGrid.node.parentElement.style.cursor = 'auto';
-    this.dataGrid['_canvas'].style.cursor = 'auto';
+    this.setCursorStyle('auto');
   }
 
   isResizing() {
-    return this.resizeRect.isAttached;
+    return this.resizing;
   }
 
   shouldResizeDataGrid(event: MouseEvent): boolean {
@@ -199,6 +191,19 @@ export class DataGridResize {
     }
   }
 
+  private fillEmptySpaceResizeFn(region: ColumnRegion, value: number) {
+    return (section) => {
+      let column = this.dataGrid.columnManager.getColumnByPosition({
+        value: section.index,
+        region
+      });
+      let minValue = this.getSectionWidth(column);
+      let curValue = selectColumnWidth(this.dataGrid.store.state, column);
+
+      this.setSectionWidth('column', column, curValue + value < minValue ? minValue : curValue + value);
+    };
+  }
+
   private getDataGridResizeConfig(event: MouseEvent): { vertical: boolean, horizontal: boolean } {
     const viewportRect = this.dataGrid.viewport.node.getBoundingClientRect();
     const verticalOffset = event.clientY - viewportRect.bottom - this.dataGrid['_hScrollBar'].node.clientHeight;
@@ -209,14 +214,6 @@ export class DataGridResize {
     return { vertical, horizontal };
   }
 
-  private setResizeRect() {
-    this.resizeRect = new Widget();
-    this.resizeRect.node.style.position = 'absolute';
-    this.resizeRect.node.style.background = DEFAULT_RESIZE_RECT_COLOR;
-    this.resizeRect.node.style.top = `${DEFAULT_GRID_PADDING + 1}px`;
-    this.resizeRect.node.style.left = `${DEFAULT_GRID_PADDING + 1}px`;
-  }
-
   private handleMouseMove(event: MouseEvent) {
     if (event.buttons !== 1) {
       return;
@@ -225,18 +222,14 @@ export class DataGridResize {
     this.captureEvent(event);
 
     if (this.resizeMode === 'both' || this.resizeMode === 'h') {
-      this.resizeRect.node.style.width = `${this.resizeStartRect.width + event.clientX - this.resizeStartRect.x}px`;
+      this.dataGrid.node.style.width = `${this.resizeStartRect.width + event.clientX - this.resizeStartRect.x + 2 * DEFAULT_GRID_PADDING}px`;
+      this.fillEmptyDataGridSpace();
     }
 
     if (this.resizeMode === 'both' || this.resizeMode === 'v') {
-      this.resizeRect.node.style.height = `${this.resizeStartRect.height + event.clientY - this.resizeStartRect.y}px`;
-    }
+      const height = this.resizeStartRect.height + event.clientY - this.resizeStartRect.y;
 
-    if (
-      (this.resizeMode === 'both' || this.resizeMode === 'v')
-      && (this.resizeRect.node.clientHeight + 2 * DEFAULT_GRID_PADDING) - this.dataGrid.node.clientHeight > this.dataGrid.baseRowSize / 3
-    ) {
-      this.dataGrid.rowManager.setRowsToShow(this.dataGrid.rowManager.rowsToShow + 1);
+      this.dataGrid.rowManager.setRowsToShow(Math.round(height / this.dataGrid.baseRowSize) || 1);
     }
   }
 
@@ -246,15 +239,9 @@ export class DataGridResize {
     }
 
     this.captureEvent(event);
-
-    const rect = this.resizeRect.node.getBoundingClientRect();
-
-    this.dataGrid.rowManager.setRowsToShow(Math.round((rect.height - this.dataGrid.headerHeight) / this.dataGrid.baseRowSize));
-    this.dataGrid.node.style.width = `${rect.width + 2 * DEFAULT_GRID_PADDING}px`;
-    this.fillEmptyDataGridSpace();
     this.setCursorStyle('auto');
 
-    this.detachResizeRect();
+    this.stopResizing();
   }
 
   private captureEvent(event: MouseEvent) {

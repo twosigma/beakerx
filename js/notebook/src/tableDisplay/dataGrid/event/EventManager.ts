@@ -101,7 +101,7 @@ export default class EventManager {
 
   private handleMouseUp(event: MouseEvent) {
     if (this.dataGrid.dataGridResize.isResizing()) {
-      return this.dataGrid.dataGridResize.detachResizeRect();
+      return this.dataGrid.dataGridResize.stopResizing();
     }
 
     this.dataGrid.cellSelectionManager.handleMouseUp(event);
@@ -166,7 +166,7 @@ export default class EventManager {
     this.dataGrid.cellSelectionManager.handleMouseDown(event);
 
     if (!this.isHeaderClicked(event) && this.dataGrid.dataGridResize.shouldResizeDataGrid(event)) {
-      return this.dataGrid.dataGridResize.attachResizeRect(event);
+      return this.dataGrid.dataGridResize.startResizing(event);
     }
 
     const data = this.dataGrid.getCellData(event.clientX, event.clientY);

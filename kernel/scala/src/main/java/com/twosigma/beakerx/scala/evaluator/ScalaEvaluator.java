@@ -97,12 +97,6 @@ public class ScalaEvaluator extends BaseEvaluator {
   }
 
   @Override
-  public void cancelExecution() {
-    super.cancelExecution();
-    //SparkVariable.cancelAllJobs();
-  }
-
-  @Override
   public void exit() {
     super.exit();
     cancelExecution();

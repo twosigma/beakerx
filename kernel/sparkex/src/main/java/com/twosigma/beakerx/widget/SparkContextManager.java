@@ -91,7 +91,7 @@ public class SparkContextManager {
   }
 
   private SparkContext sparkContext() {
-    return sparkSessionBuilder.getOrCreate().sparkContext();
+    return getSparkSession().sparkContext();
   }
 
   private void createSparkView() {
@@ -178,6 +178,7 @@ public class SparkContextManager {
       if (tryResultSparkContext.isError()) {
         sendError(parentMessage, kernel, tryResultSparkContext.error());
       }
+      kernel.registerCancelHook(SparkVariable::cancelAllJobs);
     } catch (Exception e) {
       sendError(parentMessage, kernel, e.getMessage());
     }
@@ -271,7 +272,9 @@ public class SparkContextManager {
       @Override
       public void onTaskEnd(SparkListenerTaskEnd taskEnd) {
         super.onTaskEnd(taskEnd);
-        taskEnd(taskEnd.stageId(), taskEnd.taskInfo().taskId());
+        if (taskEnd.reason().toString().equals("Success")) {
+          taskEnd(taskEnd.stageId(), taskEnd.taskInfo().taskId());
+        }
       }
     });
     return sc;
@@ -369,8 +372,6 @@ public class SparkContextManager {
   }
 
   public void cancelAllJobs() {
-    if (sparkContext() != null) {
-      sparkContext().cancelAllJobs();
-    }
+    sparkContext().cancelAllJobs();
   }
 }

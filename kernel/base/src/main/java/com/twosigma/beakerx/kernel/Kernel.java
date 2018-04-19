@@ -24,6 +24,7 @@ import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorManager;
+import com.twosigma.beakerx.evaluator.Hook;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.inspect.InspectResult;
@@ -281,5 +282,10 @@ public abstract class Kernel implements KernelFunctionality {
   @Override
   public String getOutDir() {
     return evaluatorManager.getOutDir();
+  }
+
+  @Override
+  public void registerCancelHook(Hook hook) {
+    evaluatorManager.registerCancelHook(hook);
   }
 }

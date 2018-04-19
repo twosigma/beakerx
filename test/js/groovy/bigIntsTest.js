@@ -39,20 +39,6 @@ describe('Large Integers in Tables ', function () {
   });
 
   describe('64-bit Longs ', function () {
-    it('Create image for test ', function () {
-      cellIndex = 0;
-      var fileName = 'cell1_case1.png';
-      var width = 350, height = 90;
-      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
-      console.log('width=' + beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
-      console.log('height=' + beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'height'));
-      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      console.log(imageData);
-      beakerxPO.createTableImage(imageData.value, imageDir, fileName);
-    });
-  });
-
-  describe('64-bit Longs ', function () {
     it('Should display 64-bit Longs values ', function () {
       cellIndex = 0;
       var fileName = 'cell1_case1.png';
@@ -69,10 +55,7 @@ describe('Large Integers in Tables ', function () {
       var fileName = 'cell2_case1.png';
       var width = 360, height = 90;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
-      console.log('width=' + beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
-      console.log('height=' + beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'height'));
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      console.log(imageData);
       beakerxPO.checkImageData(imageData.value, imageDir, fileName);
     });
   });

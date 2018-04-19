@@ -20,6 +20,7 @@ var LabPageObject = require('./lab.po.js').prototype;
 var env = require('../tmp.config.js');
 var path = require('path');
 var fs = require('fs');
+var resemble = require("resemblejs");
 
 function BeakerXPageObject() {
   if ('lab' == env.config.cur_app) {
@@ -239,12 +240,15 @@ function BeakerXPageObject() {
     return result;
   };
 
-  this.checkImageData = function(imageDataStr, imgDir, fileName){
+  this.checkImageData = function(imageData, imgDir, fileName){
+    var mismatchPercentage = 10;
     var absFileName = path.join(__dirname, '../resources/img', imgDir, fileName);
-    var bitmap = fs.readFileSync(absFileName);
-    var expectedDataStr = new Buffer(bitmap).toString('base64');
-    expect(expectedDataStr.length).toEqual(imageDataStr.length);
-    expect(expectedDataStr).toEqual(imageDataStr);
+    var file1 = fs.readFileSync(absFileName);
+    var file2 =  new Buffer(imageData, 'base64')
+    resemble(file1).compareTo(file2).ignoreAntialiasing().onComplete(function(data){
+      console.log(data);
+      expect(data.misMatchPercentage).toBeLessThan(mismatchPercentage);
+    });
   };
 
 };

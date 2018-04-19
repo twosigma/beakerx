@@ -86,7 +86,7 @@ def comm_msg(stream, ident, msg):
     content = msg['content']
     comm_id = content['comm_id']
     comm_manager = get_ipython().kernel.comm_manager
-    comm = comm_manager.comms.get('comm_id')
+    comm = comm_manager.comms.get(comm_id)
     if comm is None:
         magic_registry = comm_manager.kernel.shell.magics_manager.registry
         for magic in magic_registry.values():

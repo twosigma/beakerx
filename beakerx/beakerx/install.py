@@ -52,6 +52,7 @@ def _uninstall_nbextension():
     subprocess.check_call(["jupyter", "nbextension", "uninstall", "beakerx", "--py", "--sys-prefix"])
     subprocess.check_call(["jupyter", "serverextension", "disable", "beakerx", "--py", "--sys-prefix"])
 
+
 def _install_nbextension():
     if sys.platform == 'win32':
         subprocess.check_call(["jupyter", "nbextension", "install", "beakerx", "--py", "--sys-prefix"])
@@ -61,6 +62,19 @@ def _install_nbextension():
     subprocess.check_call(["jupyter", "nbextension", "enable", "beakerx", "--py", "--sys-prefix"])
 
     subprocess.check_call(["jupyter", "serverextension", "enable", "beakerx", "--py", "--sys-prefix"])
+
+
+def _install_labextensions(lab):
+    if lab:
+        subprocess.check_call(["jupyter", "labextension", "install", "@jupyter-widgets/jupyterlab-manager"])
+        subprocess.check_call(["jupyter", "labextension", "install", "beakerx-jupyterlab"])
+        subprocess.check_call(["jupyter", "labextension", "install", "beakerx-jupyterlab-js"])
+
+
+def _uninstall_labextensions():
+    subprocess.check_call(["jupyter", "labextension", "uninstall", "beakerx-jupyterlab-js"])
+    subprocess.check_call(["jupyter", "labextension", "uninstall", "beakerx-jupyterlab"])
+    subprocess.check_call(["jupyter", "labextension", "uninstall", "@jupyter-widgets/jupyterlab-manager"])
 
 
 def _copy_tree(src, dst):
@@ -188,12 +202,14 @@ def make_parser():
 
 def _disable_beakerx(args):
     _uninstall_nbextension()
+    _uninstall_labextensions()
     _uninstall_kernels()
     _install_kernelspec_manager(args.prefix, disable=True)
 
 
 def _install_beakerx(args):
     _install_nbextension()
+    _install_labextensions(args.lab)
     _install_kernels()
     _install_css()
     _copy_icons()

@@ -129,8 +129,13 @@ def _install_magics():
     with open(os.path.join(dir_path, 'ipython_config.py'), 'w+') as ipython_config:
         ipython_config.write("c = get_config()\n")
         ipython_config.write("c.InteractiveShellApp.extensions = ["
-                             "'beakerx_magics.magic_kernel_comm',\n"
-                             "'beakerx_magics.groovy_magic'\n"
+                             "'beakerx_magics.kernel_magic',\n"
+                             "'beakerx_magics.groovy_magic',\n"
+                             "'beakerx_magics.clojure_magic',\n"
+                             "'beakerx_magics.kotlin_magic',\n"
+                             "'beakerx_magics.scala_magic',\n"
+                             "'beakerx_magics.sql_magic',\n"
+                             "'beakerx_magics.java_magic'\n"
                              "]\n")
 
 def _set_conf_privileges():

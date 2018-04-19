@@ -79,11 +79,9 @@ export default class CellManager {
   }
 
   getAllCells() {
-    const startRow = this.dataGrid.rowManager.rows[0];
-    const endRow = this.dataGrid.rowManager.rows[this.dataGrid.rowManager.rows.length - 1];
     const rowsRange = {
       startCell: {
-        row: startRow.index,
+        row: 0,
         column: 0,
         type: COLUMN_TYPES.index,
         delta: 0,
@@ -91,7 +89,7 @@ export default class CellManager {
         offsetTop: 0
       },
       endCell: {
-        row: endRow.index,
+        row: this.dataGrid.rowManager.rows.length - 1,
         column: this.dataGrid.columnManager.columns[COLUMN_TYPES.body].length - 1 || 0,
         type: COLUMN_TYPES.body,
         delta: 0,

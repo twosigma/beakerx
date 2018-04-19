@@ -111,12 +111,12 @@ export class BeakerXDataGrid extends DataGrid {
     this.model = new BeakerXDataGridModel(store, this.columnManager, this.rowManager);
     this.focused = false;
 
+    this.addHighlighterManager();
+    this.addCellRenderers();
+
     this.columnManager.addColumns();
     this.rowManager.createFilterExpressionVars();
     this.store.changed.connect(throttle<void, void>(this.handleStateChanged, 100, this));
-
-    this.addHighlighterManager();
-    this.addCellRenderers();
     this.dataGridResize.setInitialSize();
   }
 

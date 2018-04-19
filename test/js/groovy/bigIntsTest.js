@@ -42,7 +42,7 @@ describe('Large Integers in Tables ', function () {
     it('Should display 64-bit Longs values ', function () {
       cellIndex = 0;
       var fileName = 'cell1_case1.png';
-      var width = 350, height = 90;
+      var width = 360, height = 90;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, fileName);

@@ -57,7 +57,6 @@ public class SparkContextManager {
   private VBox sparkView;
   private Text masterURL;
   private Text executorMemory;
-  private Text sparkContextAlias;
   private Text sparkSessionAlias;
   private Text executorCores;
 
@@ -91,21 +90,19 @@ public class SparkContextManager {
   }
 
   private SparkContext sparkContext() {
-    return sparkSessionBuilder.getOrCreate().sparkContext();
+    return getSparkSession().sparkContext();
   }
 
   private void createSparkView() {
     this.masterURL = createMasterURL();
     this.executorMemory = createExecutorMemory();
     this.executorCores = createExecutorCores();
-    this.sparkContextAlias = sparkContextAlias();
     this.sparkSessionAlias = sparkSessionAlias();
     Button connect = createConnectButton();
     ArrayList<Widget> children = new ArrayList<>();
     children.add(masterURL);
     children.add(executorCores);
     children.add(executorMemory);
-    children.add(sparkContextAlias);
     children.add(sparkSessionAlias);
     children.add(connect);
     VBox vBox = new VBox(children);
@@ -122,13 +119,6 @@ public class SparkContextManager {
       cores.setValue("10");
     }
     return cores;
-  }
-
-  private Text sparkContextAlias() {
-    Text alias = new Text();
-    alias.setDescription("SparkContext alias");
-    alias.setValue("sc");
-    return alias;
   }
 
   private Text sparkSessionAlias() {
@@ -170,7 +160,7 @@ public class SparkContextManager {
     try {
       SparkConf sparkConf = configureSparkConf(getSparkConf());
       sparkSessionBuilder.config(sparkConf);
-      SparkSession sparkSession = sparkSessionBuilder.getOrCreate();
+      SparkSession sparkSession = getSparkSession();
       addListener(sparkContext());
       SparkVariable.putSparkContext(sparkContext());
       SparkVariable.putSparkSession(sparkSession);
@@ -178,23 +168,24 @@ public class SparkContextManager {
       if (tryResultSparkContext.isError()) {
         sendError(parentMessage, kernel, tryResultSparkContext.error());
       }
+      kernel.registerCancelHook(SparkVariable::cancelAllJobs);
     } catch (Exception e) {
       sendError(parentMessage, kernel, e.getMessage());
     }
   }
 
+  private SparkSession getSparkSession() {
+    return sparkSessionBuilder.getOrCreate();
+  }
+
   private TryResult initSparkContextInShell(KernelFunctionality kernel) {
-    if (sparkContextAlias.getValue() == null || sparkContextAlias.getValue().isEmpty()) {
-      throw new RuntimeException("SparkContext alias can not be empty");
-    }
     if (sparkSessionAlias.getValue() == null || sparkSessionAlias.getValue().isEmpty()) {
       throw new RuntimeException("SparkContext alias can not be empty");
     }
     String addSc = String.format(
             "import com.twosigma.beakerx.widget.SparkVariable\n" +
-                    "var %s = SparkVariable.getSparkContext()\n" +
                     "var %s = SparkVariable.getSparkSession()\n",
-            sparkContextAlias.getValue(), sparkSessionAlias.getValue());
+            sparkSessionAlias.getValue());
 
     SimpleEvaluationObject seo = createSimpleEvaluationObject(addSc, kernel, new Message(), 1);
     return kernel.executeCode(addSc, seo);
@@ -267,7 +258,9 @@ public class SparkContextManager {
       @Override
       public void onTaskEnd(SparkListenerTaskEnd taskEnd) {
         super.onTaskEnd(taskEnd);
-        taskEnd(taskEnd.stageId(), taskEnd.taskInfo().taskId());
+        if (taskEnd.reason().toString().equals("Success")) {
+          taskEnd(taskEnd.stageId(), taskEnd.taskInfo().taskId());
+        }
       }
     });
     return sc;
@@ -365,8 +358,6 @@ public class SparkContextManager {
   }
 
   public void cancelAllJobs() {
-    if (sparkContext() != null) {
-      sparkContext().cancelAllJobs();
-    }
+    sparkContext().cancelAllJobs();
   }
 }

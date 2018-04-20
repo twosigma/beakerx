@@ -46,7 +46,6 @@ import java.util.concurrent.Future;
 public abstract class BaseEvaluator implements Evaluator {
 
   public static String INTERUPTED_MSG = "interrupted";
-
   protected final String shellId;
   protected final String sessionId;
   protected String outDir;
@@ -56,6 +55,7 @@ public abstract class BaseEvaluator implements Evaluator {
   private final CellExecutor executor;
   private Path tempFolder;
   protected EvaluatorParameters evaluatorParameters;
+  private EvaluatorHooks cancelHooks = new EvaluatorHooks();
 
   protected ExecutorService executorService;
 
@@ -200,6 +200,7 @@ public abstract class BaseEvaluator implements Evaluator {
   @Override
   public void cancelExecution() {
     executor.cancelExecution();
+    cancelHooks.runHooks();
   }
 
   @Override
@@ -261,5 +262,10 @@ public abstract class BaseEvaluator implements Evaluator {
 
   public Inspect getInspect() {
     return inspect;
+  }
+
+  @Override
+  public void registerCancelHook(Hook hook) {
+    this.cancelHooks.registerHook(hook);
   }
 }

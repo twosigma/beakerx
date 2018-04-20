@@ -165,8 +165,8 @@ export default class ColumnManager {
   }
 
   updateColumnMenuTriggers() {
-    this.bodyColumns.forEach(column => column.menu.updateTriggerPosition());
-    this.indexColumns.forEach(column => column.menu.updateTriggerPosition());
+    this.bodyColumns.forEach(column => column.menu && column.menu.updateTriggerPosition());
+    this.indexColumns.forEach(column => column.menu && column.menu.updateTriggerPosition());
   }
 
   takeColumnsByCells(startCell: ICellData, endCell: ICellData) {
@@ -244,6 +244,11 @@ export default class ColumnManager {
   recalculateMinMaxValues() {
     this.recalculateColumnsMinMax(this.bodyColumns);
     this.recalculateColumnsMinMax(this.indexColumns);
+  }
+
+  createColumnMenus() {
+    this.indexColumns.forEach(column => column.createMenu());
+    this.bodyColumns.forEach(column => column.createMenu());
   }
 
   private recalculateColumnsMinMax(columns: DataGridColumn[]) {

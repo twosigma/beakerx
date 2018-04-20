@@ -172,8 +172,8 @@ export default class EventManager {
     const data = this.dataGrid.getCellData(event.clientX, event.clientY);
 
     if (
-      data.region === 'corner-header'
-      && data.column === 0
+      !data
+      || data.region === 'corner-header' && data.column === 0
       || data.width - data.delta < COLUMN_RESIZE_AREA_WIDTH
     ) {
       return;

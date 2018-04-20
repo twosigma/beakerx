@@ -55,7 +55,11 @@ describe('(Groovy) Testing of MIME types', function () {
 
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
 
-      expect(codeCell.$('div.output_result > h1').getText()).toBe(testValues.headerText);
+      browser.waitUntil(function () {
+        return codeCell.$('div.output_result > h1').getText() === testValues.headerText;
+      })
+
+
     });
 
     it('Cell displays html code', function () {
@@ -133,7 +137,7 @@ describe('(Groovy) Testing of MIME types', function () {
 
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
 
-      expect(codeCell.$("div.output_subarea > iframe[src='https://www.scribd.com/embeds/71048089/content']").isEnabled()).toBeTruthy();
+      expect(codeCell.$("div.output_subarea > iframe[src='https://www.scribd.com/embeds/71048089/content?start_page=5&view_mode=slideshow']").isEnabled()).toBeTruthy();
     });
 
     it('Cell displays a Vimeo video', function () {
@@ -185,14 +189,6 @@ describe('(Groovy) Testing of MIME types', function () {
     });
 
     it('Cell displays an image element from file', function () {
-      cellIndex += 1;
-
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$('div.output_subarea > img').isEnabled()).toBeTruthy();
-    });
-
-    it('Cell displays an image element from byte stream', function () {
       cellIndex += 1;
 
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);

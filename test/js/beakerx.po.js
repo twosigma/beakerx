@@ -20,6 +20,7 @@ var LabPageObject = require('./lab.po.js').prototype;
 var env = require('../tmp.config.js');
 var path = require('path');
 var fs = require('fs');
+var resemble = require("resemblejs");
 
 function BeakerXPageObject() {
   if ('lab' == env.config.cur_app) {
@@ -196,7 +197,7 @@ function BeakerXPageObject() {
       var menu = browser.$('div.dropdown-submenu.bko-table-menu');
       return menu != null && menu.isVisible();
     }, 10000, 'index sub menu is not visible');
-    return browser.$('div.dropdown-submenu.bko-table-menu');
+    return browser.$$('div.dropdown-submenu.bko-table-menu');
   };
 
   this.checkBrowserLogError = function(log_level){
@@ -234,17 +235,19 @@ function BeakerXPageObject() {
       bufferCanvas.width  = width;
       bufferCanvas.height = height;
       bufferCanvas.getContext('2d').putImageData(imgData, 0, 0);
-      return bufferCanvas.toDataURL('image/png').substring(22);
+      return bufferCanvas.toDataURL('image/png').replace(/data:image\/png;base64,/, "");
     }, canvas.value, sx, sy, width, height);
     return result;
   };
 
-  this.checkImageData = function(imageDataStr, imgDir, fileName){
+  this.checkImageData = function(imageData, imgDir, fileName){
+    var mismatchPercentage = 1;
     var absFileName = path.join(__dirname, '../resources/img', imgDir, fileName);
-    var bitmap = fs.readFileSync(absFileName);
-    var expectedDataStr = new Buffer(bitmap).toString('base64');
-    expect(expectedDataStr.length).toEqual(imageDataStr.length);
-    expect(expectedDataStr).toEqual(imageDataStr);
+    var file1 = fs.readFileSync(absFileName);
+    var file2 =  new Buffer(imageData, 'base64')
+    resemble(file1).compareTo(file2).ignoreAntialiasing().onComplete(function(data){
+      expect(data.misMatchPercentage).toBeLessThan(mismatchPercentage);
+    });
   };
 
 };

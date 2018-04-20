@@ -16,7 +16,7 @@
 
 import ColumnMenu from "../headerMenu/ColumnMenu";
 import IndexMenu from "../headerMenu/IndexMenu";
-import { BeakerxDataGrid } from "../BeakerxDataGrid";
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import {IColumnOptions} from "../interface/IColumn";
 import { ICellData } from "../interface/ICell";
 import { CellRenderer, DataModel, TextRenderer } from "@phosphor/datagrid";
@@ -51,7 +51,7 @@ import {
   UPDATE_COLUMN_SORT_ORDER,
   UPDATE_COLUMN_WIDTH
 } from "./reducer";
-import {BeakerxDataStore} from "../store/dataStore";
+import {BeakerXDataStore} from "../store/BeakerXDataStore";
 import {COLUMN_TYPES, SORT_ORDER} from "./enums";
 import {
   UPDATE_COLUMN_FROZEN, UPDATE_COLUMN_RENDERER,
@@ -65,8 +65,8 @@ export default class DataGridColumn {
   name: string;
   type: COLUMN_TYPES;
   menu: ColumnMenu|IndexMenu;
-  dataGrid: BeakerxDataGrid;
-  store: BeakerxDataStore;
+  dataGrid: BeakerXDataGrid;
+  store: BeakerXDataStore;
   columnManager: ColumnManager;
   columnFilter: ColumnFilter;
   formatFn: CellRenderer.ConfigFunc<string>;
@@ -75,7 +75,7 @@ export default class DataGridColumn {
   dataTypeTooltip: CellTooltip;
   longestStringValue: string;
 
-  constructor(options: IColumnOptions, dataGrid: BeakerxDataGrid, columnManager: ColumnManager) {
+  constructor(options: IColumnOptions, dataGrid: BeakerXDataGrid, columnManager: ColumnManager) {
     this.index = options.index;
     this.name = options.name;
     this.type = options.type;
@@ -83,13 +83,11 @@ export default class DataGridColumn {
     this.store = dataGrid.store;
     this.columnManager = columnManager;
 
-    this.handleHeaderCellHovered = this.handleHeaderCellHovered.bind(this);
-
     this.assignFormatFn();
     this.createMenu();
     this.addColumnFilter();
     this.addDataTypeTooltip();
-    this.connectToHeaderCellHovered();
+    this.connectToCellHovered();
     this.connectToColumnsChanged();
     this.addMinMaxValues();
   }
@@ -182,14 +180,14 @@ export default class DataGridColumn {
   }
 
   connectToColumnsChanged() {
-    this.columnManager.columnsChanged.connect(this.onColumnsChanged.bind(this));
+    this.columnManager.columnsChanged.connect(this.onColumnsChanged, this);
   }
 
-  connectToHeaderCellHovered() {
-    this.dataGrid.cellHovered.connect(this.handleHeaderCellHovered);
+  connectToCellHovered() {
+    this.dataGrid.cellHovered.connect(this.handleHeaderCellHovered, this);
   }
 
-  handleHeaderCellHovered(sender: BeakerxDataGrid, data: ICellData) {
+  handleHeaderCellHovered(sender: BeakerXDataGrid, data: ICellData) {
     const column = data && this.columnManager.getColumnByPosition(ColumnManager.createPositionFromCell(data));
 
     if (!data || column !== this || !DataGridCell.isHeaderCell(data)) {
@@ -342,11 +340,11 @@ export default class DataGridColumn {
       let value2 = valueResolver(b);
 
       if (dataType === ALL_TYPES.string || dataType === ALL_TYPES['formatted integer'] || dataType === ALL_TYPES.html) {
-        let aLength = a ? a.length : 0;
-        let bLength = b ? b.length : 0;
-        let longer = aLength > bLength ? a : b;
+        let aLength = value1 ? value1.length : 0;
+        let bLength = value2 ? value2.length : 0;
+        let longer = aLength > bLength ? value1 : value2;
 
-        if (!this.longestStringValue || this.longestStringValue.length < longer.length) {
+        if (!this.longestStringValue || this.longestStringValue.length < String(longer).length) {
           this.longestStringValue = longer;
         }
       }
@@ -476,10 +474,14 @@ export default class DataGridColumn {
   private toggleDataTooltip(show: boolean, data?: ICellData) {
     const rect = this.dataGrid.node.getBoundingClientRect();
 
+    if (data && !this.dataTypeTooltip.node.innerText) {
+      this.dataTypeTooltip.node.innerText = typeof data.value;
+    }
+
     if (show && data) {
       return this.dataTypeTooltip.show(
         Math.ceil(rect.left + data.offset + 20),
-        Math.ceil(rect.top - 10)
+        Math.ceil(window.pageYOffset + rect.top - 10)
       );
     }
 

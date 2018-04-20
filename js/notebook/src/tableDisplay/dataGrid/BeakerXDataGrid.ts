@@ -15,7 +15,7 @@
  */
 
 import {CellRenderer, DataGrid, DataModel, GraphicsContext} from "@phosphor/datagrid";
-import { BeakerxDataGridModel } from "./model/BeakerxDataGridModel";
+import { BeakerXDataGridModel } from "./model/BeakerXDataGridModel";
 import { Widget } from "@phosphor/widgets";
 import { Signal } from '@phosphor/signaling';
 import { ICellData } from "./interface/ICell";
@@ -34,7 +34,7 @@ import CellFocusManager from "./cell/CellFocusManager";
 import {DEFAULT_HIGHLIGHT_COLOR, DEFAULT_ROW_HEIGHT} from "./style/dataGridStyle";
 import CellTooltipManager from "./cell/CellTooltipManager";
 import * as bkUtils from '../../shared/bkUtils';
-import {BeakerxDataStore} from "./store/dataStore";
+import {BeakerXDataStore} from "./store/BeakerXDataStore";
 import {
   selectCellHighlighters,
   selectHasIndex,
@@ -48,15 +48,14 @@ import enableKeyboardManager = DataGridHelpers.enableKeyboardManager;
 import ColumnPosition from "./column/ColumnPosition";
 import {SectionList} from "@phosphor/datagrid/lib/sectionlist";
 import ColumnRegion = DataModel.ColumnRegion;
-import CellRegion = DataModel.CellRegion;
 import {DataGridResize} from "./DataGridResize";
 
-export class BeakerxDataGrid extends DataGrid {
+export class BeakerXDataGrid extends DataGrid {
   id: string;
-  store: BeakerxDataStore;
+  store: BeakerXDataStore;
   columnSections: SectionList;
   columnHeaderSections: SectionList;
-  model: BeakerxDataGridModel;
+  model: BeakerXDataGridModel;
   rowHeaderSections: SectionList;
   rowSections: SectionList;
   viewport: Widget;
@@ -79,7 +78,7 @@ export class BeakerxDataGrid extends DataGrid {
 
   static FOCUS_CSS_CLASS = 'bko-focused';
 
-  constructor(options: DataGrid.IOptions, dataStore: BeakerxDataStore) {
+  constructor(options: DataGrid.IOptions, dataStore: BeakerXDataStore) {
     super(options);
 
     //this is hack to use private DataGrid properties
@@ -97,7 +96,7 @@ export class BeakerxDataGrid extends DataGrid {
     this.init(dataStore);
   }
 
-  init(store: BeakerxDataStore) {
+  init(store: BeakerXDataStore) {
     this.id = 'grid_' + bkUtils.generateId(6);
     this.store = store;
     this.columnManager = new ColumnManager(this);
@@ -109,15 +108,15 @@ export class BeakerxDataGrid extends DataGrid {
     this.cellFocusManager = new CellFocusManager(this);
     this.cellTooltipManager = new CellTooltipManager(this, selectTooltips(store.state));
     this.dataGridResize = new DataGridResize(this);
-    this.model = new BeakerxDataGridModel(store, this.columnManager, this.rowManager);
+    this.model = new BeakerXDataGridModel(store, this.columnManager, this.rowManager);
     this.focused = false;
+
+    this.addHighlighterManager();
+    this.addCellRenderers();
 
     this.columnManager.addColumns();
     this.rowManager.createFilterExpressionVars();
     this.store.changed.connect(throttle<void, void>(this.handleStateChanged, 100, this));
-
-    this.addHighlighterManager();
-    this.addCellRenderers();
     this.dataGridResize.setInitialSize();
   }
 
@@ -168,7 +167,7 @@ export class BeakerxDataGrid extends DataGrid {
 
     if (focus) {
       disableKeyboardManager();
-      this.node.classList.add(BeakerxDataGrid.FOCUS_CSS_CLASS);
+      this.node.classList.add(BeakerXDataGrid.FOCUS_CSS_CLASS);
       this.node.focus();
 
       return;
@@ -176,7 +175,7 @@ export class BeakerxDataGrid extends DataGrid {
 
     this.cellHovered.emit(null);
     this.cellTooltipManager.hideTooltip();
-    this.node.classList.remove(BeakerxDataGrid.FOCUS_CSS_CLASS);
+    this.node.classList.remove(BeakerXDataGrid.FOCUS_CSS_CLASS);
     enableKeyboardManager();
   }
 

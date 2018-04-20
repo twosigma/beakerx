@@ -16,13 +16,12 @@
 
 import { CommandRegistry } from '@phosphor/commands';
 import { Widget } from '@phosphor/widgets';
-import { BeakerxDataGrid } from "../BeakerxDataGrid";
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import Menu from './BkoMenu';
 import MenuItem from '../../../shared/interfaces/menuItemInterface';
 import MenuInterface from '../../../shared/interfaces/menuInterface';
 import DataGridColumn from "../column/DataGridColumn";
-import {selectColumnPosition} from "../column/selectors";
-import {COLUMN_TYPES, SORT_ORDER} from "../column/enums";
+import {SORT_ORDER} from "../column/enums";
 import {DataGridHelpers} from "../dataGridHelpers";
 import getEventKeyCode = DataGridHelpers.getEventKeyCode;
 import {KEYBOARD_KEYS} from "../event/enums";
@@ -39,7 +38,7 @@ export default abstract class HeaderMenu implements MenuInterface {
   protected menu: Menu;
   protected viewport: Widget;
   protected triggerNode: HTMLElement;
-  protected dataGrid: BeakerxDataGrid;
+  protected dataGrid: BeakerXDataGrid;
   protected column: DataGridColumn;
 
   private TRIGGER_CLASS_OPENED: string = 'opened';
@@ -245,7 +244,7 @@ export default abstract class HeaderMenu implements MenuInterface {
     const triggerRectObject = trigger.getBoundingClientRect();
 
     return {
-      top: triggerRectObject.bottom,
+      top: window.pageYOffset + triggerRectObject.bottom,
       left: triggerRectObject.left
     };
   }
@@ -253,10 +252,10 @@ export default abstract class HeaderMenu implements MenuInterface {
   protected correctPosition(trigger: any) {
     const menuRectObject = this.menu.node.getBoundingClientRect();
     const triggerRectObject = trigger.getBoundingClientRect();
+    const outOfViewportPartSize = triggerRectObject.bottom + menuRectObject.height - window.innerHeight;
 
-    if (triggerRectObject.bottom + menuRectObject.height > window.innerHeight) {
-      this.menu.node.style.top = '';
-      this.menu.node.style.bottom = '10px';
+    if (outOfViewportPartSize > 0) {
+      this.menu.node.style.top = `${window.pageYOffset + triggerRectObject.bottom - outOfViewportPartSize - 10}px`;
     }
 
     if (menuRectObject.top < triggerRectObject.bottom && menuRectObject.left <= triggerRectObject.right) {

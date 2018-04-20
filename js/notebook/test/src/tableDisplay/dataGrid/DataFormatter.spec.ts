@@ -20,12 +20,12 @@ import { DataFormatter } from '@beakerx/tableDisplay/dataGrid/DataFormatter';
 import { TIME_UNIT_FORMATS } from '@beakerx/tableDisplay/consts';
 import * as moment from 'moment-timezone/builds/moment-timezone-with-data';
 import modelStateMock from "./mock/modelStateMock";
-import {BeakerxDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import {BeakerXDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import columnOptionsMock from "./mock/columnOptionsMock";
 import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 import {ALL_TYPES} from "@beakerx/tableDisplay/dataGrid/dataTypes";
 import cellConfigMock from "./mock/cellConfigMock";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 
 declare var require: Function;
 
@@ -110,7 +110,7 @@ describe('DataFormatter', () => {
 
     it('should convert to date', () => {
       expect(stringFormatFn({ ...cellConfig, value: { timestamp: 1516697673043, type: 'Date' }}))
-        .to.equal('20180123 09:54:33.043 +0100');
+        .to.equal('20180123 03:54:33.043 -0500');
     });
 
     it('should return given value', () => {

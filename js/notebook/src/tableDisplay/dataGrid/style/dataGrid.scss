@@ -190,3 +190,8 @@ $sortDescendingIconWhite: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4
     background: $silverChalice;
   }
 }
+
+.bko-dragged-header {
+  position: absolute;
+  box-shadow: 0 0 3px #262626;
+}

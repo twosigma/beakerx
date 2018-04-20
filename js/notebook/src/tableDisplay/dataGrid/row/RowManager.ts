@@ -86,18 +86,30 @@ export default class RowManager {
     this.rows = this.rows.sort((row1, row2) => {
       let value1 = columnValueResolver(resolverFn(row1, columnIndex));
       let value2 = columnValueResolver(resolverFn(row2, columnIndex));
-      let result = 0;
-
-      if (value1 > value2) {
-        result = 1;
-      }
-
-      if (value1 < value2) {
-        result = -1;
-      }
+      let result = this.compareSortedValues(value1, value2)
 
       return shouldReverse ? -result : result;
     });
+  }
+
+  private compareSortedValues(value1, value2) {
+    if (
+      typeof value1 === 'number'
+      && typeof value2 === 'number'
+      && !isFinite(value1 - value2)
+    ) {
+      return !isFinite(value1) ? !isFinite(value2) ? 0 : 1 : -1;
+    }
+
+    if (value1 > value2) {
+      return 1;
+    }
+
+    if (value1 < value2) {
+      return -1;
+    }
+
+    return 0;
   }
 
   resetSorting() {

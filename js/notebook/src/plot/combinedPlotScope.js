@@ -342,6 +342,9 @@ define([
     var plots = self.stdmodel.plots;
 
     var combinedSvg = $("<svg></svg>").attr('xmlns', 'http://www.w3.org/2000/svg').attr('class', 'svg-export');
+    if (document.body.classList.contains('improveFonts')) {
+      combinedSvg.addClass('improveFonts');
+    }
 
     var plotTitle = self.element.find("#combplotTitle");
 

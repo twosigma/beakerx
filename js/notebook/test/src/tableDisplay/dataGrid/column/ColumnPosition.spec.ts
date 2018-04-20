@@ -16,10 +16,10 @@
 
 import { expect } from 'chai';
 import * as sinon from 'sinon';
-import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import modelStateMock from "../mock/modelStateMock";
 import ColumnPosition from "@beakerx/tableDisplay/dataGrid/column/ColumnPosition";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 import cellDataMock from "../mock/cellDataMock";
 
 declare var require: Function;
@@ -32,18 +32,18 @@ describe('ColumnPosition', () => {
     values: [[1,2,3],[1,3,2]],
     columnsFrozen: { column: true }
   });
-  const dataGrid = new BeakerxDataGrid({}, dataStore);
+  const dataGrid = new BeakerXDataGrid({}, dataStore);
   const columnPosition = dataGrid.columnPosition;
 
   it('should be an instance of ColumnFilter', () => {
     expect(columnPosition).to.be.an.instanceof(ColumnPosition);
   });
 
-  it('should implement method grabColumn', () => {
-    expect(columnPosition).to.have.property('grabColumn');
-    expect(columnPosition.grabColumn).to.be.a('function');
+  it('should implement method startDragging', () => {
+    expect(columnPosition).to.have.property('startDragging');
+    expect(columnPosition.startDragging).to.be.a('function');
 
-    columnPosition.grabColumn(cellDataMock);
+    columnPosition['handleDragStart'](cellDataMock);
     expect(columnPosition.grabbedCellData).to.equal(cellDataMock);
     expect(columnPosition.isDragging()).to.be.true;
     columnPosition.stopDragging();
@@ -57,7 +57,7 @@ describe('ColumnPosition', () => {
     const stub = sinon.stub(columnPosition, 'moveColumn');
     const dropData = { ...cellDataMock, column: 1 };
 
-    columnPosition.grabColumn(cellDataMock);
+    columnPosition['handleDragStart'](cellDataMock);
     columnPosition.dropCellData = dropData;
     columnPosition.dropColumn();
 
@@ -82,7 +82,7 @@ describe('ColumnPosition', () => {
     const column1 = dataGrid.columnManager.getColumnByName('column1');
     const dropData = { ...cellDataMock, column: 1 };
 
-    columnPosition.grabColumn(cellDataMock);
+    columnPosition['handleDragStart'](cellDataMock);
     columnPosition.dropCellData = dropData;
     columnPosition.dropColumn();
 

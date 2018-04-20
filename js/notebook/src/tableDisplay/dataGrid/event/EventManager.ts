@@ -14,11 +14,11 @@
  *  limitations under the License.
  */
 
-import {BeakerxDataGrid} from "../BeakerxDataGrid";
+import {BeakerXDataGrid} from "../BeakerXDataGrid";
 import DataGridColumn from "../column/DataGridColumn";
 import {HIGHLIGHTER_TYPE} from "../interface/IHighlighterState";
 import {DataGridHelpers} from "../dataGridHelpers";
-import {BeakerxDataStore} from "../store/dataStore";
+import {BeakerXDataStore} from "../store/BeakerXDataStore";
 import {selectDoubleClickTag, selectHasDoubleClickAction} from "../model/selectors";
 import {COLUMN_TYPES} from "../column/enums";
 import CellManager from "../cell/CellManager";
@@ -26,17 +26,19 @@ import throttle = DataGridHelpers.throttle;
 import isUrl = DataGridHelpers.isUrl;
 import getEventKeyCode = DataGridHelpers.getEventKeyCode;
 import {KEYBOARD_KEYS} from "./enums";
-import { Signal } from '@phosphor/signaling';
 import ColumnManager from "../column/ColumnManager";
 import {ICellData} from "../interface/ICell";
 
-export default class EventManager {
-  dataGrid: BeakerxDataGrid;
-  store: BeakerxDataStore;
+const COLUMN_RESIZE_AREA_WIDTH = 4;
 
-  constructor(dataGrid: BeakerxDataGrid) {
+export default class EventManager {
+  dataGrid: BeakerXDataGrid;
+  store: BeakerXDataStore;
+
+  constructor(dataGrid: BeakerXDataGrid) {
     this.store = dataGrid.store;
     this.dataGrid = dataGrid;
+
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleMouseOut = this.handleMouseOut.bind(this);
     this.handleMouseDown = this.handleMouseDown.bind(this);
@@ -44,6 +46,7 @@ export default class EventManager {
     this.handleHeaderClick = this.handleHeaderClick.bind(this);
     this.handleBodyClick = this.handleBodyClick.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
+    this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleCellHover = throttle<MouseEvent, void>(this.handleCellHover, 100, this);
     this.handleWindowResize = throttle<Event, void>(this.handleWindowResize, 200, this);
 
@@ -54,9 +57,13 @@ export default class EventManager {
     this.dataGrid.node.addEventListener('dblclick', this.handleDoubleClick, true);
     this.dataGrid.node.removeEventListener('mouseup', this.handleMouseUp);
     this.dataGrid.node.addEventListener('mouseup', this.handleMouseUp);
+    this.dataGrid.node.removeEventListener('mousemove', this.handleMouseMove);
+    this.dataGrid.node.addEventListener('mousemove', this.handleMouseMove);
+
     this.dataGrid['_vScrollBar'].node.addEventListener('mousedown', this.handleMouseDown);
     this.dataGrid['_hScrollBar'].node.addEventListener('mousedown', this.handleMouseDown);
     this.dataGrid['_scrollCorner'].node.addEventListener('mousedown', this.handleMouseDown);
+
     document.removeEventListener('keydown', this.handleKeyDown);
     document.addEventListener('keydown', this.handleKeyDown, true);
     window.addEventListener('resize', this.handleWindowResize);
@@ -64,9 +71,6 @@ export default class EventManager {
 
   handleEvent(event: Event, parentHandler: Function): void {
     switch (event.type) {
-      case 'mousemove':
-        this.handleCellHover(event as MouseEvent);
-        break;
       case 'mousedown':
         this.handleMouseDown(event as MouseEvent);
         break;
@@ -121,12 +125,17 @@ export default class EventManager {
     isUrl(hoveredCellData.value) && window.open(hoveredCellData.value);
   }
 
-  private handleCellHover(event: MouseEvent): void {
-    const data = this.dataGrid.getCellData(event.clientX, event.clientY);
-
+  private handleMouseMove(event: MouseEvent): void {
     if (event.buttons !== 1) {
       this.dataGrid.columnPosition.stopDragging();
     }
+
+    this.dataGrid.columnPosition.moveDraggedHeader(event);
+    this.handleCellHover(event);
+  }
+
+  private handleCellHover(event) {
+    const data = this.dataGrid.getCellData(event.clientX, event.clientY);
 
     this.dataGrid.cellHovered.emit(data);
     this.dataGrid.cellSelectionManager.handleBodyCellHover(event);
@@ -146,11 +155,15 @@ export default class EventManager {
 
     const data = this.dataGrid.getCellData(event.clientX, event.clientY);
 
-    if (data.region === 'corner-header' && data.column === 0) {
+    if (
+      data.region === 'corner-header'
+      && data.column === 0
+      || data.width - data.delta < COLUMN_RESIZE_AREA_WIDTH
+    ) {
       return;
     }
 
-    this.dataGrid.columnPosition.grabColumn(data);
+    this.dataGrid.columnPosition.startDragging(data);
   }
 
   private handleMouseOut(event: MouseEvent): void {

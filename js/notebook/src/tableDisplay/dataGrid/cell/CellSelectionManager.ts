@@ -17,8 +17,7 @@
 import {CellRenderer} from "@phosphor/datagrid";
 import ICellConfig = CellRenderer.ICellConfig;
 import {ICellData} from "../interface/ICell";
-import {BeakerxDataGrid} from "../BeakerxDataGrid";
-import DataGridColumn from "../column/DataGridColumn";
+import {BeakerXDataGrid} from "../BeakerXDataGrid";
 
 export interface IRangeCells {
   startCell: ICellData,
@@ -30,9 +29,9 @@ export default class CellSelectionManager {
   startCellData: ICellData|null;
   endCellData: ICellData|null;
   enabled: boolean;
-  dataGrid: BeakerxDataGrid;
+  dataGrid: BeakerXDataGrid;
 
-  constructor(dataGrid: BeakerxDataGrid) {
+  constructor(dataGrid: BeakerXDataGrid) {
     this.enabled = false;
     this.dataGrid = dataGrid;
   }

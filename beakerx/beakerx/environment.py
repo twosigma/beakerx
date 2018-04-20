@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from os import environ, path, fdopen, O_RDWR, O_CREAT, O_TRUNC, open as osopen
+from os import environ, path, fdopen, makedirs, O_RDWR, O_CREAT, O_TRUNC, open as osopen
 from jupyter_core import paths
 import json
 import pathlib
@@ -31,7 +31,8 @@ default_config = """
             "improve_fonts": true,
             "wide_cells": true,
             "show_publication": true,
-            "auto_save": true
+            "auto_save": true,
+            "use_data_grid": true
         }
     }
 }
@@ -46,7 +47,7 @@ class EnvironmentSettings:
 
     @staticmethod
     def save_setting_to_file(content):
-        pathlib.Path(paths.jupyter_config_dir()).mkdir(parents=True, exist_ok=True)
+        makedirs(paths.jupyter_config_dir(), exist_ok=True)
         with fdopen(osopen(EnvironmentSettings.config_path, O_RDWR | O_CREAT | O_TRUNC, 0o600), 'w+') as file:
             file.write(json.dumps(json.loads(content), indent=4, sort_keys=True))
 

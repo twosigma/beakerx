@@ -217,9 +217,19 @@ define([
   };
 
   CombinedPlotScope.prototype.updatePlot = function() {
-    _.each(this.scopes, function(scope) {
-      scope.update();
-    });
+    this.resetChildScopes();
+
+    this.standardizeData();
+    this.preparePlotModels();
+    this.initLayout();
+    this.calcRange();
+    this.runChildCharts();
+  };
+
+  CombinedPlotScope.prototype.resetChildScopes = function() {
+    this.element.find('.combplot-plotcontainer').empty();
+    this.scopes = [];
+    this.childScopeNumber = 1;
   };
 
   CombinedPlotScope.prototype.calcRange = function() {
@@ -332,6 +342,9 @@ define([
     var plots = self.stdmodel.plots;
 
     var combinedSvg = $("<svg></svg>").attr('xmlns', 'http://www.w3.org/2000/svg').attr('class', 'svg-export');
+    if (document.body.classList.contains('improveFonts')) {
+      combinedSvg.addClass('improveFonts');
+    }
 
     var plotTitle = self.element.find("#combplotTitle");
 

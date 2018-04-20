@@ -16,8 +16,7 @@
 
 import MenuItem from "../../shared/interfaces/menuItemInterface";
 import _ from 'underscore';
-
-const tableConsts = require('../consts');
+import { TIME_UNIT_FORMATS } from '../consts';
 
 const getColumnTypes = (scope: any, colIdx: number): object[] => {
   if (colIdx === 0) {
@@ -110,8 +109,8 @@ export function createPrecisionSubitems(scope): MenuItem[] {
 export function createTimeSubitems(scope): MenuItem[] {
   const items: MenuItem[] = [];
 
-  _.forEach(tableConsts.TIME_UNIT_FORMATS, function(value, unit) {
-    if (tableConsts.TIME_UNIT_FORMATS.hasOwnProperty(unit)) {
+  _.forEach(TIME_UNIT_FORMATS, function(value, unit) {
+    if (TIME_UNIT_FORMATS.hasOwnProperty(unit)) {
       let item = {
         title: value.title,
         isChecked: function(colIdx) {

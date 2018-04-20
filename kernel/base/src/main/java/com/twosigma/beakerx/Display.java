@@ -15,43 +15,41 @@
  */
 package com.twosigma.beakerx;
 
-import com.twosigma.beakerx.kernel.KernelManager;
-import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
+import com.twosigma.beakerx.widget.MIMEDisplayMethodManager;
 
-import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.twosigma.beakerx.evaluator.InternalVariable.getParentHeader;
-import static com.twosigma.beakerx.kernel.comm.Comm.DATA;
-import static com.twosigma.beakerx.kernel.msg.JupyterMessages.DISPLAY_DATA;
-import static java.util.Collections.singletonList;
-
 public class Display {
 
+  private static Display instance = new Display(MIMEDisplayMethodManager.getInstance());
+
+  private MIMEDisplayMethodManager mimeDisplayMethodManager;
+
+  private Display(MIMEDisplayMethodManager mimeDisplayMethodManager) {
+    this.mimeDisplayMethodManager = mimeDisplayMethodManager;
+  }
+
   public static void display(Object value) {
-    List<MIMEContainer> result = getMIMEContainers(value);
+    instance.displayObject(value);
+  }
+
+  private void displayObject(Object value) {
+    List<MIMEContainer> result = getNotHiddenMIMEContainers(value);
     if (!result.isEmpty()) {
-      displayMIMEContainers(result);
+      mimeDisplayMethodManager.display(result);
     }
   }
 
-  private static void displayMIMEContainers(List<MIMEContainer> result) {
-    HashMap<String, Serializable> content = new HashMap<>();
-    HashMap<String, Object> data = new HashMap<>();
-    result.forEach(x -> data.put(x.getMime().asString(), x.getData()));
-    content.put(DATA, data);
-    Message message = Comm.messageMessage(DISPLAY_DATA, Comm.Buffer.EMPTY, content, getParentHeader());
-    KernelManager.get().publish(singletonList(message));
-  }
-
-  private static List<MIMEContainer> getMIMEContainers(Object value) {
+  private List<MIMEContainer> getNotHiddenMIMEContainers(Object value) {
     List<MIMEContainer> containers = MIMEContainerFactory.createMIMEContainers(value);
     return containers.stream()
             .filter(x -> !x.getMime().asString().equals(MIMEContainer.MIME.HIDDEN)).collect(Collectors.toList());
+  }
+
+  public interface MIMEContainerDisplayMethodStrategy {
+    void display(List<MIMEContainer> mimeContainers);
   }
 
 }

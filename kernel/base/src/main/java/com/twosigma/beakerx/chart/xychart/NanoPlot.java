@@ -16,10 +16,9 @@
 
 package com.twosigma.beakerx.chart.xychart;
 
-import javax.annotation.Nullable;
 
 public class NanoPlot extends TimePlot {
-  static public boolean isNanoPlotClass(@Nullable Class<?> plotClass) {
+  static public boolean isNanoPlotClass(Class<?> plotClass) {
     return plotClass != null && NanoPlot.class.isAssignableFrom(plotClass);
   }
 }

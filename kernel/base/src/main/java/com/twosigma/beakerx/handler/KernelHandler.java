@@ -20,7 +20,7 @@ import com.twosigma.beakerx.message.Message;
 
 import java.util.Collections;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 
 public abstract class KernelHandler<T> implements Handler<T> {
 

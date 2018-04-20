@@ -17,15 +17,18 @@ package com.twosigma.beakerx;
 
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.KERNEL_INFO_REPLY;
 import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
+import static java.util.Arrays.asList;
 
-import com.google.common.collect.Lists;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +79,7 @@ public abstract class KernelInfoHandler extends KernelHandler<Message> {
     HelpLink twoSigmaOpenSource = new HelpLink("Two Sigma Open Source", "http://opensource.twosigma.com/");
     HelpLink javadoc = new HelpLink("BeakerX JavaDoc", "javadoc/index.html");
 
-    return Lists.newArrayList(beakerXHome, fileAnIssue, twoSigmaOpenSource, javadoc);
+    return new ArrayList<>(asList(beakerXHome, fileAnIssue, twoSigmaOpenSource, javadoc));
   }
 
   protected abstract HashMap<String, Serializable> doLanguageInfo(HashMap<String, Serializable> languageInfo);

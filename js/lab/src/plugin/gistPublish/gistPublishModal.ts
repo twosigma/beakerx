@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { Dialog } from '@jupyterlab/apputils';
+import Modal from './Modal';
 import { Widget } from '@phosphor/widgets';
 import { ServerConnection } from "@jupyterlab/services";
 import { PageConfig } from "@jupyterlab/coreutils";
@@ -40,37 +40,48 @@ export default class GistPublishModal {
     const bodyWidget = this.createBodyWidget();
     const personalAccessTokenInput = bodyWidget.node.querySelector('input');
     const form = bodyWidget.node.querySelector('form');
-    const cancelButton = Dialog.cancelButton({ label: 'Cancel' });
-    const publishButton = Dialog.okButton({ label: 'Publish' });
+    const cancelButton = Modal.cancelButton({ label: 'Cancel' });
+    const publishButton = Modal.okButton({ label: 'Publish' });
+    const formGroup = bodyWidget.node.querySelector('.form-group');
+    const errorNode = this.createErrorIconNode();
 
-    const submitHandler = (result: Dialog.IResult<any>) => {
-      if (result.button === cancelButton) {
-        return;
+    const submitHandler = (event) => {
+      event.preventDefault();
+
+      if (event.target && event.target.innerText === 'CANCEL') {
+        return modal.reject();
       }
 
-      if (result.button.label === "CANCEL") {
-        return;
+      if (!personalAccessTokenInput.value || !personalAccessTokenInput.checkValidity()) {
+        personalAccessTokenInput.focus();
+        formGroup.classList.add('has-error');
+        formGroup.appendChild(errorNode);
+
+        return false;
       }
 
-      submitCallback(result.value);
-      this.storePersonalAccessToken(result.value);
+      submitCallback(personalAccessToken);
+      formGroup.contains(errorNode) && formGroup.removeChild(errorNode);
+      formGroup.classList.remove('has-error');
+
+      this.storePersonalAccessToken(personalAccessTokenInput.value);
+      modal.reject();
     };
 
     if (personalAccessTokenInput && form) {
       personalAccessTokenInput.value = personalAccessToken;
     }
 
-    const modal = new Dialog({
+    const modal = new Modal({
+      submitHandler,
       title : 'Publish to a GitHub Gist',
       body: bodyWidget,
       defaultButton: 1,
       focusNodeSelector: 'input',
-      buttons: [ cancelButton, publishButton ]
+      buttons: [cancelButton, publishButton],
     });
 
-    return modal.launch().then(({ button }) => {
-      submitHandler({ button, value: personalAccessTokenInput.value });
-    });
+    return modal.launch();
   }
 
   createBodyWidget(): Widget {
@@ -79,6 +90,18 @@ export default class GistPublishModal {
     modalContent.innerHTML = gistPublishModalTemplate;
 
     return new Widget({ node: modalContent });
+  }
+
+  createErrorIconNode() {
+    const errorNode = document.createElement('span');
+
+    errorNode.classList.add('fa');
+    errorNode.classList.add('fa-remove');
+    errorNode.classList.add('form-control-feedback');
+    errorNode.style.fontSize = '18px';
+    errorNode.style.lineHeight = '25px';
+
+    return errorNode;
   }
 
   storePersonalAccessToken(githubPersonalAccessToken = ''): Promise<any> {

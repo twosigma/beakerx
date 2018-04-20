@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import java.util.stream.Collectors;
 
+import static com.twosigma.beakerx.kernel.comm.Comm.METADATA;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.getData;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -74,5 +75,15 @@ public class DisplayTest {
             .filter(x -> x.type().equals(JupyterMessages.DISPLAY_DATA))
             .collect(Collectors.toList()).get(0);
     assertThat(getData(message).get(Widget.APPLICATION_VND_JUPYTER_WIDGET_VIEW_JSON)).isNotNull();
+  }
+
+  @Test
+  public void contentShouldContainMetadata() {
+    //given
+    //when
+    Display.display("Hello");
+    //then
+    Message message = kernel.getPublishedMessages().get(0);
+    assertThat(message.getContent().get(METADATA)).isNotNull();
   }
 }

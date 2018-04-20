@@ -1,0 +1,197 @@
+/*
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+//Colors
+$alto: #DADADA;
+$gallery: #F0F0F0;
+$silver: #CDCDCD;
+$silverChalice: #A0A0A0;
+$highlightBlue: #39a9ed;
+
+$gridBackgroundColor: $gallery;
+$borderColor: $silverChalice;
+$buttonActive: $silver;
+$gridBorder: 1px solid $borderColor;
+$tooltipTransition: opacity 300ms ease-in-out 300ms;
+$sortAscendingIconBlue: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgaGVpZ2h0PSI2NCIgd2lkdGg9IjY0IiB2aWV3Qm94PSIwIDAgNjQgNjQiPg0KICA8cG9seWdvbiBmaWxsPSIjNmJhMmM3IiBwb2ludHM9IjMwLDQgNCw2MCA2MCw2MCI+PC9wb2x5Z29uPg0KPC9zdmc+DQo=');
+$sortDescendingIconBlue: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj4KPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIGhlaWdodD0iNjQiIHdpZHRoPSI2NCIgdmlld0JveD0iMCAwIDY0IDY0Ij4KICA8cG9seWdvbiBmaWxsPSIjNmJhMmM3IiBwb2ludHM9IjMwLDYwIDYwLDQgNCw0Ij48L3BvbHlnb24+Cjwvc3ZnPgo=');
+$sortAscendingIconWhite: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj4KPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIGhlaWdodD0iNjQiIHdpZHRoPSI2NCIgdmlld0JveD0iMCAwIDY0IDY0Ij4KICA8cG9seWdvbiBmaWxsPSIjZmZmZmZmIiBwb2ludHM9IjMwLDQgNCw2MCA2MCw2MCI+PC9wb2x5Z29uPgo8L3N2Zz4K');
+$sortDescendingIconWhite: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj4KPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIGhlaWdodD0iNjQiIHdpZHRoPSI2NCIgdmlld0JveD0iMCAwIDY0IDY0Ij4KICA8cG9seWdvbiBmaWxsPSIjZmZmZmZmIiBwb2ludHM9IjMwLDYwIDYwLDQgNCw0Ij48L3BvbHlnb24+Cjwvc3ZnPgo=');
+
+.p-DataGrid {
+  min-width: 64px;
+  max-width: 100%;
+  min-height: 330px;
+  padding: 20px;
+  border: 1px solid white;
+  font-family: "Lato", Helvetica, sans-serif;
+
+  &.grabbing * {
+    cursor: move !important;
+    cursor: pointer !important;
+    cursor: grabbing !important;
+    cursor: -moz-grabbing !important;
+    cursor: -webkit-grabbing !important;
+  }
+
+  .bko-menu {
+    opacity: 1;
+    padding: 0;
+
+    &:hover {
+      background-color: $highlightBlue;
+      background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAWCAYAAADjGu3TAAAAI0lEQVQoFWP8DwQMWAATFjGwED0kcNmNW5xx1B/ogUPFiAIAYSAMFvNwTdIAAAAASUVORK5CYII=');
+    }
+
+    &.sorting_asc,
+    &.sorting_desc {
+      background-size: 8px;
+      background-position: 3px center;
+    }
+
+    &.sorting_asc {
+      background-image: $sortAscendingIconBlue;
+
+      &:hover {
+        background-image: $sortAscendingIconWhite;
+      }
+    }
+
+    &.sorting_desc {
+      background-image: $sortDescendingIconBlue;
+
+      &:hover {
+        background-image: $sortDescendingIconWhite;
+      }
+    }
+  }
+
+  .rows-to-display-menu {
+    position: absolute;
+    bottom: 0;
+  }
+}
+
+.p-DataGrid-tooltip {
+  background-color: #ffffff;
+  box-shadow: 0 0 3px #333333;
+  border-radius: 3px;
+  padding: 5px 10px;
+  opacity: 0;
+  -webkit-transition: $tooltipTransition;
+  -moz-transition: $tooltipTransition;
+  -ms-transition: $tooltipTransition;
+  -o-transition: $tooltipTransition;
+  transition: $tooltipTransition;
+  font-family: "Lato", Helvetica, sans-serif;
+  z-index: 900;
+
+  &.visible {
+    opacity: 1;
+  }
+}
+
+.p-DataGrid-viewport {
+  border: $gridBorder;
+}
+
+.p-DataGrid-scrollCorner {
+  background-color: $gridBackgroundColor;
+  border-right: $gridBorder;
+  border-bottom: $gridBorder;
+}
+
+.p-DataGrid-scrollCorner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  background-color: $borderColor;
+}
+
+.p-ScrollBar {
+  &[data-orientation='horizontal'] {
+    min-height: 16px;
+    max-height: 16px;
+    min-width: 45px;
+    border-bottom: $gridBorder;
+    border-left: $gridBorder;
+    border-right: $gridBorder;
+
+    .p-ScrollBar-thumb {
+      height: 100%;
+      min-width: 15px;
+      border-left: $gridBorder;
+      border-right: $gridBorder;
+    }
+  }
+
+  &[data-orientation='vertical'] {
+    min-width: 16px;
+    max-width: 16px;
+    min-height: 45px;
+    border-right: $gridBorder;
+    border-top: $gridBorder;
+    border-bottom: $gridBorder;
+
+    .p-ScrollBar-thumb {
+      width: 100%;
+      min-height: 15px;
+      border-top: $gridBorder;
+      border-bottom: $gridBorder;
+    }
+  }
+}
+
+.p-ScrollBar-button {
+  background-color: $gridBackgroundColor;
+  background-position: center center;
+  min-height: 15px;
+  max-height: 15px;
+  min-width: 15px;
+  max-width: 15px;
+
+  &:hover {
+    background-color: $alto;
+  }
+
+  &.p-mod-active {
+    background-color: $buttonActive;
+  }
+}
+
+.p-ScrollBar-track {
+  background: $gridBackgroundColor;
+}
+
+.p-ScrollBar-thumb {
+  background: $silver;
+
+  &:hover {
+    background: $silver;
+  }
+
+  &.p-mod-active {
+    background: $silverChalice;
+  }
+}
+
+.bko-dragged-header {
+  position: absolute;
+  box-shadow: 0 0 3px #262626;
+}

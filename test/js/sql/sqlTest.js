@@ -15,28 +15,37 @@
  */
 
 var BeakerXPageObject = require('../beakerx.po.js');
-var TableHelperObject = require('../table.helper.js');
 var beakerxPO;
-var tableHelper;
 
 describe('SQL base tests ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    tableHelper = new TableHelperObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/sql/SQLTest.ipynb');
+    beakerxPO.openUIWindow();
   }, 2);
 
   afterAll(function () {
     beakerxPO.closeAndHaltNotebook();
   });
 
+  var imageDir = 'sql/sql';
+
+  describe('UI options. ', function () {
+    it("Use new table widget. ", function () {
+      beakerxPO.setDataGridForTable(true, false);
+    });
+  });
+
   describe('Create and select table (H2 database) ', function () {
     it('Output contains table ', function () {
       beakerxPO.runCodeCellByIndex(0);
       beakerxPO.runCodeCellByIndex(1);
-      var dtContainer = beakerxPO.runCellToGetDtContainer(2);
-      tableHelper.dataTablesIsEnabled(dtContainer)
+
+      var codeCell = beakerxPO.runCodeCellByIndex(2);
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, 220, 130);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell3_case1.png');
     });
   });
 

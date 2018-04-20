@@ -21,7 +21,7 @@ import com.twosigma.beakerx.mimetype.MIMEContainer;
 
 import java.util.Optional;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 
 public class MagicCommandResult implements MagicCommandOutcomeItem {
 

@@ -26,6 +26,14 @@ beakerx_dir = os.path.abspath(os.path.join(here, ".."))
 test_dir = here
 cur_app = 'notebook'
 
+#backup beakerx.json conf file
+def returnConfFile(extension):
+    home_dir = os.environ['HOME']
+    return os.path.join(home_dir, '.jupyter', 'beakerx.json' + extension)
+
+if os.path.exists(returnConfFile('')):
+    os.rename(returnConfFile(''), returnConfFile('.bak'))
+
 #define target test app
 try:
     if sys.argv.count('lab'):
@@ -94,3 +102,7 @@ if not result:
 
 if result:
     sys.exit(20)
+
+#restore backup beakerx.json conf file
+if os.path.exists(returnConfFile('.bak')):
+    os.rename(returnConfFile('.bak'), returnConfFile(''))

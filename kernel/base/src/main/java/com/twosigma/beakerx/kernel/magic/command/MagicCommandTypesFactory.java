@@ -24,7 +24,7 @@ import com.twosigma.beakerx.kernel.magic.command.functionality.ClassPathAddMvnCe
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddJarMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddRepoMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathRemoveMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathResetMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathShowMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.HtmlAliasMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.HtmlMagicCommand;
@@ -39,9 +39,10 @@ import com.twosigma.beakerx.kernel.magic.command.functionality.TimeLineModeMagic
 import com.twosigma.beakerx.kernel.magic.command.functionality.UnImportMagicCommand;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static com.twosigma.beakerx.kernel.magic.command.MavenJarResolver.MVN_DIR;
 
 public class MagicCommandTypesFactory {
@@ -49,7 +50,7 @@ public class MagicCommandTypesFactory {
   public static List<MagicCommandType> createDefaults(KernelFunctionality kernel) {
     List<MagicCommandType> magicCommandTypes = new ArrayList<>();
     magicCommandTypes.addAll(
-            newArrayList(
+            Arrays.asList(
                     javascript(),
                     js(),
                     html(),
@@ -61,7 +62,7 @@ public class MagicCommandTypesFactory {
                     addJarByMvnCell(kernel),
                     addDynamic(kernel),
                     addRepo(kernel),
-                    removeJar(kernel),
+                    addClasspathReset(kernel),
                     showClasspath(kernel),
                     addStaticImport(kernel),
                     addImport(kernel),
@@ -72,6 +73,24 @@ public class MagicCommandTypesFactory {
                     timeItCell(kernel),
                     loadMagic(kernel)));
     return magicCommandTypes;
+  }
+
+  public static ClasspathAddMvnMagicCommand getClasspathAddMvnMagicCommand(KernelFunctionality kernel) {
+    Optional<MagicCommandType> first = kernel.getMagicCommandTypes().stream()
+            .filter(x -> x.getCommand().equals(ClasspathAddMvnMagicCommand.CLASSPATH_ADD_MVN))
+            .findFirst();
+    return (ClasspathAddMvnMagicCommand) first.get().getMagicCommandFunctionality();
+  }
+
+  public static ClasspathResetMagicCommand getClasspathResetMagicCommand(KernelFunctionality kernel) {
+    Optional<MagicCommandType> first = kernel.getMagicCommandTypes().stream()
+            .filter(x -> x.getCommand().equals(ClasspathResetMagicCommand.CLASSPATH_RESET))
+            .findFirst();
+    return (ClasspathResetMagicCommand) first.get().getMagicCommandFunctionality();
+  }
+
+  private static MagicCommandType addClasspathReset(KernelFunctionality kernel) {
+    return new MagicCommandType(ClasspathResetMagicCommand.CLASSPATH_RESET, "", new ClasspathResetMagicCommand(kernel));
   }
 
   private static MagicCommandType addDynamic(KernelFunctionality kernel) {
@@ -114,22 +133,20 @@ public class MagicCommandTypesFactory {
     return new MagicCommandType(ClasspathShowMagicCommand.CLASSPATH_SHOW, "", new ClasspathShowMagicCommand(kernel));
   }
 
-  private static MagicCommandType removeJar(KernelFunctionality kernel) {
-    return new MagicCommandType(ClasspathRemoveMagicCommand.CLASSPATH_REMOVE, "<jar path>", new ClasspathRemoveMagicCommand(kernel));
-  }
-
   private static MagicCommandType addJarByMvn(KernelFunctionality kernel) {
     return new MagicCommandType(ClasspathAddMvnMagicCommand.CLASSPATH_ADD_MVN, "<group name version>",
-            new ClasspathAddMvnMagicCommand(new MavenJarResolver.ResolverParams(
-                    kernel.getCacheFolder().toString() + "/maven/cache",
-                    kernel.getTempFolder().toString() + MVN_DIR), kernel));
+            new ClasspathAddMvnMagicCommand(getMvnMagicCommandParams(kernel), kernel));
+  }
+
+  private static MavenJarResolver.ResolverParams getMvnMagicCommandParams(KernelFunctionality kernel) {
+    return new MavenJarResolver.ResolverParams(
+            kernel.getCacheFolder().toString() + "/maven/cache",
+            kernel.getTempFolder().toString() + MVN_DIR);
   }
 
   private static MagicCommandType addJarByMvnCell(KernelFunctionality kernel) {
     return new MagicCommandType(ClassPathAddMvnCellMagicCommand.CLASSPATH_ADD_MVN_CELL, "<group name version>",
-            new ClassPathAddMvnCellMagicCommand(new MavenJarResolver.ResolverParams(
-                    kernel.getCacheFolder().toString() + "/maven/cache",
-                    kernel.getTempFolder().toString() + MVN_DIR), kernel));
+            new ClassPathAddMvnCellMagicCommand(getMvnMagicCommandParams(kernel), kernel));
   }
 
   private static MagicCommandType addJar(KernelFunctionality kernel) {
@@ -160,7 +177,7 @@ public class MagicCommandTypesFactory {
     return new MagicCommandType(JavaScriptMagicCommand.JAVASCRIPT, "", new JavaScriptMagicCommand());
   }
 
-  private static MagicCommandType js(){
+  private static MagicCommandType js() {
     return new MagicCommandType(JSMagicCommand.JAVASCRIPT, "", new JSMagicCommand());
   }
 }

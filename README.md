@@ -24,14 +24,14 @@
 [![NPM version](https://badge.fury.io/js/beakerx.svg)](http://badge.fury.io/js/beakerx)
 [![PyPI Version](https://badge.fury.io/py/beakerx.svg)](http://badge.fury.io/py/beakerx)
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/beakerx/badges/version.svg)](https://anaconda.org/conda-forge/beakerx)
-[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/twosigma/beakerx/0.13.0?filepath=StartHere.ipynb)
+[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/twosigma/beakerx/0.15.2?filepath=StartHere.ipynb)
 
 BeakerX is a collection of JVM kernels and interactive widgets for
 plotting, tables, autotranslation, and other extensions to Jupyter
 Notebook.  BeakerX is in beta and under active development.
 
 The [documentation](https://github.com/twosigma/beakerx/blob/master/StartHere.ipynb) consists of tutorial notebooks on GitHub.
-You can try it in the cloud for free with [Binder](https://mybinder.org/v2/gh/twosigma/beakerx/0.13.0?filepath=StartHere.ipynb).
+You can try it in the cloud for free with [Binder](https://mybinder.org/v2/gh/twosigma/beakerx/0.15.2?filepath=StartHere.ipynb).
 
 BeakerX is the successor to the [Beaker Notebook (source code
 archive)](https://github.com/twosigma/beaker-notebook-archive).  It
@@ -61,7 +61,7 @@ conda install -y -c conda-forge ipywidgets
 beakerx install
 ```
 
-### Build and Install for Lab
+### Build and Install for Jupyter Lab
 
 ```
 conda create -y -n labx 'python>=3' nodejs pandas openjdk maven
@@ -72,6 +72,12 @@ conda install -y -c conda-forge jupyterlab
 beakerx install
 jupyter labextension install @jupyter-widgets/jupyterlab-manager
 (cd js/lab; jupyter labextension install .)
+```
+
+### Running with Docker
+
+```
+docker run -p 8888:8888 beakerx/beakerx
 ```
 
 ### Update after Java change
@@ -94,20 +100,18 @@ a local build should suffice:
 
 ### Run Tests
 
-The Java unit tests are run with every build. See [test/README.md] for how to run the e2e tests.
+The Java and TypeScript unit tests are run with every build. See [test/README.md] for how to run the e2e tests.
 
 ## Groovy with Interactive Plotting and Tables:
 <img width="900" alt="screen shot" src="https://user-images.githubusercontent.com/963093/28300136-585f9f7c-6b4b-11e7-8827-b5807d3fc9a8.png">
 
-### Autotranslation from Python to JavaScript
+## Autotranslation from Python to JavaScript
 
 <img width="900" alt="screen shot" src="https://cloud.githubusercontent.com/assets/963093/21077947/261def64-bf2a-11e6-8518-4845caf75690.png">
 
-## Running with Docker
+## Interactive Tables
 
-```
-docker run -p 8888:8888 beakerx/beakerx
-```
+<img width="900" alt="screen shot" src="https://user-images.githubusercontent.com/963093/38704584-d1fc16d8-3e74-11e8-95d5-c916bd44d10b.png">
 
 ## Architecture and Code Overview
 
@@ -118,6 +122,9 @@ The code is organized into subdirectories as follows:
 
   * a customized KernelSpec to allow BeakerX to configure the JVMs
     started to run the kernels,
+
+  * a server extension for the javadoc, settings, and version
+    endpoints,
   
   * the beakerx command line program, which has the bkr2ipynb
     converter as well as install and uninstall functions,
@@ -131,7 +138,7 @@ The code is organized into subdirectories as follows:
 
   * the compiled Java JARs.
 
-  There is a seperate python package (beakerx_magics) for the
+  There is a separate python package (beakerx_magics) for the
   `%%groovy` magic so it can always be loaded *without* loading the
   regular beakerx package (which would turn on display of pandas
   tables with our table widget).
@@ -142,7 +149,7 @@ The code is organized into subdirectories as follows:
   subdirectory for each language.
 
 * [docker](docker) configuration files for creating the Docker image.
-  There is a subdirectory [doc/base](doc/base) for an image with
+  There is a subdirectory [docker/base](docker/base) for an image with
   BeakerX's dependencies (the Ubuntu and conda packages).  The main
   image is built by compiling BeakerX and installing BeakerX in the
   base image.
@@ -153,38 +160,30 @@ The code is organized into subdirectories as follows:
 
   The lab subdirectory has the extension for Jupyter Lab (distributed
   by npm).  Notebook has two extensions, one for the widgets (which
-  are included in Lab as well, and are also seperately distributed
+  are included in Lab as well, and are also separately distributed
   with npm for embedded applications such as nbviewer), and one for
   the notebook application.  This adds a tab to the tree view with our
-  options panel.  And for regular notebook pages the extension
-  handles:
+  options panel.
 
-  * running initialization cells,
-  
-  * publication,
-  
-  * autotranslation,
-  
-  * the getCodeCells and runByTag APIs,
-  
-  * callbacks for table and plot actions,
-  
-  * UI customizations such as changing the fonts, allowing wide code
-    cells, and disabling autosave.
+  And for regular notebook pages the extension handles: running
+  initialization cells, publication, autotranslation, the getCodeCells
+  and runByTag APIs, callbacks for table and plot actions, UI
+  customizations such as changing the fonts, allowing wide code cells,
+  and disabling autosave.
 
 * [kernel](kernel) The Java implementation of the kernels is here.
   The main directory is [kernel/base](kernel/base) which has generic
   code for all the languages.  The base kernel has classes for
   Jupyter's Comm protocol (a layer over ZMQ), magics, the classpath
-  (including loading from maven), and the kernl parts of the widget
+  (including loading from maven), and the kernel parts of the widget
   APIs.
 
   There is also a subdirectory for each language which has the
-  evaluator for that language, plus scala has wrappers for the widgets
+  evaluator for that language. Scala has wrappers for the widgets
   so they have native types.
 
-* [test](test) The e2e tests, which are made with wdio (selenium,
-  chromedriver, jasmine).
+* [test](test) The e2e tests, which are made with
+  [webdriver](http://webdriver.io/) (selenium, chromedriver, jasmine).
 
 ## Contributing
 
@@ -213,10 +212,12 @@ Copyright (c) 2001-2007, Fernando Perez
 Copyright (c) 2001, Janko Hauser
 Copyright (c) 2001, Nathaniel Gray
 
-<a href="https://github.com/JuliaLang/julia/blob/master/LICENSE.md">Julia</a> Copyright (c) 2009-2015: Jeff Bezanson, Stefan Karpinski, Viral B. Shah, and other contributors
-
 <a href="http://www.scala-lang.org/license.html">Scala</a> Copyright (c) 2002-2015 EPFL
       Copyright (c) 2011-2015 Typesafe, Inc.
+
+[Guava](https://github.com/google/guava)  Copyright (C) 2012 The Guava Authors
+
+[Apache Spark](https://github.com/apache/spark) Copyright (C) 2014 and onwards The Apache Software Foundation.
 
 <a href=" http://www.h2database.com/html/license.html"> H2 database
 engine</a>
@@ -225,4 +226,3 @@ database engine (http://www.h2database.com/), which is dual licensed
 and available under the MPL 2.0 (Mozilla Public License) or under the
 EPL 1.0 (Eclipse Public License).  An original copy of the license
 agreement can be found at: http://www.h2database.com/html/license.html
-

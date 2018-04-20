@@ -17,7 +17,7 @@
 ## Dependencies
 
 Running the e2e tests from its GitHub source code requires: 
-* chrome browser version v61-63.
+* chrome browser version v63-65.
 * [conda](https://www.anaconda.com/download/)
 * [yarn](https://yarnpkg.com/lang/en/docs/install/)
 * [jupyter console](https://github.com/jupyter/jupyter_console)
@@ -34,3 +34,7 @@ To run tests for jupyter notebook use argument `nb`:
 ```
 
 By default, a notebook server runs locally at 127.0.0.1:8888 and is accessible only from localhost. 
+
+To prepare image file as expected result:
+ - use function `createTableImage()` instead of `checkImageData()` on the same code line of test script
+ - run the tests as usual

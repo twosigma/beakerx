@@ -21,6 +21,10 @@
   box-sizing: border-box;
 }
 
+#beakerx-tree-widget label {
+  font-weight: 400;
+}
+
 #beakerx-tree-widget .p-TabBar {
   min-height: 30px;
   max-height: 30px;
@@ -88,6 +92,10 @@
   left: 10px;
   right: 10px;
   padding: 15px;
+}
+
+.bx-ui-options-widget .form-check-label {
+  margin-left: 10px;
 }
 
 .bx-sync-indicator-widget {

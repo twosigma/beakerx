@@ -32,10 +32,12 @@ import java.util.HashMap;
 import java.util.concurrent.Callable;
 
 import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
+import static com.twosigma.beakerx.groovy.evaluator.GroovyStackTracePrettyPrinter.printStacktrace;
 
 class GroovyCodeRunner implements Callable<TryResult> {
 
   private static final Logger logger = LoggerFactory.getLogger(GroovyCodeRunner.class.getName());
+  public static final String SCRIPT_NAME = "script";
   private GroovyEvaluator groovyEvaluator;
   private final String theCode;
   private final SimpleEvaluationObject theOutput;
@@ -50,12 +52,14 @@ class GroovyCodeRunner implements Callable<TryResult> {
   public TryResult call() throws Exception {
     ClassLoader oldld = Thread.currentThread().getContextClassLoader();
     TryResult either;
+    String scriptName = SCRIPT_NAME;
     try {
       Object result = null;
       theOutput.setOutputHandler();
       Thread.currentThread().setContextClassLoader(groovyEvaluator.getGroovyClassLoader());
 
-      Class<?> parsedClass = groovyEvaluator.getGroovyClassLoader().parseClass(theCode);
+      scriptName += System.currentTimeMillis();
+      Class<?> parsedClass = groovyEvaluator.getGroovyClassLoader().parseClass(theCode, scriptName);
 
       Script instance = (Script) parsedClass.newInstance();
 
@@ -93,7 +97,9 @@ class GroovyCodeRunner implements Callable<TryResult> {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         StackTraceUtils.sanitize(e).printStackTrace(pw);
-        either = TryResult.createError(sw.toString());
+        String value = sw.toString();
+        value = printStacktrace(scriptName, value);
+        either = TryResult.createError(value);
       }
     } finally {
       theOutput.clrOutputHandler();

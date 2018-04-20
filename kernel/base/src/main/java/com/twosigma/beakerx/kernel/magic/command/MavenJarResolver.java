@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.kernel.magic.command;
 
-import com.google.common.base.Preconditions;
+import com.twosigma.beakerx.util.Preconditions;
 import com.twosigma.beakerx.kernel.commands.MavenInvocationSilentOutputHandler;
 import com.twosigma.beakerx.kernel.commands.MavenJarResolverSilentLogger;
 import com.twosigma.beakerx.kernel.magic.command.functionality.MvnLoggerWidget;
@@ -53,8 +53,8 @@ public class MavenJarResolver {
     this.pomFactory = pomFactory;
   }
 
-  public AddMvnCommandResult retrieve(String groupId, String artifactId, String version, MvnLoggerWidget progress) {
-    List<Dependency> dependencies = Arrays.asList(new Dependency(groupId, artifactId, version));
+  public AddMvnCommandResult retrieve(Dependency dependency, MvnLoggerWidget progress) {
+    List<Dependency> dependencies = Arrays.asList(dependency);
     return retrieve(dependencies, progress);
   }
 
@@ -127,7 +127,8 @@ public class MavenJarResolver {
         errorMsgBuilder
                 .append("\n").append(dependency.groupId).append(" : ")
                 .append(dependency.artifactId).append(" : ")
-                .append(dependency.version);
+                .append(dependency.version).append(" : ")
+                .append(dependency.type);
       }
       return AddMvnCommandResult.error(errorMsgBuilder.toString());
     }
@@ -156,14 +157,23 @@ public class MavenJarResolver {
   }
 
   public static class Dependency {
+
+    static final String DEFAULT_TYPE = "jar";
+
     String groupId;
     String artifactId;
     String version;
+    String type = DEFAULT_TYPE;
 
     public Dependency(String groupId, String artifactId, String version) {
+      this(groupId, artifactId, version, DEFAULT_TYPE);
+    }
+
+    public Dependency(String groupId, String artifactId, String version, String type) {
       this.groupId = groupId;
       this.artifactId = artifactId;
       this.version = version;
+      this.type = type;
     }
 
     public String getGroupId() {

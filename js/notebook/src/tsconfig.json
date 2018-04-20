@@ -8,7 +8,10 @@
     "allowJs": true,
     "moduleResolution": "Node",
     "noEmit": true,
-    "lib": ["dom", "es5", "es2015.promise"],
-    "types": []
+    "lib": ["dom", "es5", "es2015"],
+    "types": [],
+    "paths": {
+      "jquery": ["jquery/dist/jquery.js"]
+    }
   }
 }

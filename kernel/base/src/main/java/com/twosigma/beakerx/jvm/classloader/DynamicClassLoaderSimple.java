@@ -16,7 +16,7 @@
 
 package com.twosigma.beakerx.jvm.classloader;
 
-import com.google.common.io.ByteStreams;
+import com.twosigma.beakerx.util.ByteStreams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +37,7 @@ public class DynamicClassLoaderSimple extends ClassLoader {
 
   private final static Logger logger = LoggerFactory.getLogger(DynamicClassLoaderSimple.class.getName());
 
-  private BeakerxUrlClassLoader myloader = new BeakerxUrlClassLoader(new URL[0], null);
+  private BeakerXUrlClassLoader myloader = new BeakerXUrlClassLoader(new URL[0], null);
   private String outDir;
   protected final Map<String, Class<?>> classes;
 

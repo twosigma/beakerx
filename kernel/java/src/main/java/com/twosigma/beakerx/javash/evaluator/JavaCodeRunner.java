@@ -33,7 +33,7 @@ import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
 
 class JavaCodeRunner implements Callable<TryResult> {
@@ -148,7 +148,7 @@ class JavaCodeRunner implements Callable<TryResult> {
     codev.javaSourceCode.append("}\n");
 
     compilationUnit.addJavaSource(codev.getPname() + "." + JavaEvaluator.WRAPPER_CLASS_NAME + classId, codev.javaSourceCode.toString());
-    boolean compile = javaSourceCompiler.compile(compilationUnit);
+    boolean compile = javaSourceCompiler.compile(javaEvaluator.getClassLoader(), compilationUnit);
     if (compile) {
       javaSourceCompiler.persistCompiledClasses(compilationUnit);
       return true;
@@ -168,6 +168,7 @@ class JavaCodeRunner implements Callable<TryResult> {
     try {
       javaSourceCompiler.compile(compilationUnit);
       javaSourceCompiler.persistCompiledClasses(compilationUnit);
+      javaEvaluator.getJavaClassLoader().resetClassloader();
       either = TryResult.createResult(codev.getPname() + "." + cname);
     } catch (CompilationException e) {
       either = TryResult.createError(buildErrorMessage(e, codev.lineNumbersMapping));

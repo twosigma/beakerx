@@ -142,4 +142,39 @@ export class BeakerXDataGridModel extends DataModel {
     this.setState({ headersVertical });
     this.reset();
   }
+
+  getColumnValueResolver(dataType: ALL_TYPES): Function {
+    switch (dataType) {
+      case ALL_TYPES.datetime:
+      case ALL_TYPES.time:
+        return this.dateValueResolver;
+
+      case ALL_TYPES.double:
+      case ALL_TYPES['double with precision']:
+        return this.doubleValueResolver;
+
+      case ALL_TYPES.integer:
+      case ALL_TYPES.int64:
+        return this.integerValueResolver;
+
+      default:
+        return this.defaultValueResolver;
+    }
+  }
+
+  private dateValueResolver(value) {
+    return value.timestamp;
+  }
+
+  private defaultValueResolver(value) {
+    return value;
+  }
+
+  private doubleValueResolver(value) {
+    return parseFloat(value);
+  }
+
+  private integerValueResolver(value) {
+    return parseInt(value);
+  }
 }

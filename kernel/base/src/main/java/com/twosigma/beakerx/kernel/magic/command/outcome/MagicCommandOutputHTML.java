@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,31 +21,30 @@ import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
+import com.twosigma.beakerx.widget.HTML;
 
-import java.util.Collections;
 import java.util.Optional;
 
 import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
-import static java.util.Collections.singletonList;
 
-public class MagicCommandResult implements MagicCommandOutcomeItem {
+public class MagicCommandOutputHTML implements MagicCommandOutcomeItem {
 
-  private Status status;
-  private Optional<MIMEContainer> mimeContainer;
+  private final MIMEContainer mineContainer;
+  private MagicCommandOutput.Status status;
 
-  public MagicCommandResult(Status status, MIMEContainer mimeContainer) {
-    this.status = status;
-    this.mimeContainer = Optional.of(checkNotNull(mimeContainer));
+  public MagicCommandOutputHTML(MagicCommandOutput.Status status, String text) {
+    this.mineContainer = MIMEContainer.HTML(checkNotNull(text));
+    this.status = checkNotNull(status);
   }
 
   @Override
   public Optional<MIMEContainer> getMIMEContainer() {
-    return mimeContainer;
+    return Optional.of(this.mineContainer);
   }
 
   @Override
   public Status getStatus() {
-    return status;
+    return this.status;
   }
 
   @Override
@@ -61,22 +60,22 @@ public class MagicCommandResult implements MagicCommandOutcomeItem {
   @Override
   public void sendRepliesWithStatus(KernelFunctionality kernel, Message message, int executionCount) {
     if (getStatus().equals(MagicCommandOutcomeItem.Status.OK)) {
-      publishMessage(kernel, message, executionCount);
+      sendHTML(message);
       kernel.send(MessageCreator.buildReplyWithOkStatus(message, executionCount));
     } else {
-      publishMessage(kernel, message, executionCount);
+      sendHTML(message);
       kernel.send(MessageCreator.buildReplyWithErrorStatus(message, executionCount));
     }
   }
 
+  private void sendHTML(Message message) {
+    HTML value = new HTML(message);
+    value.setValue(getMIMEContainer().get().getData());
+    value.display();
+  }
+
   @Override
   public void sendMagicCommandOutcome(KernelFunctionality kernel, Message message, int executionCount) {
-    publishMessage(kernel, message, executionCount);
+    sendHTML(message);
   }
-
-  private void publishMessage(KernelFunctionality kernel, Message message, int executionCount) {
-    MIMEContainer mimeContainer = getMIMEContainer().get();
-    kernel.publish(Collections.singletonList(MessageCreator.buildMessage(message, singletonList(mimeContainer), executionCount)));
-  }
-
 }

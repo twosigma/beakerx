@@ -20,6 +20,7 @@ import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutputHTML;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -56,14 +57,14 @@ public abstract class ClasspathMagicCommand implements MagicCommandFunctionality
     }
   }
 
-  public MagicCommandOutput handleAddedJars(String path) {
+  public MagicCommandOutcomeItem handleAddedJars(String path) {
     Collection<String> newAddedJars = addJars(path);
     if (newAddedJars.isEmpty()) {
       return new MagicCommandOutput(MagicCommandOutput.Status.OK);
     }
     String textMessage = "Added jar" + (newAddedJars.size() > 1 ? "s: " : ": ") + newAddedJars;
     MagicCommandOutput.Status status = MagicCommandOutcomeItem.Status.OK;
-    return new MagicCommandOutput(status, textMessage);
+    return new MagicCommandOutputHTML(status, textMessage);
   }
 
   private Collection<String> handlePath(String path) {

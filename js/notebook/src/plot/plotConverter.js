@@ -54,6 +54,8 @@ define([
     "DEFAULT" : "rect",
     "CIRCLE" : "circle",
     "DIAMOND" : "diamond",
+    "TRIANGLE" : "triangle",
+    "DOWNTRIANGLE" : "downtriangle",
     "" : "rect"
   };
   var interpolationMap = {

@@ -32,8 +32,8 @@ define([
   PlotPoint.prototype.plotClass = "plot-point";
   PlotPoint.prototype.respClass = "plot-resp";
   PlotPoint.prototype.actionClass = "item-clickable item-onkey";
-  PlotPoint.prototype.shapes = ["rect", "diamond", "circle"];
-  PlotPoint.prototype.svgtags = ["rect", "polygon", "circle"];
+  PlotPoint.prototype.shapes = ["rect", "diamond", "circle", "triangle", "dcross", "downtriangle", "cross", "level", "vlevel", "linecross"];
+  PlotPoint.prototype.svgtags = ["rect", "polygon", "circle", "polygon", "polygon", "polygon", "polygon", "polygon", "polygon", "polygon"];
 
   PlotPoint.prototype.setHighlighted = function(scope, highlighted) {
 
@@ -63,13 +63,52 @@ define([
               var ele = d.ele, x = mapX(ele.x), y = mapY(ele.y),
                 s = plotUtils.getHighlightedSize(ele.size, highlighted);
               var pstr = "";
-              pstr += (x - s) + "," + (y    ) + " ";
-              pstr += (x    ) + "," + (y - s) + " ";
-              pstr += (x + s) + "," + (y    ) + " ";
-              pstr += (x    ) + "," + (y + s) + " ";
+              pstr += (x - s / 2) + "," + (y        ) + " ";
+              pstr += (x        ) + "," + (y - s / 2) + " ";
+              pstr += (x + s / 2) + "," + (y        ) + " ";
+              pstr += (x        ) + "," + (y + s / 2) + " ";
               return pstr;
             });
           break;
+        case "triangle":
+          shapesvg.selectAll(tag)
+            .transition()
+            .duration(plotUtils.getHighlightDuration())
+            .attr("points", function(d) {
+              var mapX = scope.data2scrXi, mapY = scope.data2scrYi;
+              var ele = d.ele, x = mapX(ele.x), y = mapY(ele.y),
+                s = plotUtils.getHighlightedSize(ele.size, highlighted),
+                r = s / 2,
+                ang = 30 * (Math.PI/180);
+              var pstr = "";
+              pstr += (x) + "," + (y - r) + " ";
+              pstr += (x + r * Math.cos(ang)) + "," + (y + r * Math.sin(ang)) + " ";
+              pstr += (x - r * Math.cos(ang)) + "," + (y + r * Math.sin(ang)) + " ";
+              return pstr;
+            });
+          break;
+        case "downtriangle":
+          shapesvg.selectAll(tag)
+            .transition()
+            .duration(plotUtils.getHighlightDuration())
+            .attr("points", function(d) {
+              var mapX = scope.data2scrXi, mapY = scope.data2scrYi;
+              var ele = d.ele, x = mapX(ele.x), y = mapY(ele.y),
+                s = plotUtils.getHighlightedSize(ele.size, highlighted),
+                r = s / 2,
+                ang = 30 * (Math.PI/180);
+              var pstr = "";
+              pstr += (x) + "," + (y + r) + " ";
+              pstr += (x + r * Math.cos(ang)) + "," + (y - r * Math.sin(ang)) + " ";
+              pstr += (x - r * Math.cos(ang)) + "," + (y - r * Math.sin(ang)) + " ";
+              return pstr;
+            });
+          break;
+        case "dcross":
+        case "cross":
+        case "level":
+        case "vlevel":
+        case "linecross":
         default:  // rect
           var diff = plotUtils.getHighlightedDiff(highlighted) / 2;
           shapesvg.selectAll(tag)
@@ -102,12 +141,26 @@ define([
     this.elementProps = {
       "rect" : [],
       "diamond" : [],
-      "circle" : []
+      "circle" : [],
+      "triangle" : [],
+      "dcross" : [],
+      "downtriangle" : [],
+      "cross" : [],
+      "level" : [],
+      "vlevel" : [],
+      "linecross" : []
     };
     this.elementLabels = {
       "rect" : [],
       "diamond" : [],
-      "circle" : []
+      "circle" : [],
+      "triangle" : [],
+      "dcross" : [],
+      "downtriangle" : [],
+      "cross" : [],
+      "level" : [],
+      "vlevel" : [],
+      "linecross" : []
     };
   };
 
@@ -226,10 +279,10 @@ define([
       switch (shape) {
         case "diamond":
           var pstr = "";
-          pstr += (x - s) + "," + (y    ) + " ";
-          pstr += (x    ) + "," + (y - s) + " ";
-          pstr += (x + s) + "," + (y    ) + " ";
-          pstr += (x    ) + "," + (y + s) + " ";
+          pstr += (x - s / 2) + "," + (y        ) + " ";
+          pstr += (x        ) + "," + (y - s / 2) + " ";
+          pstr += (x + s / 2) + "," + (y        ) + " ";
+          pstr += (x        ) + "," + (y + s / 2) + " ";
           _.extend(prop, {
             "pts" : pstr,
             "tooltip_cx" : x
@@ -240,10 +293,40 @@ define([
           _.extend(prop, {
             "cx": x,
             "cy": y,
-            "r": s
+            "r": s / 2
           });
           labely = y - s;
           break;
+        case "triangle":
+          var pstr = "";
+          var r = s / 2, ang = 30 * (Math.PI/180);
+          pstr += (x) + "," + (y - r) + " ";
+          pstr += (x + r * Math.cos(ang)) + "," + (y + r * Math.sin(ang)) + " ";
+          pstr += (x - r * Math.cos(ang)) + "," + (y + r * Math.sin(ang)) + " ";
+          _.extend(prop, {
+            "pts" : pstr,
+            "tooltip_cx" : x
+          });
+          labely = y - s / 2;
+          break;
+        case "downtriangle":
+          var pstr = "";
+          var r = s / 2, ang = 30 * (Math.PI/180);
+          pstr += (x) + "," + (y + r) + " ";
+          pstr += (x + r * Math.cos(ang)) + "," + (y - r * Math.sin(ang)) + " ";
+          pstr += (x - r * Math.cos(ang)) + "," + (y - r * Math.sin(ang)) + " ";
+          _.extend(prop, {
+            "pts" : pstr,
+            "tooltip_cx" : x
+          });
+          labely = y - s / 2;
+          break;
+        case "dcross":
+        case "cross":
+        case "level":
+        case "vlevel":
+        case "linecross":
+          //TODO
         default:    // rects
           _.extend(prop, {
             "x": x - s / 2,
@@ -328,6 +411,18 @@ define([
             .data(eleprops, function(d) { return d.id; })
             .attr("points", function(d) { return d.pts; });
           break;
+        case "triangle":
+        case "downtriangle":
+          shapesvg.selectAll(tag)
+            .data(eleprops, function(d) { return d.id; })
+            .attr("points", function(d) { return d.pts; });
+          break;
+        case "dcross":
+        case "cross":
+        case "level":
+        case "vlevel":
+        case "linecross":
+          // TODO
         default:  // rect
           shapesvg.selectAll(tag)
             .data(eleprops, function(d) { return d.id; })

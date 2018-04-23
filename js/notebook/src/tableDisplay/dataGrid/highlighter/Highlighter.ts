@@ -17,7 +17,6 @@
 import IHihglighterState, { HIGHLIGHTER_STYLE } from "../interface/IHighlighterState";
 import { CellRenderer } from "@phosphor/datagrid";
 import DataGridColumn from "../column/DataGridColumn";
-import { find } from "@phosphor/algorithm";
 import {DEFAULT_CELL_BACKGROUND} from "../style/dataGridStyle";
 import {BeakerXDataGridModel} from "../model/BeakerXDataGridModel";
 
@@ -27,7 +26,7 @@ export default class Highlighter {
   state: IHihglighterState;
 
   constructor(column: DataGridColumn, state: IHihglighterState) {
-    const valueResolver = column.getValueResolver();
+    const valueResolver = column.dataGrid.model.getColumnValueResolver(column.getDataType());
 
     this.column = column;
     this.model = column.dataGrid.model;
@@ -43,7 +42,7 @@ export default class Highlighter {
 
   getValueToHighlight(config: CellRenderer.ICellConfig) {
     let value = config.value;
-    let valueResolver = this.column.getValueResolver();
+    let valueResolver = this.model.getColumnValueResolver(this.column.getDataType());
 
     if (this.state.style === HIGHLIGHTER_STYLE.FULL_ROW) {
       value = this.model.rowManager.getValueByColumn(config.row, this.column.index, this.column.type);

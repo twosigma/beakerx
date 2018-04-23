@@ -84,7 +84,6 @@ export default class DataGridColumn {
     this.columnManager = columnManager;
 
     this.assignFormatFn();
-    this.createMenu();
     this.addColumnFilter();
     this.addDataTypeTooltip();
     this.connectToCellHovered();

@@ -19,7 +19,8 @@ exports.config = {
     './js/**/*.js'
   ],
   exclude: [
-    './js/nbviewer/*.js'
+    './js/nbviewer/*.js',
+    './js/groovy/mimeTest.js'
   ],
   maxInstances: 1,
   capabilities: [{

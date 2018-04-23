@@ -260,21 +260,21 @@ describe('Testing of table Actions ', function () {
 
   describe('Column menu option "Heatmap"', function () {
     it('Should display Heatmap in column', function () {
-      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       checkColumnMenu(cellIndex, codeCell, 'Heatmap', 'cell4_case8.png');
     });
   });
 
   describe('Column menu option "Data Bars"', function () {
     it('Should display Data Bars in column', function () {
-      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       checkColumnMenu(cellIndex, codeCell, 'Data Bars', 'cell4_case9.png');
     });
   });
 
   describe('Column menu option "Color by unique"', function () {
     it('Should display Color by unique in column', function () {
-      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       checkColumnMenu(cellIndex, codeCell, 'Color by unique', 'cell4_case10.png');
     });
   });

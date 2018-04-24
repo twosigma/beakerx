@@ -17,66 +17,91 @@
 import {BeakerXDataGrid} from "../BeakerXDataGrid";
 import {ICellData} from "../interface/ICell";
 import CellTooltip from "./CellTooltip";
-import {DEFAULT_GRID_PADDING} from "../style/dataGridStyle";
-import {selectColumnIndexByPosition} from "../column/selectors";
-import {COLUMN_TYPES} from "../column/enums";
 import ColumnManager from "../column/ColumnManager";
 import DataGridCell from "./DataGridCell";
+import {selectHasIndex, selectTooltips} from "../model/selectors/model";
+import {COLUMN_TYPES} from "../column/enums";
 
 export default class CellTooltipManager {
+  activeTooltips: CellTooltip[] = [];
   dataGrid: BeakerXDataGrid;
   tooltips: string[][];
-  tooltip: CellTooltip;
   lastData: ICellData;
+  hasIndex: boolean;
 
-  constructor(dataGrid: BeakerXDataGrid, tooltips: string[][]) {
-    this.tooltips = tooltips;
+  constructor(dataGrid: BeakerXDataGrid) {
+    this.tooltips = selectTooltips(dataGrid.store.state);
+    this.hasIndex = selectHasIndex(dataGrid.store.state);
     this.dataGrid = dataGrid;
 
-    if (tooltips.length) {
-      this.dataGrid.cellHovered.connect(this.handleCellHovered, this);
-      this.tooltip = new CellTooltip(
-        '',
-        this.dataGrid.node
-      );
-    }
+    this.dataGrid.cellHovered.connect(this.handleCellHovered, this);
   }
 
-  hideTooltip() {
-    this.tooltip && this.tooltip.hide();
+  hideTooltips() {
+    let tooltip;
+
+    while(tooltip = this.activeTooltips.pop()) {
+      tooltip.hide();
+    }
   }
 
   handleCellHovered(sender: BeakerXDataGrid, data: ICellData) {
-    if (!data || data.type === COLUMN_TYPES.index || DataGridCell.isHeaderCell(data)) {
-      return this.hideTooltip();
-    }
-
-    if (this.isShown(data)) {
+    if (this.dataEquals(data, this.lastData)) {
       return;
     }
 
-    let column = selectColumnIndexByPosition(
-      sender.store.state,
-      ColumnManager.createPositionFromCell(data)
-    );
-    this.tooltip.hide();
-    this.lastData = data;
-
-    setTimeout(() => {
-      let x = data.offset + data.delta + DEFAULT_GRID_PADDING;
-
-      this.tooltip.node.innerText = this.tooltips[data.row][column] || '';
-      this.tooltip.show(x, data.offsetTop);
-    }, 300);
+    this.hideTooltips();
+    if (this.shouldShowTooltip(data)) {
+      this.showTooltip(data);
+    }
   }
 
-  private isShown(data) {
-    if (!this.lastData) {
-      return false;
+  private shouldShowTooltip(data) {
+    return this.shouldShowBodyTooltip(data) || DataGridCell.isHeaderCell(data);
+  }
+
+  private shouldShowBodyTooltip(data) {
+    return (
+      this.tooltips.length > 0
+      && (data && data.type !== COLUMN_TYPES.index || this.hasIndex)
+    )
+  }
+
+  private showTooltip(data: ICellData) {
+    const rect = this.dataGrid.node.getBoundingClientRect();
+    const tooltip = new CellTooltip(
+      this.getTooltipText(data),
+      document.body
+    );
+
+    this.lastData = data;
+    this.activeTooltips.push(tooltip);
+
+    tooltip.show(
+      Math.ceil(rect.left + data.offset + 20),
+      Math.ceil(window.pageYOffset + rect.top + data.offsetTop - 10)
+    );
+  }
+
+  private getTooltipText(data) {
+    const column = this.dataGrid.columnManager.getColumnByPosition(
+      ColumnManager.createPositionFromCell(data)
+    );
+
+    if (DataGridCell.isHeaderCell(data)) {
+      return column.getDataTypeName() || typeof data.value;
     }
 
-    const { row, column, type } = this.lastData;
+    return this.tooltips[data.row][column.index] || '';
+  }
 
-    return row === data.row && column === data.column && type === data.type;
+  private dataEquals(data1: ICellData, data2: ICellData) {
+    return (
+      data1
+      && data2
+      && data1.row === data2.row
+      && data1.column === data2.column
+      && data1.region === data2.region
+    )
   }
 }

@@ -185,6 +185,8 @@ export default class EventManager {
   private handleMouseOut(event: MouseEvent): void {
     const relatedTarget = event.relatedTarget as HTMLElement;
 
+    this.dataGrid.cellTooltipManager.hideTooltips();
+
     if (relatedTarget && (
       this.dataGrid.node.contains(relatedTarget)
       || relatedTarget === this.dataGrid.node

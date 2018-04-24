@@ -43,6 +43,8 @@ export default class CellTooltipManager {
     while(tooltip = this.activeTooltips.pop()) {
       tooltip.hide();
     }
+
+    this.lastData = null;
   }
 
   handleCellHovered(sender: BeakerXDataGrid, data: ICellData) {

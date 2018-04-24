@@ -28,6 +28,7 @@ import getEventKeyCode = DataGridHelpers.getEventKeyCode;
 import {KEYBOARD_KEYS} from "./enums";
 import ColumnManager from "../column/ColumnManager";
 import {ICellData} from "../interface/ICell";
+import {DEFAULT_GRID_PADDING} from "../style/dataGridStyle";
 
 const COLUMN_RESIZE_AREA_WIDTH = 4;
 
@@ -134,6 +135,10 @@ export default class EventManager {
       return;
     }
 
+    if (this.isOutsideActiveArea(event)) {
+      return this.dataGrid.cellTooltipManager.hideTooltips();
+    }
+
     if (event.buttons !== 1) {
       this.dataGrid.columnPosition.stopDragging();
     }
@@ -148,6 +153,17 @@ export default class EventManager {
 
     this.dataGrid.columnPosition.moveDraggedHeader(event);
     this.handleCellHover(event);
+  }
+
+  private isOutsideActiveArea(event: MouseEvent) {
+    const rect = this.dataGrid.viewport.node.getBoundingClientRect();
+
+    return (
+      event.clientY - rect.top <= 1
+      || rect.bottom - event.clientY <= 1
+      || event.clientX - rect.left <= 1
+      || rect.right - event.clientX <= 1
+    )
   }
 
   private handleCellHover(event) {

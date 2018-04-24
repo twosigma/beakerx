@@ -85,6 +85,12 @@ class SparkStateProgressView extends widgets.VBoxView {
     progressLabels.find('.waiting').text(valueWaiting);
     progressLabels.find('.all').text(max);
 
+    let maxw = progressLabels.find('.all').width();
+
+    progressLabels.find('.done, .active, .waiting, .all').each((i, e) => {
+      $(e).css({ display: 'inline-block'}).width(maxw);
+    });
+
     if (this.model.get('hide')) {
         this.hideProgress();
     }

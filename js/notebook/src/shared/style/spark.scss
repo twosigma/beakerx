@@ -14,8 +14,15 @@
  *  limitations under the License.
  */
 
-.bx-spark-stateProgress h3 {
-  text-indent: 16px;
+.bx-spark-stateProgress {
+  h3 {
+    text-indent: 16px;
+  }
+  .ui-accordion-header.ui-state-active {
+    border: 1px solid #c5c5c5;
+    background: #e6e6e6;
+    color: #333333;
+  }
 }
 
 .bx-spark-jobPanel {

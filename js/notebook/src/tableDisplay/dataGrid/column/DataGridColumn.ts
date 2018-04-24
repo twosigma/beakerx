@@ -84,7 +84,6 @@ export default class DataGridColumn {
     this.columnManager = columnManager;
 
     this.assignFormatFn();
-    this.createMenu();
     this.addColumnFilter();
     this.addDataTypeTooltip();
     this.connectToCellHovered();
@@ -299,24 +298,7 @@ export default class DataGridColumn {
   }
 
   getValueResolver(): Function {
-    const dataType = this.getDataType();
-
-    switch (dataType) {
-      case ALL_TYPES.datetime:
-      case ALL_TYPES.time:
-        return this.dateValueResolver;
-
-      case ALL_TYPES.double:
-      case ALL_TYPES['double with precision']:
-        return this.doubleValueResolver;
-
-      case ALL_TYPES.integer:
-      case ALL_TYPES.int64:
-        return this.integerValueResolver;
-
-      default:
-        return this.defaultValueResolver;
-    }
+    return this.dataGrid.model.getColumnValueResolver(this.getDataType());
   }
 
   move(destination: number) {
@@ -426,22 +408,6 @@ export default class DataGridColumn {
       hasIndex: selectHasIndex(this.store.state)
     }));
     this.dataGrid.columnPosition.updateAll();
-  }
-
-  private dateValueResolver(value) {
-    return value.timestamp;
-  }
-
-  private defaultValueResolver(value) {
-    return value;
-  }
-
-  private doubleValueResolver(value) {
-    return parseFloat(value);
-  }
-
-  private integerValueResolver(value) {
-    return parseInt(value);
   }
 
   private onColumnsChanged(sender: ColumnManager, args: IBkoColumnsChangedArgs) {

@@ -100,6 +100,10 @@ export default class EventManager {
   }
 
   private handleMouseUp(event: MouseEvent) {
+    if (this.dataGrid.dataGridResize.isResizing()) {
+      return this.dataGrid.dataGridResize.stopResizing();
+    }
+
     this.dataGrid.cellSelectionManager.handleMouseUp(event);
     this.handleHeaderClick(event);
     this.handleBodyClick(event);
@@ -126,8 +130,20 @@ export default class EventManager {
   }
 
   private handleMouseMove(event: MouseEvent): void {
+    if (this.dataGrid.dataGridResize.isResizing()) {
+      return;
+    }
+
     if (event.buttons !== 1) {
       this.dataGrid.columnPosition.stopDragging();
+    }
+
+    if (!this.dataGrid.dataGridResize.isResizing()) {
+      this.dataGrid.dataGridResize.setResizeMode(event);
+    }
+
+    if (this.dataGrid.dataGridResize.isResizing()) {
+      return;
     }
 
     this.dataGrid.columnPosition.moveDraggedHeader(event);
@@ -149,15 +165,15 @@ export default class EventManager {
     !this.dataGrid.focused && this.dataGrid.setFocus(true);
     this.dataGrid.cellSelectionManager.handleMouseDown(event);
 
-    if (!this.isHeaderClicked(event)) {
-      return;
+    if (!this.isHeaderClicked(event) && this.dataGrid.dataGridResize.shouldResizeDataGrid(event)) {
+      return this.dataGrid.dataGridResize.startResizing(event);
     }
 
     const data = this.dataGrid.getCellData(event.clientX, event.clientY);
 
     if (
-      data.region === 'corner-header'
-      && data.column === 0
+      !data
+      || data.region === 'corner-header' && data.column === 0
       || data.width - data.delta < COLUMN_RESIZE_AREA_WIDTH
     ) {
       return;

@@ -23,7 +23,6 @@ import { CellRendererFactory } from "./cell/CellRendererFactory";
 import DataGridColumn from "./column/DataGridColumn";
 import IDataModelState from "./interface/IDataGridModelState";
 import HighlighterManager from "./highlighter/HighlighterManager";
-import IHihglighterState from "./interface/IHighlighterState";
 import ColumnManager from "./column/ColumnManager";
 import RowManager from "./row/RowManager";
 import CellSelectionManager from "./cell/CellSelectionManager";
@@ -241,9 +240,7 @@ export class BeakerXDataGrid extends DataGrid {
   }
 
   private addHighlighterManager() {
-    let cellHighlighters: IHihglighterState[] = selectCellHighlighters(this.store.state);
-
-    this.highlighterManager = new HighlighterManager(this, cellHighlighters);
+    this.highlighterManager = new HighlighterManager(this);
   }
 
   private addCellRenderers() {

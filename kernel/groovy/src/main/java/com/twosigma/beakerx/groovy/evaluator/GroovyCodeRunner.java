@@ -22,13 +22,10 @@ import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import groovy.lang.Script;
 import org.codehaus.groovy.runtime.StackTraceUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.concurrent.Callable;
 
 import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
@@ -36,7 +33,6 @@ import static com.twosigma.beakerx.groovy.evaluator.GroovyStackTracePrettyPrinte
 
 class GroovyCodeRunner implements Callable<TryResult> {
 
-  private static final Logger logger = LoggerFactory.getLogger(GroovyCodeRunner.class.getName());
   public static final String SCRIPT_NAME = "script";
   private GroovyEvaluator groovyEvaluator;
   private final String theCode;
@@ -49,7 +45,7 @@ class GroovyCodeRunner implements Callable<TryResult> {
   }
 
   @Override
-  public TryResult call() throws Exception {
+  public TryResult call() {
     ClassLoader oldld = Thread.currentThread().getContextClassLoader();
     TryResult either;
     String scriptName = SCRIPT_NAME;
@@ -57,55 +53,52 @@ class GroovyCodeRunner implements Callable<TryResult> {
       Object result = null;
       theOutput.setOutputHandler();
       Thread.currentThread().setContextClassLoader(groovyEvaluator.getGroovyClassLoader());
-
       scriptName += System.currentTimeMillis();
       Class<?> parsedClass = groovyEvaluator.getGroovyClassLoader().parseClass(theCode, scriptName);
-
-      Script instance = (Script) parsedClass.newInstance();
-
-      if (GroovyEvaluator.LOCAL_DEV) {
-        groovyEvaluator.getScriptBinding().setVariable(Evaluator.BEAKER_VARIABLE_NAME, new HashMap<String, Object>());
-      } else {
-        groovyEvaluator.getScriptBinding().setVariable(Evaluator.BEAKER_VARIABLE_NAME, NamespaceClient.getBeaker(groovyEvaluator.getSessionId()));
-      }
-
-      instance.setBinding(groovyEvaluator.getScriptBinding());
-
-      InternalVariable.setValue(theOutput);
-
-      result = instance.run();
-
-      if (GroovyEvaluator.LOCAL_DEV) {
-        logger.info("Result: {}", result);
-        logger.info("Variables: {}", groovyEvaluator.getScriptBinding().getVariables());
+      if (canBeInstantiated(parsedClass)) {
+        Object instance = parsedClass.newInstance();
+        if (instance instanceof Script) {
+          result = runScript((Script) instance);
+        }
       }
       either = TryResult.createResult(result);
     } catch (Throwable e) {
-      if (GroovyEvaluator.LOCAL_DEV) {
-        logger.warn(e.getMessage());
-        e.printStackTrace();
-      }
-
-      //unwrap ITE
-      if (e instanceof InvocationTargetException) {
-        e = ((InvocationTargetException) e).getTargetException();
-      }
-
-      if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {
-        either = TryResult.createError(INTERUPTED_MSG);
-      } else {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        StackTraceUtils.sanitize(e).printStackTrace(pw);
-        String value = sw.toString();
-        value = printStacktrace(scriptName, value);
-        either = TryResult.createError(value);
-      }
+      either = handleError(scriptName, e);
     } finally {
       theOutput.clrOutputHandler();
       Thread.currentThread().setContextClassLoader(oldld);
     }
     return either;
+  }
+
+  private TryResult handleError(String scriptName, Throwable e) {
+    TryResult either;
+    if (e instanceof InvocationTargetException) {
+      e = ((InvocationTargetException) e).getTargetException();
+    }
+
+    if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {
+      either = TryResult.createError(INTERUPTED_MSG);
+    } else {
+      StringWriter sw = new StringWriter();
+      PrintWriter pw = new PrintWriter(sw);
+      StackTraceUtils.sanitize(e).printStackTrace(pw);
+      String value = sw.toString();
+      value = printStacktrace(scriptName, value);
+      either = TryResult.createError(value);
+    }
+    return either;
+  }
+
+  private Object runScript(Script script) {
+    groovyEvaluator.getScriptBinding().setVariable(Evaluator.BEAKER_VARIABLE_NAME, NamespaceClient.getBeaker(groovyEvaluator.getSessionId()));
+    script.setBinding(groovyEvaluator.getScriptBinding());
+    InternalVariable.setValue(theOutput);
+    return script.run();
+  }
+
+  private boolean canBeInstantiated(Class<?> parsedClass) {
+    return !parsedClass.isEnum();
   }
 
 }

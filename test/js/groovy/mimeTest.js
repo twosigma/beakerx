@@ -32,12 +32,13 @@ describe('(Groovy) Testing of MIME types', function () {
 
   describe('(Groovy) Display MIME types', function () {
     var testValues = {
-      mathematicalSymbols: 'α2+η',
+      mathematicalSymbols: 'α+η',
       headerText: 'Hello, world!',
       markdownTestValue: "It's very easy to do bold and italics:",
       markdownBoldValue: "bold",
       markdownItalicsValue: "italics",
-      mathematicalFormula: 'F(k)=∫',
+      mathematicalFormula: 'F(k)=∫f(x)2eπikdx',
+      groovyFileName: 'GroovyTest.ipynb'
     };
 
     it('Cell outputs mathematical symbols', function () {
@@ -45,9 +46,11 @@ describe('(Groovy) Testing of MIME types', function () {
 
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
 
-      browser.waitUntil(function () {
-        return codeCell.$('div.output_result').getText() === testValues.mathematicalSymbols;
-      })
+      expect(codeCell.$('div.output_latex').getText().trim()).toContain(testValues.mathematicalSymbols);
+
+      // browser.waitUntil(function () {
+      //   return codeCell.$('div.output_latex').getText() === testValues.mathematicalSymbols;
+      // })
     });
 
     it('Cell displays html code', function () {
@@ -57,9 +60,7 @@ describe('(Groovy) Testing of MIME types', function () {
 
       browser.waitUntil(function () {
         return codeCell.$('div.output_result > h1').getText() === testValues.headerText;
-      })
-
-
+      });
     });
 
     it('Cell displays html code', function () {
@@ -67,7 +68,9 @@ describe('(Groovy) Testing of MIME types', function () {
 
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
 
-      expect(codeCell.$('div.output_result > h2').getText()).toBe(testValues.headerText);
+      browser.waitUntil(function () {
+        return codeCell.$('div.output_result > h2').getText() === testValues.headerText;
+      });
     });
 
     it('Cell displays html code', function () {
@@ -75,7 +78,9 @@ describe('(Groovy) Testing of MIME types', function () {
 
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
 
-      expect(codeCell.$('div.output_result > h3').getText()).toBe(testValues.headerText);
+      browser.waitUntil(function () {
+        return codeCell.$('div.output_result > h3').getText() === testValues.headerText;
+      });
     });
 
     it('Cell outputs mathematical symbols', function () {
@@ -103,7 +108,9 @@ describe('(Groovy) Testing of MIME types', function () {
 
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
 
-      expect(codeCell.$('div.output_subarea > a').getText()).toBe('GroovyTest.ipynb')
+      browser.waitUntil(function () {
+        return codeCell.$('div.output_subarea > a').getText() === testValues.groovyFileName;
+      })
     });
 
     it('Cell displays markdown', function () {

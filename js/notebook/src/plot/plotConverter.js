@@ -54,6 +54,13 @@ define([
     "DEFAULT" : "rect",
     "CIRCLE" : "circle",
     "DIAMOND" : "diamond",
+    "TRIANGLE" : "triangle",
+    "DOWNTRIANGLE" : "downtriangle",
+    "LEVEL" : "level",
+    "VLEVEL" : "vlevel",
+    "LINECROSS" : "linecross",
+    "CROSS" : "cross",
+    "DCROSS" : "dcross",
     "" : "rect"
   };
   var interpolationMap = {

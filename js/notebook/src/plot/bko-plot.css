@@ -314,6 +314,10 @@
   display: none;
 }
 
+.svg-export {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 .svg-export.improveFonts {
   font-family: "Lato", Helvetica, sans-serif;
 }

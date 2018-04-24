@@ -143,14 +143,12 @@ public class MessageCreator {
   public static Message buildReplyWithOkStatus(Message message, int executionCount) {
     Message messageWithStatus = buildReplyWithoutStatus(message, executionCount);
     messageWithStatus.getContent().put("status", "ok");
-
     return messageWithStatus;
   }
 
   public static Message buildReplyWithErrorStatus(Message message, int executionCount) {
     Message messageWithStatus = buildReplyWithoutStatus(message, executionCount);
     messageWithStatus.getContent().put("status", "error");
-
     return messageWithStatus;
   }
 

@@ -15,10 +15,12 @@
  */
 package com.twosigma.beakerx;
 
+import com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.magic.command.CodeFactory;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.TestWidgetUtils;
 import org.junit.Test;
 
 import java.util.List;
@@ -122,7 +124,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     Code code = CodeFactory.create(allCode, new Message(), getKernel());
     code.execute(getKernel(), 3);
     List<Message> std = waitForStdouts(getKernelSocketsService().getKernelSockets());
-    String text = (String) std.get(2).getContent().get("text");
+    String text = (String) std.get(1).getContent().get("text");
     assertThat(text).contains("PATH");
   }
 
@@ -131,7 +133,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     Code code = CodeFactory.create(allCode, new Message(), getKernel());
     code.execute(getKernel(), 2);
     List<Message> std = waitForStdouts(getKernelSocketsService().getKernelSockets());
-    String text = (String) std.get(1).getContent().get("text");
+    String text = (String) std.get(0).getContent().get("text");
     assertThat(text).contains("Magic command %showEnvs was successfully added.");
   }
 
@@ -139,8 +141,8 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     String allCode = CLASSPATH_ADD_JAR + " " + LOAD_MAGIC_DEMO_JAR;
     Code code = CodeFactory.create(allCode, new Message(), getKernel());
     code.execute(getKernel(), 1);
-    List<Message> std = waitForStdouts(getKernelSocketsService().getKernelSockets());
-    String text = (String) std.get(0).getContent().get("text");
+    Optional<Message> updateMessage = EvaluatorResultTestWatcher.waitForUpdateMessage(getKernelSocketsService().getKernelSockets());
+    String text =  (String) TestWidgetUtils.getState(updateMessage.get()).get("value");
     assertThat(text).contains("Added jar: [loadMagicJarDemo.jar]");
   }
 
@@ -181,8 +183,8 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     String allCode = CLASSPATH_ADD_JAR + " " + DEMO_JAR;
     Code code = CodeFactory.create(allCode, new Message(), getKernel());
     code.execute(getKernel(), 1);
-    List<Message> std = waitForStdouts(getKernelSocketsService().getKernelSockets());
-    String text = (String) std.get(0).getContent().get("text");
+    Optional<Message> updateMessage = EvaluatorResultTestWatcher.waitForUpdateMessage(getKernelSocketsService().getKernelSockets());
+    String text =  (String) TestWidgetUtils.getState(updateMessage.get()).get("value");
     assertThat(text).contains("Added jar: [demo.jar]");
   }
 

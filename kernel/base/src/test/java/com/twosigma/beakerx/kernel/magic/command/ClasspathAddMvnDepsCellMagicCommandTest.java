@@ -22,6 +22,7 @@ import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClassPathAddMvnCellMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.TestWidgetUtils;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -39,6 +40,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -127,13 +129,13 @@ public class ClasspathAddMvnDepsCellMagicCommandTest {
   }
 
 
-  private void handleCellClasspathAddMvnDep(String allCode, List<String> expected) throws IOException {
+  private void handleCellClasspathAddMvnDep(String allCode, List<String> expected) throws Exception {
     processMagicCommand(allCode);
     String mvnDir = kernel.getTempFolder().toString() + MavenJarResolver.MVN_DIR;
     List<String> depNames = Files.walk(Paths.get(mvnDir)).map(p -> p.getFileName().toString()).collect(Collectors.toList());
 
-    List<Message> stderr = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());
-    String text = (String) stderr.get(0).getContent().get("text");
+    Optional<Message> updateMessage = EvaluatorResultTestWatcher.waitForUpdateMessage(kernel);
+    String text =  (String) TestWidgetUtils.getState(updateMessage.get()).get("value");
 
     Assertions.assertThat(text).contains("Added jars");
     Assertions.assertThat(kernel.getClasspath().get(0)).contains(mvnDir);

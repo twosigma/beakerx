@@ -21,7 +21,7 @@ import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
-import com.twosigma.beakerx.widget.HTML;
+import com.twosigma.beakerx.widget.BxHTML;
 
 import java.util.Optional;
 
@@ -69,7 +69,7 @@ public class MagicCommandOutputHTML implements MagicCommandOutcomeItem {
   }
 
   private void sendHTML(Message message) {
-    HTML value = new HTML(message);
+    BxHTML value = new BxHTML(message);
     value.setValue(getMIMEContainer().get().getData());
     value.display();
   }

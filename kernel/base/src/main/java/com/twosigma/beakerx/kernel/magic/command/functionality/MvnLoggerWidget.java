@@ -16,8 +16,7 @@
 package com.twosigma.beakerx.kernel.magic.command.functionality;
 
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widget.HTML;
-import com.twosigma.beakerx.widget.StringWidget;
+import com.twosigma.beakerx.widget.BxHTML;
 
 import java.math.BigDecimal;
 import java.util.Timer;
@@ -30,7 +29,7 @@ import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 public class MvnLoggerWidget {
 
   static final int PERIOD = 250;
-  private StringWidget widget;
+  private BxHTML widget;
   private Timer timer;
   private volatile int jarNumbers = 0;
   private volatile double sizeInKb;
@@ -38,7 +37,7 @@ public class MvnLoggerWidget {
   private volatile String currentLine;
 
   public MvnLoggerWidget(Message parentMessage) {
-    this.widget = new HTML(parentMessage);
+    this.widget = new BxHTML(parentMessage);
     this.timer = new Timer();
     this.timer.scheduleAtFixedRate(new TimerTask() {
       @Override

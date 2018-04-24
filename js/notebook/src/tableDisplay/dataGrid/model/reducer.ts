@@ -17,10 +17,14 @@
 import {Reducer} from "@phosphor/datastore";
 import IDataModelState from "../interface/IDataGridModelState";
 import DataGridAction, {DataGridColumnAction} from "../store/DataGridAction";
+import { each } from "@phosphor/algorithm";
 import {
   selectColumnNames, selectColumnOrder, selectColumnsFrozen, selectColumnsFrozenNames,
   selectColumnsVisible
 } from "./selectors";
+import {selectCellHighlighters} from "./selectors/model";
+import IHihglighterState from "../interface/IHighlighterState";
+import {selectColumnHighlighters} from "./selectors/column";
 
 export const UPDATE_MODEL_DATA = 'UPDATE_MODEL_DATA';
 export const UPDATE_COLUMN_RENDERER = 'UPDATE_COLUMN_RENDERER';
@@ -29,6 +33,8 @@ export const UPDATE_COLUMN_FROZEN = 'UPDATE_COLUMN_FROZEN';
 export const UPDATE_COLUMN_VISIBLE = 'UPDATE_COLUMN_VISIBLE';
 export const UPDATE_COLUMNS_VISIBLE = 'UPDATE_COLUMNS_VISIBLE';
 export const RESET_COLUMNS_ORDER = 'RESET_COLUMNS_ORDER';
+export const ADD_COLUMN_HIGHLIGHTER = 'ADD_COLUMN_HIGHLIGHTER';
+export const REMOVE_COLUMN_HIGHLIGHTER = 'REMOVE_COLUMN_HIGHLIGHTER';
 
 const dataGridModelReducer: Reducer<IDataModelState> = (
   state: IDataModelState,
@@ -61,6 +67,12 @@ const dataGridModelReducer: Reducer<IDataModelState> = (
 
     case UPDATE_COLUMNS_VISIBLE:
       return reduceColumnsVisible(state, action);
+
+    case ADD_COLUMN_HIGHLIGHTER:
+      return addCellHighlighters(state, action);
+
+    case REMOVE_COLUMN_HIGHLIGHTER:
+      return removeCellHighlighters(state, action);
   }
 
   return state;
@@ -195,6 +207,35 @@ function getColumnOrderArray(state): string[] {
   }
 
   return [...selectColumnNames({ model: state })];
+}
+
+function addCellHighlighters(state, action) {
+  const newState = removeCellHighlighters(state, action);
+  const cellHighlighters = newState.cellHighlighters;
+
+  cellHighlighters.push(action.payload.value);
+
+  return {
+    ...newState,
+    cellHighlighters
+  }
+}
+
+function removeCellHighlighters(state, action) {
+  const cellHighlighters = [...selectCellHighlighters({ model: state })];
+  const highlighterState: IHihglighterState = action.payload.value;
+  const currentHighlighters = selectColumnHighlighters({ model: state }, highlighterState.colName, highlighterState.type);
+
+  if (currentHighlighters.length > 0) {
+    each(currentHighlighters, (current) => {
+      cellHighlighters.splice(cellHighlighters.indexOf(current), 1);
+    });
+  }
+
+  return {
+    ...state,
+    cellHighlighters
+  }
 }
 
 export default dataGridModelReducer;

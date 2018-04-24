@@ -2545,6 +2545,7 @@ define([
 
     var W = plotUtils.outerWidth(self.jqlegendcontainer);
     var H = plotUtils.outerHeight(self.jqlegendcontainer);
+    H += titleOuterHeight;
 
     svg.setAttribute("width", W);
     svg.setAttribute("height", H);

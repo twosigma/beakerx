@@ -209,6 +209,10 @@ export default class BeakerXCellRenderer extends TextRenderer {
     let format = this.format;
     let text = format(config);
 
+    if (text === null) {
+      return;
+    }
+
     // Resolve the vertical and horizontal alignment.
     let vAlign = CellRenderer.resolveOption(this.verticalAlignment, config);
     let hAlign = CellRenderer.resolveOption(this.horizontalAlignment, config);

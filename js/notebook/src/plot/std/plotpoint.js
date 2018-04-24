@@ -24,6 +24,8 @@ define([
   plotTip
 ) {
 
+  var PointShapeHelper = require('./PointShapeHelper.ts').default;
+
   var PlotPoint = function(data){
     _.extend(this, data); // copy properties to itself
     this.format();
@@ -52,22 +54,20 @@ define([
           shapesvg.selectAll(tag)
             .transition()
             .duration(plotUtils.getHighlightDuration())
-            .attr("r", function(d) { return plotUtils.getHighlightedSize(d.r, highlighted); });
+            .attr("r", function(d) {
+              return plotUtils.getHighlightedSize(d.r, highlighted);
+            });
           break;
         case "diamond":
           shapesvg.selectAll(tag)
             .transition()
             .duration(plotUtils.getHighlightDuration())
             .attr("points", function(d) {
-              var mapX = scope.data2scrXi, mapY = scope.data2scrYi;
-              var ele = d.ele, x = mapX(ele.x), y = mapY(ele.y),
-                s = plotUtils.getHighlightedSize(ele.size, highlighted);
-              var pstr = "";
-              pstr += (x - s / 2) + "," + (y        ) + " ";
-              pstr += (x        ) + "," + (y - s / 2) + " ";
-              pstr += (x + s / 2) + "," + (y        ) + " ";
-              pstr += (x        ) + "," + (y + s / 2) + " ";
-              return pstr;
+              var
+                mapX = scope.data2scrXi, mapY = scope.data2scrYi,
+                x = mapX(d.ele.x), y = mapY(d.ele.y),
+                size = plotUtils.getHighlightedSize(d.ele.size, highlighted);
+              return PointShapeHelper.getDiamondPoints(x, y, size);
             });
           break;
         case "triangle":
@@ -75,16 +75,11 @@ define([
             .transition()
             .duration(plotUtils.getHighlightDuration())
             .attr("points", function(d) {
-              var mapX = scope.data2scrXi, mapY = scope.data2scrYi;
-              var ele = d.ele, x = mapX(ele.x), y = mapY(ele.y),
-                s = plotUtils.getHighlightedSize(ele.size, highlighted),
-                r = s / 2,
-                ang = 30 * (Math.PI/180);
-              var pstr = "";
-              pstr += (x) + "," + (y - r) + " ";
-              pstr += (x + r * Math.cos(ang)) + "," + (y + r * Math.sin(ang)) + " ";
-              pstr += (x - r * Math.cos(ang)) + "," + (y + r * Math.sin(ang)) + " ";
-              return pstr;
+              var
+                mapX = scope.data2scrXi, mapY = scope.data2scrYi,
+                x = mapX(d.ele.x), y = mapY(d.ele.y),
+                size = plotUtils.getHighlightedSize(d.ele.size, highlighted);
+              return PointShapeHelper.getTrianglePoints(x, y, size);
             });
           break;
         case "downtriangle":
@@ -92,23 +87,73 @@ define([
             .transition()
             .duration(plotUtils.getHighlightDuration())
             .attr("points", function(d) {
-              var mapX = scope.data2scrXi, mapY = scope.data2scrYi;
-              var ele = d.ele, x = mapX(ele.x), y = mapY(ele.y),
-                s = plotUtils.getHighlightedSize(ele.size, highlighted),
-                r = s / 2,
-                ang = 30 * (Math.PI/180);
-              var pstr = "";
-              pstr += (x) + "," + (y + r) + " ";
-              pstr += (x + r * Math.cos(ang)) + "," + (y - r * Math.sin(ang)) + " ";
-              pstr += (x - r * Math.cos(ang)) + "," + (y - r * Math.sin(ang)) + " ";
-              return pstr;
+              var
+                mapX = scope.data2scrXi, mapY = scope.data2scrYi,
+                x = mapX(d.ele.x), y = mapY(d.ele.y),
+                size = plotUtils.getHighlightedSize(d.ele.size, highlighted);
+              return PointShapeHelper.getDownTrianglePoints(x, y, size);
+            });
+          break;
+        case "level":
+          shapesvg.selectAll(tag)
+            .transition()
+            .duration(plotUtils.getHighlightDuration())
+            .attr("points", function(d) {
+              var
+                mapX = scope.data2scrXi, mapY = scope.data2scrYi,
+                x = mapX(d.ele.x), y = mapY(d.ele.y),
+                size = plotUtils.getHighlightedSize(d.ele.size, highlighted);
+              return PointShapeHelper.getLevelPoints(x, y, size);
+            });
+          break;
+        case "vlevel":
+          shapesvg.selectAll(tag)
+            .transition()
+            .duration(plotUtils.getHighlightDuration())
+            .attr("points", function(d) {
+              var
+                mapX = scope.data2scrXi, mapY = scope.data2scrYi,
+                x = mapX(d.ele.x), y = mapY(d.ele.y),
+                size = plotUtils.getHighlightedSize(d.ele.size, highlighted);
+              return PointShapeHelper.getVLevelPoints(x, y, size);
+            });
+          break;
+        case "linecross":
+          shapesvg.selectAll(tag)
+            .transition()
+            .duration(plotUtils.getHighlightDuration())
+            .attr("points", function(d) {
+              var
+                mapX = scope.data2scrXi, mapY = scope.data2scrYi,
+                x = mapX(d.ele.x), y = mapY(d.ele.y),
+                size = plotUtils.getHighlightedSize(d.ele.size, highlighted);
+              return PointShapeHelper.getLineCrossPoints(x, y, size);
+            });
+          break;
+        case "cross":
+          shapesvg.selectAll(tag)
+            .transition()
+            .duration(plotUtils.getHighlightDuration())
+            .attr("points", function(d) {
+              var
+                mapX = scope.data2scrXi, mapY = scope.data2scrYi,
+                x = mapX(d.ele.x), y = mapY(d.ele.y),
+                size = plotUtils.getHighlightedSize(d.ele.size, highlighted);
+              return PointShapeHelper.getCrossPoints(x, y, size);
             });
           break;
         case "dcross":
-        case "cross":
-        case "level":
-        case "vlevel":
-        case "linecross":
+          shapesvg.selectAll(tag)
+            .transition()
+            .duration(plotUtils.getHighlightDuration())
+            .attr("points", function(d) {
+              var
+                mapX = scope.data2scrXi, mapY = scope.data2scrYi,
+                x = mapX(d.ele.x), y = mapY(d.ele.y),
+                size = plotUtils.getHighlightedSize(d.ele.size, highlighted);
+              return PointShapeHelper.getDCrossPoints(x, y, size);
+            });
+          break;
         default:  // rect
           var diff = plotUtils.getHighlightedDiff(highlighted) / 2;
           shapesvg.selectAll(tag)
@@ -249,7 +294,7 @@ define([
     for (var i = this.vindexL; i <= this.vindexR; i++) {
       var ele = eles[i];
       if (ele.y < focus.yl || ele.y > focus.yr) { continue; }
-      var x = mapX(ele.x), y = mapY(ele.y), s = ele.size;
+      var x = mapX(ele.x), y = mapY(ele.y), s = ele.size, r = s / 2;
       var labely;
 
       if (plotUtils.rangeAssert([x, y])) {
@@ -278,13 +323,8 @@ define([
       var shape = ele.shape == null ? this.shape : ele.shape;
       switch (shape) {
         case "diamond":
-          var pstr = "";
-          pstr += (x - s / 2) + "," + (y        ) + " ";
-          pstr += (x        ) + "," + (y - s / 2) + " ";
-          pstr += (x + s / 2) + "," + (y        ) + " ";
-          pstr += (x        ) + "," + (y + s / 2) + " ";
           _.extend(prop, {
-            "pts" : pstr,
+            "pts" : PointShapeHelper.getDiamondPoints(x, y, s),
             "tooltip_cx" : x
           });
           labely = y - s;
@@ -293,48 +333,67 @@ define([
           _.extend(prop, {
             "cx": x,
             "cy": y,
-            "r": s / 2
+            "r": r
           });
           labely = y - s;
           break;
         case "triangle":
-          var pstr = "";
-          var r = s / 2, ang = 30 * (Math.PI/180);
-          pstr += (x) + "," + (y - r) + " ";
-          pstr += (x + r * Math.cos(ang)) + "," + (y + r * Math.sin(ang)) + " ";
-          pstr += (x - r * Math.cos(ang)) + "," + (y + r * Math.sin(ang)) + " ";
           _.extend(prop, {
-            "pts" : pstr,
+            "pts" : PointShapeHelper.getTrianglePoints(x, y, s),
             "tooltip_cx" : x
           });
-          labely = y - s / 2;
+          labely = y - r;
           break;
         case "downtriangle":
-          var pstr = "";
-          var r = s / 2, ang = 30 * (Math.PI/180);
-          pstr += (x) + "," + (y + r) + " ";
-          pstr += (x + r * Math.cos(ang)) + "," + (y - r * Math.sin(ang)) + " ";
-          pstr += (x - r * Math.cos(ang)) + "," + (y - r * Math.sin(ang)) + " ";
           _.extend(prop, {
-            "pts" : pstr,
+            "pts" : PointShapeHelper.getDownTrianglePoints(x, y, s),
             "tooltip_cx" : x
           });
-          labely = y - s / 2;
+          labely = y - r;
+          break;
+        case "level":
+          _.extend(prop, {
+            "pts" : PointShapeHelper.getLevelPoints(x, y, s),
+            "tooltip_cx" : x
+          });
+          labely = y - r;
+          break;
+        case "vlevel":
+          _.extend(prop, {
+            "pts" : PointShapeHelper.getVLevelPoints(x, y, s),
+            "tooltip_cx" : x
+          });
+          labely = y - r;
+          break;
+        case "linecross":
+          _.extend(prop, {
+            "pts" : PointShapeHelper.getLineCrossPoints(x, y, s),
+            "tooltip_cx" : x
+          });
+          labely = y - r;
+          break;
+        case "cross":
+          _.extend(prop, {
+            "pts" : PointShapeHelper.getCrossPoints(x, y, s),
+            "tooltip_cx" : x
+          });
+          labely = y - r;
           break;
         case "dcross":
-        case "cross":
-        case "level":
-        case "vlevel":
-        case "linecross":
-          //TODO
+          _.extend(prop, {
+            "pts" : PointShapeHelper.getDCrossPoints(x, y, s),
+            "tooltip_cx" : x
+          });
+          labely = y - r;
+          break;
         default:    // rects
           _.extend(prop, {
-            "x": x - s / 2,
-            "y": y - s / 2,
+            "x": x - r,
+            "y": y - r,
             "w": s,
             "h": s
           });
-          labely = y - s / 2;
+          labely = y - r;
       }
       this.elementProps[shape].push(prop);
       if(ele.itemLabel || this.showItemLabel){
@@ -407,22 +466,17 @@ define([
             .attr("r", function(d) { return d.r; });
           break;
         case "diamond":
-          shapesvg.selectAll(tag)
-            .data(eleprops, function(d) { return d.id; })
-            .attr("points", function(d) { return d.pts; });
-          break;
         case "triangle":
         case "downtriangle":
-          shapesvg.selectAll(tag)
-            .data(eleprops, function(d) { return d.id; })
-            .attr("points", function(d) { return d.pts; });
-          break;
-        case "dcross":
         case "cross":
         case "level":
         case "vlevel":
         case "linecross":
-          // TODO
+        case "dcross":
+          shapesvg.selectAll(tag)
+            .data(eleprops, function(d) { return d.id; })
+            .attr("points", function(d) { return d.pts; });
+          break;
         default:  // rect
           shapesvg.selectAll(tag)
             .data(eleprops, function(d) { return d.id; })

@@ -173,6 +173,7 @@ export default class EventManager {
 
     if (
       !data
+      || !this.isHeaderClicked(event)
       || data.region === 'corner-header' && data.column === 0
       || data.width - data.delta < COLUMN_RESIZE_AREA_WIDTH
     ) {

@@ -170,11 +170,11 @@ describe('(Groovy) Output Containers ', function () {
       time3 = new Date().getTime();
     });
 
-    it('Cycling period approximately equals 2 seconds ', function () {
-      expect(time2 - time1).toBeGreaterThan(1500);
-      expect(time2 - time1).toBeLessThan(2500);
-      expect(time3 - time2).toBeGreaterThan(1500);
-      expect(time3 - time2).toBeLessThan(2500);
+    it('Cycling period approximately equals 3 seconds ', function () {
+      expect(time2 - time1).toBeGreaterThan(2500);
+      expect(time2 - time1).toBeLessThan(3500);
+      expect(time3 - time2).toBeGreaterThan(2500);
+      expect(time3 - time2).toBeLessThan(3500);
     });
   });
 

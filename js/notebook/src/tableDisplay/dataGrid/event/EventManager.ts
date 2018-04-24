@@ -186,7 +186,8 @@ export default class EventManager {
     const relatedTarget = event.relatedTarget as HTMLElement;
 
     if (relatedTarget && (
-      this.dataGrid.node.contains(relatedTarget)
+      event.buttons !== 0
+      || this.dataGrid.node.contains(relatedTarget)
       || relatedTarget === this.dataGrid.node
       || relatedTarget.classList.contains('bko-menu')
       || relatedTarget.closest('.bko-table-menu')

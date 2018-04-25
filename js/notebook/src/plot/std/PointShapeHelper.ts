@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+import * as $ from "jquery";
+
 export default class PointShapeHelper {
 
   public static getDiamondPoints(x: number, y: number, size: number): string {
@@ -142,6 +144,89 @@ export default class PointShapeHelper {
 
   private static pointsReducer(accumulator: string, current: Point2D): string {
     return accumulator + `${current.x},${current.y} `;
+  }
+
+  public static createLegendMarker(line: any) {
+    console.log(line);
+    let svgEl = $(this.createSvgEl('svg'))
+    svgEl.attr("width", 10);
+    svgEl.attr("height", 10);
+    svgEl.width(10);
+    svgEl.height(10);
+
+    let gEl = $(this.createSvgEl('g'))
+      .css({
+        'fill': line.color,
+        'fill-opacity': line.color_opacity,
+      // 'stroke-opacity': 0,
+      });
+
+    gEl.appendTo(svgEl);
+
+    switch(line.shape) {
+      case "circle":
+        $(this.createSvgEl('circle'))
+          .attr("cx", 5)
+          .attr("cy", 5)
+          .attr("r", 5)
+          .appendTo(gEl);
+        break;
+      case "diamond":
+        $(this.createSvgEl('polygon'))
+          .attr("points", PointShapeHelper.getDiamondPoints(5,5,10))
+          .appendTo(gEl);
+        break;
+      case "triangle":
+        $(this.createSvgEl('polygon'))
+          .attr("points", PointShapeHelper.getTrianglePoints(5,5,10))
+          .appendTo(gEl);
+        break;
+      case "downtriangle":
+        $(this.createSvgEl('polygon'))
+          .attr("points", PointShapeHelper.getDownTrianglePoints(5,5,10))
+          .appendTo(gEl);
+        break;
+      case "vlevel":
+        $(this.createSvgEl('polygon'))
+          .attr("points", PointShapeHelper.getVLevelPoints(5,5,10))
+          .appendTo(gEl);
+        break;
+      case "level":
+        $(this.createSvgEl('polygon'))
+          .attr("points", PointShapeHelper.getLevelPoints(5,5,10))
+          .appendTo(gEl);
+        break;
+      case "cross":
+        $(this.createSvgEl('polygon'))
+          .attr("points", PointShapeHelper.getCrossPoints(5,5,10))
+          .appendTo(gEl);
+        break;
+      case "dcross":
+        $(this.createSvgEl('polygon'))
+          .attr("points", PointShapeHelper.getDCrossPoints(5,5,10))
+          .appendTo(gEl);
+        break;
+      case "linecross":
+        $(this.createSvgEl('polygon'))
+          .attr("points", PointShapeHelper.getLineCrossPoints(5,5,10))
+          .appendTo(gEl);
+        break;
+      case "rect":
+      default:
+        $(this.createSvgEl('rect'))
+          .attr("width", 10)
+          .attr("height", 10)
+          .attr("x", 0)
+          .attr("y", 0)
+          .appendTo(gEl);
+        break;
+    }
+
+    return svgEl;
+  }
+
+  private static createSvgEl(name: string): any {
+    return document.createElementNS("http://www.w3.org/2000/svg", name);
   }
 }
 

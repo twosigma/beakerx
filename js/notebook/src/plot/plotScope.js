@@ -48,6 +48,7 @@ define([
   moment
 ) {
 
+  var PointShapeHelper = require('./std/PointShapeHelper.ts').default;
   var CONTEXT_MENU_DEBOUNCE_TIME = 350;
   var QUICK_ZOOM_DEBOUNCE_TIME = 50;
 
@@ -1170,16 +1171,19 @@ define([
         st_clr = plotUtils.createColor(line.stroke, line.stroke_opacity);
       var sty = line.color == null ? "dotted " : "solid ";
       // color box
+      console.log(line);
+      var svgShape = PointShapeHelper.createLegendMarker(line);
       $("<span></span>")
         .attr("id", "legendbox_" + id)
         .attr("class", "plot-legendbox")
         .attr("title", line.color == null ? "Element-based colored item" : "")
-        .css("background-color",
-          line.color == null ? "none" : clr)
-        .css("border",
-          line.stroke != null ? "1px " + sty + st_clr :
-            (line.color != null ? "1px " + sty + clr : "1px dotted gray"))
-        .appendTo(unit);
+        // .css("background-color",
+        //   line.color == null ? "none" : clr)
+        // .css("border",
+        //   line.stroke != null ? "1px " + sty + st_clr :
+        //     (line.color != null ? "1px " + sty + clr : "1px dotted gray"))
+        .appendTo(unit)
+          .append(svgShape);
       // legend text
       $("<label></label>").appendTo(unit)
         .attr("id", "legendtext_" + id)
@@ -2776,7 +2780,8 @@ define([
       color: dat.color,
       color_opacity: dat.color_opacity,
       stroke: dat.stroke,
-      stroke_opacity: dat.stroke_opacity
+      stroke_opacity: dat.stroke_opacity,
+      shape: dat.type === "point" ? dat.shape : 'rect',
     };
     if (dat.isLodItem === true) {
       line.lodDataIds = [i];

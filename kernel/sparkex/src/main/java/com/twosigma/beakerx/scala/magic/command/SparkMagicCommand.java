@@ -31,7 +31,7 @@ import org.apache.spark.sql.SparkSession;
 
 public class SparkMagicCommand implements MagicCommandFunctionality {
 
-  public static final String SPARK = "%%spark";
+  public static final String SPARK = "%%sparkRunner";
   private KernelFunctionality kernel;
 
   public SparkMagicCommand(KernelFunctionality kernel) {

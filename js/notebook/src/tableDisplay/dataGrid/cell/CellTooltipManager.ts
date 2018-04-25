@@ -51,7 +51,7 @@ export default class CellTooltipManager {
     if (this.dataEquals(data, this.lastData)) {
       return;
     }
-console.log(data);
+
     this.hideTooltips();
     if (this.shouldShowTooltip(data)) {
       this.showTooltip(data);

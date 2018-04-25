@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.widget;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Message;

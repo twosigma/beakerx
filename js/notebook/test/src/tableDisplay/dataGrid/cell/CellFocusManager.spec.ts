@@ -15,7 +15,7 @@
  */
 
 import { expect } from 'chai';
-import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import modelStateMock from "../mock/modelStateMock";
 import CellFocusManager from "@beakerx/tableDisplay/dataGrid/cell/CellFocusManager";
 import cellDataMock from "../mock/cellDataMock";
@@ -24,8 +24,9 @@ import {
   DEFAULT_CELL_BACKGROUND,
   FOCUSED_CELL_BACKGROUND
 } from "@beakerx/tableDisplay/dataGrid/style/dataGridStyle";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
+import {KEYBOARD_KEYS} from "@beakerx/tableDisplay/dataGrid/event/enums";
 
 describe('CellFocusManager', () => {
   let dataGrid;
@@ -35,7 +36,7 @@ describe('CellFocusManager', () => {
 
   before(() => {
     dataStore = createStore(modelStateMock);
-    dataGrid = new BeakerxDataGrid({}, dataStore);
+    dataGrid = new BeakerXDataGrid({}, dataStore);
     cellFocusManager = dataGrid.cellFocusManager;
   });
 
@@ -66,31 +67,31 @@ describe('CellFocusManager', () => {
     expect(cellFocusManager.getFocussedCellBackground({ ...cellConfigMock, column: 1 })).to.equal(DEFAULT_CELL_BACKGROUND);
   });
 
-  it('should implement setFocusedCellByArrowKey method', () => {
-    expect(cellFocusManager).to.have.property('setFocusedCellByArrowKey');
-    expect(cellFocusManager.setFocusedCellByArrowKey).to.be.a('Function');
+  it('should implement setFocusedCellByNavigationKey method', () => {
+    expect(cellFocusManager).to.have.property('setFocusedCellByNavigationKey');
+    expect(cellFocusManager.setFocusedCellByNavigationKey).to.be.a('Function');
 
-    cellFocusManager.setFocusedCellByArrowKey(39); // right arrow
+    cellFocusManager.setFocusedCellByNavigationKey(KEYBOARD_KEYS.ArrowRight);
     expect(cellFocusManager.focusedCellData.column).to.equal(1);
     expect(cellFocusManager.focusedCellData.row).to.equal(0);
     expect(cellFocusManager.focusedCellData.type).to.equal(COLUMN_TYPES.body);
 
-    cellFocusManager.setFocusedCellByArrowKey(40); // down arrow
+    cellFocusManager.setFocusedCellByNavigationKey(KEYBOARD_KEYS.ArrowDown);
     expect(cellFocusManager.focusedCellData.column).to.equal(1);
     expect(cellFocusManager.focusedCellData.row).to.equal(1);
     expect(cellFocusManager.focusedCellData.type).to.equal(COLUMN_TYPES.body);
 
-    cellFocusManager.setFocusedCellByArrowKey(37); // left arrow
+    cellFocusManager.setFocusedCellByNavigationKey(KEYBOARD_KEYS.ArrowLeft);
     expect(cellFocusManager.focusedCellData.column).to.equal(0);
     expect(cellFocusManager.focusedCellData.row).to.equal(1);
     expect(cellFocusManager.focusedCellData.type).to.equal(COLUMN_TYPES.body);
 
-    cellFocusManager.setFocusedCellByArrowKey(38); // up arrow
+    cellFocusManager.setFocusedCellByNavigationKey(KEYBOARD_KEYS.ArrowUp);
     expect(cellFocusManager.focusedCellData.column).to.equal(0);
     expect(cellFocusManager.focusedCellData.row).to.equal(0);
     expect(cellFocusManager.focusedCellData.type).to.equal(COLUMN_TYPES.body);
 
-    cellFocusManager.setFocusedCellByArrowKey(37); // left arrow
+    cellFocusManager.setFocusedCellByNavigationKey(KEYBOARD_KEYS.ArrowLeft);
     expect(cellFocusManager.focusedCellData.column).to.equal(0);
     expect(cellFocusManager.focusedCellData.row).to.equal(0);
     expect(cellFocusManager.focusedCellData.type).to.equal(COLUMN_TYPES.index);

@@ -16,7 +16,7 @@
 
 import ColumnMenu from "../headerMenu/ColumnMenu";
 import IndexMenu from "../headerMenu/IndexMenu";
-import { BeakerxDataGrid } from "../BeakerxDataGrid";
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import {IColumnOptions} from "../interface/IColumn";
 import { ICellData } from "../interface/ICell";
 import { CellRenderer, DataModel, TextRenderer } from "@phosphor/datagrid";
@@ -25,7 +25,6 @@ import { minmax } from '@phosphor/algorithm';
 import { HIGHLIGHTER_TYPE } from "../interface/IHighlighterState";
 import ColumnManager, { COLUMN_CHANGED_TYPES, IBkoColumnsChangedArgs } from "./ColumnManager";
 import ColumnFilter from "./ColumnFilter";
-import {ITriggerOptions} from "../headerMenu/HeaderMenu";
 import CellTooltip from "../cell/CellTooltip";
 import {
   selectColumnDataType,
@@ -34,7 +33,7 @@ import {
   selectColumnFilter,
   selectColumnHorizontalAlignment,
   selectColumnKeepTrigger, selectColumnPosition, selectColumnSortOrder,
-  selectColumnState, selectColumnVisible, selectColumnFormatForTimes
+  selectColumnState, selectColumnFormatForTimes
 } from "./selectors";
 import {DataGridColumnAction} from "../store/DataGridAction";
 import {
@@ -43,18 +42,21 @@ import {
   selectInitialColumnAlignment,
   selectStringFormatForColumn,
   selectFormatForTimes,
-  selectStringFormatForType, selectRenderer
+  selectStringFormatForType, selectRenderer, selectIsColumnFrozen, selectColumnVisible
 } from "../model/selectors";
 import {
   UPDATE_COLUMN_DISPLAY_TYPE,
   UPDATE_COLUMN_FILTER, UPDATE_COLUMN_FORMAT_FOR_TIMES,
   UPDATE_COLUMN_HORIZONTAL_ALIGNMENT,
-  UPDATE_COLUMN_POSITION, UPDATE_COLUMN_SORT_ORDER,
-  UPDATE_COLUMN_VISIBILITY, UPDATE_COLUMN_WIDTH
+  UPDATE_COLUMN_SORT_ORDER,
+  UPDATE_COLUMN_WIDTH
 } from "./reducer";
-import {BeakerxDataStore} from "../store/dataStore";
+import {BeakerXDataStore} from "../store/BeakerXDataStore";
 import {COLUMN_TYPES, SORT_ORDER} from "./enums";
-import {UPDATE_COLUMN_RENDERER} from "../model/reducer";
+import {
+  UPDATE_COLUMN_FROZEN, UPDATE_COLUMN_RENDERER,
+  UPDATE_COLUMN_VISIBLE
+} from "../model/reducer";
 import {RENDERER_TYPE} from "../interface/IRenderer";
 import DataGridCell from "../cell/DataGridCell";
 
@@ -63,16 +65,17 @@ export default class DataGridColumn {
   name: string;
   type: COLUMN_TYPES;
   menu: ColumnMenu|IndexMenu;
-  dataGrid: BeakerxDataGrid;
-  store: BeakerxDataStore;
+  dataGrid: BeakerXDataGrid;
+  store: BeakerXDataStore;
   columnManager: ColumnManager;
   columnFilter: ColumnFilter;
   formatFn: CellRenderer.ConfigFunc<string>;
   minValue: any;
   maxValue: any;
   dataTypeTooltip: CellTooltip;
+  longestStringValue: string;
 
-  constructor(options: IColumnOptions, dataGrid: BeakerxDataGrid, columnManager: ColumnManager) {
+  constructor(options: IColumnOptions, dataGrid: BeakerXDataGrid, columnManager: ColumnManager) {
     this.index = options.index;
     this.name = options.name;
     this.type = options.type;
@@ -80,19 +83,16 @@ export default class DataGridColumn {
     this.store = dataGrid.store;
     this.columnManager = columnManager;
 
-    this.handleHeaderCellHovered = this.handleHeaderCellHovered.bind(this);
-
     this.assignFormatFn();
-    this.createMenu(options.menuOptions);
-    this.addColumnFilter(options.menuOptions);
+    this.addColumnFilter();
     this.addDataTypeTooltip();
-    this.connectToHeaderCellHovered();
+    this.connectToCellHovered();
     this.connectToColumnsChanged();
     this.addMinMaxValues();
   }
 
-  static getColumnTypeByRegion(region: DataModel.CellRegion) {
-    if (region === 'row-header' || region === 'corner-header') {
+  static getColumnTypeByRegion(region: DataModel.CellRegion, position: number) {
+    if ((region === 'row-header' || region === 'corner-header') && position === 0) {
       return COLUMN_TYPES.index;
     }
 
@@ -104,24 +104,27 @@ export default class DataGridColumn {
       .getFormatFnByDisplayType(this.getDisplayType(), this.getState());
   }
 
-  createMenu(menuOptions: ITriggerOptions): void {
+  createMenu(): void {
     if (this.type === COLUMN_TYPES.index) {
-      this.menu = new IndexMenu(this, menuOptions);
+      this.menu = new IndexMenu(this);
 
       return;
     }
 
-    this.menu = new ColumnMenu(this, menuOptions);
+    this.menu = new ColumnMenu(this);
   }
 
-  addColumnFilter(menuOptions) {
+  addColumnFilter() {
+    const columnPosition = this.getPosition();
+
     this.columnFilter = new ColumnFilter(
       this.dataGrid,
       this,
       {
-        ...menuOptions,
+        x: this.dataGrid.getColumnOffset(columnPosition.value, columnPosition.region),
         y: this.dataGrid.baseColumnHeaderSize - 1,
-        width: this.dataGrid.columnSections.sectionSize(this.index)
+        width: this.dataGrid.columnSections.sectionSize(this.index),
+        height: this.dataGrid.baseRowSize
       }
     );
   }
@@ -131,8 +134,11 @@ export default class DataGridColumn {
       UPDATE_COLUMN_DISPLAY_TYPE,
       { value: displayType, columnIndex: this.index, columnType: this.type }
     ));
+
+    const position = this.getPosition();
+
     this.assignFormatFn();
-    this.dataGrid.setInitialSectionWidth(this);
+    this.dataGrid.dataGridResize.setInitialSectionWidth({ index: position.value }, position.region, this.type);
   }
 
   setTimeDisplayType(timeUnit) {
@@ -153,22 +159,16 @@ export default class DataGridColumn {
   }
 
   search(filter: string) {
-    if (filter === this.getFilter()) {
-      return;
-    }
-
-    this.updateColumnFilter(filter);
-    this.dataGrid.rowManager.searchRows();
-    this.dataGrid.model.reset();
+    this.filter(filter, true);
   }
 
-  filter(filter: string) {
+  filter(filter: string, search?: boolean) {
     if (filter === this.getFilter()) {
       return;
     }
 
     this.updateColumnFilter(filter);
-    this.dataGrid.rowManager.filterRows();
+    search ? this.dataGrid.rowManager.searchRows() : this.dataGrid.rowManager.filterRows();
     this.dataGrid.model.reset();
   }
 
@@ -179,15 +179,15 @@ export default class DataGridColumn {
   }
 
   connectToColumnsChanged() {
-    this.columnManager.columnsChanged.connect(this.onColumnsChanged.bind(this));
+    this.columnManager.columnsChanged.connect(this.onColumnsChanged, this);
   }
 
-  connectToHeaderCellHovered() {
-    this.dataGrid.cellHovered.connect(this.handleHeaderCellHovered);
+  connectToCellHovered() {
+    this.dataGrid.cellHovered.connect(this.handleHeaderCellHovered, this);
   }
 
-  handleHeaderCellHovered(sender: BeakerxDataGrid, data: ICellData) {
-    const column = data && this.columnManager.getColumnByPosition(data.type, data.column);
+  handleHeaderCellHovered(sender: BeakerXDataGrid, data: ICellData) {
+    const column = data && this.columnManager.getColumnByPosition(ColumnManager.createPositionFromCell(data));
 
     if (!data || column !== this || !DataGridCell.isHeaderCell(data)) {
       this.toggleDataTooltip(false);
@@ -298,26 +298,11 @@ export default class DataGridColumn {
   }
 
   getValueResolver(): Function {
-    const dataType = this.getDataType();
-
-    if(dataType === ALL_TYPES.datetime || dataType === ALL_TYPES.time) {
-      return this.dateValueResolver;
-    }
-
-    return this.defaultValueResolver;
+    return this.dataGrid.model.getColumnValueResolver(this.getDataType());
   }
 
   move(destination: number) {
-    this.store.dispatch(new DataGridColumnAction(
-      UPDATE_COLUMN_POSITION,
-      {
-        value: destination,
-        columnType: this.type,
-        columnIndex: this.index,
-        hasIndex: selectHasIndex(this.store.state)
-      })
-    );
-
+    this.dataGrid.columnPosition.setPosition(this, { ...this.getPosition(), value: destination });
     this.menu.hideTrigger();
     this.dataGrid.resize();
   }
@@ -331,9 +316,20 @@ export default class DataGridColumn {
   addMinMaxValues() {
     let valueResolver = this.getValueResolver();
     let valuesIterator = this.dataGrid.model.getColumnValuesIterator(this);
+    let dataType = this.getDataType();
     let minMax = minmax(valuesIterator, (a:any, b:any) => {
       let value1 = valueResolver(a);
       let value2 = valueResolver(b);
+
+      if (dataType === ALL_TYPES.string || dataType === ALL_TYPES['formatted integer'] || dataType === ALL_TYPES.html) {
+        let aLength = value1 ? value1.length : 0;
+        let bLength = value2 ? value2.length : 0;
+        let longer = aLength > bLength ? value1 : value2;
+
+        if (!this.longestStringValue || this.longestStringValue.length < String(longer).length) {
+          this.longestStringValue = longer;
+        }
+      }
 
       if (value1 === value2) {
         return 0;
@@ -360,8 +356,10 @@ export default class DataGridColumn {
     this.resetFilter();
     this.move(this.index);
     this.assignFormatFn();
-    this.dataGrid.setInitialSectionWidth(this);
-    this.dataGrid.updateWidgetWidth();
+
+    const position = this.getPosition();
+    this.dataGrid.dataGridResize.setInitialSectionWidth(this, position.region, this.type);
+    this.dataGrid.dataGridResize.updateWidgetWidth();
   }
 
   destroy() {
@@ -380,6 +378,20 @@ export default class DataGridColumn {
     }));
   }
 
+  isFrozen() {
+    return selectIsColumnFrozen(this.store.state, this);
+  }
+
+  toggleColumnFrozen() {
+    this.store.dispatch(new DataGridColumnAction(UPDATE_COLUMN_FROZEN, {
+      columnType: this.type,
+      columnName: this.name,
+      value: !this.isFrozen()
+    }));
+
+    this.dataGrid.columnPosition.updateAll();
+  }
+
   private updateColumnFilter(filter: string) {
     this.store.dispatch(new DataGridColumnAction(
       UPDATE_COLUMN_FILTER,
@@ -388,21 +400,14 @@ export default class DataGridColumn {
   }
 
   private toggleVisibility(value) {
-    this.store.dispatch(new DataGridColumnAction(UPDATE_COLUMN_VISIBILITY, {
+    this.store.dispatch(new DataGridColumnAction(UPDATE_COLUMN_VISIBLE, {
       value,
       columnIndex: this.index,
       columnType: this.type,
+      columnName: this.name,
       hasIndex: selectHasIndex(this.store.state)
     }));
-    this.dataGrid.resize();
-  }
-
-  private dateValueResolver(value) {
-    return value.timestamp;
-  }
-
-  private defaultValueResolver(value) {
-    return value;
+    this.dataGrid.columnPosition.updateAll();
   }
 
   private onColumnsChanged(sender: ColumnManager, args: IBkoColumnsChangedArgs) {
@@ -435,10 +440,14 @@ export default class DataGridColumn {
   private toggleDataTooltip(show: boolean, data?: ICellData) {
     const rect = this.dataGrid.node.getBoundingClientRect();
 
+    if (data && !this.dataTypeTooltip.node.innerText) {
+      this.dataTypeTooltip.node.innerText = typeof data.value;
+    }
+
     if (show && data) {
       return this.dataTypeTooltip.show(
         Math.ceil(rect.left + data.offset + 20),
-        Math.ceil(rect.top - 10)
+        Math.ceil(window.pageYOffset + rect.top - 10)
       );
     }
 

@@ -15,8 +15,6 @@
  */
 package com.twosigma.beakerx.widget;
 
-import com.google.common.collect.Lists;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,9 +23,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.singletonList;
+
 public abstract class MultipleSelectionWidget extends SelectionWidget<String[]> {
 
-  private static final ArrayList<String> DEFAULT = Lists.newArrayList("0");
+  private static final ArrayList<String> DEFAULT = new ArrayList<>(singletonList("0"));
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
@@ -43,7 +43,7 @@ public abstract class MultipleSelectionWidget extends SelectionWidget<String[]> 
       result = Arrays.stream((Object[]) input).map(i -> (String) i).collect(Collectors.toList());
     } else if (input instanceof List) {
       result = (List<String>) input;
-    } else if (input instanceof String){
+    } else if (input instanceof String) {
       result = Arrays.asList(input.toString());
     }
     return result.toArray(new String[result.size()]);
@@ -62,6 +62,6 @@ public abstract class MultipleSelectionWidget extends SelectionWidget<String[]> 
     } else if (input instanceof List) {
       return ((List<Integer>) input);
     }
-    return Lists.newArrayList(0);
+    return new ArrayList<>(singletonList(0));
   }
 }

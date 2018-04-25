@@ -16,19 +16,19 @@
 
 import { CommandRegistry } from '@phosphor/commands';
 import { Widget } from '@phosphor/widgets';
-import { BeakerxDataGrid } from "../BeakerxDataGrid";
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import Menu from './BkoMenu';
 import MenuItem from '../../../shared/interfaces/menuItemInterface';
 import MenuInterface from '../../../shared/interfaces/menuInterface';
 import DataGridColumn from "../column/DataGridColumn";
-import {selectColumnPosition} from "../column/selectors";
 import {SORT_ORDER} from "../column/enums";
+import {DataGridHelpers} from "../dataGridHelpers";
+import getEventKeyCode = DataGridHelpers.getEventKeyCode;
+import {KEYBOARD_KEYS} from "../event/enums";
 
 export interface ITriggerOptions {
   x: number,
-  y: number,
-  width: number,
-  height: number
+  y: number
 }
 
 export default abstract class HeaderMenu implements MenuInterface {
@@ -38,16 +38,17 @@ export default abstract class HeaderMenu implements MenuInterface {
   protected menu: Menu;
   protected viewport: Widget;
   protected triggerNode: HTMLElement;
-  protected dataGrid: BeakerxDataGrid;
+  protected dataGrid: BeakerXDataGrid;
   protected column: DataGridColumn;
 
   private TRIGGER_CLASS_OPENED: string = 'opened';
   private TRIGGER_CLASS_SORTING_DESC: string = 'sorting_desc';
   private TRIGGER_CLASS_SORTING_ASC: string = 'sorting_asc';
 
-  static DEFAULT_TRIGGER_HEIGHT: number = 20;
+  static DEFAULT_TRIGGER_HEIGHT: number = 24;
+  static DEFAULT_TRIGGER_WIDTH: number = 14;
 
-  constructor(column: DataGridColumn, triggerOptions: ITriggerOptions) {
+  constructor(column: DataGridColumn) {
     this.commands = new CommandRegistry();
     this.menu = new Menu({ commands: this.commands });
     this.viewport = column.dataGrid.viewport;
@@ -57,7 +58,7 @@ export default abstract class HeaderMenu implements MenuInterface {
 
     this.handleKeydownEvent = this.handleKeydownEvent.bind(this);
 
-    this.addTrigger(triggerOptions);
+    this.addTrigger();
     this.buildMenu();
     this.attachTriggerToMenu();
   }
@@ -65,10 +66,13 @@ export default abstract class HeaderMenu implements MenuInterface {
   protected abstract buildMenu(): void
 
   updateTriggerPosition() {
+    const columnPosition = this.column.getPosition();
+    const scrollCompensation = columnPosition.region !== 'row-header' ? this.dataGrid.scrollX : 0;
+
     this.triggerNode.style.left = `${this.dataGrid.getColumnOffset(
-      selectColumnPosition(this.dataGrid.store.state, this.column),
-      this.column.type
-    )}px`;
+      columnPosition.value,
+      columnPosition.region
+    ) - scrollCompensation}px`;
   }
 
   showTrigger(): void {
@@ -101,6 +105,7 @@ export default abstract class HeaderMenu implements MenuInterface {
 
     this.menu.addClass('open');
     this.menu.open(menuPosition.left, menuPosition.top);
+    this.menu.node.style.bottom = '';
     this.correctPosition(this.triggerNode);
 
     this.triggerNode.classList.add(this.TRIGGER_CLASS_OPENED);
@@ -134,8 +139,8 @@ export default abstract class HeaderMenu implements MenuInterface {
       menuItem.separator && menu.addItem({ type: 'separator' });
 
       if (!hasSubitems) {
-        this.addCommand(menuItem, menu);
-        menu.addItem({command: menuItem.title});
+        let command = this.addCommand(menuItem, menu);
+        menu.addItem({ command });
 
         continue;
       }
@@ -144,8 +149,10 @@ export default abstract class HeaderMenu implements MenuInterface {
     }
   }
 
-  addCommand(menuItem: MenuItem, menu: Menu): void {
-    this.commands.addCommand(menuItem.title, {
+  addCommand(menuItem: MenuItem, menu: Menu): string {
+    const commandId = menuItem.id || menuItem.title;
+
+    this.commands.addCommand(commandId, {
       label: menuItem.title,
       usage: menuItem.tooltip || '',
       iconClass: () => {
@@ -171,9 +178,11 @@ export default abstract class HeaderMenu implements MenuInterface {
       this.commands.addKeyBinding({
         keys: [menuItem.shortcut],
         selector: 'body',
-        command: menuItem.title
+        command: commandId
       });
     }
+
+    return commandId;
   }
 
   createSubmenu(menuItem: MenuItem, subitems: MenuItem[]): Menu {
@@ -214,42 +223,40 @@ export default abstract class HeaderMenu implements MenuInterface {
     this.triggerNode.classList.remove(this.TRIGGER_CLASS_SORTING_DESC);
   }
 
-  protected addTrigger({
-    x, y,
-    width = HeaderMenu.DEFAULT_TRIGGER_HEIGHT,
-    height = HeaderMenu.DEFAULT_TRIGGER_HEIGHT
-  }):void {
+  protected addTrigger():void {
     this.triggerNode = document.createElement('span');
 
-    this.triggerNode.style.height = `${height}px`;
-    this.triggerNode.style.width = `${width}px`;
+    this.triggerNode.style.height = `${HeaderMenu.DEFAULT_TRIGGER_HEIGHT}px`;
+    this.triggerNode.style.width = `${HeaderMenu.DEFAULT_TRIGGER_WIDTH}px`;
     this.triggerNode.style.position = 'absolute';
-    this.triggerNode.style.left = `${x}px`;
-    this.triggerNode.style.top = `${y}px`;
+    this.triggerNode.style.top = '0px';
     this.triggerNode.style.cursor = 'pointer';
     this.triggerNode.classList.add('bko-column-header-menu');
     this.triggerNode.classList.add('bko-menu');
     this.triggerNode.addEventListener('mousedown', (event) => {
       event.preventDefault();
-      event.stopPropagation();
 
       this.toggleMenu();
     });
   }
 
   protected getMenuPosition(trigger: any) {
-    const triggerHeight = trigger.height || 20;
-    const viewportRect = this.viewport.node.getBoundingClientRect();
+    const triggerRectObject = trigger.getBoundingClientRect();
 
     return {
-      top: viewportRect.top + trigger.offsetTop + triggerHeight,
-      left: viewportRect.left + trigger.offsetLeft
+      top: window.pageYOffset + triggerRectObject.bottom,
+      left: triggerRectObject.left
     };
   }
 
   protected correctPosition(trigger: any) {
     const menuRectObject = this.menu.node.getBoundingClientRect();
     const triggerRectObject = trigger.getBoundingClientRect();
+    const outOfViewportPartSize = triggerRectObject.bottom + menuRectObject.height - window.innerHeight;
+
+    if (outOfViewportPartSize > 0) {
+      this.menu.node.style.top = `${window.pageYOffset + triggerRectObject.bottom - outOfViewportPartSize - 10}px`;
+    }
 
     if (menuRectObject.top < triggerRectObject.bottom && menuRectObject.left <= triggerRectObject.right) {
       this.menu.node.style.left = triggerRectObject.right + 'px';
@@ -290,7 +297,7 @@ export default abstract class HeaderMenu implements MenuInterface {
     input.addEventListener('keyup', (event: KeyboardEvent) => {
       event.stopImmediatePropagation();
 
-      if (event.keyCode === 27) {
+      if (getEventKeyCode(event) === KEYBOARD_KEYS.Escape) {
         menu.close();
 
         return;

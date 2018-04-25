@@ -24,6 +24,7 @@ import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorManager;
+import com.twosigma.beakerx.evaluator.Hook;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.inspect.InspectResult;
@@ -64,18 +65,24 @@ public abstract class Kernel implements KernelFunctionality {
   private KernelSockets kernelSockets;
   private List<MagicCommandType> magicCommandTypes;
   private CacheFolderFactory cacheFolderFactory;
+  private CustomMagicCommandsFactory customMagicCommands;
 
   public Kernel(final String sessionId, final Evaluator evaluator,
-                final KernelSocketsFactory kernelSocketsFactory) {
-    this(sessionId, evaluator, kernelSocketsFactory, () -> System.exit(0), new EnvCacheFolderFactory());
+                final KernelSocketsFactory kernelSocketsFactory, CustomMagicCommandsFactory customMagicCommands) {
+    this(
+            sessionId,
+            evaluator,
+            kernelSocketsFactory, () -> System.exit(0),
+            new EnvCacheFolderFactory(), customMagicCommands);
   }
 
   protected Kernel(final String sessionId, final Evaluator evaluator, final KernelSocketsFactory kernelSocketsFactory,
-                   CloseKernelAction closeKernelAction, CacheFolderFactory cacheFolderFactory) {
+                   CloseKernelAction closeKernelAction, CacheFolderFactory cacheFolderFactory, CustomMagicCommandsFactory customMagicCommands) {
     this.sessionId = sessionId;
     this.cacheFolderFactory = cacheFolderFactory;
     this.kernelSocketsFactory = kernelSocketsFactory;
     this.closeKernelAction = closeKernelAction;
+    this.customMagicCommands = customMagicCommands;
     this.commMap = new ConcurrentHashMap<>();
     this.executionResultSender = new ExecutionResultSender(this);
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
@@ -252,6 +259,7 @@ public abstract class Kernel implements KernelFunctionality {
 
   private void createMagicCommands() {
     this.magicCommandTypes = MagicCommandTypesFactory.createDefaults(this);
+    customMagicCommands.customMagicCommands(this).forEach(this::registerMagicCommandType);
     configureMagicCommands();
   }
 
@@ -274,5 +282,10 @@ public abstract class Kernel implements KernelFunctionality {
   @Override
   public String getOutDir() {
     return evaluatorManager.getOutDir();
+  }
+
+  @Override
+  public void registerCancelHook(Hook hook) {
+    evaluatorManager.registerCancelHook(hook);
   }
 }

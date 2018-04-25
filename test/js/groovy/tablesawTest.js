@@ -15,19 +15,16 @@
  */
 
 var BeakerXPageObject = require('../beakerx.po.js');
-var TableHelperObject = require('../table.helper.js');
 var PlotHelperObject = require('../plot.helper.js');
 var beakerxPO;
-var tableHelper;
-var plotHelper;
 
 describe('Tests for combination of code and magics. ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    tableHelper = new TableHelperObject();
     plotHelper = new PlotHelperObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/groovy/TablesawTest.ipynb');
+    beakerxPO.openUIWindow();
   });
 
   afterAll(function () {
@@ -35,26 +32,13 @@ describe('Tests for combination of code and magics. ', function () {
   });
 
   var cellIndex;
+  var imageDir = 'groovy/tablesaw';
 
-  function checkTableCell(dtContainer, rowIndex, columnIndex, textValue) {
-    expect(tableHelper.getCellOfTableBody(dtContainer, rowIndex, columnIndex).getText()).toMatch(textValue);
-  };
-
-  function checkTableHead(dtContainer, columnIndex, textValue){
-    expect(tableHelper.getCellOfTableHeader(dtContainer, columnIndex).getText()).toMatch(textValue);
-  };
-
-  function checkRowValues(dtContainer, rowIndex, values){
-    for(i = 1; i < values.length; i++){
-      checkTableCell(dtContainer, rowIndex, i, values[i - 1]);
-    };
-  };
-
-  function checkHeaderValues(dtContainer, headers){
-    for(i = 1; i < headers.length; i++){
-      checkTableHead(dtContainer, i, headers[i - 1]);
-    };
-  };
+  describe('UI options. ', function () {
+    it("Use new table widget. ", function () {
+      beakerxPO.setDataGridForTable(true, false);
+    });
+  });
 
   describe('Import tablesaw jars. ', function () {
     it('Output contains names of jars. ', function () {
@@ -76,25 +60,29 @@ describe('Tests for combination of code and magics. ', function () {
 
   describe('Call table.read() method. ', function () {
     it('Should displays table. ', function () {
+      var width = 700, height = 100;
       cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      checkHeaderValues(dtContainer, [/Date/, /Time/, /State/, /State No/, /Scale/]);
-      checkRowValues(dtContainer, 0, [/2014/, /\d\d:37:00/, /GA/, /0.0/, /0.0/]);
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell3_case1.png');
     });
   });
 
   describe('Call table.structure() method. ', function () {
     it('Should displays table structure. ', function () {
-      cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      checkHeaderValues(dtContainer, [/Index/, /Column Name/, /Column Type/]);
-      checkRowValues(dtContainer, 0, [/0.0/, /Date/, /LOCAL_DATE/]);
+      var width = 250, height = 200;
+      cellIndex += 2;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell4_case1.png');
     });
   });
 
   describe('Call table.columnNames() method. ', function () {
     it('Should displays column names. ', function () {
-      cellIndex += 1;
+      cellIndex += 2;
       beakerxPO.runCodeCellByIndex(cellIndex);
       beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex,
         /Date.*Time.*State.*State No.*Scale.*Injuries.*Fatalities.*Start Lat.*Start Lon.*Length.*Width/);
@@ -111,25 +99,29 @@ describe('Tests for combination of code and magics. ', function () {
 
   describe('Call table.first(10) method. ', function () {
     it('Should displays the first 10 rows. ', function () {
+      var width = 700, height = 100;
       cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      expect(tableHelper.getAllRowsOfTableBody(dtContainer).length).toEqual(10);
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell7_case1.png');
     });
   });
 
   describe('Select all columns by "float" type. ', function () {
     it('Should display 4 columns. ', function () {
-      cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      expect(tableHelper.getAllRowsOfTableBody(dtContainer).length).toEqual(4);
-      checkHeaderValues(dtContainer, [/Index/, /Column Name/, /Column Type/]);
-      checkRowValues(dtContainer, 0, [/7.0/, /Start Lat/, /FLOAT/]);
+      var width = 250, height = 115;
+      cellIndex += 2;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell8_case1.png');
     });
   });
 
   describe('Call table.summary() method. ', function () {
     it('Should summarize the data in each column. ', function () {
-      cellIndex += 1;
+      cellIndex += 2;
       beakerxPO.runCodeCellByIndex(cellIndex);
       beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /Table summary for: tornadoes_2014.csv/);
       beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /Count.*908/);
@@ -148,72 +140,78 @@ describe('Tests for combination of code and magics. ', function () {
 
   describe('Sorting by column. ', function () {
     it('Should sort "Fatalities" column. ', function () {
+      var width = 700, height = 100;
       cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      checkTableHead(dtContainer, 7, /Fatalities/);
-      checkTableCell(dtContainer, 0, 7, /16.0/);
-      checkTableCell(dtContainer, 1, 7, /10.0/);
-      checkTableCell(dtContainer, 2, 7, /4.0/);
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell11_case1.png');
     });
   });
 
   describe('Descriptive statistics. ', function () {
     it('Should display summary statistic. ', function () {
-      cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      checkHeaderValues(dtContainer, [/Measure/, /Value/]);
-      checkRowValues(dtContainer, 0, [/n/, /908.0/]);
-      checkRowValues(dtContainer, 1, [/sum/, /48.0/]);
+      var width = 160, height = 210;
+      cellIndex += 2;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell12_case1.png');
     });
   });
 
   describe('Performing totals and sub-totals. ', function () {
     it('Should display totals and sub-totals. ', function () {
-      cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      checkHeaderValues(dtContainer, [/Scale/, /Median.*Injuries/]);
-      checkRowValues(dtContainer, 0, [/0.0/, /0.0/]);
-      checkRowValues(dtContainer, 4, [/4.0/, /2.0/]);
+      var width = 180, height = 140;
+      cellIndex += 2;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell13_case1.png');
     });
   });
 
   describe('Call CrossTab.xCount() method. ', function () {
     it('Should display cross tabs. ', function () {
-      cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      checkHeaderValues(dtContainer, [/labels/, /0/, /1/]);
-      checkRowValues(dtContainer, 0, [/AL/, /12.0/, /32.0/]);
-      checkRowValues(dtContainer, 1, [/AR/, /5.0/, /12.0/]);
+      var width = 410, height = 200;
+      cellIndex += 2;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell14_case1.png');
     });
   });
 
   describe('K-means clustering. ', function () {
     it('Create table from "whiskey.csv" file. ', function () {
-      cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      checkHeaderValues(dtContainer, [/Index/, /Column Name/, /Column Type/]);
-      checkRowValues(dtContainer, 0, [/0.0/, /RowID/, /SHORT_INT/]);
-      checkRowValues(dtContainer, 1, [/1.0/, /Distillery/, /CATEGORY/]);
+      var width = 250, height = 200;
+      cellIndex += 2;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell15_case1.png');
     });
 
     it('Print claster formation. ', function () {
-      cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      checkHeaderValues(dtContainer, [/Label/, /Cluster/]);
-      checkRowValues(dtContainer, 0, [/AnCnoc/, /0.0/]);
-      checkRowValues(dtContainer, 1, [/Auchentoshan/, /0.0/]);
+      var width = 220, height = 200;
+      cellIndex += 2;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell16_case1.png');
     });
 
     it('Print centroids for each claster. ', function () {
-      cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      checkHeaderValues(dtContainer, [/Cluster/, /Body/, /Sweetness/]);
-      checkRowValues(dtContainer, 0, [/0.0/, /1.333/, /2.400/]);
-      checkRowValues(dtContainer, 1, [/1.0/, /1.455/, /2.545/]);
+      var width = 500, height = 100;
+      cellIndex += 2;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell17_case1.png');
     });
 
     it('Gets the distortion for our model. ', function () {
-      cellIndex += 1;
+      cellIndex += 2;
       beakerxPO.runCodeCellByIndex(cellIndex);
       beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /385.0489177/);
     });
@@ -262,15 +260,16 @@ describe('Tests for combination of code and magics. ', function () {
     });
 
     it('Should display table. ', function () {
+      var width = 500, height = 100;
       cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      checkHeaderValues(dtContainer, [/Year/, /Max/, /Min/]);
-      checkRowValues(dtContainer, 0, [/1980/, /0.529/, /0.371/]);
-      checkRowValues(dtContainer, 1, [/1981/, /0.507/, /0.210/]);
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell34_case1.png');
     });
 
     it('Should display Plot with stems and line. ', function () {
-      cellIndex += 1;
+      cellIndex += 2;
       var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
       expect(plotHelper.getLineByGIndex(svgElement, 1).getAttribute('d')).not.toBeNull();
       expect(plotHelper.getAllGStemLines(svgElement, 2).length).toBeGreaterThan(10);

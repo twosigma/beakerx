@@ -17,18 +17,18 @@
 import '../../../global.env';
 import ColumnManager from "../column/ColumnManager";
 import createModalTemplate from './columnLimitModalTemplate';
-import {BeakerxDataGrid} from "../BeakerxDataGrid";
+import {BeakerXDataGrid} from "../BeakerXDataGrid";
 import {selectColumnNames} from "../model/selectors";
-import {BeakerxDataStore} from "../store/dataStore";
+import {BeakerXDataStore} from "../store/BeakerXDataStore";
 import {selectOutputColumnLimit} from "../column/selectors";
 
 export default class ColumnLimitModal {
-  store: BeakerxDataStore;
+  store: BeakerXDataStore;
   columnManager: ColumnManager;
   container: HTMLElement;
   modalId: string;
 
-  constructor(dataGrid: BeakerxDataGrid, container: HTMLElement) {
+  constructor(dataGrid: BeakerXDataGrid, container: HTMLElement) {
     this.store = dataGrid.store;
     this.columnManager = dataGrid.columnManager;
     this.container = container;

@@ -24,7 +24,7 @@ import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
-import com.twosigma.beakerx.jvm.classloader.BeakerxUrlClassLoader;
+import com.twosigma.beakerx.jvm.classloader.BeakerXUrlClassLoader;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
@@ -40,7 +40,6 @@ import com.twosigma.beakerx.scala.serializers.ScalaMapSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaPrimitiveTypeListOfListSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaPrimitiveTypeMapSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaTableDeSerializer;
-import com.twosigma.beakerx.widget.SparkVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +53,7 @@ public class ScalaEvaluator extends BaseEvaluator {
   private BeakerxObjectFactory beakerxObjectFactory;
   private final Provider<BeakerObjectConverter> objectSerializerProvider;
   private static boolean autoTranslationSetup = false;
-  private BeakerxUrlClassLoader classLoader;
+  private BeakerXUrlClassLoader classLoader;
   private ScalaEvaluatorGlue shell;
 
   public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, EvaluatorParameters evaluatorParameters) {
@@ -76,7 +75,7 @@ public class ScalaEvaluator extends BaseEvaluator {
 
   @Override
   protected void addJarToClassLoader(PathToJar pathToJar) {
-    classLoader.addJar(pathToJar);
+    this.classLoader.addJar(pathToJar);
   }
 
   @Override
@@ -86,8 +85,7 @@ public class ScalaEvaluator extends BaseEvaluator {
 
   @Override
   protected void doReloadEvaluator() {
-    this.classLoader = newClassLoader();
-    this.shell = createNewEvaluator();
+    this.shell = createNewEvaluator(shell);
   }
 
   @Override
@@ -96,12 +94,6 @@ public class ScalaEvaluator extends BaseEvaluator {
     this.shell = createNewEvaluator();
     executorService.shutdown();
     executorService = Executors.newSingleThreadExecutor();
-  }
-
-  @Override
-  public void cancelExecution() {
-    super.cancelExecution();
-    SparkVariable.cancelAllJobs();
   }
 
   @Override
@@ -139,6 +131,18 @@ public class ScalaEvaluator extends BaseEvaluator {
     if (imp.endsWith(".*"))
       imp = imp.substring(0, imp.length() - 1) + "_";
     return imp;
+  }
+
+  private ScalaEvaluatorGlue createNewEvaluator(ScalaEvaluatorGlue shell) {
+    ScalaEvaluatorGlue newEvaluator = createNewEvaluator();
+    setLineId(newEvaluator,shell.interpreter().lastRequest().lineRep().lineId());
+    return newEvaluator;
+  }
+
+  private void setLineId(ScalaEvaluatorGlue newEvaluator,int lines) {
+    for (int i = newEvaluator.interpreter().lastRequest().lineRep().lineId(); i < lines; i++) {
+      newEvaluator.evaluate2("\"\"");
+    }
   }
 
   private ScalaEvaluatorGlue createNewEvaluator() {
@@ -182,9 +186,9 @@ public class ScalaEvaluator extends BaseEvaluator {
    * Scala uses multiple classloaders and (unfortunately) cannot fallback to the java one while compiling scala code so we
    * have to build our DynamicClassLoader and also build a proper classpath for the compiler classloader.
    */
-  private BeakerxUrlClassLoader newClassLoader() {
+  private BeakerXUrlClassLoader newClassLoader() {
     logger.debug("creating new loader");
-    BeakerxUrlClassLoader cl = new BeakerxUrlClassLoader(ClassLoader.getSystemClassLoader());
+    BeakerXUrlClassLoader cl = new BeakerXUrlClassLoader(ClassLoader.getSystemClassLoader());
     cl.addPathToJars(getClasspath().getPaths());
     return cl;
   }

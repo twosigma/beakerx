@@ -15,15 +15,12 @@
  */
 
 var BeakerXPageObject = require('../beakerx.po.js');
-var TableHelperObject = require('../table.helper.js');
 var beakerxPO;
-var tableHelper;
 
 describe('Autotranslation Groovy to JavaScript and D3 ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    tableHelper = new TableHelperObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/groovy/AutoTranslationGroovyTest.ipynb');
   });
 
@@ -34,12 +31,10 @@ describe('Autotranslation Groovy to JavaScript and D3 ', function () {
   var cellIndex;
 
   describe('(Groovy kernel) Init data on groovy ', function(){
-    it('Output contains data table ', function(){
+    it("Cell doesn't have output ", function(){
       cellIndex = 0;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      tableHelper.dataTablesIsEnabled(dtContainer);
-      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 1).getText()).toMatch(/nodes/);
-      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 2).getText()).toMatch(/"radius":10.+"colorB":20/);
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      expect(beakerxPO.getAllOutputAreaChildren(codeCell).length).toBe(0);
     });
   });
 

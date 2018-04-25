@@ -15,9 +15,12 @@
  */
 
 import IDataGridModelState from "@beakerx/tableDisplay/dataGrid/interface/IDataGridModelState";
+import highlighterStateMock from "./highlighterStateMock";
 
 let modelStateMock: IDataGridModelState = {
-  cellHighlighters: [],
+  cellHighlighters: [{
+    ...highlighterStateMock
+  }],
   columnNames: ['test', 'column'],
   hasIndex: false,
   stringFormatForColumn: { column: { type: 'value', values: { column: [':)', ':('] } } },
@@ -44,7 +47,7 @@ let modelStateMock: IDataGridModelState = {
   stringFormatForType: {},
   subtype: 'Tabledisplay',
   timeStrings: null,
-  timeZone: null,
+  timeZone: 'UTC',
   tooManyRows: false,
   type: 'Tabledisplay',
 };

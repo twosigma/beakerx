@@ -20,6 +20,7 @@ export default interface MenuItem {
   title: string,
   action?: Function,
   enableItemsFiltering?: boolean,
+  id?: string,
   icon?: string,
   inputPlaceholder?: string,
   inputAction?: Function,

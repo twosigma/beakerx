@@ -16,21 +16,16 @@
 
 import { expect } from 'chai';
 import Highlighter from "@beakerx/tableDisplay/dataGrid/highlighter/Highlighter";
-import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 import highlighterStateMock from "../mock/highlighterStateMock";
-import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import modelStateMock from "../mock/modelStateMock";
-import columnOptionsMock from "../mock/columnOptionsMock";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
+import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
 
 describe('Highlighter', () => {
-  const dataStore = createStore(modelStateMock);
-  const dataGrid = new BeakerxDataGrid({}, dataStore);
-  const column = new DataGridColumn(
-    columnOptionsMock,
-    dataGrid,
-    dataGrid.columnManager
-  );
+  const dataStore = createStore({ ...modelStateMock, values: [[null, 1],[1, null]] });
+  const dataGrid = new BeakerXDataGrid({}, dataStore);
+  const column = dataGrid.columnManager.columns[COLUMN_TYPES.body][0];
 
   let highlighter = new Highlighter(
     column,

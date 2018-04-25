@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.kotlin.evaluator;
 
-import com.twosigma.beakerx.jvm.classloader.BeakerxUrlClassLoader;
+import com.twosigma.beakerx.jvm.classloader.BeakerXUrlClassLoader;
 import com.twosigma.beakerx.kernel.ImportPath;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.kotlin.cli.common.repl.ReplClassLoader;
@@ -39,7 +39,7 @@ import static org.jetbrains.kotlin.com.intellij.openapi.util.Disposer.newDisposa
 public class ReplWithClassLoaderFactory {
 
   @NotNull
-  public static ReplWithClassLoader createReplWithKotlinParentClassLoader(KotlinEvaluator kotlinEvaluator, BeakerxUrlClassLoader parent) {
+  public static ReplWithClassLoader createReplWithKotlinParentClassLoader(KotlinEvaluator kotlinEvaluator, BeakerXUrlClassLoader parent) {
     return createReplInterpreter(getClasspath(), parent, kotlinEvaluator);
   }
 
@@ -71,9 +71,9 @@ public class ReplWithClassLoaderFactory {
   }
 
   @NotNull
-  public static BeakerxUrlClassLoader createParentClassLoader(KotlinEvaluator kotlinEvaluator) {
-    List<URL> urls = BeakerxUrlClassLoader.createUrls(kotlinEvaluator.getClasspath().getPaths());
-    BeakerxUrlClassLoader parent = new BeakerxUrlClassLoader(urls.toArray(new URL[urls.size()]), ClassLoader.getSystemClassLoader());
+  public static BeakerXUrlClassLoader createParentClassLoader(KotlinEvaluator kotlinEvaluator) {
+    List<URL> urls = BeakerXUrlClassLoader.createUrls(kotlinEvaluator.getClasspath().getPaths());
+    BeakerXUrlClassLoader parent = new BeakerXUrlClassLoader(urls.toArray(new URL[urls.size()]), ClassLoader.getSystemClassLoader());
     return parent;
   }
 

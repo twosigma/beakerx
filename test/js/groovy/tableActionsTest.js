@@ -15,99 +15,103 @@
  */
 
 var BeakerXPageObject = require('../beakerx.po.js');
-var TableHelperObject = require('../table.helper.js');
 var beakerxPO;
-var tableHelper;
 
 describe('Testing of table Actions ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    tableHelper = new TableHelperObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/groovy/TableActionsTest.ipynb');
+    beakerxPO.openUIWindow();
   }, 2);
 
   afterAll(function () {
     beakerxPO.closeAndHaltNotebook();
   });
 
-  function getTableRowElement(codeCellIndex, rowIndex, colIndex){
-    var dtContainer = beakerxPO.getDtContainerByIndex(codeCellIndex);
-    return tableHelper.getCellOfTableBody(dtContainer, rowIndex, colIndex);
+  function doubleClickOnTable(codeCell, x, y){
+    codeCell.click('div.p-DataGrid-viewport', x, y);
+    codeCell.doubleClick('div.p-DataGrid-viewport');
+    beakerxPO.kernelIdleIcon.waitForEnabled();
   };
 
   var cellIndex;
+  var imageDir = 'groovy/tableActions';
+  var width = 130, height = 65;
 
-  describe('ContextMenuItem action ', function(){
-    var rowIndex = 0;
-
-    it('ContextMenuItem should change table cell value ', function () {
-      cellIndex = 0;
-      var colIndex = 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      var cell_0 = tableHelper.getCellOfTableBody(dtContainer, rowIndex, colIndex);
-      var value1 = parseInt(cell_0.getText());
-      cell_0.rightClick();
-      browser.click('div.p-Menu-itemLabel=plusOne');
-      beakerxPO.kernelIdleIcon.waitForEnabled();
-      var value2 = parseInt(getTableRowElement(cellIndex, rowIndex, colIndex).getText());
-      expect(value2).toBeGreaterThan(value1);
-    });
-
-    it('ContextMenuItem should run tag (by string) ', function () {
-      var colIndex = 2;
-      var cell_1 = getTableRowElement(cellIndex, rowIndex, colIndex);
-      cell_1.rightClick();
-      browser.click('div.p-Menu-itemLabel=tag1ByStr');
-      beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex + 1, /0:1=2/);
-    });
-
-    it('ContextMenuItem should run tag (by closure) ', function () {
-      var colIndex = 3;
-      var cell_2 = getTableRowElement(cellIndex, rowIndex, colIndex);
-      cell_2.rightClick();
-      browser.click('div.p-Menu-itemLabel=tag1ByClosure');
-      beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex + 1, /0:2=3/);
+  describe('UI options. ', function () {
+    it("Use new table widget. ", function () {
+      beakerxPO.setDataGridForTable(true, false);
     });
   });
 
-  describe('DoubleClickAction action ', function(){
-    var rowIndex = 0;
+  describe('ContextMenuItem action ', function () {
+    var codeCell;
 
-    it('DoubleClickAction should change table cell value ', function () {
-      cellIndex += 2;
-      var colIndex = 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      var cell_0 = tableHelper.getCellOfTableBody(dtContainer, rowIndex, colIndex);
-      var value1 = parseInt(cell_0.getText());
-      cell_0.doubleClick();
+    it('ContextMenuItem should change table cell value ', function () {
+      cellIndex = 0;
+      codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell1_case1.png');
+
+      codeCell.rightClick('canvas', 40, 40);
+      browser.click('div.p-Menu-itemLabel=plusOne');
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      var value2 = parseInt(getTableRowElement(cellIndex, rowIndex, colIndex).getText());
-      expect(value2).toBeGreaterThan(value1);
+      canvas = codeCell.$('canvas');
+      imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell1_case2.png');
+    });
+
+    it('ContextMenuItem should run tag (by string) ', function () {
+      codeCell.rightClick('canvas', 40, 55);
+      browser.click('div.p-Menu-itemLabel=tag1ByStr');
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex + 1, /1:0=4/);
+    });
+
+    it('ContextMenuItem should run tag (by closure) ', function () {
+      codeCell.rightClick('canvas', 100, 55);
+      browser.click('div.p-Menu-itemLabel=tag1ByClosure');
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex + 1, /1:1=5/);
+    });
+  });
+
+  describe('DoubleClickAction action ', function () {
+    it('DoubleClickAction should change table cell value ', function () {
+      cellIndex += 4;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell2_case1.png');
+
+      doubleClickOnTable(codeCell, 40, 40);
+      canvas = codeCell.$('canvas');
+      imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell2_case2.png');
     });
 
     it('DoubleClickAction should run tag (by string) ', function () {
-      cellIndex += 1;
-      var colIndex = 2;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      var cell_1 = tableHelper.getCellOfTableBody(dtContainer, rowIndex, colIndex);
-      cell_1.doubleClick();
-      beakerxPO.kernelIdleIcon.waitForEnabled();
-      cellIndex += 1;
-      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /0:1=2/);
+      cellIndex += 3;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell3_case1.png');
+
+      doubleClickOnTable(codeCell, 40, 40);
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex + 1, /0:0=1/);
     });
 
     it('DoubleClickAction should run tag (by closure) ', function () {
-      cellIndex += 1;
-      var colIndex = 3;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      var cell_2 = tableHelper.getCellOfTableBody(dtContainer, rowIndex, colIndex);
-      cell_2.doubleClick();
-      beakerxPO.kernelIdleIcon.waitForEnabled();
-      cellIndex += 1;
-      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /0:2=3/);
+      cellIndex += 3;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell4_case1.png');
+
+      doubleClickOnTable(codeCell, 40, 40);
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex + 1, /0:0=1/);
     });
   });
 

@@ -59,7 +59,7 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
   }
 
   var interpreter = {
-    var i = new IMain(settings, new java.io.PrintWriter(baos))
+    var i = new ScalaInterpreter(settings, new java.io.PrintWriter(baos))
     i.setContextClassLoader()
     i
   }

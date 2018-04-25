@@ -14,10 +14,15 @@
  *  limitations under the License.
  */
 
-import {IBeakerxDataGridState} from "../store/dataStore";
-import {selectColumnNames} from "../model/selectors";
+import {IBeakerXDataGridState} from "../store/BeakerXDataStore";
+import {
+  DEFAULT_INDEX_COLUMN_NAME, selectColumnNames, selectColumnOrder, selectColumnsFrozen,
+  selectColumnsFrozenNames,
+  selectColumnsVisible,
+  selectHasIndex
+} from "../model/selectors";
 import {find} from "@phosphor/algorithm";
-import {IColumnsState, IColumnState} from "../interface/IColumn";
+import {IColumnPosition, IColumnsState, IColumnState} from "../interface/IColumn";
 import {ALL_TYPES} from "../dataTypes";
 import {COLUMN_TYPES, SORT_ORDER} from "./enums";
 import {createSelector} from "reselect";
@@ -32,13 +37,12 @@ const defaultState: IColumnState = {
   keepTrigger: false,
   horizontalAlignment: 'left',
   formatForTimes: null,
-  visible: true,
   sortOrder: SORT_ORDER.NO_SORT,
   filter: null,
-  position: 0
+  position: { value: 0, region: 'body' }
 };
 
-export const selectColumnStates = (state: IBeakerxDataGridState): IColumnsState => state.columns;
+export const selectColumnStates = (state: IBeakerXDataGridState): IColumnsState => state.columns;
 export const selectColumnStatesArray = createSelector(
   [selectColumnStates],
   (states) => Array.from(states.values())
@@ -52,96 +56,76 @@ export const selectBodyColumnStates = createSelector(
       .sort((state1, state2) => state1.index - state2.index)
   ));
 
-export const selectIndexColumnStates = createSelector(
-  [selectColumnStatesArray],
-  (states) => (
-    states
-      .filter(columnState => columnState.columnType === COLUMN_TYPES.index)
-      .sort((state1, state2) => state1.index - state2.index)
-));
-
-export const selectBodyColumnNames = createSelector(
-  [selectBodyColumnStates],
-  (bodyColumnStates) => bodyColumnStates.map(state => state.name)
-);
-
-export const selectIndexColumnNames = createSelector(
-  [selectIndexColumnStates],
-  (bodyColumnStates) => bodyColumnStates.map(state => state.name)
-);
-
-export const selectBodyColumnVisibility = createSelector(
-  [selectBodyColumnStates],
-  (bodyColumnStates) => bodyColumnStates.map(state => state.visible)
+export const selectVisibleBodyColumns = createSelector(
+  [selectBodyColumnStates, selectColumnsVisible, selectColumnOrder],
+  (bodyColumnStates, columnsVisible, columnOrder) => (bodyColumnStates.filter(
+    state => columnsVisible[state.name] !== false && (columnOrder.length === 0 || columnOrder.indexOf(state.name) !== -1)
+  ))
 );
 
 export const selectColumnStateByKey = (state, key) => selectColumnStates(state).get(key) || defaultState;
 
 export const selectColumnState = (
-  state: IBeakerxDataGridState,
+  state: IBeakerXDataGridState,
   column
 ) => selectColumnStateByKey(state, `${column.type}_${column.index}`);
 
-export const selectColumnDataTypeName = (state: IBeakerxDataGridState, column) => (
-  selectColumnState(state, column).dataTypeName
+export const selectColumnDataTypeName = createSelector(
+  [selectColumnState],
+  (state) => state.dataTypeName
 );
 
-export const selectColumnVisible = (state: IBeakerxDataGridState, column) => (
-  selectColumnState(state, column).visible
-);
-
-export const selectColumnHorizontalAlignment = (state: IBeakerxDataGridState, column) => (
+export const selectColumnHorizontalAlignment = (state: IBeakerXDataGridState, column) => (
   selectColumnState(state, column).horizontalAlignment
 );
 
-export const selectColumnDisplayType = (state: IBeakerxDataGridState, column) => (
+export const selectColumnDisplayType = (state: IBeakerXDataGridState, column) => (
   selectColumnState(state, column).displayType
 );
 
-export const selectColumnFilter = (state: IBeakerxDataGridState, column) => (
+export const selectColumnFilter = (state: IBeakerXDataGridState, column) => (
   selectColumnState(state, column).filter || ''
 );
 
-export const selectColumnDataType = (state: IBeakerxDataGridState, column) => (
+export const selectColumnDataType = (state: IBeakerXDataGridState, column) => (
   selectColumnState(state, column).dataType
 );
 
-export const selectColumnSortOrder = (state: IBeakerxDataGridState, column) => (
+export const selectColumnSortOrder = (state: IBeakerXDataGridState, column) => (
   selectColumnState(state, column).sortOrder
 );
 
-export const selectColumnKeepTrigger = (state: IBeakerxDataGridState, column) => (
+export const selectColumnKeepTrigger = (state: IBeakerXDataGridState, column) => (
   selectColumnState(state, column).keepTrigger
 );
 
-export const selectColumnFormatForTimes = (state: IBeakerxDataGridState, column) => (
+export const selectColumnFormatForTimes = (state: IBeakerXDataGridState, column) => (
   selectColumnState(state, column).formatForTimes || {}
 );
 
-export const selectColumnWidth = (state: IBeakerxDataGridState, column) => (
+export const selectColumnWidth = (state: IBeakerXDataGridState, column) => (
   selectColumnState(state, column).width || 0
 );
 
-export const selectColumnPosition = (state: IBeakerxDataGridState, column) => (
-  selectColumnState(state, column).position || 0
+export const selectColumnPosition = (state: IBeakerXDataGridState, column) => (
+  selectColumnState(state, column).position
 );
 
-const selectColumnType = (state, columnType, position) => columnType;
-const selectPosition = (state, columnType, position) => position;
+const selectPosition = (state, position: IColumnPosition) => position;
 
 export const selectColumnIndexByPosition = createSelector(
-  [selectColumnStatesArray, selectColumnType, selectPosition],
-  (states, columnType, position): number => {
+  [selectColumnStatesArray, selectPosition],
+  (states, position: IColumnPosition): number => {
     const columnState: IColumnState = find(states,(stateItem: IColumnState) => (
-      stateItem.columnType === columnType && stateItem.position === position
-    )) || defaultState;
+      stateItem.position.region === position.region && stateItem.position.value === position.value
+    ));
 
     return columnState.index;
   }
 );
 
-export const selectOutputColumnLimit = (state: IBeakerxDataGridState) => (
-  beakerx.prefs && beakerx.prefs.outputColumnLimit
-    ? beakerx.prefs.outputColumnLimit
+export const selectOutputColumnLimit = (state: IBeakerXDataGridState) => (
+  window.beakerx && window.beakerx.prefs && window.beakerx.prefs.outputColumnLimit
+    ? window.beakerx.prefs.outputColumnLimit
     : selectColumnNames(state).length
 );

@@ -16,11 +16,11 @@
 
 import * as sinon from 'sinon';
 import { expect } from 'chai';
-import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import modelStateMock from "./mock/modelStateMock";
-import EventManager from "@beakerx/tableDisplay/dataGrid/EventManager";
+import EventManager from "@beakerx/tableDisplay/dataGrid/event/EventManager";
 import cellDataMock from "./mock/cellDataMock";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 
 describe('EventManager', () => {
   let dataGrid;
@@ -29,7 +29,7 @@ describe('EventManager', () => {
 
   before(() => {
     dataStore = createStore(modelStateMock);
-    dataGrid = new BeakerxDataGrid({}, dataStore);
+    dataGrid = new BeakerXDataGrid({}, dataStore);
     eventManager = dataGrid.eventManager;
   });
 
@@ -98,7 +98,7 @@ describe('EventManager', () => {
   it('should implement handleKeyDown event handler', () => {
     const highlighterStub = sinon.stub(eventManager, 'handleHighlighterKeyDown');
     const numStub = sinon.stub(eventManager, 'handleNumKeyDown');
-    const arrowStub = sinon.stub(eventManager, 'handleArrowKeyDown');
+    const navigationStub = sinon.stub(eventManager, 'handleNavigationKeyDown');
     const columnStub = sinon.stub(dataGrid.columnManager, 'takeColumnByCell');
 
     expect(eventManager).to.have.property('handleKeyDown');
@@ -106,24 +106,25 @@ describe('EventManager', () => {
 
     const event = new KeyboardEvent('keydown', { key: 'ArrowUp', code: 'ArrowUp' });
 
+    dataGrid.setFocus(true);
     eventManager.handleKeyDown(event);
 
     expect(highlighterStub.calledOnce).to.be.true;
     expect(numStub.calledOnce).to.be.true;
-    expect(arrowStub.calledOnce).to.be.true;
-    expect(columnStub.calledOnce).to.be.false
+    expect(navigationStub.calledOnce).to.be.true;
+    expect(columnStub.calledOnce).to.be.false;
 
     dataGrid.cellFocusManager.setFocusedCell(cellDataMock);
     eventManager.handleKeyDown(event);
 
     expect(highlighterStub.calledTwice).to.be.true;
     expect(numStub.calledTwice).to.be.true;
-    expect(arrowStub.calledTwice).to.be.true;
+    expect(navigationStub.calledTwice).to.be.true;
     expect(columnStub.calledOnce).to.be.true;
 
     highlighterStub.restore();
     numStub.restore();
-    arrowStub.restore();
+    navigationStub.restore();
     columnStub.restore();
   });
 

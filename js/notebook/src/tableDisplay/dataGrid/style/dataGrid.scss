@@ -26,6 +26,10 @@ $borderColor: $silverChalice;
 $buttonActive: $silver;
 $gridBorder: 1px solid $borderColor;
 $tooltipTransition: opacity 300ms ease-in-out 300ms;
+$sortAscendingIconBlue: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgaGVpZ2h0PSI2NCIgd2lkdGg9IjY0IiB2aWV3Qm94PSIwIDAgNjQgNjQiPg0KICA8cG9seWdvbiBmaWxsPSIjNmJhMmM3IiBwb2ludHM9IjMwLDQgNCw2MCA2MCw2MCI+PC9wb2x5Z29uPg0KPC9zdmc+DQo=');
+$sortDescendingIconBlue: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj4KPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIGhlaWdodD0iNjQiIHdpZHRoPSI2NCIgdmlld0JveD0iMCAwIDY0IDY0Ij4KICA8cG9seWdvbiBmaWxsPSIjNmJhMmM3IiBwb2ludHM9IjMwLDYwIDYwLDQgNCw0Ij48L3BvbHlnb24+Cjwvc3ZnPgo=');
+$sortAscendingIconWhite: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj4KPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIGhlaWdodD0iNjQiIHdpZHRoPSI2NCIgdmlld0JveD0iMCAwIDY0IDY0Ij4KICA8cG9seWdvbiBmaWxsPSIjZmZmZmZmIiBwb2ludHM9IjMwLDQgNCw2MCA2MCw2MCI+PC9wb2x5Z29uPgo8L3N2Zz4K');
+$sortDescendingIconWhite: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj4KPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIGhlaWdodD0iNjQiIHdpZHRoPSI2NCIgdmlld0JveD0iMCAwIDY0IDY0Ij4KICA8cG9seWdvbiBmaWxsPSIjZmZmZmZmIiBwb2ludHM9IjMwLDYwIDYwLDQgNCw0Ij48L3BvbHlnb24+Cjwvc3ZnPgo=');
 
 .p-DataGrid {
   min-width: 64px;
@@ -35,8 +39,17 @@ $tooltipTransition: opacity 300ms ease-in-out 300ms;
   border: 1px solid white;
   font-family: "Lato", Helvetica, sans-serif;
 
+  &.grabbing * {
+    cursor: move !important;
+    cursor: pointer !important;
+    cursor: grabbing !important;
+    cursor: -moz-grabbing !important;
+    cursor: -webkit-grabbing !important;
+  }
+
   .bko-menu {
     opacity: 1;
+    padding: 0;
 
     &:hover {
       background-color: $highlightBlue;
@@ -45,24 +58,48 @@ $tooltipTransition: opacity 300ms ease-in-out 300ms;
 
     &.sorting_asc,
     &.sorting_desc {
-      background-size: 18px;
+      background-size: 8px;
+      background-position: 3px center;
     }
 
     &.sorting_asc {
-      background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAAAZ0lEQVQ4y2NgGLKgquEuFxBPAGI2ahhWCsS/gDibUoO0gPgxEP8H4ttArEyuQYxAPBdqEAxPBImTY5gjEL9DM+wTENuQahAvEO9DMwiGdwAxOymGJQLxTyD+jgWDxCMZRsEoGAVoAADeemwtPcZI2wAAAABJRU5ErkJggg==');
+      background-image: $sortAscendingIconBlue;
 
       &:hover {
-        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAAANklEQVR42mNgGNLgPxBQzSAYoNSgrf9RwVaquIoi1wH1NfzHDqZSxVVkue4/EYBhFIyCUYAGABPAkfD1W4bSAAAAAElFTkSuQmCC");
+        background-image: $sortAscendingIconWhite;
       }
     }
 
     &.sorting_desc {
-      background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAAAZUlEQVQ4y2NgGAWjYBSggaqGu5FA/BOIv2PBIPFEUgxjB+IdQPwfC94HxLykus4GiD+hGfQOiB3J8SojEE9EM2wuSJzcsFMG4ttQgx4DsRalkZENxL+AuJQaMcsGxBOAmGvopk8AVz1sLZgg0bsAAAAASUVORK5CYII=');
+      background-image: $sortDescendingIconBlue;
 
       &:hover {
-        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAAAL0lEQVR42mNgGAWjYBSggf9EAKoZSI7rtuIwayrVvEtJ2KG7bivVIoNqsTu00ycAka+SJUKi7ZcAAAAASUVORK5CYII=");
+        background-image: $sortDescendingIconWhite;
       }
     }
+  }
+
+  .rows-to-display-menu {
+    position: absolute;
+    bottom: 0;
+  }
+}
+
+.cursor-ns-resize {
+  &, * {
+    cursor: ns-resize!important;
+  }
+}
+
+.cursor-ew-resize {
+  &, * {
+    cursor: ew-resize!important;
+  }
+}
+
+.cursor-nwse-resize {
+  &, * {
+    cursor: nwse-resize!important;
   }
 }
 
@@ -170,4 +207,9 @@ $tooltipTransition: opacity 300ms ease-in-out 300ms;
   &.p-mod-active {
     background: $silverChalice;
   }
+}
+
+.bko-dragged-header {
+  position: absolute;
+  box-shadow: 0 0 3px #262626;
 }

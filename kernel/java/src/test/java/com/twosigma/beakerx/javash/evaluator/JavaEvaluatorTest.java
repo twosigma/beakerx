@@ -157,4 +157,40 @@ public class JavaEvaluatorTest {
     //then
     assertThat((String) evaluate.result()).isEqualTo("AAA");
   }
+
+  @Test
+  public void overwriteClass() throws Exception {
+    //given
+    runCode("" +
+            "package hello;\n" +
+            "public class Main {\n" +
+            "    public static String doSth (){\n" +
+            "        return \"hello\";\n" +
+            "    }\n" +
+            "}");
+
+    runCode("" +
+            "package hello;\n" +
+            "return Main.doSth();");
+    //when
+    runCode("" +
+            "package hello;\n" +
+            "public class Main {\n" +
+            "    public static String doSth (){\n" +
+            "        return \"hello2\";\n" +
+            "    }\n" +
+            "}");
+
+    TryResult result = runCode("" +
+            "package hello;\n" +
+            "return Main.doSth();");
+    //then
+    assertThat((String) result.result()).contains("hello2");
+  }
+
+  private TryResult runCode(String s) {
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(s);
+    return javaEvaluator.evaluate(seo, s);
+  }
+
 }

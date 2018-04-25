@@ -18,16 +18,16 @@ import { expect } from 'chai';
 import UniqueEntriesHighlighter from "@beakerx/tableDisplay/dataGrid/highlighter/UniqueEntriesHighlighter";
 import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 import highlighterStateMock from "../mock/highlighterStateMock";
-import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import modelStateMock from "../mock/modelStateMock";
 import columnOptionsMock from "../mock/columnOptionsMock";
 import cellConfigMock from "../mock/cellConfigMock";
 import { HIGHLIGHTER_TYPE } from "@beakerx/tableDisplay/dataGrid/interface/IHighlighterState";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 
 describe('UniqueEntriesHighlighter', () => {
-  const dataStore = createStore(modelStateMock);
-  const dataGrid = new BeakerxDataGrid({}, dataStore);
+  const dataStore = createStore({ ...modelStateMock, types: ['double', 'double']});
+  const dataGrid = new BeakerXDataGrid({}, dataStore);
   const column = new DataGridColumn(
     columnOptionsMock,
     dataGrid,
@@ -53,9 +53,9 @@ describe('UniqueEntriesHighlighter', () => {
 
   it('should return proper backgroud color', () => {
     expect(uniqueEntriesHighlighter.getBackgroundColor(cellConfigMock))
-      .to.equal('hsl(0, 75%, 85%)');
+      .to.include('85%, 85%)');
     expect(uniqueEntriesHighlighter.getBackgroundColor({ ...cellConfigMock, value: 0 }))
-      .to.equal('hsl(180, 75%, 85%)');
+      .to.include('85%, 85%)');
     expect(uniqueEntriesHighlighter.getBackgroundColor({ ...cellConfigMock, value: 0.5 }))
       .to.equal('');
   });

@@ -16,18 +16,16 @@
 
 var BeakerXPageObject = require('../beakerx.po.js');
 var PlotHelperObject = require('../plot.helper.js');
-var TableHelperObject = require('../table.helper.js');
 var beakerxPO;
 var plotHelper;
-var tableHelper;
 
 describe('Groovy base tests. ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
     plotHelper = new PlotHelperObject();
-    tableHelper = new TableHelperObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/groovy/GroovyTest.ipynb');
+    beakerxPO.openUIWindow();
   }, 2);
 
   afterAll(function () {
@@ -35,6 +33,13 @@ describe('Groovy base tests. ', function () {
   });
 
   var cellIndex;
+  var imageDir = 'groovy/groovy';
+
+  describe('UI options. ', function () {
+    it("Use new table widget. ", function () {
+      beakerxPO.setDataGridForTable(true, false);
+    });
+  });
 
   describe('Define local and global variables. ', function () {
     it('Execute result output contains "2". ', function () {
@@ -122,20 +127,36 @@ describe('Groovy base tests. ', function () {
 
     it('Output contains table. ', function () {
       cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      tableHelper.dataTablesIsEnabled(dtContainer);
-      expect(tableHelper.getAllRowsOfTableBody(dtContainer)[0].getText())
-        .toMatch(/"text.plain":"5"/);
+      var fileName = 'cell10_case1.png';
+      var width = 410, height = 43;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      cellIndex += 1;
     });
   });
 
   describe('Display array as table. ', function () {
     it('Output contains table. ', function () {
       cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      tableHelper.dataTablesIsEnabled(dtContainer);
-      expect(tableHelper.getCellOfTableHeader(dtContainer, 1).getText()).toMatch(/hours/);
-      expect(tableHelper.getCellOfTableBody(dtContainer, 0, 1).getText()).toMatch(/10/);
+      var fileName = 'cell11_case1.png';
+      var width = 90, height = 43;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      cellIndex += 1;
+    });
+  });
+
+  describe('Display array with null value. ', function () {
+    it('Output contains table. ', function () {
+      cellIndex += 1;
+      var fileName = 'cell12_case1.png';
+      var width = 130, height = 65;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      cellIndex += 1;
     });
   });
 

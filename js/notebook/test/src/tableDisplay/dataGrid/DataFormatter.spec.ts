@@ -20,12 +20,12 @@ import { DataFormatter } from '@beakerx/tableDisplay/dataGrid/DataFormatter';
 import { TIME_UNIT_FORMATS } from '@beakerx/tableDisplay/consts';
 import * as moment from 'moment-timezone/builds/moment-timezone-with-data';
 import modelStateMock from "./mock/modelStateMock";
-import {BeakerxDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import {BeakerXDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import columnOptionsMock from "./mock/columnOptionsMock";
 import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 import {ALL_TYPES} from "@beakerx/tableDisplay/dataGrid/dataTypes";
 import cellConfigMock from "./mock/cellConfigMock";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 
 declare var require: Function;
 
@@ -110,12 +110,12 @@ describe('DataFormatter', () => {
 
     it('should convert to date', () => {
       expect(stringFormatFn({ ...cellConfig, value: { timestamp: 1516697673043, type: 'Date' }}))
-        .to.equal('20180123 09:54:33.043 +0100');
+        .to.equal('20180123 03:54:33.043 -0500');
     });
 
     it('should return given value', () => {
       expect(stringFormatFn({ ...cellConfig, value: 1 })).to.equal(1);
-      expect(stringFormatFn({ ...cellConfig, value: null })).to.equal(null);
+      expect(stringFormatFn({ ...cellConfig, value: null })).to.equal('');
       expect(stringFormatFn({ ...cellConfig, value: '' })).to.equal('');
       expect(stringFormatFn({ ...cellConfig, value: 0 })).to.equal(0);
       expect(stringFormatFn({ ...cellConfig, value: false })).to.equal(false);
@@ -291,9 +291,9 @@ describe('DataFormatter', () => {
 
     it('should return formatted datetime', () => {
       expect(datetimeFormatFn({ ...cellConfig, value: { timestamp: 1516697673043, type: 'Date' }}))
-        .to.equal('20180123 09:54:33.043 +0100');
+        .to.equal('20180123 08:54:33.043 +0000');
 
-      expect(datetimeFormatFn({ ...cellConfig, value: 1516703121 })).to.equal('20180123 11:25:21.000 +0100');
+      expect(datetimeFormatFn({ ...cellConfig, value: 1516703121 })).to.equal('20180123 10:25:21.000 +0000');
     });
 
     it('should return Invalid date', () => {

@@ -55,16 +55,18 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
   public static final String INDEX = "index";
 
   private Comm comm;
+  private WidgetDisplayMethodManager displayMethodManager;
 
   public Widget() {
     comm = new Comm(TargetNamesEnum.JUPYTER_WIDGET);
+    displayMethodManager = WidgetDisplayMethodManager.getInstance();
   }
 
   protected void openComm() {
     openComm(Comm.Buffer.EMPTY);
   }
 
-  protected void openComm(Comm.Buffer buffer) {
+  private void openComm(Comm.Buffer buffer) {
     comm.setData(createContent());
     addValueChangeMsgCallback();
     comm.open(buffer);
@@ -84,14 +86,13 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
 
   @Override
   public void display() {
-    beforeDisplay();
-    sendDisplay();
+    displayMethodManager.display(this);
   }
 
   protected void beforeDisplay() {
   }
 
-  private void sendDisplay() {
+  protected void sendDisplay() {
     HashMap<String, Serializable> content = new HashMap<>();
     HashMap<String, Serializable> data = new HashMap<>();
     //These magic numbers needs to be clarified
@@ -168,6 +169,10 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
 
   public void activateWidgetInContainer() {
     // should be removed when our widgets will be rewritten to ipywidget style
+  }
+
+  public interface WidgetDisplayMethodStrategy {
+    void display(Widget widget);
   }
 
 }

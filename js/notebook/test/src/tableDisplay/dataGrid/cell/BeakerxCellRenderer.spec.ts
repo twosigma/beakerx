@@ -16,15 +16,15 @@
 
 import * as sinon from 'sinon';
 import { expect } from 'chai';
-import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import {GraphicsContext, TextRenderer} from "@phosphor/datagrid";
 import modelStateMock from "../mock/modelStateMock";
-import BeakerxCellRenderer from "@beakerx/tableDisplay/dataGrid/cell/BeakerxCellRenderer";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import BeakerXCellRenderer from "@beakerx/tableDisplay/dataGrid/cell/BeakerXCellRenderer";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 import cellConfigMock from "../mock/cellConfigMock";
 import cellDataMock from "../mock/cellDataMock";
 
-describe('BeakerxCellRenderer', () => {
+describe('BeakerXCellRenderer', () => {
   let dataGrid;
   let cellRenderer;
   let dataStore;
@@ -32,12 +32,12 @@ describe('BeakerxCellRenderer', () => {
 
   before(() => {
     dataStore = createStore(modelStateMock);
-    dataGrid = new BeakerxDataGrid({}, dataStore);
+    dataGrid = new BeakerXDataGrid({}, dataStore);
 
     gc = new GraphicsContext(dataGrid['_canvasGC']);
 
     gc['_context'].fillText = () => {};
-    cellRenderer = new BeakerxCellRenderer(dataGrid);
+    cellRenderer = new BeakerXCellRenderer(dataGrid);
   });
 
   after(() => {

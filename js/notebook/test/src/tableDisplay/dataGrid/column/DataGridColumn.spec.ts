@@ -16,12 +16,12 @@
 
 import * as sinon from 'sinon';
 import { expect } from 'chai';
-import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import DataGridColumn from '@beakerx/tableDisplay/dataGrid/column/DataGridColumn';
 import ColumnMenu from "@beakerx/tableDisplay/dataGrid/headerMenu/ColumnMenu";
 import IndexMenu from "@beakerx/tableDisplay/dataGrid/headerMenu/IndexMenu";
 import modelStateMock from "../mock/modelStateMock";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
 import {ALIGNMENTS_BY_CHAR} from "@beakerx/tableDisplay/dataGrid/column/columnAlignment";
 import {ALL_TYPES} from "@beakerx/tableDisplay/dataGrid/dataTypes";
@@ -29,8 +29,8 @@ import {ALL_TYPES} from "@beakerx/tableDisplay/dataGrid/dataTypes";
 declare var require: Function;
 
 describe('DataGridColumn', () => {
-  const dataStore = createStore(modelStateMock);
-  const dataGrid = new BeakerxDataGrid({}, dataStore);
+  const dataStore = createStore({ ...modelStateMock, values: [[null, 1], [1, null]]});
+  const dataGrid = new BeakerXDataGrid({}, dataStore);
   const columnManager = dataGrid.columnManager;
 
   describe('DataGridColumn.type === "body"', () => {
@@ -57,16 +57,16 @@ describe('DataGridColumn', () => {
       expect(bodyDataGridColumn.move).to.be.a('Function');
 
       bodyDataGridColumn.move(1);
-      expect(bodyDataGridColumn.getPosition()).to.equal(1);
+      expect(bodyDataGridColumn.getPosition().value).to.equal(1);
 
       bodyDataGridColumn.hide();
-      expect(bodyDataGridColumn.getPosition()).to.equal(1);
-      expect(columnManager.bodyColumns[1].getPosition()).to.equal(0);
+      expect(bodyDataGridColumn.getPosition().value).to.equal(1);
+      expect(columnManager.bodyColumns[1].getPosition().value).to.equal(0);
 
       bodyDataGridColumn.show();
       bodyDataGridColumn.move(0);
 
-      expect(bodyDataGridColumn.getPosition()).to.equal(0);
+      expect(bodyDataGridColumn.getPosition().value).to.equal(0);
     });
 
     it('should call toggleVisibility', () => {

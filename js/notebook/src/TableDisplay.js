@@ -89,17 +89,30 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
   },
 
   initTableDisplay: function(data) {
-    var baseUrl = (Jupyter.notebook_list || Jupyter.notebook).base_url;
-    var api = new BeakerXApi(baseUrl);
+    var baseUrl;
+    var api;
     var self = this;
 
-    api.loadSettings().then(function(settings) {
-      if (!settings || !settings.ui_options || !settings.ui_options.use_data_grid) {
-        self.initDatatablesTable(data);
-      } else {
-        self.initDataGridTable(data);
-      }
-    });
+    try {
+      var coreutils = require('@jupyterlab/coreutils');
+      coreutils.PageConfig.getOption('pageUrl');
+      baseUrl = coreutils.PageConfig.getBaseUrl();
+    } catch(e) {
+      baseUrl = '/';
+    }
+
+    api = new BeakerXApi(baseUrl);
+    api.loadSettings()
+      .then(function (settings) { self.resolveWidget(settings, data); })
+      .catch(function () { self.resolveWidget(api.DEFAULT_SETTINGS, data); });
+  },
+
+  resolveWidget: function(settings, data) {
+    if (!settings || !settings.ui_options || !settings.ui_options.use_data_grid) {
+      this.initDatatablesTable(data);
+    } else {
+      this.initDataGridTable(data);
+    }
   },
 
   showWarning: function(data) {

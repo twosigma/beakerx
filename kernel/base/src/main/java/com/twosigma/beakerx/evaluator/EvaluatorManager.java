@@ -114,4 +114,8 @@ public class EvaluatorManager {
   public String getOutDir() {
     return evaluator.getOutDir();
   }
+
+  public void registerCancelHook(Hook hook) {
+    evaluator.registerCancelHook(hook);
+  }
 }

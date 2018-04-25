@@ -48,7 +48,8 @@ class SparkStateProgressModel extends widgets.VBoxModel {
         stageId: 0,
         stageLink: "",
         jobLink: ""
-      }
+      },
+      hide: false
     };
   }
 }
@@ -84,10 +85,24 @@ class SparkStateProgressView extends widgets.VBoxView {
     progressLabels.find('.waiting').text(valueWaiting);
     progressLabels.find('.all').text(max);
 
+    let maxw = progressLabels.find('.all').width();
+
+    progressLabels.find('.done, .active, .waiting, .all').each((i, e) => {
+      $(e).css({ display: 'inline-block'}).width(maxw);
+    });
+
+    if (this.model.get('hide')) {
+        this.hideProgress();
+    }
     return super.update();
   }
 
-  private createWidget(): void {
+  private hideProgress() {
+      let widget: any= $(this.el).find('.bx-spark-stateProgress');
+      widget.accordion( "option", "active",  false);
+  }
+
+    private createWidget(): void {
     let widget: any = $('<div>', {
       class: 'bx-spark-stateProgress'
     }).append(

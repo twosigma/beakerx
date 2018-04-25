@@ -28,8 +28,6 @@ import getEventKeyCode = DataGridHelpers.getEventKeyCode;
 import {KEYBOARD_KEYS} from "./enums";
 import ColumnManager from "../column/ColumnManager";
 import {ICellData} from "../interface/ICell";
-import debounce = DataGridHelpers.debounce;
-import DataGridCell from "../cell/DataGridCell";
 
 const COLUMN_RESIZE_AREA_WIDTH = 4;
 
@@ -50,7 +48,7 @@ export default class EventManager {
     this.handleBodyClick = this.handleBodyClick.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
-    this.handleCellHover = debounce<MouseEvent>(this.handleCellHover.bind(this), 100, this.cellHoverControll);
+    this.handleCellHover = throttle<MouseEvent, void>(this.handleCellHover, 100, this, this.cellHoverControll);
     this.handleMouseMoveOutiseArea = throttle<MouseEvent, void>(this.handleMouseMoveOutiseArea, 100, this);
     this.handleWindowResize = throttle<Event, void>(this.handleWindowResize, 200, this);
 

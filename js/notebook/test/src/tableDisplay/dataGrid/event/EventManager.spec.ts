@@ -17,10 +17,10 @@
 import * as sinon from 'sinon';
 import { expect } from 'chai';
 import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
-import modelStateMock from "./mock/modelStateMock";
 import EventManager from "@beakerx/tableDisplay/dataGrid/event/EventManager";
-import cellDataMock from "./mock/cellDataMock";
 import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
+import cellDataMock from "../mock/cellDataMock";
+import modelStateMock from "../mock/modelStateMock";
 
 describe('EventManager', () => {
   let dataGrid;

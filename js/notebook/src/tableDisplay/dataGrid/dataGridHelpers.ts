@@ -143,12 +143,12 @@ export namespace DataGridHelpers {
     }
   }
 
-  export function debounce<A>(f:(a:A) => void, delay: number) {
-    let timer: number = null;
+  export function debounce<A>(f:(a:A) => void, delay: number, controllObject?: { timerId: number }) {
+    let controll: { timerId: number } = controllObject || { timerId: undefined };
 
     return (a: A) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => f(a), delay);
+      clearTimeout(controll.timerId);
+      controll.timerId = setTimeout(() => f(a), delay);
     }
   }
 

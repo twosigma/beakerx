@@ -51,7 +51,7 @@ export default class CellTooltipManager {
     if (this.dataEquals(data, this.lastData)) {
       return;
     }
-
+console.log(data);
     this.hideTooltips();
     if (this.shouldShowTooltip(data)) {
       this.showTooltip(data);
@@ -70,6 +70,7 @@ export default class CellTooltipManager {
   }
 
   private showTooltip(data: ICellData) {
+    const offsetTop = DataGridCell.isHeaderCell(data) ? 0 : data.offsetTop;
     const rect = this.dataGrid.node.getBoundingClientRect();
     const tooltip = new CellTooltip(
       this.getTooltipText(data),
@@ -81,7 +82,7 @@ export default class CellTooltipManager {
 
     tooltip.show(
       Math.ceil(rect.left + data.offset + 20),
-      Math.ceil(window.pageYOffset + rect.top + data.offsetTop - 10)
+      Math.ceil(window.pageYOffset + rect.top + offsetTop - 10)
     );
   }
 

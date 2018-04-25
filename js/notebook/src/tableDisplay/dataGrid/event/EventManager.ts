@@ -28,6 +28,7 @@ import getEventKeyCode = DataGridHelpers.getEventKeyCode;
 import {KEYBOARD_KEYS} from "./enums";
 import ColumnManager from "../column/ColumnManager";
 import {ICellData} from "../interface/ICell";
+import BeakerXScrollBar from "../scrollBar/BeakerXScrollBar";
 
 const COLUMN_RESIZE_AREA_WIDTH = 4;
 
@@ -47,6 +48,7 @@ export default class EventManager {
     this.handleBodyClick = this.handleBodyClick.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
+    this.handleScrollBarMouseUp = this.handleScrollBarMouseUp.bind(this);
     this.handleCellHover = throttle<MouseEvent, void>(this.handleCellHover, 100, this);
     this.handleWindowResize = throttle<Event, void>(this.handleWindowResize, 200, this);
 
@@ -91,8 +93,17 @@ export default class EventManager {
   }
 
   destroy() {
+    document.removeEventListener('mouseup', this.handleScrollBarMouseUp, true);
     document.removeEventListener('keydown', this.handleKeyDown);
     window.removeEventListener('resize', this.handleWindowResize);
+  }
+
+  private handleScrollBarMouseUp(event: MouseEvent) {
+    document.removeEventListener('mouseup', this.handleScrollBarMouseUp, true);
+
+    if (!this.isNodeInsideGrid(event)) {
+      this.dataGrid.setFocus(false);
+    }
   }
 
   private handleWindowResize(event) {
@@ -162,6 +173,8 @@ export default class EventManager {
       return;
     }
 
+    document.addEventListener('mouseup', this.handleScrollBarMouseUp, true);
+
     !this.dataGrid.focused && this.dataGrid.setFocus(true);
     this.dataGrid.cellSelectionManager.handleMouseDown(event);
 
@@ -169,6 +182,10 @@ export default class EventManager {
       return this.dataGrid.dataGridResize.startResizing(event);
     }
 
+    this.handleStartDragging(event);
+  }
+
+  private handleStartDragging(event: MouseEvent) {
     const data = this.dataGrid.getCellData(event.clientX, event.clientY);
 
     if (
@@ -184,20 +201,23 @@ export default class EventManager {
   }
 
   private handleMouseOut(event: MouseEvent): void {
-    const relatedTarget = event.relatedTarget as HTMLElement;
-
-    if (relatedTarget && (
-      event.buttons !== 0
-      || this.dataGrid.node.contains(relatedTarget)
-      || relatedTarget === this.dataGrid.node
-      || relatedTarget.classList.contains('bko-menu')
-      || relatedTarget.closest('.bko-table-menu')
-    )) {
+    if (this.isNodeInsideGrid(event) || event.buttons !== 0) {
       return;
     }
 
     this.dataGrid.columnPosition.stopDragging();
     this.dataGrid.setFocus(false);
+  }
+
+  private isNodeInsideGrid(event: MouseEvent) {
+    const relatedTarget = (event.relatedTarget || event.target) as HTMLElement;
+
+    return relatedTarget && (
+      this.dataGrid.node.contains(relatedTarget)
+      || relatedTarget === this.dataGrid.node
+      || relatedTarget.classList.contains('bko-menu')
+      || relatedTarget.closest('.bko-table-menu')
+    );
   }
 
   private handleMouseWheel(event: MouseEvent, parentHandler: Function): void {

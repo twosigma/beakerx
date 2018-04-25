@@ -119,8 +119,13 @@ export namespace DataGridHelpers {
     return null;
   }
 
-  export function throttle<T, U>(func: Function, limit: number, context = this): (T) => U|undefined {
-    let lastFunc;
+  export function throttle<T, U>(
+    func: Function,
+    limit: number,
+    context = this,
+    controllObject?: { timerId: number }
+  ): (T) => U|undefined {
+    let controll = controllObject || { timerId: undefined };
     let lastRan;
 
     return (...args: T[]): U|undefined => {
@@ -131,8 +136,8 @@ export namespace DataGridHelpers {
         return;
       }
 
-      clearTimeout(lastFunc);
-      lastFunc = setTimeout(() => {
+      clearTimeout(controll.timerId);
+      controll.timerId = setTimeout(() => {
         if ((Date.now() - lastRan) < limit) {
           return;
         }
@@ -143,12 +148,12 @@ export namespace DataGridHelpers {
     }
   }
 
-  export function debounce<A>(f:(a:A) => void, delay: number) {
-    let timer: number = null;
+  export function debounce<A>(f:(a:A) => void, delay: number, controllObject?: { timerId: number }) {
+    let controll: { timerId: number } = controllObject || { timerId: undefined };
 
     return (a: A) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => f(a), delay);
+      clearTimeout(controll.timerId);
+      controll.timerId = setTimeout(() => f(a), delay);
     }
   }
 

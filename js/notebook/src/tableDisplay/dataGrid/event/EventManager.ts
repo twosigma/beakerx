@@ -28,7 +28,6 @@ import getEventKeyCode = DataGridHelpers.getEventKeyCode;
 import {KEYBOARD_KEYS} from "./enums";
 import ColumnManager from "../column/ColumnManager";
 import {ICellData} from "../interface/ICell";
-import BeakerXScrollBar from "../scrollBar/BeakerXScrollBar";
 
 const COLUMN_RESIZE_AREA_WIDTH = 4;
 

@@ -17,6 +17,12 @@
 .bx-spark-stateProgress {
   h3 {
     text-indent: 16px;
+    &:focus {
+      outline: none;
+    }
+    &.ui-state-active .ui-icon {
+      background-image: url("~jquery-ui/themes/base/images/ui-icons_444444_256x240.png");
+    }
   }
   .ui-accordion-header.ui-state-active {
     border: 1px solid #c5c5c5;

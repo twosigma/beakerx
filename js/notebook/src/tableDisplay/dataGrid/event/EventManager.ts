@@ -330,7 +330,11 @@ export default class EventManager {
       return;
     }
 
-    this.dataGrid.cellFocusManager.setFocusedCellByNavigationKey(code);
+    if (this.dataGrid.cellFocusManager.focusedCellData) {
+      this.dataGrid.cellFocusManager.setFocusedCellByNavigationKey(code);
+    } else if (code === KEYBOARD_KEYS.PageDown || code === KEYBOARD_KEYS.PageUp) {
+      this.dataGrid.scrollByPage(code === KEYBOARD_KEYS.PageUp ? 'up' : 'down');
+    }
 
     if (event.shiftKey) {
       this.dataGrid.cellSelectionManager.setEndCell(

@@ -16,7 +16,7 @@
 
 exports.config = {
   specs: [
-    './js/**/javaArgs*.js'
+    './js/**/*.js'
   ],
   exclude: [
     './js/nbviewer/*.js'

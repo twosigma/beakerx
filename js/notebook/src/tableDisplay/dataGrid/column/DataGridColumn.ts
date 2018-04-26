@@ -25,7 +25,6 @@ import { minmax } from '@phosphor/algorithm';
 import { HIGHLIGHTER_TYPE } from "../interface/IHighlighterState";
 import ColumnManager, { COLUMN_CHANGED_TYPES, IBkoColumnsChangedArgs } from "./ColumnManager";
 import ColumnFilter from "./ColumnFilter";
-import CellTooltip from "../cell/CellTooltip";
 import {
   selectColumnDataType,
   selectColumnDataTypeName,
@@ -72,7 +71,6 @@ export default class DataGridColumn {
   formatFn: CellRenderer.ConfigFunc<string>;
   minValue: any;
   maxValue: any;
-  dataTypeTooltip: CellTooltip;
   longestStringValue: string;
 
   constructor(options: IColumnOptions, dataGrid: BeakerXDataGrid, columnManager: ColumnManager) {
@@ -85,7 +83,6 @@ export default class DataGridColumn {
 
     this.assignFormatFn();
     this.addColumnFilter();
-    this.addDataTypeTooltip();
     this.connectToCellHovered();
     this.connectToColumnsChanged();
     this.addMinMaxValues();
@@ -190,14 +187,12 @@ export default class DataGridColumn {
     const column = data && this.columnManager.getColumnByPosition(ColumnManager.createPositionFromCell(data));
 
     if (!data || column !== this || !DataGridCell.isHeaderCell(data)) {
-      this.toggleDataTooltip(false);
       this.menu.hideTrigger();
 
       return;
     }
 
     this.menu.showTrigger();
-    this.toggleDataTooltip(true, data);
   }
 
   getAlignment() {
@@ -364,7 +359,6 @@ export default class DataGridColumn {
 
   destroy() {
     this.menu.destroy();
-    this.dataTypeTooltip.hide();
   }
 
   toggleDataBarsRenderer(enable?: boolean) {
@@ -431,26 +425,5 @@ export default class DataGridColumn {
       UPDATE_COLUMN_SORT_ORDER,
       { value: order, columnIndex: this.index, columnType: this.type })
     );
-  }
-
-  private addDataTypeTooltip() {
-    this.dataTypeTooltip = new CellTooltip(this.getDataTypeName(), document.body);
-  }
-
-  private toggleDataTooltip(show: boolean, data?: ICellData) {
-    const rect = this.dataGrid.node.getBoundingClientRect();
-
-    if (data && !this.dataTypeTooltip.node.innerText) {
-      this.dataTypeTooltip.node.innerText = typeof data.value;
-    }
-
-    if (show && data) {
-      return this.dataTypeTooltip.show(
-        Math.ceil(rect.left + data.offset + 20),
-        Math.ceil(window.pageYOffset + rect.top - 10)
-      );
-    }
-
-    this.dataTypeTooltip.hide();
   }
 }

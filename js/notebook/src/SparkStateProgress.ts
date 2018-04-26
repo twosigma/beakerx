@@ -56,6 +56,8 @@ class SparkStateProgressModel extends widgets.VBoxModel {
 
 class SparkStateProgressView extends widgets.VBoxView {
 
+  private showTimeout: number;
+
   render() {
     super.render();
     this.createWidget();
@@ -92,17 +94,23 @@ class SparkStateProgressView extends widgets.VBoxView {
     });
 
     if (this.model.get('hide')) {
-        this.hideProgress();
+      this.hideProgress();
     }
     return super.update();
   }
 
   private hideProgress() {
-      let widget: any= $(this.el).find('.bx-spark-stateProgress');
-      widget.accordion( "option", "active",  false);
+    clearTimeout(this.showTimeout);
+    let widget: any = $(this.el).find('.bx-spark-stateProgress');
+    widget.accordion( "option", "active",  false);
   }
 
-    private createWidget(): void {
+  private showProgress() {
+    let widget: any = $(this.el).find('.bx-spark-stateProgress');
+    widget.accordion( "option", "active",  0);
+  }
+
+  private createWidget(): void {
     let widget: any = $('<div>', {
       class: 'bx-spark-stateProgress'
     }).append(
@@ -111,12 +119,16 @@ class SparkStateProgressView extends widgets.VBoxView {
     );
 
     widget.accordion({
-      active: 0,
+      active: false,
       collapsible: true,
       heightStyle: "content",
     });
 
     widget.appendTo(this.el);
+
+    this.showTimeout = setTimeout(() => {
+      this.showProgress();
+    }, 3000);
   }
 
   private createJobPanel(): JQuery<HTMLElement> {

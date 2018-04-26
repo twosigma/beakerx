@@ -25,7 +25,7 @@ let modelStateMock: IDataGridModelState = {
   hasIndex: false,
   stringFormatForColumn: { column: { type: 'value', values: { column: [':)', ':('] } } },
   types: ['integer', 'integer'],
-  values: [[1, 2],[0, 0]],
+  values: [[1, 2],[0, NaN]],
   columnsVisible: {},
   tooltips: [],
   hasDoubleClickAction: false,

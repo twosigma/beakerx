@@ -1171,19 +1171,13 @@ define([
         st_clr = plotUtils.createColor(line.stroke, line.stroke_opacity);
       var sty = line.color == null ? "dotted " : "solid ";
       // color box
-      console.log(line);
-      var svgShape = PointShapeHelper.createLegendMarker(line);
       $("<span></span>")
         .attr("id", "legendbox_" + id)
         .attr("class", "plot-legendbox")
         .attr("title", line.color == null ? "Element-based colored item" : "")
-        // .css("background-color",
-        //   line.color == null ? "none" : clr)
-        // .css("border",
-        //   line.stroke != null ? "1px " + sty + st_clr :
-        //     (line.color != null ? "1px " + sty + clr : "1px dotted gray"))
         .appendTo(unit)
-          .append(svgShape);
+        .append(PointShapeHelper.createLegendMarker(line));
+
       // legend text
       $("<label></label>").appendTo(unit)
         .attr("id", "legendtext_" + id)

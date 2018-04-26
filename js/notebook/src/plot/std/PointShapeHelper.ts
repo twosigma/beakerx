@@ -147,18 +147,16 @@ export default class PointShapeHelper {
   }
 
   public static createLegendMarker(line: any) {
-    console.log(line);
     let svgEl = $(this.createSvgEl('svg'))
-    svgEl.attr("width", 10);
-    svgEl.attr("height", 10);
-    svgEl.width(10);
-    svgEl.height(10);
+      .attr("width", 10)
+      .attr("height", 10)
+      .width(10)
+      .height(10);
 
     let gEl = $(this.createSvgEl('g'))
       .css({
         'fill': line.color,
         'fill-opacity': line.color_opacity,
-      // 'stroke-opacity': 0,
       });
 
     gEl.appendTo(svgEl);

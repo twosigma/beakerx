@@ -54,7 +54,9 @@ describe('Tests for combination of code and magics. ', function () {
 
     it('Using of the spaces in %classpath and %import magics', function () {
       cellIndex += 1;
-      beakerxPO.runAndCheckOutputTextOfStdout(cellIndex, /Added jar:.+testdemo\.jar.+/);
+      var output = beakerxPO.runCodeCellByIndex(cellIndex);
+
+      expect(output.$('div.output_subarea').getText()).toBe('Added jar: [testdemo.jar]');
     });
 
     it('Cell has IntSlider widget', function () {
@@ -75,7 +77,9 @@ describe('Tests for combination of code and magics. ', function () {
 
     it('%classpath for jar which contains spaces in name', function () {
       cellIndex += 1;
-      beakerxPO.runAndCheckOutputTextOfStdout(cellIndex, /Added jar:.+ with space\.jar.+/);
+
+      var output = beakerxPO.runCodeCellByIndex(cellIndex);
+      expect(output.$('div.output_subarea').getText()).toBe('Added jar: [ with space.jar]');
     });
   });
 

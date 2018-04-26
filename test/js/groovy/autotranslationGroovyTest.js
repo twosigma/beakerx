@@ -30,18 +30,18 @@ describe('Autotranslation Groovy to JavaScript and D3 ', function () {
 
   var cellIndex;
 
-  describe('(Groovy kernel) Init data on groovy ', function(){
-    it("Cell doesn't have output ", function(){
+  describe('(Groovy kernel) Init data on groovy ', function () {
+    it("Cell outputs a list of nodes", function () {
       cellIndex = 0;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      expect(beakerxPO.getAllOutputAreaChildren(codeCell).length).toBe(0);
+      expect(beakerxPO.getAllOutputAreaChildren(codeCell).length).toBe(1);
     });
   });
 
-  describe('(Groovy kernel) JavaScript and D3 code ', function(){
+  describe('(Groovy kernel) JavaScript and D3 code ', function () {
     var svgElement;
 
-    it('Output contains svg tag ', function(){
+    it('Output contains svg tag ', function () {
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
       cellIndex += 1;
@@ -53,40 +53,40 @@ describe('Autotranslation Groovy to JavaScript and D3 ', function () {
       expect(svgElement.isEnabled()).toBeTruthy();
     });
 
-    it('Should set width, height and transform attributes to svg ', function(){
+    it('Should set width, height and transform attributes to svg ', function () {
       expect(Math.round(svgElement.getAttribute('width'))).toEqual(600);
       expect(Math.round(svgElement.getAttribute('height'))).toEqual(200);
       expect(svgElement.getAttribute('transform')).toMatch('translate');
     });
 
-    it('svg has 11 circles ', function(){
+    it('svg has 11 circles ', function () {
       expect(svgElement.$$('circle').length).toEqual(11);
     });
 
-    it('First and last circles has "class"= "moon" ', function(){
+    it('First and last circles has "class"= "moon" ', function () {
       expect(svgElement.$$('circle')[0].getAttribute('class')).toEqual('moon');
       expect(svgElement.$$('circle')[10].getAttribute('class')).toEqual('moon');
     });
 
-    it('First circle has "r"=5, "cx"=5, "cy"=55 ', function(){
+    it('First circle has "r"=5, "cx"=5, "cy"=55 ', function () {
       var fCircle = svgElement.$$('circle')[0];
       expect(Math.round(fCircle.getAttribute('r'))).toEqual(5);
       expect(Math.round(fCircle.getAttribute('cx'))).toEqual(5);
       expect(Math.round(fCircle.getAttribute('cy'))).toEqual(55);
     });
 
-    it('Last circle has "r"=55, "cx"=455, "cy"=105 ', function(){
+    it('Last circle has "r"=55, "cx"=455, "cy"=105 ', function () {
       var lCircle = svgElement.$$('circle')[10];
       expect(Math.round(lCircle.getAttribute('r'))).toEqual(55);
       expect(Math.round(lCircle.getAttribute('cx'))).toEqual(455);
       expect(Math.round(lCircle.getAttribute('cy'))).toEqual(105);
     });
 
-    it('First circle has color rgb(100,100,0) ', function(){
+    it('First circle has color rgb(100,100,0) ', function () {
       expect(svgElement.$$('circle')[0].getCssProperty('fill').value).toEqual('rgb(100,100,0)');
     });
 
-    it('Last circle has color rgb(100,100,200) ', function(){
+    it('Last circle has color rgb(100,100,200) ', function () {
       expect(svgElement.$$('circle')[10].getCssProperty('fill').value).toEqual('rgb(100,100,200)');
     });
   });

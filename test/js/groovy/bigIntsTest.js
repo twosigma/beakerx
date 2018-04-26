@@ -51,7 +51,7 @@ describe('Large Integers in Tables ', function () {
 
   describe('BigNums (arbitrary precision) ', function () {
     it('Should display bignums values ', function () {
-      cellIndex += 2;
+      cellIndex += 1;
       var fileName = 'cell2_case1.png';
       var width = 360, height = 90;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);

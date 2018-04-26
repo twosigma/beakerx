@@ -140,7 +140,7 @@ export default class EventManager {
   }
 
   private handleMouseMove(event: MouseEvent): void {
-    if (this.dataGrid.dataGridResize.isResizing() || this.isOutsideActiveArea(event)) {
+    if (this.dataGrid.dataGridResize.isResizing()) {
       return;
     }
 
@@ -152,7 +152,7 @@ export default class EventManager {
       this.dataGrid.dataGridResize.setResizeMode(event);
     }
 
-    if (this.dataGrid.dataGridResize.isResizing()) {
+    if (this.dataGrid.dataGridResize.isResizing() || this.isOutsideActiveArea(event)) {
       return;
     }
 

@@ -18,6 +18,7 @@ package com.twosigma.beakerx.scala.kernel;
 import com.twosigma.beakerx.KernelExecutionTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
+import com.twosigma.beakerx.kernel.CustomMagicCommandsEmptyImpl;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.comm.Comm;
@@ -30,6 +31,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForErrorMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getCacheFolderFactory;
@@ -42,7 +44,7 @@ public class ScalaKernelTest extends KernelExecutionTest {
   @Override
   protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
     ScalaEvaluator evaluator = new ScalaEvaluator(sessionId, sessionId, null, cellExecutor(), new NoBeakerxObjectTestFactory(), getTestTempFolderFactory(), EvaluatorTest.KERNEL_PARAMETERS);
-    return new Scala(sessionId, evaluator, kernelSocketsFactory, closeKernelAction, getCacheFolderFactory());
+    return new Scala(sessionId, evaluator, kernelSocketsFactory, closeKernelAction, getCacheFolderFactory(),new CustomMagicCommandsEmptyImpl());
   }
 
   @Override
@@ -78,4 +80,26 @@ public class ScalaKernelTest extends KernelExecutionTest {
     String value = (String) actual.get("text/plain");
     assertThat(result).contains(value);
   }
+
+  @Test
+  public void noKeepVariablesWhenAddJar() throws Exception {
+    //given
+    //when
+    runStatement("val aaa  = 1 ");
+    addDemoJar();
+    runStatement("aaa");
+    //then
+    Optional<Message> result = waitForErrorMessage(getKernelSocketsService().getKernelSockets());
+    assertThat(result).isPresent();
+    assertThat((String)result.get().getContent().get("text")).contains("not found");
+  }
+
+  private void runStatement(String code) throws InterruptedException {
+    getKernelSocketsService().clear();
+    Message message = getExecuteRequestMessage(code);
+    getKernelSocketsService().handleMsg(message);
+    Optional<Message> idleMessage = waitForIdleMessage(getKernelSocketsService().getKernelSockets());
+    assertThat(idleMessage).isPresent();
+  }
+
 }

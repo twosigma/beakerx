@@ -75,7 +75,7 @@ public class ScalaEvaluator extends BaseEvaluator {
 
   @Override
   protected void addJarToClassLoader(PathToJar pathToJar) {
-    classLoader.addJar(pathToJar);
+    this.classLoader.addJar(pathToJar);
   }
 
   @Override
@@ -85,8 +85,7 @@ public class ScalaEvaluator extends BaseEvaluator {
 
   @Override
   protected void doReloadEvaluator() {
-    this.classLoader = newClassLoader();
-    this.shell = createNewEvaluator();
+    this.shell = createNewEvaluator(shell);
   }
 
   @Override
@@ -132,6 +131,18 @@ public class ScalaEvaluator extends BaseEvaluator {
     if (imp.endsWith(".*"))
       imp = imp.substring(0, imp.length() - 1) + "_";
     return imp;
+  }
+
+  private ScalaEvaluatorGlue createNewEvaluator(ScalaEvaluatorGlue shell) {
+    ScalaEvaluatorGlue newEvaluator = createNewEvaluator();
+    setLineId(newEvaluator,shell.interpreter().lastRequest().lineRep().lineId());
+    return newEvaluator;
+  }
+
+  private void setLineId(ScalaEvaluatorGlue newEvaluator,int lines) {
+    for (int i = newEvaluator.interpreter().lastRequest().lineRep().lineId(); i < lines; i++) {
+      newEvaluator.evaluate2("\"\"");
+    }
   }
 
   private ScalaEvaluatorGlue createNewEvaluator() {

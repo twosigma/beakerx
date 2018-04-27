@@ -25,6 +25,7 @@ import com.twosigma.beakerx.groovy.handler.GroovyKernelInfoHandler;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.kernel.CacheFolderFactory;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
+import com.twosigma.beakerx.kernel.CustomMagicCommandsEmptyImpl;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelConfigurationFile;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
@@ -40,11 +41,11 @@ import java.util.HashMap;
 public class Groovy extends Kernel {
 
   private Groovy(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
-    super(id, evaluator, kernelSocketsFactory);
+    super(id, evaluator, kernelSocketsFactory, new CustomMagicCommandsEmptyImpl());
   }
 
   public Groovy(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction, CacheFolderFactory cacheFolderFactory) {
-    super(id, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory);
+    super(id, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory, new CustomMagicCommandsEmptyImpl());
   }
 
   @Override

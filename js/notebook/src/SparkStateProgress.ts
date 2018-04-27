@@ -87,16 +87,26 @@ class SparkStateProgressView extends widgets.VBoxView {
     progressLabels.find('.waiting').text(valueWaiting);
     progressLabels.find('.all').text(max);
 
-    let maxw = progressLabels.find('.all').width();
-
-    progressLabels.find('.done, .active, .waiting, .all').each((i, e) => {
-      $(e).css({ display: 'inline-block'}).width(maxw);
-    });
+    this.updateLabelWidths();
 
     if (this.model.get('hide')) {
       this.hideProgress();
     }
     return super.update();
+  }
+
+  private updateLabelWidths() {
+    let progressLabels = $(this.el).find('.bx-spark-stageProgressLabels');
+    let maxw = progressLabels
+      .find('.all')
+      .css({ display: 'inline-block' })
+      .innerWidth();
+
+    progressLabels.find('.done, .active, .waiting').each((i, e) => {
+      $(e)
+        .css({ display: 'inline-block' })
+        .innerWidth(maxw);
+    });
   }
 
   private hideProgress() {
@@ -122,6 +132,8 @@ class SparkStateProgressView extends widgets.VBoxView {
       active: false,
       collapsible: true,
       heightStyle: "content",
+    }).on( "accordionactivate", ( event, ui ) => {
+      this.updateLabelWidths();
     });
 
     widget.appendTo(this.el);

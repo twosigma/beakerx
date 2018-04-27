@@ -23,6 +23,7 @@ import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMa
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathResetMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.TestWidgetUtils;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -140,14 +141,14 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     assertThat(text).contains(ADD_MVN_FORMAT_ERROR_MESSAGE + "\n");
   }
 
-  private void handleClasspathAddMvnDep(String allCode, String expected) throws IOException {
+  private void handleClasspathAddMvnDep(String allCode, String expected) throws Exception {
     MagicCommand command = new MagicCommand(new ClasspathAddMvnMagicCommand(kernel.mavenResolverParam, kernel), allCode);
     Code code = Code.createCode(allCode, singletonList(command), NO_ERRORS, new Message());
     //when
     code.execute(kernel, 1);
     //then
-    List<Message> stderr = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());
-    String text = (String) stderr.get(0).getContent().get("text");
+    Optional<Message> updateMessage = EvaluatorResultTestWatcher.waitForUpdateMessage(kernel);
+    String text =  (String)TestWidgetUtils.getState(updateMessage.get()).get("value");
     assertThat(text).contains("Added jar");
     assertThat(text).contains(expected);
     String mvnDir = kernel.getTempFolder().toString() + MavenJarResolver.MVN_DIR;

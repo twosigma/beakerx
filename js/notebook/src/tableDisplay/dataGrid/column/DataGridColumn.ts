@@ -21,11 +21,10 @@ import {IColumnOptions} from "../interface/IColumn";
 import { ICellData } from "../interface/ICell";
 import { CellRenderer, DataModel, TextRenderer } from "@phosphor/datagrid";
 import {ALL_TYPES, getDisplayType, isDoubleWithPrecision} from "../dataTypes";
-import { minmax } from '@phosphor/algorithm';
+import { minmax, filter } from '@phosphor/algorithm';
 import { HIGHLIGHTER_TYPE } from "../interface/IHighlighterState";
 import ColumnManager, { COLUMN_CHANGED_TYPES, IBkoColumnsChangedArgs } from "./ColumnManager";
 import ColumnFilter from "./ColumnFilter";
-import CellTooltip from "../cell/CellTooltip";
 import {
   selectColumnDataType,
   selectColumnDataTypeName,
@@ -72,7 +71,6 @@ export default class DataGridColumn {
   formatFn: CellRenderer.ConfigFunc<string>;
   minValue: any;
   maxValue: any;
-  dataTypeTooltip: CellTooltip;
   longestStringValue: string;
 
   constructor(options: IColumnOptions, dataGrid: BeakerXDataGrid, columnManager: ColumnManager) {
@@ -85,7 +83,6 @@ export default class DataGridColumn {
 
     this.assignFormatFn();
     this.addColumnFilter();
-    this.addDataTypeTooltip();
     this.connectToCellHovered();
     this.connectToColumnsChanged();
     this.addMinMaxValues();
@@ -190,14 +187,12 @@ export default class DataGridColumn {
     const column = data && this.columnManager.getColumnByPosition(ColumnManager.createPositionFromCell(data));
 
     if (!data || column !== this || !DataGridCell.isHeaderCell(data)) {
-      this.toggleDataTooltip(false);
       this.menu.hideTrigger();
 
       return;
     }
 
     this.menu.showTrigger();
-    this.toggleDataTooltip(true, data);
   }
 
   getAlignment() {
@@ -314,29 +309,13 @@ export default class DataGridColumn {
   }
 
   addMinMaxValues() {
-    let valueResolver = this.getValueResolver();
-    let valuesIterator = this.dataGrid.model.getColumnValuesIterator(this);
     let dataType = this.getDataType();
-    let minMax = minmax(valuesIterator, (a:any, b:any) => {
-      let value1 = valueResolver(a);
-      let value2 = valueResolver(b);
-
-      if (dataType === ALL_TYPES.string || dataType === ALL_TYPES['formatted integer'] || dataType === ALL_TYPES.html) {
-        let aLength = value1 ? value1.length : 0;
-        let bLength = value2 ? value2.length : 0;
-        let longer = aLength > bLength ? value1 : value2;
-
-        if (!this.longestStringValue || this.longestStringValue.length < String(longer).length) {
-          this.longestStringValue = longer;
-        }
-      }
-
-      if (value1 === value2) {
-        return 0;
-      }
-
-      return value1 < value2 ? -1 : 1;
-    });
+    let valueResolver = this.dataGrid.model.getColumnValueResolver(dataType);
+    let valuesIterator = this.dataGrid.model.getColumnValuesIterator(this);
+    let minMax = minmax(
+      filter(valuesIterator, (value) => !Number.isNaN(valueResolver(value))),
+      this.getMinMaxValuesIterator(dataType, valueResolver)
+    );
 
     this.minValue = minMax ? minMax[0] : null;
     this.maxValue = minMax ? minMax[1] : null;
@@ -364,7 +343,6 @@ export default class DataGridColumn {
 
   destroy() {
     this.menu.destroy();
-    this.dataTypeTooltip.hide();
   }
 
   toggleDataBarsRenderer(enable?: boolean) {
@@ -390,6 +368,29 @@ export default class DataGridColumn {
     }));
 
     this.dataGrid.columnPosition.updateAll();
+  }
+
+  private getMinMaxValuesIterator(dataType: ALL_TYPES, valueResolver: Function): (a:any, b:any) => number {
+    return (a:any, b:any) => {
+      let value1 = valueResolver(a);
+      let value2 = valueResolver(b);
+
+      if (dataType === ALL_TYPES.string || dataType === ALL_TYPES['formatted integer'] || dataType === ALL_TYPES.html) {
+        let aLength = value1 ? value1.length : 0;
+        let bLength = value2 ? value2.length : 0;
+        let longer = aLength > bLength ? value1 : value2;
+
+        if (!this.longestStringValue || this.longestStringValue.length < String(longer).length) {
+          this.longestStringValue = longer;
+        }
+      }
+
+      if (value1 === value2) {
+        return 0;
+      }
+
+      return value1 < value2 ? -1 : 1;
+    }
   }
 
   private updateColumnFilter(filter: string) {
@@ -431,26 +432,5 @@ export default class DataGridColumn {
       UPDATE_COLUMN_SORT_ORDER,
       { value: order, columnIndex: this.index, columnType: this.type })
     );
-  }
-
-  private addDataTypeTooltip() {
-    this.dataTypeTooltip = new CellTooltip(this.getDataTypeName(), document.body);
-  }
-
-  private toggleDataTooltip(show: boolean, data?: ICellData) {
-    const rect = this.dataGrid.node.getBoundingClientRect();
-
-    if (data && !this.dataTypeTooltip.node.innerText) {
-      this.dataTypeTooltip.node.innerText = typeof data.value;
-    }
-
-    if (show && data) {
-      return this.dataTypeTooltip.show(
-        Math.ceil(rect.left + data.offset + 20),
-        Math.ceil(window.pageYOffset + rect.top - 10)
-      );
-    }
-
-    this.dataTypeTooltip.hide();
   }
 }

@@ -17,11 +17,16 @@ package com.twosigma.beakerx.kernel.magic.command.outcome;
 
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.msg.MessageCreator;
+import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
+import static java.util.Collections.singletonList;
 
 public class MagicCommandResult implements MagicCommandOutcomeItem {
 
@@ -44,11 +49,6 @@ public class MagicCommandResult implements MagicCommandOutcomeItem {
   }
 
   @Override
-  public Outcome getOutcome() {
-    return Outcome.RESULT;
-  }
-
-  @Override
   public TryResult getResult() {
     return null;
   }
@@ -57,4 +57,26 @@ public class MagicCommandResult implements MagicCommandOutcomeItem {
   public SimpleEvaluationObject getSimpleEvaluationObject() {
     return null;
   }
+
+  @Override
+  public void sendRepliesWithStatus(KernelFunctionality kernel, Message message, int executionCount) {
+    if (getStatus().equals(MagicCommandOutcomeItem.Status.OK)) {
+      publishMessage(kernel, message, executionCount);
+      kernel.send(MessageCreator.buildReplyWithOkStatus(message, executionCount));
+    } else {
+      publishMessage(kernel, message, executionCount);
+      kernel.send(MessageCreator.buildReplyWithErrorStatus(message, executionCount));
+    }
+  }
+
+  @Override
+  public void sendMagicCommandOutcome(KernelFunctionality kernel, Message message, int executionCount) {
+    publishMessage(kernel, message, executionCount);
+  }
+
+  private void publishMessage(KernelFunctionality kernel, Message message, int executionCount) {
+    MIMEContainer mimeContainer = getMIMEContainer().get();
+    kernel.publish(Collections.singletonList(MessageCreator.buildMessage(message, singletonList(mimeContainer), executionCount)));
+  }
+
 }

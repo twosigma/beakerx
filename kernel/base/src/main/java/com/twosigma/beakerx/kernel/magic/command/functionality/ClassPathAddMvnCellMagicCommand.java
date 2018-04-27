@@ -34,8 +34,8 @@ public class ClassPathAddMvnCellMagicCommand extends ClasspathMagicCommand {
   public static final String CLASSPATH_ADD_MVN_CELL = "%" + CLASSPATH + " " + ADD + " " + MVN;
   public static final String MVN_CELL_FORMAT_ERROR_MESSAGE =
           "Wrong command format, should be " + CLASSPATH_ADD_MVN_CELL + "\n"
-                  + " group name version or group:name:version" + "\n"
-                  + " group name version or group:name:version";
+                  + " group name version [type classifier] or group:name:version[:type:classifier]" + "\n"
+                  + " group name version [type classifier] or group:name:version[:type:classifier]";
   private static final String SPLIT_LINE_REGEX = "\\r?\\n";
 
   private MavenJarResolver.ResolverParams commandParams;
@@ -93,24 +93,16 @@ public class ClassPathAddMvnCellMagicCommand extends ClasspathMagicCommand {
     List<MavenJarResolver.Dependency> dependencies = new ArrayList<>();
     for (String line : lines) {
       String[] dependencyData = MagicCommandUtils.splitPath(line);
-      dependencies.add(getDep(dependencyData));
+      dependencies.add(MavenJarResolver.Dependency.create(Arrays.asList(dependencyData)));
     }
     return dependencies;
-  }
-
-  private MavenJarResolver.Dependency getDep(String[] split) {
-    if (split.length == 4) {
-      return new MavenJarResolver.Dependency(split[0], split[1], split[2], split[3]);
-    } else {
-      return new MavenJarResolver.Dependency(split[0], split[1], split[2]);
-    }
   }
 
   private boolean validateCommandLines(String[] commandLines) {
     boolean isValid = false;
     for (int i = 1; i < commandLines.length; i++) {
       String[] strings = MagicCommandUtils.splitPath(commandLines[i]);
-      if (strings.length == 3 || strings.length == 4) {
+      if (strings.length > 2) {
         isValid = true;
       } else {
         isValid = false;

@@ -32,8 +32,8 @@ export default class Highlighter {
     this.model = column.dataGrid.model;
     this.state = { ...state };
     this.state.style = state.style || HIGHLIGHTER_STYLE.SINGLE_COLUMN;
-    this.state.minVal = valueResolver(this.state.minVal || this.column.minValue);
-    this.state.maxVal = valueResolver(this.state.maxVal || this.column.maxValue);
+    this.state.minVal = valueResolver(Number.isFinite(this.state.minVal) ? this.state.minVal : this.column.minValue);
+    this.state.maxVal = valueResolver(Number.isFinite(this.state.maxVal) ? this.state.maxVal : this.column.maxValue);
   }
 
   getBackgroundColor(config: CellRenderer.ICellConfig) {

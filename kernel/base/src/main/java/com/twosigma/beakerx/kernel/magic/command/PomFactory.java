@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 public class PomFactory {
 
@@ -48,12 +49,17 @@ public class PomFactory {
     return pomAsString.replace(
             "</dependencies>",
             "  <dependency>\n" +
-                    "    <groupId>" + dependency.groupId + "</groupId>\n" +
-                    "    <artifactId>" + dependency.artifactId + "</artifactId>\n" +
-                    "    <version>" + dependency.version + "</version>\n" +
-                    "    <type>" + dependency.type + "</type>\n" +
+                    "    <groupId>" + dependency.getGroupId() + "</groupId>\n" +
+                    "    <artifactId>" + dependency.getArtifactId() + "</artifactId>\n" +
+                    "    <version>" + dependency.getVersion() + "</version>\n" +
+                    "    <type>" + dependency.getType() + "</type>\n" +
+                    classifier(dependency.getClassifier()) +
                     "  </dependency>\n" +
                     "</dependencies>");
+  }
+
+  private String classifier(Optional<String> classifier) {
+    return classifier.map(s -> "<classifier>" + s + "</classifier>\n").orElse("");
   }
 
   private String configureOutputDir(String pathToMavenRepo, String pomAsString) {

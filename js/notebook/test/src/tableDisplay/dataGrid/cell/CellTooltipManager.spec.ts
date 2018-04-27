@@ -46,9 +46,9 @@ describe('CellTooltipManager', () => {
     expect(cellTooltipManager.tooltips).to.equal(tooltips);
   });
 
-  it('should have the tooltip property', () => {
-    expect(cellTooltipManager).to.have.property('tooltip');
-    expect(cellTooltipManager.tooltip).to.be.an.instanceof(CellTooltip);
+  it('should have the activeTooltips property', () => {
+    expect(cellTooltipManager).to.have.property('activeTooltips');
+    expect(cellTooltipManager.activeTooltips).to.be.an('Array');
   });
 
   it('should implement the handleCellHovered method', () => {

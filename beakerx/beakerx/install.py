@@ -71,10 +71,11 @@ def _install_labextensions(lab):
         subprocess.check_call(["jupyter", "labextension", "install", "beakerx-jupyterlab-js"])
 
 
-def _uninstall_labextensions():
-    subprocess.check_call(["jupyter", "labextension", "uninstall", "beakerx-jupyterlab-js"])
-    subprocess.check_call(["jupyter", "labextension", "uninstall", "beakerx-jupyterlab"])
-    subprocess.check_call(["jupyter", "labextension", "uninstall", "@jupyter-widgets/jupyterlab-manager"])
+def _uninstall_labextensions(lab):
+    if lab:
+        subprocess.check_call(["jupyter", "labextension", "uninstall", "beakerx-jupyterlab-js"])
+        subprocess.check_call(["jupyter", "labextension", "uninstall", "beakerx-jupyterlab"])
+        subprocess.check_call(["jupyter", "labextension", "uninstall", "@jupyter-widgets/jupyterlab-manager"])
 
 
 def _copy_tree(src, dst):
@@ -207,7 +208,7 @@ def make_parser():
 
 def _disable_beakerx(args):
     _uninstall_nbextension()
-    _uninstall_labextensions()
+    _uninstall_labextensions(args.lab)
     _uninstall_kernels()
     _install_kernelspec_manager(args.prefix, disable=True)
 

@@ -159,10 +159,12 @@ export default class CellManager {
       return;
     }
 
-    const cells = this.getSelectedCells();
-    const cellsData = this.exportCellsTo(cells, 'tabs');
+    let cells = this.getSelectedCells();
+    if (cells.length === 0) {
+      cells = this.getAllCells();
+    }
 
-    this.executeCopy(cellsData);
+    this.executeCopy(this.exportCellsTo(cells, 'tabs'));
   }
 
   CSVDownload(selectedOnly) {

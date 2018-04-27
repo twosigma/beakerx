@@ -30,7 +30,7 @@ import CellManager from "./cell/CellManager";
 import {DataGridHelpers} from "./dataGridHelpers";
 import EventManager from "./event/EventManager";
 import CellFocusManager from "./cell/CellFocusManager";
-import {DEFAULT_HIGHLIGHT_COLOR, DEFAULT_ROW_HEIGHT} from "./style/dataGridStyle";
+import {DEFAULT_HIGHLIGHT_COLOR} from "./style/dataGridStyle";
 import CellTooltipManager from "./cell/CellTooltipManager";
 import * as bkUtils from '../../shared/bkUtils';
 import {BeakerXDataStore} from "./store/BeakerXDataStore";
@@ -88,9 +88,6 @@ export class BeakerXDataGrid extends DataGrid {
     this.columnSections = this['_columnSections'];
     this.canvasGC = this['_canvasGC'];
 
-    this.baseRowSize = DEFAULT_ROW_HEIGHT;
-    this.baseColumnHeaderSize = DEFAULT_ROW_HEIGHT;
-
     this.resize = throttle(this.resize, 150, this);
     this.init(dataStore);
   }
@@ -105,7 +102,7 @@ export class BeakerXDataGrid extends DataGrid {
     this.cellManager = new CellManager(this);
     this.eventManager = new EventManager(this);
     this.cellFocusManager = new CellFocusManager(this);
-    this.cellTooltipManager = new CellTooltipManager(this, selectTooltips(store.state));
+    this.cellTooltipManager = new CellTooltipManager(this);
     this.dataGridResize = new DataGridResize(this);
     this.model = new BeakerXDataGridModel(store, this.columnManager, this.rowManager);
     this.focused = false;
@@ -113,8 +110,8 @@ export class BeakerXDataGrid extends DataGrid {
     this.columnManager.addColumns();
     this.rowManager.createFilterExpressionVars();
     this.store.changed.connect(throttle<void, void>(this.handleStateChanged, 100, this));
-    this.dataGridResize.setInitialSize();
 
+    this.dataGridResize.setInitialSize();
     this.addHighlighterManager();
     this.addCellRenderers();
 
@@ -175,7 +172,7 @@ export class BeakerXDataGrid extends DataGrid {
     }
 
     this.cellHovered.emit(null);
-    this.cellTooltipManager.hideTooltip();
+    this.cellTooltipManager.hideTooltips();
     this.node.classList.remove(BeakerXDataGrid.FOCUS_CSS_CLASS);
     enableKeyboardManager();
   }
@@ -256,5 +253,4 @@ export class BeakerXDataGrid extends DataGrid {
   private handleStateChanged() {
     this.model.reset();
   }
-
 }

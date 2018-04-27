@@ -16,7 +16,6 @@
 
 import {BeakerXDataGrid} from "./BeakerXDataGrid";
 import { MessageLoop } from '@phosphor/messaging';
-import {Widget} from "@phosphor/widgets";
 import {DataModel} from "@phosphor/datagrid";
 import {selectDataFontSize, selectHeaderFontSize, selectHeadersVertical} from "./model/selectors";
 import {
@@ -30,8 +29,8 @@ import {DataGridHelpers} from "./dataGridHelpers";
 import {selectColumnWidth} from "./column/selectors";
 import getStringSize = DataGridHelpers.getStringSize;
 
-const DEFAULT_RESIZE_RECT_COLOR = 'rgba(57, 169, 237, 0.5)';
 const DEFAULT_RESIZE_SECTION_SIZE_IN_PX = 6;
+const DEFAULT_ROW_PADDING = 4;
 
 export class DataGridResize {
   dataGrid: BeakerXDataGrid;
@@ -55,6 +54,7 @@ export class DataGridResize {
   }
 
   setInitialSize(): void {
+    this.setBaseRowSize();
     this.resizeHeader();
     this.updateWidgetHeight();
     this.setInitialSectionWidths();
@@ -296,6 +296,7 @@ export class DataGridResize {
   private resizeHeader(): void {
     let bodyColumnNamesWidths: number[] = [];
     let indexColumnNamesWidths: number[] = [];
+    let headerFontSize = selectHeaderFontSize(this.dataGrid.store.state) + 2 * DEFAULT_ROW_PADDING;
 
     if (selectHeadersVertical(this.dataGrid.store.state)) {
       const mapNameToWidth = name => getStringSize(name, selectHeaderFontSize(this.dataGrid.store.state)).width;
@@ -306,8 +307,16 @@ export class DataGridResize {
 
     this.dataGrid.baseColumnHeaderSize = Math.max.apply(
       null,
-      [...bodyColumnNamesWidths, ...indexColumnNamesWidths, DEFAULT_ROW_HEIGHT]
+      [...bodyColumnNamesWidths, ...indexColumnNamesWidths, headerFontSize, DEFAULT_ROW_HEIGHT]
     );
+  }
+
+  private setBaseRowSize() {
+    const dataFontSize = selectDataFontSize(this.dataGrid.store.state);
+
+    this.dataGrid.baseRowSize = Number.isFinite(dataFontSize)
+      ? dataFontSize + 2 * DEFAULT_ROW_PADDING
+      : DEFAULT_ROW_HEIGHT;
   }
 
   private getSectionWidth(column): number {

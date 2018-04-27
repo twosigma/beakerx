@@ -30,7 +30,7 @@ describe('Tests for combination of code and magics. ', function () {
 
   var cellIndex;
   var timeExp = /CPU times: user \d+.+, sys: \d+.+, total: \d+.+\n+Wall Time: \d+/;
-  var errorExp = /org.codehaus.groovy.control.MultipleCompilationErrorsException:/;
+  var errorExp = /Ambiguous expression could be either a parameterless closure expression/;
   var error2Exp = /unexpected token: } @ line 1, column 1./;
 
   describe('Combination of code and magics. ', function () {
@@ -54,7 +54,7 @@ describe('Tests for combination of code and magics. ', function () {
 
     it('Using of the spaces in %classpath and %import magics', function () {
       cellIndex += 1;
-      beakerxPO.runAndCheckOutputTextOfStdout(cellIndex, /Added jar:.+testdemo\.jar.+/);
+      beakerxPO.runAndCheckOutputTextOfWidget(cellIndex, /Added jar:.+testdemo\.jar.+/);
     });
 
     it('Cell has IntSlider widget', function () {
@@ -75,7 +75,7 @@ describe('Tests for combination of code and magics. ', function () {
 
     it('%classpath for jar which contains spaces in name', function () {
       cellIndex += 1;
-      beakerxPO.runAndCheckOutputTextOfStdout(cellIndex, /Added jar:.+ with space\.jar.+/);
+      beakerxPO.runAndCheckOutputTextOfWidget(cellIndex, /Added jar:.+ with space\.jar.+/);
     });
   });
 

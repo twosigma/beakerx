@@ -124,6 +124,10 @@ function BeakerXPageObject() {
     this.runCellAndCheckTextHandleError(cellIndex, expectedText, this.getAllOutputsStderr);
   };
 
+  this.runAndCheckOutputTextOfWidget = function (cellIndex, expectedText) {
+    this.runCellAndCheckTextHandleError(cellIndex, expectedText, this.getAllOutputsWidget);
+  };
+
   this.runCellAndCheckTextHandleError = function(cellIndex, expectedText, getTextElements){
     var resultTest;
     var codeCell;
@@ -151,6 +155,10 @@ function BeakerXPageObject() {
 
   this.waitAndCheckOutputTextOfStderr = function (cellIndex, expectedText, outputIndex) {
     this.waitAndCheckOutputText(cellIndex, expectedText, this.getAllOutputsStderr, outputIndex);
+  };
+
+  this.waitAndCheckOutputTextOfWidget = function (cellIndex, expectedText, outputIndex) {
+    this.waitAndCheckOutputText(cellIndex, expectedText, this.getAllOutputsWidget, outputIndex);
   };
 
   this.waitAndCheckOutputText = function (index, expectedText, getTextElements, outputIndex) {
@@ -244,8 +252,9 @@ function BeakerXPageObject() {
     var mismatchPercentage = 1;
     var absFileName = path.join(__dirname, '../resources/img', imgDir, fileName);
     var file1 = fs.readFileSync(absFileName);
-    var file2 =  new Buffer(imageData, 'base64')
-    resemble(file1).compareTo(file2).ignoreAntialiasing().onComplete(function(data){
+    var file2 =  new Buffer(imageData, 'base64');
+    resemble(file1).compareTo(file2).onComplete(function(data){
+      console.log(fileName + ': misMatch=' + data.misMatchPercentage);
       expect(data.misMatchPercentage).toBeLessThan(mismatchPercentage);
     });
   };

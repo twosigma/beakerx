@@ -21,4 +21,5 @@ export default interface IUIOptions {
   show_publication: boolean;
   auto_save: boolean;
   use_data_grid: boolean;
+  show_data_browser: boolean;
 }

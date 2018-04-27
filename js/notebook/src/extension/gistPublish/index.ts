@@ -36,6 +36,9 @@ export function registerFeature(): void {
   }]);
 
   $('#btn_publish > span').remove();
+  $('#btn_publish').attr({
+    'title': 'Publish ...',
+  });
 
   const publish_menu = $('<li>')
     .attr('id', 'publish_gist')

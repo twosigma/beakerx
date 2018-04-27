@@ -236,6 +236,7 @@ define([
   $('#btn_datasets > span').remove();
 
   $('#btn_datasets').attr({
+    'title': 'Data Browser',
     'data-toggle': 'button',
     'aria-pressed': 'false'
   });

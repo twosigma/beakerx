@@ -33,7 +33,7 @@ define([
   var impl = {
     "Quandl" : new quandl.quandlImpl(),
     "Enigma" : new enigma.enigmaImpl()
-  } 
+  };
   var datasets = [];
   for (key in impl) {
     datasets.push.apply(datasets, impl[key].getDataSet());
@@ -105,7 +105,7 @@ define([
     var side_panel_inner = side_panel.find('.data_side_panel_inner');
     var src = '';
     // list view
-    if (active_page == 1) {
+    if (active_page === 1) {
       var searchbar = $('<br><div class="input-group"><input type="text" placeholder="Search..." class="form-control" id="data_query"> \
        <span class="input-group-btn"> \
        <button class="btn btn-default" title="clear search and reload" id="clear-search"><i class="fa-repeat fa"></i></button> </span></div>');
@@ -127,7 +127,7 @@ define([
       });
       side_panel_inner.append(searchbar)
                       .append(divholder);
-    } else if (active_page == 2) {
+    } else if (active_page === 2) {
       // detail page
       var p = datasets[active_product];
       var provider = p.provider;
@@ -201,7 +201,8 @@ define([
       $('#data_query').val('');
       searchHits();
     });
-  }
+  };
+
   redo_panel = function() {
     var p = $('#data_side_panel');
     p.find('.data_side_panel_inner').html('');
@@ -222,7 +223,7 @@ define([
   };
   
   Jupyter.toolbar.add_buttons_group([{
-    'label'   : 'Data Browser',
+    'label'   : ' ',
     'icon'    : 'fa-database',
     'id'      : 'btn_datasets',
     'callback': function() {
@@ -231,6 +232,8 @@ define([
       setTimeout(function() {btn.blur();}, 500);
     }
   }]);
+
+  $('#btn_datasets > span').remove();
 
   $('#btn_datasets').attr({
     'data-toggle': 'button',

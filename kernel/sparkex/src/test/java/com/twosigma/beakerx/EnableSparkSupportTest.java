@@ -135,8 +135,11 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
               }
 
               @Override
-              public Outcome getOutcome() {
-                return null;
+              public void sendMagicCommandOutcome(KernelFunctionality kernel, Message message, int executionCount) {
+              }
+
+              @Override
+              public void sendRepliesWithStatus(KernelFunctionality kernel, Message message, int executionCount) {
               }
 
               @Override

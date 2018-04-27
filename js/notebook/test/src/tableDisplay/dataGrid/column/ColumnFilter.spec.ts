@@ -15,7 +15,6 @@
  */
 
 import { expect } from 'chai';
-import * as sinon from 'sinon';
 import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import modelStateMock from "../mock/modelStateMock";
 import ColumnFilter from "@beakerx/tableDisplay/dataGrid/column/ColumnFilter";

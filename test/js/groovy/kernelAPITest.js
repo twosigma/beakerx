@@ -33,7 +33,7 @@ describe('(Groovy) Testing of Kernel API', function () {
   describe('(Groovy) Adding jar file', function () {
     it('Jar file is loaded correctly ', function () {
       cellIndex = 0;
-      beakerxPO.runAndCheckOutputTextOfStdout(cellIndex, /Added jar: .loadMagicJarDemo.jar/);
+      beakerxPO.runAndCheckOutputTextOfWidget(cellIndex, /Added jar: .loadMagicJarDemo.jar/);
     });
 
     it('Magic command is added successfully ', function () {

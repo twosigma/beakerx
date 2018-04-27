@@ -32,7 +32,8 @@ default_config = """
             "wide_cells": true,
             "show_publication": true,
             "auto_save": true,
-            "use_data_grid": true
+            "use_data_grid": true,
+            "show_data_browser": false
         }
     }
 }

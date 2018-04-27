@@ -140,7 +140,7 @@ export default class EventManager {
   }
 
   private handleMouseMove(event: MouseEvent): void {
-    if (this.dataGrid.dataGridResize.isResizing() || this.isOutsideActiveArea(event)) {
+    if (this.dataGrid.dataGridResize.isResizing()) {
       return;
     }
 
@@ -152,7 +152,7 @@ export default class EventManager {
       this.dataGrid.dataGridResize.setResizeMode(event);
     }
 
-    if (this.dataGrid.dataGridResize.isResizing()) {
+    if (this.dataGrid.dataGridResize.isResizing() || this.isOutsideActiveArea(event)) {
       return;
     }
 
@@ -193,12 +193,16 @@ export default class EventManager {
     document.addEventListener('mouseup', this.handleScrollBarMouseUp, true);
 
     !this.dataGrid.focused && this.dataGrid.setFocus(true);
-    this.dataGrid.cellSelectionManager.handleMouseDown(event);
 
     if (!this.isHeaderClicked(event) && this.dataGrid.dataGridResize.shouldResizeDataGrid(event)) {
       return this.dataGrid.dataGridResize.startResizing(event);
     }
 
+    if (this.isOutsideActiveArea(event)) {
+      return;
+    }
+
+    this.dataGrid.cellSelectionManager.handleMouseDown(event);
     this.handleStartDragging(event);
   }
 
@@ -330,7 +334,11 @@ export default class EventManager {
       return;
     }
 
-    this.dataGrid.cellFocusManager.setFocusedCellByNavigationKey(code);
+    if (this.dataGrid.cellFocusManager.focusedCellData) {
+      this.dataGrid.cellFocusManager.setFocusedCellByNavigationKey(code);
+    } else if (code === KEYBOARD_KEYS.PageDown || code === KEYBOARD_KEYS.PageUp) {
+      this.dataGrid.scrollByPage(code === KEYBOARD_KEYS.PageUp ? 'up' : 'down');
+    }
 
     if (event.shiftKey) {
       this.dataGrid.cellSelectionManager.setEndCell(

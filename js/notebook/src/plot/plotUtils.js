@@ -132,6 +132,9 @@ define([
       return yAxisR && yAxisR.label === data.yAxis;
     },
     createColor : function(hexstr, opacity) {
+      if (hexstr === "none") {
+        return "none";
+      }
       if (hexstr == null) {
         hexstr = "#000000";
       }

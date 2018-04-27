@@ -128,7 +128,7 @@
   height: 10px;
   margin: 0px 5px;
   display: inline-block;
-  vertical-align: middle;
+  vertical-align: baseline;
 }
 
 .plot-legendcheckbox {

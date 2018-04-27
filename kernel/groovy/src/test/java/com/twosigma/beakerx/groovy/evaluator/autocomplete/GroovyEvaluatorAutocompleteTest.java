@@ -489,4 +489,27 @@ public class GroovyEvaluatorAutocompleteTest {
     assertThat(autocomplete.getMatches()).isEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(0);
   }
+
+  @Test
+  public void shouldCompleteToSINGLE_COLUMN() throws Exception {
+    //when
+    String code = "import com.twosigma.beakerx.table.highlight.*\n" +
+            "\n" +
+            "def table = new TableDisplay([[1,2,3], \n" +
+            "                              [3,4,5], \n" +
+            "                              [6,2,8], \n" +
+            "                              [6,2,8], \n" +
+            "                              [6,2,8], \n" +
+            "                              [6,4,8], \n" +
+            "                              [6,2,8], \n" +
+            "                              [6,2,8], \n" +
+            "                              [6,5,8]], \n" +
+            "                             ['a', 'b', 'c'], \n" +
+            "                             ['double', 'double', 'double'])\n" +
+            "table.addCellHighlighter(TableDisplayCellHighlighter.getUniqueEntriesHighlighter(\"b\", TableDisplayCellHighlighter.";
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
+  }
 }

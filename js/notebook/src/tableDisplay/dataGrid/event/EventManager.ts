@@ -193,12 +193,16 @@ export default class EventManager {
     document.addEventListener('mouseup', this.handleScrollBarMouseUp, true);
 
     !this.dataGrid.focused && this.dataGrid.setFocus(true);
-    this.dataGrid.cellSelectionManager.handleMouseDown(event);
 
     if (!this.isHeaderClicked(event) && this.dataGrid.dataGridResize.shouldResizeDataGrid(event)) {
       return this.dataGrid.dataGridResize.startResizing(event);
     }
 
+    if (this.isOutsideActiveArea(event)) {
+      return;
+    }
+
+    this.dataGrid.cellSelectionManager.handleMouseDown(event);
     this.handleStartDragging(event);
   }
 

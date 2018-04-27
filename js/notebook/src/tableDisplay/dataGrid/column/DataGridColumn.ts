@@ -21,7 +21,7 @@ import {IColumnOptions} from "../interface/IColumn";
 import { ICellData } from "../interface/ICell";
 import { CellRenderer, DataModel, TextRenderer } from "@phosphor/datagrid";
 import {ALL_TYPES, getDisplayType, isDoubleWithPrecision} from "../dataTypes";
-import { minmax } from '@phosphor/algorithm';
+import { minmax, filter } from '@phosphor/algorithm';
 import { HIGHLIGHTER_TYPE } from "../interface/IHighlighterState";
 import ColumnManager, { COLUMN_CHANGED_TYPES, IBkoColumnsChangedArgs } from "./ColumnManager";
 import ColumnFilter from "./ColumnFilter";
@@ -309,29 +309,13 @@ export default class DataGridColumn {
   }
 
   addMinMaxValues() {
-    let valueResolver = this.getValueResolver();
-    let valuesIterator = this.dataGrid.model.getColumnValuesIterator(this);
     let dataType = this.getDataType();
-    let minMax = minmax(valuesIterator, (a:any, b:any) => {
-      let value1 = valueResolver(a);
-      let value2 = valueResolver(b);
-
-      if (dataType === ALL_TYPES.string || dataType === ALL_TYPES['formatted integer'] || dataType === ALL_TYPES.html) {
-        let aLength = value1 ? value1.length : 0;
-        let bLength = value2 ? value2.length : 0;
-        let longer = aLength > bLength ? value1 : value2;
-
-        if (!this.longestStringValue || this.longestStringValue.length < String(longer).length) {
-          this.longestStringValue = longer;
-        }
-      }
-
-      if (value1 === value2) {
-        return 0;
-      }
-
-      return value1 < value2 ? -1 : 1;
-    });
+    let valueResolver = this.dataGrid.model.getColumnValueResolver(dataType);
+    let valuesIterator = this.dataGrid.model.getColumnValuesIterator(this);
+    let minMax = minmax(
+      filter(valuesIterator, (value) => !Number.isNaN(valueResolver(value))),
+      this.getMinMaxValuesIterator(dataType, valueResolver)
+    );
 
     this.minValue = minMax ? minMax[0] : null;
     this.maxValue = minMax ? minMax[1] : null;
@@ -384,6 +368,29 @@ export default class DataGridColumn {
     }));
 
     this.dataGrid.columnPosition.updateAll();
+  }
+
+  private getMinMaxValuesIterator(dataType: ALL_TYPES, valueResolver: Function): (a:any, b:any) => number {
+    return (a:any, b:any) => {
+      let value1 = valueResolver(a);
+      let value2 = valueResolver(b);
+
+      if (dataType === ALL_TYPES.string || dataType === ALL_TYPES['formatted integer'] || dataType === ALL_TYPES.html) {
+        let aLength = value1 ? value1.length : 0;
+        let bLength = value2 ? value2.length : 0;
+        let longer = aLength > bLength ? value1 : value2;
+
+        if (!this.longestStringValue || this.longestStringValue.length < String(longer).length) {
+          this.longestStringValue = longer;
+        }
+      }
+
+      if (value1 === value2) {
+        return 0;
+      }
+
+      return value1 < value2 ? -1 : 1;
+    }
   }
 
   private updateColumnFilter(filter: string) {

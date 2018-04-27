@@ -37,7 +37,7 @@ export function registerFeature(): void {
 
   $('#btn_publish > span').remove();
   $('#btn_publish').attr({
-    'title': 'Publish ...',
+    'title': 'Publish...',
   });
 
   const publish_menu = $('<li>')

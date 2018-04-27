@@ -55,8 +55,9 @@ describe('(Groovy) Java Properties and Heap Size tests', function () {
 
       cellIndex = 0;
       var output = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(parseFloat(output.$('.output_subarea').getText()).toFixed(1)).toBe('4.8');
+      var heapSize = parseFloat(output.$('.output_subarea').getText()).toFixed(1);
+      expect(heapSize).toBeGreaterThan(4.7);
+      expect(heapSize).toBeLessThan(5.3);
     });
 
     it('Correct property is set', function () {
@@ -82,8 +83,9 @@ describe('(Groovy) Java Properties and Heap Size tests', function () {
 
       cellIndex = 0;
       var output = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(parseFloat(output.$('.output_subarea').getText()).toFixed(1)).toBe('2.9');
+      var heapSize = parseFloat(output.$('.output_subarea').getText()).toFixed(1);
+      expect(heapSize).toBeGreaterThan(2.7);
+      expect(heapSize).toBeLessThan(3.3);
     });
 
     it('Correct property is set after change', function () {

@@ -174,7 +174,7 @@ export default class EventManager {
   private handleCellHover(event) {
     const data = this.dataGrid.getCellData(event.clientX, event.clientY);
 
-    this.dataGrid.cellHovered.emit(data);
+    this.dataGrid.cellHovered.emit({ data, event });
     this.dataGrid.cellSelectionManager.handleBodyCellHover(event);
   }
 

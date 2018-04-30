@@ -183,7 +183,7 @@ export default class DataGridColumn {
     this.dataGrid.cellHovered.connect(this.handleHeaderCellHovered, this);
   }
 
-  handleHeaderCellHovered(sender: BeakerXDataGrid, data: ICellData) {
+  handleHeaderCellHovered(sender: BeakerXDataGrid, { data }) {
     const column = data && this.columnManager.getColumnByPosition(ColumnManager.createPositionFromCell(data));
 
     if (!data || column !== this || !DataGridCell.isHeaderCell(data)) {

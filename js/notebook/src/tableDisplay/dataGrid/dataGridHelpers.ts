@@ -93,24 +93,12 @@ export namespace DataGridHelpers {
     cursorPosition: number
   ): { index: number, delta: number } | null {
     // Bail early if the list is empty or the position is invalid.
-    if (list.sectionCount === 0 || cursorPosition < 0) {
+    if (list.sectionCount === 0 || cursorPosition < 0 || cursorPosition - list.totalSize > 0) {
       return null;
     }
 
-    // Compute the delta from the end of the list.
-    let delta = cursorPosition - (list.totalSize);
-    if (delta > 0) {
-      return null;
-    }
-
-    // Test whether the hover is just past the last section.
-    let index = list.sectionCount - 1;
-    if (delta >= -list.sectionSize(index)) {
-      return { index, delta };
-    }
-
-    index = list.sectionIndex(cursorPosition);
-    delta = cursorPosition - (list.sectionOffset(index));
+    let index = list.sectionIndex(cursorPosition);
+    let delta = cursorPosition - (list.sectionOffset(index));
 
     if (index >= 0) {
       return { index, delta };

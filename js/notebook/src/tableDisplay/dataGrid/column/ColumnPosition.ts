@@ -29,10 +29,8 @@ import {UPDATE_COLUMN_ORDER} from "../model/reducer";
 import DataGridColumn from "./DataGridColumn";
 import {IColumnPosition} from "../interface/IColumn";
 import ColumnManager from "./ColumnManager";
-import {COLUMN_TYPES} from "./enums";
+import {COLUMN_SIDE, COLUMN_TYPES} from "./enums";
 import {DEFAULT_BORDER_COLOR} from "../style/dataGridStyle";
-import {DataGridHelpers} from "../dataGridHelpers";
-import throttle = DataGridHelpers.throttle;
 
 const DATA_GRID_PADDING: number = 20;
 const DRAG_START_DEBOUNCE_TIME: number = 150;
@@ -102,7 +100,7 @@ export default class ColumnPosition {
       return this.stopDragging();
     }
 
-    this.moveColumn(this.grabbedCellData);
+    this.moveColumn();
     this.stopDragging();
   }
 
@@ -171,9 +169,9 @@ export default class ColumnPosition {
     this.attachDraggableHeader(data);
   }
 
-  private moveColumn(data: ICellData) {
+  private moveColumn() {
     const frozenColumnscount = selectColumnsFrozenCount(this.store.state);
-    const column = this.dataGrid.columnManager.getColumnByPosition(ColumnManager.createPositionFromCell(data));
+    const column = this.dataGrid.columnManager.getColumnByPosition(ColumnManager.createPositionFromCell(this.grabbedCellData));
     let destination = this.dropCellData.column;
 
     if (this.dropCellData.region !== 'corner-header' && this.dropCellData.region !== 'row-header') {
@@ -222,19 +220,28 @@ export default class ColumnPosition {
     this.dataGrid.node.appendChild(this.draggableHeaderCanvas);
   }
 
-  private handleCellHovered(sender: BeakerXDataGrid, data: ICellData|null) {
+  private handleCellHovered(sender: BeakerXDataGrid, { data, event }) {
     const pressData = this.grabbedCellData;
+    let targetData = data;
 
     if (
       !data
       || !pressData
-      || pressData.column === data.column
       || pressData.type !== data.type
     ) {
       return true;
     }
 
-    this.dropCellData = data;
+    let direction = data.column >= this.grabbedCellData.column ? COLUMN_SIDE.right : COLUMN_SIDE.left;
+    let side = data.delta < data.width / 2 ? COLUMN_SIDE.left : COLUMN_SIDE.right;
+
+    if (side === COLUMN_SIDE.right && direction !== COLUMN_SIDE.right) {
+      targetData = this.dataGrid.getCellData(event.clientX + data.width - data.delta + 1, event.clientY);
+    } else if (side === COLUMN_SIDE.left && direction === COLUMN_SIDE.right) {
+      targetData = this.dataGrid.getCellData(event.clientX - data.delta - 1, event.clientY);
+    }
+
+    this.dropCellData = targetData;
     this.dataGrid.repaint();
   }
 }

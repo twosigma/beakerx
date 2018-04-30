@@ -72,7 +72,7 @@ export class BeakerXDataGrid extends DataGrid {
   focused: boolean;
   wrapperId: string;
 
-  cellHovered = new Signal<this, ICellData|null>(this);
+  cellHovered = new Signal<this, { data: ICellData|null, event: MouseEvent }>(this);
   commSignal = new Signal<this, {}>(this);
 
   static FOCUS_CSS_CLASS = 'bko-focused';
@@ -174,7 +174,7 @@ export class BeakerXDataGrid extends DataGrid {
       return;
     }
 
-    this.cellHovered.emit(null);
+    this.cellHovered.emit({ data: null, event: null });
     this.cellTooltipManager.hideTooltips();
     this.node.classList.remove(BeakerXDataGrid.FOCUS_CSS_CLASS);
     enableKeyboardManager();
@@ -206,15 +206,13 @@ export class BeakerXDataGrid extends DataGrid {
     }
 
     if (msg.type === 'paint-request' && this.columnPosition.dropCellData) {
-      const side = this.columnPosition.dropCellData.column < this.columnPosition.grabbedCellData.column ? 'left': 'right';
-
-      this.colorizeColumnBorder(this.columnPosition.dropCellData, DEFAULT_HIGHLIGHT_COLOR, side);
+      this.colorizeColumnBorder(this.columnPosition.dropCellData, DEFAULT_HIGHLIGHT_COLOR);
     }
 
     return true;
   }
 
-  colorizeColumnBorder(data: ICellData, color: string, side?: 'left'|'right') {
+  colorizeColumnBorder(data: ICellData, color: string) {
     const { column, region } = data;
     let sectionList = region === 'corner-header' || region === 'row-header' ? this.rowHeaderSections : this.columnSections;
     let sectionSize = sectionList.sectionSize(column);
@@ -222,7 +220,7 @@ export class BeakerXDataGrid extends DataGrid {
     let x = sectionOffset;
     let height = this.totalHeight;
 
-    if (!side || side === 'right') {
+    if (data.delta > data.width / 2) {
       x += sectionSize;
     }
 

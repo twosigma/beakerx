@@ -99,6 +99,16 @@ export default class DataGridCell {
     return null;
   }
 
+  static dataEquals(data1: ICellData, data2: ICellData) {
+    return (
+      data1
+      && data2
+      && data1.row === data2.row
+      && data1.column === data2.column
+      && data1.region === data2.region
+    )
+  }
+
   static isCellHovered(hoveredCell: ICellData, comparedCell: ICellData|ICellConfig): boolean {
     return (
       hoveredCell

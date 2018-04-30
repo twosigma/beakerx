@@ -221,25 +221,28 @@ define([
     var visible = slide_side_panel(main_panel, side_panel);
     return visible;
   };
-  
-  Jupyter.toolbar.add_buttons_group([{
-    'label'   : ' ',
-    'icon'    : 'fa-database',
-    'id'      : 'btn_datasets',
-    'callback': function() {
-      var visible = toggle_side_panel();
-      var btn = $(this);
-      setTimeout(function() {btn.blur();}, 500);
-    }
-  }]);
 
-  $('#btn_datasets > span').remove();
+  var addButton = function() {
+    Jupyter.toolbar.add_buttons_group([{
+      'label'   : ' ',
+      'icon'    : 'fa-database',
+      'id'      : 'btn_datasets',
+      'callback': function() {
+        var visible = toggle_side_panel();
+        var btn = $(this);
+        setTimeout(function() {btn.blur();}, 500);
+      }
+    }]);
 
-  $('#btn_datasets').attr({
-    'title': 'Data Browser',
-    'data-toggle': 'button',
-    'aria-pressed': 'false'
-  });
+    $('#btn_datasets > span').remove();
+
+    $('#btn_datasets').attr({
+      'title': 'Data Browser',
+      'data-toggle': 'button',
+      'aria-pressed': 'false'
+    });
+  }
+  window._addCatalogButton = addButton;
 
   // bind drop event
   var bindDroppable = function() {

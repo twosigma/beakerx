@@ -31,6 +31,7 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
   public readonly WIDE_CELLS_SELECTOR = '#wide_cells';
   public readonly IMPROVE_FONTS_SELECTOR = '#improve_fonts';
   public readonly SHOW_PUBLICATION_SELECTOR = '#show_publication';
+  public readonly SHOW_CATALOG_SELECTOR = '#show_catalog';
   public readonly AUTO_SAVE_SELECTOR = '#auto_save';
   public readonly USE_DATA_GRID_SELECTOR = '#use_data_grid';
 
@@ -58,6 +59,12 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
       name: 'show_publication',
       label: 'Show publication button and menu item',
       isLabSupported: true,
+    },
+    {
+      id: 'show_catalog',
+      name: 'show_catalog',
+      label: 'Show catalog button',
+      isLabSupported: false,
     },
     {
       id: 'auto_save',
@@ -99,6 +106,7 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
         this.IMPROVE_FONTS_SELECTOR,
         this.WIDE_CELLS_SELECTOR,
         this.SHOW_PUBLICATION_SELECTOR,
+        this.SHOW_CATALOG_SELECTOR,
         this.AUTO_SAVE_SELECTOR,
         this.USE_DATA_GRID_SELECTOR,
       ].join(','))
@@ -112,6 +120,7 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
     this.setAutoClose(options.auto_close);
     this.setImproveFonts(options.improve_fonts);
     this.setShowPublication(options.show_publication);
+    this.setShowCatalog(options.show_catalog);
     this.setAutoSave(options.auto_save);
     this.setUseDataGrid(options.use_data_grid);
   }
@@ -190,6 +199,12 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
   private setShowPublication(checked: boolean) {
     this.$node
       .find(this.SHOW_PUBLICATION_SELECTOR)
+      .prop('checked', checked);
+  }
+
+  private setShowCatalog(checked: boolean) {
+    this.$node
+      .find(this.SHOW_CATALOG_SELECTOR)
       .prop('checked', checked);
   }
 

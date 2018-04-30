@@ -32,6 +32,7 @@ export function registerFeature(baseUrl: string): void {
       setupWideCells(data.ui_options.wide_cells);
       setupImproveFonts(data.ui_options.improve_fonts);
       setupShowPublication(data.ui_options.show_publication);
+      setupShowCatalog(data.ui_options.show_catalog);
       setupAutoSave(data.ui_options.auto_save);
 
     })
@@ -82,6 +83,13 @@ function setupShowPublication(showPublication: boolean) {
     return;
   }
   GistPublish.registerFeature();
+}
+
+function setupShowCatalog(showCatalog: boolean) {
+  if (!showCatalog) {
+    return;
+  }
+  (<any>window)._addCatalogButton();
 }
 
 function setupAutoSave(autoSave: boolean) {

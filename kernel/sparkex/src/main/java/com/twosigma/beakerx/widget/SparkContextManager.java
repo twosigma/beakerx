@@ -182,10 +182,13 @@ public class SparkContextManager {
     if (sparkSessionAlias.getValue() == null || sparkSessionAlias.getValue().isEmpty()) {
       throw new RuntimeException("SparkContext alias can not be empty");
     }
-    String addSc = String.format(
-            "import com.twosigma.beakerx.widget.SparkVariable\n" +
-                    "val %s = SparkVariable.getSparkSession()\n",
-            sparkSessionAlias.getValue());
+    String addSc = String.format(("import com.twosigma.beakerx.widget.SparkVariable\n" +
+                                  "val %s = SparkVariable.getSparkSession()\n" +
+                                  "import org.apache.spark.SparkContext._\n" +
+                                  "import spark.implicits._\n" +
+                                  "import spark.sql\n" +
+                                  "import org.apache.spark.sql.functions._\n"),
+                                 sparkSessionAlias.getValue());
 
     SimpleEvaluationObject seo = createSimpleEvaluationObject(addSc, kernel, new Message(), 1);
     return kernel.executeCode(addSc, seo);

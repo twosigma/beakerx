@@ -296,7 +296,10 @@ export class DataGridResize {
   private resizeHeader(): void {
     let bodyColumnNamesWidths: number[] = [];
     let indexColumnNamesWidths: number[] = [];
-    let headerFontSize = selectHeaderFontSize(this.dataGrid.store.state) + 2 * DEFAULT_ROW_PADDING;
+    let headerFontSize = selectHeaderFontSize(this.dataGrid.store.state);
+    let headerRowSize = isFinite(headerFontSize)
+      ? headerFontSize + 2 * DEFAULT_ROW_PADDING
+      : this.dataGrid.baseRowSize;
 
     if (selectHeadersVertical(this.dataGrid.store.state)) {
       const mapNameToWidth = name => getStringSize(name, selectHeaderFontSize(this.dataGrid.store.state)).width;
@@ -307,7 +310,7 @@ export class DataGridResize {
 
     this.dataGrid.baseColumnHeaderSize = Math.max.apply(
       null,
-      [...bodyColumnNamesWidths, ...indexColumnNamesWidths, headerFontSize, DEFAULT_ROW_HEIGHT]
+      [...bodyColumnNamesWidths, ...indexColumnNamesWidths, headerRowSize, DEFAULT_ROW_HEIGHT]
     );
   }
 

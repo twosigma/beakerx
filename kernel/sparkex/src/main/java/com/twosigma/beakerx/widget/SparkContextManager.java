@@ -184,7 +184,7 @@ public class SparkContextManager {
     }
     String addSc = String.format(
             "import com.twosigma.beakerx.widget.SparkVariable\n" +
-                    "var %s = SparkVariable.getSparkSession()\n",
+                    "val %s = SparkVariable.getSparkSession()\n",
             sparkSessionAlias.getValue());
 
     SimpleEvaluationObject seo = createSimpleEvaluationObject(addSc, kernel, new Message(), 1);

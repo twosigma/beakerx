@@ -118,7 +118,6 @@ public class ExecuteRequestHandlerMagicCommandTest {
     assertThat(kernel.getPublishedMessages().size()).isEqualTo(4);
   }
 
-  @Test
   public void handleImportMagicCommandAndExecuteTheCode() throws Exception {
     //given
     String code = "" +
@@ -153,7 +152,6 @@ public class ExecuteRequestHandlerMagicCommandTest {
     noCode(code);
   }
 
-  @Test
   public void noCodeToExecuteWithWhiteSpaces() throws InterruptedException {
     //given
     String code = "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR + "\n" +

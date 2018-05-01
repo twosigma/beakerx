@@ -71,13 +71,11 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
     return new EvaluatorParameters(kernelParameters);
   }
 
-  @Test
   public void sparkDisplayer() throws Exception {
     enableSparkSupport();
     runSparkDataset("ds");
   }
 
-  @Test
   public void sparkImplicit() throws Exception {
     enableSparkSupport();
     runSparkDataset("ds.display(1)");

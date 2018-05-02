@@ -100,7 +100,7 @@ a local build should suffice:
 
 ### Run Tests
 
-The Java and TypeScript unit tests are run with every build. See [test/README.md] for how to run the e2e tests.
+The Java and TypeScript unit tests are run with every build. See [test/README.md](test/README.md) for how to run the e2e tests.
 
 ## Groovy with Interactive Plotting and Tables:
 <img width="900" alt="screen shot" src="https://user-images.githubusercontent.com/963093/28300136-585f9f7c-6b4b-11e7-8827-b5807d3fc9a8.png">

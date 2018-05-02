@@ -48,6 +48,7 @@ import ColumnPosition from "./column/ColumnPosition";
 import {SectionList} from "@phosphor/datagrid/lib/sectionlist";
 import ColumnRegion = DataModel.ColumnRegion;
 import {DataGridResize} from "./DataGridResize";
+import {ALL_TYPES} from "./dataTypes";
 
 export class BeakerXDataGrid extends DataGrid {
   id: string;
@@ -242,6 +243,11 @@ export class BeakerXDataGrid extends DataGrid {
     let cellRendererFactory = new CellRendererFactory(this);
     let defaultRenderer = cellRendererFactory.getRenderer();
 
+    this.cellRenderers.set(
+      'body',
+      { dataType: ALL_TYPES[ALL_TYPES.html] },
+      cellRendererFactory.getRenderer(ALL_TYPES.html)
+    );
     this.cellRenderers.set('body', {}, defaultRenderer);
     this.cellRenderers.set('column-header', {}, defaultRenderer);
     this.cellRenderers.set('corner-header', {}, defaultRenderer);

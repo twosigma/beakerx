@@ -37,6 +37,12 @@ export default class ColumnFilter {
     return isNaN(columnName) ? '' : 'col_';
   }
 
+  static escapeColumnName(columnName: string): string {
+    return String(columnName)
+      .replace(/\s+/, '_')
+      .replace('/\W+/', '');
+  }
+
   constructor(dataGrid: BeakerXDataGrid, column: DataGridColumn, options: { x, y, width, height }) {
     this.dataGrid = dataGrid;
     this.column = column;
@@ -127,7 +133,7 @@ export default class ColumnFilter {
   }
 
   private createFilterExpression(value: any): string {
-    return value.replace('$', `${ColumnFilter.getColumnNameVarPrefix(this.column.name)}${this.column.name}`);
+    return value.replace('$', `${ColumnFilter.getColumnNameVarPrefix(this.column.name)}${ColumnFilter.escapeColumnName(this.column.name)}`);
   }
 
   private createSearchExpression(value: any) {

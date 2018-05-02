@@ -16,7 +16,7 @@
 
 import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import DataGridColumn from "./DataGridColumn";
-import {selectColumnPosition, selectColumnWidth} from "./selectors";
+import {selectColumnWidth} from "./selectors";
 import {DataGridHelpers} from "../dataGridHelpers";
 import getEventKeyCode = DataGridHelpers.getEventKeyCode;
 import {KEYBOARD_KEYS} from "../event/enums";
@@ -77,6 +77,10 @@ export default class ColumnFilter {
   attach(node: HTMLElement) {
     Widget.attach(this.filterWidget, node);
     this.bindEvents();
+  }
+
+  blur() {
+    this.filterInput.blur();
   }
 
   private updateInputPosition() {

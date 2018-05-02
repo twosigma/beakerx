@@ -22,8 +22,6 @@ import {
   selectHeaderFontSize,
   selectHeadersVertical, selectRenderer
 } from "../model/selectors";
-import {DataGridHelpers} from "../dataGridHelpers";
-import escapeHTML = DataGridHelpers.escapeHTML;
 
 export default class HTMLCellRenderer extends BeakerXCellRenderer {
 
@@ -101,7 +99,7 @@ export default class HTMLCellRenderer extends BeakerXCellRenderer {
           xmlns="http://www.w3.org/1999/xhtml"
           style="display: table-cell; font: ${font}; width: ${config.width}px; height: ${config.height}px; color: ${color}; vertical-align: ${vAlign === 'center' ? 'middle' : vAlign}; text-align: ${hAlign}"
         >
-          <div style="display: inline-block; padding: 0 2px">${escapeHTML(text)}</div>
+          <div style="display: inline-block; padding: 0 2px">${text}</div>
         </div>
       </foreignObject>
     </svg>`;

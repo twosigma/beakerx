@@ -65,6 +65,9 @@ class DecimalStringFormat:
         self.minDecimals = min
         self.maxDecimals = max
 
+class HTMLFormat:
+    type = "html"
+
 class HighlightStyle(Enum):
     FULL_ROW = 1
     SINGLE_COLUMN = 2
@@ -91,6 +94,8 @@ class TableDisplayStringFormat:
     @staticmethod
     def getDecimalFormat(min, max):
         return DecimalStringFormat(min, max)
+    def getHTMLFormat():
+        return HTMLFormat()
 
 class TableDisplayCellHighlighter:
     FULL_ROW = HighlightStyle.FULL_ROW

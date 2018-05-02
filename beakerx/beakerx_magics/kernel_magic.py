@@ -15,6 +15,7 @@ from queue import Empty
 from IPython import get_ipython
 from IPython.core.magic import (Magics, magics_class, cell_magic)
 from jupyter_client.manager import KernelManager
+from ipykernel.zmqshell import ZMQInteractiveShell
 import atexit
 import logging
 
@@ -107,4 +108,5 @@ def comm_msg(stream, ident, msg):
 
 
 def load_ipython_extension(ipython):
-    ipython.kernel.shell_handlers['comm_msg'] = comm_msg
+    if isinstance(ipython, ZMQInteractiveShell):
+        ipython.kernel.shell_handlers['comm_msg'] = comm_msg

@@ -14,6 +14,7 @@
 from IPython import get_ipython
 from IPython.core.magic import (magics_class, cell_magic)
 from .kernel_magic import KernelMagics
+from ipykernel.zmqshell import ZMQInteractiveShell
 
 
 @magics_class
@@ -31,7 +32,8 @@ class GroovyMagics(KernelMagics):
 
 
 def load_ipython_extension(ipython):
-    ipython.register_magics(GroovyMagics)
+    if isinstance(ipython, ZMQInteractiveShell):
+        ipython.register_magics(GroovyMagics)
 
 
 if __name__ == '__main__':

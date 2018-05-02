@@ -14,7 +14,7 @@
 from IPython import get_ipython
 from IPython.core.magic import (magics_class, cell_magic)
 from .kernel_magic import KernelMagics
-
+from ipykernel.zmqshell import ZMQInteractiveShell
 
 @magics_class
 class SqlMagics(KernelMagics):
@@ -31,7 +31,8 @@ class SqlMagics(KernelMagics):
 
 
 def load_ipython_extension(ipython):
-    ipython.register_magics(SqlMagics)
+    if isinstance(ipython, ZMQInteractiveShell):
+        ipython.register_magics(SqlMagics)
 
 
 if __name__ == '__main__':

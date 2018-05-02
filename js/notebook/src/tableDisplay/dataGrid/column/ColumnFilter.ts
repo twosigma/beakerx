@@ -109,9 +109,14 @@ export default class ColumnFilter {
     event.preventDefault();
     event.stopImmediatePropagation();
 
+    if (keyCode === KEYBOARD_KEYS.Escape) {
+      this.column.columnManager.resetFilters();
+
+      return;
+    }
+
     if (
       keyCode === KEYBOARD_KEYS.Enter
-      || keyCode === KEYBOARD_KEYS.Escape
       || !this.filterInput
     ) {
       return;

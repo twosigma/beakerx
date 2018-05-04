@@ -310,8 +310,12 @@ export default class DataGridColumn {
 
   addMinMaxValues() {
     let dataType = this.getDataType();
-    let valueResolver = this.dataGrid.model.getColumnValueResolver(dataType);
+    let displayType = this.getDisplayType();
     let valuesIterator = this.dataGrid.model.getColumnValuesIterator(this);
+    let valueResolver = this.dataGrid.model.getColumnValueResolver(
+      displayType === ALL_TYPES.html ? displayType : dataType
+    );
+
     let minMax = minmax(
       filter(valuesIterator, (value) => !Number.isNaN(valueResolver(value))),
       this.getMinMaxValuesIterator(dataType, valueResolver)

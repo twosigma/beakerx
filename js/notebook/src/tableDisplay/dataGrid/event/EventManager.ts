@@ -53,7 +53,7 @@ export default class EventManager {
     this.handleMouseMoveOutiseArea = throttle<MouseEvent, void>(this.handleMouseMoveOutiseArea, 100, this);
     this.handleWindowResize = throttle<Event, void>(this.handleWindowResize, 200, this);
 
-    this.dataGrid.node.onselectstart = () => false;
+    this.dataGrid.node.addEventListener('selectstart', this.handleSelectStart);
     this.dataGrid.node.addEventListener('mouseout', this.handleMouseOut);
     this.dataGrid.node.addEventListener('dblclick', this.handleDoubleClick, true);
     this.dataGrid.node.addEventListener('mouseup', this.handleMouseUp);
@@ -95,6 +95,16 @@ export default class EventManager {
     document.removeEventListener('keydown', this.handleKeyDown);
     document.removeEventListener('mousemove', this.handleMouseMoveOutiseArea);
     window.removeEventListener('resize', this.handleWindowResize);
+  }
+
+  private handleSelectStart(event) {
+    const target = event.target as HTMLElement;
+
+    if (target && target.classList.contains('filter-input')) {
+      return true;
+    }
+
+    return false
   }
 
   private handleScrollBarMouseUp(event: MouseEvent) {

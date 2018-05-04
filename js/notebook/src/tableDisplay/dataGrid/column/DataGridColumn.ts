@@ -18,7 +18,6 @@ import ColumnMenu from "../headerMenu/ColumnMenu";
 import IndexMenu from "../headerMenu/IndexMenu";
 import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import {IColumnOptions} from "../interface/IColumn";
-import { ICellData } from "../interface/ICell";
 import { CellRenderer, DataModel, TextRenderer } from "@phosphor/datagrid";
 import {ALL_TYPES, getDisplayType, isDoubleWithPrecision} from "../dataTypes";
 import { minmax, filter } from '@phosphor/algorithm';
@@ -135,7 +134,8 @@ export default class DataGridColumn {
     const position = this.getPosition();
 
     this.assignFormatFn();
-    this.dataGrid.dataGridResize.setInitialSectionWidth({ index: position.value }, position.region, this.type);
+    this.recalculateLongestStringValue(displayType);
+    this.dataGrid.dataGridResize.setInitialSectionWidth({ index: position.value }, position.region);
   }
 
   setTimeDisplayType(timeUnit) {
@@ -341,7 +341,7 @@ export default class DataGridColumn {
     this.assignFormatFn();
 
     const position = this.getPosition();
-    this.dataGrid.dataGridResize.setInitialSectionWidth(this, position.region, this.type);
+    this.dataGrid.dataGridResize.setInitialSectionWidth(this, position.region);
     this.dataGrid.dataGridResize.updateWidgetWidth();
   }
 
@@ -372,6 +372,15 @@ export default class DataGridColumn {
     }));
 
     this.dataGrid.columnPosition.updateAll();
+  }
+
+  recalculateLongestStringValue(displayType: ALL_TYPES|string) {
+    if (displayType !== ALL_TYPES.string && displayType !== ALL_TYPES.html ) {
+      return;
+    }
+
+    this.longestStringValue = null;
+    this.addMinMaxValues();
   }
 
   private getMinMaxValuesIterator(dataType: ALL_TYPES, valueResolver: Function): (a:any, b:any) => number {

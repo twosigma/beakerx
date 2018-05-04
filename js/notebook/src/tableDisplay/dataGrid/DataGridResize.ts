@@ -94,15 +94,15 @@ export class DataGridResize {
 
   setInitialSectionWidths(): void {
     for (let index = this.dataGrid.columnSections.sectionCount - 1; index >= 0; index--) {
-      this.setInitialSectionWidth({ index }, 'body', COLUMN_TYPES.body);
+      this.setInitialSectionWidth({ index }, 'body');
     }
 
     for (let index = this.dataGrid.rowHeaderSections.sectionCount - 1; index >= 0; index--) {
-      this.setInitialSectionWidth({ index }, 'row-header', COLUMN_TYPES.index);
+      this.setInitialSectionWidth({ index }, 'row-header');
     }
   }
 
-  setInitialSectionWidth(section, region: DataModel.ColumnRegion, columnType: COLUMN_TYPES): void {
+  setInitialSectionWidth(section, region: DataModel.ColumnRegion): void {
     const column = this.dataGrid.columnPosition.getColumnByPosition({ region, value: section.index });
     const area = region === 'row-header' ? 'row-header' : 'column';
 

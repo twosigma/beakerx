@@ -34,7 +34,6 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
   public readonly SHOW_CATALOG_SELECTOR = '#show_catalog';
   public readonly AUTO_SAVE_SELECTOR = '#auto_save';
   public readonly USE_DATA_GRID_SELECTOR = '#use_data_grid';
-  public readonly SHOW_DATA_BROWSER_SELECTOR = '#show_data_browser';
 
   public readonly UI_OPTIONS = [
     {
@@ -79,12 +78,6 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
       label: 'New table widget',
       isLabSupported: true,
     },
-    {
-      id: 'show_data_browser',
-      name: 'show_data_browser',
-      label: 'Show data browser button',
-      isLabSupported: false,
-    },
   ];
 
   public readonly HTML_ELEMENT_TEMPLATE = `
@@ -116,7 +109,6 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
         this.SHOW_CATALOG_SELECTOR,
         this.AUTO_SAVE_SELECTOR,
         this.USE_DATA_GRID_SELECTOR,
-        this.SHOW_DATA_BROWSER_SELECTOR,
       ].join(','))
       .on('change', this.optionsChangedHandler.bind(this));
   }
@@ -131,7 +123,6 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
     this.setShowCatalog(options.show_catalog);
     this.setAutoSave(options.auto_save);
     this.setUseDataGrid(options.use_data_grid);
-    this.setShowDataBrowser(options.show_data_browser);
   }
 
   protected onActivateRequest(): void {
@@ -226,12 +217,6 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
   private setUseDataGrid(checked: boolean) {
     this.$node
       .find(this.USE_DATA_GRID_SELECTOR)
-      .prop('checked', checked);
-  }
-
-  private setShowDataBrowser(checked: boolean) {
-    this.$node
-      .find(this.SHOW_DATA_BROWSER_SELECTOR)
       .prop('checked', checked);
   }
 

@@ -18,6 +18,7 @@ import './../global.env';
 
 import BeakerXApi from "../tree/Utils/BeakerXApi";
 import * as GistPublish from "./gistPublish/index";
+import * as DataBrowser from "./dataBrowser/index";
 
 export function registerFeature(baseUrl: string): void {
   if (!!Jupyter.NotebookList) {
@@ -89,7 +90,7 @@ function setupShowCatalog(showCatalog: boolean) {
   if (!showCatalog) {
     return;
   }
-  (<any>window)._addCatalogButton();
+  DataBrowser.registerFeature();
 }
 
 function setupAutoSave(autoSave: boolean) {

@@ -117,8 +117,9 @@ class EasyForm(BeakerxBox):
 
     def addCheckBoxes(self, *args, **kwargs):
         layout = BeakerxHBox()
-        orientation = getValue(kwargs, 'orientation', 2)
+        orientation = getValue(kwargs, 'orientation', EasyForm.VERTICAL)
         if orientation == EasyForm.HORIZONTAL:
+            
             box = BeakerxHBox()
         else:
             box = BeakerxVBox()

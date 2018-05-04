@@ -23,6 +23,9 @@ import {KEYBOARD_KEYS} from "../event/enums";
 import {Widget} from "@phosphor/widgets";
 import throttle = DataGridHelpers.throttle;
 
+export const FILTER_INPUT_TOOLTIP = 'filter with an expression with a variable defined for each column and $ means the current column.  eg "$ > 5"';
+export const SEARCH_INPUT_TOOLTIP = 'searching for a substring, show only matching rows';
+
 export default class ColumnFilter {
   dataGrid: BeakerXDataGrid;
   column: DataGridColumn;
@@ -54,6 +57,7 @@ export default class ColumnFilter {
     this.useSearch = true;
     this.filterIcon.classList.remove('fa-filter');
     this.filterIcon.classList.add('fa-search');
+    this.filterInput.title = SEARCH_INPUT_TOOLTIP;
     this.showInput(shouldFocus);
   }
 
@@ -61,6 +65,7 @@ export default class ColumnFilter {
     this.useSearch = false;
     this.filterIcon.classList.add('fa-filter');
     this.filterIcon.classList.remove('fa-search');
+    this.filterInput.title = FILTER_INPUT_TOOLTIP;
     this.showInput(shouldFocus);
   }
 
@@ -157,7 +162,7 @@ export default class ColumnFilter {
 
     this.filterNode.innerHTML = `<div class="input-clear">
       <span class="fa filter-icon fa-filter"></span>
-      <input class="filter-input" type="text" title='filter with an expression with a variable defined for each column and $ means the current column.  eg "$ > 5"'>
+      <input class="filter-input" type="text" title='${FILTER_INPUT_TOOLTIP}'>
       <span class="fa fa-times clear-filter"></span>
     </div>`;
 

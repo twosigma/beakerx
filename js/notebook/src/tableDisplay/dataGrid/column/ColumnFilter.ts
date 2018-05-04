@@ -24,7 +24,7 @@ import {Widget} from "@phosphor/widgets";
 import throttle = DataGridHelpers.throttle;
 
 export const FILTER_INPUT_TOOLTIP = 'filter with an expression with a variable defined for each column and $ means the current column.  eg "$ > 5"';
-export const SEARCH_INPUT_TOOLTIP = 'searching for a substring, show only matching rows';
+export const SEARCH_INPUT_TOOLTIP = 'search for a substring, show only matching rows';
 
 export default class ColumnFilter {
   dataGrid: BeakerXDataGrid;

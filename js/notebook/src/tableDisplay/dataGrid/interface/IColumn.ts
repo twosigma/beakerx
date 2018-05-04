@@ -14,9 +14,8 @@
  *  limitations under the License.
  */
 
-import { ITriggerOptions } from "../headerMenu/HeaderMenu";
 import DataGridColumn from "../column/DataGridColumn";
-import {TextRenderer} from "@phosphor/datagrid";
+import {DataModel, TextRenderer} from "@phosphor/datagrid";
 import {ALL_TYPES} from "../dataTypes";
 import {COLUMN_TYPES, SORT_ORDER} from "../column/enums";
 
@@ -28,8 +27,7 @@ export interface IColumn {
 export interface IColumnOptions {
   index: number,
   name: string,
-  type: COLUMN_TYPES,
-  menuOptions: ITriggerOptions
+  type: COLUMN_TYPES
 }
 
 export interface IColumns {
@@ -48,10 +46,14 @@ export interface IColumnState {
   keepTrigger: boolean,
   horizontalAlignment: TextRenderer.HorizontalAlignment,
   formatForTimes: any,
-  visible: boolean,
   sortOrder: SORT_ORDER,
   filter: string|null,
-  position: number,
+  position: IColumnPosition,
   width?: number
   renderer?: number
+}
+
+export interface IColumnPosition {
+  value: number,
+  region: DataModel.ColumnRegion
 }

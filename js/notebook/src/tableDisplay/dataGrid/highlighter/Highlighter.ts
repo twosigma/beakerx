@@ -17,24 +17,23 @@
 import IHihglighterState, { HIGHLIGHTER_STYLE } from "../interface/IHighlighterState";
 import { CellRenderer } from "@phosphor/datagrid";
 import DataGridColumn from "../column/DataGridColumn";
-import { find } from "@phosphor/algorithm";
 import {DEFAULT_CELL_BACKGROUND} from "../style/dataGridStyle";
-import {BeakerxDataGridModel} from "../model/BeakerxDataGridModel";
+import {BeakerXDataGridModel} from "../model/BeakerXDataGridModel";
 
 export default class Highlighter {
   column: DataGridColumn;
-  model: BeakerxDataGridModel;
+  model: BeakerXDataGridModel;
   state: IHihglighterState;
 
   constructor(column: DataGridColumn, state: IHihglighterState) {
-    const valueResolver = column.getValueResolver();
+    const valueResolver = column.dataGrid.model.getColumnValueResolver(column.getDataType());
 
     this.column = column;
     this.model = column.dataGrid.model;
     this.state = { ...state };
     this.state.style = state.style || HIGHLIGHTER_STYLE.SINGLE_COLUMN;
-    this.state.minVal = valueResolver(this.state.minVal || this.column.minValue);
-    this.state.maxVal = valueResolver(this.state.maxVal || this.column.maxValue);
+    this.state.minVal = valueResolver(Number.isFinite(this.state.minVal) ? this.state.minVal : this.column.minValue);
+    this.state.maxVal = valueResolver(Number.isFinite(this.state.maxVal) ? this.state.maxVal : this.column.maxValue);
   }
 
   getBackgroundColor(config: CellRenderer.ICellConfig) {
@@ -43,7 +42,7 @@ export default class Highlighter {
 
   getValueToHighlight(config: CellRenderer.ICellConfig) {
     let value = config.value;
-    let valueResolver = this.column.getValueResolver();
+    let valueResolver = this.model.getColumnValueResolver(this.column.getDataType());
 
     if (this.state.style === HIGHLIGHTER_STYLE.FULL_ROW) {
       value = this.model.rowManager.getValueByColumn(config.row, this.column.index, this.column.type);

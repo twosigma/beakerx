@@ -15,20 +15,22 @@
  */
 
 import { Widget } from '@phosphor/widgets';
-import { BeakerxDataGrid } from './BeakerxDataGrid';
+import { BeakerXDataGrid } from './BeakerXDataGrid';
 import { silverStripeStyle } from './style/dataGridStyle';
 import IDataGridScopeOptions from "./interface/IDataGridScopeOptions";
 import DataGridContextMenu from "./contextMenu/DataGridContextMenu";
 import ColumnLimitModal from "./modal/ColumnLimitModal";
-import createStore, {BeakerxDataStore} from "./store/dataStore";
+import createStore, {BeakerXDataStore} from "./store/BeakerXDataStore";
 import {selectModel} from "./model/selectors";
+import {DataGridHelpers} from "./dataGridHelpers";
+import {RendererMap} from "@phosphor/datagrid";
 
 export class DataGridScope {
   contextMenu: DataGridContextMenu;
 
-  readonly dataGrid: BeakerxDataGrid;
+  readonly dataGrid: BeakerXDataGrid;
   readonly element: HTMLElement;
-  readonly store: BeakerxDataStore;
+  readonly store: BeakerXDataStore;
   private tableDisplayModel: any;
   private tableDisplayView: any;
 
@@ -37,9 +39,15 @@ export class DataGridScope {
     this.element = options.element;
     this.tableDisplayModel = options.widgetModel;
     this.tableDisplayView = options.widgetView;
-    this.dataGrid = new BeakerxDataGrid({ style: silverStripeStyle }, this.store);
-
+    this.dataGrid = new BeakerXDataGrid(
+      {
+        style: silverStripeStyle,
+        cellRenderers: new RendererMap({ priority: ['body|{dataType: html}','body|'] })
+      },
+      this.store
+    );
     this.element.id = `wrap_${this.tableDisplayModel.model_id}`;
+
     this.dataGrid.setWrapperId(this.element.id);
     this.connectToCommSignal();
     this.createContextMenu();
@@ -70,7 +78,7 @@ export class DataGridScope {
     this.dataGrid.columnManager.resetFilters();
     this.dataGrid.columnManager.showAllColumns();
     this.dataGrid.columnManager.resetColumnsAlignment();
-    this.dataGrid.columnManager.resetColumnsOrder();
+    this.dataGrid.columnManager.resetColumnPositions();
   }
 
   connectToCommSignal() {

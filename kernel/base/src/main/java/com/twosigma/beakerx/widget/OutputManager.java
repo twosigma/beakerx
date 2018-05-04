@@ -15,39 +15,62 @@
  */
 package com.twosigma.beakerx.widget;
 
-public class OutputManager {
+import com.twosigma.beakerx.Display;
+import com.twosigma.beakerx.mimetype.MIMEContainer;
 
-  private static Output output;
-  private static Output stderr;
-  private static Output stdout;
+import java.util.List;
 
-  public static void setOutput(Output out) {
-    output = out;
+public final class OutputManager {
+
+  private static OutputManager instance = new OutputManager(
+          WidgetDisplayMethodManager.getInstance(),
+          MIMEDisplayMethodManager.getInstance());
+
+  private WidgetDisplayMethodManager widgetDisplayMethodManager;
+  private MIMEDisplayMethodManager mimeDisplayMethodManager;
+  private Output output;
+  private Output stderr;
+  private Output stdout;
+  private Widget.WidgetDisplayMethodStrategy widgetDisplayMethodStrategy = new WidgetDisplayMethodStrategy();
+  private Display.MIMEContainerDisplayMethodStrategy mimeContainerDisplayMethodStrategy = new MIMEContainerDisplayMethodStrategy();
+
+  private OutputManager(WidgetDisplayMethodManager widgetDisplayMethodManager, MIMEDisplayMethodManager mimeDisplayMethodManager) {
+    this.widgetDisplayMethodManager = widgetDisplayMethodManager;
+    this.mimeDisplayMethodManager = mimeDisplayMethodManager;
   }
 
-  public static void setStderr(Output out) {
-    stderr = out;
+  public static Output setOutput(Output out) {
+    instance.output = out;
+    defineWidgetDisplayMethod();
+    return instance.output;
   }
 
-  public static void setStdout(Output out) {
-    stdout = out;
+  public static Output setStandardError(Output out) {
+    instance.stderr = out;
+    return instance.stderr;
+  }
+
+  public static Output setStandardOutput(Output out) {
+    instance.stdout = out;
+    defineWidgetDisplayMethod();
+    return instance.stdout;
   }
 
   public static void clearStderr() {
-    if (stderr != null) {
-      stderr.clearOutput();
+    if (instance.stderr != null) {
+      instance.stderr.clearOutput();
     }
   }
 
   public static void clearStdout() {
-    if (stdout != null) {
-      stdout.clearOutput();
+    if (instance.stdout != null) {
+      instance.stdout.clearOutput();
     }
   }
 
   public static void clearOutput() {
-    if (output != null) {
-      output.clearOutput();
+    if (instance.output != null) {
+      instance.output.clearOutput();
     }
   }
 
@@ -58,12 +81,12 @@ public class OutputManager {
   }
 
   public static boolean sendStdout(String s) {
-    if (output != null || stdout != null) {
-      if (output != null) {
-        output.sendStdout(s);
+    if (instance.output != null || instance.stdout != null) {
+      if (instance.output != null) {
+        instance.output.sendStdout(s);
       }
-      if (stdout != null) {
-        stdout.sendStdout(s);
+      if (instance.stdout != null) {
+        instance.stdout.sendStdout(s);
       }
       return true;
     }
@@ -71,15 +94,58 @@ public class OutputManager {
   }
 
   public static boolean sendStderr(String s) {
-    if (output != null || stderr != null) {
-      if (output != null) {
-        output.sendStderr(s);
+    if (instance.output != null || instance.stderr != null) {
+      if (instance.output != null) {
+        instance.output.sendStderr(s);
       }
-      if (stderr != null) {
-        stderr.sendStderr(s);
+      if (instance.stderr != null) {
+        instance.stderr.sendStderr(s);
       }
       return true;
     }
     return false;
+  }
+
+  private static void defineWidgetDisplayMethod() {
+    Output outputWidget = getOutput();
+    if (outputWidget == null) {
+      instance.widgetDisplayMethodManager.setDefaultDisplayMethod();
+      instance.mimeDisplayMethodManager.setDefaultDisplayMethod();
+    } else {
+      instance.widgetDisplayMethodManager.defineDisplayMethod(instance.widgetDisplayMethodStrategy);
+      instance.mimeDisplayMethodManager.defineDisplayMethod(instance.mimeContainerDisplayMethodStrategy);
+    }
+  }
+
+  private static Output getOutput() {
+    if (instance.output != null) {
+      return instance.output;
+    }
+    if (instance.stdout != null) {
+      return instance.stdout;
+    }
+    return null;
+  }
+
+  static void changeWidgetDisplayMethodStrategy(Widget.WidgetDisplayMethodStrategy displayMethodStrategy) {
+    instance.widgetDisplayMethodManager.defineDisplayMethod(displayMethodStrategy);
+  }
+
+  static void changeMIMEDisplayMethodStrategy(Display.MIMEContainerDisplayMethodStrategy displayMethodStrategy) {
+    instance.mimeDisplayMethodManager.defineDisplayMethod(displayMethodStrategy);
+  }
+
+  static class WidgetDisplayMethodStrategy implements Widget.WidgetDisplayMethodStrategy {
+    @Override
+    public void display(Widget widget) {
+      getOutput().display(widget);
+    }
+  }
+
+  static class MIMEContainerDisplayMethodStrategy implements Display.MIMEContainerDisplayMethodStrategy {
+    @Override
+    public void display(List<MIMEContainer> mimeContainers) {
+      getOutput().display(mimeContainers);
+    }
   }
 }

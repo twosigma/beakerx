@@ -20,12 +20,9 @@ import { Menu } from '@phosphor/widgets';
 import ColumnMenu from '@beakerx/tableDisplay/dataGrid/headerMenu/ColumnMenu';
 import { createColumnMenuItems } from '@beakerx/tableDisplay/dataGrid/headerMenu/createColumnMenuItems';
 import HeaderMenu from '@beakerx/tableDisplay/dataGrid/headerMenu/HeaderMenu';
-import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
-import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
-import menuOptionsMock from "../mock/menuOptionsMock";
+import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import modelStateMock from "../mock/modelStateMock";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
-import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 
 describe('ColumnMenu', () => {
   let columnMenu;
@@ -35,13 +32,8 @@ describe('ColumnMenu', () => {
 
   before(() => {
     dataStore = createStore(modelStateMock);
-    dataGrid = new BeakerxDataGrid({}, dataStore);
-    column = new DataGridColumn({
-      index: 0,
-      type: COLUMN_TYPES.body,
-      name: 'test',
-      menuOptions: menuOptionsMock
-    }, dataGrid, dataGrid.columnManager);
+    dataGrid = new BeakerXDataGrid({}, dataStore);
+    column = dataGrid.columnManager.bodyColumns[0];
 
     columnMenu = column.menu;
   });

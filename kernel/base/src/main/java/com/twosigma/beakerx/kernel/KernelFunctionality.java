@@ -17,6 +17,7 @@ package com.twosigma.beakerx.kernel;
 
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.evaluator.Hook;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -87,4 +88,8 @@ public interface KernelFunctionality {
   Class<?> loadClass(String clazzName) throws ClassNotFoundException;
 
   void registerMagicCommandType(MagicCommandType magicCommandType);
+
+  String getOutDir();
+
+  void registerCancelHook(Hook hook);
 }

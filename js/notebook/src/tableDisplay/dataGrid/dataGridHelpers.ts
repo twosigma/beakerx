@@ -16,10 +16,12 @@
 
 import {SectionList} from "@phosphor/datagrid/lib/sectionlist";
 import {DEFAULT_DATA_FONT_SIZE} from "./style/dataGridStyle";
+import {KEYBOARD_KEYS} from "./event/enums";
+import DataGridColumn from "./column/DataGridColumn";
+import * as moment from 'moment-timezone/builds/moment-timezone-with-data';
 
 export namespace DataGridHelpers {
-  const urlRegex = /((https?|ftp|file):\/\/|\/)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/i;
-
+  const urlRegex = /((https?|ftp|file):\/\/)(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[A-Z0-9+&@#/%=~_|$])/i;
   const htmlCharactersReplacementMap = {
     '"': '&quot;',
     '&': '&amp;',
@@ -61,6 +63,12 @@ export namespace DataGridHelpers {
     } catch (e) {}
   }
 
+  export function enableNotebookEditMode() {
+    try {
+      Jupyter.notebook.edit_mode();
+    } catch (e) {}
+  }
+
   export function getStringSize(value: string, fontSize: Number|null|undefined) {
     let spanEl: HTMLSpanElement = document.createElement('span');
     let width: number;
@@ -85,24 +93,12 @@ export namespace DataGridHelpers {
     cursorPosition: number
   ): { index: number, delta: number } | null {
     // Bail early if the list is empty or the position is invalid.
-    if (list.sectionCount === 0 || cursorPosition < 0) {
+    if (list.sectionCount === 0 || cursorPosition < 0 || cursorPosition - list.totalSize > 0) {
       return null;
     }
 
-    // Compute the delta from the end of the list.
-    let delta = cursorPosition - (list.totalSize - 1);
-    if (delta > 0) {
-      return null;
-    }
-
-    // Test whether the hover is just past the last section.
-    let index = list.sectionCount - 1;
-    if (delta >= -list.sectionSize(index)) {
-      return { index, delta };
-    }
-
-    index = list.sectionIndex(cursorPosition);
-    delta = cursorPosition - (list.sectionOffset(index) - 1);
+    let index = list.sectionIndex(cursorPosition);
+    let delta = cursorPosition - (list.sectionOffset(index));
 
     if (index >= 0) {
       return { index, delta };
@@ -111,13 +107,16 @@ export namespace DataGridHelpers {
     return null;
   }
 
-  export function throttle<T, U>(func: Function, limit: number): (T) => U|undefined {
-    let lastFunc;
+  export function throttle<T, U>(
+    func: Function,
+    limit: number,
+    context = this,
+    controllObject?: { timerId: number }
+  ): (T) => U|undefined {
+    let controll = controllObject || { timerId: undefined };
     let lastRan;
 
-    return function(...args: T[]): U|undefined {
-      const context = this;
-
+    return (...args: T[]): U|undefined => {
       if (!lastRan) {
         func.apply(context, args);
         lastRan = Date.now();
@@ -125,8 +124,8 @@ export namespace DataGridHelpers {
         return;
       }
 
-      clearTimeout(lastFunc);
-      lastFunc = setTimeout(() => {
+      clearTimeout(controll.timerId);
+      controll.timerId = setTimeout(() => {
         if ((Date.now() - lastRan) < limit) {
           return;
         }
@@ -137,7 +136,59 @@ export namespace DataGridHelpers {
     }
   }
 
+  export function debounce<A>(f:(a:A) => void, delay: number, controllObject?: { timerId: number }) {
+    let controll: { timerId: number } = controllObject || { timerId: undefined };
+
+    return (a: A) => {
+      clearTimeout(controll.timerId);
+      controll.timerId = setTimeout(() => f(a), delay);
+    }
+  }
+
   export function isUrl(url: string) {
     return urlRegex.test(String(url));
+  }
+
+  export function getEventKeyCode(event: KeyboardEvent) {
+    if (event.which || event.charCode || event.keyCode ) {
+      return event.which || event.charCode || event.keyCode;
+    }
+
+    if (event.code) {
+      return KEYBOARD_KEYS[event.code];
+    }
+
+    return event.key.charAt(0) || 0;
+  }
+
+  export function sortColumnsByPositionCallback(columnA: DataGridColumn, columnB: DataGridColumn) {
+    let positionA = columnA.getPosition();
+    let positionB = columnB.getPosition();
+
+    if (positionA.region === positionB.region) {
+      return positionA.value - positionB.value;
+    }
+
+    return positionA.region === 'row-header' ? -1 : 1;
+  }
+
+  export function applyTimezone(timestamp, tz) {
+    const time = moment(timestamp);
+
+    if (!tz) {
+      return time;
+    }
+
+    if (tz.startsWith("GMT")) {
+      time.utcOffset(tz);
+    } else {
+      time.tz(tz);
+    }
+
+    return time;
+  }
+
+  export function formatTimestamp(timestamp, tz, format) {
+    return applyTimezone(timestamp, tz).format(format);
   }
 }

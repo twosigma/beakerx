@@ -39,10 +39,10 @@ import com.twosigma.beakerx.kernel.magic.command.functionality.TimeLineModeMagic
 import com.twosigma.beakerx.kernel.magic.command.functionality.UnImportMagicCommand;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static com.twosigma.beakerx.kernel.magic.command.MavenJarResolver.MVN_DIR;
 
 public class MagicCommandTypesFactory {
@@ -50,7 +50,7 @@ public class MagicCommandTypesFactory {
   public static List<MagicCommandType> createDefaults(KernelFunctionality kernel) {
     List<MagicCommandType> magicCommandTypes = new ArrayList<>();
     magicCommandTypes.addAll(
-            newArrayList(
+            Arrays.asList(
                     javascript(),
                     js(),
                     html(),

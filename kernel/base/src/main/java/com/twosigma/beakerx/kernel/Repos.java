@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.kernel;
 
-import com.google.common.collect.Maps;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Repos {
@@ -23,7 +23,7 @@ public class Repos {
   protected Map<String, String> repoNameWithURL;
 
   public Repos() {
-    this.repoNameWithURL = Maps.newHashMap();
+    this.repoNameWithURL = new HashMap<>();
   }
 
   public String add(String name, String url) {

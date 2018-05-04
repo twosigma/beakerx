@@ -19,13 +19,18 @@ export default class CellTooltip {
   node: HTMLElement;
   container: HTMLElement;
 
+  static TOOLTIP_ANIMATION_DELAY = 300;
+
   constructor(text: string, container: HTMLElement) {
     this.container = container;
     this.node = document.createElement('div');
     this.node.style.position = 'absolute';
     this.node.style.visibility = 'visible';
-    this.node.innerText = text;
     this.node.classList.add('p-DataGrid-tooltip');
+
+    if (text) {
+      this.node.innerText = text;
+    }
   }
 
   show(x: number, y: number): void {
@@ -38,17 +43,20 @@ export default class CellTooltip {
 
     this.container.appendChild(this.node);
     clearTimeout(this.timeoutId);
-    setTimeout(() => this.node.classList.add('visible'), 300);
+    this.timeoutId = setTimeout(() => this.node.classList.add('visible'), CellTooltip.TOOLTIP_ANIMATION_DELAY);
   }
 
   hide(): void {
     this.node.classList.remove('visible');
 
     clearTimeout(this.timeoutId);
-    this.timeoutId = setTimeout(() => {
-      if (this.container.contains(this.node)) {
-        this.container.removeChild(this.node);
-      }
-    }, 300);
+    this.timeoutId = setTimeout(
+      () => {
+        if (this.container.contains(this.node)) {
+          this.container.removeChild(this.node);
+        }
+      },
+      2 * CellTooltip.TOOLTIP_ANIMATION_DELAY
+    )
   }
 }

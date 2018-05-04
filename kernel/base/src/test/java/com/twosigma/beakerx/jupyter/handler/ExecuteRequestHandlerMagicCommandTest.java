@@ -65,7 +65,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     executeRequestHandler.handle(magicMessage);
     waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(5);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(8);
   }
 
   @Test
@@ -77,7 +77,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     executeRequestHandler.handle(magicMessage);
     waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(4);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(7);
   }
 
   @Test
@@ -90,7 +90,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     executeRequestHandler.handle(magicMessage);
     waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(5);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(8);
   }
 
   @Test
@@ -118,7 +118,6 @@ public class ExecuteRequestHandlerMagicCommandTest {
     assertThat(kernel.getPublishedMessages().size()).isEqualTo(4);
   }
 
-  @Test
   public void handleImportMagicCommandAndExecuteTheCode() throws Exception {
     //given
     String code = "" +
@@ -129,7 +128,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     executeRequestHandler.handle(magicMessage);
     waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(4);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(8);
   }
 
   @Test
@@ -153,7 +152,6 @@ public class ExecuteRequestHandlerMagicCommandTest {
     noCode(code);
   }
 
-  @Test
   public void noCodeToExecuteWithWhiteSpaces() throws InterruptedException {
     //given
     String code = "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR + "\n" +
@@ -169,7 +167,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     executeRequestHandler.handle(magicMessage);
     waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(4);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(7);
     //assertThat(kernel.getSentMessages().size()).isEqualTo(1);
     assertThat(kernel.getCode()).isNull();
   }
@@ -184,7 +182,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     executeRequestHandler.handle(magicMessage);
     waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(5);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(8);
     assertThat(kernel.getCode()).isEqualTo("code code code");
   }
 
@@ -200,7 +198,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     executeRequestHandler.handle(magicMessage);
     waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(5);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(8);
   }
 
   @Test
@@ -215,6 +213,6 @@ public class ExecuteRequestHandlerMagicCommandTest {
     executeRequestHandler.handle(magicMessage);
     waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(6);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(9);
   }
 }

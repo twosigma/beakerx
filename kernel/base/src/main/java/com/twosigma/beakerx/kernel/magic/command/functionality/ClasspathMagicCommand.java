@@ -15,26 +15,24 @@
  */
 package com.twosigma.beakerx.kernel.magic.command.functionality;
 
-import com.google.common.collect.Lists;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutputHTML;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 import static java.util.Collections.singletonList;
 
 public abstract class ClasspathMagicCommand implements MagicCommandFunctionality {
@@ -59,18 +57,18 @@ public abstract class ClasspathMagicCommand implements MagicCommandFunctionality
     }
   }
 
-  public MagicCommandOutput handleAddedJars(String path){
+  public MagicCommandOutcomeItem handleAddedJars(String path) {
     Collection<String> newAddedJars = addJars(path);
     if (newAddedJars.isEmpty()) {
       return new MagicCommandOutput(MagicCommandOutput.Status.OK);
     }
     String textMessage = "Added jar" + (newAddedJars.size() > 1 ? "s: " : ": ") + newAddedJars;
     MagicCommandOutput.Status status = MagicCommandOutcomeItem.Status.OK;
-    return new MagicCommandOutput(status, textMessage);
+    return new MagicCommandOutputHTML(status, textMessage);
   }
 
   private Collection<String> handlePath(String path) {
-    List<String> addedJarsName = Lists.newLinkedList();
+    List<String> addedJarsName = new LinkedList<>();
     Path currentPath = Paths.get(path);
     List<Path> paths = this.kernel.addJarsToClasspath(singletonList(new PathToJar(path)));
     if (!paths.isEmpty()) {
@@ -80,7 +78,7 @@ public abstract class ClasspathMagicCommand implements MagicCommandFunctionality
   }
 
   private List<String> handleWildCards(String path) {
-    List<String> addedJarsName = Lists.newLinkedList();
+    List<String> addedJarsName = new LinkedList<>();
     Map<Path, String> paths = getPaths(path);
     List<PathToJar> pathsToJars = paths.keySet().stream()
             .map(currentPath -> new PathToJar(currentPath.toString()))

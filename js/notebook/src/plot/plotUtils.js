@@ -132,6 +132,9 @@ define([
       return yAxisR && yAxisR.label === data.yAxis;
     },
     createColor : function(hexstr, opacity) {
+      if (hexstr === "none") {
+        return "none";
+      }
       if (hexstr == null) {
         hexstr = "#000000";
       }
@@ -889,12 +892,14 @@ define([
       var download = this.download;
       var context = canvas.getContext("2d");
       var image = new Image;
-      image.src = imgsrc;
       image.onload = function() {
         context.drawImage(image, 0, 0, canvas.width, canvas.height);
         download(canvas.toDataURL("image/png"), fileName);
         context.clearRect(0, 0, canvas.width, canvas.height);
+        image.remove();
       };
+
+      image.src = imgsrc;
     },
     addInlineStyles: function(element, extraStyles) {
       var styleEl = document.createElement('style');
@@ -983,7 +988,10 @@ define([
       return xhr.responseText;
     },
     convertToXHTML: function (html) {
-      return html.replace(/input[^>]+"/g, "$&" + '/');
+      var doc = document.implementation.createHTMLDocument('');
+      doc.documentElement.setAttribute('xmlns', doc.documentElement.namespaceURI);
+      doc.write(html);
+      return (new XMLSerializer).serializeToString(doc.body.firstChild);
     },
     download: function(url, fileName) {
       var a = document.createElement('a');

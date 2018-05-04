@@ -17,9 +17,9 @@
 import { expect } from 'chai';
 import CellTooltipManager from "@beakerx/tableDisplay/dataGrid/cell/CellTooltipManager";
 import modelStateMock from "../mock/modelStateMock";
-import {BeakerxDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import {BeakerXDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import CellTooltip from "@beakerx/tableDisplay/dataGrid/cell/CellTooltip";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 
 describe('CellTooltipManager', () => {
   let dataGrid;
@@ -29,7 +29,7 @@ describe('CellTooltipManager', () => {
 
   before(() => {
     dataStore = createStore({ ...modelStateMock, tooltips });
-    dataGrid = new BeakerxDataGrid({}, dataStore);
+    dataGrid = new BeakerXDataGrid({}, dataStore);
     cellTooltipManager = dataGrid.cellTooltipManager;
   });
 
@@ -46,9 +46,9 @@ describe('CellTooltipManager', () => {
     expect(cellTooltipManager.tooltips).to.equal(tooltips);
   });
 
-  it('should have the tooltip property', () => {
-    expect(cellTooltipManager).to.have.property('tooltip');
-    expect(cellTooltipManager.tooltip).to.be.an.instanceof(CellTooltip);
+  it('should have the activeTooltips property', () => {
+    expect(cellTooltipManager).to.have.property('activeTooltips');
+    expect(cellTooltipManager.activeTooltips).to.be.an('Array');
   });
 
   it('should implement the handleCellHovered method', () => {

@@ -16,23 +16,16 @@
 
 export default `
 <div>
-  <p class="alert alert-primary bg-info">
-    <strong>Leave the Personal Access Token field empty to publish as an anonymous gist.</strong>
-    <br />
-    <strong>Press enter or click the "Publish" button below.  A
-    window will open with the results, which you can share like
-    any URL.</strong>
-  </p>
   <form>
-    <div class="form-group">
+    <div class="form-group has-feedback">
       <label>Personal Access Token</label>
-      <input type="password" class="form-control">
+      <input required type="password" class="form-control">
     </div>
+    <p class="help-block">
+      <span>Enter a <a target="_blank" href="https://github.com/settings/tokens">Personal Access Token</a> to publish the notebook as a gist in your GitHub account.</span><br/>
+      <span>We recommend your Token have only the <strong><i>gist</i></strong> scope.</span><br/>
+      <span>For more information, read the <a  target="_blank" href="https://developer.github.com/apps/building-oauth-apps/scopes-for-oauth-apps/">documentation for scopes</a>.</span>
+    </p>
   </form>
-  <p class="help-block">
-    <span>Enter a <a target="_blank" href="https://github.com/settings/tokens">Personal Access Token</a> to publish the notebook as a gist in your GitHub account.</span><br />
-    <span>We recommend your Personal Access Token have only the <strong><i>gists</i></strong> scope.</span><br />
-    <span>You can read about scopes <a href="https://developer.github.com/apps/building-oauth-apps/scopes-for-oauth-apps/">here</a></span>
-  </p>
 </div>
 `;

@@ -19,7 +19,10 @@ var loadedModules = [
   require("./TabView"),
   require("./GridView"),
   require("./CyclingDisplayBox"),
-  require("./HTMLPre").default
+  require("./SparkUI").default,
+  require("./SparkStateProgress").default,
+  require("./HTMLPre").default,
+  require("./BxHTML").default
 ];
 
 for (var i in loadedModules) {

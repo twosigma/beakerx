@@ -18,7 +18,6 @@ package com.twosigma.beakerx.evaluator;
 import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.kernel.AddImportStatus;
-import com.twosigma.beakerx.kernel.Repos;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -71,4 +70,8 @@ public interface Evaluator {
   Path getTempFolder();
 
   Class<?> loadClass(String clazzName) throws ClassNotFoundException;
+
+  String getOutDir();
+
+  void registerCancelHook(Hook hook);
 }

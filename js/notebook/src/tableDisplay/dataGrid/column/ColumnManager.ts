@@ -15,25 +15,25 @@
  */
 
 import DataGridColumn from "./DataGridColumn";
-import { ITriggerOptions } from "../headerMenu/HeaderMenu";
-import { CellRenderer } from "@phosphor/datagrid";
+import {CellRenderer, DataModel} from "@phosphor/datagrid";
 import { chain, find } from '@phosphor/algorithm'
-import { BeakerxDataGrid } from "../BeakerxDataGrid";
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import { Signal } from '@phosphor/signaling';
 import {ICellData} from "../interface/ICell";
-import {IColumns} from "../interface/IColumn";
-import {BeakerxDataStore} from "../store/dataStore";
-import {selectColumnNames, selectHasIndex} from "../model/selectors";
-import {DataGridColumnsAction} from "../store/DataGridAction";
+import {IColumnPosition, IColumns} from "../interface/IColumn";
+import {BeakerXDataStore} from "../store/BeakerXDataStore";
 import {
-  selectBodyColumnNames,
-  selectColumnIndexByPosition,
-  selectIndexColumnNames
-} from "./selectors";
-import {
-  UPDATE_COLUMNS_FILTERS, UPDATE_COLUMNS_POSITION, UPDATE_COLUMNS_VISIBILITY
-} from "./reducer";
+  selectColumnNames, selectHasIndex, selectBodyColumnNames, selectIndexColumnNames
+} from "../model/selectors";
+import {default as DataGridAction, DataGridColumnsAction} from "../store/DataGridAction";
+import {selectColumnIndexByPosition} from "./selectors";
+import {UPDATE_COLUMNS_FILTERS} from "./reducer";
 import {COLUMN_TYPES, SORT_ORDER} from "./enums";
+import CellRegion = DataModel.CellRegion;
+import ICellConfig = CellRenderer.ICellConfig;
+import {DataGridHelpers} from "../dataGridHelpers";
+import sortColumnsByPositionCallback = DataGridHelpers.sortColumnsByPositionCallback;
+import {RESET_COLUMNS_ORDER, UPDATE_COLUMNS_VISIBLE} from "../model/reducer";
 
 export interface IBkoColumnsChangedArgs {
   type: COLUMN_CHANGED_TYPES,
@@ -42,19 +42,30 @@ export interface IBkoColumnsChangedArgs {
 }
 
 export enum COLUMN_CHANGED_TYPES {
-  'columnSort',
-  'columnMove'
+  'columnSort'
 }
 
 export default class ColumnManager {
-  store: BeakerxDataStore;
-  dataGrid: BeakerxDataGrid;
+  store: BeakerXDataStore;
+  dataGrid: BeakerXDataGrid;
   columns: IColumns = {};
   columnsChanged = new Signal<this, IBkoColumnsChangedArgs>(this);
 
-  constructor(dataGrid: BeakerxDataGrid) {
+  constructor(dataGrid: BeakerXDataGrid) {
     this.dataGrid = dataGrid;
     this.store = this.dataGrid.store;
+  }
+
+  static createPositionFromCell(config: ICellConfig|ICellData): IColumnPosition {
+    let region = ColumnManager.getColumnRegionByCell(config);
+
+    return { region, value: config.column };
+  }
+
+  static getColumnRegionByCell(
+    config: ICellConfig|ICellData|{ region: CellRegion }
+  ): DataModel.ColumnRegion {
+    return config.region === 'row-header' || config.region === 'corner-header' ? 'row-header' : 'body'
   }
 
   get bodyColumns() {
@@ -85,8 +96,11 @@ export default class ColumnManager {
   }
 
   getColumn(config: CellRenderer.ICellConfig): DataGridColumn {
-    const columnType = DataGridColumn.getColumnTypeByRegion(config.region);
-    const columnIndex = selectColumnIndexByPosition(this.store.state, columnType, config.column);
+    const columnType = DataGridColumn.getColumnTypeByRegion(config.region, config.column);
+    const columnIndex = selectColumnIndexByPosition(
+      this.store.state,
+      ColumnManager.createPositionFromCell(config)
+    );
 
     return this.columns[columnType][columnIndex];
   }
@@ -95,10 +109,8 @@ export default class ColumnManager {
     return this.columns[columnType][index];
   }
 
-  getColumnByPosition(columnType: COLUMN_TYPES, position: number) {
-    const columnIndex = selectColumnIndexByPosition(this.store.state, columnType, position);
-
-    return this.getColumnByIndex(columnType, columnIndex);
+  getColumnByPosition(position: IColumnPosition) {
+    return this.dataGrid.columnPosition.getColumnByPosition(position);
   }
 
   getColumnByName(columnName: string): DataGridColumn|undefined {
@@ -137,7 +149,6 @@ export default class ColumnManager {
     this.bodyColumns.forEach(resetFilterFn);
     this.indexColumns.forEach(resetFilterFn);
     this.dataGrid.rowManager.filterRows();
-    this.dataGrid.repaint();
   }
 
   showFilters(column?: DataGridColumn) {
@@ -148,14 +159,19 @@ export default class ColumnManager {
     this.showFilterInputs(true, column);
   }
 
+  blurColumnFilterInputs() {
+    this.bodyColumns.forEach(column => column.columnFilter.blur());
+    this.indexColumns.forEach(column => column.columnFilter.blur());
+  }
+
   updateColumnFilterNodes() {
     this.bodyColumns.forEach(column => column.columnFilter.updateInputNode());
     this.indexColumns.forEach(column => column.columnFilter.updateInputNode());
   }
 
   updateColumnMenuTriggers() {
-    this.bodyColumns.forEach(column => column.menu.updateTriggerPosition());
-    this.indexColumns.forEach(column => column.menu.updateTriggerPosition());
+    this.bodyColumns.forEach(column => column.menu && column.menu.updateTriggerPosition());
+    this.indexColumns.forEach(column => column.menu && column.menu.updateTriggerPosition());
   }
 
   takeColumnsByCells(startCell: ICellData, endCell: ICellData) {
@@ -163,9 +179,23 @@ export default class ColumnManager {
 
     if (endCell.type !== COLUMN_TYPES.index) {
       result = this.bodyColumns
-        .map(column => this.columns[column.type][selectColumnIndexByPosition(this.store.state, column.type, column.index)])
-        .filter(column => column.getVisible())
-        .slice(startCell.column, endCell.column + 1);
+        .filter(column => {
+          let position = column.getPosition();
+
+          if (!column.getVisible()) {
+            return false;
+          }
+
+          if (startCell.region === endCell.region) {
+            return position.value >= startCell.column && position.value <= endCell.column;
+          }
+
+          return (
+            position.region === 'row-header' && position.value >= startCell.column
+            || position.region === 'body' && position.value <= endCell.column
+          );
+        })
+        .sort(sortColumnsByPositionCallback);
     }
 
     if (startCell.type === COLUMN_TYPES.index) {
@@ -176,7 +206,7 @@ export default class ColumnManager {
   }
 
   takeColumnByCell(cellData: ICellData): DataGridColumn|null {
-    const column = this.dataGrid.columnManager.getColumnByPosition(cellData.type, cellData.column);
+    const column = this.getColumnByPosition(ColumnManager.createPositionFromCell(cellData));
 
     return column ? column : null;
   }
@@ -185,13 +215,14 @@ export default class ColumnManager {
     const columnNames = selectColumnNames(this.store.state);
     const hasIndex = selectHasIndex(this.store.state);
 
-    this.store.dispatch(new DataGridColumnsAction(UPDATE_COLUMNS_VISIBILITY, {
+    this.store.dispatch(new DataGridColumnsAction(UPDATE_COLUMNS_VISIBLE, {
       hasIndex,
-      value: columnNames.map(() => true),
+      value: columnNames.reduce((acc, name) => { acc[name] = true; return acc; }, {}),
       defaultValue: [0]
     }));
 
-    this.dataGrid.resize();
+    this.store.dispatch(new DataGridAction(RESET_COLUMNS_ORDER, { value: false }));
+    this.dataGrid.columnPosition.updateAll();
   }
 
   resetColumnsAlignment() {
@@ -201,18 +232,8 @@ export default class ColumnManager {
     this.dataGrid.model.reset();
   }
 
-  resetColumnsOrder() {
-    const columnNames = selectColumnNames(this.store.state);
-    const hasIndex = selectHasIndex(this.store.state);
-
-    this.store.dispatch(new DataGridColumnsAction(UPDATE_COLUMNS_POSITION, {
-      hasIndex,
-      value: columnNames.map((index, order) => order),
-      defaultValue: [0]
-    }));
-
-    this.dataGrid.resize();
-    this.dataGrid.model.reset();
+  resetColumnPositions() {
+    this.dataGrid.columnPosition.reset();
   }
 
   resetColumnStates() {
@@ -230,6 +251,11 @@ export default class ColumnManager {
     this.recalculateColumnsMinMax(this.indexColumns);
   }
 
+  createColumnMenus() {
+    this.indexColumns.forEach(column => column.createMenu());
+    this.bodyColumns.forEach(column => column.createMenu());
+  }
+
   private recalculateColumnsMinMax(columns: DataGridColumn[]) {
     columns.forEach(column => {
       column.addMinMaxValues();
@@ -238,10 +264,14 @@ export default class ColumnManager {
 
   private showFilterInputs(useSearch: boolean, column?: DataGridColumn) {
     const methodToCall = useSearch ? 'showSearchInput' : 'showFilterInput';
-    const showInputsFn = columnItem => columnItem.columnFilter[methodToCall](
-      column === columnItem,
-      this.dataGrid.getColumnOffset(columnItem.index, columnItem.type)
-    );
+    const showInputsFn = columnItem => {
+      const position = columnItem.getPosition();
+
+      columnItem.columnFilter[methodToCall](
+        column === columnItem,
+        this.dataGrid.getColumnOffset(position.value, position.region)
+      );
+    };
 
     this.dataGrid.model.setFilterHeaderVisible(true);
     this.bodyColumns.forEach(showInputsFn);
@@ -259,18 +289,10 @@ export default class ColumnManager {
   }
 
   private addColumn(name, index, type) {
-    let menuOptions: ITriggerOptions = {
-      x: this.dataGrid.getColumnOffset(index, type),
-      y: 0,
-      width: this.dataGrid.baseColumnHeaderSize,
-      height: this.dataGrid.baseColumnHeaderSize
-    };
-
     let column = new DataGridColumn({
-      index,
       name,
-      menuOptions,
-      type,
+      index,
+      type
     }, this.dataGrid, this);
 
     this.columns[type].push(column);
@@ -282,5 +304,4 @@ export default class ColumnManager {
 
     Signal.disconnectAll(this);
   }
-
 }

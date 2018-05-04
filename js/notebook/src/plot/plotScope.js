@@ -48,7 +48,9 @@ define([
   moment
 ) {
 
+  var PointShapeHelper = require('./std/PointShapeHelper.ts').default;
   var CONTEXT_MENU_DEBOUNCE_TIME = 350;
+  var QUICK_ZOOM_DEBOUNCE_TIME = 50;
 
   function PlotScope(wrapperId) {
     this.wrapperId = wrapperId;
@@ -1173,12 +1175,9 @@ define([
         .attr("id", "legendbox_" + id)
         .attr("class", "plot-legendbox")
         .attr("title", line.color == null ? "Element-based colored item" : "")
-        .css("background-color",
-          line.color == null ? "none" : clr)
-        .css("border",
-          line.stroke != null ? "1px " + sty + st_clr :
-            (line.color != null ? "1px " + sty + clr : "1px dotted gray"))
-        .appendTo(unit);
+        .appendTo(unit)
+        .append(PointShapeHelper.createLegendMarker(line));
+
       // legend text
       $("<label></label>").appendTo(unit)
         .attr("id", "legendtext_" + id)
@@ -1821,29 +1820,30 @@ define([
     var self = this;
 
     if (self.interactMode === "locate") {
-
       // trigger 'show' for save-as context menu
-      if (_.isMatch(self.mousep1, self.mousep2)
-          && self.saveAsMenuContainer
-          && self.saveAsMenuContainer.contextMenu) {
-
+      if (
+        _.isMatch(self.mousep1, self.mousep2)
+        && self.saveAsMenuContainer
+        && self.saveAsMenuContainer.contextMenu
+      ) {
         var mousePosition = d3.mouse(document.body);
-        self.saveAsMenuContainer.contextMenu({x: mousePosition[0], y: mousePosition[1]});
 
-      // draw rectangle for zoom-area and update chart
-      } else {
+        self.saveAsMenuContainer.contextMenu({x: mousePosition[0], y: mousePosition[1]});
+      } else if(self.shouldStartBoxZooming()) {
+        // draw rectangle for zoom-area and update chart
         self.locateFocus();
         self.locateBox = null;
         self.update();
         self.interactMode = "zoom";
+      } else {
+        self.locateBox = null;
       }
 
       self.enableZoomWheel();
 
-      var locateBox = self.getLocateBoxCoords();
       var isDispatchedAsSecond = self.zoomEventsDispatchOrder.indexOf('contextMenu') !== -1;
 
-      if (isDispatchedAsSecond && self.contexteMenuEvent && locateBox.w <= 1 && locateBox.h <= 1) {
+      if (isDispatchedAsSecond && self.contexteMenuEvent && !self.shouldStartBoxZooming()) {
         self.jqcontainer[0] && self.jqcontainer[0].dispatchEvent(self.contexteMenuEvent);
       }
 
@@ -1856,6 +1856,14 @@ define([
     }
 
     self.jqsvg.css("cursor", "auto");
+  };
+
+  PlotScope.prototype.shouldStartBoxZooming = function() {
+    return (
+      Math.abs(this.mousep1.x - this.mousep2.x) > 10
+      && Math.abs(this.mousep1.y - this.mousep2.y) > 10
+      && moment() - this.zoomStarted > QUICK_ZOOM_DEBOUNCE_TIME
+    );
   };
 
   PlotScope.prototype.fixFocus = function(focus) {
@@ -2451,7 +2459,11 @@ define([
       .node()
       .cloneNode(true);
     svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    svg.setAttribute('class', 'svg-export');
+    if (document.body.classList.contains('improveFonts')) {
+      svg.setAttribute('class', 'svg-export improveFonts');
+    } else {
+      svg.setAttribute('class', 'svg-export');
+    }
 
     var plotTitle = self.jqplottitle;
     var titleOuterHeight = plotUtils.getActualCss(plotTitle, 'outerHeight', true);
@@ -2516,8 +2528,8 @@ define([
     self.canvas.width = svg.getAttribute("width") * scale;
     self.canvas.height = svg.getAttribute("height") * scale;
 
-    var imgsrc = 'data:image/svg+xml;base64,' +
-                 btoa(unescape(encodeURIComponent(plotUtils.convertToXHTML(svg.outerHTML))));
+    var html = plotUtils.convertToXHTML(svg.outerHTML);
+    var imgsrc = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html)));
     var fileName = _.isEmpty(self.stdmodel.title) ? 'plot' : self.stdmodel.title;
     plotUtils.drawPng(self.canvas, imgsrc, fileName + ".png");
   };
@@ -2529,58 +2541,10 @@ define([
     var legendContainer = self.jqlegendcontainer.find("#plotLegend");
     var containerLeftMargin = parseFloat(self.jqcontainer.css("margin-left"));
 
-    var W = plotUtils.outerWidth(self.jqcontainer) + containerLeftMargin + 1;//add 1 because jQuery round size
-    var H = plotUtils.outerHeight(self.jqcontainer) + titleOuterHeight + 1;
-    var legendW = plotUtils.getActualCss(legendContainer, 'outerWidth', true) || 0;
-    var legendH = plotUtils.getActualCss(legendContainer, 'outerHeight', true) || 0;
-    var legendPosition = self.stdmodel.legendPosition;
+    var W = plotUtils.outerWidth(self.jqlegendcontainer);
+    var H = plotUtils.outerHeight(self.jqlegendcontainer);
+    H += titleOuterHeight;
 
-    if (!legendPosition.position) {
-      if (legendPosition.x + legendW > W) {
-        W += legendPosition.x + legendW - W;
-      }
-      if ((legendPosition.y + legendH) > H) {
-        H += legendPosition.y + legendH - H;
-      }
-    }
-
-    if (legendPosition.position === "LEFT") {
-      plotUtils.translateChildren(svg, legendW + margin, 0);
-      W += legendW + margin;
-    }
-    if (legendPosition.position === "RIGHT") {
-      W += legendW + margin;
-    }
-    if (legendPosition.position === "BOTTOM") {
-      H += legendH + margin;
-    }
-    if (legendPosition.position === "TOP") {
-      plotUtils.translateChildren(svg, 0, legendH + margin);
-      H += legendH + margin;
-    }
-    if (isHorizontal) {
-      if (["TOP_LEFT", "TOP_RIGHT"].indexOf(legendPosition.position) !== -1) {
-        plotUtils.translateChildren(svg, 0, legendH + margin);
-        H += legendH + margin;
-      }
-      if (["BOTTOM_LEFT", "BOTTOM_RIGHT"].indexOf(legendPosition.position) !== -1) {
-        H += legendH + margin;
-      }
-      if (legendPosition.position !== "LEFT") {
-        plotUtils.translateChildren(svg, containerLeftMargin, 0);
-      }
-    } else {
-      if (["TOP_LEFT", "BOTTOM_LEFT"].indexOf(legendPosition.position) !== -1) {
-        plotUtils.translateChildren(svg, legendW + margin, 0);
-        W += legendW + margin;
-      }
-      if (["TOP_RIGHT", "BOTTOM_RIGHT"].indexOf(legendPosition.position) !== -1) {
-        W += legendW + margin;
-      }
-      if (["LEFT", "TOP_LEFT", "BOTTOM_LEFT"].indexOf(legendPosition.position) < 0) {
-        plotUtils.translateChildren(svg, containerLeftMargin, 0);
-      }
-    }
     svg.setAttribute("width", W);
     svg.setAttribute("height", H);
     $(svg).css("width", W);
@@ -2810,7 +2774,8 @@ define([
       color: dat.color,
       color_opacity: dat.color_opacity,
       stroke: dat.stroke,
-      stroke_opacity: dat.stroke_opacity
+      stroke_opacity: dat.stroke_opacity,
+      shape: dat.type === "point" ? dat.shape : 'rect',
     };
     if (dat.isLodItem === true) {
       line.lodDataIds = [i];

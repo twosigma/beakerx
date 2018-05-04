@@ -38,6 +38,14 @@ export const getTypeByName = (typeName: string): number => {
 };
 
 export function getDisplayType(type: ALL_TYPES, stringFormatForType?: any, stringFormatForColumn?: any) {
+  if (stringFormatForColumn && stringFormatForColumn.type === 'value') {
+    return ALL_TYPES.string;
+  }
+
+  if (type === ALL_TYPES.string && stringFormatForColumn && stringFormatForColumn.type) {
+    return ALL_TYPES[stringFormatForColumn.type] || ALL_TYPES.string;
+  }
+
   if (type === ALL_TYPES.datetime || type === ALL_TYPES.time) {
     return ALL_TYPES.datetime;
   }

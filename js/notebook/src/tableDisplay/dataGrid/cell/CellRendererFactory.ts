@@ -14,17 +14,24 @@
  *  limitations under the License.
  */
 
-import { BeakerxDataGrid } from "../BeakerxDataGrid";
-import BeakerxCellRenderer from "./BeakerxCellRenderer";
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
+import BeakerXCellRenderer from "./BeakerXCellRenderer";
+import {ALL_TYPES} from "../dataTypes";
+import HTMLCellRenderer from "./HTMLCellRenderer";
 
 export class CellRendererFactory {
-  private dataGrid: BeakerxDataGrid;
+  private dataGrid: BeakerXDataGrid;
 
-  constructor(dataGrid: BeakerxDataGrid) {
+  constructor(dataGrid: BeakerXDataGrid) {
     this.dataGrid = dataGrid;
   }
 
-  getRenderer() {
-    return new BeakerxCellRenderer(this.dataGrid);
+  getRenderer(dataType?: ALL_TYPES) {
+    switch (dataType) {
+      case ALL_TYPES.html:
+        return new HTMLCellRenderer(this.dataGrid);
+      default:
+        return new BeakerXCellRenderer(this.dataGrid);
+    }
   }
 }

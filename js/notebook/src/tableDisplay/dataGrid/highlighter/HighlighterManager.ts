@@ -20,29 +20,35 @@ import IHihglighterState, {
 } from "../interface/IHighlighterState";
 import Highlighter from "./Highlighter";
 import HighlighterFactory from "./HighlighterFactory";
-import { BeakerxDataGrid } from "../BeakerxDataGrid";
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import { each, iter, filter, toArray } from "@phosphor/algorithm";
 import { CellRenderer } from "@phosphor/datagrid";
 import {DEFAULT_CELL_BACKGROUND} from "../style/dataGridStyle";
+import DataGridColumn from "../column/DataGridColumn";
+import {selectCellHighlighters} from "../model/selectors/model";
+import {DataGridColumnAction} from "../store/DataGridAction";
+import {ADD_COLUMN_HIGHLIGHTER, REMOVE_COLUMN_HIGHLIGHTER} from "../model/reducer";
 
 export default class HighlighterManager {
-  highlightersState: IHihglighterState[];
   highlighters: Highlighter[];
-  dataGrid: BeakerxDataGrid;
+  dataGrid: BeakerXDataGrid;
+  cachedHighlighters: Map<string, Highlighter>;
 
-  constructor(dataGrid: BeakerxDataGrid, highlightersState: IHihglighterState[]) {
+  constructor(dataGrid: BeakerXDataGrid) {
     this.dataGrid = dataGrid;
-    this.highlightersState = [...highlightersState];
     this.highlighters = [];
+    this.cachedHighlighters = new Map();
 
     this.createHighlighter = this.createHighlighter.bind(this);
     this.registerHighlighter = this.registerHighlighter.bind(this);
     this.unregisterHighlighter = this.unregisterHighlighter.bind(this);
 
-    this.createHighlighters(this.highlightersState);
+    this.createHighlighters();
   }
 
-  createHighlighters(state: IHihglighterState[]) {
+  createHighlighters() {
+    const state = selectCellHighlighters(this.dataGrid.store.state);
+
     state.forEach(this.createHighlighter);
   }
 
@@ -51,6 +57,14 @@ export default class HighlighterManager {
 
     if (!column) {
       return;
+    }
+
+    const highlighter = this.cachedHighlighters.get(
+      this.getHighlighterKey(column, state.type)
+    );
+
+    if (highlighter) {
+      return this.registerHighlighter(highlighter);
     }
 
     this.registerHighlighter(HighlighterFactory.getHighlighter(state, column));
@@ -65,13 +79,19 @@ export default class HighlighterManager {
       this.highlighters.unshift(highlighter);
     } else {
       this.highlighters.push(highlighter);
+      this.cachedHighlighters.set(
+        this.getHighlighterKey(highlighter.column, highlighter.state.type),
+        highlighter
+      );
     }
   }
 
   unregisterHighlighter(highlighter: Highlighter) {
     const index = this.highlighters.indexOf(highlighter);
 
-    index !== -1 && this.highlighters.splice(index, 1);
+    if (index !== -1) {
+      this.highlighters.splice(index, 1);
+    }
   }
 
   getColumnHighlighters(column, highlighterType?: HIGHLIGHTER_TYPE): Highlighter[] {
@@ -86,19 +106,41 @@ export default class HighlighterManager {
   }
 
   addColumnHighlighter(column, highlighterType: HIGHLIGHTER_TYPE) {
-    this.removeColumnHighlighter(column, highlighterType);
-    this.registerHighlighter(HighlighterFactory.getHighlighter({
+    const highlighterState: IHihglighterState = {
       ...HighlighterFactory.defaultHighlighterState,
       type: highlighterType,
-      style: HIGHLIGHTER_STYLE.SINGLE_COLUMN,
+      minVal: column.minValue,
+      maxVal: column.maxValue,
       colName: column.name
-    }, column));
+    };
+
+    this.removeColumnHighlighter(column, highlighterType);
+    this.dataGrid.store.dispatch(new DataGridColumnAction(ADD_COLUMN_HIGHLIGHTER, {
+      columnIndex: column.index,
+      columnName: column.name,
+      value: highlighterState
+    }));
+
+    this.registerHighlighter(
+      this.cachedHighlighters.get(this.getHighlighterKey(column, highlighterType))
+      || HighlighterFactory.getHighlighter(highlighterState, column)
+    );
   }
 
   removeColumnHighlighter(column, highlighterType?: HIGHLIGHTER_TYPE) {
     const highlighters = this.getColumnHighlighters(column, highlighterType);
 
-    each(highlighters, this.unregisterHighlighter);
+    each(highlighters, (highlighter) => {
+      this.dataGrid.store.dispatch(new DataGridColumnAction(
+        REMOVE_COLUMN_HIGHLIGHTER,
+        {
+          value: highlighter.state,
+          columnName: column.name,
+          columnIndex: column.index
+        }
+      ));
+      this.unregisterHighlighter(highlighter);
+    });
   }
 
   toggleColumnHighlighter(column, highlighterType: HIGHLIGHTER_TYPE) {
@@ -133,5 +175,9 @@ export default class HighlighterManager {
     );
 
     return background;
+  }
+
+  private getHighlighterKey(column: DataGridColumn, highlighterType: string): string {
+    return `${column.index}_${column.type}_${highlighterType}`;
   }
 }

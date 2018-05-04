@@ -18,7 +18,9 @@ exports.config = {
   specs: [
     './js/**/*.js'
   ],
-  exclude: [],
+  exclude: [
+    './js/nbviewer/*.js'
+  ],
   maxInstances: 1,
   capabilities: [{
     maxInstances: 1,

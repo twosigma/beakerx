@@ -22,6 +22,7 @@ describe('(Groovy) Output Containers ', function () {
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/groovy/OutputContainersTest.ipynb');
+    beakerxPO.openUIWindow();
   });
 
   afterAll(function () {
@@ -35,8 +36,14 @@ describe('(Groovy) Output Containers ', function () {
   }
 
   function widgetTableIsVisible(widget){
-    return widget.isVisible('div.bko-table');
+    return widget.isVisible('div.p-Widget.p-DataGrid-viewport');
   }
+
+  describe('UI options. ', function () {
+    it("Use new table widget. ", function () {
+      beakerxPO.setDataGridForTable(true, false);
+    });
+  });
 
   describe('(Groovy) OutputCell.HIDDEN ', function() {
     it("Cell doesn't have output", function () {
@@ -132,7 +139,7 @@ describe('(Groovy) Output Containers ', function () {
   function waitWidgetTableIsVisible(output, lastId){
     var widgetId;
     browser.waitUntil(function() {
-      var widget = output.$('div.widget-box > div.p-Widget > div');
+      var widget = output.$('div.widget-box > div.p-Widget');
       widgetId = widget.getAttribute('id');
       return (lastId != widgetId) && widgetTableIsVisible(widget);
     });
@@ -163,11 +170,11 @@ describe('(Groovy) Output Containers ', function () {
       time3 = new Date().getTime();
     });
 
-    it('Cycling period approximately equals 2 seconds ', function () {
-      expect(time2 - time1).toBeGreaterThan(1500);
-      expect(time2 - time1).toBeLessThan(2500);
-      expect(time3 - time2).toBeGreaterThan(1500);
-      expect(time3 - time2).toBeLessThan(2500);
+    it('Cycling period approximately equals 3 seconds ', function () {
+      expect(time2 - time1).toBeGreaterThan(2500);
+      expect(time2 - time1).toBeLessThan(3500);
+      expect(time3 - time2).toBeGreaterThan(2500);
+      expect(time3 - time2).toBeLessThan(3500);
     });
   });
 

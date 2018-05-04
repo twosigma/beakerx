@@ -15,7 +15,7 @@
  */
 
 import * as d3scale from 'd3-scale';
-import { formatColor, getDefaultColor } from "../style/dataGridStyle";
+import {DEFAULT_CELL_BACKGROUND, formatColor, getDefaultColor} from "../style/dataGridStyle";
 import Highlighter from "./Highlighter";
 import IHihglighterState from "../interface/IHighlighterState";
 import DataGridColumn from "../column/DataGridColumn";
@@ -36,6 +36,12 @@ export default class HeatmapHighlighter extends Highlighter {
   }
 
   getBackgroundColor(config: CellRenderer.ICellConfig) {
-    return this.colorScale(this.getValueToHighlight(config));
+    const value = this.getValueToHighlight(config);
+
+    if (isNaN(value)) {
+      return DEFAULT_CELL_BACKGROUND;
+    }
+
+    return this.colorScale(value);
   }
 }

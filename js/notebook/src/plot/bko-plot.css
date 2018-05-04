@@ -128,7 +128,7 @@
   height: 10px;
   margin: 0px 5px;
   display: inline-block;
-  vertical-align: middle;
+  vertical-align: baseline;
 }
 
 .plot-legendcheckbox {
@@ -310,12 +310,23 @@
   padding: 0.5em;
 }
 
+.svg-export .plot-legendcheckbox {
+  display: none;
+}
+
+.svg-export {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.svg-export.improveFonts {
+  font-family: "Lato", Helvetica, sans-serif;
+}
+
 .improveFonts .plot-plotcontainer,
 .improveFonts .plot-label,
 .improveFonts .plot-xylabel,
 .improveFonts .plot-legend-label,
 .improveFonts .plot-title,
-.improveFonts .svg-export,
 .improveFonts .heatmap-tooltip {
   font-family: "Lato", Helvetica, sans-serif;
 }

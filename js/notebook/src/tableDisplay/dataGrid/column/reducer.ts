@@ -26,11 +26,9 @@ import {COLUMN_TYPES} from "./enums";
 export const UPDATE_COLUMNS_STATES = 'UPDATE_COLUMNS_STATES';
 export const UPDATE_COLUMN_STATE = 'UPDATE_COLUMNS_STATE';
 export const UPDATE_COLUMNS_VISIBILITY = 'UPDATE_COLUMNS_VISIBILITY';
-export const UPDATE_COLUMNS_POSITION = 'UPDATE_COLUMNS_POSITION';
-export const UPDATE_COLUMN_POSITION = 'UPDATE_COLUMN_POSITION';
+export const UPDATE_COLUMN_POSITIONS = 'UPDATE_COLUMN_POSITIONS';
 export const UPDATE_COLUMNS_TYPES = 'UPDATE_COLUMNS_TYPES';
 export const UPDATE_COLUMNS_NAMES = 'UPDATE_COLUMNS_NAMES';
-export const UPDATE_COLUMN_VISIBILITY = 'UPDATE_COLUMN_VISIBILITY';
 export const UPDATE_COLUMNS_FILTERS = 'UPDATE_COLUMNS_FILTERS';
 export const UPDATE_COLUMN_FILTER = 'UPDATE_COLUMN_FILTER';
 export const UPDATE_COLUMN_HORIZONTAL_ALIGNMENT = 'UPDATE_COLUMN_HORIZONTAL_ALIGNMENT';
@@ -39,8 +37,6 @@ export const UPDATE_COLUMN_DISPLAY_TYPE = 'UPDATE_COLUMN_DISPLAY_TYPE';
 export const UPDATE_COLUMN_SORT_ORDER = 'UPDATE_COLUMN_SORT_ORDER';
 export const UPDATE_COLUMN_WIDTH = 'UPDATE_COLUMN_WIDTH';
 
-const reduceColumnsVisibility = reduceColumnsState('visible');
-const reduceColumnsPosition = reduceColumnsState('position');
 const reduceColumnsNames = reduceColumnsState('name');
 const reduceColumnsTypes = reduceColumnsState('dataTypeName');
 const reduceColumnsFilters = reduceColumnsState('filter');
@@ -62,17 +58,8 @@ const columnReducer: Reducer<IColumnsState> = (
     case UPDATE_COLUMN_STATE:
       return reduceColumnState(state, action);
 
-    case UPDATE_COLUMNS_VISIBILITY:
-      return reduceColumnsVisibility(state, action);
-
-    case UPDATE_COLUMN_VISIBILITY:
-      return reduceColumnVisibility(state, action);
-
-    case UPDATE_COLUMNS_POSITION:
-      return reduceColumnsPosition(state, action);
-
-    case UPDATE_COLUMN_POSITION:
-      return reduceColumnPosition(state, action);
+    case UPDATE_COLUMN_POSITIONS:
+      return reduceColumnPositions(state, action);
 
     case UPDATE_COLUMNS_TYPES:
       return reduceColumnsTypes(state, action);
@@ -162,49 +149,74 @@ function reduceColumnStateProperty(property: string) {
   };
 }
 
-function reduceColumnVisibility(state, action) {
-  const newState: IColumnsState = reduceColumnStateProperty('visible')(state, action);
-  const visibleStates: IColumnState[] = Array.from(newState.values()).filter(
-    columnState => columnState.columnType === COLUMN_TYPES.body && columnState.visible
+function reduceColumnPositions(state: IColumnsState, action: DataGridColumnsAction) {
+  const { value, hasIndex, columnsFrozenNames = [], columnsVisible = {} } = action.payload;
+  const columnsFrozenCopy = [...columnsFrozenNames];
+  const stateArray = Array.from(state.values());
+  const order = [...value];
+  const hiddenStates: IColumnState[] = stateArray.filter(
+    columnState => columnsVisible[columnState.name] === false
   );
 
-  // Move column to the end or behind the visible columns
-  return reduceColumnPosition(newState, new DataGridColumnAction(
-    UPDATE_COLUMN_POSITION,
-    {
-      ...action.payload,
-      value: action.payload.value ? visibleStates.length - 1 : visibleStates.length
+
+  // Remove frozen columns
+  if (columnsFrozenCopy.length > 0) {
+    columnsFrozenCopy.sort((name1, name2) => {
+      let index1 = order.indexOf(name1);
+      let index2 = order.indexOf(name2);
+
+      return index1 - index2;
+    });
+
+    columnsFrozenCopy.forEach(name => {
+      order.splice(order.indexOf(name), 1)[0];
+    });
+  }
+
+  // Move hidden columns outside the visible range
+  hiddenStates.forEach((state, index) => {
+    let position = order.indexOf(state.name);
+    let frozenPosition = columnsFrozenCopy.indexOf(state.name);
+
+    if (position !== -1) {
+      order.splice(position, 1);
+      order.push(state.name);
     }
-  ));
-}
 
-function reduceColumnPosition(state, action) {
-  const { columnType, columnIndex, value, hasIndex } = action.payload;
-  const order = createBodyColumnsOrderArray(state, columnType);
-  const lastPosition = order.indexOf(columnIndex);
-  const resultPositions: number[] = [];
-
-  order.splice(lastPosition, 1);
-  order.splice(value, 0, columnIndex);
-  order.forEach((index, position) => { resultPositions[index] = position; });
-
-  return reduceColumnsPosition(state, new DataGridColumnsAction(UPDATE_COLUMNS_POSITION, {
-    hasIndex,
-    value: resultPositions,
-    defaultValue: [0]
-  }));
-}
-
-function createBodyColumnsOrderArray(state, columnType): number[] {
-  const order: number[] = [];
-
-  state.forEach((columnState) => {
-    if (columnState.columnType === columnType) {
-      order[columnState.position] = columnState.index
+    if (frozenPosition !== -1) {
+      columnsFrozenCopy.splice(frozenPosition, 1);
+      columnsFrozenCopy.push(state.name);
     }
   });
 
-  return order;
+  const newState = new Map<string, IColumnState>(state);
+
+  newState.forEach((columnState, key, map) => {
+    if (columnState.columnType !== COLUMN_TYPES.body) {
+      return true;
+    }
+
+    let positionInBody = order.indexOf(columnState.name);
+    let positionInFrozen = columnsFrozenCopy.indexOf(columnState.name) + 1;
+
+    if (positionInFrozen === 0 && positionInBody === -1) {
+      positionInBody = order.push(columnState.name) - 1;
+    }
+
+    if (hasIndex) {
+      positionInBody -= 1;
+    }
+
+    map.set(key, {
+      ...columnState,
+      position: {
+        region: positionInFrozen === 0 ? 'body' : 'row-header',
+        value: positionInFrozen === 0 ? positionInBody : positionInFrozen,
+      }
+    });
+  });
+
+  return newState;
 }
 
 export default columnReducer;

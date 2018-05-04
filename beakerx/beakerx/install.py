@@ -34,7 +34,7 @@ from distutils import log
 def _all_kernels():
     kernels = pkg_resources.resource_listdir(
         'beakerx', 'kernel')
-    return [kernel for kernel in kernels if kernel != 'base']
+    return [kernel for kernel in kernels if (kernel != 'base' and kernel !='sparkex')]
 
 
 def _base_classpath_for(kernel):
@@ -52,6 +52,7 @@ def _uninstall_nbextension():
     subprocess.check_call(["jupyter", "nbextension", "uninstall", "beakerx", "--py", "--sys-prefix"])
     subprocess.check_call(["jupyter", "serverextension", "disable", "beakerx", "--py", "--sys-prefix"])
 
+
 def _install_nbextension():
     if sys.platform == 'win32':
         subprocess.check_call(["jupyter", "nbextension", "install", "beakerx", "--py", "--sys-prefix"])
@@ -61,6 +62,20 @@ def _install_nbextension():
     subprocess.check_call(["jupyter", "nbextension", "enable", "beakerx", "--py", "--sys-prefix"])
 
     subprocess.check_call(["jupyter", "serverextension", "enable", "beakerx", "--py", "--sys-prefix"])
+
+
+def _install_labextensions(lab):
+    if lab:
+        subprocess.check_call(["jupyter", "labextension", "install", "@jupyter-widgets/jupyterlab-manager"])
+        subprocess.check_call(["jupyter", "labextension", "install", "beakerx-jupyterlab"])
+        subprocess.check_call(["jupyter", "labextension", "install", "beakerx-jupyterlab-js"])
+
+
+def _uninstall_labextensions(lab):
+    if lab:
+        subprocess.check_call(["jupyter", "labextension", "uninstall", "beakerx-jupyterlab-js"])
+        subprocess.check_call(["jupyter", "labextension", "uninstall", "beakerx-jupyterlab"])
+        subprocess.check_call(["jupyter", "labextension", "uninstall", "@jupyter-widgets/jupyterlab-manager"])
 
 
 def _copy_tree(src, dst):
@@ -125,10 +140,18 @@ def _uninstall_kernels():
 def _install_magics():
     log.info("installing groovy magic for python...")
     dir_path = os.path.join(sys.prefix, 'etc', 'ipython')
-    pathlib.Path(dir_path).mkdir(parents=True, exist_ok=True)
+    os.makedirs(dir_path, exist_ok=True)
     with open(os.path.join(dir_path, 'ipython_config.py'), 'w+') as ipython_config:
         ipython_config.write("c = get_config()\n")
-        ipython_config.write("c.InteractiveShellApp.extensions = ['beakerx_magics.groovy_magic']\n")
+        ipython_config.write("c.InteractiveShellApp.extensions = ["
+                             "'beakerx_magics.kernel_magic',\n"
+                             "'beakerx_magics.groovy_magic',\n"
+                             "'beakerx_magics.clojure_magic',\n"
+                             "'beakerx_magics.kotlin_magic',\n"
+                             "'beakerx_magics.scala_magic',\n"
+                             "'beakerx_magics.sql_magic',\n"
+                             "'beakerx_magics.java_magic'\n"
+                             "]\n")
 
 def _set_conf_privileges():
     config_path = os.path.join(paths.jupyter_config_dir(), 'beakerx.json')
@@ -185,12 +208,14 @@ def make_parser():
 
 def _disable_beakerx(args):
     _uninstall_nbextension()
+    _uninstall_labextensions(args.lab)
     _uninstall_kernels()
     _install_kernelspec_manager(args.prefix, disable=True)
 
 
 def _install_beakerx(args):
     _install_nbextension()
+    _install_labextensions(args.lab)
     _install_kernels()
     _install_css()
     _copy_icons()

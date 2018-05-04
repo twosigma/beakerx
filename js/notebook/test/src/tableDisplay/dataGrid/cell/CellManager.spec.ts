@@ -15,11 +15,11 @@
  */
 
 import { expect } from 'chai';
-import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import modelStateMock from "../mock/modelStateMock";
 import CellManager from "@beakerx/tableDisplay/dataGrid/cell/CellManager";
 import cellDataMock from "../mock/cellDataMock";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/dataStore";
+import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 
 describe('CellManager', () => {
   let dataGrid;
@@ -29,7 +29,7 @@ describe('CellManager', () => {
 
   before(() => {
     dataStore = createStore(modelStateMock);
-    dataGrid = new BeakerxDataGrid({}, dataStore);
+    dataGrid = new BeakerXDataGrid({}, dataStore);
     cellManager = dataGrid.cellManager;
     cellSelectionManager = dataGrid.cellSelectionManager;
     cellSelectionManager.setStartCell(cellDataMock);
@@ -105,8 +105,8 @@ describe('CellManager', () => {
     expect(cellManager).to.have.property('exportCellsTo');
     expect(cellManager.exportCellsTo).to.be.a('Function');
     const cells = cellManager.getSelectedCells();
-    const resultCsv = `"test","column"\n"1","2"\n`;
-    const resultTabs = `test\tcolumn\n1\t2\n`;
+    const resultCsv = `"test","column"\n"1",":)"\n`;
+    const resultTabs = `test\tcolumn\n1\t:)\n`;
 
     expect(cellManager.exportCellsTo(cells, 'csv')).to.equal(resultCsv);
     expect(cellManager.exportCellsTo(cells, 'tabs')).to.equal(resultTabs);
@@ -115,7 +115,7 @@ describe('CellManager', () => {
   it('should implement getCSVFromCells method', () => {
     expect(cellManager).to.have.property('getCSVFromCells');
     expect(cellManager.getCSVFromCells).to.be.a('Function');
-    const result = `"test","column"\n"1","2"\n`;
+    const result = `"test","column"\n"1",":)"\n`;
 
     expect(cellManager.getCSVFromCells(true)).to.equal(result);
   });

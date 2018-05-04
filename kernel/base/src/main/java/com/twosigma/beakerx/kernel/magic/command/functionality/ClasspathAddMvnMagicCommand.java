@@ -20,16 +20,19 @@ import com.twosigma.beakerx.kernel.Repos;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver;
 import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver.AddMvnCommandResult;
+import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver.Dependency;
 import com.twosigma.beakerx.kernel.magic.command.PomFactory;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
+
+import static java.util.Arrays.asList;
 
 public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
 
   public static final String ADD = "add";
   public static final String MVN = "mvn";
   public static final String CLASSPATH_ADD_MVN = CLASSPATH + " " + ADD + " " + MVN;
-  public static final String ADD_MVN_FORMAT_ERROR_MESSAGE = "Wrong command format, should be" + CLASSPATH_ADD_MVN + " group name version [type] or " + CLASSPATH_ADD_MVN + " group:name:version:[type]";
+  public static final String ADD_MVN_FORMAT_ERROR_MESSAGE = "Wrong command format, should be" + CLASSPATH_ADD_MVN + " group name version [type classifier] or " + CLASSPATH_ADD_MVN + " group:name:version[:type:classifier]";
 
   private MavenJarResolver.ResolverParams commandParams;
   private PomFactory pomFactory;
@@ -70,44 +73,28 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
     return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, result.getErrorMessage());
   }
 
-  private MavenJarResolver.Dependency getDependency(String[] split) {
+  private Dependency getDependency(String[] split) {
     if (isGradleFormat(split)) {
       String[] valuesFromGradlePattern = split[3].split(":");
-      return getDepForGradle(valuesFromGradlePattern);
+      return Dependency.create((asList(valuesFromGradlePattern)));
     } else {
-      return getDepForMaven(split);
+      return Dependency.create(asList(split).subList(3, split.length));
     }
   }
 
   private boolean isMavenFormat(String[] split) {
-    return split.length == 6 || split.length == 7;
+    return split.length > 5;
   }
 
   private boolean isGradleFormat(String[] split) {
     if (split.length == 4) {
       String[] valuesFromGradlePattern = split[3].split(":");
-      return valuesFromGradlePattern.length == 3 || valuesFromGradlePattern.length == 4;
+      return valuesFromGradlePattern.length > 2;
     }
     return false;
   }
 
-  private MavenJarResolver.Dependency getDepForMaven(String[] split) {
-    if (split.length == 7) {
-      return new MavenJarResolver.Dependency(split[3], split[4], split[5], split[6]);
-    } else {
-      return new MavenJarResolver.Dependency(split[3], split[4], split[5]);
-    }
-  }
-
-  private MavenJarResolver.Dependency getDepForGradle(String[] valuesFromGradlePattern) {
-    if (valuesFromGradlePattern.length == 4) {
-      return new MavenJarResolver.Dependency(valuesFromGradlePattern[0], valuesFromGradlePattern[1], valuesFromGradlePattern[2], valuesFromGradlePattern[3]);
-    } else {
-      return new MavenJarResolver.Dependency(valuesFromGradlePattern[0], valuesFromGradlePattern[1], valuesFromGradlePattern[2]);
-    }
-  }
-
-  private AddMvnCommandResult retrieve(MavenJarResolver.Dependency dependency, MavenJarResolver classpathAddMvnCommand, MvnLoggerWidget progress) {
+  private AddMvnCommandResult retrieve(Dependency dependency, MavenJarResolver classpathAddMvnCommand, MvnLoggerWidget progress) {
     return classpathAddMvnCommand.retrieve(dependency, progress);
   }
 

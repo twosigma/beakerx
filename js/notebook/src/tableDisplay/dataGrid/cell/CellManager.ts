@@ -14,18 +14,24 @@
  *  limitations under the License.
  */
 
-import {BeakerxDataGrid} from "../BeakerxDataGrid";
+import {BeakerXDataGrid} from "../BeakerXDataGrid";
 import * as bkUtils from '../../../shared/bkUtils';
 import {IRangeCells} from "./CellSelectionManager";
 import {CellRenderer, DataModel} from "@phosphor/datagrid";
 import {COLUMN_TYPES} from "../column/enums";
 import {ICellData} from "../interface/ICell";
 import {DataGridHelpers} from "../dataGridHelpers";
-import throttle = DataGridHelpers.throttle;
 import isUrl = DataGridHelpers.isUrl;
 
+interface ICellDataOptions {
+  row: number,
+  column: number,
+  value: any,
+  region: DataModel.CellRegion
+}
+
 export default class CellManager {
-  dataGrid: BeakerxDataGrid;
+  dataGrid: BeakerXDataGrid;
   hoveredCellData: ICellData;
 
   static cellsEqual(cellData: ICellData, secondCellData: ICellData): boolean {
@@ -37,14 +43,19 @@ export default class CellManager {
     );
   }
 
-  constructor(dataGrid: BeakerxDataGrid) {
+  constructor(dataGrid: BeakerXDataGrid) {
     this.dataGrid = dataGrid;
 
-    this.dataGrid.cellHovered.connect(throttle(this.handleCellHovered, 100), this);
+    this.dataGrid.cellHovered.connect(this.handleCellHovered, this);
   }
 
   repaintRow(cellData) {
-    if(!cellData || isNaN(cellData.offset) || isNaN(cellData.offsetTop)) {
+    if(
+      !cellData
+      || isNaN(cellData.offset)
+      || isNaN(cellData.offsetTop)
+      || this.dataGrid.columnPosition.isDragging()
+    ) {
       return;
     }
 
@@ -68,11 +79,9 @@ export default class CellManager {
   }
 
   getAllCells() {
-    const startRow = this.dataGrid.rowManager.rows[0];
-    const endRow = this.dataGrid.rowManager.rows[this.dataGrid.rowManager.rows.length - 1];
     const rowsRange = {
       startCell: {
-        row: startRow.index,
+        row: 0,
         column: 0,
         type: COLUMN_TYPES.index,
         delta: 0,
@@ -80,7 +89,7 @@ export default class CellManager {
         offsetTop: 0
       },
       endCell: {
-        row: endRow.index,
+        row: this.dataGrid.rowManager.rows.length - 1,
         column: this.dataGrid.columnManager.columns[COLUMN_TYPES.body].length - 1 || 0,
         type: COLUMN_TYPES.body,
         delta: 0,
@@ -150,10 +159,12 @@ export default class CellManager {
       return;
     }
 
-    const cells = this.getSelectedCells();
-    const cellsData = this.exportCellsTo(cells, 'tabs');
+    let cells = this.getSelectedCells();
+    if (cells.length === 0) {
+      cells = this.getAllCells();
+    }
 
-    this.executeCopy(cellsData);
+    this.executeCopy(this.exportCellsTo(cells, 'tabs'));
   }
 
   CSVDownload(selectedOnly) {
@@ -171,46 +182,46 @@ export default class CellManager {
   };
 
   createCellConfig(
-    options: { row: number, column: number, value: any, region: DataModel.CellRegion }
+    { row = 0, column = 0, value = 0, region = 'body' }: ICellDataOptions|ICellData
   ): CellRenderer.ICellConfig {
     return {
-      region: '',
-      row: 0,
-      column: 0,
-      value: 0,
+      row,
+      column,
+      region,
+      value,
       x: 0,
       y: 0,
       metadata: {},
       width: 0,
-      height: 0,
-      ...options
+      height: 0
     }
   }
 
-  private handleCellHovered(sender: BeakerxDataGrid, cellData: ICellData) {
-    if (CellManager.cellsEqual(cellData, this.hoveredCellData)) {
+  private handleCellHovered(sender: BeakerXDataGrid, { data }) {
+    let cursor = this.dataGrid.viewport.node.style.cursor;
+
+    if (cursor.indexOf('resize') !== -1 || this.dataGrid.columnPosition.isDragging()) {
       return;
     }
 
-    let value = cellData && cellData.value;
-    let oldCellData = null;
+    let value = data && data.value;
+    this.updateViewportCursor(value);
 
-    if (this.hoveredCellData) {
-      oldCellData = { ...this.hoveredCellData };
-    }
-
-    if (!isUrl(value)) {
-      this.hoveredCellData = null;
-      this.repaintRow(oldCellData);
-      this.dataGrid['_canvas'].style.cursor = 'auto';
-
+    if (CellManager.cellsEqual(data, this.hoveredCellData)) {
       return;
     }
 
-    this.hoveredCellData = cellData;
-    this.repaintRow(oldCellData);
-    this.repaintRow(cellData);
-    this.dataGrid['_canvas'].style.cursor = 'pointer';
+    this.repaintRow(this.hoveredCellData);
+    data && this.repaintRow(data);
+    this.hoveredCellData = data;
+  }
+
+  private updateViewportCursor(value) {
+    if (isUrl(value)) {
+      this.dataGrid['_canvas'].style.cursor = 'pointer';
+    } else {
+      this.dataGrid['_canvas'].style.cursor = '';
+    }
   }
 
   private getCSVFromCells(selectedOnly: boolean) {

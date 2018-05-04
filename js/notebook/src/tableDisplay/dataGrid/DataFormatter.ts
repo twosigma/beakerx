@@ -31,16 +31,17 @@ import {
   selectTimeStrings,
   selectTimeZone
 } from "./model/selectors";
-import {BeakerxDataStore} from "./store/dataStore";
+import {BeakerXDataStore} from "./store/BeakerXDataStore";
+import formatTimestamp = DataGridHelpers.formatTimestamp;
 
 const bkUtils = require('../../shared/bkUtils');
 
 export const DEFAULT_TIME_FORMAT = 'YYYYMMDD HH:mm:ss.SSS ZZ';
 
 export class DataFormatter {
-  store: BeakerxDataStore;
+  store: BeakerXDataStore;
 
-  constructor(store: BeakerxDataStore) {
+  constructor(store: BeakerXDataStore) {
     this.store = store;
 
     this.handleNull = this.handleNull.bind(this);
@@ -132,7 +133,7 @@ export class DataFormatter {
   private string(config: CellRenderer.ICellConfig) {
     const objectValue = _.isObject(config.value);
     const stringFormatForColumn = this.stringFormatForColumn[this.columnNames[config.column]];
-    let formattedValue = config.value;
+    let formattedValue = config.value !== null ? config.value : '';
 
     if (!objectValue && stringFormatForColumn && stringFormatForColumn.type === 'value') {
       return this.value(config);
@@ -228,12 +229,12 @@ export class DataFormatter {
       : TIME_UNIT_FORMATS.DATETIME.format;
 
     if (_.isObject(config.value) && config.value.type === 'Date') {
-      return bkUtils.formatTimestamp(config.value.timestamp, this.timeZone, format);
+      return formatTimestamp(config.value.timestamp, this.timeZone, format);
     }
 
     let milli = config.value * 1000;
 
-    return bkUtils.formatTimestamp(milli, this.timeZone, format);
+    return formatTimestamp(milli, this.timeZone, format);
   }
 
   private getTimeFormatForColumn(columnState?: IColumnState) {

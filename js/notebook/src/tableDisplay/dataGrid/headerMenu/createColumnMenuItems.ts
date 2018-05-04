@@ -19,8 +19,9 @@ import MenuItem from "../../../shared/interfaces/menuItemInterface";
 import DataGridColumn from "../column/DataGridColumn";
 import { CENTER, LEFT, RIGHT } from "../column/columnAlignment";
 import {HIGHLIGHTER_TYPE} from "../interface/IHighlighterState";
-import {selectBodyColumnVisibility} from "../column/selectors";
+import {selectVisibleBodyColumns} from "../column/selectors";
 import {SORT_ORDER} from "../column/enums";
+import {selectColumnsFrozenCount, selectVisibleColumnsFrozenCount} from "../model/selectors";
 
 export function createColumnMenuItems(column: DataGridColumn): MenuItem[] {
   return [
@@ -98,8 +99,8 @@ export function createColumnMenuItems(column: DataGridColumn): MenuItem[] {
     },
     {
       title: 'Fix Left',
-      isChecked: (column) => {},
-      action: (column) => {}
+      isChecked: (column) => column.isFrozen(),
+      action: (column) => column.toggleColumnFrozen()
     },
     {
       title: 'Move column to front',
@@ -109,10 +110,14 @@ export function createColumnMenuItems(column: DataGridColumn): MenuItem[] {
     {
       title: 'Move column to end',
       action: (column) => {
-        let position = selectBodyColumnVisibility(column.dataGrid.store.state)
-          .filter(visible => visible).length - 1;
+        let visibleColumnsLength = selectVisibleBodyColumns(column.dataGrid.store.state).length;
+        let frozenColumnsCount = selectVisibleColumnsFrozenCount(column.dataGrid.store.state);
 
-        column.move(position);
+        if (column.getPosition().region === 'body') {
+          column.move(visibleColumnsLength - 1);
+        } else {
+          column.move(frozenColumnsCount);
+        }
       }
     },
     {

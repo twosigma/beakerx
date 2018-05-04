@@ -14,23 +14,36 @@
  *  limitations under the License.
  */
 
-import { BeakerxDataGrid } from "../BeakerxDataGrid";
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import DataGridColumn from "./DataGridColumn";
-import {selectColumnPosition, selectColumnWidth} from "./selectors";
+import {selectColumnWidth} from "./selectors";
+import {DataGridHelpers} from "../dataGridHelpers";
+import getEventKeyCode = DataGridHelpers.getEventKeyCode;
+import {KEYBOARD_KEYS} from "../event/enums";
+import {Widget} from "@phosphor/widgets";
+import throttle = DataGridHelpers.throttle;
 
 export default class ColumnFilter {
-  dataGrid: BeakerxDataGrid;
+  dataGrid: BeakerXDataGrid;
   column: DataGridColumn;
+  filterWidget: Widget;
   filterNode: HTMLElement;
   filterIcon: HTMLSpanElement;
   clearIcon: HTMLSpanElement;
   filterInput: HTMLInputElement;
-  debounceId: any;
   useSearch: boolean;
 
-  static DEBOUNCE_TIME_IN_MS = 250;
+  static getColumnNameVarPrefix(columnName: any) {
+    return isNaN(columnName) ? '' : 'col_';
+  }
 
-  constructor(dataGrid: BeakerxDataGrid, column: DataGridColumn, options: { x, y, width, height }) {
+  static escapeColumnName(columnName: string): string {
+    return String(columnName)
+      .replace(/\s+/, '_')
+      .replace('/\W+/', '');
+  }
+
+  constructor(dataGrid: BeakerXDataGrid, column: DataGridColumn, options: { x, y, width, height }) {
     this.dataGrid = dataGrid;
     this.column = column;
 
@@ -52,7 +65,8 @@ export default class ColumnFilter {
   }
 
   hideInput() {
-    this.filterNode.style.visibility = 'hidden';
+    this.filterWidget.setHidden(true);
+    this.filterInput.value = '';
   }
 
   updateInputNode() {
@@ -60,24 +74,33 @@ export default class ColumnFilter {
     this.updateInputPosition();
   }
 
+  attach(node: HTMLElement) {
+    Widget.attach(this.filterWidget, node);
+    this.bindEvents();
+  }
+
+  blur() {
+    this.filterInput.blur();
+  }
+
   private updateInputPosition() {
-    const position = this.dataGrid.getColumnOffset(
-      selectColumnPosition(this.dataGrid.store.state, this.column),
-      this.column.type
+    const position = this.column.getPosition();
+    const offset = this.dataGrid.getColumnOffset(
+      position.value,
+      position.region
     );
 
-    this.filterNode.style.left = `${position}px`;
+    this.filterNode.style.left = `${offset}px`;
   }
 
   private showInput(shouldFocus: boolean): void {
     this.updateInputNode();
 
-    if (this.filterNode.style.visibility === 'visible') {
+    if (this.filterWidget.isVisible) {
       return;
     }
 
-    this.filterNode.style.visibility = 'visible';
-    this.dataGrid.viewport.node.appendChild(this.filterNode);
+    this.filterWidget.setHidden(false);
 
     if (shouldFocus) {
       this.filterInput.focus();
@@ -85,21 +108,29 @@ export default class ColumnFilter {
   }
 
   private filterHandler(event: KeyboardEvent) {
-    if (event.keyCode === 27 || event.keyCode === 13 || !this.filterInput) { return; }
+    const keyCode = getEventKeyCode(event);
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+
+    if (keyCode === KEYBOARD_KEYS.Escape) {
+      this.column.columnManager.resetFilters();
+
+      return;
+    }
+
+    if (
+      keyCode === KEYBOARD_KEYS.Enter
+      || !this.filterInput
+    ) {
+      return;
+    }
 
     if (this.useSearch) {
       return this.column.search(this.createExpression(this.filterInput.value));
     }
 
     this.column.filter(this.createExpression(this.filterInput.value));
-  }
-
-  private debouncedFilterHandler(event: KeyboardEvent) {
-    clearTimeout(this.debounceId);
-    this.debounceId = setTimeout(
-      () => this.filterHandler(event),
-      ColumnFilter.DEBOUNCE_TIME_IN_MS
-    );
   }
 
   private createExpression(value: string) {
@@ -110,52 +141,53 @@ export default class ColumnFilter {
     return this.createFilterExpression(value);
   }
 
-  private createFilterExpression(value: string): string {
-    return value.replace('$', `${this.column.name}`);
+  private createFilterExpression(value: any): string {
+    return value.replace('$', `${ColumnFilter.getColumnNameVarPrefix(this.column.name)}${ColumnFilter.escapeColumnName(this.column.name)}`);
   }
 
-  private createSearchExpression(value: string) {
+  private createSearchExpression(value: any) {
     const expression = `String($).indexOf("${String(value)}") !== -1`;
 
     return this.createFilterExpression(expression);
   }
 
   private addInputNode(options: { x, y, width, height }): void {
-    const filterNode = document.createElement('div');
+    this.filterWidget = new Widget();
+    this.filterNode = this.filterWidget.node;
 
-    filterNode.innerHTML = `<div class="input-clear">
+    this.filterNode.innerHTML = `<div class="input-clear">
       <span class="fa filter-icon fa-filter"></span>
       <input class="filter-input" type="text" title='filter with an expression with a variable defined for each column and $ means the current column.  eg "$ > 5"'>
       <span class="fa fa-times clear-filter"></span>
     </div>`;
 
-    filterNode.classList.add('input-clear-growing');
-    filterNode.style.width = `${options.width}px`;
-    filterNode.style.height = `${options.height}px`;
-    filterNode.style.left = `${options.x}px`;
-    filterNode.style.top = `${options.y}px`;
-    filterNode.style.position = 'absolute';
+    this.filterNode.classList.add('input-clear-growing');
+    this.filterNode.style.width = `${options.width}px`;
+    this.filterNode.style.height = `${this.dataGrid.baseRowSize}px`;
+    this.filterNode.style.left = `${options.x}px`;
+    this.filterNode.style.top = `${options.y}px`;
+    this.filterNode.style.position = 'absolute';
 
-    this.filterNode = filterNode;
     this.filterIcon = this.filterNode.querySelector('.filter-icon') || new HTMLSpanElement();
     this.filterInput = this.filterNode.querySelector('input') || new HTMLInputElement();
     this.clearIcon = this.filterNode.querySelector('.clear-filter') || new HTMLSpanElement();
-    this.filterInput.style.height = `${options.height}px`;
+    this.filterInput.style.height = `${this.dataGrid.baseRowSize}px`;
 
-    this.bindEvents();
+    this.filterWidget.setHidden(true);
   }
 
   private bindEvents() {
-    this.filterInput.addEventListener('mousedown', (event) => event.stopImmediatePropagation());
-    this.filterNode.addEventListener('mousedown', (event) => event.stopImmediatePropagation());
-    this.filterInput.addEventListener('keyup', this.debouncedFilterHandler.bind(this));
+    const handleMouseDown = (event) => {
+      this.dataGrid.setFocus(true);
+      event.stopImmediatePropagation();
 
-    if (this.clearIcon) {
-      this.clearIcon.addEventListener('mousedown', () => {
+      if (event.target === this.clearIcon) {
         this.column.columnManager.resetFilters();
-      });
-    }
+      }
+    };
 
-
+    this.filterInput.addEventListener('keyup', throttle(this.filterHandler, 100, this), true);
+    this.filterInput.addEventListener('mousedown', handleMouseDown, true);
+    this.filterNode.addEventListener('mousedown', handleMouseDown, true);
   }
 }

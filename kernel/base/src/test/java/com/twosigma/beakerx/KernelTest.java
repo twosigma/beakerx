@@ -61,6 +61,7 @@ import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
 import com.twosigma.beakerx.message.Message;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.util.Lists;
+import py4j.ClientServer;
 
 import java.io.File;
 import java.io.IOException;
@@ -369,5 +370,10 @@ public class KernelTest implements KernelFunctionality {
       throw new RuntimeException(e);
     }
   }
+
+  public ClientServer getPythonMagicCS() {
+    return null;
+  }
+
 
 }

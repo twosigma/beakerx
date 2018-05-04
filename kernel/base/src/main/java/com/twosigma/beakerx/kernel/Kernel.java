@@ -46,6 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import py4j.ClientServer;
 
 public abstract class Kernel implements KernelFunctionality {
 
@@ -64,6 +65,7 @@ public abstract class Kernel implements KernelFunctionality {
   private KernelSockets kernelSockets;
   private List<MagicCommandType> magicCommandTypes;
   private CacheFolderFactory cacheFolderFactory;
+  private ClientServer pythonMagicCS = null;
 
   public Kernel(final String sessionId, final Evaluator evaluator,
                 final KernelSocketsFactory kernelSocketsFactory) {
@@ -107,6 +109,9 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   private void doExit() {
+    if (this.pythonMagicCS != null) {
+      this.pythonMagicCS.shutdown();
+    }
     this.evaluatorManager.exit();
     this.handlers.exit();
     this.executionResultSender.exit();
@@ -258,6 +263,11 @@ public abstract class Kernel implements KernelFunctionality {
   protected void configureMagicCommands() {
   }
 
+  public PythonEntryPoint getPythonMagicEntryPoint() {
+    return (PythonEntryPoint)
+            this.pythonMagicCS.getPythonServerEntryPoint(new Class[] {PythonEntryPoint.class});
+  }
+
   @Override
   public void registerMagicCommandType(MagicCommandType magicCommandType) {
     this.magicCommandTypes.add(magicCommandType);
@@ -269,5 +279,12 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   protected void configureJvmRepr() {
+  }
+
+  public ClientServer getPythonMagicCS() {
+    if (pythonMagicCS == null) {
+      pythonMagicCS = new ClientServer(null);
+    }
+    return pythonMagicCS;
   }
 }

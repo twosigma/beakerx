@@ -24,6 +24,7 @@ import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Message;
+import py4j.ClientServer;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -87,4 +88,6 @@ public interface KernelFunctionality {
   Class<?> loadClass(String clazzName) throws ClassNotFoundException;
 
   void registerMagicCommandType(MagicCommandType magicCommandType);
+
+  ClientServer getPythonMagicCS();
 }

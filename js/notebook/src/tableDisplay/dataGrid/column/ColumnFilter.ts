@@ -75,6 +75,8 @@ export default class ColumnFilter {
   }
 
   updateInputNode() {
+    this.filterNode.style.height = this.getInputHeight();
+    this.filterInput.style.height = this.getInputHeight();
     this.filterNode.style.width = `${selectColumnWidth(this.dataGrid.store.state, this.column)}px`;
     this.updateInputPosition();
   }
@@ -96,6 +98,7 @@ export default class ColumnFilter {
     );
 
     this.filterNode.style.left = `${offset}px`;
+    this.filterNode.style.top = `${this.dataGrid.baseColumnHeaderSize - 1}px`;
   }
 
   private showInput(shouldFocus: boolean): void {
@@ -168,7 +171,7 @@ export default class ColumnFilter {
 
     this.filterNode.classList.add('input-clear-growing');
     this.filterNode.style.width = `${options.width}px`;
-    this.filterNode.style.height = `${this.dataGrid.baseRowSize}px`;
+    this.filterNode.style.height = this.getInputHeight();
     this.filterNode.style.left = `${options.x}px`;
     this.filterNode.style.top = `${options.y}px`;
     this.filterNode.style.position = 'absolute';
@@ -176,7 +179,7 @@ export default class ColumnFilter {
     this.filterIcon = this.filterNode.querySelector('.filter-icon') || new HTMLSpanElement();
     this.filterInput = this.filterNode.querySelector('input') || new HTMLInputElement();
     this.clearIcon = this.filterNode.querySelector('.clear-filter') || new HTMLSpanElement();
-    this.filterInput.style.height = `${this.dataGrid.baseRowSize}px`;
+    this.filterInput.style.height = this.getInputHeight();
 
     this.filterWidget.setHidden(true);
   }
@@ -194,5 +197,9 @@ export default class ColumnFilter {
     this.filterInput.addEventListener('keyup', throttle(this.filterHandler, 100, this), true);
     this.filterInput.addEventListener('mousedown', handleMouseDown, true);
     this.filterNode.addEventListener('mousedown', handleMouseDown, true);
+  }
+
+  private getInputHeight() {
+    return `${this.dataGrid.baseRowSize}px`;
   }
 }

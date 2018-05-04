@@ -20,8 +20,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@jupyterlab/rendermime": "^0.15.2",
-    "@jupyterlab/rendermime-interfaces": "^1.0.4"
+    "@jupyterlab/rendermime": "^0.16.3",
+    "@jupyterlab/rendermime-interfaces": "^1.0.10"
   },
   "devDependencies": {
     "@types/node": "^8.0.56",

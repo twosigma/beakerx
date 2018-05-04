@@ -36,7 +36,7 @@ __webpack_public_path__ = document.querySelector('body').getAttribute('data-base
 require('./shared/style/beakerx.scss');
 require('./plot/bko-combinedplot.css');
 require('./plot/bko-plot.css');
-require('./dataBrowser/dataBrowser.css');
+require('./extension/dataBrowser/dataBrowser.css');
 
 define([
   'services/config',
@@ -51,7 +51,6 @@ define([
   './shared/bkCoreManager',
   'big.js',
   './extension/UIOptionsHelper',
-  './dataBrowser/DataBrowser'
 ], function(
   configmod,
   comm,
@@ -64,8 +63,7 @@ define([
   plotApi,
   bkCoreManager,
   big,
-  UIOptionsHelper,
-  DataBrowser
+  UIOptionsHelper
 ) {
   "use strict";
 

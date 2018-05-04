@@ -33,7 +33,7 @@ default_config = """
             "show_publication": true,
             "auto_save": true,
             "use_data_grid": true,
-            "show_data_browser": false
+            "show_catalog": false
         }
     }
 }

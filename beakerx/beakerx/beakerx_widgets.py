@@ -276,12 +276,12 @@ class BeakerxCheckbox(Checkbox, EasyFormComponent):
 class BeakerxCheckboxGroup(EasyFormComponent):
     def __init__(self, **kwargs):
         super(BeakerxCheckboxGroup, self).__init__(**kwargs)
+        self.children = []
 
     def __set_value(self, new_value):
         for item in self.children:
             item.value = item.description in new_value
 
-    children = []
     value = property(lambda self: [item.description for item in self.children if item.value], __set_value)
 
     def addChildren(self, children):

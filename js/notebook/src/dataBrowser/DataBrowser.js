@@ -241,7 +241,7 @@ define([
       'data-toggle': 'button',
       'aria-pressed': 'false'
     });
-  }
+  };
   window._addCatalogButton = addButton;
 
   // bind drop event

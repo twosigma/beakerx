@@ -16,7 +16,7 @@
 
 import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import DataGridColumn from "./DataGridColumn";
-import {selectColumnPosition, selectColumnWidth} from "./selectors";
+import {selectColumnWidth} from "./selectors";
 import {DataGridHelpers} from "../dataGridHelpers";
 import getEventKeyCode = DataGridHelpers.getEventKeyCode;
 import {KEYBOARD_KEYS} from "../event/enums";
@@ -35,6 +35,12 @@ export default class ColumnFilter {
 
   static getColumnNameVarPrefix(columnName: any) {
     return isNaN(columnName) ? '' : 'col_';
+  }
+
+  static escapeColumnName(columnName: string): string {
+    return String(columnName)
+      .replace(/\s+/, '_')
+      .replace('/\W+/', '');
   }
 
   constructor(dataGrid: BeakerXDataGrid, column: DataGridColumn, options: { x, y, width, height }) {
@@ -73,6 +79,10 @@ export default class ColumnFilter {
     this.bindEvents();
   }
 
+  blur() {
+    this.filterInput.blur();
+  }
+
   private updateInputPosition() {
     const position = this.column.getPosition();
     const offset = this.dataGrid.getColumnOffset(
@@ -103,9 +113,14 @@ export default class ColumnFilter {
     event.preventDefault();
     event.stopImmediatePropagation();
 
+    if (keyCode === KEYBOARD_KEYS.Escape) {
+      this.column.columnManager.resetFilters();
+
+      return;
+    }
+
     if (
       keyCode === KEYBOARD_KEYS.Enter
-      || keyCode === KEYBOARD_KEYS.Escape
       || !this.filterInput
     ) {
       return;
@@ -127,7 +142,7 @@ export default class ColumnFilter {
   }
 
   private createFilterExpression(value: any): string {
-    return value.replace('$', `${ColumnFilter.getColumnNameVarPrefix(this.column.name)}${this.column.name}`);
+    return value.replace('$', `${ColumnFilter.getColumnNameVarPrefix(this.column.name)}${ColumnFilter.escapeColumnName(this.column.name)}`);
   }
 
   private createSearchExpression(value: any) {

@@ -124,6 +124,10 @@ function BeakerXPageObject() {
     this.runCellAndCheckTextHandleError(cellIndex, expectedText, this.getAllOutputsStderr);
   };
 
+  this.runAndCheckOutputTextOfWidget = function (cellIndex, expectedText) {
+    this.runCellAndCheckTextHandleError(cellIndex, expectedText, this.getAllOutputsWidget);
+  };
+
   this.runCellAndCheckTextHandleError = function(cellIndex, expectedText, getTextElements){
     var resultTest;
     var codeCell;
@@ -151,6 +155,10 @@ function BeakerXPageObject() {
 
   this.waitAndCheckOutputTextOfStderr = function (cellIndex, expectedText, outputIndex) {
     this.waitAndCheckOutputText(cellIndex, expectedText, this.getAllOutputsStderr, outputIndex);
+  };
+
+  this.waitAndCheckOutputTextOfWidget = function (cellIndex, expectedText, outputIndex) {
+    this.waitAndCheckOutputText(cellIndex, expectedText, this.getAllOutputsWidget, outputIndex);
   };
 
   this.waitAndCheckOutputText = function (index, expectedText, getTextElements, outputIndex) {

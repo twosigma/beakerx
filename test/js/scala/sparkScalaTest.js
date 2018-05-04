@@ -35,8 +35,8 @@ describe('Scala notebook', function () {
       cellIndex = 0;
       beakerxPO.runCodeCellByIndex(cellIndex);
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /spark-sql/);
-      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /spark-core/);
+      beakerxPO.waitAndCheckOutputTextOfWidget(cellIndex, /spark-sql/, 1);
+      beakerxPO.waitAndCheckOutputTextOfWidget(cellIndex, /spark-core/, 1);
     });
   });
 

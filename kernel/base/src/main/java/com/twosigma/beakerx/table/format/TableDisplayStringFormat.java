@@ -24,6 +24,11 @@ public class TableDisplayStringFormat {
     return new DecimalStringFormat(minDecimals, maxDecimals);
   }
 
+  // Get a formatter that shows strings as formatted HTML
+  public static TableDisplayStringFormat getHTMLFormat() {
+    return new HTMLStringFormat();
+  }
+
   // Get a formatter that will show Date in a timestamp format with millisecond precision
   public static TableDisplayStringFormat getTimeFormat() {
     return new TimeStringFormat();

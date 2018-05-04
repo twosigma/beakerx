@@ -139,7 +139,7 @@ describe('(Groovy) Output Containers ', function () {
   function waitWidgetTableIsVisible(output, lastId){
     var widgetId;
     browser.waitUntil(function() {
-      var widget = output.$('div.widget-box > div.p-Widget > div');
+      var widget = output.$('div.widget-box > div.p-Widget');
       widgetId = widget.getAttribute('id');
       return (lastId != widgetId) && widgetTableIsVisible(widget);
     });

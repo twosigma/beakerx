@@ -30,7 +30,7 @@ import CellManager from "./cell/CellManager";
 import {DataGridHelpers} from "./dataGridHelpers";
 import EventManager from "./event/EventManager";
 import CellFocusManager from "./cell/CellFocusManager";
-import {DEFAULT_HIGHLIGHT_COLOR, DEFAULT_ROW_HEIGHT} from "./style/dataGridStyle";
+import {DEFAULT_HIGHLIGHT_COLOR} from "./style/dataGridStyle";
 import CellTooltipManager from "./cell/CellTooltipManager";
 import * as bkUtils from '../../shared/bkUtils';
 import {BeakerXDataStore} from "./store/BeakerXDataStore";
@@ -48,6 +48,7 @@ import ColumnPosition from "./column/ColumnPosition";
 import {SectionList} from "@phosphor/datagrid/lib/sectionlist";
 import ColumnRegion = DataModel.ColumnRegion;
 import {DataGridResize} from "./DataGridResize";
+import {ALL_TYPES} from "./dataTypes";
 
 export class BeakerXDataGrid extends DataGrid {
   id: string;
@@ -72,7 +73,7 @@ export class BeakerXDataGrid extends DataGrid {
   focused: boolean;
   wrapperId: string;
 
-  cellHovered = new Signal<this, ICellData|null>(this);
+  cellHovered = new Signal<this, { data: ICellData|null, event: MouseEvent }>(this);
   commSignal = new Signal<this, {}>(this);
 
   static FOCUS_CSS_CLASS = 'bko-focused';
@@ -87,9 +88,6 @@ export class BeakerXDataGrid extends DataGrid {
     this.rowSections = this['_rowSections'];
     this.columnSections = this['_columnSections'];
     this.canvasGC = this['_canvasGC'];
-
-    this.baseRowSize = DEFAULT_ROW_HEIGHT;
-    this.baseColumnHeaderSize = DEFAULT_ROW_HEIGHT;
 
     this.resize = throttle(this.resize, 150, this);
     this.init(dataStore);
@@ -113,8 +111,8 @@ export class BeakerXDataGrid extends DataGrid {
     this.columnManager.addColumns();
     this.rowManager.createFilterExpressionVars();
     this.store.changed.connect(throttle<void, void>(this.handleStateChanged, 100, this));
-    this.dataGridResize.setInitialSize();
 
+    this.dataGridResize.setInitialSize();
     this.addHighlighterManager();
     this.addCellRenderers();
 
@@ -174,8 +172,9 @@ export class BeakerXDataGrid extends DataGrid {
       return;
     }
 
-    this.cellHovered.emit(null);
+    this.cellHovered.emit({ data: null, event: null });
     this.cellTooltipManager.hideTooltips();
+    this.columnManager.blurColumnFilterInputs();
     this.node.classList.remove(BeakerXDataGrid.FOCUS_CSS_CLASS);
     enableKeyboardManager();
   }
@@ -206,15 +205,13 @@ export class BeakerXDataGrid extends DataGrid {
     }
 
     if (msg.type === 'paint-request' && this.columnPosition.dropCellData) {
-      const side = this.columnPosition.dropCellData.column < this.columnPosition.grabbedCellData.column ? 'left': 'right';
-
-      this.colorizeColumnBorder(this.columnPosition.dropCellData, DEFAULT_HIGHLIGHT_COLOR, side);
+      this.colorizeColumnBorder(this.columnPosition.dropCellData, DEFAULT_HIGHLIGHT_COLOR);
     }
 
     return true;
   }
 
-  colorizeColumnBorder(data: ICellData, color: string, side?: 'left'|'right') {
+  colorizeColumnBorder(data: ICellData, color: string) {
     const { column, region } = data;
     let sectionList = region === 'corner-header' || region === 'row-header' ? this.rowHeaderSections : this.columnSections;
     let sectionSize = sectionList.sectionSize(column);
@@ -222,7 +219,7 @@ export class BeakerXDataGrid extends DataGrid {
     let x = sectionOffset;
     let height = this.totalHeight;
 
-    if (!side || side === 'right') {
+    if (data.delta > data.width / 2) {
       x += sectionSize;
     }
 
@@ -247,6 +244,11 @@ export class BeakerXDataGrid extends DataGrid {
     let cellRendererFactory = new CellRendererFactory(this);
     let defaultRenderer = cellRendererFactory.getRenderer();
 
+    this.cellRenderers.set(
+      'body',
+      { dataType: ALL_TYPES[ALL_TYPES.html] },
+      cellRendererFactory.getRenderer(ALL_TYPES.html)
+    );
     this.cellRenderers.set('body', {}, defaultRenderer);
     this.cellRenderers.set('column-header', {}, defaultRenderer);
     this.cellRenderers.set('corner-header', {}, defaultRenderer);
@@ -256,5 +258,4 @@ export class BeakerXDataGrid extends DataGrid {
   private handleStateChanged() {
     this.model.reset();
   }
-
 }

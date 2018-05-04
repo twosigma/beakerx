@@ -15,10 +15,8 @@
  */
 package com.twosigma.beakerx.widget;
 
-import com.twosigma.beakerx.widget.ValueWidget;
-import com.twosigma.beakerx.widget.Widget;
-
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,10 +40,35 @@ public abstract class Box extends ValueWidget<String> {
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
-    List<String> commIds = children.stream().map(x -> IPY_MODEL + x.getComm().getCommId()).collect(Collectors.toList());
+    List<String> commIds = comIds();
     content.put(CHILDREN, commIds.toArray());
     super.content(content);
     return content;
+  }
+
+  public void add(Widget widget) {
+    this.children.add(widget);
+    updateChildren();
+  }
+
+  public void removeDOMWidget(DOMWidget widget) {
+    widget.getLayout().setDisplayNone();
+    remove(widget);
+  }
+
+  public void remove(Widget widget) {
+    widget.close();
+    this.children.remove(widget);
+    updateChildren();
+  }
+
+  private void updateChildren() {
+    List<String> commIds = comIds();
+    sendUpdate(CHILDREN, commIds.toArray());
+  }
+
+  private List<String> comIds() {
+    return children.stream().map(x -> IPY_MODEL + x.getComm().getCommId()).collect(Collectors.toList());
   }
 
   @Override

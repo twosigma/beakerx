@@ -19,6 +19,7 @@ import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorManager;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
+import com.twosigma.beakerx.evaluator.Hook;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -268,6 +269,11 @@ public class KernelTest implements KernelFunctionality {
     magicCommandTypes.add(magicCommandType);
   }
 
+  @Override
+  public String getOutDir() {
+    return null;
+  }
+
   private Path tempFolder() {
     if (this.evaluatorManager == null) {
       return EvaluatorTest.getTestTempFolderFactory().createTempFolder();
@@ -370,4 +376,7 @@ public class KernelTest implements KernelFunctionality {
     }
   }
 
+  @Override
+  public void registerCancelHook(Hook hook) {
+  }
 }

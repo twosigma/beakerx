@@ -36,6 +36,7 @@ export default class BeakerXApi {
       improve_fonts: true,
       wide_cells: true,
       show_publication: true,
+      show_catalog: false,
       auto_save: true,
       use_data_grid: true,
       show_data_browser: false,

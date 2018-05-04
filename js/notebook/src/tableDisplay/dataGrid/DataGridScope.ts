@@ -22,6 +22,8 @@ import DataGridContextMenu from "./contextMenu/DataGridContextMenu";
 import ColumnLimitModal from "./modal/ColumnLimitModal";
 import createStore, {BeakerXDataStore} from "./store/BeakerXDataStore";
 import {selectModel} from "./model/selectors";
+import {DataGridHelpers} from "./dataGridHelpers";
+import {RendererMap} from "@phosphor/datagrid";
 
 export class DataGridScope {
   contextMenu: DataGridContextMenu;
@@ -37,9 +39,15 @@ export class DataGridScope {
     this.element = options.element;
     this.tableDisplayModel = options.widgetModel;
     this.tableDisplayView = options.widgetView;
-    this.dataGrid = new BeakerXDataGrid({ style: silverStripeStyle }, this.store);
-
+    this.dataGrid = new BeakerXDataGrid(
+      {
+        style: silverStripeStyle,
+        cellRenderers: new RendererMap({ priority: ['body|{dataType: html}','body|'] })
+      },
+      this.store
+    );
     this.element.id = `wrap_${this.tableDisplayModel.model_id}`;
+
     this.dataGrid.setWrapperId(this.element.id);
     this.connectToCommSignal();
     this.createContextMenu();

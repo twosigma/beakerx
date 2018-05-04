@@ -66,6 +66,11 @@ export default class HTMLCellRenderer extends BeakerXCellRenderer {
     const textHeight = TextRenderer.measureFontHeight(font);
     const img = new Image();
     const data = this.getSVGData(text, config, vAlign, hAlign);
+    const dpiRatio =  this.dataGrid['_dpiRatio'];
+    const x = config.x * dpiRatio;
+    const y = config.y * dpiRatio;
+    const width = config.width * dpiRatio;
+    const height = config.height * dpiRatio;
 
     gc.setTransform(1, 0, 0, 1, 0, 0);
     gc.textBaseline = 'bottom';
@@ -79,14 +84,14 @@ export default class HTMLCellRenderer extends BeakerXCellRenderer {
       gc.clip();
     }
 
-    img.width = config.width;
-    img.height = config.height;
+    img.width = width;
+    img.height = height;
     img.onload = (((config) => () => {
       this.dataGrid.repaint(config.x, config.y, config.width, config.height);
     })({...config}));
 
     img.src = "data:image/svg+xml," + data;
-    img.complete && gc.drawImage(img, config.x, config.y);
+    img.complete && gc.drawImage(img, x, y, width, height);
   }
 
   getSVGData(text: string, config: CellRenderer.ICellConfig, vAlign, hAlign): string {

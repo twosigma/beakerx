@@ -183,24 +183,21 @@ export default class EventManager {
   }
 
   private isOutsideViewport(event: MouseEvent) {
-    const rect = this.dataGrid.viewport.node.getBoundingClientRect();
+    return this.isOutsideNode(event, this.dataGrid.viewport.node);
+  }
+
+  private isOutsideGrid(event) {
+    return this.isOutsideNode(event, this.dataGrid.node);
+  }
+
+  private isOutsideNode(event: MouseEvent, node: HTMLElement) {
+    const rect = node.getBoundingClientRect();
 
     return (
       event.clientY - rect.top <= 1
       || rect.bottom - event.clientY <= 1
       || event.clientX - rect.left <= 1
       || rect.right - event.clientX <= 1
-    )
-  }
-
-  private isOutsideGrid(event) {
-    const rect = this.dataGrid.node.getBoundingClientRect();
-
-    return (
-      event.clientY - rect.top <= 0
-      || rect.bottom - event.clientY <= 0
-      || event.clientX - rect.left <= 0
-      || rect.right - event.clientX <= 0
     )
   }
 

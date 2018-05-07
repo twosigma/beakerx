@@ -28,6 +28,7 @@ import getEventKeyCode = DataGridHelpers.getEventKeyCode;
 import {KEYBOARD_KEYS} from "./enums";
 import ColumnManager from "../column/ColumnManager";
 import {ICellData} from "../interface/ICell";
+import retrieveUrl = DataGridHelpers.retrieveUrl;
 
 const COLUMN_RESIZE_AREA_WIDTH = 4;
 
@@ -146,7 +147,8 @@ export default class EventManager {
       return;
     }
 
-    isUrl(hoveredCellData.value) && window.open(hoveredCellData.value);
+    let url = retrieveUrl(hoveredCellData.value);
+    url && window.open(url);
   }
 
   private handleMouseMove(event: MouseEvent): void {

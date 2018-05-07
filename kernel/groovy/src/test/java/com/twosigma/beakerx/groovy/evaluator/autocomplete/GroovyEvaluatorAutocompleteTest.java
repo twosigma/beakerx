@@ -471,13 +471,13 @@ public class GroovyEvaluatorAutocompleteTest {
   @Test
   public void autocompleteToFileMethods() throws Exception {
     String code = "fname = \"demoResources/bar-chart.vg.json\"\n" +
-                  "fileContents = new File(fname)\n" +
-                  "fileContents.t";
+            "fileContents = new File(fname)\n" +
+            "fileContents.t";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
-    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length()-1);
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 1);
   }
 
   @Test
@@ -511,5 +511,25 @@ public class GroovyEvaluatorAutocompleteTest {
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
+  }
+
+  @Test
+  public void shouldOnlyShowAutocompleteForTableDisplayCellHighlighter() throws Exception {
+    //when
+    String code = "TableDisplayCellHighlighter.";
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
+    assertThat(autocomplete.getMatches().size()).isEqualTo(4);
+  }
+
+  @Test
+  public void shouldAutocompleteToPrintln() throws Exception {
+    //when
+    String code = "System.out.printl";
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    assertThat(autocomplete.getStartIndex()).isEqualTo(11);
+    assertThat(autocomplete.getMatches().size()).isEqualTo(1);
   }
 }

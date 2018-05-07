@@ -67,6 +67,10 @@ export default class CellManager {
     );
   }
 
+  setHoveredCellData(data: ICellData|null) {
+    this.hoveredCellData = data;
+  }
+
   getSelectedCells() {
     const rowsRange = this.dataGrid.cellSelectionManager.getRowsRangeCells();
     const columnsRange = this.dataGrid.cellSelectionManager.getColumnsRangeCells();
@@ -213,7 +217,7 @@ export default class CellManager {
 
     this.repaintRow(this.hoveredCellData);
     data && this.repaintRow(data);
-    this.hoveredCellData = data;
+    this.setHoveredCellData(data);
   }
 
   private updateViewportCursor(value) {

@@ -165,9 +165,9 @@ export class BeakerXDataGrid extends DataGrid {
     this.focused = focus;
 
     if (focus) {
+      this.node.focus();
       disableKeyboardManager();
       this.node.classList.add(BeakerXDataGrid.FOCUS_CSS_CLASS);
-      this.node.focus();
 
       return;
     }

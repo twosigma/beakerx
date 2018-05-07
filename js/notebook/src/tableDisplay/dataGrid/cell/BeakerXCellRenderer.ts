@@ -35,7 +35,7 @@ import {
 import IRenderer, {RENDERER_TYPE} from "../interface/IRenderer";
 import {DataGridHelpers} from "../dataGridHelpers";
 import getStringSize = DataGridHelpers.getStringSize;
-import isUrl = DataGridHelpers.isUrl;
+import retrieveUrl = DataGridHelpers.retrieveUrl;
 
 interface ICellRendererOptions {
   font?: string,
@@ -46,6 +46,8 @@ interface ICellRendererOptions {
   boxHeight?: number,
   textHeight?: number
 }
+
+const TEXT_WIDTH_OFFSET = 8;
 
 export default abstract class BeakerXCellRenderer extends TextRenderer {
   store: BeakerXDataStore;
@@ -91,33 +93,42 @@ export default abstract class BeakerXCellRenderer extends TextRenderer {
 
   drawTextUnderline(gc: GraphicsContext, textConfig, config) {
     let { text, textX, textY, color } = textConfig;
+    let url = retrieveUrl(text);
 
-    if (!isUrl(text)) {
+    if (!url) {
       return;
     }
 
     let underlineEndX: number;
-    let textWidth: number = getStringSize(text, selectDataFontSize(this.store.state)).width - 8;
+    let underlineStartX: number;
+    let urlIndex = text.indexOf(url);
+    let firstPart = urlIndex > 0 ? text.slice(0, urlIndex) : '';
+    let fontSize = selectDataFontSize(this.store.state);
+    let textWidth: number = getStringSize(text, fontSize).width - TEXT_WIDTH_OFFSET;
+    let firstPartWidth = getStringSize(firstPart, fontSize).width - TEXT_WIDTH_OFFSET;
     let hAlign = CellRenderer.resolveOption(this.horizontalAlignment, config);
 
     // Compute the X position for the underline.
     switch (hAlign) {
       case 'left':
         underlineEndX = Math.round(textX + textWidth);
+        underlineStartX = Math.round(textX + firstPartWidth);
         break;
       case 'center':
-        textX = config.x + config.width / 2 - textWidth/ 2;
+        textX = config.x + config.width / 2 - textWidth / 2;
         underlineEndX = Math.round(textX + textWidth);
+        underlineStartX = textX + firstPartWidth;
         break;
       case 'right':
-        underlineEndX = Math.round(textX - textWidth);
+        underlineEndX = Math.round(textX - textWidth + firstPartWidth);
+        underlineStartX = textX;
         break;
       default:
         throw 'unreachable';
     }
 
     gc.beginPath();
-    gc.moveTo(textX, textY - 0.5);
+    gc.moveTo(underlineStartX, textY - 0.5);
     gc.lineTo(underlineEndX, textY - 0.5);
     gc.strokeStyle = color;
     gc.lineWidth = 1.0;

@@ -15,30 +15,36 @@
  */
 
 define([
-  './quandlData.json',
+  './enigmaData.json',
 ],function(
-  quandlData
+  engimaData
 ){
-  
-  function quandlImpl() {
-    this.providerName = "Quandl";
-    this.icon = "https://d3rlqa3rnk4r1f.cloudfront.net/assets/images/logos/v2/quandl-word-mark-fb41d14c7a394be8118897fb977de828.svg";
-    this.color = "#e25829";
-    
+
+  function enigmaImpl() {
+    this.providerName = "Engima";
+    this.icon = "https://assets.enigma.com/blocks/Meet-the-new-Public-3.svg?mtime=20170620130459";
+    this.color = "#000000";
+
     this.getDataSet = function () {
-      if (quandlData != null) {
-        return quandlData.datasets;
+      if (engimaData !== null) {
+        return engimaData.datasets;
       }
     };
 
     this.getCodeSample = function(entry, language) {
-      if (language == "python") {
-        return 'quandl.get("' + entry.code + '")';
+      if (language === "python") {
+        var code = "import requests \n\
+url = 'https://public.enigma.com/api/snapshots/" + entry.dataid + "?&row_limit=100'\n\
+response = requests.get(url)\n\
+data = response.json()\n\
+df = pd.DataFrame(data=data['table_rows']['rows'],columns=data['table_rows']['fields']) \n\
+df\n ";
+        return code;
       }
     }
- };
+  }
+
   module.exports = {
-    quandlImpl: quandlImpl
+    enigmaImpl: enigmaImpl
   };
 });
-

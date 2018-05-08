@@ -1,6 +1,7 @@
 from py4j.clientserver import ClientServer, JavaParameters, PythonParameters
 from queue import Empty
 from jupyter_client.manager import KernelManager
+import json
 
 
 class PythonMagic:
@@ -46,16 +47,11 @@ class PythonEntryPoint(object):
 
     def getShellMsg(self):
         shellMsg = self.pm.get_shell_msg()
-        return str(shellMsg)
+        return json.dumps(shellMsg, default=str)
 
     def getIopubMsg(self):
         iopubMsg = self.pm.get_iopub_msg()
-        if iopubMsg == None:
-            return "None"
-        else:
-            iopubMsg['header']['date'] = str(iopubMsg['header']['date'])
-            iopubMsg['parent_header']['date'] = str(iopubMsg['parent_header']['date'])
-            return str(iopubMsg)
+        return json.dumps(iopubMsg, default=str)
 
     class Java:
         implements = ["com.twosigma.beakerx.kernel.PythonEntryPoint"]

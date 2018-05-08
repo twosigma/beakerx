@@ -47,15 +47,14 @@ public class PythonMagicCommand implements MagicCommandFunctionality {
         String codeBlock = param.getCommandCodeBlock();
         pep.evaluate(codeBlock);
         pep.getShellMsg();
-        String msg = "";
         List<Message> messages = new ArrayList<>();
-        while (!msg.equals("None")){
-            msg = pep.getIopubMsg();
+        while (true) {
+            String iopubMsg = pep.getIopubMsg();
+            if (iopubMsg.equals("null")) break;
             try {
-                Message message = parseMessage(msg);
-                messages.add(message);
+                messages.add(parseMessage(iopubMsg));
             } catch (IOException e) {
-                e.printStackTrace();
+                return new MagicKernelResponse(MagicCommandOutcomeItem.Status.ERROR, messages);
             }
         }
         return new MagicKernelResponse(MagicCommandOutcomeItem.Status.OK, messages);
@@ -63,13 +62,8 @@ public class PythonMagicCommand implements MagicCommandFunctionality {
 
     public Message parseMessage(String stringJson) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        if (!stringJson.equals("None")) {
-            stringJson = stringJson.replaceAll("None", "null");
-            stringJson = stringJson.replaceAll("False", "false");
-            stringJson = stringJson.replaceAll("True", "true");
-        }
-        JsonNode json = mapper.readTree(stringJson.replace('\'','\"'));
         Message msg = new Message();
+        JsonNode json = mapper.readTree(stringJson);
         msg.setContent(mapper.convertValue(json.get("content"), Map.class));
         msg.setMetadata(mapper.convertValue(json.get("metadata"), Map.class));
         msg.setBuffers(mapper.convertValue(json.get("buffers"), List.class));

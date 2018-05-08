@@ -41,4 +41,13 @@ describe('Tests for kernel magic. ', function () {
     });
   });
 
+  describe('%%groovy and %%classpath in the same cell ', function () {
+    it('Should add jar to classpath ', function () {
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfWidget(cellIndex, /arpack_combined_all.+jar/, 1);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /org.netlib.blas.Daxpy/);
+    });
+  });
+
 });

@@ -86,12 +86,13 @@ export default class HTMLCellRenderer extends BeakerXCellRenderer {
 
     img.width = width;
     img.height = height;
-    img.onload = (((config) => () => {
-      this.dataGrid.repaint(config.x, config.y, config.width, config.height);
-    })({...config}));
-
     img.src = "data:image/svg+xml," + data;
-    img.complete && gc.drawImage(img, x, y, width, height);
+
+    if (!img.complete) {
+      img.onload = () => { this.dataGrid.repaint(x, y, width, height); };
+    } else {
+      gc.drawImage(img, x, y, width, height);
+    }
   }
 
   getSVGData(text: string, config: CellRenderer.ICellConfig, vAlign, hAlign): string {

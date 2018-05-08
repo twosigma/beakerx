@@ -89,3 +89,14 @@ try {
 }
 
 export default sanitize;
+
+
+export const sanitizeHTML = (html: string, allowCss: boolean = false) => {
+  try {
+    const sanitize_html = Jupyter && window.require('base/js/security').sanitize_html;
+
+    return sanitize_html(html, allowCss);
+  } catch(error) {
+    return html;
+  }
+};

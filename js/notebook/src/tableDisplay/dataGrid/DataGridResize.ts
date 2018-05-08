@@ -23,7 +23,6 @@ import {
   DEFAULT_ROW_HEIGHT, MIN_COLUMN_WIDTH
 } from "./style/dataGridStyle";
 import DataGridColumn from "./column/DataGridColumn";
-import {COLUMN_TYPES} from "./column/enums";
 import ColumnRegion = DataModel.ColumnRegion;
 import {DataGridHelpers} from "./dataGridHelpers";
 import {selectColumnWidth} from "./column/selectors";

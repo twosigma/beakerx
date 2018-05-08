@@ -57,6 +57,7 @@ import {
 } from "../model/reducer";
 import {RENDERER_TYPE} from "../interface/IRenderer";
 import DataGridCell from "../cell/DataGridCell";
+import {ColumnValuesIterator} from "./ColumnValuesIterator";
 
 export default class DataGridColumn {
   index: number;
@@ -309,6 +310,8 @@ export default class DataGridColumn {
   }
 
   addMinMaxValues() {
+    let stringMinMax;
+    let minMax;
     let dataType = this.getDataType();
     let displayType = this.getDisplayType();
     let valuesIterator = this.dataGrid.model.getColumnValuesIterator(this);
@@ -316,13 +319,21 @@ export default class DataGridColumn {
       displayType === ALL_TYPES.html ? displayType : dataType
     );
 
-    let minMax = minmax(
-      filter(valuesIterator, (value) => !Number.isNaN(valueResolver(value))),
-      this.getMinMaxValuesIterator(dataType, valueResolver)
-    );
+    if (dataType === ALL_TYPES.string || dataType === ALL_TYPES['formatted integer'] || dataType === ALL_TYPES.html) {
+      stringMinMax = minmax(valuesIterator, ColumnValuesIterator.longestString(valueResolver));
+    } else {
+      minMax = minmax(
+        filter(valuesIterator, (value) => !Number.isNaN(valueResolver(value))),
+        ColumnValuesIterator.minMax(valueResolver)
+      );
+    }
 
     this.minValue = minMax ? minMax[0] : null;
     this.maxValue = minMax ? minMax[1] : null;
+
+    if (stringMinMax) {
+      this.longestStringValue = stringMinMax[1];
+    }
   }
 
   resetState() {
@@ -381,29 +392,6 @@ export default class DataGridColumn {
 
     this.longestStringValue = null;
     this.addMinMaxValues();
-  }
-
-  private getMinMaxValuesIterator(dataType: ALL_TYPES, valueResolver: Function): (a:any, b:any) => number {
-    return (a:any, b:any) => {
-      let value1 = valueResolver(a);
-      let value2 = valueResolver(b);
-
-      if (dataType === ALL_TYPES.string || dataType === ALL_TYPES['formatted integer'] || dataType === ALL_TYPES.html) {
-        let aLength = value1 ? value1.length : 0;
-        let bLength = value2 ? value2.length : 0;
-        let longer = aLength > bLength ? value1 : value2;
-
-        if (!this.longestStringValue || this.longestStringValue.length < String(longer).length) {
-          this.longestStringValue = longer;
-        }
-      }
-
-      if (value1 === value2) {
-        return 0;
-      }
-
-      return value1 < value2 ? -1 : 1;
-    }
   }
 
   private updateColumnFilter(filter: string) {

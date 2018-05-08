@@ -47,8 +47,8 @@ export default class CellTooltipManager {
     this.lastData = null;
   }
 
-  handleCellHovered(sender: BeakerXDataGrid, data: ICellData) {
-    if (this.dataEquals(data, this.lastData)) {
+  handleCellHovered(sender: BeakerXDataGrid, { data }) {
+    if (DataGridCell.dataEquals(data, this.lastData)) {
       return;
     }
 
@@ -99,15 +99,5 @@ export default class CellTooltipManager {
     }
 
     return this.tooltips[data.row][column.index] || '';
-  }
-
-  private dataEquals(data1: ICellData, data2: ICellData) {
-    return (
-      data1
-      && data2
-      && data1.row === data2.row
-      && data1.column === data2.column
-      && data1.region === data2.region
-    )
   }
 }

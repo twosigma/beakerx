@@ -33,6 +33,7 @@ import {
 import DataGridAction from "../store/DataGridAction";
 import {UPDATE_MODEL_DATA} from "./reducer";
 import {
+  selectColumnDataType,
   selectColumnIndexByPosition,
   selectVisibleBodyColumns
 } from "../column/selectors";
@@ -119,6 +120,17 @@ export class BeakerXDataGridModel extends DataModel {
     }
 
     return dataGridRow.values[index];
+  }
+
+  metadata(region: DataModel.CellRegion, position: number): DataModel.Metadata {
+    let column = this.columnManager.getColumnByPosition({
+      value: position,
+      region: ColumnManager.getColumnRegionByCell({ region })
+    });
+
+    return {
+      dataType: ALL_TYPES[column.getDisplayType()]
+    };
   }
 
   setState(state) {

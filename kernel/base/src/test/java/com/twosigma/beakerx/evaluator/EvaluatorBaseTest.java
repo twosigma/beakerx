@@ -116,4 +116,15 @@ public abstract class EvaluatorBaseTest {
     assertThat(Files.exists(groovyEvaluator.getTempFolder())).isFalse();
   }
 
+  @Test
+  public void shouldRunCancelHooks() {
+    //given
+    final StringBuilder cancelDone = new StringBuilder();
+    BaseEvaluator evaluator = evaluator();
+    evaluator.registerCancelHook(() -> cancelDone.append("Done"));
+    //when
+    evaluator.cancelExecution();
+    //then
+    assertThat(cancelDone.toString()).isEqualTo("Done");
+  }
 }

@@ -26,8 +26,15 @@ public class IntProgress extends BoundedIntWidget {
   public static final String VIEW_NAME_VALUE = "ProgressView";
   public static final String MODEL_NAME_VALUE = "IntProgressModel";
   protected static final String ORIENTATION = "orientation";
+  public static final String BAR_STYLE = "bar_style";
 
   private String orientation = "horizontal";
+  private BarStyle barStyle = BarStyle.EMPTY;
+
+  public IntProgress(Integer min, Integer max, Integer step) {
+    super(min, max, step);
+    openComm();
+  }
 
   public IntProgress() {
     super();
@@ -38,7 +45,7 @@ public class IntProgress extends BoundedIntWidget {
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
     content.put(ORIENTATION, this.orientation);
-    content.put("bar_style", "");
+    content.put(BAR_STYLE, this.barStyle.getValue());
     return content;
   }
 
@@ -51,6 +58,11 @@ public class IntProgress extends BoundedIntWidget {
     sendUpdate(ORIENTATION, orientation);
   }
 
+  public void setBarStyle(BarStyle style) {
+    this.barStyle = style;
+    sendUpdate(BAR_STYLE, this.barStyle.getValue());
+  }
+
   @Override
   public String getModelNameValue() {
     return MODEL_NAME_VALUE;
@@ -59,6 +71,25 @@ public class IntProgress extends BoundedIntWidget {
   @Override
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
+  }
+
+
+  enum BarStyle {
+    SUCCESS("success"),
+    INFO("info"),
+    WARNING("warning"),
+    DANGER("danger"),
+    EMPTY("");
+
+    private String value;
+
+    BarStyle(String value) {
+      this.value = value;
+    }
+
+    public String getValue() {
+      return value;
+    }
   }
 
 }

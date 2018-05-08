@@ -48,6 +48,7 @@ import ColumnPosition from "./column/ColumnPosition";
 import {SectionList} from "@phosphor/datagrid/lib/sectionlist";
 import ColumnRegion = DataModel.ColumnRegion;
 import {DataGridResize} from "./DataGridResize";
+import {ALL_TYPES} from "./dataTypes";
 
 export class BeakerXDataGrid extends DataGrid {
   id: string;
@@ -72,7 +73,7 @@ export class BeakerXDataGrid extends DataGrid {
   focused: boolean;
   wrapperId: string;
 
-  cellHovered = new Signal<this, ICellData|null>(this);
+  cellHovered = new Signal<this, { data: ICellData|null, event: MouseEvent }>(this);
   commSignal = new Signal<this, {}>(this);
 
   static FOCUS_CSS_CLASS = 'bko-focused';
@@ -164,15 +165,16 @@ export class BeakerXDataGrid extends DataGrid {
     this.focused = focus;
 
     if (focus) {
+      this.node.focus();
       disableKeyboardManager();
       this.node.classList.add(BeakerXDataGrid.FOCUS_CSS_CLASS);
-      this.node.focus();
 
       return;
     }
 
-    this.cellHovered.emit(null);
+    this.cellHovered.emit({ data: null, event: null });
     this.cellTooltipManager.hideTooltips();
+    this.columnManager.blurColumnFilterInputs();
     this.node.classList.remove(BeakerXDataGrid.FOCUS_CSS_CLASS);
     enableKeyboardManager();
   }
@@ -203,15 +205,13 @@ export class BeakerXDataGrid extends DataGrid {
     }
 
     if (msg.type === 'paint-request' && this.columnPosition.dropCellData) {
-      const side = this.columnPosition.dropCellData.column < this.columnPosition.grabbedCellData.column ? 'left': 'right';
-
-      this.colorizeColumnBorder(this.columnPosition.dropCellData, DEFAULT_HIGHLIGHT_COLOR, side);
+      this.colorizeColumnBorder(this.columnPosition.dropCellData, DEFAULT_HIGHLIGHT_COLOR);
     }
 
     return true;
   }
 
-  colorizeColumnBorder(data: ICellData, color: string, side?: 'left'|'right') {
+  colorizeColumnBorder(data: ICellData, color: string) {
     const { column, region } = data;
     let sectionList = region === 'corner-header' || region === 'row-header' ? this.rowHeaderSections : this.columnSections;
     let sectionSize = sectionList.sectionSize(column);
@@ -219,7 +219,7 @@ export class BeakerXDataGrid extends DataGrid {
     let x = sectionOffset;
     let height = this.totalHeight;
 
-    if (!side || side === 'right') {
+    if (data.delta > data.width / 2) {
       x += sectionSize;
     }
 
@@ -243,10 +243,16 @@ export class BeakerXDataGrid extends DataGrid {
   private addCellRenderers() {
     let cellRendererFactory = new CellRendererFactory(this);
     let defaultRenderer = cellRendererFactory.getRenderer();
+    let headerCellRenderer = cellRendererFactory.getHeaderRenderer();
 
+    this.cellRenderers.set(
+      'body',
+      { dataType: ALL_TYPES[ALL_TYPES.html] },
+      cellRendererFactory.getRenderer(ALL_TYPES.html)
+    );
     this.cellRenderers.set('body', {}, defaultRenderer);
-    this.cellRenderers.set('column-header', {}, defaultRenderer);
-    this.cellRenderers.set('corner-header', {}, defaultRenderer);
+    this.cellRenderers.set('column-header', {}, headerCellRenderer);
+    this.cellRenderers.set('corner-header', {}, headerCellRenderer);
     this.cellRenderers.set('row-header', {}, defaultRenderer);
   }
 

@@ -24,3 +24,8 @@ export enum SORT_ORDER {
   DESC,
   NO_SORT
 }
+
+export enum COLUMN_SIDE {
+  left,
+  right
+}

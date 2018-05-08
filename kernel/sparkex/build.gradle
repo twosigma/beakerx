@@ -1,0 +1,57 @@
+version 'unspecified'
+
+apply plugin: 'java'
+apply plugin: 'scala'
+
+sourceCompatibility = 1.8
+
+ext.kernelIdName = 'sparkex'
+
+configurations {
+    provided
+    antlr
+}
+
+
+sourceSets {
+    main {
+        compileClasspath += configurations.provided
+        scala {
+            srcDirs = ['src/main/scala', 'src/main/java']
+        }
+        java {
+            srcDirs = []
+        }
+    }
+    test {
+        compileClasspath += configurations.provided
+        runtimeClasspath += configurations.provided
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+dependencies {
+    provided project(':base')
+    provided project(':scala')
+
+    provided group: 'org.apache.spark', name: 'spark-core_2.11', version: '2.2.1'
+    provided group: 'org.apache.spark', name: 'spark-sql_2.11', version: '2.2.1'
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile project(':base').sourceSets.test.output
+    testCompile project(':scala').sourceSets.test.output
+}
+
+task copyDependencies(type: Copy) {
+    from configurations.runtime
+    from jar
+    into new File(pathToStaticContent, 'sparkex/lib')
+}
+
+jar.finalizedBy copyDependencies
+
+staticContent {
+    ext.executeStaticContent = false
+}

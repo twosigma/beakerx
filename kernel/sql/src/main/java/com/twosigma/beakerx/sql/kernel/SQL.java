@@ -25,9 +25,11 @@ import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.kernel.CacheFolderFactory;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
+import com.twosigma.beakerx.kernel.CustomMagicCommandsFactory;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelConfigurationFile;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
@@ -41,18 +43,18 @@ import com.twosigma.beakerx.sql.magic.command.DataSourcesMagicCommand;
 import com.twosigma.beakerx.sql.magic.command.DefaultDataSourcesMagicCommand;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class SQL extends Kernel {
 
   private SQL(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
-    super(sessionId, evaluator, kernelSocketsFactory);
-    registerCustomMagicCommands();
+    super(sessionId, evaluator, kernelSocketsFactory, new SQLCustomMagicCommandsImpl());
   }
 
   public SQL(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction, CacheFolderFactory cacheFolderFactory) {
-    super(sessionId, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory);
-    registerCustomMagicCommands();
+    super(sessionId, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory, new SQLCustomMagicCommandsImpl());
   }
 
   @Override
@@ -81,17 +83,19 @@ public class SQL extends Kernel {
     return new EvaluatorParameters(kernelParameters);
   }
 
-  private void registerCustomMagicCommands() {
-    registerMagicCommandType(
-            new MagicCommandType(
-                    DATASOURCES,
-                    "<jdbc:[dbEngine]:[subsubprotocol:][databaseName]>",
-                    new DataSourcesMagicCommand(this)));
-    registerMagicCommandType(
-            new MagicCommandType(
-                    DEFAULT_DATASOURCE,
-                    "<sourceName=jdbc:[dbEngine]:[subsubprotocol:][databaseName]>",
-                    new DefaultDataSourcesMagicCommand(this)));
+  static class SQLCustomMagicCommandsImpl implements CustomMagicCommandsFactory {
+    @Override
+    public List<MagicCommandType> customMagicCommands(KernelFunctionality kernel) {
+      return Arrays.asList(
+              new MagicCommandType(
+                      DATASOURCES,
+                      "<jdbc:[dbEngine]:[subsubprotocol:][databaseName]>",
+                      new DataSourcesMagicCommand(kernel)),
+              new MagicCommandType(
+                      DEFAULT_DATASOURCE,
+                      "<sourceName=jdbc:[dbEngine]:[subsubprotocol:][databaseName]>",
+                      new DefaultDataSourcesMagicCommand(kernel)));
+    }
   }
 
 }

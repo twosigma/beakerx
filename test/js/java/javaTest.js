@@ -69,7 +69,7 @@ describe('Java base tests ', function () {
   describe('Add and use jar ', function () {
     it('Add jar by %classpath magic ', function () {
       cellIndex += 1;
-      beakerxPO.runAndCheckOutputTextOfStdout(cellIndex, /Added jar:.+BeakerXClasspathTest\.jar.+/);
+      beakerxPO.runAndCheckOutputTextOfWidget(cellIndex, /Added jar:.+BeakerXClasspathTest\.jar.+/);
     });
     it('Check path of added jar ', function () {
       cellIndex += 1;

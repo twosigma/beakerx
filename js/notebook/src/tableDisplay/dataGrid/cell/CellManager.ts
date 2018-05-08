@@ -67,6 +67,10 @@ export default class CellManager {
     );
   }
 
+  setHoveredCellData(data: ICellData|null) {
+    this.hoveredCellData = data;
+  }
+
   getSelectedCells() {
     const rowsRange = this.dataGrid.cellSelectionManager.getRowsRangeCells();
     const columnsRange = this.dataGrid.cellSelectionManager.getColumnsRangeCells();
@@ -197,23 +201,23 @@ export default class CellManager {
     }
   }
 
-  private handleCellHovered(sender: BeakerXDataGrid, cellData: ICellData) {
+  private handleCellHovered(sender: BeakerXDataGrid, { data }) {
     let cursor = this.dataGrid.viewport.node.style.cursor;
 
     if (cursor.indexOf('resize') !== -1 || this.dataGrid.columnPosition.isDragging()) {
       return;
     }
 
-    let value = cellData && cellData.value;
+    let value = data && data.value;
     this.updateViewportCursor(value);
 
-    if (CellManager.cellsEqual(cellData, this.hoveredCellData)) {
+    if (CellManager.cellsEqual(data, this.hoveredCellData)) {
       return;
     }
 
     this.repaintRow(this.hoveredCellData);
-    cellData && this.repaintRow(cellData);
-    this.hoveredCellData = cellData;
+    data && this.repaintRow(data);
+    this.setHoveredCellData(data);
   }
 
   private updateViewportCursor(value) {

@@ -16,12 +16,15 @@
 
 import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import DataGridColumn from "./DataGridColumn";
-import {selectColumnPosition, selectColumnWidth} from "./selectors";
+import {selectColumnWidth} from "./selectors";
 import {DataGridHelpers} from "../dataGridHelpers";
 import getEventKeyCode = DataGridHelpers.getEventKeyCode;
 import {KEYBOARD_KEYS} from "../event/enums";
 import {Widget} from "@phosphor/widgets";
 import throttle = DataGridHelpers.throttle;
+
+export const FILTER_INPUT_TOOLTIP = 'filter with an expression with a variable defined for each column and $ means the current column.  eg "$ > 5".';
+export const SEARCH_INPUT_TOOLTIP = 'search for a substring, show only matching rows.';
 
 export default class ColumnFilter {
   dataGrid: BeakerXDataGrid;
@@ -37,6 +40,12 @@ export default class ColumnFilter {
     return isNaN(columnName) ? '' : 'col_';
   }
 
+  static escapeColumnName(columnName: string): string {
+    return String(columnName)
+      .replace(/\s+/, '_')
+      .replace('/\W+/', '');
+  }
+
   constructor(dataGrid: BeakerXDataGrid, column: DataGridColumn, options: { x, y, width, height }) {
     this.dataGrid = dataGrid;
     this.column = column;
@@ -48,6 +57,7 @@ export default class ColumnFilter {
     this.useSearch = true;
     this.filterIcon.classList.remove('fa-filter');
     this.filterIcon.classList.add('fa-search');
+    this.filterInput.title = SEARCH_INPUT_TOOLTIP;
     this.showInput(shouldFocus);
   }
 
@@ -55,6 +65,7 @@ export default class ColumnFilter {
     this.useSearch = false;
     this.filterIcon.classList.add('fa-filter');
     this.filterIcon.classList.remove('fa-search');
+    this.filterInput.title = FILTER_INPUT_TOOLTIP;
     this.showInput(shouldFocus);
   }
 
@@ -64,6 +75,8 @@ export default class ColumnFilter {
   }
 
   updateInputNode() {
+    this.filterNode.style.height = this.getInputHeight();
+    this.filterInput.style.height = this.getInputHeight();
     this.filterNode.style.width = `${selectColumnWidth(this.dataGrid.store.state, this.column)}px`;
     this.updateInputPosition();
   }
@@ -71,6 +84,10 @@ export default class ColumnFilter {
   attach(node: HTMLElement) {
     Widget.attach(this.filterWidget, node);
     this.bindEvents();
+  }
+
+  blur() {
+    this.filterInput.blur();
   }
 
   private updateInputPosition() {
@@ -81,6 +98,7 @@ export default class ColumnFilter {
     );
 
     this.filterNode.style.left = `${offset}px`;
+    this.filterNode.style.top = `${this.dataGrid.baseColumnHeaderSize - 1}px`;
   }
 
   private showInput(shouldFocus: boolean): void {
@@ -103,9 +121,14 @@ export default class ColumnFilter {
     event.preventDefault();
     event.stopImmediatePropagation();
 
+    if (keyCode === KEYBOARD_KEYS.Escape) {
+      this.column.columnManager.resetFilters();
+
+      return;
+    }
+
     if (
       keyCode === KEYBOARD_KEYS.Enter
-      || keyCode === KEYBOARD_KEYS.Escape
       || !this.filterInput
     ) {
       return;
@@ -127,7 +150,7 @@ export default class ColumnFilter {
   }
 
   private createFilterExpression(value: any): string {
-    return value.replace('$', `${ColumnFilter.getColumnNameVarPrefix(this.column.name)}${this.column.name}`);
+    return value.replace('$', `${ColumnFilter.getColumnNameVarPrefix(this.column.name)}${ColumnFilter.escapeColumnName(this.column.name)}`);
   }
 
   private createSearchExpression(value: any) {
@@ -142,13 +165,13 @@ export default class ColumnFilter {
 
     this.filterNode.innerHTML = `<div class="input-clear">
       <span class="fa filter-icon fa-filter"></span>
-      <input class="filter-input" type="text" title='filter with an expression with a variable defined for each column and $ means the current column.  eg "$ > 5"'>
+      <input class="filter-input" type="text" title='${FILTER_INPUT_TOOLTIP}'>
       <span class="fa fa-times clear-filter"></span>
     </div>`;
 
     this.filterNode.classList.add('input-clear-growing');
     this.filterNode.style.width = `${options.width}px`;
-    this.filterNode.style.height = `${this.dataGrid.baseRowSize}px`;
+    this.filterNode.style.height = this.getInputHeight();
     this.filterNode.style.left = `${options.x}px`;
     this.filterNode.style.top = `${options.y}px`;
     this.filterNode.style.position = 'absolute';
@@ -156,7 +179,7 @@ export default class ColumnFilter {
     this.filterIcon = this.filterNode.querySelector('.filter-icon') || new HTMLSpanElement();
     this.filterInput = this.filterNode.querySelector('input') || new HTMLInputElement();
     this.clearIcon = this.filterNode.querySelector('.clear-filter') || new HTMLSpanElement();
-    this.filterInput.style.height = `${this.dataGrid.baseRowSize}px`;
+    this.filterInput.style.height = this.getInputHeight();
 
     this.filterWidget.setHidden(true);
   }
@@ -174,5 +197,9 @@ export default class ColumnFilter {
     this.filterInput.addEventListener('keyup', throttle(this.filterHandler, 100, this), true);
     this.filterInput.addEventListener('mousedown', handleMouseDown, true);
     this.filterNode.addEventListener('mousedown', handleMouseDown, true);
+  }
+
+  private getInputHeight() {
+    return `${this.dataGrid.baseRowSize}px`;
   }
 }

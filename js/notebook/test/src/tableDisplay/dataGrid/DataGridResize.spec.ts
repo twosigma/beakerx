@@ -22,7 +22,7 @@ import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 import {DataGridResize} from "@beakerx/tableDisplay/dataGrid/DataGridResize";
 import {
   DEFAULT_GRID_BORDER_WIDTH,
-  DEFAULT_GRID_PADDING
+  DEFAULT_GRID_PADDING, DEFAULT_ROW_HEIGHT
 } from "@beakerx/tableDisplay/dataGrid/style/dataGridStyle";
 
 describe('DataGridResize', () => {
@@ -59,11 +59,6 @@ describe('DataGridResize', () => {
     expect(dataGridResize).to.have.property('shouldResizeDataGrid');
     expect(dataGridResize).to.have.property('setResizeMode');
     expect(dataGridResize).to.have.property('setCursorStyle');
-  });
-
-  it('should set the base row and header size', () => {
-    expect(dataGrid.baseRowSize).to.equal(28);
-    expect(dataGrid.baseColumnHeaderSize).to.equal(40);
   });
 
   it('should call resize methods while calling setInitialSize', () => {
@@ -113,6 +108,25 @@ describe('DataGridResize', () => {
     dataGridResize.setCursorStyle('ew-resize');
 
     expect(document.body.classList.contains('cursor-ew-resize')).to.be.true;
+  });
+
+  it('should set the base row and header size', () => {
+    expect(dataGrid.baseRowSize).to.equal(28);
+    expect(dataGrid.baseColumnHeaderSize).to.equal(40);
+  });
+
+  it('should set correct column header row size', () => {
+    const dataStore = createStore({
+      ...modelStateMock,
+      headerFontSize: NaN,
+      dataFontSize: null
+    });
+    const dataGrid = new BeakerXDataGrid({}, dataStore);
+
+    expect(dataGrid.baseRowSize).to.equal(DEFAULT_ROW_HEIGHT);
+    expect(dataGrid.baseColumnHeaderSize).to.equal(DEFAULT_ROW_HEIGHT);
+
+    dataGrid.destroy();
   });
 
 });

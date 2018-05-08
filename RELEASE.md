@@ -103,6 +103,8 @@ To update the embedded version of our widget library, and our Lab extension:
 Release to Docker Hub
 ---------------------
 
+Make sure docker is configured to run with at least 4GB of RAM.
+
 ```
 docker build -t beakerx-base -f docker/base/Dockerfile .
 docker build -t beakerx -f docker/Dockerfile .

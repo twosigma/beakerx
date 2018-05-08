@@ -18,6 +18,7 @@ import './../global.env';
 
 import BeakerXApi from "../tree/Utils/BeakerXApi";
 import * as GistPublish from "./gistPublish/index";
+import * as DataBrowser from "./dataBrowser/index";
 
 export function registerFeature(baseUrl: string): void {
   if (!!Jupyter.NotebookList) {
@@ -32,6 +33,7 @@ export function registerFeature(baseUrl: string): void {
       setupWideCells(data.ui_options.wide_cells);
       setupImproveFonts(data.ui_options.improve_fonts);
       setupShowPublication(data.ui_options.show_publication);
+      setupShowCatalog(data.ui_options.show_catalog);
       setupAutoSave(data.ui_options.auto_save);
 
     })
@@ -82,6 +84,13 @@ function setupShowPublication(showPublication: boolean) {
     return;
   }
   GistPublish.registerFeature();
+}
+
+function setupShowCatalog(showCatalog: boolean) {
+  if (!showCatalog) {
+    return;
+  }
+  DataBrowser.registerFeature();
 }
 
 function setupAutoSave(autoSave: boolean) {

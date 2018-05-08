@@ -35,9 +35,21 @@ import {
 import IRenderer, {RENDERER_TYPE} from "../interface/IRenderer";
 import {DataGridHelpers} from "../dataGridHelpers";
 import getStringSize = DataGridHelpers.getStringSize;
-import isUrl = DataGridHelpers.isUrl;
+import retrieveUrl = DataGridHelpers.retrieveUrl;
 
-export default class BeakerXCellRenderer extends TextRenderer {
+interface ICellRendererOptions {
+  font?: string,
+  color?: string,
+  text?: any,
+  vAlign?: string,
+  hAlign?: string,
+  boxHeight?: number,
+  textHeight?: number
+}
+
+const TEXT_WIDTH_OFFSET = 8;
+
+export default abstract class BeakerXCellRenderer extends TextRenderer {
   store: BeakerXDataStore;
   dataGrid: BeakerXDataGrid;
   backgroundColor: CellRenderer.ConfigOption<string>;
@@ -57,12 +69,73 @@ export default class BeakerXCellRenderer extends TextRenderer {
     this.font = this.getFont.bind(this);
     this.textColor = this.getTextColor.bind(this);
   }
-  
-  getBackgroundColor(config: CellRenderer.ICellConfig): string {
-    if (DataGridCell.isHeaderCell(config)) {
-      return DEFAULT_CELL_BACKGROUND;
+
+  abstract drawText(gc: GraphicsContext, config: CellRenderer.ICellConfig): void
+
+  drawBackground(gc: GraphicsContext, config: CellRenderer.ICellConfig) {
+    super.drawBackground(gc, config);
+
+    const renderer = this.getRenderer(config);
+    const isHeaderCell = DataGridCell.isHeaderCell(config);
+
+    if (renderer && renderer.type === RENDERER_TYPE.DataBars && !isHeaderCell) {
+      const barWidth = config.width/2 * renderer.percent;
+
+      gc.fillStyle = DEFAULT_HIGHLIGHT_COLOR;
+      gc.fillRect(
+        config.x + config.width/2 - (renderer.direction === 'RIGHT' ? 0 : barWidth),
+        config.y,
+        barWidth,
+        config.height - 1
+      );
+    }
+  }
+
+  drawTextUnderline(gc: GraphicsContext, textConfig, config) {
+    let { text, textX, textY, color } = textConfig;
+    let url = retrieveUrl(text);
+
+    if (!url) {
+      return;
     }
 
+    let underlineEndX: number;
+    let underlineStartX: number;
+    let urlIndex = text.indexOf(url);
+    let firstPart = urlIndex > 0 ? text.slice(0, urlIndex) : '';
+    let fontSize = selectDataFontSize(this.store.state);
+    let textWidth: number = getStringSize(text, fontSize).width - TEXT_WIDTH_OFFSET;
+    let firstPartWidth = getStringSize(firstPart, fontSize).width - TEXT_WIDTH_OFFSET;
+    let hAlign = CellRenderer.resolveOption(this.horizontalAlignment, config);
+
+    // Compute the X position for the underline.
+    switch (hAlign) {
+      case 'left':
+        underlineEndX = Math.round(textX + textWidth);
+        underlineStartX = Math.round(textX + firstPartWidth);
+        break;
+      case 'center':
+        textX = config.x + config.width / 2 - textWidth / 2;
+        underlineEndX = Math.round(textX + textWidth);
+        underlineStartX = textX + firstPartWidth;
+        break;
+      case 'right':
+        underlineEndX = Math.round(textX - textWidth + firstPartWidth);
+        underlineStartX = textX;
+        break;
+      default:
+        throw 'unreachable';
+    }
+
+    gc.beginPath();
+    gc.moveTo(underlineStartX, textY - 0.5);
+    gc.lineTo(underlineEndX, textY - 0.5);
+    gc.strokeStyle = color;
+    gc.lineWidth = 1.0;
+    gc.stroke();
+  }
+
+  getBackgroundColor(config: CellRenderer.ICellConfig): string {
     let selectionColor = this.dataGrid.cellSelectionManager.getBackgroundColor(config);
     let highlighterColor = this.dataGrid.highlighterManager.getCellBackground(config);
     let focusedColor = this.dataGrid.cellFocusManager.getFocussedCellBackground(config);
@@ -123,122 +196,66 @@ export default class BeakerXCellRenderer extends TextRenderer {
     };
   }
 
-  drawBackground(gc: GraphicsContext, config: CellRenderer.ICellConfig) {
-    super.drawBackground(gc, config);
+  getOptions(config: CellRenderer.ICellConfig): ICellRendererOptions {
+    let result: ICellRendererOptions = {};
 
-    const renderer = this.getRenderer(config);
-    const isHeaderCell = DataGridCell.isHeaderCell(config);
-
-    if (renderer && renderer.type === RENDERER_TYPE.DataBars && !isHeaderCell) {
-      const barWidth = config.width/2 * renderer.percent;
-
-      gc.fillStyle = DEFAULT_HIGHLIGHT_COLOR;
-      gc.fillRect(
-        config.x + config.width/2 - (renderer.direction === 'RIGHT' ? 0 : barWidth),
-        config.y,
-        barWidth,
-        config.height - 1
-      );
-    }
-  }
-
-  drawTextUnderline(gc: GraphicsContext, textConfig, config) {
-    let { text, textX, textY, color } = textConfig;
-
-    if (!isUrl(text)) {
-      return;
-    }
-
-    let underlineEndX: number;
-    let textWidth: number = getStringSize(text, selectDataFontSize(this.store.state)).width - 8;
-    let hAlign = CellRenderer.resolveOption(this.horizontalAlignment, config);
-
-    // Compute the X position for the underline.
-    switch (hAlign) {
-      case 'left':
-        underlineEndX = Math.round(textX + textWidth);
-        break;
-      case 'center':
-        textX = config.x + config.width / 2 - textWidth/ 2;
-        underlineEndX = Math.round(textX + textWidth);
-        break;
-      case 'right':
-        underlineEndX = Math.round(textX - textWidth);
-        break;
-      default:
-        throw 'unreachable';
-    }
-
-    gc.beginPath();
-    gc.moveTo(textX, textY - 0.5);
-    gc.lineTo(underlineEndX, textY - 0.5);
-    gc.strokeStyle = color;
-    gc.lineWidth = 1.0;
-    gc.stroke();
-  }
-
-  drawText(gc: GraphicsContext, config: CellRenderer.ICellConfig): void {
     // Resolve the font for the cell.
-    let font = CellRenderer.resolveOption(this.font, config);
-    const renderer = this.getRenderer(config);
-    const isHeaderCell = DataGridCell.isHeaderCell(config);
-
-    if (
-      renderer
-      && renderer.type === RENDERER_TYPE.DataBars
-      && !renderer.includeText
-      && !isHeaderCell
-    ) {
-      return;
-    }
+    result.font = CellRenderer.resolveOption(this.font, config);
 
     // Bail if there is no font to draw.
-    if (!font) {
-      return;
+    if (!result.font) {
+      return result;
     }
 
     // Resolve the text color for the cell.
-    let color = CellRenderer.resolveOption(this.textColor, config);
+    result.color = CellRenderer.resolveOption(this.textColor, config);
 
     // Bail if there is no text color to draw.
-    if (!color) {
-      return;
+    if (!result.color) {
+      return result;
     }
 
     // Format the cell value to text.
     let format = this.format;
-    let text = format(config);
+    result.text = format(config);
 
-    if (text === null) {
-      return;
+    if (result.text === null) {
+      return result;
     }
 
     // Resolve the vertical and horizontal alignment.
-    let vAlign = CellRenderer.resolveOption(this.verticalAlignment, config);
-    let hAlign = CellRenderer.resolveOption(this.horizontalAlignment, config);
+    result.vAlign = CellRenderer.resolveOption(this.verticalAlignment, config);
+    result.hAlign = CellRenderer.resolveOption(this.horizontalAlignment, config);
 
     // Compute the padded text box height for the specified alignment.
-    let boxHeight = config.height - (vAlign === 'center' ? 1 : 2);
+    result.boxHeight = config.height - (result.vAlign === 'center' ? 1 : 2);
 
     // Bail if the text box has no effective size.
-    if (boxHeight <= 0) {
-      return;
+    if (result.boxHeight <= 0) {
+      return result;
     }
 
     // Compute the text height for the gc font.
-    let textHeight = TextRenderer.measureFontHeight(font);
+    result.textHeight = TextRenderer.measureFontHeight(result.font);
 
-    // Set up the text position variables.
+    return result;
+  }
+
+  getTextPosition(
+    config: CellRenderer.ICellConfig,
+    options: ICellRendererOptions,
+    isHeaderCell: boolean = false
+  ): { textX: number, textY: number } {
     let textX: number;
     let textY: number;
 
     // Compute the Y position for the text.
-    switch (vAlign) {
+    switch (options.vAlign) {
       case 'top':
-        textY = config.y + 2 + textHeight;
+        textY = config.y + 2 + options.textHeight;
         break;
       case 'center':
-        textY = config.y + config.height / 2 + textHeight / 2;
+        textY = config.y + config.height / 2 + options.textHeight / 2;
         break;
       case 'bottom':
         textY = config.y + config.height - 2;
@@ -248,7 +265,7 @@ export default class BeakerXCellRenderer extends TextRenderer {
     }
 
     // Compute the X position for the text.
-    switch (hAlign) {
+    switch (options.hAlign) {
       case 'left':
         textX = config.x + (isHeaderCell ? 10 : 2);
         break;
@@ -262,38 +279,6 @@ export default class BeakerXCellRenderer extends TextRenderer {
         throw 'unreachable';
     }
 
-    // Clip the cell if the text is taller than the text box height.
-    if (textHeight > boxHeight) {
-      gc.beginPath();
-      gc.rect(config.x, config.y, config.width, config.height - 1);
-      gc.clip();
-    }
-
-    let verticalHeader = isHeaderCell && selectHeadersVertical(this.store.state);
-
-    // Set the gc state.
-    gc.textBaseline = 'bottom';
-    gc.textAlign = hAlign;
-
-    if(verticalHeader) {
-      gc.save();
-      gc.rotate(-Math.PI/2);
-
-      textX = -config.height + 2;
-      textY = config.x + config.width - 3;
-      gc.textBaseline = 'bottom';
-      gc.textAlign = 'left';
-    }
-
-    gc.font = font;
-    gc.fillStyle = color;
-
-    if (DataGridCell.isCellHovered(this.dataGrid.cellManager.hoveredCellData, config)) {
-      this.drawTextUnderline(gc, { text, textX, textY, color }, config);
-    }
-
-    // Draw the text for the cell.
-    gc.fillText(text, textX, textY);
-    verticalHeader && gc.restore();
+    return { textX, textY };
   }
 }

@@ -96,24 +96,26 @@ public class KernelSocketsZMQ extends KernelSockets {
   }
 
   private synchronized void sendMsg(ZMQ.Socket socket, List<Message> messages) {
-    messages.forEach(message -> {
-      String header = toJson(message.getHeader());
-      String parent = toJson(message.getParentHeader());
-      String meta = toJson(message.getMetadata());
-      String content = toJson(message.getContent());
-      String digest = hmac.sign(Arrays.asList(header, parent, meta, content));
+    if (!isShutdown()) {
+      messages.forEach(message -> {
+        String header = toJson(message.getHeader());
+        String parent = toJson(message.getParentHeader());
+        String meta = toJson(message.getMetadata());
+        String content = toJson(message.getContent());
+        String digest = hmac.sign(Arrays.asList(header, parent, meta, content));
 
-      ZMsg newZmsg = new ZMsg();
-      message.getIdentities().forEach(newZmsg::add);
-      newZmsg.add(DELIM);
-      newZmsg.add(digest.getBytes(StandardCharsets.UTF_8));
-      newZmsg.add(header.getBytes(StandardCharsets.UTF_8));
-      newZmsg.add(parent.getBytes(StandardCharsets.UTF_8));
-      newZmsg.add(meta.getBytes(StandardCharsets.UTF_8));
-      newZmsg.add(content.getBytes(StandardCharsets.UTF_8));
-      message.getBuffers().forEach(x -> newZmsg.add(x));
-      newZmsg.send(socket);
-    });
+        ZMsg newZmsg = new ZMsg();
+        message.getIdentities().forEach(newZmsg::add);
+        newZmsg.add(DELIM);
+        newZmsg.add(digest.getBytes(StandardCharsets.UTF_8));
+        newZmsg.add(header.getBytes(StandardCharsets.UTF_8));
+        newZmsg.add(parent.getBytes(StandardCharsets.UTF_8));
+        newZmsg.add(meta.getBytes(StandardCharsets.UTF_8));
+        newZmsg.add(content.getBytes(StandardCharsets.UTF_8));
+        message.getBuffers().forEach(x -> newZmsg.add(x));
+        newZmsg.send(socket);
+      });
+    }
   }
 
   private Message readMessage(ZMQ.Socket socket) {
@@ -167,6 +169,10 @@ public class KernelSocketsZMQ extends KernelSockets {
           break;
         }
       }
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    } catch (Error e) {
+      logger.error(e.toString());
     } finally {
       close();
     }

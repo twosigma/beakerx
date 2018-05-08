@@ -44,9 +44,9 @@ describe('Tests for combination of code and magics. ', function () {
     it('Output contains names of jars. ', function () {
       cellIndex = 0;
       beakerxPO.runCodeCellByIndex(cellIndex);
-      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /tablesaw-plot/);
-      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /tablesaw-smile/);
-      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /tablesaw-beakerx/);
+      beakerxPO.waitAndCheckOutputTextOfWidget(cellIndex, /tablesaw-plot/, 1);
+      beakerxPO.waitAndCheckOutputTextOfWidget(cellIndex, /tablesaw-smile/, 1);
+      beakerxPO.waitAndCheckOutputTextOfWidget(cellIndex, /tablesaw-beakerx/, 1);
     });
   });
 
@@ -255,8 +255,8 @@ describe('Tests for combination of code and magics. ', function () {
     it('Output contains names of jars. ', function () {
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
-      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /quandl-core/);
-      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /quandl-tablesaw/);
+      beakerxPO.waitAndCheckOutputTextOfWidget(cellIndex, /quandl-core/, 1);
+      beakerxPO.waitAndCheckOutputTextOfWidget(cellIndex, /quandl-tablesaw/, 1);
     });
 
     it('Should display table. ', function () {

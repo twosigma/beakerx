@@ -159,6 +159,11 @@ export default class ColumnManager {
     this.showFilterInputs(true, column);
   }
 
+  blurColumnFilterInputs() {
+    this.bodyColumns.forEach(column => column.columnFilter.blur());
+    this.indexColumns.forEach(column => column.columnFilter.blur());
+  }
+
   updateColumnFilterNodes() {
     this.bodyColumns.forEach(column => column.columnFilter.updateInputNode());
     this.indexColumns.forEach(column => column.columnFilter.updateInputNode());

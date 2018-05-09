@@ -49,6 +49,7 @@ public class SparkContextManager {
   public static final String SPARK_APP_NAME = "spark.app.name";
   public static final String SPARK_CORES_MAX = "spark.cores.max";
   public static final String SPARK_EXECUTOR_CORES = "spark.executor.cores";
+  public static final String SPARK_SESSION_NAME = "spark";
 
   private final SparkUI sparkUI;
   private Map<Integer, SparkStateProgress> progressBars = new HashMap<>();
@@ -57,7 +58,6 @@ public class SparkContextManager {
   private VBox sparkView;
   private Text masterURL;
   private Text executorMemory;
-  private Text sparkSessionAlias;
   private Text executorCores;
 
   private SparkSession.Builder sparkSessionBuilder;
@@ -97,13 +97,11 @@ public class SparkContextManager {
     this.masterURL = createMasterURL();
     this.executorMemory = createExecutorMemory();
     this.executorCores = createExecutorCores();
-    this.sparkSessionAlias = sparkSessionAlias();
     Button connect = createConnectButton();
     ArrayList<Widget> children = new ArrayList<>();
     children.add(masterURL);
     children.add(executorCores);
     children.add(executorMemory);
-    children.add(sparkSessionAlias);
     children.add(connect);
     VBox vBox = new VBox(children);
     this.sparkUI.add(vBox);
@@ -119,13 +117,6 @@ public class SparkContextManager {
       cores.setValue("10");
     }
     return cores;
-  }
-
-  private Text sparkSessionAlias() {
-    Text alias = new Text();
-    alias.setDescription("SparkSession alias");
-    alias.setValue("spark");
-    return alias;
   }
 
   private Text createExecutorMemory() {
@@ -179,17 +170,13 @@ public class SparkContextManager {
   }
 
   private TryResult initSparkContextInShell(KernelFunctionality kernel) {
-    if (sparkSessionAlias.getValue() == null || sparkSessionAlias.getValue().isEmpty()) {
-      throw new RuntimeException("SparkContext alias can not be empty");
-    }
-    String sessionName = sparkSessionAlias.getValue();
     String addSc = String.format(("import com.twosigma.beakerx.widget.SparkVariable\n" +
                                   "val %s = SparkVariable.getSparkSession()\n" +
                                   "import org.apache.spark.SparkContext._\n" +
                                   "import %s.implicits._\n" +
                                   "import %s.sql\n" +
                                   "import org.apache.spark.sql.functions._\n"),
-                                 sessionName, sessionName, sessionName);
+            SPARK_SESSION_NAME, SPARK_SESSION_NAME, SPARK_SESSION_NAME);
 
     SimpleEvaluationObject seo = createSimpleEvaluationObject(addSc, kernel, new Message(), 1);
     return kernel.executeCode(addSc, seo);

@@ -48,6 +48,8 @@ public class CommMsgHandler extends KernelHandler<Message> {
     logger.debug("Comm message handling, target name: " + (comm != null ? comm.getTargetName() : "undefined"));
     if (comm != null) {
       comm.handleMsg(message);
+    } else {
+        logger.warn("No such comm: " + getString(commMap, COMM_ID));
     }
   }
 

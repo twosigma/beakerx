@@ -25,7 +25,6 @@ import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicKernelResponse;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
-import py4j.ClientServer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,7 +42,7 @@ public class PythonMagicCommand implements MagicCommandFunctionality {
 
     @Override
     public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
-        PythonEntryPoint pep = getPythonEntryPoint(kernel);
+        PythonEntryPoint pep = kernel.getPythonEntryPoint();
         String codeBlock = param.getCommandCodeBlock();
         pep.evaluate(codeBlock);
         pep.getShellMsg();
@@ -71,11 +70,6 @@ public class PythonMagicCommand implements MagicCommandFunctionality {
         msg.setIdentities(identities == null ? new ArrayList<>() : identities);
         msg.setHeader(mapper.convertValue(json.get("header"), Header.class));
         return msg;
-    }
-
-    private PythonEntryPoint getPythonEntryPoint(KernelFunctionality kernel) {
-        ClientServer cs = kernel.getPythonMagicCS();
-        return (PythonEntryPoint) cs.getPythonServerEntryPoint(new Class[] {PythonEntryPoint.class});
     }
 
     @Override

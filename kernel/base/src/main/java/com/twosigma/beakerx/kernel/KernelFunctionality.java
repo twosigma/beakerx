@@ -94,5 +94,5 @@ public interface KernelFunctionality {
 
   void registerCancelHook(Hook hook);
 
-  ClientServer getPythonMagicCS();
+  PythonEntryPoint getPythonEntryPoint();
 }

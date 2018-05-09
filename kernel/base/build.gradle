@@ -101,6 +101,12 @@ task copyDependencies(type: Copy) {
   into new File(pathToStaticContent, 'base/lib')
 }
 
+task copyPyMagic(type: Copy) {
+  from 'python_magic.py'
+  into new File(pathToStaticContent, 'base')
+}
+
+copyDependencies.finalizedBy copyPyMagic
 jar.finalizedBy copyDependencies
 
 staticContent {

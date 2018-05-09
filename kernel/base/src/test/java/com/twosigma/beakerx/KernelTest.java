@@ -31,6 +31,8 @@ import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.PathToJar;
+import com.twosigma.beakerx.kernel.PythonEntryPoint;
+import com.twosigma.beakerx.kernel.PythonMagicManager;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandWhichThrowsException;
@@ -381,9 +383,9 @@ public class KernelTest implements KernelFunctionality {
   public void registerCancelHook(Hook hook) {
   }
 
-  public ClientServer getPythonMagicCS() {
+  @Override
+  public PythonEntryPoint getPythonEntryPoint() {
     return null;
   }
-
 
 }

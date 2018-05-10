@@ -20,17 +20,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import py4j.ClientServer;
+import py4j.Py4JException;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class PythonMagicManager {
 
-    private static String PY4J_SCRIPT_NAME = "/python_magic.py";
+    private static String PY4J_SCRIPT_NAME = "/beakerx_magics/python_magic.py";
     private static String PYTHON = "python3";
 
     ClientServer clientServer = null;
@@ -38,27 +38,26 @@ public class PythonMagicManager {
     Process pythonProcess = null;
 
     public PythonMagicManager() {
-        String pyScriptPath = "";
-        try {
-            String uri = this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
-            pyScriptPath = new File(uri).getParentFile().getParentFile().toString();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        String[] cmd = {PYTHON, pyScriptPath + PY4J_SCRIPT_NAME};
-        ProcessBuilder pb = new ProcessBuilder(cmd);
-        try {
-            this.pythonProcess = pb.start();
-        } catch (IOException e) {
-            e.printStackTrace();
+        String home = System.getenv("BEAKERX_HOME");
+        if (home != null) {
+            try {
+                String pyScriptPath = new File(home).getParentFile().toString();
+                String[] cmd = {PYTHON, pyScriptPath + PY4J_SCRIPT_NAME};
+                this.pythonProcess = new ProcessBuilder(cmd).start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void exit() {
+        if (pep != null) {
+            pep.shutdownKernel();
+        }
         if (clientServer != null) {
             this.clientServer.shutdown();
         }
-        if (pythonProcess != null && pythonProcess.isAlive()) {
+        if (pythonProcess != null) {
             pythonProcess.destroy();
         }
     }

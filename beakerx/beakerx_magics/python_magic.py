@@ -19,6 +19,10 @@ class PythonMagic:
         self.kc.start_channels()
         self.kc.wait_for_ready()
 
+    def stop_kernel(self):
+        self.kc.stop_channels()
+        self.km.shutdown_kernel(now=True)
+
     def run_cell(self, code):
         if not self.km:
             self.start()
@@ -43,7 +47,7 @@ class PythonEntryPoint(object):
     def evaluate(self, code):
         print('code for evaluate {}'.format(code))
         self.pm.run_cell(code)
-        return "OK"
+        return None
 
     def getShellMsg(self):
         shellMsg = self.pm.get_shell_msg()
@@ -52,6 +56,10 @@ class PythonEntryPoint(object):
     def getIopubMsg(self):
         iopubMsg = self.pm.get_iopub_msg()
         return json.dumps(iopubMsg, default=str)
+
+    def shutdownKernel(self):
+        self.pm.stop_kernel()
+        return None
 
     class Java:
         implements = ["com.twosigma.beakerx.kernel.PythonEntryPoint"]

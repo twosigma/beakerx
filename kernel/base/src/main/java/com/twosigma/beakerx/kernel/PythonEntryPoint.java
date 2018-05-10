@@ -19,4 +19,5 @@ public interface PythonEntryPoint {
     String evaluate(String code);
     String getIopubMsg();
     String getShellMsg();
+    String shutdownKernel();
 }

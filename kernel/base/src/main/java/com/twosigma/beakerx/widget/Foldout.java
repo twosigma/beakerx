@@ -19,11 +19,8 @@ import com.twosigma.beakerx.message.Message;
 
 public class Foldout extends StringWidget {
 
-//  public static final String VIEW_NAME_VALUE = "FoldoutView";
-//  public static final String MODEL_NAME_VALUE = "FoldoutModel";
-
-  public static final String VIEW_NAME_VALUE = "TextView";
-  public static final String MODEL_NAME_VALUE = "TextModel";
+  public static final String VIEW_NAME_VALUE = "FoldoutView";
+  public static final String MODEL_NAME_VALUE = "FoldoutModel";
 
   public Foldout(Message parent) {
     super();

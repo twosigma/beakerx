@@ -271,8 +271,13 @@ export class DataGridResize {
     const hasHScroll = !this.dataGrid['_hScrollBar'].isHidden;
     const scrollBarHeight = hasHScroll ? this.dataGrid['_hScrollBarMinHeight'] : 0;
     const spacing = 2 * (DEFAULT_GRID_PADDING + DEFAULT_GRID_BORDER_WIDTH);
+    let height = 0;
 
-    return rowCount * this.dataGrid.baseRowSize + this.dataGrid.headerHeight + spacing + scrollBarHeight;
+    for (let i = 0; i < rowCount; i += 1) {
+      height += this.dataGrid.rowSections.sectionSize(i);
+    }
+
+    return height + this.dataGrid.headerHeight + spacing + scrollBarHeight;
   }
 
   private resizeSections(): void {

@@ -20,7 +20,7 @@ import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import {IColumnOptions} from "../interface/IColumn";
 import { CellRenderer, DataModel, TextRenderer } from "@phosphor/datagrid";
 import {ALL_TYPES, getDisplayType, isDoubleWithPrecision} from "../dataTypes";
-import { minmax, filter } from '@phosphor/algorithm';
+import { minmax, filter, each } from '@phosphor/algorithm';
 import { HIGHLIGHTER_TYPE } from "../interface/IHighlighterState";
 import ColumnManager, { COLUMN_CHANGED_TYPES, IBkoColumnsChangedArgs } from "./ColumnManager";
 import ColumnFilter from "./ColumnFilter";
@@ -58,6 +58,9 @@ import {
 import {RENDERER_TYPE} from "../interface/IRenderer";
 import DataGridCell from "../cell/DataGridCell";
 import {ColumnValuesIterator} from "./ColumnValuesIterator";
+import {DataGridHelpers} from "../dataGridHelpers";
+import getStringSize = DataGridHelpers.getStringSize;
+import {selectDataFontSize} from "../model/selectors/model";
 
 export default class DataGridColumn {
   index: number;
@@ -319,7 +322,9 @@ export default class DataGridColumn {
       displayType === ALL_TYPES.html ? displayType : dataType
     );
 
-    if (dataType === ALL_TYPES.string || dataType === ALL_TYPES['formatted integer'] || dataType === ALL_TYPES.html) {
+    if (dataType === ALL_TYPES.html || displayType === ALL_TYPES.html) {
+      this.resizeHTMLRows(valuesIterator);
+    } else if (dataType === ALL_TYPES.string || dataType === ALL_TYPES['formatted integer']) {
       stringMinMax = minmax(valuesIterator, ColumnValuesIterator.longestString(valueResolver));
     } else {
       minMax = minmax(
@@ -392,6 +397,25 @@ export default class DataGridColumn {
 
     this.longestStringValue = null;
     this.addMinMaxValues();
+  }
+
+  private resizeHTMLRows(valuesIterator) {
+    let fontSize = selectDataFontSize(this.store.state);
+    let longest;
+
+    each(valuesIterator, (value, index) => {
+      let size = getStringSize(value, fontSize);
+
+      if (!longest || longest.width < size.width) {
+        longest = { width: size.width, value };
+      }
+
+      if (size.height > this.dataGrid.rowSections.sectionSize(index)) {
+        this.dataGrid.resizeSection('row', index, size.height);
+      }
+    });
+
+    this.longestStringValue = longest && longest.value;
   }
 
   private updateColumnFilter(filter: string) {

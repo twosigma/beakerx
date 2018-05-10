@@ -8,8 +8,10 @@
     "lib": ["dom", "es6", "es5"],
     "types": ["mocha", "chai", "node"],
     "paths": {
+      "*.woff": ["./mock/assets.ts"],
       "@beakerx/*": ["../../src/*"]
     }
   },
-  "compileOnSave": false
+  "compileOnSave": false,
+  "include": ["../../src/types/*.d.ts"]
 }

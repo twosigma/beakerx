@@ -70,7 +70,7 @@ export namespace DataGridHelpers {
     } catch (e) {}
   }
 
-  export function getStringSize(value: string, fontSize: Number|null|undefined) {
+  export function getStringSize(value: any, fontSize: Number|null|undefined) {
     let divEl: HTMLSpanElement = document.createElement('div');
     let width: number;
     let height: number;
@@ -86,8 +86,8 @@ export namespace DataGridHelpers {
 
     const rect = divEl.getBoundingClientRect();
 
-    width = rect.width;
-    height = rect.height;
+    width = Math.ceil(rect.width);
+    height = Math.ceil(rect.height);
 
     document.body.removeChild(divEl);
 

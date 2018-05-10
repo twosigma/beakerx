@@ -15,6 +15,7 @@
  */
 
 var jsdom = require('jsdom');
+var requireHacker = require('require-hacker');
 
 global.beakerx = {};
 global.window = new jsdom.JSDOM().window;
@@ -36,3 +37,11 @@ window.HTMLCanvasElement.prototype.getContext = function() {
 
 global.navigator = window.navigator;
 global.define = function() {};
+
+requireHacker.global_hook('assets', function(path) {
+  if (!/\.woff(\?v=\d+\.\d+\.\d+)?$/.test(path)) {
+    return;
+  }
+
+  return { source: "module.exports = ''", path: path };
+});

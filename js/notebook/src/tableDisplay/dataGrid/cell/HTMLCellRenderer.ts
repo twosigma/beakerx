@@ -75,6 +75,7 @@ export default class HTMLCellRenderer extends BeakerXCellRenderer {
     const width = config.width * dpiRatio;
     const height = config.height * dpiRatio;
 
+    gc.setTransform(1, 0, 0, 1, 0, 0);
     gc.textBaseline = 'bottom';
     gc.textAlign = hAlign;
     gc.font = font;
@@ -91,7 +92,7 @@ export default class HTMLCellRenderer extends BeakerXCellRenderer {
     img.src = "data:image/svg+xml," + data;
 
     if (!img.complete) {
-      img.onload = () => { this.dataGrid.repaint(x, y, width, height); };
+      img.onload = () => { this.dataGrid.repaint(config.x, config.y, config.width, config.height); };
     } else {
       gc.drawImage(img, x, y, width, height);
     }

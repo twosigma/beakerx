@@ -85,11 +85,10 @@ public class Button extends ValueWidget<Boolean> {
 
 
   private void handleOnClick(Message message) {
-    handleCommEventSync(message, CommActions.CLICK, this::executeAction);
+    handleCommEventSync(message, CommActions.CLICK, this::onClick);
   }
-  
-  
-  private void executeAction(HashMap content, Message message){
+
+  public void onClick(HashMap content, Message message){
     if(actionPerformed != null){
       actionPerformed.executeAction(content, message);
     }

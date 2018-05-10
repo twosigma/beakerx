@@ -22,6 +22,7 @@ describe('Tests for kernel magic. ', function () {
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/python/kernelMagicsTest.ipynb');
+    beakerxPO.openUIWindow();
   });
 
   afterAll(function () {
@@ -29,6 +30,21 @@ describe('Tests for kernel magic. ', function () {
   });
 
   var cellIndex;
+  var imageDir = 'python/kernelMagics';
+
+  function checkPlotWithLine(codeCell){
+    browser.waitUntil(function(){
+      return codeCell.$$('div.dtcontainer').length > 0;
+    }, 20000);
+    var dtContainer = beakerxPO.getDtContainerByIndex(cellIndex);
+    expect(dtContainer.$('path.plot-line').isVisible()).toBeTruthy();
+  }
+
+  describe('UI options. ', function () {
+    it("Use new table widget. ", function () {
+      beakerxPO.setDataGridForTable(true, false);
+    });
+  });
 
   describe('%%groovy ', function () {
     it('Should display stdout and execute results ', function () {
@@ -39,14 +55,71 @@ describe('Tests for kernel magic. ', function () {
       var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0];
       expect(result.getText()).toMatch(/results work/);
     });
-  });
 
-  describe('%%groovy and %%classpath in the same cell ', function () {
     it('Should add jar to classpath ', function () {
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
       beakerxPO.waitAndCheckOutputTextOfWidget(cellIndex, /arpack_combined_all.+jar/, 1);
       beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /org.netlib.blas.Daxpy/);
+    });
+
+    it('Should display table ', function () {
+      cellIndex += 1;
+      var fileName = 'cell3_case1.png';
+      var width = 130, height = 70;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+    });
+
+    it('Should display error ', function () {
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfStderr(cellIndex, /groovy.lang.MissingMethodException/);
+    });
+
+    it('Should display HTML ', function () {
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /HTML works/);
+    });
+
+    it('Should display Plot with Line ', function () {
+      cellIndex += 1;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      checkPlotWithLine(codeCell);
+    });
+  });
+
+  describe('%%java ', function () {
+    it('Should display Plot with Line ', function () {
+      cellIndex += 1;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      checkPlotWithLine(codeCell);
+    });
+  });
+
+  describe('%%scala ', function () {
+    it('Should display Plot with Line ', function () {
+      cellIndex += 1;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      checkPlotWithLine(codeCell);
+    });
+  });
+
+  describe('%%kotlin ', function () {
+    it('Should display Plot with Line ', function () {
+      cellIndex += 1;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      checkPlotWithLine(codeCell);
+    });
+  });
+
+  describe('%%clojure ', function () {
+    it('Should display Plot with Line ', function () {
+      cellIndex += 1;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      checkPlotWithLine(codeCell);
     });
   });
 

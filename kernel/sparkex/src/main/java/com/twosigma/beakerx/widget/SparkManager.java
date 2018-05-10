@@ -15,40 +15,25 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.twosigma.beakerx.TryResult;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
 import org.apache.spark.sql.SparkSession;
 
-public class SparkVariable {
+public interface SparkManager {
 
-  private static SparkUIManager manager = null;
-  private static SparkContext sparkContext;
-  private static SparkSession sparkSession;
+  TryResult configure(KernelFunctionality kernel, SparkUIManager sparkContextManager);
 
-  static void putSparkUIManager(SparkUIManager sparkUIManager) {
-    manager = sparkUIManager;
-  }
+  SparkSession getOrCreate();
 
-  public static SparkUIManager getSparkUIManager() {
-    return manager;
-  }
+  SparkConf getSparkConf();
 
-  static void putSparkContext(SparkContext sc) {
-    sparkContext = sc;
-  }
+  SparkContext sparkContext();
 
-  public static SparkContext getSparkContext() {
-    return sparkContext;
-  }
+  SparkSession.Builder getBuilder();
 
-  public static void cancelAllJobs() {
-    manager.cancelAllJobs();
-  }
-
-  public static void putSparkSession(SparkSession sSession) {
-    sparkSession = sSession;
-  }
-
-  public static SparkSession getSparkSession() {
-    return sparkSession;
+  interface SparkManagerFactory {
+    SparkManager create(SparkSession.Builder sparkSessionBuilder);
   }
 }

@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.widget;
 
-import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 
 import java.util.ArrayList;
@@ -30,18 +29,21 @@ public class SparkUI extends VBox {
   public static final String MODEL_NAME_VALUE = "SparkUIModel";
   public static final String BEAKERX_ID = "beakerx.id";
 
-  public static SparkUI create(SparkConf sparkConf) {
-    return new SparkUI(SparkSession.builder().config(sparkConf));
+  private final SparkUIManager sparkUIManager;
+
+  private VBox vBox;
+  private Button connectButton;
+
+  private static SparkUI create(SparkManager sparkManager) {
+    return new SparkUI(sparkManager);
   }
 
-  public static SparkUI create(SparkSession.Builder spaBuilder) {
-    return new SparkUI(spaBuilder);
-  }
-
-  private SparkUI(SparkSession.Builder builder) {
+  private SparkUI(SparkManager sparkManager) {
     super(new ArrayList<>());
-    SparkSession.Builder sparkSessionBuilder = configureSparkSessionBuilder(builder);
-    new SparkContextManager(this, sparkSessionBuilder);
+    configureSparkSessionBuilder(sparkManager.getBuilder());
+    this.vBox = new VBox(new ArrayList<>());
+    add(vBox);
+    this.sparkUIManager = new SparkUIManager(this, sparkManager);
   }
 
   @Override
@@ -68,5 +70,48 @@ public class SparkUI extends VBox {
     builder.config(SPARK_EXTRA_LISTENERS, START_STOP_SPARK_LISTENER);
     builder.config(BEAKERX_ID, UUID.randomUUID().toString());
     return builder;
+  }
+
+  public boolean isSparkSessionIsActive() {
+    return sparkUIManager.isActive();
+  }
+
+  public void addMasterUrl(Text masterURL) {
+    vBox.add(masterURL);
+  }
+
+  public void addExecutorCores(Text executorCores) {
+    vBox.add(executorCores);
+  }
+
+  public void addExecutorMemory(Text executorMemory) {
+    vBox.add(executorMemory);
+  }
+
+  public void addConnectButton(Button connect) {
+    this.connectButton = connect;
+    vBox.add(connectButton);
+  }
+
+  public void clearView() {
+    removeDOMWidget(vBox);
+    connectButton = null;
+    this.vBox = new VBox(new ArrayList<>());
+    add(vBox);
+  }
+
+  public Button getConnectButton() {
+    return connectButton;
+  }
+
+  public interface SparkUIFactory {
+    SparkUI create(SparkManager sparkManager);
+  }
+
+  public static class SparkUIFactoryImpl implements SparkUIFactory {
+    @Override
+    public SparkUI create(SparkManager sparkManager) {
+      return SparkUI.create(sparkManager);
+    }
   }
 }

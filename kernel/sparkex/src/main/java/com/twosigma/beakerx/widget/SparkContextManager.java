@@ -61,11 +61,12 @@ public class SparkContextManager {
   private Text executorCores;
 
   private SparkSession.Builder sparkSessionBuilder;
+  private boolean active = false;
 
   public SparkContextManager(SparkUI sparkUI, SparkSession.Builder sparkSessionBuilder) {
     this.sparkUI = sparkUI;
     this.sparkSessionBuilder = sparkSessionBuilder;
-    SparkVariable.putSparkContextManager(getSparkConf(), this);
+    SparkVariable.putSparkContextManager(this);
     createSparkView();
   }
 
@@ -158,8 +159,10 @@ public class SparkContextManager {
       TryResult tryResultSparkContext = initSparkContextInShell(kernel);
       if (tryResultSparkContext.isError()) {
         sendError(parentMessage, kernel, tryResultSparkContext.error());
+      } else {
+        kernel.registerCancelHook(SparkVariable::cancelAllJobs);
+        active = true;
       }
-      kernel.registerCancelHook(SparkVariable::cancelAllJobs);
     } catch (Exception e) {
       sendError(parentMessage, kernel, e.getMessage());
     }
@@ -171,11 +174,11 @@ public class SparkContextManager {
 
   private TryResult initSparkContextInShell(KernelFunctionality kernel) {
     String addSc = String.format(("import com.twosigma.beakerx.widget.SparkVariable\n" +
-                                  "val %s = SparkVariable.getSparkSession()\n" +
-                                  "import org.apache.spark.SparkContext._\n" +
-                                  "import %s.implicits._\n" +
-                                  "import %s.sql\n" +
-                                  "import org.apache.spark.sql.functions._\n"),
+                    "val %s = SparkVariable.getSparkSession()\n" +
+                    "import org.apache.spark.SparkContext._\n" +
+                    "import %s.implicits._\n" +
+                    "import %s.sql\n" +
+                    "import org.apache.spark.sql.functions._\n"),
             SPARK_SESSION_NAME, SPARK_SESSION_NAME, SPARK_SESSION_NAME);
 
     SimpleEvaluationObject seo = createSimpleEvaluationObject(addSc, kernel, new Message(), 1);
@@ -267,6 +270,7 @@ public class SparkContextManager {
     if (statusPanel != null) {
       sparkUI.removeDOMWidget(statusPanel);
       statusPanel = null;
+      active = false;
       createSparkView();
     }
   }
@@ -350,5 +354,9 @@ public class SparkContextManager {
 
   public void cancelAllJobs() {
     sparkContext().cancelAllJobs();
+  }
+
+  public boolean isActive() {
+    return active;
   }
 }

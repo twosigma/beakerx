@@ -26,6 +26,7 @@ import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 import com.twosigma.beakerx.widget.SparkUI;
+import com.twosigma.beakerx.widget.SparkVariable;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 
@@ -45,6 +46,13 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
 
   @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
+    if (SparkVariable.getSparkContextManager() != null && SparkVariable.getSparkContextManager().isActive()) {
+      return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Active spark session exists. If you want to close it run 'spark.close()'");
+    }
+    return createUI(param);
+  }
+
+  private MagicCommandOutcomeItem createUI(MagicCommandExecutionParam param) {
     SimpleEvaluationObject seo = PlainCode.createSimpleEvaluationObject(param.getCommandCodeBlock(), kernel, param.getCode().getMessage(), param.getExecutionCount());
     if (param.getCommandCodeBlock().isEmpty()) {
       InternalVariable.setValue(seo);
@@ -75,13 +83,13 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
     return displaySparkUI(sparkUI);
   }
 
-  private MagicCommandOutcomeItem displaySparkUI(SparkUI sparkUI) {
-    Display.display(sparkUI);
-    return new MagicCommandOutput(MagicCommandOutput.Status.OK);
-  }
-
   private MagicCommandOutcomeItem createSparkUI(SparkConf sparkConf) {
     SparkUI sparkUI = SparkUI.create(sparkConf);
     return displaySparkUI(sparkUI);
+  }
+
+  private MagicCommandOutcomeItem displaySparkUI(SparkUI sparkUI) {
+    Display.display(sparkUI);
+    return new MagicCommandOutput(MagicCommandOutput.Status.OK);
   }
 }

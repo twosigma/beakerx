@@ -19,6 +19,7 @@ import {DEFAULT_DATA_FONT_SIZE} from "./style/dataGridStyle";
 import {KEYBOARD_KEYS} from "./event/enums";
 import DataGridColumn from "./column/DataGridColumn";
 import * as moment from 'moment-timezone/builds/moment-timezone-with-data';
+import {sanitizeHTML} from "../../plot/plotSanitize";
 
 export namespace DataGridHelpers {
   const urlRegex = /((https?|ftp|file):\/\/)(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[A-Z0-9+&@#/%=~_|$])/i;
@@ -69,21 +70,26 @@ export namespace DataGridHelpers {
     } catch (e) {}
   }
 
-  export function getStringSize(value: string, fontSize: Number|null|undefined) {
-    let spanEl: HTMLSpanElement = document.createElement('span');
+  export function getStringSize(value: any, fontSize: Number|null|undefined) {
+    let divEl: HTMLSpanElement = document.createElement('div');
     let width: number;
     let height: number;
 
-    spanEl.textContent = value;
-    spanEl.style.fontFamily = 'Lato, Helvetica, sans-serif';
-    spanEl.style.fontSize = `${fontSize || DEFAULT_DATA_FONT_SIZE}px`;
-    spanEl.style.padding = '5px';
-    spanEl.style.position = 'absolute';
-    document.body.appendChild(spanEl);
+    divEl.innerHTML = sanitizeHTML(value, true);
+    divEl.style.fontFamily = 'Lato, Helvetica, sans-serif';
+    divEl.style.fontSize = `${fontSize || DEFAULT_DATA_FONT_SIZE}px`;
+    divEl.style.padding = '5px';
+    divEl.style.position = 'absolute';
+    divEl.style.display = 'inline-block';
+    divEl.style.visibility = 'hidden';
+    document.body.appendChild(divEl);
 
-    width = spanEl.clientWidth;
-    height = spanEl.clientHeight;
-    document.body.removeChild(spanEl);
+    const rect = divEl.getBoundingClientRect();
+
+    width = Math.ceil(rect.width);
+    height = Math.ceil(rect.height);
+
+    document.body.removeChild(divEl);
 
     return { width, height };
   }

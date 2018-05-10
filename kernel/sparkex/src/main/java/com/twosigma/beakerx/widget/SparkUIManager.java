@@ -22,7 +22,6 @@ import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.message.Message;
 import org.apache.spark.sql.SparkSession;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +39,6 @@ public class SparkUIManager {
 
   private final SparkUI sparkUI;
   private Map<Integer, SparkStateProgress> progressBars = new HashMap<>();
-  private VBox jobPanel = null;
   private HBox statusPanel;
   private Text masterURL;
   private Text executorMemory;
@@ -167,13 +165,7 @@ public class SparkUIManager {
   void startStage(int stageId, int numTasks) {
     SparkStateProgress intProgress = new SparkStateProgress(numTasks, stageId, stageId, jobLink(stageId), stageLink(stageId));
     intProgress.init();
-    if (jobPanel != null) {
-      jobPanel.getLayout().setDisplayNone();
-      jobPanel.close();
-    }
-    jobPanel = new VBox(new ArrayList<>());
-    jobPanel.add(intProgress);
-    jobPanel.display();
+    intProgress.display();
     progressBars.put(stageId, intProgress);
   }
 

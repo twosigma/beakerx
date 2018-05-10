@@ -383,9 +383,4 @@ public class KernelTest implements KernelFunctionality {
   public void registerCancelHook(Hook hook) {
   }
 
-  @Override
-  public PythonEntryPoint getPythonEntryPoint() {
-    return null;
-  }
-
 }

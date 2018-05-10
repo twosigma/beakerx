@@ -295,4 +295,9 @@ public abstract class Kernel implements KernelFunctionality {
   public PythonEntryPoint getPythonEntryPoint() {
       return pythonMagicManager.getPythonEntryPoint();
   }
+
+  @Override
+  public PythonMagicManager getPythonMagicManager() {
+    return pythonMagicManager;
+  }
 }

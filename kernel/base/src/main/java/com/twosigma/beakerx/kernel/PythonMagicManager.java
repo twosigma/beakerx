@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import py4j.ClientServer;
-import py4j.Py4JException;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,13 +31,14 @@ public class PythonMagicManager {
 
     private static String PY4J_SCRIPT_NAME = "/beakerx_magics/python_magic.py";
     private static String PYTHON = "python3";
+    private static String ENV_BEAKERX_HOME = "BEAKERX_HOME";
 
     ClientServer clientServer = null;
     PythonEntryPoint pep = null;
     Process pythonProcess = null;
 
     public PythonMagicManager() {
-        String home = System.getenv("BEAKERX_HOME");
+        String home = System.getenv(ENV_BEAKERX_HOME);
         if (home != null) {
             try {
                 String pyScriptPath = new File(home).getParentFile().toString();
@@ -80,11 +80,7 @@ public class PythonMagicManager {
         this.clientServer = new ClientServer(null);
     }
 
-    private String createJson(Message message) {
-        return message.toString();
-    }
-
-    public List<Message> getIopubMessages() throws IOException {
+    private List<Message> getIopubMessages() throws IOException {
         List<Message> messages = new ArrayList<>();
         while (true) {
             String iopubMsg = pep.getIopubMsg();
@@ -105,5 +101,22 @@ public class PythonMagicManager {
         msg.setIdentities(identities == null ? new ArrayList<>() : identities);
         msg.setHeader(mapper.convertValue(json.get("header"), Header.class));
         return msg;
+    }
+
+    public List<Message> handleMsg(Message message) {
+        getPythonEntryPoint();
+        pep.sendMessage(new ObjectMapper().valueToTree(message).toString());
+        List<Message> messages = new ArrayList<>();
+
+        try {
+            messages = getIopubMessages();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        for (Message msg : messages) {
+            msg.setParentHeader(message.getHeader());
+        }
+        return messages;
     }
 }

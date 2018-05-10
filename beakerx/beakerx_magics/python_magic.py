@@ -38,6 +38,14 @@ class PythonMagic:
         except Empty:
             return None
 
+    def pass_msg(self, msg_raw):
+        msg_json = json.loads(msg_raw)
+        content = msg_json['content']
+        msg_type = msg_json['header']['msg_type']
+        msg = self.kc.session.msg(msg_type, content)
+        self.kc.shell_channel.send(msg)
+        return None
+
 
 class PythonEntryPoint(object):
 
@@ -60,6 +68,11 @@ class PythonEntryPoint(object):
     def shutdownKernel(self):
         self.pm.stop_kernel()
         return None
+
+    def sendMessage(self, msg_raw):
+        self.pm.pass_msg(msg_raw)
+        return None
+
 
     class Java:
         implements = ["com.twosigma.beakerx.kernel.PythonEntryPoint"]

@@ -15,18 +15,20 @@
  */
 package com.twosigma.beakerx.kernel.handler;
 
-import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.PythonMagicManager;
+import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
-import static com.twosigma.beakerx.kernel.comm.Comm.COMM_ID;
 import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
+import static com.twosigma.beakerx.kernel.comm.Comm.COMM_ID;
 
 public class CommMsgHandler extends KernelHandler<Message> {
 
@@ -49,7 +51,15 @@ public class CommMsgHandler extends KernelHandler<Message> {
     if (comm != null) {
       comm.handleMsg(message);
     } else {
-        logger.warn("No such comm: " + getString(commMap, COMM_ID));
+      PythonMagicManager pythonMagicManager = kernel.getPythonMagicManager();
+      if (pythonMagicManager != null) {
+        List<Message> messages = pythonMagicManager.handleMsg(message);
+        if (!messages.isEmpty()) {
+          kernel.publish(messages);
+          return;
+        }
+      }
+      logger.warn("No such comm: " + getString(commMap, COMM_ID));
     }
   }
 

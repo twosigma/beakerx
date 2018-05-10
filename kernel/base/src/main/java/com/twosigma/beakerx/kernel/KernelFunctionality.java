@@ -94,5 +94,7 @@ public interface KernelFunctionality {
 
   void registerCancelHook(Hook hook);
 
-  PythonEntryPoint getPythonEntryPoint();
+  default PythonEntryPoint getPythonEntryPoint() {return null;}
+
+  default PythonMagicManager getPythonMagicManager() {return null;}
 }

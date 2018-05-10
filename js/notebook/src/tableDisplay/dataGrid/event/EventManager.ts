@@ -28,6 +28,7 @@ import getEventKeyCode = DataGridHelpers.getEventKeyCode;
 import {KEYBOARD_KEYS} from "./enums";
 import ColumnManager from "../column/ColumnManager";
 import {ICellData} from "../interface/ICell";
+import retrieveUrl = DataGridHelpers.retrieveUrl;
 
 const COLUMN_RESIZE_AREA_WIDTH = 4;
 
@@ -50,7 +51,7 @@ export default class EventManager {
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleScrollBarMouseUp = this.handleScrollBarMouseUp.bind(this);
     this.handleCellHover = throttle<MouseEvent, void>(this.handleCellHover, 100, this, this.cellHoverControll);
-    this.handleMouseMoveOutiseArea = throttle<MouseEvent, void>(this.handleMouseMoveOutiseArea, 100, this);
+    this.handleMouseMoveOutsideArea = throttle<MouseEvent, void>(this.handleMouseMoveOutsideArea, 100, this);
     this.handleWindowResize = throttle<Event, void>(this.handleWindowResize, 200, this);
 
     this.dataGrid.node.addEventListener('selectstart', this.handleSelectStart);
@@ -63,7 +64,7 @@ export default class EventManager {
     this.dataGrid['_hScrollBar'].node.addEventListener('mousedown', this.handleMouseDown);
     this.dataGrid['_scrollCorner'].node.addEventListener('mousedown', this.handleMouseDown);
 
-    document.addEventListener('mousemove', this.handleMouseMoveOutiseArea);
+    document.addEventListener('mousemove', this.handleMouseMoveOutsideArea);
     document.addEventListener('keydown', this.handleKeyDown, true);
 
     window.addEventListener('resize', this.handleWindowResize);
@@ -93,8 +94,20 @@ export default class EventManager {
   destroy() {
     document.removeEventListener('mouseup', this.handleScrollBarMouseUp, true);
     document.removeEventListener('keydown', this.handleKeyDown);
-    document.removeEventListener('mousemove', this.handleMouseMoveOutiseArea);
+    document.removeEventListener('mousemove', this.handleMouseMoveOutsideArea);
     window.removeEventListener('resize', this.handleWindowResize);
+  }
+
+  handleMouseMoveOutsideArea(event: MouseEvent) {
+    if (this.isOutsideViewport(event)) {
+      clearTimeout(this.cellHoverControll.timerId);
+      this.dataGrid.cellTooltipManager.hideTooltips();
+    }
+
+    if (this.isOutsideGrid(event)) {
+      this.dataGrid.cellHovered.emit(null);
+      this.dataGrid.dataGridResize.setCursorStyle('auto');
+    }
   }
 
   private handleSelectStart(event) {
@@ -146,7 +159,8 @@ export default class EventManager {
       return;
     }
 
-    isUrl(hoveredCellData.value) && window.open(hoveredCellData.value);
+    let url = retrieveUrl(hoveredCellData.value);
+    url && window.open(url);
   }
 
   private handleMouseMove(event: MouseEvent): void {
@@ -162,7 +176,7 @@ export default class EventManager {
       this.dataGrid.dataGridResize.setResizeMode(event);
     }
 
-    if (this.dataGrid.dataGridResize.isResizing() || this.isOutsideActiveArea(event)) {
+    if (this.dataGrid.dataGridResize.isResizing() || this.isOutsideViewport(event)) {
       return;
     }
 
@@ -170,8 +184,16 @@ export default class EventManager {
     this.handleCellHover(event);
   }
 
-  private isOutsideActiveArea(event: MouseEvent) {
-    const rect = this.dataGrid.viewport.node.getBoundingClientRect();
+  private isOutsideViewport(event: MouseEvent) {
+    return this.isOutsideNode(event, this.dataGrid.viewport.node);
+  }
+
+  private isOutsideGrid(event) {
+    return this.isOutsideNode(event, this.dataGrid.node);
+  }
+
+  private isOutsideNode(event: MouseEvent, node: HTMLElement) {
+    const rect = node.getBoundingClientRect();
 
     return (
       event.clientY - rect.top <= 1
@@ -188,13 +210,6 @@ export default class EventManager {
     this.dataGrid.cellSelectionManager.handleBodyCellHover(event);
   }
 
-  private handleMouseMoveOutiseArea(event: MouseEvent) {
-    if (this.isOutsideActiveArea(event)) {
-      clearTimeout(this.cellHoverControll.timerId);
-      this.dataGrid.cellTooltipManager.hideTooltips();
-    }
-  }
-
   private handleMouseDown(event: MouseEvent): void {
     if (event.buttons !== 1) {
       return;
@@ -208,7 +223,7 @@ export default class EventManager {
       return this.dataGrid.dataGridResize.startResizing(event);
     }
 
-    if (this.isOutsideActiveArea(event)) {
+    if (this.isOutsideViewport(event)) {
       return;
     }
 

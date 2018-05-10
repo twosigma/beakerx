@@ -155,6 +155,12 @@ export namespace DataGridHelpers {
     return urlRegex.test(String(url));
   }
 
+  export function retrieveUrl(text: string): string|null {
+    const matched = text.match(urlRegex);
+
+    return matched ? matched[0] : null;
+  }
+
   export function getEventKeyCode(event: KeyboardEvent) {
     if (event.which || event.charCode || event.keyCode ) {
       return event.which || event.charCode || event.keyCode;

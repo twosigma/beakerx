@@ -15,7 +15,6 @@
  */
 
 import {CellRenderer, GraphicsContext, TextRenderer} from "@phosphor/datagrid";
-import {createSelector} from "reselect";
 import BeakerXCellRenderer from "./BeakerXCellRenderer";
 import {BeakerXDataGrid} from "../BeakerXDataGrid";
 
@@ -29,12 +28,7 @@ export default class HTMLCellRenderer extends BeakerXCellRenderer {
     super(dataGrid, options);
   }
 
-  paint(gc: GraphicsContext, config: CellRenderer.ICellConfig): void {
-    this.drawBackground(gc, config);
-    this.drawHTML(gc, config);
-  }
-
-  drawHTML(gc: GraphicsContext, config: CellRenderer.ICellConfig): void {
+  drawText(gc: GraphicsContext, config: CellRenderer.ICellConfig): void {
     const font = CellRenderer.resolveOption(this.font, config);
 
     if (!font) {

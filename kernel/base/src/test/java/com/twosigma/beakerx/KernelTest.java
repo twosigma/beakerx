@@ -274,7 +274,7 @@ public class KernelTest implements KernelFunctionality {
 
   @Override
   public String getOutDir() {
-    return null;
+    return "";
   }
 
   private Path tempFolder() {

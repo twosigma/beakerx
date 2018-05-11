@@ -13,5 +13,6 @@
     "paths": {
       "jquery": ["jquery/dist/jquery.js"]
     }
-  }
+  },
+  "include": ["./types/*.d.ts"]
 }

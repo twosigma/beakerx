@@ -169,9 +169,20 @@ export class BeakerXDataGridModel extends DataModel {
       case ALL_TYPES.int64:
         return this.integerValueResolver;
 
+      case ALL_TYPES.html:
+        return this.htmlTextContentResolver;
+
       default:
         return this.defaultValueResolver;
     }
+  }
+
+  private htmlTextContentResolver(value) {
+    const div = document.createElement('div');
+
+    div.innerHTML = value;
+
+    return div.textContent;
   }
 
   private dateValueResolver(value) {

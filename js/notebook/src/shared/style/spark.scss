@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 
+.foldout-widget,
 .bx-spark-stateProgress {
   h3 {
     text-indent: 16px;
@@ -24,6 +25,8 @@
       background-image: url("~jquery-ui/themes/base/images/ui-icons_444444_256x240.png");
     }
   }
+
+  .widget-label,
   .ui-accordion-header.ui-state-active {
     border: 1px solid #c5c5c5;
     background: #e6e6e6;

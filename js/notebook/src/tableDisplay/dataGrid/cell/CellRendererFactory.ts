@@ -15,9 +15,10 @@
  */
 
 import { BeakerXDataGrid } from "../BeakerXDataGrid";
-import BeakerXCellRenderer from "./BeakerXCellRenderer";
 import {ALL_TYPES} from "../dataTypes";
 import HTMLCellRenderer from "./HTMLCellRenderer";
+import HeaderCellRenderer from "./HeaderCellRenderer";
+import DefaultCellRenderer from "./DefaultCellRenderer";
 
 export class CellRendererFactory {
   private dataGrid: BeakerXDataGrid;
@@ -31,7 +32,11 @@ export class CellRendererFactory {
       case ALL_TYPES.html:
         return new HTMLCellRenderer(this.dataGrid);
       default:
-        return new BeakerXCellRenderer(this.dataGrid);
+        return new DefaultCellRenderer(this.dataGrid);
     }
+  }
+
+  getHeaderRenderer() {
+    return new HeaderCellRenderer(this.dataGrid)
   }
 }

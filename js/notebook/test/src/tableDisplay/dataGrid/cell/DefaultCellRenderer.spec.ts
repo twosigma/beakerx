@@ -23,8 +23,9 @@ import BeakerXCellRenderer from "@beakerx/tableDisplay/dataGrid/cell/BeakerXCell
 import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 import cellConfigMock from "../mock/cellConfigMock";
 import cellDataMock from "../mock/cellDataMock";
+import DefaultCellRenderer from "@beakerx/tableDisplay/dataGrid/cell/DefaultCellRenderer";
 
-describe('BeakerXCellRenderer', () => {
+describe('DefaultCellRenderer', () => {
   let dataGrid;
   let cellRenderer;
   let dataStore;
@@ -37,7 +38,7 @@ describe('BeakerXCellRenderer', () => {
     gc = new GraphicsContext(dataGrid['_canvasGC']);
 
     gc['_context'].fillText = () => {};
-    cellRenderer = new BeakerXCellRenderer(dataGrid);
+    cellRenderer = new DefaultCellRenderer(dataGrid);
   });
 
   after(() => {
@@ -45,6 +46,7 @@ describe('BeakerXCellRenderer', () => {
   });
 
   it('should be an instance of TextRenderer', () => {
+    expect(cellRenderer).to.be.an.instanceof(BeakerXCellRenderer);
     expect(cellRenderer).to.be.an.instanceof(TextRenderer);
   });
 

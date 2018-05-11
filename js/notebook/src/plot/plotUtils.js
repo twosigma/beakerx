@@ -924,7 +924,7 @@ define([
       fontFace += this.getFontToInject({
         fontFamily: 'Lato',
         urlformats: [{
-          base64: require('!base64-loader!./../shared/fonts/lato/Lato-Regular.woff'),
+          base64: require('./../shared/fonts/lato/Lato-Regular.woff'),
           format: 'woff'
         }],
         fontWeight: 'normal',
@@ -933,7 +933,7 @@ define([
       fontFace += this.getFontToInject({
         fontFamily: 'Lato',
         urlformats: [{
-          base64: require('!base64-loader!./../shared/fonts/lato/Lato-Black.woff'),
+          base64: require('./../shared/fonts/lato/Lato-Black.woff'),
           format: 'woff'
         }],
         fontWeight: 'bold',
@@ -970,7 +970,7 @@ define([
     getFontToInject: function(font) {
       var src = '';
       font.urlformats.forEach(function(fontDef) {
-        src += "url('data:application/font-" + fontDef.format + ";charset=utf-8;base64," + fontDef.base64 + "') format('" + fontDef.format + "'), ";
+        src += "url('"+ fontDef.base64 + "')";
       });
       src = src.replace(/,\s*$/, "");
       return '@font-face' + " { " +

@@ -442,7 +442,7 @@ babel-messages@^6.23.0:
   dependencies:
     babel-runtime "^6.22.0"
 
-babel-runtime@^6.22.0, babel-runtime@^6.26.0:
+babel-runtime@^6.22.0, babel-runtime@^6.26.0, babel-runtime@^6.6.1:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.26.0.tgz#965c7058668e82b55d7bfe04ff2337bc8b5647fe"
   dependencies:
@@ -494,13 +494,17 @@ balanced-match@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
 
+base64-inline-loader@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/base64-inline-loader/-/base64-inline-loader-1.1.1.tgz#2b8b2841e7848292519ea3a3d8dfc6a6c141791a"
+  dependencies:
+    file-loader "^1.1.11"
+    loader-utils "^1.1.0"
+    mime-types "^2.1.18"
+
 base64-js@^1.0.2:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.2.3.tgz#fb13668233d9614cf5fb4bce95a9ba4096cdf801"
-
-base64-loader@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/base64-loader/-/base64-loader-1.0.0.tgz#e530bad88e906dd2a1fad0af2d9e683fa8bd92a8"
 
 base@^0.11.1:
   version "0.11.2"
@@ -972,6 +976,10 @@ colormin@^1.0.5:
     color "^0.11.0"
     css-color-names "0.0.4"
     has "^1.0.1"
+
+colors@^1.1.2:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/colors/-/colors-1.2.4.tgz#e0cb41d3e4b20806b3bfc27f4559f01b94bc2f7c"
 
 colors@~1.1.2:
   version "1.1.2"
@@ -1949,6 +1957,13 @@ file-loader@^0.10.0:
   resolved "https://registry.yarnpkg.com/file-loader/-/file-loader-0.10.1.tgz#815034119891fc6441fb5a64c11bc93c22ddd842"
   dependencies:
     loader-utils "^1.0.2"
+
+file-loader@^1.1.11:
+  version "1.1.11"
+  resolved "https://registry.yarnpkg.com/file-loader/-/file-loader-1.1.11.tgz#6fe886449b0f2a936e43cabaac0cdbfb369506f8"
+  dependencies:
+    loader-utils "^1.0.2"
+    schema-utils "^0.4.5"
 
 filename-regex@^2.0.0:
   version "2.0.1"
@@ -3263,7 +3278,7 @@ mime-db@~1.33.0:
   version "1.33.0"
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.33.0.tgz#a3492050a5cb9b63450541e39d9788d2272783db"
 
-mime-types@^2.1.12, mime-types@~2.1.17, mime-types@~2.1.7:
+mime-types@^2.1.12, mime-types@^2.1.18, mime-types@~2.1.17, mime-types@~2.1.7:
   version "2.1.18"
   resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.18.tgz#6f323f60a83d11146f831ff11fd66e2fe5503bb8"
   dependencies:
@@ -4521,6 +4536,13 @@ request@~2.79.0:
 require-directory@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/require-directory/-/require-directory-2.1.1.tgz#8c64ad5fd30dab1c976e2344ffe7f792a6a6df42"
+
+require-hacker@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/require-hacker/-/require-hacker-3.0.1.tgz#0879be067fcf067530665bcce4c89ac81a870477"
+  dependencies:
+    babel-runtime "^6.6.1"
+    colors "^1.1.2"
 
 require-main-filename@^1.0.1:
   version "1.0.1"

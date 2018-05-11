@@ -165,9 +165,9 @@ export class BeakerXDataGrid extends DataGrid {
     this.focused = focus;
 
     if (focus) {
+      this.node.focus();
       disableKeyboardManager();
       this.node.classList.add(BeakerXDataGrid.FOCUS_CSS_CLASS);
-      this.node.focus();
 
       return;
     }
@@ -243,6 +243,7 @@ export class BeakerXDataGrid extends DataGrid {
   private addCellRenderers() {
     let cellRendererFactory = new CellRendererFactory(this);
     let defaultRenderer = cellRendererFactory.getRenderer();
+    let headerCellRenderer = cellRendererFactory.getHeaderRenderer();
 
     this.cellRenderers.set(
       'body',
@@ -250,8 +251,8 @@ export class BeakerXDataGrid extends DataGrid {
       cellRendererFactory.getRenderer(ALL_TYPES.html)
     );
     this.cellRenderers.set('body', {}, defaultRenderer);
-    this.cellRenderers.set('column-header', {}, defaultRenderer);
-    this.cellRenderers.set('corner-header', {}, defaultRenderer);
+    this.cellRenderers.set('column-header', {}, headerCellRenderer);
+    this.cellRenderers.set('corner-header', {}, headerCellRenderer);
     this.cellRenderers.set('row-header', {}, defaultRenderer);
   }
 

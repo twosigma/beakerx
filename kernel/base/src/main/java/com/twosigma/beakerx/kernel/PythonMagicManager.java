@@ -20,9 +20,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import py4j.ClientServer;
+import py4j.GatewayServer;
 
+import javax.net.ServerSocketFactory;
+import javax.net.SocketFactory;
 import java.io.File;
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,15 +38,34 @@ public class PythonMagicManager {
     private static String ENV_BEAKERX_HOME = "BEAKERX_HOME";
 
     ClientServer clientServer = null;
-    PythonEntryPoint pep = null;
-    Process pythonProcess = null;
+    private PythonEntryPoint pep = null;
+    private Process pythonProcess = null;
+
+    private static String DEFAULT_PORT = "25333";
+    private static String DEFAULT_PYTHON_PORT = "25334";
+
+    private Integer port = null;
+    private Integer pythonPort = null;
 
     public PythonMagicManager() {
+        initPythonProcess();
+    }
+
+    private void initPythonProcess() {
+        //cleanup communication resources if already in use
+        exit();
+
         String home = System.getenv(ENV_BEAKERX_HOME);
         if (home != null) {
+            port = findFreePort();
+            pythonPort = findFreePort();
             try {
                 String pyScriptPath = new File(home).getParentFile().toString();
-                String[] cmd = {PYTHON, pyScriptPath + PY4J_SCRIPT_NAME};
+                String[] cmd = {
+                        PYTHON,
+                        pyScriptPath + PY4J_SCRIPT_NAME,
+                        port == null ? DEFAULT_PORT : String.valueOf(port),
+                        pythonPort == null ? DEFAULT_PYTHON_PORT : String.valueOf(pythonPort)};
                 this.pythonProcess = new ProcessBuilder(cmd).start();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -53,16 +76,22 @@ public class PythonMagicManager {
     public void exit() {
         if (pep != null) {
             pep.shutdownKernel();
+            pep = null;
         }
         if (clientServer != null) {
-            this.clientServer.shutdown();
+            clientServer.shutdown();
+            clientServer = null;
         }
         if (pythonProcess != null) {
             pythonProcess.destroy();
+            pythonProcess = null;
         }
     }
 
     public PythonEntryPoint getPythonEntryPoint() {
+        if (pythonProcess == null || !pythonProcess.isAlive() || clientServer == null) {
+            initPythonProcess();
+        }
         if (pep == null) {
             this.pep = initPythonEntryPoint();
         }
@@ -77,7 +106,9 @@ public class PythonMagicManager {
     }
 
     private void initClientServer() {
-        this.clientServer = new ClientServer(null);
+        this.clientServer = new ClientServer(port, GatewayServer.defaultAddress(), pythonPort,
+                GatewayServer.defaultAddress(), GatewayServer.DEFAULT_CONNECT_TIMEOUT,
+                GatewayServer.DEFAULT_READ_TIMEOUT, ServerSocketFactory.getDefault(), SocketFactory.getDefault(), null);
     }
 
     private List<Message> getIopubMessages() throws IOException {
@@ -90,7 +121,7 @@ public class PythonMagicManager {
         return messages;
     }
 
-    public Message parseMessage(String stringJson) throws IOException {
+    private Message parseMessage(String stringJson) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         Message msg = new Message();
         JsonNode json = mapper.readTree(stringJson);
@@ -118,5 +149,28 @@ public class PythonMagicManager {
             msg.setParentHeader(message.getHeader());
         }
         return messages;
+    }
+
+    private Integer findFreePort() {
+        ServerSocket socket = null;
+        try {
+            socket = new ServerSocket(0);
+            socket.setReuseAddress(true);
+            int port = socket.getLocalPort();
+            try {
+                socket.close();
+            } catch (IOException e) {
+            }
+            return port;
+        } catch (IOException e) {
+        } finally {
+            if (socket != null) {
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+        return null;
     }
 }

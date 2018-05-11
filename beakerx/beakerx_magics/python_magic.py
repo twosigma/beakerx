@@ -2,6 +2,7 @@ from py4j.clientserver import ClientServer, JavaParameters, PythonParameters
 from queue import Empty
 from jupyter_client.manager import KernelManager
 import json
+import sys
 
 
 class PythonMagic:
@@ -78,8 +79,11 @@ class PythonEntryPoint(object):
         implements = ["com.twosigma.beakerx.kernel.PythonEntryPoint"]
 
 
+default_port = int(sys.argv[1])
+default_python_port = int(sys.argv[2])
+
 pep = PythonEntryPoint()
 gateway = ClientServer(
-    java_parameters=JavaParameters(),
-    python_parameters=PythonParameters(),
+    java_parameters=JavaParameters(port=default_port),
+    python_parameters=PythonParameters(port=default_python_port),
     python_server_entry_point=pep)

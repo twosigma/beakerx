@@ -109,6 +109,9 @@ function BeakerXPageObject() {
   this.runCellToGetCanvas = function (index) {
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
+    browser.waitUntil(function(){
+      return codeCell.$$('canvas').length > 0;
+    });
     return codeCell.$('canvas');
   };
 

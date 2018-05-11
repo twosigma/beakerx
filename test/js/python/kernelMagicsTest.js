@@ -123,4 +123,19 @@ describe('Tests for kernel magic. ', function () {
     });
   });
 
+  describe('%%sql ', function () {
+    it('Should display table ', function () {
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /Sql started successfully/);
+
+      cellIndex += 1;
+      var fileName = 'cell12_case1.png';
+      var width = 500, height = 140;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+    });
+  });
+
 });

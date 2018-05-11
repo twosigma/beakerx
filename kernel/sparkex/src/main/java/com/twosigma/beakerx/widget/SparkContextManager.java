@@ -52,6 +52,7 @@ public class SparkContextManager {
 
   private final SparkUI sparkUI;
   private Map<Integer, SparkStateProgress> progressBars = new HashMap<>();
+  private VBox jobPanel = null;
   private HBox statusPanel;
   private VBox sparkView;
   private Text masterURL;
@@ -307,7 +308,13 @@ public class SparkContextManager {
   private void startStage(int stageId, int numTasks) {
     SparkStateProgress intProgress = new SparkStateProgress(numTasks, stageId, stageId, jobLink(stageId), stageLink(stageId));
     intProgress.init();
-    intProgress.display();
+    if (jobPanel != null) {
+      jobPanel.getLayout().setDisplayNone();
+      jobPanel.close();
+    }
+    jobPanel = new VBox(new ArrayList<>());
+    jobPanel.add(intProgress);
+    jobPanel.display();
     progressBars.put(stageId, intProgress);
   }
 

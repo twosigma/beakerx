@@ -156,7 +156,11 @@ export namespace DataGridHelpers {
   }
 
   export function retrieveUrl(text: string): string|null {
-    const matched = text.match(urlRegex);
+    if (typeof text !== 'string') {
+      return null;
+    }
+
+    const matched = text && text.match(urlRegex);
 
     return matched ? matched[0] : null;
   }

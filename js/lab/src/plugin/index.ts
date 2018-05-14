@@ -52,7 +52,7 @@ class BeakerxExtension implements DocumentRegistry.WidgetExtension {
     registerGlobal();
     let app = this.app;
     let settings = this.settings;
-    Promise.all([panel.ready, context.ready]).then(function() {
+    Promise.all([panel.ready, panel.session.ready, context.ready]).then(function() {
       enableInitializationCellsFeature(panel);
       registerCommentOutCmd(panel);
       registerCommTargets(panel, context);

@@ -66,6 +66,7 @@ $focusColor: #66bb6a;
   display: block;
 
   & > .widget-label {
+    display: block;
     cursor: pointer;
     text-align: left;
     line-height: normal;
@@ -105,7 +106,7 @@ $focusColor: #66bb6a;
 
   .widget-html-content {
     font-size: 14px;
-    line-height: 1.2em;
+    line-height: 1.3em;
     padding: 1em 2.2em;
     border: 1px solid #ababab;
     border-top: 0;

@@ -47,6 +47,7 @@ public class PythonMagicCommand implements MagicCommandFunctionality {
         pep.evaluate(codeBlock);
         pep.getShellMsg();
         List<Message> messages = new ArrayList<>();
+        //until there are messages on iopub channel available collect them into response
         while (true) {
             String iopubMsg = pep.getIopubMsg();
             if (iopubMsg.equals("null")) break;

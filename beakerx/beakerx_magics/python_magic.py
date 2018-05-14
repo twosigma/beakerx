@@ -1,3 +1,16 @@
+# Copyright 2017 TWO SIGMA OPEN SOURCE, LLC  #
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#        http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 from py4j.clientserver import ClientServer, JavaParameters, PythonParameters
 from queue import Empty
 from jupyter_client.manager import KernelManager
@@ -74,16 +87,19 @@ class PythonEntryPoint(object):
         self.pm.pass_msg(msg_raw)
         return None
 
-
     class Java:
         implements = ["com.twosigma.beakerx.kernel.PythonEntryPoint"]
 
 
-default_port = int(sys.argv[1])
-default_python_port = int(sys.argv[2])
+class Py4JServer:
+    def __init__(self, port, pyport):
+        pep = PythonEntryPoint()
+        gateway = ClientServer(
+            java_parameters=JavaParameters(port=int(port)),
+            python_parameters=PythonParameters(port=int(pyport)),
+            python_server_entry_point=pep)
+        print('Py4j server is running')
 
-pep = PythonEntryPoint()
-gateway = ClientServer(
-    java_parameters=JavaParameters(port=default_port),
-    python_parameters=PythonParameters(port=default_python_port),
-    python_server_entry_point=pep)
+
+if __name__ == '__main__':
+    Py4JServer(sys.argv[1], sys.argv[2])

@@ -53,6 +53,7 @@ import com.twosigma.beakerx.kernel.magic.command.functionality.JSMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.JavaScriptMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.LoadMagicMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.LsMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.PythonMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeCellModeMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeItCellModeMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeItLineModeMagicCommand;
@@ -64,7 +65,6 @@ import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
 import com.twosigma.beakerx.message.Message;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.util.Lists;
-import py4j.ClientServer;
 
 import java.io.File;
 import java.io.IOException;
@@ -92,6 +92,7 @@ public class KernelTest implements KernelFunctionality {
   private EvaluatorManager evaluatorManager;
   private String code;
   private Path tempFolder;
+  private PythonMagicManager pythonMagicManager;
 
   public MavenJarResolver.ResolverParams mavenResolverParam = null;
 
@@ -115,6 +116,7 @@ public class KernelTest implements KernelFunctionality {
     initMavenResolverParam();
     initMagicCommands();
     KernelManager.register(this);
+    this.pythonMagicManager = new PythonMagicManager();
   }
 
   private void initMavenResolverParam() {
@@ -150,7 +152,8 @@ public class KernelTest implements KernelFunctionality {
             new MagicCommandType(TimeCellModeMagicCommand.TIME_CELL, "", new TimeCellModeMagicCommand(this)),
             new MagicCommandType(TimeItLineModeMagicCommand.TIMEIT_LINE, "", new TimeItLineModeMagicCommand(this)),
             new MagicCommandType(TimeItCellModeMagicCommand.TIMEIT_CELL, "", new TimeItCellModeMagicCommand(this)),
-            new MagicCommandType(LoadMagicMagicCommand.LOAD_MAGIC, "", new LoadMagicMagicCommand(this))
+            new MagicCommandType(LoadMagicMagicCommand.LOAD_MAGIC, "", new LoadMagicMagicCommand(this)),
+            new MagicCommandType(PythonMagicCommand.PYTHON, "", new PythonMagicCommand(this))
     ));
   }
 
@@ -369,6 +372,9 @@ public class KernelTest implements KernelFunctionality {
     } else {
       removeTempFolder();
     }
+    if (pythonMagicManager != null) {
+      pythonMagicManager.exit();
+    }
   }
 
   private void removeTempFolder() {
@@ -383,4 +389,13 @@ public class KernelTest implements KernelFunctionality {
   public void registerCancelHook(Hook hook) {
   }
 
+  @Override
+  public PythonEntryPoint getPythonEntryPoint() {
+    return pythonMagicManager.getPythonEntryPoint();
+  }
+
+  @Override
+  public PythonMagicManager getPythonMagicManager() {
+    return pythonMagicManager;
+  }
 }

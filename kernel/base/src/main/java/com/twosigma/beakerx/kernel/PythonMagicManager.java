@@ -24,18 +24,15 @@ import py4j.GatewayServer;
 
 import javax.net.ServerSocketFactory;
 import javax.net.SocketFactory;
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class PythonMagicManager {
-
-    private static String PY4J_SCRIPT_NAME = "/beakerx_magics/python_magic.py";
-    private static String PYTHON = "python3";
-    private static String ENV_BEAKERX_HOME = "BEAKERX_HOME";
 
     ClientServer clientServer = null;
     private PythonEntryPoint pep = null;
@@ -47,30 +44,31 @@ public class PythonMagicManager {
     private Integer port = null;
     private Integer pythonPort = null;
 
-    public PythonMagicManager() {
-        initPythonProcess();
-    }
-
     private void initPythonProcess() {
         //cleanup communication resources if already in use
         exit();
 
-        String home = System.getenv(ENV_BEAKERX_HOME);
-        if (home != null) {
-            port = findFreePort();
-            pythonPort = findFreePort();
-            try {
-                String pyScriptPath = new File(home).getParentFile().toString();
-                String[] cmd = {
-                        PYTHON,
-                        pyScriptPath + PY4J_SCRIPT_NAME,
-                        port == null ? DEFAULT_PORT : String.valueOf(port),
-                        pythonPort == null ? DEFAULT_PYTHON_PORT : String.valueOf(pythonPort)};
-                this.pythonProcess = new ProcessBuilder(cmd).start();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        port = findFreePort();
+        pythonPort = findFreePort();
+
+        try {
+            ProcessBuilder pb = new ProcessBuilder(getPy4jCommand());
+            pb.redirectError(ProcessBuilder.Redirect.INHERIT);
+            pythonProcess = pb.start();
+            //wait for python process to initialize properly
+            new BufferedReader(new InputStreamReader(pythonProcess.getInputStream())).readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+
+    protected String[] getPy4jCommand() {
+        return new String[] {
+                "beakerx",
+                "py4j_server",
+                "--port", port == null ? DEFAULT_PORT : String.valueOf(port),
+                "--pyport", pythonPort == null ? DEFAULT_PYTHON_PORT : String.valueOf(pythonPort)
+        };
     }
 
     public void exit() {

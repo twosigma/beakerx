@@ -15,9 +15,6 @@
  */
 package com.twosigma.beakerx.kernel;
 
-import static com.twosigma.beakerx.kernel.KernelSignalHandler.addSigIntHandler;
-import static java.util.Collections.singletonList;
-
 import com.twosigma.beakerx.BeakerxDefaultDisplayers;
 import com.twosigma.beakerx.DisplayerDataMapper;
 import com.twosigma.beakerx.TryResult;
@@ -31,12 +28,14 @@ import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
-import com.twosigma.beakerx.kernel.magic.command.MagicCommandTypesFactory;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandTypesFactory;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
 import com.twosigma.beakerx.message.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -45,8 +44,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static com.twosigma.beakerx.kernel.KernelSignalHandler.addSigIntHandler;
+import static java.util.Collections.singletonList;
 
 public abstract class Kernel implements KernelFunctionality {
 
@@ -66,6 +65,7 @@ public abstract class Kernel implements KernelFunctionality {
   private List<MagicCommandType> magicCommandTypes;
   private CacheFolderFactory cacheFolderFactory;
   private CustomMagicCommandsFactory customMagicCommands;
+  private PythonMagicManager pythonMagicManager;
 
   public Kernel(final String sessionId, final Evaluator evaluator,
                 final KernelSocketsFactory kernelSocketsFactory, CustomMagicCommandsFactory customMagicCommands) {
@@ -87,6 +87,7 @@ public abstract class Kernel implements KernelFunctionality {
     this.executionResultSender = new ExecutionResultSender(this);
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
     this.handlers = new KernelHandlers(this, getCommOpenHandler(this), getKernelInfoHandler(this));
+    this.pythonMagicManager = new PythonMagicManager();
     createMagicCommands();
     DisplayerDataMapper.init();
     configureSignalHandler();
@@ -114,6 +115,7 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   private void doExit() {
+    this.pythonMagicManager.exit();
     this.evaluatorManager.exit();
     this.handlers.exit();
     this.executionResultSender.exit();
@@ -287,5 +289,15 @@ public abstract class Kernel implements KernelFunctionality {
   @Override
   public void registerCancelHook(Hook hook) {
     evaluatorManager.registerCancelHook(hook);
+  }
+
+  @Override
+  public PythonEntryPoint getPythonEntryPoint() {
+      return pythonMagicManager.getPythonEntryPoint();
+  }
+
+  @Override
+  public PythonMagicManager getPythonMagicManager() {
+    return pythonMagicManager;
   }
 }

@@ -49,6 +49,8 @@ dependencies {
   compile group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
   compile group: 'com.google.code.gson', name: 'gson', version: '2.3.1'
 
+  compile group: 'net.sf.py4j', name: 'py4j', version: '0.10.7'
+
   testCompile group: 'org.reflections', name: 'reflections', version: '0.9.10'
 }
 

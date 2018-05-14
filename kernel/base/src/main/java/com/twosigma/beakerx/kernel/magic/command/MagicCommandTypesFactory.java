@@ -32,6 +32,7 @@ import com.twosigma.beakerx.kernel.magic.command.functionality.JSMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.JavaScriptMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.LoadMagicMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.LsMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.PythonMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeCellModeMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeItCellModeMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeItLineModeMagicCommand;
@@ -56,6 +57,7 @@ public class MagicCommandTypesFactory {
                     html(),
                     HTML(),
                     bash(),
+                    python(kernel),
                     lsmagic(magicCommandTypes),
                     addJar(kernel),
                     addJarByMvn(kernel),
@@ -179,5 +181,9 @@ public class MagicCommandTypesFactory {
 
   private static MagicCommandType js() {
     return new MagicCommandType(JSMagicCommand.JAVASCRIPT, "", new JSMagicCommand());
+  }
+
+  private static MagicCommandType python(KernelFunctionality kernel) {
+    return new MagicCommandType(PythonMagicCommand.PYTHON, "", new PythonMagicCommand(kernel));
   }
 }

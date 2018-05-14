@@ -92,7 +92,8 @@ setup_args = dict(
     install_requires    = [
         'notebook >=4.4.0',
         'ipywidgets >=7.0.0',
-        'pandas'
+        'pandas',
+        'py4j'
 
     ],
     python_requires='>=3',

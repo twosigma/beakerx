@@ -57,11 +57,6 @@ export default class HTMLCellRenderer extends BeakerXCellRenderer {
     const textHeight = TextRenderer.measureFontHeight(font);
     const img = new Image();
     const data = this.getSVGData(text, config, vAlign, hAlign);
-    const dpiRatio =  this.dataGrid['_dpiRatio'];
-    const x = config.x * dpiRatio;
-    const y = config.y * dpiRatio;
-    const width = config.width * dpiRatio;
-    const height = config.height * dpiRatio;
 
     gc.setTransform(1, 0, 0, 1, 0, 0);
     gc.textBaseline = 'bottom';

@@ -52,7 +52,6 @@ public abstract class ClasspathAddDynamicMagicCommandTest extends KernelSetUpFix
   private void verifyResult() throws InterruptedException {
     Optional<Message> updateMessage = EvaluatorResultTestWatcher.waitForUpdateMessage(kernelSocketsService.getKernelSockets());
     String text =  (String) TestWidgetUtils.getState(updateMessage.get()).get("value");
-    assertThat(text).contains("Added jar");
     assertTrue("No jar added", text.contains(DEMO_JAR_NAME));
   }
 
@@ -76,7 +75,6 @@ public abstract class ClasspathAddDynamicMagicCommandTest extends KernelSetUpFix
     assertThat(idleMessage).isPresent();
     Optional<Message> updateMessage = EvaluatorResultTestWatcher.waitForUpdateMessage(kernelSocketsService.getKernelSockets());
     String text =  (String) TestWidgetUtils.getState(updateMessage.get()).get("value");
-    assertThat(text).contains("Added jars");
     assertTrue("Should be two added jars", text.contains(DEMO_JAR_NAME) && text.contains(LOAD_MAGIC_JAR_DEMO_JAR_NAME));
   }
 

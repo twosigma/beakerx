@@ -71,9 +71,9 @@ public abstract class ClasspathMagicCommand implements MagicCommandFunctionality
     if (newAddedJars.isEmpty()) {
       return new MagicCommandOutput(MagicCommandOutput.Status.OK);
     }
-    String textMessage = "Added jar" + (newAddedJars.size() > 1 ? "s: " : ": ") + newAddedJars;
+    String header = "Added jar" + (newAddedJars.size() > 1 ? "s: " : ": ");
     MagicCommandOutput.Status status = MagicCommandOutcomeItem.Status.OK;
-    return new MagicCommandOutputFoldout(status, textMessage);
+    return new MagicCommandOutputFoldout(status, String.join(", ", newAddedJars), header);
   }
 
   private Collection<String> handlePath(String path) {

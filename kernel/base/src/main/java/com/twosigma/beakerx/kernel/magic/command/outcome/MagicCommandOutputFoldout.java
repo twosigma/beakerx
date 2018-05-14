@@ -31,10 +31,12 @@ public class MagicCommandOutputFoldout implements MagicCommandOutcomeItem {
 
   private final MIMEContainer mineContainer;
   private MagicCommandOutput.Status status;
+  private String header;
 
-  public MagicCommandOutputFoldout(MagicCommandOutput.Status status, String text) {
+  public MagicCommandOutputFoldout(MagicCommandOutput.Status status, String text, String header) {
     this.mineContainer = MIMEContainer.HTML(checkNotNull(text));
     this.status = checkNotNull(status);
+    this.header = header;
   }
 
   @Override
@@ -71,6 +73,7 @@ public class MagicCommandOutputFoldout implements MagicCommandOutcomeItem {
   private void sendHTML(Message message) {
     Foldout value = new Foldout(message);
     value.setValue(getMIMEContainer().get().getData());
+    value.setDescription(this.header);
     value.display();
   }
 

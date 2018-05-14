@@ -74,8 +74,8 @@ public class SparkMagicCommandTest {
   }
 
   private MagicCommandOutcomeItem createSparkUiAndConnectToSession() {
-    Code code = Code.createCode("", new ArrayList<>(), new ArrayList<>(), new Message());
-    MagicCommandExecutionParam param = new MagicCommandExecutionParam("", "", 1, code, true);
+    Code code = Code.createCode("%%spark", new ArrayList<>(), new ArrayList<>(), new Message());
+    MagicCommandExecutionParam param = new MagicCommandExecutionParam("%%spark", "", 1, code, true);
     MagicCommandOutcomeItem execute = sparkMagicCommand.execute(param);
     assertThat(execute.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.OK);
     assertThat(sparkUI.isSparkSessionIsActive()).isFalse();

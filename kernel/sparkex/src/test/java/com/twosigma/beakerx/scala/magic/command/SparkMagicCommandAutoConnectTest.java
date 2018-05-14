@@ -49,7 +49,7 @@ public class SparkMagicCommandAutoConnectTest {
     MagicCommandOutcomeItem execute = createSparkUi("--unknownOption");
     //then
     assertThat(execute.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.ERROR);
-    assertThat((String)execute.getMIMEContainer().get().getData()).contains("Unknown option --connect");
+    assertThat((String) execute.getMIMEContainer().get().getData()).contains("Unknown option --unknownOption");
   }
 
   @Test
@@ -74,7 +74,7 @@ public class SparkMagicCommandAutoConnectTest {
 
   private MagicCommandOutcomeItem createSparkUi(String option) {
     Code code = Code.createCode("%%spark " + option, new ArrayList<>(), new ArrayList<>(), new Message());
-    MagicCommandExecutionParam param = new MagicCommandExecutionParam("%%spark --connect", "", 1, code, true);
+    MagicCommandExecutionParam param = new MagicCommandExecutionParam("%%spark " + option, "", 1, code, true);
     MagicCommandOutcomeItem execute = sparkMagicCommand.execute(param);
     return execute;
   }

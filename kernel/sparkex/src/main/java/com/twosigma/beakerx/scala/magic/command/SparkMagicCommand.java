@@ -32,6 +32,7 @@ import com.twosigma.beakerx.widget.SparkUI;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,19 +47,24 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
   private SparkUI.SparkUIFactory sparkUIFactory;
   private SparkManager.SparkManagerFactory sparkManagerFactory;
   private SparkUI sparkUI;
-  private Map<String, SparkOption> sparkOptions = new HashMap<>();
+  private Map<String, SparkOption> sparkOptions;
 
   public SparkMagicCommand(KernelFunctionality kernel) {
     //constructor for reflection in LoadMagicMagicCommand
     this(kernel, new SparkUI.SparkUIFactoryImpl(), new SparkManagerImpl.SparkManagerFactoryImpl());
-    sparkOptions.put("--connect", this::connectToSparkSession);
-    sparkOptions.put("-c", this::connectToSparkSession);
   }
 
   SparkMagicCommand(KernelFunctionality kernel, SparkUI.SparkUIFactory sparkUIFactory, SparkManager.SparkManagerFactory sparkManagerFactory) {
     this.kernel = kernel;
     this.sparkUIFactory = sparkUIFactory;
     this.sparkManagerFactory = sparkManagerFactory;
+    configureOptions();
+  }
+
+  private void configureOptions() {
+    this.sparkOptions = new HashMap<>();
+    this.sparkOptions.put("--connect", this::connectToSparkSession);
+    this.sparkOptions.put("-c", this::connectToSparkSession);
   }
 
   @Override
@@ -95,7 +101,7 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
   private List<String> getOptions(MagicCommandExecutionParam param) {
     String[] parts = param.getCommand().split(" ");
     if (parts.length == 1) {
-      return asList(parts);
+      return new ArrayList<>();
     }
     return asList(copyOfRange(parts, 1, parts.length));
   }

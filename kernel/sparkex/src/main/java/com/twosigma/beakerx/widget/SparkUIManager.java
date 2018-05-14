@@ -37,6 +37,7 @@ public class SparkUIManager {
   public static final String SPARK_EXECUTOR_CORES = "spark.executor.cores";
   public static final String SPARK_SESSION_NAME = "spark";
   public static final String CONNECT = "Connect";
+  private static final String SPARK_MASTER_DEFAULT = "local[*]";
 
   private final SparkUI sparkUI;
   private Map<Integer, SparkStateProgress> progressBars = new HashMap<>();
@@ -95,6 +96,8 @@ public class SparkUIManager {
     masterURL.setDescription("Master URL");
     if (sparkManager.getSparkConf().contains(SPARK_MASTER)) {
       masterURL.setValue(sparkManager.getSparkConf().get(SPARK_MASTER));
+    } else {
+      masterURL.setValue(SPARK_MASTER_DEFAULT);
     }
     return masterURL;
   }

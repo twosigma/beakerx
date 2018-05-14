@@ -14,8 +14,9 @@
  *  limitations under the License.
  */
 
+.bx-html-widget.ui-accordion,
 .bx-spark-stateProgress {
-  h3 {
+  h3, label {
     text-indent: 16px;
     &:focus {
       outline: none;

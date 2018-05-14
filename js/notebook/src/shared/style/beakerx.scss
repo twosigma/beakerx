@@ -61,3 +61,13 @@ $focusColor: #66bb6a;
 .jp-Toolbar-button.fa {
   line-height: 100%;
 }
+
+.bx-html-widget.ui-accordion {
+  display: block;
+
+  .widget-label {
+    width: 100%;
+    text-align: left;
+    line-height: normal;
+  }
+}

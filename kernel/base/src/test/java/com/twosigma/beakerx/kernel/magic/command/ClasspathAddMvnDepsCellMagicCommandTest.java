@@ -137,7 +137,6 @@ public class ClasspathAddMvnDepsCellMagicCommandTest {
     Optional<Message> updateMessage = EvaluatorResultTestWatcher.waitForUpdateMessage(kernel);
     String text =  (String) TestWidgetUtils.getState(updateMessage.get()).get("value");
 
-    Assertions.assertThat(text).contains("Added jars");
     Assertions.assertThat(kernel.getClasspath().get(0)).contains(mvnDir);
     Assertions.assertThat(expected.stream()
             .allMatch(depNames::contains));

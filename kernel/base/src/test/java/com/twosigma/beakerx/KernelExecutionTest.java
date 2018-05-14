@@ -143,7 +143,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     code.execute(getKernel(), 1);
     Optional<Message> updateMessage = EvaluatorResultTestWatcher.waitForUpdateMessage(getKernelSocketsService().getKernelSockets());
     String text =  (String) TestWidgetUtils.getState(updateMessage.get()).get("value");
-    assertThat(text).contains("Added jar: [loadMagicJarDemo.jar]");
+    assertThat(text).contains("loadMagicJarDemo.jar");
   }
 
   @Test
@@ -185,7 +185,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     code.execute(getKernel(), 1);
     Optional<Message> updateMessage = EvaluatorResultTestWatcher.waitForUpdateMessage(getKernelSocketsService().getKernelSockets());
     String text =  (String) TestWidgetUtils.getState(updateMessage.get()).get("value");
-    assertThat(text).contains("Added jar: [demo.jar]");
+    assertThat(text).contains("demo.jar");
   }
 
   @Test

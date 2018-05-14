@@ -149,7 +149,6 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     //then
     Optional<Message> updateMessage = EvaluatorResultTestWatcher.waitForUpdateMessage(kernel);
     String text =  (String)TestWidgetUtils.getState(updateMessage.get()).get("value");
-    assertThat(text).contains("Added jar");
     assertThat(text).contains(expected);
     String mvnDir = kernel.getTempFolder().toString() + MavenJarResolver.MVN_DIR;
     Stream<Path> paths = Files.walk(Paths.get(mvnDir));

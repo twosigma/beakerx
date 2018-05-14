@@ -21,20 +21,22 @@ import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
-import com.twosigma.beakerx.widget.BxHTML;
+import com.twosigma.beakerx.widget.Foldout;
 
 import java.util.Optional;
 
 import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 
-public class MagicCommandOutputHTML implements MagicCommandOutcomeItem {
+public class MagicCommandOutputFoldout implements MagicCommandOutcomeItem {
 
   private final MIMEContainer mineContainer;
   private MagicCommandOutput.Status status;
+  private String header;
 
-  public MagicCommandOutputHTML(MagicCommandOutput.Status status, String text) {
+  public MagicCommandOutputFoldout(MagicCommandOutput.Status status, String text, String header) {
     this.mineContainer = MIMEContainer.HTML(checkNotNull(text));
     this.status = checkNotNull(status);
+    this.header = header;
   }
 
   @Override
@@ -69,8 +71,9 @@ public class MagicCommandOutputHTML implements MagicCommandOutcomeItem {
   }
 
   private void sendHTML(Message message) {
-    BxHTML value = new BxHTML(message);
+    Foldout value = new Foldout(message);
     value.setValue(getMIMEContainer().get().getData());
+    value.setDescription(this.header);
     value.display();
   }
 

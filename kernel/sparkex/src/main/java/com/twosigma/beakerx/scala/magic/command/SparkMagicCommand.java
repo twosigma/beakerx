@@ -25,11 +25,16 @@ import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
+import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widget.SparkManager;
 import com.twosigma.beakerx.widget.SparkManagerImpl;
 import com.twosigma.beakerx.widget.SparkUI;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 public class SparkMagicCommand implements MagicCommandFunctionality {
 
@@ -60,7 +65,24 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
     if (sparkUI != null && sparkUI.isSparkSessionIsActive()) {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Active spark session exists. If you want to close it run 'spark.close()'");
     }
-    return createUI(param);
+    MagicCommandOutcomeItem ui = createUI(param);
+    if (ui.getStatus().equals(MagicCommandOutcomeItem.Status.OK)) {
+      List<String> options = getOptions(param);
+      options.forEach(option -> {
+        if (option.equals("--connect") || option.equals("-c")) {
+          sparkUI.getConnectButton().onClick(new HashMap(), new Message());
+        }
+      });
+    }
+    return ui;
+  }
+
+  private List<String> getOptions(MagicCommandExecutionParam param) {
+    String[] parts = param.getCommand().split(" ");
+    if (parts.length == 1) {
+      Arrays.asList(parts);
+    }
+    return Arrays.asList(Arrays.copyOfRange(parts, 1, parts.length));
   }
 
   private MagicCommandOutcomeItem createUI(MagicCommandExecutionParam param) {

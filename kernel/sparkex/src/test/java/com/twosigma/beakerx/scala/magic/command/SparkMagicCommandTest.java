@@ -78,6 +78,7 @@ public class SparkMagicCommandTest {
     MagicCommandExecutionParam param = new MagicCommandExecutionParam("", "", 1, code, true);
     MagicCommandOutcomeItem execute = sparkMagicCommand.execute(param);
     assertThat(execute.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.OK);
+    assertThat(sparkUI.isSparkSessionIsActive()).isFalse();
     sparkUI.getConnectButton().onClick(new HashMap(), new Message());
     return execute;
   }
@@ -94,7 +95,7 @@ public class SparkMagicCommandTest {
     };
   }
 
-  private SparkManager.SparkManagerFactory createSparkManagerFactory() {
+  public static SparkManager.SparkManagerFactory createSparkManagerFactory() {
     return sparkSessionBuilder -> new SparkManager() {
       SparkConf sparkConf = new SparkConf();
       SparkSession.Builder builder = SparkSession.builder().config(sparkConf);

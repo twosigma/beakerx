@@ -426,7 +426,6 @@ class TableDisplayWrapper(object):
 class BeakerX:
     """Runtime support for Python code in BeakerX."""
     _comm = Comm(target_name='beaker.autotranslation')
-    os.environ['BEAKERX_HOME'] = os.path.dirname(os.path.realpath(__file__))
 
     def __init__(self):
         BeakerX.pandas_display_table()

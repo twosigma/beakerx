@@ -32,9 +32,12 @@ import com.twosigma.beakerx.widget.SparkUI;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static java.util.Arrays.asList;
+import static java.util.Arrays.copyOfRange;
 
 public class SparkMagicCommand implements MagicCommandFunctionality {
 
@@ -43,10 +46,13 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
   private SparkUI.SparkUIFactory sparkUIFactory;
   private SparkManager.SparkManagerFactory sparkManagerFactory;
   private SparkUI sparkUI;
+  private Map<String, SparkOption> sparkOptions = new HashMap<>();
 
   public SparkMagicCommand(KernelFunctionality kernel) {
     //constructor for reflection in LoadMagicMagicCommand
     this(kernel, new SparkUI.SparkUIFactoryImpl(), new SparkManagerImpl.SparkManagerFactoryImpl());
+    sparkOptions.put("--connect", this::connectToSparkSession);
+    sparkOptions.put("-c", this::connectToSparkSession);
   }
 
   SparkMagicCommand(KernelFunctionality kernel, SparkUI.SparkUIFactory sparkUIFactory, SparkManager.SparkManagerFactory sparkManagerFactory) {
@@ -65,24 +71,33 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
     if (sparkUI != null && sparkUI.isSparkSessionIsActive()) {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Active spark session exists. If you want to close it run 'spark.close()'");
     }
+    List<String> options = getOptions(param);
+    MagicCommandOutcomeItem optionValidation = validateOptions(options);
+    if (optionValidation.getStatus().equals(MagicCommandOutput.Status.ERROR)) {
+      return optionValidation;
+    }
     MagicCommandOutcomeItem ui = createUI(param);
     if (ui.getStatus().equals(MagicCommandOutcomeItem.Status.OK)) {
-      List<String> options = getOptions(param);
-      options.forEach(option -> {
-        if (option.equals("--connect") || option.equals("-c")) {
-          sparkUI.getConnectButton().onClick(new HashMap(), new Message());
-        }
-      });
+      options.forEach(option -> sparkOptions.get(option).run());
     }
     return ui;
+  }
+
+  private MagicCommandOutcomeItem validateOptions(List<String> options) {
+    for (String option : options) {
+      if (!sparkOptions.containsKey(option)) {
+        return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Unknown option " + option);
+      }
+    }
+    return new MagicCommandOutput(MagicCommandOutput.Status.OK);
   }
 
   private List<String> getOptions(MagicCommandExecutionParam param) {
     String[] parts = param.getCommand().split(" ");
     if (parts.length == 1) {
-      Arrays.asList(parts);
+      return asList(parts);
     }
-    return Arrays.asList(Arrays.copyOfRange(parts, 1, parts.length));
+    return asList(copyOfRange(parts, 1, parts.length));
   }
 
   private MagicCommandOutcomeItem createUI(MagicCommandExecutionParam param) {
@@ -127,5 +142,13 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
   private MagicCommandOutcomeItem displaySparkUI(SparkUI sparkUI) {
     Display.display(sparkUI);
     return new MagicCommandOutput(MagicCommandOutput.Status.OK);
+  }
+
+  private void connectToSparkSession() {
+    sparkUI.getConnectButton().onClick(new HashMap(), new Message());
+  }
+
+  interface SparkOption {
+    void run();
   }
 }

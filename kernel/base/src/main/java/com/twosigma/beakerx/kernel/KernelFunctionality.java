@@ -25,7 +25,6 @@ import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Message;
-import py4j.ClientServer;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -94,7 +93,7 @@ public interface KernelFunctionality {
 
   void registerCancelHook(Hook hook);
 
-  PythonEntryPoint getPythonEntryPoint();
+  PythonEntryPoint getPythonEntryPoint(String kernelName);
 
-  PythonMagicManager getPythonMagicManager();
+  MagicKernelManager getManagerByCommId(String commId);
 }

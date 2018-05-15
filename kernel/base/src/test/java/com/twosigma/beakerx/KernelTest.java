@@ -32,7 +32,7 @@ import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.kernel.PythonEntryPoint;
-import com.twosigma.beakerx.kernel.PythonMagicManager;
+import com.twosigma.beakerx.kernel.MagicKernelManager;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandWhichThrowsException;
@@ -53,7 +53,7 @@ import com.twosigma.beakerx.kernel.magic.command.functionality.JSMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.JavaScriptMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.LoadMagicMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.LsMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.PythonMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.kernelMagic.PythonMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeCellModeMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeItCellModeMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeItLineModeMagicCommand;
@@ -92,7 +92,7 @@ public class KernelTest implements KernelFunctionality {
   private EvaluatorManager evaluatorManager;
   private String code;
   private Path tempFolder;
-  private PythonMagicManager pythonMagicManager;
+  private Map<String, MagicKernelManager> magicKernels;
 
   public MavenJarResolver.ResolverParams mavenResolverParam = null;
 
@@ -116,7 +116,7 @@ public class KernelTest implements KernelFunctionality {
     initMavenResolverParam();
     initMagicCommands();
     KernelManager.register(this);
-    this.pythonMagicManager = new PythonMagicManager();
+    this.magicKernels = new HashMap<>();
   }
 
   private void initMavenResolverParam() {
@@ -372,8 +372,10 @@ public class KernelTest implements KernelFunctionality {
     } else {
       removeTempFolder();
     }
-    if (pythonMagicManager != null) {
-      pythonMagicManager.exit();
+    if (magicKernels != null) {
+      for (MagicKernelManager manager : magicKernels.values()) {
+        manager.exit();
+      }
     }
   }
 
@@ -390,12 +392,17 @@ public class KernelTest implements KernelFunctionality {
   }
 
   @Override
-  public PythonEntryPoint getPythonEntryPoint() {
-    return pythonMagicManager.getPythonEntryPoint();
+  public PythonEntryPoint getPythonEntryPoint(String kernelName) {
+    MagicKernelManager manager = magicKernels.get(kernelName);
+    if (manager == null) {
+      manager = new MagicKernelManager(kernelName);
+      magicKernels.put(kernelName, manager);
+    }
+    return manager.getPythonEntryPoint();
   }
 
   @Override
-  public PythonMagicManager getPythonMagicManager() {
-    return pythonMagicManager;
+  public MagicKernelManager getManagerByCommId(String commId) {
+    return null;
   }
 }

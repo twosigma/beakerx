@@ -57,10 +57,11 @@ def py4j_server_subparser(subparser):
     py4j_server_parser.set_defaults(func=start_py4j_server)
     py4j_server_parser.add_argument("--port")
     py4j_server_parser.add_argument("--pyport")
+    py4j_server_parser.add_argument("--kernel")
 
 
 def start_py4j_server(args):
-    Py4JServer(args.port, args.pyport)
+    Py4JServer(args.port, args.pyport, args.kernel)
 
 
 def run_jupyter(jupyter_commands):

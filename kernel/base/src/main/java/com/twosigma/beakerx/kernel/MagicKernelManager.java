@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class PythonMagicManager {
+public class MagicKernelManager {
 
     ClientServer clientServer = null;
     private PythonEntryPoint pep = null;
@@ -43,6 +43,12 @@ public class PythonMagicManager {
 
     private Integer port = null;
     private Integer pythonPort = null;
+
+    private final String kernelName;
+
+    public MagicKernelManager(String kernelName) {
+        this.kernelName = kernelName;
+    }
 
     private void initPythonProcess() {
         //cleanup communication resources if already in use
@@ -67,7 +73,8 @@ public class PythonMagicManager {
                 "beakerx",
                 "py4j_server",
                 "--port", port == null ? DEFAULT_PORT : String.valueOf(port),
-                "--pyport", pythonPort == null ? DEFAULT_PYTHON_PORT : String.valueOf(pythonPort)
+                "--pyport", pythonPort == null ? DEFAULT_PYTHON_PORT : String.valueOf(pythonPort),
+                "--kernel", kernelName
         };
     }
 

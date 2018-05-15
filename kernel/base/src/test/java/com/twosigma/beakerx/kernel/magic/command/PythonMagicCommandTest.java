@@ -21,11 +21,13 @@ import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.message.Message;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static com.twosigma.beakerx.kernel.magic.command.functionality.kernelMagic.PythonMagicCommand.PYTHON;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Ignore
 public class PythonMagicCommandTest {
 
     private KernelTest kernel;

@@ -101,6 +101,7 @@ if not result:
     result = test_console.test_lsmagic()
 
 if result:
+    test_console.test_lsmagic()
     sys.exit(20)
 
 #restore backup beakerx.json conf file

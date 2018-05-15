@@ -91,6 +91,16 @@ describe('Tests for kernel magic. ', function () {
     });
   });
 
+  describe('interrupt %%groovy magic ', function () {
+    it('Should display KeyboardInterrupt error ', function () {
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      browser.pause(500);
+      beakerxPO.clickInterruptKernel();
+      beakerxPO.waitAndCheckOutputTextOfStderr(cellIndex, /KeyboardInterrupt/);
+    });
+  });
+
   describe('%%java ', function () {
     it('Should display Plot with Line ', function () {
       cellIndex += 1;

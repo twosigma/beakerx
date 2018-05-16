@@ -104,7 +104,7 @@ class FoldoutView extends widgets.BoxView {
     this.content.style.display = 'block';
     this.previewContentParent.appendChild(this.previewContent);
     this.content.style.height = `${
-      this.hiddenContainer.clientHeight + DEFAULT_ADDED_SPACE
+      this.hiddenContainer.clientHeight + DEFAULT_ADDED_SPACE / 2
     }px`;
   }
 
@@ -113,7 +113,7 @@ class FoldoutView extends widgets.BoxView {
     this.previewContainer.style.display = 'block';
     this.previewContainer.appendChild(this.previewContent);
     this.previewContainer.style.height = `${
-      this.previewContent.clientHeight + 2 * DEFAULT_ADDED_SPACE
+      this.previewContent.clientHeight + DEFAULT_ADDED_SPACE
     }px`;
   }
 

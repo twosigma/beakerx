@@ -24,19 +24,13 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static com.twosigma.beakerx.kernel.magic.command.functionality.kernelMagic.PythonMagicCommand.PYTHON;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Ignore
-public class PythonMagicCommandTest {
+public class KernelMagicCommandTest {
 
     private KernelTest kernel;
     private EvaluatorTest evaluator;
-    private static String PYTHON_CODE = "%%python" + System.lineSeparator() + "print('Test')";
-    private static String PYTHON_CODE_INDENTS = "%%python" + System.lineSeparator()
-            + "def foo():" + System.lineSeparator()
-            + "\tprint('Test2')" + System.lineSeparator() + System.lineSeparator()
-            + "foo()";
 
     @Before
     public void setUp() throws Exception {
@@ -52,8 +46,8 @@ public class PythonMagicCommandTest {
     @Test
     public void testPythonMagicCell() throws Exception {
         //given
-        String pythonCode = PYTHON_CODE;
-        Code code = CodeFactory.create(PYTHON + System.lineSeparator() + pythonCode, new Message(), kernel);
+        String pythonCode = "%%python" + System.lineSeparator() + "print('Test')";
+        Code code = CodeFactory.create(pythonCode, new Message(), kernel);
         //when
         code.execute(this.kernel, 1);
         //then
@@ -63,12 +57,49 @@ public class PythonMagicCommandTest {
     @Test
     public void testPythonCodeWithIndents() throws Exception {
         //given
-        String pythonCodeWIndents = PYTHON_CODE_INDENTS;
-        Code code = CodeFactory.create(PYTHON + System.lineSeparator() + pythonCodeWIndents, new Message(), kernel);
+        String pythonCodeWIndents = "%%python" + System.lineSeparator()
+                + "def foo():" + System.lineSeparator()
+                + "\tprint('Test2')" + System.lineSeparator() + System.lineSeparator()
+                + "foo()";
+        Code code = CodeFactory.create(pythonCodeWIndents, new Message(), kernel);
         //when
         code.execute(this.kernel, 1);
         //then
         assertThat(kernel.getPublishedMessages().get(2).getContent().get("text")).isEqualTo("Test2\n");
+    }
+
+    @Test
+    public void testJavaKernelAlias() throws Exception {
+        //given
+        String javaAliasCode = "%%java" + System.lineSeparator() + "System.out.println(2+2);";
+        Code code = CodeFactory.create(javaAliasCode, new Message(), kernel);
+        //when
+        code.execute(this.kernel, 1);
+        //then
+        assertThat(kernel.getPublishedMessages().get(2).getContent().get("text")).isEqualTo("4");
+    }
+
+    @Test
+    public void testJavaKernel() throws Exception {
+        //given
+        String javaCode = "%%kernel java" + System.lineSeparator() + "System.out.println(2+2);";
+        Code code = CodeFactory.create(javaCode, new Message(), kernel);
+        //when
+        code.execute(this.kernel, 1);
+        //then
+        assertThat(kernel.getPublishedMessages().get(2).getContent().get("text")).isEqualTo("4");
+    }
+
+    @Test
+    public void testKernelNotExist() throws Exception {
+        //given
+        String javaCode = "%%kernel not_exist" + System.lineSeparator() + "System.out.println(2+2);";
+        Code code = CodeFactory.create(javaCode, new Message(), kernel);
+        //when
+        code.execute(this.kernel, 1);
+        //then
+        assertThat(kernel.getPublishedMessages().get(0).getContent().get("text"))
+                .isEqualTo("Kernel not_exist is not available!\n");
     }
 
 }

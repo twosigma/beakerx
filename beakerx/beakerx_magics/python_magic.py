@@ -14,6 +14,7 @@
 from py4j.clientserver import ClientServer, JavaParameters, PythonParameters
 from queue import Empty
 from jupyter_client.manager import KernelManager
+from jupyter_client.kernelspec import NoSuchKernel
 import json
 import sys
 
@@ -25,6 +26,7 @@ class PythonMagic:
         self.kc = None
         self.comms = []
         self.kernel_name = kernel_name
+        self.start()
 
     def start(self):
         self.km = KernelManager()
@@ -94,8 +96,11 @@ class PythonEntryPoint(object):
 
 class Py4JServer:
     def __init__(self, port, pyport, kernel_name):
-        pep = PythonEntryPoint(kernel_name)
-        gateway = ClientServer(
+        try:
+            pep = PythonEntryPoint(kernel_name)
+        except NoSuchKernel:
+            sys.exit(2)
+        ClientServer(
             java_parameters=JavaParameters(port=int(port)),
             python_parameters=PythonParameters(port=int(pyport)),
             python_server_entry_point=pep)

@@ -18,6 +18,7 @@ package com.twosigma.beakerx.kernel.magic.command.functionality.kernelMagic;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.NoSuchKernelException;
 import com.twosigma.beakerx.kernel.PythonEntryPoint;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
@@ -46,10 +47,16 @@ public class KernelMagicCommand implements MagicCommandFunctionality {
 
     @Override
     public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
+        PythonEntryPoint pep;
         if (!validateCommandFormat(param)) {
             return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, getFormatErrorMessage());
         }
-        PythonEntryPoint pep = kernel.getPythonEntryPoint(getKernelName(param));
+        String kernelName = getKernelName(param);
+        try {
+            pep = kernel.getPythonEntryPoint(kernelName);
+        } catch (NoSuchKernelException e) {
+            return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, String.format("Kernel %s is not available!", e.getMessage()));
+        }
         String codeBlock = param.getCommandCodeBlock();
         pep.evaluate(codeBlock);
         pep.getShellMsg();

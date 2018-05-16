@@ -93,7 +93,7 @@ public interface KernelFunctionality {
 
   void registerCancelHook(Hook hook);
 
-  PythonEntryPoint getPythonEntryPoint(String kernelName);
+  PythonEntryPoint getPythonEntryPoint(String kernelName) throws NoSuchKernelException;
 
   MagicKernelManager getManagerByCommId(String commId);
 }

@@ -299,7 +299,7 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   @Override
-  public PythonEntryPoint getPythonEntryPoint(String kernelName) {
+  public PythonEntryPoint getPythonEntryPoint(String kernelName) throws NoSuchKernelException {
       MagicKernelManager manager = magicKernels.get(kernelName);
       if (manager == null) {
         manager = new MagicKernelManager(kernelName);

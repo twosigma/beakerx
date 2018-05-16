@@ -139,9 +139,15 @@ The code is organized into subdirectories as follows:
   * the compiled Java JARs.
 
   There is a separate python package (beakerx_magics) for the
-  `%%groovy` magic so it can always be loaded *without* loading the
+  `%%groovy` magic so it can be loaded *without* loading the
   regular beakerx package (which would turn on display of pandas
   tables with our table widget).
+
+  This package also has the py4j support for the `%%python` magic.  In
+  order for the JVM kernels to be able to start Jupyter kernels they
+  need to be able to call into Python.  There is a `beakerx
+  py4j_server` subcommand for this purpose (for internal use, not for
+  the user).
 
 * [doc](doc) Documentation consisting of executable tutorial
   notebooks.  [StartHere.ipynb](StartHere.ipynb) at the top level

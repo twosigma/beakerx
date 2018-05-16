@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class PythonMagicManager {
+public class MagicKernelManager {
 
     ClientServer clientServer = null;
     private PythonEntryPoint pep = null;
@@ -40,11 +40,19 @@ public class PythonMagicManager {
 
     private static String DEFAULT_PORT = "25333";
     private static String DEFAULT_PYTHON_PORT = "25334";
+    private static int NO_SUCH_KERNEL_CODE = 2;
+    private static String PY4J_INIT_MESSAGE = "Py4j server is running";
 
     private Integer port = null;
     private Integer pythonPort = null;
 
-    private void initPythonProcess() {
+    private final String kernelName;
+
+    public MagicKernelManager(String kernelName) {
+        this.kernelName = kernelName;
+    }
+
+    private void initPythonProcess() throws NoSuchKernelException {
         //cleanup communication resources if already in use
         exit();
 
@@ -55,8 +63,13 @@ public class PythonMagicManager {
             ProcessBuilder pb = new ProcessBuilder(getPy4jCommand());
             pb.redirectError(ProcessBuilder.Redirect.INHERIT);
             pythonProcess = pb.start();
-            //wait for python process to initialize properly
-            new BufferedReader(new InputStreamReader(pythonProcess.getInputStream())).readLine();
+            BufferedReader br = new BufferedReader(new InputStreamReader(pythonProcess.getInputStream()));
+            while (!PY4J_INIT_MESSAGE.equals(br.readLine()) && pythonProcess.isAlive()){
+                //wait for python process to initialize properly
+            }
+            if (!pythonProcess.isAlive() && pythonProcess.exitValue() == NO_SUCH_KERNEL_CODE) {
+                throw new NoSuchKernelException(kernelName);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -67,7 +80,8 @@ public class PythonMagicManager {
                 "beakerx",
                 "py4j_server",
                 "--port", port == null ? DEFAULT_PORT : String.valueOf(port),
-                "--pyport", pythonPort == null ? DEFAULT_PYTHON_PORT : String.valueOf(pythonPort)
+                "--pyport", pythonPort == null ? DEFAULT_PYTHON_PORT : String.valueOf(pythonPort),
+                "--kernel", kernelName
         };
     }
 
@@ -86,7 +100,7 @@ public class PythonMagicManager {
         }
     }
 
-    public PythonEntryPoint getPythonEntryPoint() {
+    public PythonEntryPoint getPythonEntryPoint() throws NoSuchKernelException {
         if (pythonProcess == null || !pythonProcess.isAlive() || clientServer == null) {
             initPythonProcess();
         }
@@ -133,9 +147,13 @@ public class PythonMagicManager {
     }
 
     public List<Message> handleMsg(Message message) {
-        getPythonEntryPoint();
-        pep.sendMessage(new ObjectMapper().valueToTree(message).toString());
         List<Message> messages = new ArrayList<>();
+        try {
+            getPythonEntryPoint();
+        } catch (NoSuchKernelException e) {
+            return messages;
+        }
+        pep.sendMessage(new ObjectMapper().valueToTree(message).toString());
 
         try {
             messages = getIopubMessages();

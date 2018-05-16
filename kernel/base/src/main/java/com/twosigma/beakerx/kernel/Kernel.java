@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -51,7 +52,7 @@ public abstract class Kernel implements KernelFunctionality {
 
   private static final Logger logger = LoggerFactory.getLogger(Kernel.class);
 
-  public static String OS = System.getProperty("os.name").toLowerCase();
+  private static String OS = System.getProperty("os.name").toLowerCase();
   public static boolean showNullExecutionResult = true;
   private final CloseKernelAction closeKernelAction;
 
@@ -65,7 +66,8 @@ public abstract class Kernel implements KernelFunctionality {
   private List<MagicCommandType> magicCommandTypes;
   private CacheFolderFactory cacheFolderFactory;
   private CustomMagicCommandsFactory customMagicCommands;
-  private PythonMagicManager pythonMagicManager;
+  private Map<String, MagicKernelManager> magicKernels;
+  private Map<String, String> commKernelMapping;
 
   public Kernel(final String sessionId, final Evaluator evaluator,
                 final KernelSocketsFactory kernelSocketsFactory, CustomMagicCommandsFactory customMagicCommands) {
@@ -87,7 +89,8 @@ public abstract class Kernel implements KernelFunctionality {
     this.executionResultSender = new ExecutionResultSender(this);
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
     this.handlers = new KernelHandlers(this, getCommOpenHandler(this), getKernelInfoHandler(this));
-    this.pythonMagicManager = new PythonMagicManager();
+    this.magicKernels = new HashMap<>();
+    this.commKernelMapping = new HashMap<>();
     createMagicCommands();
     DisplayerDataMapper.init();
     configureSignalHandler();
@@ -115,11 +118,17 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   private void doExit() {
-    this.pythonMagicManager.exit();
+    doExitOnKernelManager();
     this.evaluatorManager.exit();
     this.handlers.exit();
     this.executionResultSender.exit();
     this.closeKernelAction.close();
+  }
+
+  private void doExitOnKernelManager() {
+    for (MagicKernelManager manager : magicKernels.values()) {
+      manager.exit();
+    }
   }
 
   private void closeComms() {
@@ -127,7 +136,7 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   public static boolean isWindows() {
-    return (OS.indexOf("win") >= 0);
+    return OS.contains("win");
   }
 
   public synchronized void setShellOptions(final EvaluatorParameters kernelParameters) {
@@ -292,12 +301,23 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   @Override
-  public PythonEntryPoint getPythonEntryPoint() {
-      return pythonMagicManager.getPythonEntryPoint();
+  public PythonEntryPoint getPythonEntryPoint(String kernelName) throws NoSuchKernelException {
+      MagicKernelManager manager = magicKernels.get(kernelName);
+      if (manager == null) {
+        manager = new MagicKernelManager(kernelName);
+        magicKernels.put(kernelName, manager);
+      }
+      return manager.getPythonEntryPoint();
   }
 
   @Override
-  public PythonMagicManager getPythonMagicManager() {
-    return pythonMagicManager;
+  public MagicKernelManager getManagerByCommId(String commId) {
+    String kernelName = commKernelMapping.get(commId);
+    return magicKernels.get(kernelName);
+  }
+
+  @Override
+  public void addCommIdManagerMapping(String commId, String kernel){
+    commKernelMapping.put(commId, kernel);
   }
 }

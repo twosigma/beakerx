@@ -14,20 +14,23 @@
 from py4j.clientserver import ClientServer, JavaParameters, PythonParameters
 from queue import Empty
 from jupyter_client.manager import KernelManager
+from jupyter_client.kernelspec import NoSuchKernel
 import json
 import sys
 
 
-class PythonMagic:
+class JVMKernelMagic:
 
-    def __init__(self):
+    def __init__(self, kernel_name):
         self.km = None
         self.kc = None
         self.comms = []
+        self.kernel_name = kernel_name
+        self.start()
 
     def start(self):
         self.km = KernelManager()
-        self.km.kernel_name = 'python3'
+        self.km.kernel_name = self.kernel_name
         self.km.start_kernel()
         self.kc = self.km.client()
         self.kc.start_channels()
@@ -63,8 +66,8 @@ class PythonMagic:
 
 class PythonEntryPoint(object):
 
-    def __init__(self):
-        self.pm = PythonMagic()
+    def __init__(self, kernel_name):
+        self.pm = JVMKernelMagic(kernel_name)
 
     def evaluate(self, code):
         print('code for evaluate {}'.format(code))
@@ -92,9 +95,12 @@ class PythonEntryPoint(object):
 
 
 class Py4JServer:
-    def __init__(self, port, pyport):
-        pep = PythonEntryPoint()
-        gateway = ClientServer(
+    def __init__(self, port, pyport, kernel_name):
+        try:
+            pep = PythonEntryPoint(kernel_name)
+        except NoSuchKernel:
+            sys.exit(2)
+        ClientServer(
             java_parameters=JavaParameters(port=int(port)),
             python_parameters=PythonParameters(port=int(pyport)),
             python_server_entry_point=pep)
@@ -102,4 +108,4 @@ class Py4JServer:
 
 
 if __name__ == '__main__':
-    Py4JServer(sys.argv[1], sys.argv[2])
+    Py4JServer(sys.argv[1], sys.argv[2], sys.argv[3])

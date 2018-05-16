@@ -15,27 +15,27 @@
  */
 package com.twosigma.beakerx.widget;
 
-import com.twosigma.beakerx.TryResult;
-import com.twosigma.beakerx.kernel.KernelFunctionality;
-import org.apache.spark.SparkConf;
-import org.apache.spark.SparkContext;
-import org.apache.spark.sql.SparkSession;
+import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
+import static java.util.Arrays.asList;
 
-import java.util.List;
+public class PropertyItem extends HBox {
 
-public interface SparkManager {
+  private Text name;
+  private Text value;
+  private Button remove;
 
-  TryResult configure(KernelFunctionality kernel, SparkUIManager sparkContextManager);
+  public PropertyItem(Text name, Text value, Button remove) {
+    super(asList(checkNotNull(name), checkNotNull(value), checkNotNull(remove)));
+    this.name = name;
+    this.value = value;
+    this.remove = remove;
+  }
 
-  SparkSession getOrCreate();
+  public String getNameAsString() {
+    return name.getValue();
+  }
 
-  SparkConf getSparkConf(List<SparkConfiguration.Configuration> configurations);
-
-  SparkContext sparkContext();
-
-  SparkSession.Builder getBuilder();
-
-  interface SparkManagerFactory {
-    SparkManager create(SparkSession.Builder sparkSessionBuilder);
+  public String getValueAsString() {
+    return value.getValue();
   }
 }

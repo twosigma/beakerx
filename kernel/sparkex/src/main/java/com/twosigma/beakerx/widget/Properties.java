@@ -15,27 +15,28 @@
  */
 package com.twosigma.beakerx.widget;
 
-import com.twosigma.beakerx.TryResult;
-import com.twosigma.beakerx.kernel.KernelFunctionality;
-import org.apache.spark.SparkConf;
-import org.apache.spark.SparkContext;
-import org.apache.spark.sql.SparkSession;
-
 import java.util.List;
+import java.util.stream.Collectors;
 
-public interface SparkManager {
+public class Properties {
 
-  TryResult configure(KernelFunctionality kernel, SparkUIManager sparkContextManager);
+  private final VBox widget;
 
-  SparkSession getOrCreate();
+  public Properties(List<PropertyItem> children) {
+    this.widget = new VBox(children.stream().map(x -> (Widget) x).collect(Collectors.toList()));
+  }
 
-  SparkConf getSparkConf(List<SparkConfiguration.Configuration> configurations);
+  public List<PropertyItem> getItems() {
+    return this.widget.getChildren().stream()
+            .map(x -> (PropertyItem) x)
+            .collect(Collectors.toList());
+  }
 
-  SparkContext sparkContext();
+  public VBox getWidget() {
+    return widget;
+  }
 
-  SparkSession.Builder getBuilder();
-
-  interface SparkManagerFactory {
-    SparkManager create(SparkSession.Builder sparkSessionBuilder);
+  public void add(PropertyItem propertyItem) {
+    this.widget.add(propertyItem);
   }
 }

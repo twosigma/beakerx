@@ -41,6 +41,7 @@ public class MagicKernelManager {
     private static String DEFAULT_PORT = "25333";
     private static String DEFAULT_PYTHON_PORT = "25334";
     private static int NO_SUCH_KERNEL_CODE = 2;
+    private static String PY4J_INIT_MESSAGE = "Py4j server is running";
 
     private Integer port = null;
     private Integer pythonPort = null;
@@ -62,13 +63,14 @@ public class MagicKernelManager {
             ProcessBuilder pb = new ProcessBuilder(getPy4jCommand());
             pb.redirectError(ProcessBuilder.Redirect.INHERIT);
             pythonProcess = pb.start();
-            //wait for python process to initialize properly
-            new BufferedReader(new InputStreamReader(pythonProcess.getInputStream())).readLine();
-            Thread.sleep(1);
+            BufferedReader br = new BufferedReader(new InputStreamReader(pythonProcess.getInputStream()));
+            while (!PY4J_INIT_MESSAGE.equals(br.readLine()) && pythonProcess.isAlive()){
+                //wait for python process to initialize properly
+            }
             if (!pythonProcess.isAlive() && pythonProcess.exitValue() == NO_SUCH_KERNEL_CODE) {
                 throw new NoSuchKernelException(kernelName);
             }
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

@@ -160,6 +160,18 @@ describe('Groovy base tests. ', function () {
     });
   });
 
+  describe('%%python ', function () {
+    it('Should display Plot with Line ', function () {
+      cellIndex += 1;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      browser.waitUntil(function(){
+        return codeCell.$$('div.dtcontainer').length > 0;
+      }, 20000);
+      var dtContainer = beakerxPO.getDtContainerByIndex(cellIndex);
+      expect(dtContainer.$('path.plot-line').isVisible()).toBeTruthy();
+    });
+  });
+
   describe('(Groovy) Press "Tab" to autocomplete code ', function(){
     it('Autocomplete list is not empty ', function(){
       cellIndex += 1;
@@ -177,5 +189,6 @@ describe('Groovy base tests. ', function () {
       expect(tooltip.getText()).toMatch(/com.twosigma.beakerx.easyform.EasyForm/);
     });
   });
+
 
 });

@@ -19,7 +19,7 @@ import json
 import sys
 
 
-class PythonMagic:
+class JVMKernelMagic:
 
     def __init__(self, kernel_name):
         self.km = None
@@ -67,7 +67,7 @@ class PythonMagic:
 class PythonEntryPoint(object):
 
     def __init__(self, kernel_name):
-        self.pm = PythonMagic(kernel_name)
+        self.pm = JVMKernelMagic(kernel_name)
 
     def evaluate(self, code):
         print('code for evaluate {}'.format(code))

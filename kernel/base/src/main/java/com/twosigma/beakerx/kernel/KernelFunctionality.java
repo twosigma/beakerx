@@ -96,4 +96,6 @@ public interface KernelFunctionality {
   PythonEntryPoint getPythonEntryPoint(String kernelName) throws NoSuchKernelException;
 
   MagicKernelManager getManagerByCommId(String commId);
+
+  void addCommIdManagerMapping(String commId, String kernel);
 }

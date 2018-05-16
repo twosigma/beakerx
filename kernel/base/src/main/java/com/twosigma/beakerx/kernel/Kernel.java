@@ -67,6 +67,7 @@ public abstract class Kernel implements KernelFunctionality {
   private CacheFolderFactory cacheFolderFactory;
   private CustomMagicCommandsFactory customMagicCommands;
   private Map<String, MagicKernelManager> magicKernels;
+  private Map<String, String> commKernelMapping;
 
   public Kernel(final String sessionId, final Evaluator evaluator,
                 final KernelSocketsFactory kernelSocketsFactory, CustomMagicCommandsFactory customMagicCommands) {
@@ -89,6 +90,7 @@ public abstract class Kernel implements KernelFunctionality {
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
     this.handlers = new KernelHandlers(this, getCommOpenHandler(this), getKernelInfoHandler(this));
     this.magicKernels = new HashMap<>();
+    this.commKernelMapping = new HashMap<>();
     createMagicCommands();
     DisplayerDataMapper.init();
     configureSignalHandler();
@@ -310,6 +312,12 @@ public abstract class Kernel implements KernelFunctionality {
 
   @Override
   public MagicKernelManager getManagerByCommId(String commId) {
-    return null;
+    String kernelName = commKernelMapping.get(commId);
+    return magicKernels.get(kernelName);
+  }
+
+  @Override
+  public void addCommIdManagerMapping(String commId, String kernel){
+    commKernelMapping.put(commId, kernel);
   }
 }

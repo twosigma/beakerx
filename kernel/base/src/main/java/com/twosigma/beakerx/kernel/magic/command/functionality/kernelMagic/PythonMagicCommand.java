@@ -21,7 +21,7 @@ import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 public class PythonMagicCommand extends KernelMagicAliasCommand {
 
     public static final String PYTHON = "%%python";
-    private static final String KERNEL_NAME = "python3";
+    private static final String KERNEL_NAME = "python";
 
     public PythonMagicCommand(KernelFunctionality kernel) {
         super(kernel);

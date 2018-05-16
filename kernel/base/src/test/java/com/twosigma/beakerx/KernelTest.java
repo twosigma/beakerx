@@ -418,4 +418,7 @@ public class KernelTest implements KernelFunctionality {
   public MagicKernelManager getManagerByCommId(String commId) {
     return null;
   }
+
+  @Override
+  public void addCommIdManagerMapping(String commId, String kernel) {}
 }

@@ -66,7 +66,12 @@ public class KernelMagicCommand implements MagicCommandFunctionality {
             String iopubMsg = pep.getIopubMsg();
             if (iopubMsg.equals("null")) break;
             try {
-                messages.add(parseMessage(iopubMsg));
+                Message msg = parseMessage(iopubMsg);
+                messages.add(msg);
+                String commId = (String) msg.getContent().get("comm_id");
+                if (commId != null) {
+                    kernel.addCommIdManagerMapping(commId, kernelName);
+                }
             } catch (IOException e) {
                 return new MagicKernelResponse(MagicCommandOutcomeItem.Status.ERROR, messages);
             }

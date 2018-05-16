@@ -37,7 +37,9 @@ public class SparkConfiguration extends VBox {
     this.add = createAddButton();
     this.header = new HBox(singletonList(this.add));
     this.properties = new Properties(new ArrayList<>());
-    add(new Foldout(Arrays.asList(this.header,this.properties.getWidget())));
+    Foldout.FoldoutOption foldoutOption = new Foldout.FoldoutOption();
+    foldoutOption.hidePreview = true;
+    add(new Foldout(Arrays.asList(this.header, this.properties.getWidget()), foldoutOption));
   }
 
   private Button createAddButton() {

@@ -23,10 +23,10 @@ import com.twosigma.beakerx.message.Message;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +43,8 @@ public class SparkUIManager {
   private static final String SPARK_MASTER_DEFAULT = "local[*]";
 
   private final SparkUI sparkUI;
-  private Map<Integer, SparkStateProgress> progressBars = new HashMap<>();
+  private Map<Integer, SparkStateProgress> progressBarMap = new HashMap<>();
+  private LinkedList<SparkStateProgress> progressBarList = new LinkedList<>();
   private Text masterURL;
   private Text executorMemory;
   private Text executorCores;
@@ -175,33 +176,45 @@ public class SparkUIManager {
   void startStage(int stageId, int numTasks) {
     SparkStateProgress intProgress = new SparkStateProgress(numTasks, stageId, stageId, jobLink(stageId), stageLink(stageId));
     intProgress.init();
+    clearJobPanel();
+    jobPanel = createSparkFoldout();
+    addSparkJobsToJobPanel(stageId, intProgress);
+    jobPanel.display();
+  }
+
+  private void addSparkJobsToJobPanel(int stageId, SparkStateProgress intProgress) {
+    progressBarMap.put(stageId, intProgress);
+    progressBarList.addFirst(intProgress);
+    progressBarList.forEach(x -> jobPanel.add(x));
+  }
+
+  private void clearJobPanel() {
     if (jobPanel != null) {
       jobPanel.getLayout().setDisplayNone();
       jobPanel.close();
     }
+  }
 
+  private SparkFoldout createSparkFoldout() {
     Label label = new Label();
     label.setValue("Spark progress");
-
-    jobPanel = new SparkFoldout();
+    SparkFoldout jobPanel = new SparkFoldout();
     jobPanel.add(label);
-    jobPanel.add(intProgress);
-    jobPanel.display();
-    progressBars.put(stageId, intProgress);
+    return jobPanel;
   }
 
   void endStage(int stageId) {
-    SparkStateProgress sparkStateProgress = progressBars.get(stageId);
+    SparkStateProgress sparkStateProgress = progressBarMap.get(stageId);
     sparkStateProgress.hide();
   }
 
   void taskStart(int stageId, long taskId) {
-    SparkStateProgress intProgress = progressBars.get(stageId);
+    SparkStateProgress intProgress = progressBarMap.get(stageId);
     intProgress.addActive();
   }
 
   void taskEnd(int stageId, long taskId) {
-    SparkStateProgress intProgress = progressBars.get(stageId);
+    SparkStateProgress intProgress = progressBarMap.get(stageId);
     intProgress.addDone();
   }
 

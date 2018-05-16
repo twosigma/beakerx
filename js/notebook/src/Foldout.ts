@@ -16,11 +16,10 @@
 
 const widgets = require('./widgets');
 const DEFAULT_LABEL_TEXT = 'Output';
-const DEFAULT_CONTENT_PADDING = 14;
-const DEFAULT_CONTENT_MIN_LINE_HEIGHT = 16;
-const ANIMATION_DURATION = 500;
+const DEFAULT_ADDED_SPACE = 22;
+const ANIMATION_DURATION = 300;
 
-class FoldoutModel extends widgets.HTMLModel {
+class FoldoutModel extends widgets.BoxModel {
   defaults() {
     return {
       ...super.defaults(),
@@ -34,50 +33,123 @@ class FoldoutModel extends widgets.HTMLModel {
   }
 }
 
-class FoldoutView extends widgets.HTMLView {
+class FoldoutView extends widgets.BoxView {
+  label: HTMLLabelElement;
+  content: HTMLElement;
+  previewContainer: HTMLElement;
+  previewContent: HTMLElement;
+  previewContentParent: HTMLElement;
+  hiddenContainer: HTMLElement;
+  timeoutId: number;
+  active: boolean;
+
+  addLabel(labelElement?: HTMLLabelElement) {
+    if (!labelElement) {
+      this.label = document.createElement('label');
+      this.label.innerText = DEFAULT_LABEL_TEXT;
+    } else {
+      this.label = labelElement;
+    }
+
+    this.label.classList.add('foldout-label');
+    this.label.style.display = 'block';
+    this.el.insertBefore(this.label, this.content);
+  }
+
+  addContent() {
+    this.content = document.createElement('div');
+    this.content.classList.add('foldout-content');
+    this.el.appendChild(this.content);
+  }
+
+  addPreviewContent() {
+    this.previewContainer = document.createElement('div');
+    this.previewContent = document.createElement('div');
+    this.previewContainer.classList.add('foldout-preview');
+    this.el.appendChild(this.previewContainer);
+  }
+
+  addHiddenContainer() {
+    this.hiddenContainer = document.createElement('div');
+    this.hiddenContainer.classList.add('foldout-content');
+    this.hiddenContainer.style.visibility = 'hidden';
+    this.hiddenContainer.style.position = 'fixed';
+    this.hiddenContainer.style.zIndex = '-1';
+    this.el.appendChild(this.hiddenContainer);
+  }
+
+  headerClickCallback() {
+    clearTimeout(this.timeoutId);
+    this.active = !this.active;
+    this.el.classList.toggle('active', this.active);
+
+    if (this.active) {
+      this.hiddenContainer.style.width = `${this.el.clientWidth}px`;
+      this.previewContainer.style.height = `0px`;
+      this.timeoutId = setTimeout(
+        this.activateFoldoutCallback.bind(this),
+        ANIMATION_DURATION
+      );
+    } else {
+      this.content.style.height = `0px`;
+      this.timeoutId = setTimeout(
+        this.deactivateFoldoutCallback.bind(this),
+        ANIMATION_DURATION
+      );
+    }
+  }
+
+  activateFoldoutCallback() {
+    this.previewContainer.style.display = 'none';
+    this.content.style.display = 'block';
+    this.previewContentParent.appendChild(this.previewContent);
+    this.content.style.height = `${
+      this.hiddenContainer.clientHeight + DEFAULT_ADDED_SPACE
+    }px`;
+  }
+
+  deactivateFoldoutCallback() {
+    this.content.style.display = 'none';
+    this.previewContainer.style.display = 'block';
+    this.previewContainer.appendChild(this.previewContent);
+    this.previewContainer.style.height = `${
+      this.previewContent.clientHeight + 2 * DEFAULT_ADDED_SPACE
+    }px`;
+  }
+
+  getPreviewContent(): HTMLElement {
+    return this.content.firstChild as HTMLElement;
+  }
+
   render() {
     super.render();
 
-    let active = false;
-    let hiddenContainer: HTMLElement = document.createElement('div');
-    let minHeight = 2 * DEFAULT_CONTENT_PADDING + DEFAULT_CONTENT_MIN_LINE_HEIGHT;
-    let timeoutId;
-
-    hiddenContainer.innerHTML = this.content.outerHTML;
-    let original = hiddenContainer.firstChild as HTMLElement;
-
-    hiddenContainer.style.visibility = 'hidden';
-    hiddenContainer.style.position = 'fixed';
-    hiddenContainer.style.zIndex = '-1';
-    original.style.whiteSpace = 'normal';
-    original.style.height = 'auto';
+    this.addContent();
+    this.addPreviewContent();
+    this.addHiddenContainer();
 
     this.el.classList.add('foldout-widget');
-    this.el.appendChild(hiddenContainer);
 
-    this.content.style.whiteSpace = 'nowrap';
+    this.children_views.update(this.model.get('children')).then((views) => {
+      this.content.innerHTML = '';
 
-    if (!this.label.innerText) {
-      this.label.innerText = DEFAULT_LABEL_TEXT;
-      this.label.style.display = 'block'
-    }
+      views.forEach((view) => {
+        if (view.el.classList.contains('widget-label')) {
+          this.addLabel(view.el);
+        } else {
+          this.content.appendChild(view.el);
+        }
+      });
 
-    this.label.addEventListener('click', () => {
-      clearTimeout(timeoutId);
-      active = !active;
-      this.el.classList.toggle('active', active);
-
-      if (active) {
-        hiddenContainer.style.width = `${this.el.clientWidth}px`;
-        this.content.style.whiteSpace = 'normal';
-        this.content.style.height = `${ original.clientHeight }px`;
-      } else {
-        this.content.style.height = `${minHeight}px`;
-        timeoutId = setTimeout(
-          () => { this.content.style.whiteSpace = 'nowrap'; },
-          ANIMATION_DURATION
-        );
-      }
+      !this.label && this.addLabel();
+      this.content.style.height = '0px';
+      this.content.style.display = 'none';
+      this.hiddenContainer.innerHTML = this.content.innerHTML;
+      this.previewContent = this.getPreviewContent();
+      this.previewContentParent = this.previewContent.parentNode as HTMLElement;
+      this.previewContainer.appendChild(this.previewContent);
+      this.previewContainer.style.height = `${this.previewContent.clientHeight + DEFAULT_ADDED_SPACE}px`;
+      this.label.addEventListener('click', this.headerClickCallback.bind(this));
     });
   }
 }

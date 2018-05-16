@@ -62,15 +62,19 @@ $focusColor: #66bb6a;
   line-height: 100%;
 }
 
+.foldout-widget.widget-box,
 .foldout-widget.widget-html {
   display: block;
 
-  & > .widget-label {
+  & > .foldout-label {
     display: block;
     cursor: pointer;
+    color: #333333;
     text-align: left;
     line-height: normal;
     text-indent: 16px;
+    border: 1px solid #c5c5c5;
+    background: #e6e6e6;
     border-radius: 3px 3px 0 0;
     position: relative;
     margin: 2px 0 0 0;
@@ -93,26 +97,40 @@ $focusColor: #66bb6a;
   }
 
   &.active {
+    .foldout-label,
     .widget-label {
       &:before {
         background-position: -65px -16px;
       }
     }
+  }
 
-    .widget-html-content {
-      height: 1em;
+  .foldout-preview {
+    &,
+    * {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
     }
   }
 
-  .widget-html-content {
+  .foldout-preview,
+  .foldout-content {
     font-size: 14px;
     line-height: 1.3em;
-    padding: 1em 2.2em;
+    padding: 0 2.2em;
     border: 1px solid #ababab;
     border-top: 0;
     border-radius: 0 0 3px 3px;
     text-overflow: ellipsis;
     overflow: hidden;
-    transition: height 0.5s ease-in-out;
+    transition: height 0.3s ease-in-out;
+
+    &:before {
+      content: '';
+      height: 10px;
+      display: block;
+      width: 100%;
+    }
   }
 }

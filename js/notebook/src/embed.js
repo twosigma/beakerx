@@ -21,6 +21,7 @@ var loadedModules = [
   require("./CyclingDisplayBox"),
   require("./SparkUI").default,
   require("./SparkStateProgress").default,
+  require("./SparkConfiguration").default,
   require("./HTMLPre").default,
   require("./BxHTML").default,
   require("./Foldout").default

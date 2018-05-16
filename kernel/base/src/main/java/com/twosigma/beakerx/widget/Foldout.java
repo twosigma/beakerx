@@ -18,11 +18,17 @@ package com.twosigma.beakerx.widget;
 import com.twosigma.beakerx.message.Message;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Foldout extends Box {
 
   public static final String VIEW_NAME_VALUE = "FoldoutView";
   public static final String MODEL_NAME_VALUE = "FoldoutModel";
+
+  public Foldout(List<Widget> children) {
+    super(children);
+    openComm();
+  }
 
   public Foldout(Message parent) {
     super(new ArrayList<>());

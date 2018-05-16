@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.widget;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,9 +36,8 @@ public class SparkConfiguration extends VBox {
     super(new ArrayList<>());
     this.add = createAddButton();
     this.header = new HBox(singletonList(this.add));
-    add(this.header);
     this.properties = new Properties(new ArrayList<>());
-    add(this.properties.getWidget());
+    add(new Foldout(Arrays.asList(this.header,this.properties.getWidget())));
   }
 
   private Button createAddButton() {

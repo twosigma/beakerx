@@ -21,7 +21,9 @@ import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
+import com.twosigma.beakerx.widget.BxHTML;
 import com.twosigma.beakerx.widget.Foldout;
+import com.twosigma.beakerx.widget.Label;
 
 import java.util.Optional;
 
@@ -72,8 +74,13 @@ public class MagicCommandOutputFoldout implements MagicCommandOutcomeItem {
 
   private void sendHTML(Message message) {
     Foldout value = new Foldout(message);
-    value.setValue(getMIMEContainer().get().getData());
-    value.setDescription(this.header);
+    Label label = new Label();
+    BxHTML content = new BxHTML();
+
+    content.setValue(getMIMEContainer().get().getData());
+    label.setValue(this.header);
+    value.add(label);
+    value.add(content);
     value.display();
   }
 

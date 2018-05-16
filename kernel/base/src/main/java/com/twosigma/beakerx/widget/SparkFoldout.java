@@ -15,18 +15,16 @@
  */
 package com.twosigma.beakerx.widget;
 
-import com.twosigma.beakerx.message.Message;
-
 import java.util.ArrayList;
 
-public class Foldout extends Box {
+public class SparkFoldout extends Box {
 
-  public static final String VIEW_NAME_VALUE = "FoldoutView";
-  public static final String MODEL_NAME_VALUE = "FoldoutModel";
+  public static final String VIEW_NAME_VALUE = "SparkFoldoutView";
+  public static final String MODEL_NAME_VALUE = "SparkFoldoutModel";
 
-  public Foldout(Message parent) {
+  public SparkFoldout() {
     super(new ArrayList<>());
-    openComm(parent);
+    openComm();
   }
 
   @Override

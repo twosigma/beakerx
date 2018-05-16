@@ -50,7 +50,7 @@ public class SparkUIManager {
 
   private SparkManager sparkManager;
 
-  private VBox jobPanel = null;
+  private SparkFoldout jobPanel = null;
 
   public SparkUIManager(SparkUI sparkUI, SparkManager sparkManager) {
     this.sparkUI = sparkUI;
@@ -175,7 +175,12 @@ public class SparkUIManager {
       jobPanel.getLayout().setDisplayNone();
       jobPanel.close();
     }
-    jobPanel = new VBox(new ArrayList<>());
+
+    Label label = new Label();
+    label.setValue("Spark progress");
+
+    jobPanel = new SparkFoldout();
+    jobPanel.add(label);
     jobPanel.add(intProgress);
     jobPanel.display();
     progressBars.put(stageId, intProgress);

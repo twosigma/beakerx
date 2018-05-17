@@ -121,28 +121,33 @@ The code is organized into subdirectories as follows:
 * [beakerx](beakerx) The Python packages.  The main beakerx package has:
 
   * a customized KernelSpec to allow BeakerX to configure the JVMs
-    started to run the kernels,
+    that run the kernels,
 
   * a server extension for the javadoc, settings, and version
     endpoints,
   
   * the beakerx command line program, which has the bkr2ipynb
-    converter, the py4j server, utilities, as well as install and
-    uninstall functions.
+    converter, the py4j server, utilities, install, and uninstall
+    functions.
   
   * the Python API for the runtime (tables, plots, easyform),
     including automatically installing a displayer for pandas tables,
     and autotranslation;
   
-  * the webpack (compiled JavaScript, TypeScript, CSS, fonts, images);
-    and
+  * the nbextension webpack (compiled JavaScript, TypeScript, CSS,
+    fonts, images); and
 
-  * the compiled Java JARs.
+  * the compiled Java JARs of each of the kernels, and a directory of
+    shared JARs.
 
   There is a separate python package (beakerx_magics) for the
-  `%%groovy` magic so it can be loaded *without* loading the
-  regular beakerx package (which would turn on display of pandas
-  tables with our table widget).
+  `%%groovy` magic so it can be loaded *without* loading the regular
+  beakerx package (which would turn on display of pandas tables with
+  our table widget).
+
+  BeakerX [configures ipython](beakerx/beakerx/install.py#L140) to
+  automatically load the magics in the beakerx_magics package,
+  `%load_ext` is not required.
 
   The [groovy magic](beakerx/beakerx_magics/kernel_magic.py) uses the standard Jupyter API,
   jupyter_client.manager.KernelManager to start the kernel.

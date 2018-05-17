@@ -13,17 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package com.twosigma.beakerx.kernel;
 
-.foldout-preview {
-  & > .bx-spark-stagePanel {
-    padding: 0;
-  }
-}
+public class NoSuchKernelException extends Exception {
 
-.bx-spark-jobPanel {
-  max-width: 600px;
-}
+    private static final long serialVersionUID = 1L;
 
-.bx-spark-stageProgressBar {
-  margin: 0 10px;
+    public NoSuchKernelException(String message) {
+        super(message);
+    }
+
 }

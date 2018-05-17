@@ -39,8 +39,9 @@ public class Foldout extends Box {
     openComm();
   }
 
-  public Foldout(Message parent) {
+  public Foldout(Message parent, FoldoutOption foldoutOption) {
     super(new ArrayList<>());
+    this.foldoutOption = foldoutOption;
     openComm(parent);
   }
 

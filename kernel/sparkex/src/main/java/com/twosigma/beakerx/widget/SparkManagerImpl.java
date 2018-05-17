@@ -108,7 +108,11 @@ public class SparkManagerImpl implements SparkManager {
         Tuple2 x = (Tuple2) iterator.next();
         sparkConf.set((String) (x)._1, (String) (x)._2);
       }
-      configurations.forEach(x -> sparkConf.set(x.getName(), x.getValue()));
+      configurations.forEach(x -> {
+        if (x.getName() != null) {
+          sparkConf.set(x.getName(), (x.getValue() != null) ? x.getValue() : "");
+        }
+      });
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

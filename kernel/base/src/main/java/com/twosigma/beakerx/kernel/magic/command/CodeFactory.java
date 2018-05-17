@@ -91,7 +91,7 @@ public class CodeFactory {
   private static String takeRestOfTheCode(Scanner scanner) {
     List<String> result = new ArrayList<>();
     while (scanner.hasNextLine()) {
-      result.add(scanner.nextLine().trim());
+      result.add(scanner.nextLine());
     }
     return String.join(System.lineSeparator(), result);
   }

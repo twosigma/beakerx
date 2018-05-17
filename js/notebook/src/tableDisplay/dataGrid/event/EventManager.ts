@@ -23,7 +23,6 @@ import {selectDoubleClickTag, selectHasDoubleClickAction} from "../model/selecto
 import {COLUMN_TYPES} from "../column/enums";
 import CellManager from "../cell/CellManager";
 import throttle = DataGridHelpers.throttle;
-import isUrl = DataGridHelpers.isUrl;
 import getEventKeyCode = DataGridHelpers.getEventKeyCode;
 import {KEYBOARD_KEYS} from "./enums";
 import ColumnManager from "../column/ColumnManager";
@@ -105,7 +104,7 @@ export default class EventManager {
     }
 
     if (this.isOutsideGrid(event)) {
-      this.dataGrid.cellHovered.emit(null);
+      this.dataGrid.cellHovered.emit({ data: null });
       this.dataGrid.dataGridResize.setCursorStyle('auto');
     }
   }

@@ -133,7 +133,7 @@ public class ClasspathMagicCommandTest {
     code.execute(kernel, 1);
     Optional<Message> updateMessage = EvaluatorResultTestWatcher.waitForUpdateMessage(kernel);
     String text =  (String)TestWidgetUtils.getState(updateMessage.get()).get("value");
-    assertThat(text).contains("Added jar: [" + FOO_JAR + "]");
+    assertThat(text).contains(FOO_JAR);
   }
 
   @Test
@@ -142,7 +142,7 @@ public class ClasspathMagicCommandTest {
     code.execute(kernel, 1);
     Optional<Message> updateMessage = EvaluatorResultTestWatcher.waitForUpdateMessage(kernel);
     String text =  (String)TestWidgetUtils.getState(updateMessage.get()).get("value");
-    assertThat(text).contains("Added jar: [ with space.jar]");
+    assertThat(text).contains("with space.jar");
   }
 
 }

@@ -23,7 +23,6 @@ import {
   DEFAULT_ROW_HEIGHT, MIN_COLUMN_WIDTH
 } from "./style/dataGridStyle";
 import DataGridColumn from "./column/DataGridColumn";
-import {COLUMN_TYPES} from "./column/enums";
 import ColumnRegion = DataModel.ColumnRegion;
 import {DataGridHelpers} from "./dataGridHelpers";
 import {selectColumnWidth} from "./column/selectors";
@@ -94,15 +93,15 @@ export class DataGridResize {
 
   setInitialSectionWidths(): void {
     for (let index = this.dataGrid.columnSections.sectionCount - 1; index >= 0; index--) {
-      this.setInitialSectionWidth({ index }, 'body', COLUMN_TYPES.body);
+      this.setInitialSectionWidth({ index }, 'body');
     }
 
     for (let index = this.dataGrid.rowHeaderSections.sectionCount - 1; index >= 0; index--) {
-      this.setInitialSectionWidth({ index }, 'row-header', COLUMN_TYPES.index);
+      this.setInitialSectionWidth({ index }, 'row-header');
     }
   }
 
-  setInitialSectionWidth(section, region: DataModel.ColumnRegion, columnType: COLUMN_TYPES): void {
+  setInitialSectionWidth(section, region: DataModel.ColumnRegion): void {
     const column = this.dataGrid.columnPosition.getColumnByPosition({ region, value: section.index });
     const area = region === 'row-header' ? 'row-header' : 'column';
 
@@ -272,8 +271,13 @@ export class DataGridResize {
     const hasHScroll = !this.dataGrid['_hScrollBar'].isHidden;
     const scrollBarHeight = hasHScroll ? this.dataGrid['_hScrollBarMinHeight'] : 0;
     const spacing = 2 * (DEFAULT_GRID_PADDING + DEFAULT_GRID_BORDER_WIDTH);
+    let height = 0;
 
-    return rowCount * this.dataGrid.baseRowSize + this.dataGrid.headerHeight + spacing + scrollBarHeight;
+    for (let i = 0; i < rowCount; i += 1) {
+      height += this.dataGrid.rowSections.sectionSize(i);
+    }
+
+    return height + this.dataGrid.headerHeight + spacing + scrollBarHeight;
   }
 
   private resizeSections(): void {

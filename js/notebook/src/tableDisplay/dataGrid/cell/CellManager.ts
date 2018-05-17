@@ -263,34 +263,29 @@ export default class CellManager {
     };
 
     function exportCells(cells, exportOptions) {
-      let out = '';
+      let out = [];
 
       for (let i = 0; i < cells.length; i++) {
         let row = cells[i];
 
         for (let j = 0; j < row.length; j++) {
-          if (j !== 0) {
-            out = out + exportOptions.sep;
-          }
-
           let cellData = row[j];
-          if (cellData === null) {
-            cellData = '';
-          }
 
-          cellData = cellData + '';
-          out = [
-            out,
-            exportOptions.qot,
-            (cellData !== undefined && cellData !== null ? fix(cellData) : ''),
+          out.push(`${
+            j !== 0 ? exportOptions.sep : ''
+          }${
             exportOptions.qot
-          ].join('');
+          }${
+            (cellData !== undefined && cellData !== null ? fix(cellData + '') : '')
+          }${
+            exportOptions.qot
+          }`);
         }
 
-        out = out + exportOptions.eol;
+        out.push(exportOptions.eol);
       }
 
-      return out;
+      return out.join('');
     }
 
     if (format === 'tabs') {

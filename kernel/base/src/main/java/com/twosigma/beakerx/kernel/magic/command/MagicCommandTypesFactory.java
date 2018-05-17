@@ -30,13 +30,21 @@ import com.twosigma.beakerx.kernel.magic.command.functionality.HtmlAliasMagicCom
 import com.twosigma.beakerx.kernel.magic.command.functionality.HtmlMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.JSMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.JavaScriptMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.kernelMagic.ClojureMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.kernelMagic.GroovyMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.kernelMagic.JavaMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.kernelMagic.KernelMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.LoadMagicMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.LsMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.kernelMagic.KotlinMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.kernelMagic.PythonMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeCellModeMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeItCellModeMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeItLineModeMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeLineModeMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.UnImportMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.kernelMagic.SQLMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.kernelMagic.ScalaMagicCommand;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,7 +79,16 @@ public class MagicCommandTypesFactory {
                     timeCell(kernel),
                     timeItLine(kernel),
                     timeItCell(kernel),
-                    loadMagic(kernel)));
+                    loadMagic(kernel),
+                    kernel(kernel),
+                    //aliases for kernel magic
+                    python(kernel),
+                    clojure(kernel),
+                    groovy(kernel),
+                    java(kernel),
+                    kotlin(kernel),
+                    scala(kernel),
+                    sql(kernel)));
     return magicCommandTypes;
   }
 
@@ -179,5 +196,37 @@ public class MagicCommandTypesFactory {
 
   private static MagicCommandType js() {
     return new MagicCommandType(JSMagicCommand.JAVASCRIPT, "", new JSMagicCommand());
+  }
+
+  private static MagicCommandType kernel(KernelFunctionality kernel) {
+    return new MagicCommandType(KernelMagicCommand.KERNEL, "", new KernelMagicCommand(kernel));
+  }
+
+  private static MagicCommandType python(KernelFunctionality kernel) {
+    return new MagicCommandType(PythonMagicCommand.PYTHON, "", new PythonMagicCommand(kernel));
+  }
+
+  private static MagicCommandType sql(KernelFunctionality kernel) {
+    return new MagicCommandType(SQLMagicCommand.SQL, "", new SQLMagicCommand(kernel));
+  }
+
+  private static MagicCommandType scala(KernelFunctionality kernel) {
+    return new MagicCommandType(ScalaMagicCommand.SCALA, "", new ScalaMagicCommand(kernel));
+  }
+
+  private static MagicCommandType kotlin(KernelFunctionality kernel) {
+    return new MagicCommandType(KotlinMagicCommand.KOTLIN, "", new KotlinMagicCommand(kernel));
+  }
+
+  private static MagicCommandType java(KernelFunctionality kernel) {
+    return new MagicCommandType(JavaMagicCommand.JAVA, "", new JavaMagicCommand(kernel));
+  }
+
+  private static MagicCommandType groovy(KernelFunctionality kernel) {
+    return new MagicCommandType(GroovyMagicCommand.GROOVY, "", new GroovyMagicCommand(kernel));
+  }
+
+  private static MagicCommandType clojure(KernelFunctionality kernel) {
+    return new MagicCommandType(ClojureMagicCommand.CLOJURE, "", new ClojureMagicCommand(kernel));
   }
 }

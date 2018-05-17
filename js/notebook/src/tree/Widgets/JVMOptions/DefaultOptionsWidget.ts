@@ -30,9 +30,13 @@ export default class DefaultOptionsWidget extends Widget implements DefaultOptio
 
   public readonly HTML_ELEMENT_TEMPLATE = `
 <div id="default_options">
-  <label class="control-label" for="heap_GB">Heap Size</label>
-  <input id="heap_GB" name="heap_size_prop" value="">
-  <span>GB</span>
+  <div class="bx-wrapper">
+
+    <label for="heap_GB">Heap Size</label>
+    <input id="heap_GB" name="heap_size_prop" value="">
+    <span>GB</span>
+
+  </div>
 </div>
 `;
 

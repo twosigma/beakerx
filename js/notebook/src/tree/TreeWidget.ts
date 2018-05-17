@@ -25,7 +25,7 @@ import TreeWidgetModel from "./Models/TreeWidgetModel";
 import SyncIndicatorWidget from "./Widgets/SyncIndicatorWidget";
 import OptionsWidget from "./Widgets/OptionsWidget";
 
-import "./styles/tree.css";
+import "./styles/tree.scss";
 
 export default class TreeWidget extends Panel {
 

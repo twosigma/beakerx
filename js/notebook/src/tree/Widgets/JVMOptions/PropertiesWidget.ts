@@ -30,21 +30,20 @@ export default class PropertiesWidget extends Widget {
 
   public readonly HTML_ELEMENT_TEMPLATE = `
 <fieldset>
-  <div class="panel panel-default">
-    <div class="panel-heading">
+  <div class="bx-panel">
+    <div class="bx-panel-heading">
 
-      <label>Properties</label>
+      Properties
 
       <button type="button"
         id="add_property_jvm_sett"
-        class="btn btn-default btn-xs"
-        data-original-title="add new">
+        class="bx-btn">
         <i class="fa fa-plus"></i>
       </button>
        
     </div>
     
-    <div id="properties_property" class="panel-body"></div>
+    <div id="properties_property" class="bx-panel-body"></div>
   </div>
 </fieldset>
 `;

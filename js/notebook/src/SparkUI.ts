@@ -14,8 +14,6 @@
  *  limitations under the License.
  */
 
-import * as $ from "jquery";
-
 const widgets = require('./widgets');
 
 class SparkUIModel extends widgets.VBoxModel {

@@ -127,7 +127,8 @@ The code is organized into subdirectories as follows:
     endpoints,
   
   * the beakerx command line program, which has the bkr2ipynb
-    converter as well as install and uninstall functions,
+    converter, the py4j server, utilities, as well as install and
+    uninstall functions.
   
   * the Python API for the runtime (tables, plots, easyform),
     including automatically installing a displayer for pandas tables,
@@ -143,11 +144,16 @@ The code is organized into subdirectories as follows:
   regular beakerx package (which would turn on display of pandas
   tables with our table widget).
 
+  The [groovy magic](beakerx/beakerx_magics/kernel_magic.py) uses the standard Jupyter API,
+  jupyter_client.manager.KernelManager to start the kernel.
+  It then proxies Comm into the inner kernel.
+  
   This package also has the py4j support for the `%%python` magic.  In
   order for the JVM kernels to be able to start Jupyter kernels they
   need to be able to call into Python.  There is a `beakerx
   py4j_server` subcommand for this purpose (for internal use, not for
-  the user).
+  the user).  It calls into the groovy magic with its Comm proxy,
+  implemented in Python.
 
 * [doc](doc) Documentation consisting of executable tutorial
   notebooks.  [StartHere.ipynb](StartHere.ipynb) at the top level

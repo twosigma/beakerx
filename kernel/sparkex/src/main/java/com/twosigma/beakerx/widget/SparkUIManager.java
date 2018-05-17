@@ -44,7 +44,6 @@ public class SparkUIManager {
 
   private final SparkUI sparkUI;
   private Map<Integer, SparkStateProgress> progressBarMap = new HashMap<>();
-  private LinkedList<SparkStateProgress> progressBarList = new LinkedList<>();
   private Text masterURL;
   private Text executorMemory;
   private Text executorCores;
@@ -184,8 +183,7 @@ public class SparkUIManager {
 
   private void addSparkJobsToJobPanel(int stageId, SparkStateProgress intProgress) {
     progressBarMap.put(stageId, intProgress);
-    progressBarList.addFirst(intProgress);
-    progressBarList.forEach(x -> jobPanel.add(x));
+    jobPanel.add(intProgress);
   }
 
   private void clearJobPanel() {

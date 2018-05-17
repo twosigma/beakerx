@@ -30,15 +30,9 @@ export default class DefaultOptionsWidget extends Widget implements DefaultOptio
 
   public readonly HTML_ELEMENT_TEMPLATE = `
 <div id="default_options">
-  <div class="form-inline form-group">
-
-    <label class="control-label" for="heap_GB">Heap Size</label>
-    <div class="input-group">
-      <input id="heap_GB" name="heap_size_prop" value="" class="form-control mb-2 mr-sm-2 mb-sm-0">
-      <div class="input-group-addon">GB</div>
-    </div>
-
-  </div>
+  <label class="control-label" for="heap_GB">Heap Size</label>
+  <input id="heap_GB" name="heap_size_prop" value="">
+  <span>GB</span>
 </div>
 `;
 

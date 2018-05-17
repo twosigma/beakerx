@@ -39,6 +39,7 @@ public class SparkConfiguration extends VBox {
     this.properties = new Properties(new ArrayList<>());
     Foldout.FoldoutOption foldoutOption = new Foldout.FoldoutOption();
     foldoutOption.hidePreview = true;
+    foldoutOption.headerLabel = "Advanced settings";
     add(new Foldout(Arrays.asList(this.header, this.properties.getWidget()), foldoutOption));
   }
 

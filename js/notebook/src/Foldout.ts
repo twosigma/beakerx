@@ -14,6 +14,9 @@
  *  limitations under the License.
  */
 
+import {MessageLoop} from '@phosphor/messaging';
+import {Widget,Panel} from '@phosphor/widgets';
+
 const widgets = require('./widgets');
 const DEFAULT_LABEL_TEXT = 'Output';
 const DEFAULT_ADDED_SPACE = 22;
@@ -34,39 +37,61 @@ class FoldoutModel extends widgets.BoxModel {
 }
 
 class FoldoutView extends widgets.BoxView {
-  label: HTMLLabelElement;
-  content: HTMLElement;
-  previewContainer: HTMLElement;
+  label: Panel;
+  content: Panel;
+  previewContainer: Widget;
   previewContent: HTMLElement;
   previewContentParent: HTMLElement;
   hiddenContainer: HTMLElement;
   timeoutId: number;
   active: boolean;
 
-  addLabel(labelElement?: HTMLLabelElement) {
-    if (!labelElement) {
-      this.label = document.createElement('label');
-      this.label.innerText = DEFAULT_LABEL_TEXT;
-    } else {
-      this.label = labelElement;
-    }
+  initialize(parameters) {
+    this.addLabel();
+    this.addContent();
+    this.addPreviewContent();
+    this.addHiddenContainer();
 
-    this.label.classList.add('foldout-label');
-    this.label.style.display = 'block';
-    this.el.insertBefore(this.label, this.content);
+    super.initialize(parameters);
+  }
+
+  add_child_model(model) {
+    return this.create_child_view(model).then((view: widgets.DOMWidgetView) => {
+      if (view instanceof widgets.LabelView) {
+        this.label.insertWidget(0, view.pWidget);
+        view.pWidget.node.classList.add('foldout-label-content');
+      } else {
+        this.content.layout && this.content.addWidget(view.pWidget);
+      }
+
+      return view;
+    }).catch(widgets.reject('Could not add child view to box', true));
+  }
+
+  addLabel() {
+    this.label = new Panel();
+
+    this.label.node.classList.add('foldout-label');
+    this.label.node.style.display = 'block';
+    this.label.node.addEventListener('click', this.headerClickCallback.bind(this));
+    this.pWidget.insertWidget(0, this.label);
   }
 
   addContent() {
-    this.content = document.createElement('div');
-    this.content.classList.add('foldout-content');
-    this.el.appendChild(this.content);
+    this.content = new Panel();
+
+    this.content.node.classList.add('foldout-content');
+    this.content.node.style.height = '0px';
+    this.content.node.style.display = 'none';
+    this.pWidget.insertWidget(1, this.content);
   }
 
   addPreviewContent() {
-    this.previewContainer = document.createElement('div');
+    this.previewContainer = new Widget();
     this.previewContent = document.createElement('div');
-    this.previewContainer.classList.add('foldout-preview');
-    this.el.appendChild(this.previewContainer);
+    this.previewContainer.node.classList.add('foldout-preview');
+
+    this.label.addWidget(this.previewContainer);
   }
 
   addHiddenContainer() {
@@ -84,14 +109,14 @@ class FoldoutView extends widgets.BoxView {
     this.el.classList.toggle('active', this.active);
 
     if (this.active) {
-      this.hiddenContainer.style.width = `${this.el.clientWidth}px`;
-      this.previewContainer.style.height = `0px`;
+      this.hiddenContainer.node.style.width = `${this.el.clientWidth}px`;
+      this.previewContainer.node.style.opacity = '0';
       this.timeoutId = setTimeout(
         this.activateFoldoutCallback.bind(this),
-        ANIMATION_DURATION
+        100
       );
     } else {
-      this.content.style.height = `0px`;
+      this.content.node.style.height = `0px`;
       this.timeoutId = setTimeout(
         this.deactivateFoldoutCallback.bind(this),
         ANIMATION_DURATION
@@ -100,57 +125,52 @@ class FoldoutView extends widgets.BoxView {
   }
 
   activateFoldoutCallback() {
-    this.previewContainer.style.display = 'none';
-    this.content.style.display = 'block';
+    this.previewContainer.node.style.opacity = '0';
+    this.content.node.style.display = 'block';
     this.previewContentParent.appendChild(this.previewContent);
-    this.content.style.height = `${
+    this.content.node.style.height = `${
       this.hiddenContainer.clientHeight + DEFAULT_ADDED_SPACE / 2
     }px`;
   }
 
   deactivateFoldoutCallback() {
-    this.content.style.display = 'none';
-    this.previewContainer.style.display = 'block';
-    this.previewContainer.appendChild(this.previewContent);
-    this.previewContainer.style.height = `${
-      this.previewContent.clientHeight + DEFAULT_ADDED_SPACE
-    }px`;
+    this.content.node.style.display = 'none';
+    this.previewContainer.node.appendChild(this.previewContent);
+    this.previewContainer.node.style.opacity = '1';
   }
 
   getPreviewContent(): HTMLElement {
-    return this.content.firstChild as HTMLElement;
+    return this.content.node.firstChild as HTMLElement;
   }
 
   render() {
-    super.render();
-
-    this.addContent();
-    this.addPreviewContent();
-    this.addHiddenContainer();
-
+    this.set_box_style();
     this.el.classList.add('foldout-widget');
 
     this.children_views.update(this.model.get('children')).then((views) => {
-      this.content.innerHTML = '';
+      if (!this.label.node.innerText) {
+        this.label.node.innerText = DEFAULT_LABEL_TEXT;
+      }
 
-      views.forEach((view) => {
-        if (view.el.classList.contains('widget-label')) {
-          this.addLabel(view.el);
-        } else {
-          this.content.appendChild(view.el);
-        }
-      });
-
-      !this.label && this.addLabel();
-      this.content.style.height = '0px';
-      this.content.style.display = 'none';
-      this.hiddenContainer.innerHTML = this.content.innerHTML;
+      this.hiddenContainer.innerHTML = this.content.node.innerHTML;
       this.previewContent = this.getPreviewContent();
-      this.previewContentParent = this.previewContent.parentNode as HTMLElement;
-      this.previewContainer.appendChild(this.previewContent);
-      this.previewContainer.style.height = `${this.previewContent.clientHeight + DEFAULT_ADDED_SPACE}px`;
-      this.label.addEventListener('click', this.headerClickCallback.bind(this));
+
+      if (this.previewContent) {
+        this.previewContentParent = this.previewContent.parentNode as HTMLElement;
+        this.previewContainer.node.appendChild(this.previewContent);
+        this.previewContainer.node.style.opacity = '1';
+      }
+
+      views.forEach(function (view) {
+        MessageLoop.postMessage(view.pWidget, Widget.ResizeMessage.UnknownSize)
+      });
     });
+  }
+
+  dispose() {
+    super.dispose();
+    this.content.dispose();
+    this.label.dispose();
   }
 }
 

@@ -142,6 +142,7 @@ public class SparkUIManager {
     seo.error(message);
   }
 
+
   public void applicationStart() {
     sparkUI.clearView();
     sparkUI.addStatusPanel(createStatusPanel());

@@ -160,15 +160,11 @@ describe('Groovy base tests. ', function () {
     });
   });
 
-  describe('%%python ', function () {
+  describe('%%python magic', function () {
     it('Should display Plot with Line ', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      browser.waitUntil(function(){
-        return codeCell.$$('div.dtcontainer').length > 0;
-      }, 20000);
-      var dtContainer = beakerxPO.getDtContainerByIndex(cellIndex);
-      expect(dtContainer.$('path.plot-line').isVisible()).toBeTruthy();
+      beakerxPO.checkPlotWithLine(codeCell, cellIndex);
     });
   });
 

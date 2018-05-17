@@ -50,14 +50,9 @@ class FoldoutView extends widgets.BoxView {
     this.hidePreview = this.model.get('hidePreview');
   }
 
-  addLabel(labelElement?: HTMLLabelElement) {
-    if (!labelElement) {
-      this.label = document.createElement('label');
-      this.label.innerText = DEFAULT_LABEL_TEXT;
-    } else {
-      this.label = labelElement;
-    }
-
+  addLabel() {
+    this.label = document.createElement('label');
+    this.label.innerText = this.model.get('headerLabel') || DEFAULT_LABEL_TEXT;
     this.label.classList.add('foldout-label');
     this.label.style.display = 'block';
     this.el.insertBefore(this.label, this.content);
@@ -149,6 +144,7 @@ class FoldoutView extends widgets.BoxView {
   render() {
     super.render();
 
+    this.addLabel();
     this.addContent();
     this.addPreviewContent();
     this.addHiddenContainer();
@@ -161,14 +157,9 @@ class FoldoutView extends widgets.BoxView {
       this.content.style.display = 'none';
 
       views.forEach((view) => {
-        if (view.el.classList.contains('widget-label')) {
-          this.addLabel(view.el);
-        } else {
-          this.content.appendChild(view.el);
-        }
+        this.content.appendChild(view.el);
       });
 
-      !this.label && this.addLabel();
       !this.hidePreview && this.renderPreview();
       this.hidePreview && this.el.classList.add('collapsed');
       this.hiddenContainer.innerHTML = this.content.innerHTML;this.label.addEventListener('click', this.headerClickCallback.bind(this));

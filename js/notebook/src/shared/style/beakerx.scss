@@ -106,8 +106,7 @@ $focusColor: #66bb6a;
   }
 
   .foldout-preview {
-    &,
-    * {
+    .widget-html-content {
       text-overflow: ellipsis;
       overflow: hidden;
       white-space: nowrap;

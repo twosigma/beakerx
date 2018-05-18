@@ -45,25 +45,28 @@ class SparkUIView extends widgets.VBoxView {
   private updateLabels() {
     const lengths = [];
     const labels = [];
-    const promise = new Promise((resolve) => {
+    const noop = () => {};
+    const promise = new Promise((resolve, reject) => {
       this.resolveChildren(this).then((views) => {
         views.forEach((view) => {
           this.resolveChildren(view).then((views) => {
             views.forEach((view) => {
-              this.resolveChildren(view).then((views) => {
-                this.collectLabels(views, lengths, labels, resolve);
-              });
+              this.resolveChildren(view)
+                .then((views) => {
+                  this.collectLabels(views, lengths, labels, resolve);
+                })
+                .catch(reject);
             });
-          });
+          }, noop);
         });
-      });
+      }, noop);
     });
 
     promise.then(() => {
       const maxWidth = Math.max.apply(null, lengths);
 
       labels.forEach((label) => { label.style.width = `${maxWidth}px`; });
-    });
+    }).catch(noop);
   }
 
   private resolveChildren(view) {

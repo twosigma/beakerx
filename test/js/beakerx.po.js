@@ -262,6 +262,14 @@ function BeakerXPageObject() {
     });
   };
 
+  this.checkPlotWithLine = function(codeCell, cellIndex){
+    browser.waitUntil(function(){
+      return codeCell.$$('div.dtcontainer').length > 0;
+    }, 30000);
+    var dtContainer = this.getDtContainerByIndex(cellIndex);
+    expect(dtContainer.$('path.plot-line').isVisible()).toBeTruthy();
+  };
+
 };
 
 module.exports = BeakerXPageObject;

@@ -62,13 +62,13 @@ $focusColor: #66bb6a;
   line-height: 100%;
 }
 
-.foldout-widget.widget-box,
-.foldout-widget.widget-html {
+.foldout-widget.widget-box {
   display: block;
 
   & > .foldout-label {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
     cursor: pointer;
     color: #333333;
     text-align: left;
@@ -82,6 +82,7 @@ $focusColor: #66bb6a;
     padding: .5em .5em .5em .7em;
     font-size: 100%;
     width: 100%;
+    height: 36px;
 
     &:before {
       content: '';
@@ -100,7 +101,7 @@ $focusColor: #66bb6a;
       margin: 0;
       padding: 0;
       height: auto;
-      display: inline;
+      display: block;
       line-height: inherit;
     }
   }
@@ -114,7 +115,20 @@ $focusColor: #66bb6a;
     }
   }
 
+  &.collapsed {
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+  }
+
   .foldout-preview {
+    font-size: 14px;
+    line-height: 1.3em;
+    flex-grow: 1;
+    max-width: 600px;
+    text-indent: 0;
+    transition: opacity 0.1s ease-in-out;
+    padding: 0 15px;
+
     .widget-html-content {
       text-overflow: ellipsis;
       overflow: hidden;
@@ -131,7 +145,7 @@ $focusColor: #66bb6a;
     border-radius: 0 0 3px 3px;
     text-overflow: ellipsis;
     overflow: hidden;
-    transition: height 0.3s ease-in-out, opacity 0.1s ease-in-out;
+    transition: height 0.3s ease-in-out;
 
     &:before {
       content: '';

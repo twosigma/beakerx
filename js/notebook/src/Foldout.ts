@@ -72,7 +72,6 @@ class FoldoutView extends widgets.BoxView {
     this.label = new Panel();
 
     this.label.node.classList.add('foldout-label');
-    this.label.node.style.display = 'block';
     this.label.node.addEventListener('click', this.headerClickCallback.bind(this));
     this.pWidget.insertWidget(0, this.label);
   }
@@ -109,7 +108,7 @@ class FoldoutView extends widgets.BoxView {
     this.el.classList.toggle('active', this.active);
 
     if (this.active) {
-      this.hiddenContainer.node.style.width = `${this.el.clientWidth}px`;
+      this.hiddenContainer.style.width = `${this.el.clientWidth}px`;
       this.previewContainer.node.style.opacity = '0';
       this.timeoutId = setTimeout(
         this.activateFoldoutCallback.bind(this),
@@ -125,6 +124,7 @@ class FoldoutView extends widgets.BoxView {
   }
 
   activateFoldoutCallback() {
+    this.el.classList.remove('collapsed');
     this.previewContainer.node.style.opacity = '0';
     this.content.node.style.display = 'block';
     this.previewContentParent.appendChild(this.previewContent);
@@ -134,6 +134,7 @@ class FoldoutView extends widgets.BoxView {
   }
 
   deactivateFoldoutCallback() {
+    this.el.classList.add('collapsed');
     this.content.node.style.display = 'none';
     this.previewContainer.node.appendChild(this.previewContent);
     this.previewContainer.node.style.opacity = '1';
@@ -146,6 +147,7 @@ class FoldoutView extends widgets.BoxView {
   render() {
     this.set_box_style();
     this.el.classList.add('foldout-widget');
+    this.el.classList.add('collapsed');
 
     this.children_views.update(this.model.get('children')).then((views) => {
       if (!this.label.node.innerText) {
@@ -154,16 +156,14 @@ class FoldoutView extends widgets.BoxView {
 
       this.hiddenContainer.innerHTML = this.content.node.innerHTML;
       this.previewContent = this.getPreviewContent();
+      let textLabelNode = this.label.node.firstChild as HTMLElement;
+      this.previewContainer.node.style.width = `${this.el.clientWidth - (textLabelNode.clientWidth + 40)}px`;
 
       if (this.previewContent) {
         this.previewContentParent = this.previewContent.parentNode as HTMLElement;
         this.previewContainer.node.appendChild(this.previewContent);
         this.previewContainer.node.style.opacity = '1';
       }
-
-      views.forEach(function (view) {
-        MessageLoop.postMessage(view.pWidget, Widget.ResizeMessage.UnknownSize)
-      });
     });
   }
 
@@ -171,6 +171,7 @@ class FoldoutView extends widgets.BoxView {
     super.dispose();
     this.content.dispose();
     this.label.dispose();
+    this.previewContainer.dispose();
   }
 }
 

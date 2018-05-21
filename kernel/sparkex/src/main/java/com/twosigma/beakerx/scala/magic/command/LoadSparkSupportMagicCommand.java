@@ -17,6 +17,7 @@ package com.twosigma.beakerx.scala.magic.command;
 
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.CodeFactory;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
@@ -57,7 +58,7 @@ public class LoadSparkSupportMagicCommand implements MagicCommandFunctionality {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Can not run spark support");
     }
     SparkDisplayers.register();
-
+    addDefaultImports();
     return new MagicCommandOutput(MagicCommandOutput.Status.OK, "Spark support enabled");
   }
 
@@ -72,6 +73,10 @@ public class LoadSparkSupportMagicCommand implements MagicCommandFunctionality {
     String codeToExecute = new SparkImplicit().codeAsString();
     SimpleEvaluationObject seo = createSimpleEvaluationObject(codeToExecute, kernel, new Message(), 1);
     return kernel.executeCode(codeToExecute, seo);
+  }
+
+  private void addDefaultImports() {
+    kernel.addImport(new ImportPath("org.apache.spark.sql.SparkSession"));
   }
 
 }

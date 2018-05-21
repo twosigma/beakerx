@@ -81,13 +81,13 @@ export default class OtherOptionsWidget extends Widget implements OtherOptionsWi
 
   private createFormRowElement(): JQuery<HTMLElement> {
     return $('<div>', {
-      class: 'form-group form-inline'
+      class: 'bx-form-row',
     });
   }
 
   private createInputElement(val: string = ''): JQuery<HTMLElement> {
     return $('<input>', {
-      class: 'form-control',
+      class: 'bx-input-text',
       type: 'text',
       placeholder: 'value',
     }).val(val)
@@ -97,7 +97,7 @@ export default class OtherOptionsWidget extends Widget implements OtherOptionsWi
   private createRemoveButtonElement(): JQuery<HTMLElement> {
     return $('<button>', {
       'type': 'button',
-      'class': 'btn btn-default'
+      'class': 'bx-btn'
     }).append(
       $('<i>', { class: 'fa fa-times'})
     );

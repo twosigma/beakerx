@@ -121,10 +121,10 @@ class SparkStateProgressView extends widgets.VBoxView {
     let stagePanel = this.createStagePanel(state);
 
     return $('<div>', {
-      class: 'panel panel-default bx-spark-jobPanel'
+      class: 'bx-panel bx-spark-jobPanel'
     }).append(
-      $('<div>', { class: 'panel-heading' }).append(jobLink),
-      $('<div>', { class: 'panel-body container-fluid bx-spark-stagePanel' }).append(stagePanel)
+      $('<div>', { class: 'bx-panel-heading' }).append(jobLink),
+      $('<div>', { class: 'bx-panel-body bx-spark-stagePanel' }).append(stagePanel)
     );
   }
 
@@ -170,14 +170,14 @@ class SparkStateProgressView extends widgets.VBoxView {
     this.progressBar.classList.add('progress');
 
     this.progressBar.innerHTML = `
-      <div class="progress-bar progress-bar-success" style="width: ${percentDone}%"></div>
-      <div class="progress-bar progress-bar-info" style="width: ${percentActive}%"></div>
-      <div class="progress-bar progress-bar-warning" style="width: ${percentWaiting}%"></div>
+      <div class="bx-progress-bar done" style="width: ${percentDone}%"></div>
+      <div class="progress-bar active" style="width: ${percentActive}%"></div>
+      <div class="progress-bar waiting" style="width: ${percentWaiting}%"></div>
     `;
 
-    this.progressBarDone = this.progressBar.querySelector('.progress-bar-success');
-    this.progressBarActive = this.progressBar.querySelector('.progress-bar-info');
-    this.progressBarWaiting = this.progressBar.querySelector('.progress-bar-warning');
+    this.progressBarDone = this.progressBar.querySelector('.done');
+    this.progressBarActive = this.progressBar.querySelector('.active');
+    this.progressBarWaiting = this.progressBar.querySelector('.waiting');
 
     return $(this.progressBar);
   }
@@ -192,10 +192,10 @@ class SparkStateProgressView extends widgets.VBoxView {
     this.progressLabels.classList.add('bx-spark-stageProgressLabels');
     
     this.progressLabels.innerHTML = `
-      <span class="done label label-success" title="Done">${valueDone}</span> <span
-      class="active label label-info" title="Active">${valueActive}</span> <span
-      class="waiting label label-warning" title="Waiting">${valueWaiting}</span> <span
-      class="all label label-default" title="All tasks">${max}</span>
+      <span class="bx-label done" title="Done">${valueDone}</span> <span
+      class="bx-label active" title="Active">${valueActive}</span> <span
+      class="bx-label waiting" title="Waiting">${valueWaiting}</span> <span
+      class="bx-label all" title="All tasks">${max}</span>
     `;
     
     this.progressLabelDone = this.progressLabels.querySelector('.done');

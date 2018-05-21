@@ -165,13 +165,13 @@ export default class PropertiesWidget extends Widget {
 
   private createFormRowElement(): JQuery<HTMLElement> {
     return $('<div>', {
-      class: 'form-group form-inline'
+      class: 'bx-form-row'
     });
   }
 
   private createInputElement(placeholder: string, val: string = ''): JQuery<HTMLElement> {
     return $('<input>', {
-      class: 'form-control',
+      class: 'bx-input-text',
       type: 'text',
       placeholder: placeholder,
     }).val(val)
@@ -181,7 +181,7 @@ export default class PropertiesWidget extends Widget {
   private createRemoveButtonElement(): JQuery<HTMLElement> {
     return $('<button>', {
       'type': 'button',
-      'class': 'btn btn-default'
+      'class': 'bx-btn'
     }).append(
       $('<i>', { class: 'fa fa-times'})
     );

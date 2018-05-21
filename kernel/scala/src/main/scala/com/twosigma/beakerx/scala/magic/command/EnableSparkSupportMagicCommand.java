@@ -81,16 +81,16 @@ public class EnableSparkSupportMagicCommand implements MagicCommandFunctionality
     private MagicCommandOutcomeItem getMagicCommandOutcomeItem(KernelFunctionality kernel, SparkexJarService sparkexJarService) {
       MagicCommandOutcomeItem add = sparkexJarService.addSparkexJar(kernel);
       if (!add.getStatus().equals(MagicCommandOutcomeItem.Status.OK)) {
-        return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Can not load sparkex.jar");
+        return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Cannot load sparkex.jar");
       }
       MagicCommandOutcomeItem load = loadSparkSupportMagicClass();
       if (!load.getStatus().equals(MagicCommandOutcomeItem.Status.OK)) {
-        return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Can not load LoadSparkSupportMagicCommand class");
+        return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Cannot load LoadSparkSupportMagicCommand class");
       }
 
       MagicCommandOutcomeItem magic = loadSparkSupportMagic();
       if (!magic.getStatus().equals(MagicCommandOutcomeItem.Status.OK)) {
-        return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Can not run LoadSparkSupportMagicCommand. Check if you add spark to path.");
+        return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Error loading Spark, was it added to the classpath?");
       }
       return new MagicCommandOutput(MagicCommandOutput.Status.OK, "Spark support enabled");
     }

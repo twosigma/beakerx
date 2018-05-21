@@ -34,7 +34,7 @@ RUN apt-get update && \
 	echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
 	apt-get update && apt-get install yarn -y && \
 	apt-get clean && \
-	conda create -y -n beakerx 'python>=3' nodejs pandas openjdk maven && \
+	conda create -y -n beakerx 'python>=3' nodejs pandas openjdk maven py4j && \
     conda config --env --add pinned_packages 'openjdk >8.0.121' && \
 	conda install -y -n beakerx -c conda-forge ipywidgets jupyterhub jupyterlab pyzmq pytest
 

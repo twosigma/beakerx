@@ -90,6 +90,10 @@ var LabPageObject = function () {
     browser.$('div.jp-Dialog-buttonLabel=Publish').click();
   };
 
+  this.clickInterruptKernel = function () {
+    browser.$('button.jp-Toolbar-button.jp-StopIcon.jp-Toolbar-item]').click();
+  };
+
   this.getAllOutputAreaChildren = function (codeCell) {
     return codeCell.$$('div.jp-OutputArea-child');
   };

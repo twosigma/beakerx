@@ -74,8 +74,8 @@ public class MagicCommandOutputFoldout implements MagicCommandOutcomeItem {
 
   private void sendHTML(Message message) {
     Foldout value = new Foldout(message);
-    Label label = new Label();
-    BxHTML content = new BxHTML();
+    Label label = new Label(message);
+    BxHTML content = new BxHTML(message);
 
     content.setValue(getMIMEContainer().get().getData());
     label.setValue(this.header);

@@ -93,7 +93,7 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
   private void runSparkDataset(String returnStatement) throws InterruptedException {
     //given
     String peoplePath = EnableSparkSupportTest.class.getClassLoader().getResource("people.json").getPath();
-    String code = "import org.apache.spark.sql.SparkSession\n" +
+    String code =
             "val spark = SparkSession\n" +
             "    .builder\n" +
             "    .appName(\"jupyter\")\n" +

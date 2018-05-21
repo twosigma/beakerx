@@ -25,7 +25,7 @@ import TreeWidgetModel from "./Models/TreeWidgetModel";
 import SyncIndicatorWidget from "./Widgets/SyncIndicatorWidget";
 import OptionsWidget from "./Widgets/OptionsWidget";
 
-import "./styles/tree.scss";
+import "./../shared/style/tree.scss";
 
 export default class TreeWidget extends Panel {
 
@@ -41,7 +41,7 @@ export default class TreeWidget extends Panel {
     if (this.options.isLab) {
       this.addClass('isLab');
     } else {
-      require("./styles/tree-notebook.css");
+      require("./../shared/style/tree-notebook.css");
     }
 
     this.title.label = 'BeakerX';

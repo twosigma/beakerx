@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+@import "bxvariables";
+
 .foldout-preview {
   & > .bx-spark-stagePanel {
     padding: 0;
@@ -26,4 +28,48 @@
 
 .bx-spark-stageProgressBar {
   margin: 0 10px;
+}
+
+.bx-panel {
+  border: 1px solid $bxBorderColor1;
+  border-radius: 2px;
+  margin-bottom: 18px;
+
+  .bx-panel-heading {
+    background-color: $bxBgColor2;
+    padding: 10px;
+    border-bottom: 1px solid $bxBorderColor1;
+
+    display: flex;
+  }
+
+  .bx-panel-body {
+    padding: 10px;
+  }
+}
+
+.bx-label {
+  display: inline;
+  padding: .2em .6em .3em;
+  font-size: 75%;
+  font-weight: bold;
+  line-height: 1;
+  text-align: center;
+  vertical-align: baseline;
+  border-radius: .25em;
+  color: #ffffff;
+
+  &.done { background-color: $bxColorSuccess; }
+  &.active { background-color: $bxColorInfo; }
+  &.waiting { background-color: $bxColorWarning; }
+  &.all { background-color: $bxColorDefault; }
+}
+
+.bx-progress-bar {
+  display: inline-block;
+  height: 28px;
+
+  &.done { background-color: $bxColorSuccess; }
+  &.active { background-color: $bxColorInfo; }
+  &.waiting { background-color: $bxColorWarning; }
 }

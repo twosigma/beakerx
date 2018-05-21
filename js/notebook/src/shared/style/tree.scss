@@ -30,6 +30,8 @@
  *  limitations under the License.
  */
 
+@import "bxvariables";
+
 #beakerx-tree-widget.isLab {
   width: 100%;
   height: 100%;
@@ -131,9 +133,6 @@
 }
 
 // ========== NEW
-$bxBorderColor1: #cccccc;
-$bxBgColor1: #ffffff;
-$bxBgColor2: #eeeeee;
 
 #beakerx-tree {
 
@@ -201,6 +200,39 @@ $bxBgColor2: #eeeeee;
 
     .bx-panel-body {
       padding:10px;
+
+      .bx-form-row {
+
+        &:not(:last-child) {
+          margin-bottom: 6px;
+        }
+
+        .bx-input-text {
+          display: inline-block;
+          border: 1px solid $bxBorderColor1;
+          border-radius: 2px;
+          margin: 0 6px 0 0;
+          padding: 6px 12px;
+          font-size: 13px;
+          line-height: 1.4;
+        }
+
+        .bx-btn {
+          border: 1px solid $bxBorderColor1;
+          border-radius: 2px;
+          margin: 0;
+          background-color: $bxBgColor1;
+          padding: 6px 12px;
+          font-size: 13px;
+          line-height: 1.4;
+
+          &:hover {
+            background-color: $bxBgColor2;
+          }
+
+        }
+
+      }
     }
   }
 

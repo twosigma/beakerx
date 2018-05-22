@@ -32,6 +32,15 @@
 
 @import "bxvariables";
 
+a {
+  color: $bxColorLink;
+  text-decoration: none;
+  &:focus, &:hover {
+    color: $bxColorHover;
+    text-decoration: underline;
+  }
+}
+
 #beakerx-tree-widget {
 
   .hidden {

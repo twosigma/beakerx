@@ -29,6 +29,12 @@
 
 .bx-spark-stageProgressBar {
   margin: 0 10px;
+  display: flex;
+  align-items: center;
+
+}
+.bx-spark-stageProgressLabels {
+  margin: 0;
 }
 
 .bx-panel {
@@ -68,7 +74,8 @@
 
 .bx-progress-bar {
   display: inline-block;
-  height: 28px;
+  height: 18px;
+  border-radius: .25em;
 
   &.done { background-color: $bxColorSuccess; }
   &.active { background-color: $bxColorInfo; }

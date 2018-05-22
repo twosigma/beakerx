@@ -33,6 +33,10 @@ public class SparkStateProgress extends VBox {
 
   public SparkStateProgress(int numTasks, int jobId, int stageId, String jobLink, String stageLink) {
     super(new ArrayList<>());
+    init(numTasks, jobId, stageId, jobLink, stageLink);
+  }
+
+  private void init(int numTasks, int jobId, int stageId, String jobLink, String stageLink) {
     this.numberOfTasks = numTasks;
     this.jobId = jobId;
     this.stageId = stageId;

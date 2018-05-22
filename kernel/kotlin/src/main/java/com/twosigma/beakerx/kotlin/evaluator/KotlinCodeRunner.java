@@ -48,10 +48,8 @@ class KotlinCodeRunner implements Callable<TryResult> {
     TryResult either;
     ClassLoader oldld = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader(loader);
-    InternalVariable.setValue(theOutput);
     try {
       theOutput.setOutputHandler();
-      InternalVariable.setValue(theOutput);
       ReplEvalResult eval = repl.eval(this.codeToBeExecuted);
       either = interpretResult(eval);
     } catch (Throwable e) {

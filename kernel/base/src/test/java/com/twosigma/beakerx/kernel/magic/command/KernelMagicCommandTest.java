@@ -16,14 +16,18 @@
 package com.twosigma.beakerx.kernel.magic.command;
 
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.MessageFactorTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Ignore
@@ -47,7 +51,7 @@ public class KernelMagicCommandTest {
     public void testPythonMagicCell() throws Exception {
         //given
         String pythonCode = "%%python" + System.lineSeparator() + "print('Test')";
-        Code code = CodeFactory.create(pythonCode, new Message(), kernel);
+        Code code = CodeFactory.create(pythonCode, commMsg(), kernel);
         //when
         code.execute(this.kernel, 1);
         //then
@@ -61,7 +65,7 @@ public class KernelMagicCommandTest {
                 + "def foo():" + System.lineSeparator()
                 + "\tprint('Test2')" + System.lineSeparator() + System.lineSeparator()
                 + "foo()";
-        Code code = CodeFactory.create(pythonCodeWIndents, new Message(), kernel);
+        Code code = CodeFactory.create(pythonCodeWIndents, commMsg(), kernel);
         //when
         code.execute(this.kernel, 1);
         //then
@@ -72,7 +76,7 @@ public class KernelMagicCommandTest {
     public void testJavaKernelAlias() throws Exception {
         //given
         String javaAliasCode = "%%java" + System.lineSeparator() + "System.out.println(2+2);";
-        Code code = CodeFactory.create(javaAliasCode, new Message(), kernel);
+        Code code = CodeFactory.create(javaAliasCode, commMsg(), kernel);
         //when
         code.execute(this.kernel, 1);
         //then
@@ -83,7 +87,7 @@ public class KernelMagicCommandTest {
     public void testJavaKernel() throws Exception {
         //given
         String javaCode = "%%kernel java" + System.lineSeparator() + "System.out.println(2+2);";
-        Code code = CodeFactory.create(javaCode, new Message(), kernel);
+        Code code = CodeFactory.create(javaCode, commMsg(), kernel);
         //when
         code.execute(this.kernel, 1);
         //then
@@ -94,7 +98,7 @@ public class KernelMagicCommandTest {
     public void testKernelNotExist() throws Exception {
         //given
         String javaCode = "%%kernel not_exist" + System.lineSeparator() + "System.out.println(2+2);";
-        Code code = CodeFactory.create(javaCode, new Message(), kernel);
+        Code code = CodeFactory.create(javaCode, commMsg(), kernel);
         //when
         code.execute(this.kernel, 1);
         //then

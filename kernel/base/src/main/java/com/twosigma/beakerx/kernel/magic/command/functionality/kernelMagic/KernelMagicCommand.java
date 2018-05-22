@@ -94,14 +94,13 @@ public class KernelMagicCommand implements MagicCommandFunctionality {
 
     private Message parseMessage(String stringJson) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        Message msg = new Message();
         JsonNode json = mapper.readTree(stringJson);
+        Message msg = new Message(mapper.convertValue(json.get("header"), Header.class));
         msg.setContent(mapper.convertValue(json.get("content"), Map.class));
         msg.setMetadata(mapper.convertValue(json.get("metadata"), Map.class));
         msg.setBuffers(mapper.convertValue(json.get("buffers"), List.class));
         List<byte[]> identities = mapper.convertValue(json.get("comm_id"), List.class);
         msg.setIdentities(identities == null ? new ArrayList<>() : identities);
-        msg.setHeader(mapper.convertValue(json.get("header"), Header.class));
         return msg;
     }
 

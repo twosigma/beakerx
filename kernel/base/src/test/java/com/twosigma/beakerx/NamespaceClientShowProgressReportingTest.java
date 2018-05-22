@@ -18,10 +18,12 @@ package com.twosigma.beakerx;
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.message.Message;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class NamespaceClientShowProgressReportingTest {
@@ -46,7 +48,10 @@ public class NamespaceClientShowProgressReportingTest {
   @Test
   public void updateProgressReporting() throws Exception {
     //given
-    InternalVariable.setValue(new SimpleEvaluationObject("code"));
+    SimpleEvaluationObject code = new SimpleEvaluationObject("code");
+    Message jupyterMessage = commMsg();
+    code.setJupyterMessage(jupyterMessage);
+    InternalVariable.setValue(code);
     //when
     namespaceClient.showProgressUpdate("msg1", 20);
     namespaceClient.showProgressUpdate("msg2", 40);

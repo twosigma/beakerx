@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static com.twosigma.beakerx.scala.magic.command.SparkMagicCommandTest.createSparkManagerFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -73,7 +74,7 @@ public class SparkMagicCommandAutoConnectTest {
   }
 
   private MagicCommandOutcomeItem createSparkUi(String option) {
-    Code code = Code.createCode("%%spark " + option, new ArrayList<>(), new ArrayList<>(), new Message());
+    Code code = Code.createCode("%%spark " + option, new ArrayList<>(), new ArrayList<>(), commMsg());
     MagicCommandExecutionParam param = new MagicCommandExecutionParam("%%spark " + option, "", 1, code, true);
     MagicCommandOutcomeItem execute = sparkMagicCommand.execute(param);
     return execute;

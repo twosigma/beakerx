@@ -27,6 +27,7 @@ import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static com.twosigma.beakerx.kernel.msg.MessageCreator.NAME;
 import static com.twosigma.beakerx.kernel.msg.MessageCreator.STDOUT;
 import static com.twosigma.beakerx.kernel.msg.MessageCreator.TEXT;
@@ -78,7 +79,7 @@ public class ButtonComponentWidgetTest extends EasyFormWidgetTest {
   }
 
   private Message messageWithClickEvent() {
-    Message message = new Message();
+    Message message = commMsg();
     LinkedHashMap<String, Serializable> content = new LinkedHashMap<>();
     LinkedHashMap<Object, Object> eventContent = new LinkedHashMap<>();
     LinkedHashMap<Object, Object> eventClick = new LinkedHashMap<>();
@@ -116,7 +117,7 @@ public class ButtonComponentWidgetTest extends EasyFormWidgetTest {
   }
 
   private Message messageWithoutClickEvent() {
-    return new Message();
+    return commMsg();
   }
 
   @Override

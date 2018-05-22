@@ -68,10 +68,9 @@ public class MessageCreator {
   }
 
   private static Message initMessage(JupyterMessages type, Message message) {
-    Message reply = new Message();
+    Message reply = new Message(new Header(type, message.getHeader().getSession()));
     reply.setParentHeader(message.getHeader());
     reply.setIdentities(message.getIdentities());
-    reply.setHeader(new Header(type, message.getHeader().getSession()));
     return reply;
   }
 

@@ -24,6 +24,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddJarMagicCommand.CLASSPATH_ADD_JAR;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.JavaScriptMagicCommand.JAVASCRIPT;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,7 +53,7 @@ public class CodeTest {
             "      d3: '//cdnjs.cloudflare.com/ajax/libs/d3/3.4.8/d3.min'\n" +
             "  }});";
     //when
-    Code code = CodeFactory.create(JAVASCRIPT + "\n" + jsCode, new Message(), kernel);
+    Code code = CodeFactory.create(JAVASCRIPT + "\n" + jsCode, commMsg(), kernel);
     //then
     assertThat(code.getCodeFrames().size()).isEqualTo(1);
     MagicCommand magicCommand = (MagicCommand) code.getCodeFrames().get(0);
@@ -72,7 +73,7 @@ public class CodeTest {
             CLASSPATH_ADD_JAR + " lib3.jar\n" +
             "code code code";
     //when
-    Code code = CodeFactory.create(allCode, new Message(), kernel);
+    Code code = CodeFactory.create(allCode, commMsg(), kernel);
     //then
     assertThat(code.getCodeFrames().size()).isEqualTo(4);
     assertThat(((MagicCommand) code.getCodeFrames().get(0)).getCommand()).isEqualTo("%classpath add jar lib1.jar");

@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.sql.magic.command;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static com.twosigma.beakerx.sql.magic.command.DataSourcesMagicCommand.DATASOURCES;
 import static com.twosigma.beakerx.sql.magic.command.DefaultDataSourcesMagicCommand.DEFAULT_DATASOURCE;
 import static java.util.Collections.singletonList;
@@ -52,7 +53,7 @@ public class SQLMagicCommandTest {
     //given
     String codeAsString = DEFAULT_DATASOURCE + " jdbc:h2:mem:db1";
     MagicCommand command = new MagicCommand(new DefaultDataSourcesMagicCommand(kernel), codeAsString);
-    Code code = Code.createCode(codeAsString, singletonList(command), NO_ERRORS, new Message());
+    Code code = Code.createCode(codeAsString, singletonList(command), NO_ERRORS, commMsg());
     //when
     code.execute(kernel, 1);
     //then
@@ -64,7 +65,7 @@ public class SQLMagicCommandTest {
     //given
     String codeAsString = DATASOURCES + " jdbc:h2:mem:db2";
     MagicCommand command = new MagicCommand(new DataSourcesMagicCommand(kernel), codeAsString);
-    Code code = Code.createCode(codeAsString, singletonList(command), NO_ERRORS, new Message());
+    Code code = Code.createCode(codeAsString, singletonList(command), NO_ERRORS, commMsg());
     //when
     code.execute(kernel, 1);
     //then

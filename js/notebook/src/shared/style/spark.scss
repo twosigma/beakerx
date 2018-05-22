@@ -29,3 +29,16 @@
 .bx-spark-stageProgressBar {
   margin: 0 10px;
 }
+
+.bx-spark-stageProgressLabels {
+  display: block;
+  line-height: 100%;
+  height: 18px;
+  align-items: center;
+
+  .label {
+    display: inline-block;
+    max-height: 100%;
+    line-height: 150%;
+  }
+}

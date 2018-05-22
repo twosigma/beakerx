@@ -148,7 +148,7 @@ public class SparkUIManager {
   private HBox createStatusPanel() {
     Label appStatus = createAppStatus();
     Button disconnect = createDisconnectButton();
-    HBox statusPanel = new HBox(Arrays.asList(uiLink(), disconnect, appStatus));
+    HBox statusPanel = new HBox(Arrays.asList(uiLink(), appStatus, disconnect));
     sparkUI.add(statusPanel);
     return statusPanel;
   }

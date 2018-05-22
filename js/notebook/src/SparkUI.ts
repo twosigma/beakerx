@@ -33,8 +33,14 @@ class SparkUIModel extends widgets.VBoxModel {
 }
 
 class SparkUIView extends widgets.VBoxView {
+  private connectionStatus: HTMLElement;
+
   public render() {
     super.render();
+
+    this.el.classList.add('bx-spark-status-panel');
+
+    this.processConnectionWidget();
     this.updateLabels();
   }
 
@@ -68,6 +74,14 @@ class SparkUIView extends widgets.VBoxView {
     return $(labelEl).css({
       width: 'auto',
     }).outerWidth();
+  }
+
+  private processConnectionWidget() {
+    this.children_views.update(this.model.get('children')).then((views) => {
+      views.forEach((view) => {
+        debugger;
+      });
+    });
   }
 }
 

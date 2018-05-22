@@ -20,6 +20,20 @@ $focusColor: #66bb6a;
   font-family: "Lato", Helvetica, sans-serif;
 }
 
+.BeakerX-button {
+  &[class*="icon"] {
+    font: normal normal normal 14px/1 FontAwesome;
+  }
+
+  &:before {
+    display: inline-block;
+  }
+
+  &.icon-close:before {
+    content: "\f00d" !important;
+  }
+}
+
 .bko-focused {
   border: 1px solid $focusColor !important;
 

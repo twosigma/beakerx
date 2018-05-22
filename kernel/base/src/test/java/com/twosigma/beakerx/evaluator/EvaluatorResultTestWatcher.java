@@ -158,7 +158,7 @@ public class EvaluatorResultTestWatcher {
   }
 
 
-  private static Optional<Message> getUpdate(List<Message> messages) {
+  public static Optional<Message> getUpdate(List<Message> messages) {
     return messages.stream().
             filter(x -> x.type().equals(JupyterMessages.COMM_MSG)).
             filter(x -> TestWidgetUtils.getData(x).get("method").equals("update")).

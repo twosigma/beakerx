@@ -26,7 +26,7 @@ export default class DOMUtils {
         display:"block",
         position:"absolute"
       });
-    let fakeEl = $('<div>', { id: 'beakerx-tree' });
+    let fakeEl = $('<div>', { id: 'beakerx-tree-widget' });
     fakeEl.appendTo($('body'));
     copyEl.appendTo(fakeEl);
     let h = copyEl.outerHeight();

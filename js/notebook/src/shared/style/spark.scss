@@ -74,3 +74,22 @@
   &.active { background-color: $bxColorInfo; }
   &.waiting { background-color: $bxColorWarning; }
 }
+
+.bx-row {
+  display: flex;
+  .bx-text-right {
+    text-align: right;
+  }
+  .bx-col-xs-2 {
+    display: inline-block;
+    width: 16.66%;
+  }
+  .bx-col-xs-4 {
+    display: inline-block;
+    width: 33.33%;
+  }
+  .bx-col-xs-6 {
+    display: inline-block;
+    width: 50%;
+  }
+}

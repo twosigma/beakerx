@@ -135,10 +135,10 @@ class SparkStateProgressView extends widgets.VBoxView {
     let progressBar = this.createStageProgressBar(state);
     let progressLabels = this.createStageProgressLabels(state);
 
-    return $('<div>', { class: 'row' }).append(
-      $('<div>', { class: 'col-xs-2 text-right' }).append(stageLink),
-      $('<div>', { class: 'col-xs-6' }).append(progressBar),
-      $('<div>', { class: 'col-xs-4' }).append(progressLabels),
+    return $('<div>', { class: 'bx-row' }).append(
+      $('<div>', { class: 'bx-col-xs-2 bx-text-right' }).append(stageLink),
+      $('<div>', { class: 'bx-col-xs-6' }).append(progressBar),
+      $('<div>', { class: 'bx-col-xs-4' }).append(progressLabels),
     );
   }
 
@@ -165,8 +165,8 @@ class SparkStateProgressView extends widgets.VBoxView {
 
     this.progressBar.innerHTML = `
       <div class="bx-progress-bar done" style="width: ${percentDone}%"></div>
-      <div class="progress-bar active" style="width: ${percentActive}%"></div>
-      <div class="progress-bar waiting" style="width: ${percentWaiting}%"></div>
+      <div class="bx-progress-bar active" style="width: ${percentActive}%"></div>
+      <div class="bx-progress-bar waiting" style="width: ${percentWaiting}%"></div>
     `;
 
     this.progressBarDone = this.progressBar.querySelector('.done');

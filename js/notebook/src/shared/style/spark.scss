@@ -14,6 +14,10 @@
  *  limitations under the License.
  */
 
+$colorSuccess: #4CAF50;
+$colorWhite: #ffffff;
+$colorBorder: #cfcfcf;
+
 .foldout-preview {
   & > .bx-spark-stagePanel {
     padding: 0 15px;
@@ -26,6 +30,7 @@
   max-width: 600px;
 }
 
+.bx-spark-connectionProgressBar,
 .bx-spark-stageProgressBar {
   margin: 0 10px;
 }
@@ -40,5 +45,17 @@
     display: inline-block;
     max-height: 100%;
     line-height: 150%;
+  }
+}
+
+.bx-spark-connectionProgressBar {
+  background-color: transparent;
+  border: 1px solid $colorBorder;
+  height: 20px;
+  margin: 6px;
+  line-height: 18px;
+
+  &.connected {
+    background-color: $colorSuccess;
   }
 }

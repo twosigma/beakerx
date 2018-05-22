@@ -38,14 +38,14 @@ class SparkUIView extends widgets.VBoxView {
   public render() {
     super.render();
 
-    this.el.classList.add('bx-spark-status-panel');
-
     this.processConnectionWidget();
     this.updateLabels();
   }
 
   public update() {
     super.update();
+
+    this.processConnectionWidget();
     this.updateLabels();
   }
 
@@ -79,7 +79,11 @@ class SparkUIView extends widgets.VBoxView {
   private processConnectionWidget() {
     this.children_views.update(this.model.get('children')).then((views) => {
       views.forEach((view) => {
-        debugger;
+        if (view instanceof widgets.LabelView) {
+          this.connectionStatus = view.pWidget;
+          this.connectionStatus.el.classList.add('bx-spark-connectionProgressBar');
+          this.connectionStatus.el.classList.add('progress');
+        }
       });
     });
   }

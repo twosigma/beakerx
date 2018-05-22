@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static com.twosigma.beakerx.widget.Output.OUTPUT_TYPE;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsg;
@@ -50,7 +51,7 @@ public class OutputWidgetTest {
 
   private Message submitCodeToExecution() {
     SimpleEvaluationObject value = new SimpleEvaluationObject("output");
-    Message jupyterMessage = new Message();
+    Message jupyterMessage =commMsg();
     value.setJupyterMessage(jupyterMessage);
     InternalVariable.setValue(value);
     return jupyterMessage;

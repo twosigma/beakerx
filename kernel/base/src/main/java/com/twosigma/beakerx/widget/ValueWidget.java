@@ -15,6 +15,8 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.twosigma.beakerx.message.Message;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -33,6 +35,14 @@ public abstract class ValueWidget<T extends Serializable> extends DOMWidget {
   protected Boolean visible = true;
   protected String description = "";
   protected Integer msg_throttle = 3;
+
+  public ValueWidget() {
+    super();
+  }
+
+  public ValueWidget(Message parent) {
+    super(parent);
+  }
 
   public T getValue() {
     return this.value;

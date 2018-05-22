@@ -61,8 +61,7 @@ public class TableDisplayActionsTest {
   }
 
   private Message actionDetailsMessage() {
-    Message message = new Message();
-    message.setHeader(initHeader(JupyterMessages.COMM_MSG));
+    Message message = new Message(initHeader(JupyterMessages.COMM_MSG));
 
     Map<String, Serializable> content = new LinkedHashMap<>();
     content.put(COMM_ID, tableDisplay.getComm().getCommId());
@@ -95,8 +94,7 @@ public class TableDisplayActionsTest {
   }
 
   private Message contextMenuMessage() {
-    Message message = new Message();
-    message.setHeader(initHeader(JupyterMessages.COMM_MSG));
+    Message message = new Message(initHeader(JupyterMessages.COMM_MSG));
 
     Map<String, Serializable> content = new LinkedHashMap<>();
     content.put(COMM_ID, tableDisplay.getComm().getCommId());
@@ -125,8 +123,7 @@ public class TableDisplayActionsTest {
   }
 
   private Message doubleClickActionMessage() {
-    Message message = new Message();
-    message.setHeader(initHeader(JupyterMessages.COMM_MSG));
+    Message message = new Message(initHeader(JupyterMessages.COMM_MSG));
 
     Map<String, Serializable> content = new LinkedHashMap<>();
     content.put(COMM_ID, tableDisplay.getComm().getCommId());

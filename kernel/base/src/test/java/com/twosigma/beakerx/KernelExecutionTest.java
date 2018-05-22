@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForErrorMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
@@ -121,7 +122,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
 
   private void verifyLoadedMagicCommand() throws InterruptedException {
     String allCode = "%showEnvs";
-    Code code = CodeFactory.create(allCode, new Message(), getKernel());
+    Code code = CodeFactory.create(allCode, commMsg(), getKernel());
     code.execute(getKernel(), 3);
     List<Message> std = waitForStdouts(getKernelSocketsService().getKernelSockets());
     String text = (String) std.get(1).getContent().get("text");
@@ -130,7 +131,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
 
   private void loadMagicCommandByClass() throws InterruptedException {
     String allCode = LOAD_MAGIC + "   com.twosigma.beakerx.custom.magic.command.ShowEnvsCustomMagicCommand";
-    Code code = CodeFactory.create(allCode, new Message(), getKernel());
+    Code code = CodeFactory.create(allCode, commMsg(), getKernel());
     code.execute(getKernel(), 2);
     List<Message> std = waitForStdouts(getKernelSocketsService().getKernelSockets());
     String text = (String) std.get(0).getContent().get("text");
@@ -139,7 +140,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
 
   private void addJarWithCustomMagicCommand() throws InterruptedException {
     String allCode = CLASSPATH_ADD_JAR + " " + LOAD_MAGIC_DEMO_JAR;
-    Code code = CodeFactory.create(allCode, new Message(), getKernel());
+    Code code = CodeFactory.create(allCode, commMsg(), getKernel());
     code.execute(getKernel(), 1);
     Optional<Message> updateMessage = EvaluatorResultTestWatcher.waitForUpdateMessage(getKernelSocketsService().getKernelSockets());
     String text =  (String) TestWidgetUtils.getState(updateMessage.get()).get("value");
@@ -181,7 +182,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
 
   protected void addDemoJar() throws InterruptedException {
     String allCode = CLASSPATH_ADD_JAR + " " + DEMO_JAR;
-    Code code = CodeFactory.create(allCode, new Message(), getKernel());
+    Code code = CodeFactory.create(allCode, commMsg(), getKernel());
     code.execute(getKernel(), 1);
     Optional<Message> updateMessage = EvaluatorResultTestWatcher.waitForUpdateMessage(getKernelSocketsService().getKernelSockets());
     String text =  (String) TestWidgetUtils.getState(updateMessage.get()).get("value");
@@ -194,7 +195,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     addDemoJar();
     String path = pathToDemoClassFromAddedDemoJar();
     //when
-    Code code = CodeFactory.create(IMPORT + " " + path, new Message(), getKernel());
+    Code code = CodeFactory.create(IMPORT + " " + path, commMsg(), getKernel());
     code.execute(kernel,1);
     //then
     verifyImportedDemoClassByMagicCommand();
@@ -228,7 +229,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     String path = pathToDemoClassFromAddedDemoJar();
     String allCode = IMPORT + " " + path.substring(0, path.lastIndexOf(".")) + ".*";
     //when
-    Code code = CodeFactory.create(allCode, new Message(), getKernel());
+    Code code = CodeFactory.create(allCode, commMsg(), getKernel());
     code.execute(kernel,1);
     //then
     verifyImportedDemoClassByMagicCommand();
@@ -241,7 +242,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     String allCode = IMPORT + " " + (path.substring(0, path.lastIndexOf(".")) + "Unknown.*");
     addDemoJar();
     //when
-    Code code = CodeFactory.create(allCode, new Message(), getKernel());
+    Code code = CodeFactory.create(allCode, commMsg(), getKernel());
     code.execute(kernel,1);
     //then
     List<Message> std = waitForStderr(getKernelSocketsService().getKernelSockets());
@@ -254,7 +255,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     //given
     String allCode = IMPORT + " " + pathToDemoClassFromAddedDemoJar() + "UnknownClass";
     //when
-    Code code = CodeFactory.create(allCode, new Message(), getKernel());
+    Code code = CodeFactory.create(allCode, commMsg(), getKernel());
     code.execute(kernel,1);
     //then
     List<Message> std = waitForStderr(getKernelSocketsService().getKernelSockets());
@@ -267,10 +268,10 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     //given
     addDemoJar();
     String path = pathToDemoClassFromAddedDemoJar();
-    Code code = CodeFactory.create(IMPORT + " " + path, new Message(), getKernel());
+    Code code = CodeFactory.create(IMPORT + " " + path, commMsg(), getKernel());
     code.execute(kernel,1);
     //when
-    Code code2 = CodeFactory.create(UNIMPORT + " " + path, new Message(), getKernel());
+    Code code2 = CodeFactory.create(UNIMPORT + " " + path, commMsg(), getKernel());
     code2.execute(kernel,2);
     //then
     //assertThat(status).isEqualTo(MagicCommandOutcomeItem.Status.OK);

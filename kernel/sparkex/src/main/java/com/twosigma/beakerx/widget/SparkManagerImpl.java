@@ -19,6 +19,8 @@ import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
@@ -54,7 +56,7 @@ public class SparkManagerImpl implements SparkManager {
   }
 
   @Override
-  public TryResult configure(KernelFunctionality kernel, SparkUIManager sparkContextManager) {
+  public TryResult configure(KernelFunctionality kernel, SparkUIManager sparkContextManager, Message parentMessage) {
     this.sparkContextManager = sparkContextManager;
     SparkConf sparkConf = configureSparkConf(getSparkConf());
     sparkSessionBuilder.config(sparkConf);
@@ -62,7 +64,7 @@ public class SparkManagerImpl implements SparkManager {
     addListener(getOrCreate().sparkContext());
     SparkVariable.putSparkContext(getOrCreate().sparkContext());
     SparkVariable.putSparkSession(sparkSession);
-    TryResult tryResultSparkContext = initSparkContextInShell(kernel);
+    TryResult tryResultSparkContext = initSparkContextInShell(kernel, parentMessage);
     if (!tryResultSparkContext.isError()) {
       kernel.registerCancelHook(SparkVariable::cancelAllJobs);
     }
@@ -84,7 +86,7 @@ public class SparkManagerImpl implements SparkManager {
     return this.sparkSessionBuilder;
   }
 
-  private TryResult initSparkContextInShell(KernelFunctionality kernel) {
+  private TryResult initSparkContextInShell(KernelFunctionality kernel, Message parent) {
     String addSc = String.format(("import com.twosigma.beakerx.widget.SparkVariable\n" +
                     "val %s = SparkVariable.getSparkSession()\n" +
                     "import org.apache.spark.SparkContext._\n" +
@@ -93,7 +95,7 @@ public class SparkManagerImpl implements SparkManager {
                     "import org.apache.spark.sql.functions._\n"),
             SPARK_SESSION_NAME, SPARK_SESSION_NAME, SPARK_SESSION_NAME);
 
-    SimpleEvaluationObject seo = createSimpleEvaluationObject(addSc, kernel, new Message(), 1);
+    SimpleEvaluationObject seo = createSimpleEvaluationObject(addSc, kernel, new Message(new Header(JupyterMessages.COMM_MSG, parent.getHeader().getSession())), 1);
     return kernel.executeCode(addSc, seo);
   }
 

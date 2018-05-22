@@ -69,7 +69,7 @@ public class EnableSparkSupportMagicCommand implements MagicCommandFunctionality
 
     @Override
     public MagicCommandOutcomeItem run(MagicCommandExecutionParam param) {
-      MagicCommandOutcomeItem magicCommandOutcomeItem = getMagicCommandOutcomeItem(kernel, sparkexJarService);
+      MagicCommandOutcomeItem magicCommandOutcomeItem = getMagicCommandOutcomeItem(kernel, sparkexJarService, param);
       if (magicCommandOutcomeItem.getStatus().equals(MagicCommandOutcomeItem.Status.OK)) {
         command = new EnableSparkSupportMagicCommandSparkAction();
         return command.run(param);
@@ -78,7 +78,7 @@ public class EnableSparkSupportMagicCommand implements MagicCommandFunctionality
       }
     }
 
-    private MagicCommandOutcomeItem getMagicCommandOutcomeItem(KernelFunctionality kernel, SparkexJarService sparkexJarService) {
+    private MagicCommandOutcomeItem getMagicCommandOutcomeItem(KernelFunctionality kernel, SparkexJarService sparkexJarService, MagicCommandExecutionParam param) {
       MagicCommandOutcomeItem add = sparkexJarService.addSparkexJar(kernel);
       if (!add.getStatus().equals(MagicCommandOutcomeItem.Status.OK)) {
         return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Cannot load sparkex.jar");
@@ -88,18 +88,18 @@ public class EnableSparkSupportMagicCommand implements MagicCommandFunctionality
         return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Cannot load LoadSparkSupportMagicCommand class");
       }
 
-      MagicCommandOutcomeItem magic = loadSparkSupportMagic();
+      MagicCommandOutcomeItem magic = loadSparkSupportMagic(param);
       if (!magic.getStatus().equals(MagicCommandOutcomeItem.Status.OK)) {
         return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Error loading Spark, was it added to the classpath?");
       }
       return new MagicCommandOutput(MagicCommandOutput.Status.OK, "Spark support enabled");
     }
 
-    private MagicCommandOutcomeItem loadSparkSupportMagic() {
+    private MagicCommandOutcomeItem loadSparkSupportMagic(MagicCommandExecutionParam param) {
       String loadSparkMagic = "%loadSparkSupport";
       Optional<MagicCommandFunctionality> magic = CodeFactory.findMagicCommandFunctionality(kernel.getMagicCommandTypes(), loadSparkMagic);
       MagicCommandOutcomeItem execute = magic.get()
-              .execute(new MagicCommandExecutionParam(null, null, 1, null, false));
+              .execute(param);
       return execute;
     }
 

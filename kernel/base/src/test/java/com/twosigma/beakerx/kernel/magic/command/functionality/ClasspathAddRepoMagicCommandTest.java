@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddRepoMagicCommand.ADDED_NEW_REPO;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddRepoMagicCommand.CLASSPATH_CONFIG_RESOLVER;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddRepoMagicCommand.MVN_LOCAL;
@@ -51,7 +52,7 @@ public class ClasspathAddRepoMagicCommandTest {
   public void addMvnLocal() {
     //given
     String allCode = CLASSPATH_CONFIG_RESOLVER + " " + MVN_LOCAL;
-    Code code = CodeFactory.create(allCode, new Message(), kernel);
+    Code code = CodeFactory.create(allCode, commMsg(), kernel);
     //when
     code.execute(kernel, 1);
     //then
@@ -66,7 +67,7 @@ public class ClasspathAddRepoMagicCommandTest {
     try {
       BeakerxSystemProperty.fixUserHome("/home/xxx");
       String allCode = CLASSPATH_CONFIG_RESOLVER + " " + MVN_LOCAL;
-      Code code = CodeFactory.create(allCode, new Message(), kernel);
+      Code code = CodeFactory.create(allCode, commMsg(), kernel);
       //when
       code.execute(kernel, 1);
       //then
@@ -82,7 +83,7 @@ public class ClasspathAddRepoMagicCommandTest {
   public void addExternalRepo() {
     //given
     String allCode = CLASSPATH_CONFIG_RESOLVER + " " + "externalRepo http://someExternalRepo";
-    Code code = CodeFactory.create(allCode, new Message(), kernel);
+    Code code = CodeFactory.create(allCode, commMsg(), kernel);
     //when
     code.execute(kernel, 1);
     //then

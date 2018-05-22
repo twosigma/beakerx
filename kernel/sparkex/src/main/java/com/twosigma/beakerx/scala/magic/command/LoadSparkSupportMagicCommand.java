@@ -25,6 +25,8 @@ import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.functionality.LoadMagicMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.scala.spark.SparkDisplayers;
 import com.twosigma.beakerx.scala.spark.SparkImplicit;
@@ -49,7 +51,7 @@ public class LoadSparkSupportMagicCommand implements MagicCommandFunctionality {
 
   @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
-    TryResult implicits = addImplicits();
+    TryResult implicits = addImplicits(param.getCode().getMessage());
     if (implicits.isError()) {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, implicits.error());
     }
@@ -69,9 +71,13 @@ public class LoadSparkSupportMagicCommand implements MagicCommandFunctionality {
     return magicCommandOutcomeItem;
   }
 
-  private TryResult addImplicits() {
+  private TryResult addImplicits(Message parent) {
     String codeToExecute = new SparkImplicit().codeAsString();
-    SimpleEvaluationObject seo = createSimpleEvaluationObject(codeToExecute, kernel, new Message(), 1);
+    SimpleEvaluationObject seo = createSimpleEvaluationObject(
+            codeToExecute,
+            kernel,
+            new Message(new Header(JupyterMessages.COMM_MSG, parent.getHeader().getSession())),
+            1);
     return kernel.executeCode(codeToExecute, seo);
   }
 

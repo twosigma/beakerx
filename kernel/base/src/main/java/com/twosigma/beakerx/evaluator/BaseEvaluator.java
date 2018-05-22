@@ -74,6 +74,7 @@ public abstract class BaseEvaluator implements Evaluator {
   }
 
   protected TryResult evaluate(SimpleEvaluationObject seo, Callable<TryResult> callable) {
+    InternalVariable.setValue(seo);
     Future<TryResult> submit = executorService.submit(callable);
     TryResult either = null;
     try {

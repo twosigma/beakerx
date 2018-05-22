@@ -16,6 +16,7 @@
 
 package com.twosigma.beakerx.groovy.autocomplete;
 
+import com.twosigma.beakerx.MessageFactorTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beakerx.groovy.kernel.GroovyKernelMock;
@@ -106,7 +107,7 @@ public class GroovyCompleteHandlerTest {
   }
 
   private Message autocompleteMsgFor(String code, int curPos) {
-    Message message = new Message();
+    Message message = MessageFactorTest.commMsg();
     Map<String, Serializable> content = new HashMap();
     content.put(CompleteHandler.CODE, code);
     content.put(CompleteHandler.CURSOR_POS, curPos);

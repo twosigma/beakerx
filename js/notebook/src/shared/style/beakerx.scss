@@ -133,6 +133,11 @@ $focusColor: #66bb6a;
       overflow: hidden;
       white-space: nowrap;
     }
+
+    p {
+      margin: 0;
+      padding: 0;
+    }
   }
 
   .foldout-content {

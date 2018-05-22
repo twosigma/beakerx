@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.jupyter.msg;
 
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.MessageFactorTest;
 import com.twosigma.beakerx.jvm.object.OutputCell;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
@@ -42,7 +43,7 @@ public class MessageCreatorNoResultTest {
   public void noResult() throws Exception {
     //given
     SimpleEvaluationObject seo = new SimpleEvaluationObject("code");
-    seo.setJupyterMessage(new Message());
+    seo.setJupyterMessage(MessageFactorTest.commMsg());
     seo.finished(OutputCell.HIDDEN);
     //when
     List<MessageHolder> messages = MessageCreator.createMessage(seo);

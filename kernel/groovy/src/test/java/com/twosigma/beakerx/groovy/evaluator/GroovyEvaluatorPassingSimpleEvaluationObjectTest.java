@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import com.twosigma.beakerx.message.Message;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GroovyEvaluatorPassingSimpleEvaluationObjectTest {
@@ -47,7 +48,7 @@ public class GroovyEvaluatorPassingSimpleEvaluationObjectTest {
             "import com.twosigma.beakerx.evaluator.InternalVariable\n" +
             "InternalVariable.getParentHeader()";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
-    Message message = new Message();
+    Message message = commMsg();
     seo.setJupyterMessage(message);
     //when
     TryResult evaluate = groovyEvaluator.evaluate(seo, code);

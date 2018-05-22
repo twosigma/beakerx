@@ -246,15 +246,14 @@ public class ExecuteRequestHandlerTest {
   }
 
   private static Message copyMessage(Message origin) {
-    Message copy = new Message();
+    String header = toJson(origin.getHeader());
+    Message copy = new Message(parse(header, Header.class));
     for (byte[] list : origin.getIdentities()) {
       copy.getIdentities().add(list.clone());
     }
-    String header = toJson(origin.getHeader());
     String parent = toJson(origin.getParentHeader());
     String metadata = toJson(origin.getMetadata());
     String content = toJson(origin.getContent());
-    copy.setHeader(parse(header, Header.class));
     copy.setParentHeader(parse(parent, Header.class));
     copy.setMetadata(parse(metadata, LinkedHashMap.class));
     copy.setContent(parse(content, LinkedHashMap.class));

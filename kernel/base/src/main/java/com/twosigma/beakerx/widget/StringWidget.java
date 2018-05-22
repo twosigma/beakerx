@@ -15,12 +15,22 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.twosigma.beakerx.message.Message;
+
 import java.io.Serializable;
 import java.util.HashMap;
 
 import com.twosigma.beakerx.widget.ValueWidget;
 
 public abstract class StringWidget extends ValueWidget<String> {
+
+  public StringWidget() {
+    super();
+  }
+
+  public StringWidget(Message parent) {
+    super(parent);
+  }
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {

@@ -120,7 +120,7 @@ public class KernelSocketsZMQ extends KernelSockets {
 
   private Message readMessage(ZMQ.Socket socket) {
     ZMsg zmsg = null;
-    Message message = new Message();
+    Message message = null;
     try {
       zmsg = ZMsg.recvMsg(socket);
       ZFrame[] parts = new ZFrame[zmsg.size()];
@@ -135,10 +135,10 @@ public class KernelSocketsZMQ extends KernelSockets {
       verifyDelim(parts[MessageParts.DELIM]);
       verifySignatures(expectedSig, header, parent, metadata, content);
 
+      message = new Message(parse(header, Header.class));
       if (uuid != null) {
         message.getIdentities().add(uuid);
       }
-      message.setHeader(parse(header, Header.class));
       message.setParentHeader(parse(parent, Header.class));
       message.setMetadata(parse(metadata, LinkedHashMap.class));
       message.setContent(parse(content, LinkedHashMap.class));
@@ -200,8 +200,7 @@ public class KernelSocketsZMQ extends KernelSockets {
     Message message = readMessage(controlSocket);
     JupyterMessages type = message.getHeader().getTypeEnum();
     if (type.equals(SHUTDOWN_REQUEST)) {
-      Message reply = new Message();
-      reply.setHeader(new Header(SHUTDOWN_REPLY, message.getHeader().getSession()));
+      Message reply = new Message(new Header(SHUTDOWN_REPLY, message.getHeader().getSession()));
       reply.setParentHeader(message.getHeader());
       reply.setContent(message.getContent());
       sendMsg(controlSocket, Collections.singletonList(reply));

@@ -54,8 +54,7 @@ public class CommInfoHandler extends KernelHandler<Message> {
 
   private void handleMsg(Message message) {
     logger.debug("Processing CommInfoHandler");
-    Message reply = new Message();
-    reply.setHeader(new Header(COMM_INFO_REPLY, message.getHeader().getSession()));
+    Message reply = new Message(new Header(COMM_INFO_REPLY, message.getHeader().getSession()));
     HashMap<String, Serializable> content = new HashMap<>();
     content.put(COMMS, new HashMap<String, Serializable>());
 

@@ -15,6 +15,7 @@ package com.twosigma.beakerx.groovy.evaluator;
  *  limitations under the License.
  */
 
+import com.twosigma.beakerx.MessageFactorTest;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
@@ -63,7 +64,7 @@ public class GroovyEvaluatorMagicCommandsTest {
 
   private TryResult runCode(String code) throws InterruptedException {
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
-    Message message = new Message();
+    Message message = MessageFactorTest.commMsg();
     seo.setJupyterMessage(message);
     return groovyEvaluator.evaluate(seo, code);
   }

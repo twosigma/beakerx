@@ -28,7 +28,7 @@ public class Label extends StringWidget {
   }
 
   public Label(Message parentMessage) {
-    super();
+    super(parentMessage);
     openComm(parentMessage);
   }
 

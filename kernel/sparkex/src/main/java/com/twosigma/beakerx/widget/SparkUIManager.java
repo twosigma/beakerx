@@ -16,13 +16,13 @@
 package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.TryResult;
+import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.message.Message;
 import org.apache.spark.sql.SparkSession;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -168,22 +168,30 @@ public class SparkUIManager {
     return disconnect;
   }
 
+  private Message currentParentHeader = null;
+
   void startStage(int stageId, int numTasks) {
+    if (InternalVariable.getParentHeader() != currentParentHeader) {
+      currentParentHeader = InternalVariable.getParentHeader();
+      jobPanel = initSparkFoldout(jobPanel);
+    }
     SparkStateProgress intProgress = new SparkStateProgress(numTasks, stageId, stageId, jobLink(stageId), stageLink(stageId));
     intProgress.init();
-    if (jobPanel != null) {
-      jobPanel.getLayout().setDisplayNone();
-      jobPanel.close();
-    }
+    jobPanel.add(intProgress);
+    progressBars.put(stageId, intProgress);
+  }
 
+  private SparkFoldout initSparkFoldout(SparkFoldout oldJobPanel) {
+    if (oldJobPanel != null) {
+      oldJobPanel.getLayout().setDisplayNone();
+      oldJobPanel.close();
+    }
     Label label = new Label();
     label.setValue("Spark progress");
-
-    jobPanel = new SparkFoldout();
+    SparkFoldout jobPanel = new SparkFoldout();
     jobPanel.add(label);
-    jobPanel.add(intProgress);
     jobPanel.display();
-    progressBars.put(stageId, intProgress);
+    return jobPanel;
   }
 
   void endStage(int stageId) {

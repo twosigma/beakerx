@@ -38,6 +38,10 @@ public abstract class Box extends ValueWidget<String> {
     this.children = children;
   }
 
+  public List<Widget> getChildren() {
+    return children;
+  }
+
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     List<String> commIds = comIds();

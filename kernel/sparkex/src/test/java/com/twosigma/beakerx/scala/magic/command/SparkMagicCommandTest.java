@@ -125,6 +125,11 @@ public class SparkMagicCommandTest {
       public SparkSession.Builder getBuilder() {
         return builder;
       }
+
+      @Override
+      public String getSparkAppId() {
+        return "sparkAppId1";
+      }
     };
   }
 

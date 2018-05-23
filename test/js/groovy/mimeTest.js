@@ -32,12 +32,13 @@ describe('(Groovy) Testing of MIME types', function () {
 
   describe('(Groovy) Display MIME types', function () {
     var testValues = {
-      mathematicalSymbols: 'α2+η',
+      mathematicalSymbols: 'α+η',
       headerText: 'Hello, world!',
       markdownTestValue: "It's very easy to do bold and italics:",
       markdownBoldValue: "bold",
       markdownItalicsValue: "italics",
-      mathematicalFormula: 'F(k)=∫',
+      mathematicalFormula: 'F(k)=∫f(x)2eπikdx',
+      groovyFileName: 'GroovyTest.ipynb'
     };
 
     it('Cell outputs mathematical symbols', function () {
@@ -45,9 +46,21 @@ describe('(Groovy) Testing of MIME types', function () {
 
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
 
+      expect(codeCell.$('div.output_latex').getText().trim()).toContain(testValues.mathematicalSymbols);
+
+      // browser.waitUntil(function () {
+      //   return codeCell.$('div.output_latex').getText() === testValues.mathematicalSymbols;
+      // })
+    });
+
+    it('Cell displays html code', function () {
+      cellIndex += 1;
+
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+
       browser.waitUntil(function () {
-        return codeCell.$('div.output_result').getText() === testValues.mathematicalSymbols;
-      })
+        return codeCell.$('div.output_result > h1').getText() === testValues.headerText;
+      });
     });
 
     it('Cell displays html code', function () {
@@ -55,7 +68,9 @@ describe('(Groovy) Testing of MIME types', function () {
 
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
 
-      expect(codeCell.$('div.output_result > h1').getText()).toBe(testValues.headerText);
+      browser.waitUntil(function () {
+        return codeCell.$('div.output_result > h2').getText() === testValues.headerText;
+      });
     });
 
     it('Cell displays html code', function () {
@@ -63,15 +78,9 @@ describe('(Groovy) Testing of MIME types', function () {
 
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
 
-      expect(codeCell.$('div.output_result > h2').getText()).toBe(testValues.headerText);
-    });
-
-    it('Cell displays html code', function () {
-      cellIndex += 1;
-
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$('div.output_result > h3').getText()).toBe(testValues.headerText);
+      browser.waitUntil(function () {
+        return codeCell.$('div.output_result > h3').getText() === testValues.headerText;
+      });
     });
 
     it('Cell outputs mathematical symbols', function () {
@@ -99,7 +108,9 @@ describe('(Groovy) Testing of MIME types', function () {
 
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
 
-      expect(codeCell.$('div.output_subarea > a').getText()).toBe('GroovyTest.ipynb')
+      browser.waitUntil(function () {
+        return codeCell.$('div.output_subarea > a').getText() === testValues.groovyFileName;
+      })
     });
 
     it('Cell displays markdown', function () {
@@ -133,7 +144,7 @@ describe('(Groovy) Testing of MIME types', function () {
 
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
 
-      expect(codeCell.$("div.output_subarea > iframe[src='https://www.scribd.com/embeds/71048089/content']").isEnabled()).toBeTruthy();
+      expect(codeCell.$("div.output_subarea > iframe[src='https://www.scribd.com/embeds/71048089/content?start_page=5&view_mode=slideshow']").isEnabled()).toBeTruthy();
     });
 
     it('Cell displays a Vimeo video', function () {
@@ -185,14 +196,6 @@ describe('(Groovy) Testing of MIME types', function () {
     });
 
     it('Cell displays an image element from file', function () {
-      cellIndex += 1;
-
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$('div.output_subarea > img').isEnabled()).toBeTruthy();
-    });
-
-    it('Cell displays an image element from byte stream', function () {
       cellIndex += 1;
 
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);

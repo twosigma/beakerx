@@ -15,8 +15,7 @@
  */
 package com.twosigma.beakerx.widget;
 
-import com.twosigma.beakerx.widget.ValueWidget;
-import com.twosigma.beakerx.widget.Widget;
+import com.twosigma.beakerx.message.Message;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -37,15 +36,55 @@ public abstract class Box extends ValueWidget<String> {
   List<Widget> children;
 
   public Box(List<Widget> children) {
+    super();
+    this.children = children;
+  }
+
+  public Box(List<Widget> children, Message parent) {
+    super(parent);
     this.children = children;
   }
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
-    List<String> commIds = children.stream().map(x -> IPY_MODEL + x.getComm().getCommId()).collect(Collectors.toList());
+    List<String> commIds = comIds();
     content.put(CHILDREN, commIds.toArray());
     super.content(content);
     return content;
+  }
+
+  public void add(Widget widget,Message parent) {
+    this.children.add(widget);
+    updateChildren(parent);
+  }
+
+  public void add(Widget widget) {
+    this.children.add(widget);
+    updateChildren();
+  }
+
+  public void removeDOMWidget(DOMWidget widget) {
+    widget.getLayout().setDisplayNone();
+    remove(widget);
+  }
+
+  public void remove(Widget widget) {
+    widget.close();
+    this.children.remove(widget);
+    updateChildren();
+  }
+
+  private void updateChildren() {
+    List<String> commIds = comIds();
+    sendUpdate(CHILDREN, commIds.toArray());
+  }
+  private void updateChildren(Message parent) {
+    List<String> commIds = comIds();
+    sendUpdate(CHILDREN, commIds.toArray(),parent);
+  }
+
+  private List<String> comIds() {
+    return children.stream().map(x -> IPY_MODEL + x.getComm().getCommId()).collect(Collectors.toList());
   }
 
   @Override

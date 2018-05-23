@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.kernel.handler;
 
-
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.Code;
@@ -83,10 +82,9 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
   }
 
   private void announceTheCode(Message message, String code) {
-    Message reply = new Message();
+    Message reply = new Message(new Header(EXECUTE_INPUT, message.getHeader().getSession()));
     reply.setParentHeader(message.getHeader());
     reply.setIdentities(message.getIdentities());
-    reply.setHeader(new Header(EXECUTE_INPUT, message.getHeader().getSession()));
     Map<String, Serializable> map1 = new HashMap<>(2);
     map1.put("execution_count", executionCount);
     map1.put("code", code);

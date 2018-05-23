@@ -16,7 +16,6 @@
 package com.twosigma.beakerx.clojure.evaluator;
 
 import com.twosigma.beakerx.TryResult;
-import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 
 import java.io.PrintWriter;
@@ -45,7 +44,6 @@ class ClojureCodeRunner implements Callable<TryResult> {
     TryResult either;
     try {
       theOutput.setOutputHandler();
-      InternalVariable.setValue(theOutput);
       Object o = clojureEvaluator.runCode(theCode);
       try {
         checkingOfCorruptedClojureObjects(o);

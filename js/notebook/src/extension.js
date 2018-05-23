@@ -36,6 +36,7 @@ __webpack_public_path__ = document.querySelector('body').getAttribute('data-base
 require('./shared/style/beakerx.scss');
 require('./plot/bko-combinedplot.css');
 require('./plot/bko-plot.css');
+require('./extension/dataBrowser/dataBrowser.css');
 
 define([
   'services/config',
@@ -49,7 +50,7 @@ define([
   './plot/plotApi',
   './shared/bkCoreManager',
   'big.js',
-  './extension/UIOptionsHelper'
+  './extension/UIOptionsHelper',
 ], function(
   configmod,
   comm,

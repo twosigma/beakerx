@@ -145,7 +145,8 @@ public class ClojureKernelTest extends KernelExecutionTest {
     //when
     kernelSocketsService.handleMsg(message);
     //then
-    waitForIdleMessage(kernelSocketsService.getKernelSockets());
+    Optional<Message> idle = waitForIdleMessage(kernelSocketsService.getKernelSockets());
+    Assertions.assertThat(idle).isPresent();
     verifyPlot(kernelSocketsService);
   }
 

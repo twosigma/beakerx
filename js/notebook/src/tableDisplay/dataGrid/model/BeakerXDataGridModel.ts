@@ -33,6 +33,7 @@ import {
 import DataGridAction from "../store/DataGridAction";
 import {UPDATE_MODEL_DATA} from "./reducer";
 import {
+  selectColumnDataType,
   selectColumnIndexByPosition,
   selectVisibleBodyColumns
 } from "../column/selectors";
@@ -121,6 +122,17 @@ export class BeakerXDataGridModel extends DataModel {
     return dataGridRow.values[index];
   }
 
+  metadata(region: DataModel.CellRegion, position: number): DataModel.Metadata {
+    let column = this.columnManager.getColumnByPosition({
+      value: position,
+      region: ColumnManager.getColumnRegionByCell({ region })
+    });
+
+    return {
+      dataType: ALL_TYPES[column.getDisplayType()]
+    };
+  }
+
   setState(state) {
     this.store.dispatch(new DataGridAction(UPDATE_MODEL_DATA, state));
   }
@@ -141,5 +153,51 @@ export class BeakerXDataGridModel extends DataModel {
   setHeaderTextVertical(headersVertical: boolean) {
     this.setState({ headersVertical });
     this.reset();
+  }
+
+  getColumnValueResolver(dataType: ALL_TYPES): Function {
+    switch (dataType) {
+      case ALL_TYPES.datetime:
+      case ALL_TYPES.time:
+        return this.dateValueResolver;
+
+      case ALL_TYPES.double:
+      case ALL_TYPES['double with precision']:
+        return this.doubleValueResolver;
+
+      case ALL_TYPES.integer:
+      case ALL_TYPES.int64:
+        return this.integerValueResolver;
+
+      case ALL_TYPES.html:
+        return this.htmlTextContentResolver;
+
+      default:
+        return this.defaultValueResolver;
+    }
+  }
+
+  private htmlTextContentResolver(value) {
+    const div = document.createElement('div');
+
+    div.innerHTML = value;
+
+    return div.textContent;
+  }
+
+  private dateValueResolver(value) {
+    return value.timestamp;
+  }
+
+  private defaultValueResolver(value) {
+    return value;
+  }
+
+  private doubleValueResolver(value) {
+    return parseFloat(value);
+  }
+
+  private integerValueResolver(value) {
+    return parseInt(value);
   }
 }

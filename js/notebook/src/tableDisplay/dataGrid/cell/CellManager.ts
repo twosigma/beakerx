@@ -67,6 +67,10 @@ export default class CellManager {
     );
   }
 
+  setHoveredCellData(data: ICellData|null) {
+    this.hoveredCellData = data;
+  }
+
   getSelectedCells() {
     const rowsRange = this.dataGrid.cellSelectionManager.getRowsRangeCells();
     const columnsRange = this.dataGrid.cellSelectionManager.getColumnsRangeCells();
@@ -79,11 +83,9 @@ export default class CellManager {
   }
 
   getAllCells() {
-    const startRow = this.dataGrid.rowManager.rows[0];
-    const endRow = this.dataGrid.rowManager.rows[this.dataGrid.rowManager.rows.length - 1];
     const rowsRange = {
       startCell: {
-        row: startRow.index,
+        row: 0,
         column: 0,
         type: COLUMN_TYPES.index,
         delta: 0,
@@ -91,7 +93,7 @@ export default class CellManager {
         offsetTop: 0
       },
       endCell: {
-        row: endRow.index,
+        row: this.dataGrid.rowManager.rows.length - 1,
         column: this.dataGrid.columnManager.columns[COLUMN_TYPES.body].length - 1 || 0,
         type: COLUMN_TYPES.body,
         delta: 0,
@@ -161,10 +163,12 @@ export default class CellManager {
       return;
     }
 
-    const cells = this.getSelectedCells();
-    const cellsData = this.exportCellsTo(cells, 'tabs');
+    let cells = this.getSelectedCells();
+    if (cells.length === 0) {
+      cells = this.getAllCells();
+    }
 
-    this.executeCopy(cellsData);
+    this.executeCopy(this.exportCellsTo(cells, 'tabs'));
   }
 
   CSVDownload(selectedOnly) {
@@ -197,23 +201,23 @@ export default class CellManager {
     }
   }
 
-  private handleCellHovered(sender: BeakerXDataGrid, cellData: ICellData) {
+  private handleCellHovered(sender: BeakerXDataGrid, { data }) {
     let cursor = this.dataGrid.viewport.node.style.cursor;
 
     if (cursor.indexOf('resize') !== -1 || this.dataGrid.columnPosition.isDragging()) {
       return;
     }
 
-    let value = cellData && cellData.value;
+    let value = data && data.value;
     this.updateViewportCursor(value);
 
-    if (CellManager.cellsEqual(cellData, this.hoveredCellData)) {
+    if (CellManager.cellsEqual(data, this.hoveredCellData)) {
       return;
     }
 
     this.repaintRow(this.hoveredCellData);
-    cellData && this.repaintRow(cellData);
-    this.hoveredCellData = cellData;
+    data && this.repaintRow(data);
+    this.setHoveredCellData(data);
   }
 
   private updateViewportCursor(value) {
@@ -259,34 +263,29 @@ export default class CellManager {
     };
 
     function exportCells(cells, exportOptions) {
-      let out = '';
+      let out = [];
 
       for (let i = 0; i < cells.length; i++) {
         let row = cells[i];
 
         for (let j = 0; j < row.length; j++) {
-          if (j !== 0) {
-            out = out + exportOptions.sep;
-          }
-
           let cellData = row[j];
-          if (cellData === null) {
-            cellData = '';
-          }
 
-          cellData = cellData + '';
-          out = [
-            out,
-            exportOptions.qot,
-            (cellData !== undefined && cellData !== null ? fix(cellData) : ''),
+          out.push(`${
+            j !== 0 ? exportOptions.sep : ''
+          }${
             exportOptions.qot
-          ].join('');
+          }${
+            (cellData !== undefined && cellData !== null ? fix(cellData + '') : '')
+          }${
+            exportOptions.qot
+          }`);
         }
 
-        out = out + exportOptions.eol;
+        out.push(exportOptions.eol);
       }
 
-      return out;
+      return out.join('');
     }
 
     if (format === 'tabs') {

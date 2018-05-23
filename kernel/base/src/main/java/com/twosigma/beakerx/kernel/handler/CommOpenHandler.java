@@ -58,20 +58,20 @@ public abstract class CommOpenHandler extends KernelHandler<Message> {
 
   private void handleMsg(Message message) {
     logger.debug("Processing CommOpenHandler");
-    Message reply = new Message();
+    Message reply = null;
     HashMap<String, Serializable> map = new HashMap<>(6);
 
     Map<String, Serializable> commMap = message.getContent();
     Comm newComm = null;
     if (isValidMessage(commMap)) {
       newComm = readComm(commMap);
-      reply.setHeader(new Header(COMM_OPEN, message.getHeader().getSession()));
+      reply = new Message(new Header(COMM_OPEN, message.getHeader().getSession()));
       map.put(COMM_ID, newComm.getCommId());
       map.put(TARGET_NAME, newComm.getTargetName());
       map.put(DATA, new HashMap<>());
       map.put(TARGET_MODULE, newComm.getTargetModule());
     } else {
-      reply.setHeader(new Header(COMM_CLOSE, message.getHeader().getSession()));
+      reply = new Message(new Header(COMM_CLOSE, message.getHeader().getSession()));
       map.put(DATA, new HashMap<>());
     }
 

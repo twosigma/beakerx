@@ -15,10 +15,12 @@
  */
 
 import { expect } from 'chai';
-import * as sinon from 'sinon';
 import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import modelStateMock from "../mock/modelStateMock";
-import ColumnFilter from "@beakerx/tableDisplay/dataGrid/column/ColumnFilter";
+import ColumnFilter, {
+  FILTER_INPUT_TOOLTIP,
+  SEARCH_INPUT_TOOLTIP
+} from "@beakerx/tableDisplay/dataGrid/column/ColumnFilter";
 import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 
 declare var require: Function;
@@ -50,6 +52,7 @@ describe('ColumnFilter', () => {
     expect(columnFilter.filterWidget.isHidden).to.be.false;
     expect(columnFilter.filterIcon.classList.contains('fa-filter')).to.be.true;
     expect(columnFilter.useSearch).to.be.false;
+    expect(columnFilter.filterInput.title).to.equal(FILTER_INPUT_TOOLTIP);
   });
 
   it('should show the search input', () => {
@@ -57,6 +60,7 @@ describe('ColumnFilter', () => {
     expect(columnFilter.filterWidget.isHidden).to.be.false;
     expect(columnFilter.filterIcon.classList.contains('fa-search')).to.be.true;
     expect(columnFilter.useSearch).to.be.true;
+    expect(columnFilter.filterInput.title).to.equal(SEARCH_INPUT_TOOLTIP);
   });
 
   it('should hide the input', () => {

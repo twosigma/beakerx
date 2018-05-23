@@ -18,14 +18,12 @@ import ColumnMenu from "../headerMenu/ColumnMenu";
 import IndexMenu from "../headerMenu/IndexMenu";
 import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import {IColumnOptions} from "../interface/IColumn";
-import { ICellData } from "../interface/ICell";
 import { CellRenderer, DataModel, TextRenderer } from "@phosphor/datagrid";
 import {ALL_TYPES, getDisplayType, isDoubleWithPrecision} from "../dataTypes";
-import { minmax } from '@phosphor/algorithm';
+import { minmax, filter, each } from '@phosphor/algorithm';
 import { HIGHLIGHTER_TYPE } from "../interface/IHighlighterState";
 import ColumnManager, { COLUMN_CHANGED_TYPES, IBkoColumnsChangedArgs } from "./ColumnManager";
 import ColumnFilter from "./ColumnFilter";
-import CellTooltip from "../cell/CellTooltip";
 import {
   selectColumnDataType,
   selectColumnDataTypeName,
@@ -59,6 +57,10 @@ import {
 } from "../model/reducer";
 import {RENDERER_TYPE} from "../interface/IRenderer";
 import DataGridCell from "../cell/DataGridCell";
+import {ColumnValuesIterator} from "./ColumnValuesIterator";
+import {DataGridHelpers} from "../dataGridHelpers";
+import getStringSize = DataGridHelpers.getStringSize;
+import {selectDataFontSize} from "../model/selectors/model";
 
 export default class DataGridColumn {
   index: number;
@@ -72,7 +74,6 @@ export default class DataGridColumn {
   formatFn: CellRenderer.ConfigFunc<string>;
   minValue: any;
   maxValue: any;
-  dataTypeTooltip: CellTooltip;
   longestStringValue: string;
 
   constructor(options: IColumnOptions, dataGrid: BeakerXDataGrid, columnManager: ColumnManager) {
@@ -84,9 +85,7 @@ export default class DataGridColumn {
     this.columnManager = columnManager;
 
     this.assignFormatFn();
-    this.createMenu();
     this.addColumnFilter();
-    this.addDataTypeTooltip();
     this.connectToCellHovered();
     this.connectToColumnsChanged();
     this.addMinMaxValues();
@@ -139,7 +138,8 @@ export default class DataGridColumn {
     const position = this.getPosition();
 
     this.assignFormatFn();
-    this.dataGrid.dataGridResize.setInitialSectionWidth({ index: position.value }, position.region, this.type);
+    this.recalculateLongestStringValue(displayType);
+    this.dataGrid.dataGridResize.setInitialSectionWidth({ index: position.value }, position.region);
   }
 
   setTimeDisplayType(timeUnit) {
@@ -187,18 +187,16 @@ export default class DataGridColumn {
     this.dataGrid.cellHovered.connect(this.handleHeaderCellHovered, this);
   }
 
-  handleHeaderCellHovered(sender: BeakerXDataGrid, data: ICellData) {
+  handleHeaderCellHovered(sender: BeakerXDataGrid, { data }) {
     const column = data && this.columnManager.getColumnByPosition(ColumnManager.createPositionFromCell(data));
 
     if (!data || column !== this || !DataGridCell.isHeaderCell(data)) {
-      this.toggleDataTooltip(false);
       this.menu.hideTrigger();
 
       return;
     }
 
     this.menu.showTrigger();
-    this.toggleDataTooltip(true, data);
   }
 
   getAlignment() {
@@ -299,24 +297,7 @@ export default class DataGridColumn {
   }
 
   getValueResolver(): Function {
-    const dataType = this.getDataType();
-
-    switch (dataType) {
-      case ALL_TYPES.datetime:
-      case ALL_TYPES.time:
-        return this.dateValueResolver;
-
-      case ALL_TYPES.double:
-      case ALL_TYPES['double with precision']:
-        return this.doubleValueResolver;
-
-      case ALL_TYPES.integer:
-      case ALL_TYPES.int64:
-        return this.integerValueResolver;
-
-      default:
-        return this.defaultValueResolver;
-    }
+    return this.dataGrid.model.getColumnValueResolver(this.getDataType());
   }
 
   move(destination: number) {
@@ -332,32 +313,32 @@ export default class DataGridColumn {
   }
 
   addMinMaxValues() {
-    let valueResolver = this.getValueResolver();
-    let valuesIterator = this.dataGrid.model.getColumnValuesIterator(this);
+    let stringMinMax;
+    let minMax;
     let dataType = this.getDataType();
-    let minMax = minmax(valuesIterator, (a:any, b:any) => {
-      let value1 = valueResolver(a);
-      let value2 = valueResolver(b);
+    let displayType = this.getDisplayType();
+    let valuesIterator = this.dataGrid.model.getColumnValuesIterator(this);
+    let valueResolver = this.dataGrid.model.getColumnValueResolver(
+      displayType === ALL_TYPES.html ? displayType : dataType
+    );
 
-      if (dataType === ALL_TYPES.string || dataType === ALL_TYPES['formatted integer'] || dataType === ALL_TYPES.html) {
-        let aLength = a ? a.length : 0;
-        let bLength = b ? b.length : 0;
-        let longer = aLength > bLength ? a : b;
-
-        if (!this.longestStringValue || this.longestStringValue.length < longer.length) {
-          this.longestStringValue = longer;
-        }
-      }
-
-      if (value1 === value2) {
-        return 0;
-      }
-
-      return value1 < value2 ? -1 : 1;
-    });
+    if (dataType === ALL_TYPES.html || displayType === ALL_TYPES.html) {
+      this.resizeHTMLRows(valuesIterator);
+    } else if (dataType === ALL_TYPES.string || dataType === ALL_TYPES['formatted integer']) {
+      stringMinMax = minmax(valuesIterator, ColumnValuesIterator.longestString(valueResolver));
+    } else {
+      minMax = minmax(
+        filter(valuesIterator, (value) => !Number.isNaN(valueResolver(value))),
+        ColumnValuesIterator.minMax(valueResolver)
+      );
+    }
 
     this.minValue = minMax ? minMax[0] : null;
     this.maxValue = minMax ? minMax[1] : null;
+
+    if (stringMinMax) {
+      this.longestStringValue = stringMinMax[1];
+    }
   }
 
   resetState() {
@@ -376,13 +357,12 @@ export default class DataGridColumn {
     this.assignFormatFn();
 
     const position = this.getPosition();
-    this.dataGrid.dataGridResize.setInitialSectionWidth(this, position.region, this.type);
+    this.dataGrid.dataGridResize.setInitialSectionWidth(this, position.region);
     this.dataGrid.dataGridResize.updateWidgetWidth();
   }
 
   destroy() {
     this.menu.destroy();
-    this.dataTypeTooltip.hide();
   }
 
   toggleDataBarsRenderer(enable?: boolean) {
@@ -410,6 +390,34 @@ export default class DataGridColumn {
     this.dataGrid.columnPosition.updateAll();
   }
 
+  recalculateLongestStringValue(displayType: ALL_TYPES|string) {
+    if (displayType !== ALL_TYPES.string && displayType !== ALL_TYPES.html ) {
+      return;
+    }
+
+    this.longestStringValue = null;
+    this.addMinMaxValues();
+  }
+
+  private resizeHTMLRows(valuesIterator) {
+    let fontSize = selectDataFontSize(this.store.state);
+    let longest;
+
+    each(valuesIterator, (value, index) => {
+      let size = getStringSize(value, fontSize);
+
+      if (!longest || longest.width < size.width) {
+        longest = { width: size.width, value };
+      }
+
+      if (size.height > this.dataGrid.rowSections.sectionSize(index)) {
+        this.dataGrid.resizeSection('row', index, size.height);
+      }
+    });
+
+    this.longestStringValue = longest && longest.value;
+  }
+
   private updateColumnFilter(filter: string) {
     this.store.dispatch(new DataGridColumnAction(
       UPDATE_COLUMN_FILTER,
@@ -426,22 +434,6 @@ export default class DataGridColumn {
       hasIndex: selectHasIndex(this.store.state)
     }));
     this.dataGrid.columnPosition.updateAll();
-  }
-
-  private dateValueResolver(value) {
-    return value.timestamp;
-  }
-
-  private defaultValueResolver(value) {
-    return value;
-  }
-
-  private doubleValueResolver(value) {
-    return parseFloat(value);
-  }
-
-  private integerValueResolver(value) {
-    return parseInt(value);
   }
 
   private onColumnsChanged(sender: ColumnManager, args: IBkoColumnsChangedArgs) {
@@ -465,26 +457,5 @@ export default class DataGridColumn {
       UPDATE_COLUMN_SORT_ORDER,
       { value: order, columnIndex: this.index, columnType: this.type })
     );
-  }
-
-  private addDataTypeTooltip() {
-    this.dataTypeTooltip = new CellTooltip(this.getDataTypeName(), document.body);
-  }
-
-  private toggleDataTooltip(show: boolean, data?: ICellData) {
-    const rect = this.dataGrid.node.getBoundingClientRect();
-
-    if (data && !this.dataTypeTooltip.node.innerText) {
-      this.dataTypeTooltip.node.innerText = typeof data.value;
-    }
-
-    if (show && data) {
-      return this.dataTypeTooltip.show(
-        Math.ceil(rect.left + data.offset + 20),
-        Math.ceil(window.pageYOffset + rect.top - 10)
-      );
-    }
-
-    this.dataTypeTooltip.hide();
   }
 }

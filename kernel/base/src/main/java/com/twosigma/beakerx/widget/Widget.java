@@ -155,6 +155,10 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
     this.comm.sendUpdate(propertyName, value);
   }
 
+  public void sendUpdate(String propertyName, Object value, Message parent) {
+    this.comm.sendUpdate(propertyName, value, parent);
+  }
+
   public void sendUpdate(Comm.Buffer buffer) {
     this.comm.sendUpdate(buffer);
   }

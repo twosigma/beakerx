@@ -18,13 +18,14 @@ import {createSelector} from "reselect";
 import {DataModel} from "@phosphor/datagrid";
 import {
   selectAlignmentByType,
-  selectAlignmentForColumn, selectAlignmentForType,
+  selectAlignmentForColumn, selectAlignmentForType, selectCellHighlighters,
   selectColumnOrder,
-  selectColumnsFrozen, selectColumnsVisible, selectHasIndex,
+  selectColumnsFrozen, selectColumnsVisible, selectColumnTypes, selectHasIndex,
   selectRawColumnNames, selectRendererForColumn, selectRendererForType
 } from "./model";
 import {getAlignmentByChar} from "../../column/columnAlignment";
 import {IColumnPosition} from "../../interface/IColumn";
+import {ALL_TYPES} from "../../dataTypes";
 
 export const DEFAULT_INDEX_COLUMN_NAME = 'index';
 
@@ -33,6 +34,15 @@ export const selectColumnNames = createSelector(selectRawColumnNames, names => n
 export const selectBodyColumnNames = createSelector(
   [selectColumnNames, selectHasIndex],
   (columnNames, hasIndex) => hasIndex ? columnNames.slice(1) : columnNames
+);
+
+export const selectColumnIndexByName = createSelector(
+  [selectBodyColumnNames, (state, name) => name],
+  (names, name) => {
+    const index = names.indexOf(String(name));
+
+    return index !== -1 ? index : 0;
+  }
 );
 
 export const selectIndexColumnNames = createSelector(
@@ -81,6 +91,11 @@ export const selectVisibleColumnsFrozenCount = createSelector(
   (columnsFrozenNames, columnsVisible) => columnsFrozenNames
     .filter(name => columnsVisible[name] !== false)
     .length
+);
+
+export const selectColumnDataTypeByName = createSelector(
+  [selectColumnTypes, selectRawColumnNames, (state, name) => name],
+  (types, names, name) => ALL_TYPES[types[names.indexOf(name)]]
 );
 
 // Returns the map columnIndex => position
@@ -163,4 +178,15 @@ export const selectRenderer = createSelector(
 
     return typeRenderer;
   }
+);
+
+export const selectColumnHighlighters = createSelector(
+  [
+    selectCellHighlighters,
+    (state, columnName) => columnName,
+    (state, columnName, highlighterType) => highlighterType
+  ],
+  (highlighters, columnName, highlighterType) => highlighters.filter(
+    highlighter => highlighter.colName === columnName && highlighter.type === highlighterType
+  )
 );

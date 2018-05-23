@@ -17,6 +17,8 @@ import beakerx
 from notebook import notebookapp as app
 from .install import install, uninstall
 from .bkr2ipynb import main
+from beakerx_magics import Py4JServer
+
 
 def install_subparser(subparser):
     install_parser = subparser.add_parser('install', help='installs BeakerX extensions')
@@ -24,7 +26,11 @@ def install_subparser(subparser):
     install_parser.add_argument("--prefix",
                                 help="location of the environment to install into",
                                 default=sys.prefix)
+    install_parser.add_argument("--lab",
+                                help="install lab extension",
+                                action='store_true')
     return subparser
+
 
 def uninstall_subparser(subparser):
     uninstall_parser = subparser.add_parser('uninstall', help='uninstalls BeakerX extensions')
@@ -32,7 +38,11 @@ def uninstall_subparser(subparser):
     uninstall_parser.add_argument("--prefix",
                                   help="location of the environment to uninstall from",
                                   default=sys.prefix)
+    uninstall_parser.add_argument("--lab",
+                                help="uninstall lab extension",
+                                action='store_true')
     return subparser
+
 
 def bkr2ipynb_subparser(subparser):
     bkr2ipynb_parser = subparser.add_parser('bkr2ipynb', help='converts Beaker notebooks to ipynb format')
@@ -41,8 +51,22 @@ def bkr2ipynb_subparser(subparser):
                                   help="Beaker notebooks to be converted. Enter *.bkr in case you want to convert all notebooks at once.")
     return subparser
 
+
+def py4j_server_subparser(subparser):
+    py4j_server_parser = subparser.add_parser('py4j_server')
+    py4j_server_parser.set_defaults(func=start_py4j_server)
+    py4j_server_parser.add_argument("--port")
+    py4j_server_parser.add_argument("--pyport")
+    py4j_server_parser.add_argument("--kernel")
+
+
+def start_py4j_server(args):
+    Py4JServer(args.port, args.pyport, args.kernel)
+
+
 def run_jupyter(jupyter_commands):
     app.launch_new_instance(jupyter_commands)
+
 
 def init_parser():
 
@@ -54,7 +78,9 @@ def init_parser():
     install_subparser(subparsers)
     uninstall_subparser(subparsers)
     bkr2ipynb_subparser(subparsers)
+    py4j_server_subparser(subparsers)
     return parser
+
 
 def parse():
     parser = init_parser()

@@ -35,14 +35,12 @@ class GroovyWorkerThread implements Callable<TryResult> {
   }
 
   @Override
-  public TryResult call() throws Exception {
+  public TryResult call() {
     NamespaceClient nc = null;
     TryResult r;
     try {
-      if (!GroovyEvaluator.LOCAL_DEV) {
-        nc = NamespaceClient.getBeaker(groovyEvaluator.getSessionId());
-        nc.setOutputObj(j.outputObject);
-      }
+      nc = NamespaceClient.getBeaker(groovyEvaluator.getSessionId());
+      nc.setOutputObj(j.outputObject);
       j.outputObject.started();
       String code = j.codeToBeExecuted;
       r = groovyEvaluator.executeTask(new GroovyCodeRunner(groovyEvaluator, code, j.outputObject));

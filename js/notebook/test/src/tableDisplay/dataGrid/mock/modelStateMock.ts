@@ -15,21 +15,24 @@
  */
 
 import IDataGridModelState from "@beakerx/tableDisplay/dataGrid/interface/IDataGridModelState";
+import highlighterStateMock from "./highlighterStateMock";
 
 let modelStateMock: IDataGridModelState = {
-  cellHighlighters: [],
+  cellHighlighters: [{
+    ...highlighterStateMock
+  }],
   columnNames: ['test', 'column'],
   hasIndex: false,
   stringFormatForColumn: { column: { type: 'value', values: { column: [':)', ':('] } } },
   types: ['integer', 'integer'],
-  values: [[1, 2],[0, 0]],
+  values: [[1, 2],[0, NaN]],
   columnsVisible: {},
   tooltips: [],
   hasDoubleClickAction: false,
   columnOrder: [],
-  headerFontSize: null,
+  headerFontSize: 32,
   fontColor: null,
-  dataFontSize: null,
+  dataFontSize: 20,
   alignmentForColumn: { 'test': 'C' },
   alignmentForType: { 'integer': 'L' },
   columnsFrozen: {},

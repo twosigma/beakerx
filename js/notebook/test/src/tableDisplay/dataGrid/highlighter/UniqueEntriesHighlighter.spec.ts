@@ -25,7 +25,7 @@ import cellConfigMock from "../mock/cellConfigMock";
 import { HIGHLIGHTER_TYPE } from "@beakerx/tableDisplay/dataGrid/interface/IHighlighterState";
 import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 
-describe.only('UniqueEntriesHighlighter', () => {
+describe('UniqueEntriesHighlighter', () => {
   const dataStore = createStore({ ...modelStateMock, types: ['double', 'double']});
   const dataGrid = new BeakerXDataGrid({}, dataStore);
   const column = new DataGridColumn(

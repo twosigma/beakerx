@@ -85,6 +85,24 @@ $sortDescendingIconWhite: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4
   }
 }
 
+.cursor-ns-resize {
+  &, * {
+    cursor: ns-resize!important;
+  }
+}
+
+.cursor-ew-resize {
+  &, * {
+    cursor: ew-resize!important;
+  }
+}
+
+.cursor-nwse-resize {
+  &, * {
+    cursor: nwse-resize!important;
+  }
+}
+
 .p-DataGrid-tooltip {
   background-color: #ffffff;
   box-shadow: 0 0 3px #333333;

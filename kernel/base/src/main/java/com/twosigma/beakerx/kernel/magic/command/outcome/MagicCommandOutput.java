@@ -17,8 +17,12 @@ package com.twosigma.beakerx.kernel.magic.command.outcome;
 
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.msg.MessageCreator;
+import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
@@ -70,8 +74,23 @@ public class MagicCommandOutput implements MagicCommandOutcomeItem {
   }
 
   @Override
-  public Outcome getOutcome() {
-    return Outcome.OUTPUT;
+  public void sendRepliesWithStatus(KernelFunctionality kernel, Message message, int executionCount) {
+    if (getStatus().equals(MagicCommandOutcomeItem.Status.OK)) {
+      if (getMIMEContainer().isPresent()) {
+        kernel.publish(Collections.singletonList(MessageCreator.buildOutputMessage(message, (String) getMIMEContainer().get().getData(), false)));
+      }
+      kernel.send(MessageCreator.buildReplyWithOkStatus(message, executionCount));
+    } else {
+      kernel.publish(Collections.singletonList(MessageCreator.buildOutputMessage(message, (String) getMIMEContainer().get().getData(), true)));
+      kernel.send(MessageCreator.buildReplyWithErrorStatus(message, executionCount));
+    }
   }
 
+  @Override
+  public void sendMagicCommandOutcome(KernelFunctionality kernel, Message message, int executionCount) {
+    if (getMIMEContainer().isPresent()) {
+      boolean hasError = getStatus().equals(MagicCommandOutcomeItem.Status.ERROR);
+      kernel.publish(Collections.singletonList(MessageCreator.buildOutputMessage(message, (String) getMIMEContainer().get().getData(), hasError)));
+    }
+  }
 }

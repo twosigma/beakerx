@@ -15,43 +15,44 @@
  */
 package com.twosigma.beakerx.kernel;
 
-import static com.twosigma.beakerx.kernel.KernelSignalHandler.addSigIntHandler;
-import static java.util.Collections.singletonList;
-
 import com.twosigma.beakerx.BeakerxDefaultDisplayers;
 import com.twosigma.beakerx.DisplayerDataMapper;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorManager;
+import com.twosigma.beakerx.evaluator.Hook;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
-import com.twosigma.beakerx.kernel.magic.command.MagicCommandTypesFactory;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandTypesFactory;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
 import com.twosigma.beakerx.message.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static com.twosigma.beakerx.kernel.KernelSignalHandler.addSigIntHandler;
+import static java.util.Collections.singletonList;
 
 public abstract class Kernel implements KernelFunctionality {
 
   private static final Logger logger = LoggerFactory.getLogger(Kernel.class);
 
-  public static String OS = System.getProperty("os.name").toLowerCase();
+  private static String OS = System.getProperty("os.name").toLowerCase();
   public static boolean showNullExecutionResult = true;
   private final CloseKernelAction closeKernelAction;
 
@@ -64,22 +65,32 @@ public abstract class Kernel implements KernelFunctionality {
   private KernelSockets kernelSockets;
   private List<MagicCommandType> magicCommandTypes;
   private CacheFolderFactory cacheFolderFactory;
+  private CustomMagicCommandsFactory customMagicCommands;
+  private Map<String, MagicKernelManager> magicKernels;
+  private Map<String, String> commKernelMapping;
 
   public Kernel(final String sessionId, final Evaluator evaluator,
-                final KernelSocketsFactory kernelSocketsFactory) {
-    this(sessionId, evaluator, kernelSocketsFactory, () -> System.exit(0), new EnvCacheFolderFactory());
+                final KernelSocketsFactory kernelSocketsFactory, CustomMagicCommandsFactory customMagicCommands) {
+    this(
+            sessionId,
+            evaluator,
+            kernelSocketsFactory, () -> System.exit(0),
+            new EnvCacheFolderFactory(), customMagicCommands);
   }
 
   protected Kernel(final String sessionId, final Evaluator evaluator, final KernelSocketsFactory kernelSocketsFactory,
-                   CloseKernelAction closeKernelAction, CacheFolderFactory cacheFolderFactory) {
+                   CloseKernelAction closeKernelAction, CacheFolderFactory cacheFolderFactory, CustomMagicCommandsFactory customMagicCommands) {
     this.sessionId = sessionId;
     this.cacheFolderFactory = cacheFolderFactory;
     this.kernelSocketsFactory = kernelSocketsFactory;
     this.closeKernelAction = closeKernelAction;
+    this.customMagicCommands = customMagicCommands;
     this.commMap = new ConcurrentHashMap<>();
     this.executionResultSender = new ExecutionResultSender(this);
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
     this.handlers = new KernelHandlers(this, getCommOpenHandler(this), getKernelInfoHandler(this));
+    this.magicKernels = new HashMap<>();
+    this.commKernelMapping = new HashMap<>();
     createMagicCommands();
     DisplayerDataMapper.init();
     configureSignalHandler();
@@ -107,10 +118,17 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   private void doExit() {
+    doExitOnKernelManager();
     this.evaluatorManager.exit();
     this.handlers.exit();
     this.executionResultSender.exit();
     this.closeKernelAction.close();
+  }
+
+  private void doExitOnKernelManager() {
+    for (MagicKernelManager manager : magicKernels.values()) {
+      manager.exit();
+    }
   }
 
   private void closeComms() {
@@ -118,7 +136,7 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   public static boolean isWindows() {
-    return (OS.indexOf("win") >= 0);
+    return OS.contains("win");
   }
 
   public synchronized void setShellOptions(final EvaluatorParameters kernelParameters) {
@@ -252,6 +270,7 @@ public abstract class Kernel implements KernelFunctionality {
 
   private void createMagicCommands() {
     this.magicCommandTypes = MagicCommandTypesFactory.createDefaults(this);
+    customMagicCommands.customMagicCommands(this).forEach(this::registerMagicCommandType);
     configureMagicCommands();
   }
 
@@ -269,5 +288,36 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   protected void configureJvmRepr() {
+  }
+
+  @Override
+  public String getOutDir() {
+    return evaluatorManager.getOutDir();
+  }
+
+  @Override
+  public void registerCancelHook(Hook hook) {
+    evaluatorManager.registerCancelHook(hook);
+  }
+
+  @Override
+  public PythonEntryPoint getPythonEntryPoint(String kernelName) throws NoSuchKernelException {
+      MagicKernelManager manager = magicKernels.get(kernelName);
+      if (manager == null) {
+        manager = new MagicKernelManager(kernelName);
+        magicKernels.put(kernelName, manager);
+      }
+      return manager.getPythonEntryPoint();
+  }
+
+  @Override
+  public MagicKernelManager getManagerByCommId(String commId) {
+    String kernelName = commKernelMapping.get(commId);
+    return magicKernels.get(kernelName);
+  }
+
+  @Override
+  public void addCommIdManagerMapping(String commId, String kernel){
+    commKernelMapping.put(commId, kernel);
   }
 }

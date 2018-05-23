@@ -23,17 +23,18 @@ import {selectDoubleClickTag, selectHasDoubleClickAction} from "../model/selecto
 import {COLUMN_TYPES} from "../column/enums";
 import CellManager from "../cell/CellManager";
 import throttle = DataGridHelpers.throttle;
-import isUrl = DataGridHelpers.isUrl;
 import getEventKeyCode = DataGridHelpers.getEventKeyCode;
 import {KEYBOARD_KEYS} from "./enums";
 import ColumnManager from "../column/ColumnManager";
 import {ICellData} from "../interface/ICell";
+import retrieveUrl = DataGridHelpers.retrieveUrl;
 
 const COLUMN_RESIZE_AREA_WIDTH = 4;
 
 export default class EventManager {
   dataGrid: BeakerXDataGrid;
   store: BeakerXDataStore;
+  cellHoverControll = { timerId: undefined };
 
   constructor(dataGrid: BeakerXDataGrid) {
     this.store = dataGrid.store;
@@ -47,25 +48,24 @@ export default class EventManager {
     this.handleBodyClick = this.handleBodyClick.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
-    this.handleCellHover = throttle<MouseEvent, void>(this.handleCellHover, 100, this);
+    this.handleScrollBarMouseUp = this.handleScrollBarMouseUp.bind(this);
+    this.handleCellHover = throttle<MouseEvent, void>(this.handleCellHover, 100, this, this.cellHoverControll);
+    this.handleMouseMoveOutsideArea = throttle<MouseEvent, void>(this.handleMouseMoveOutsideArea, 100, this);
     this.handleWindowResize = throttle<Event, void>(this.handleWindowResize, 200, this);
 
-    this.dataGrid.node.onselectstart = () => false;
-    this.dataGrid.node.removeEventListener('mouseout', this.handleMouseOut);
+    this.dataGrid.node.addEventListener('selectstart', this.handleSelectStart);
     this.dataGrid.node.addEventListener('mouseout', this.handleMouseOut);
-    this.dataGrid.node.removeEventListener('dblclick', this.handleDoubleClick, true);
     this.dataGrid.node.addEventListener('dblclick', this.handleDoubleClick, true);
-    this.dataGrid.node.removeEventListener('mouseup', this.handleMouseUp);
     this.dataGrid.node.addEventListener('mouseup', this.handleMouseUp);
-    this.dataGrid.node.removeEventListener('mousemove', this.handleMouseMove);
     this.dataGrid.node.addEventListener('mousemove', this.handleMouseMove);
 
     this.dataGrid['_vScrollBar'].node.addEventListener('mousedown', this.handleMouseDown);
     this.dataGrid['_hScrollBar'].node.addEventListener('mousedown', this.handleMouseDown);
     this.dataGrid['_scrollCorner'].node.addEventListener('mousedown', this.handleMouseDown);
 
-    document.removeEventListener('keydown', this.handleKeyDown);
+    document.addEventListener('mousemove', this.handleMouseMoveOutsideArea);
     document.addEventListener('keydown', this.handleKeyDown, true);
+
     window.addEventListener('resize', this.handleWindowResize);
   }
 
@@ -91,8 +91,40 @@ export default class EventManager {
   }
 
   destroy() {
+    document.removeEventListener('mouseup', this.handleScrollBarMouseUp, true);
     document.removeEventListener('keydown', this.handleKeyDown);
+    document.removeEventListener('mousemove', this.handleMouseMoveOutsideArea);
     window.removeEventListener('resize', this.handleWindowResize);
+  }
+
+  handleMouseMoveOutsideArea(event: MouseEvent) {
+    if (this.isOutsideViewport(event)) {
+      clearTimeout(this.cellHoverControll.timerId);
+      this.dataGrid.cellTooltipManager.hideTooltips();
+    }
+
+    if (this.isOutsideGrid(event)) {
+      this.dataGrid.cellHovered.emit({ data: null });
+      this.dataGrid.dataGridResize.setCursorStyle('auto');
+    }
+  }
+
+  private handleSelectStart(event) {
+    const target = event.target as HTMLElement;
+
+    if (target && target.classList.contains('filter-input')) {
+      return true;
+    }
+
+    return false
+  }
+
+  private handleScrollBarMouseUp(event: MouseEvent) {
+    document.removeEventListener('mouseup', this.handleScrollBarMouseUp, true);
+
+    if (!this.isNodeInsideGrid(event)) {
+      this.dataGrid.setFocus(false);
+    }
   }
 
   private handleWindowResize(event) {
@@ -100,6 +132,10 @@ export default class EventManager {
   }
 
   private handleMouseUp(event: MouseEvent) {
+    if (this.dataGrid.dataGridResize.isResizing()) {
+      return this.dataGrid.dataGridResize.stopResizing();
+    }
+
     this.dataGrid.cellSelectionManager.handleMouseUp(event);
     this.handleHeaderClick(event);
     this.handleBodyClick(event);
@@ -122,22 +158,54 @@ export default class EventManager {
       return;
     }
 
-    isUrl(hoveredCellData.value) && window.open(hoveredCellData.value);
+    let url = retrieveUrl(hoveredCellData.value);
+    url && window.open(url);
   }
 
   private handleMouseMove(event: MouseEvent): void {
+    if (this.dataGrid.dataGridResize.isResizing()) {
+      return;
+    }
+
     if (event.buttons !== 1) {
       this.dataGrid.columnPosition.stopDragging();
+    }
+
+    if (!this.dataGrid.dataGridResize.isResizing()) {
+      this.dataGrid.dataGridResize.setResizeMode(event);
+    }
+
+    if (this.dataGrid.dataGridResize.isResizing() || this.isOutsideViewport(event)) {
+      return;
     }
 
     this.dataGrid.columnPosition.moveDraggedHeader(event);
     this.handleCellHover(event);
   }
 
+  private isOutsideViewport(event: MouseEvent) {
+    return this.isOutsideNode(event, this.dataGrid.viewport.node);
+  }
+
+  private isOutsideGrid(event) {
+    return this.isOutsideNode(event, this.dataGrid.node);
+  }
+
+  private isOutsideNode(event: MouseEvent, node: HTMLElement) {
+    const rect = node.getBoundingClientRect();
+
+    return (
+      event.clientY - rect.top <= 1
+      || rect.bottom - event.clientY <= 1
+      || event.clientX - rect.left <= 1
+      || rect.right - event.clientX <= 1
+    )
+  }
+
   private handleCellHover(event) {
     const data = this.dataGrid.getCellData(event.clientX, event.clientY);
 
-    this.dataGrid.cellHovered.emit(data);
+    this.dataGrid.cellHovered.emit({ data, event });
     this.dataGrid.cellSelectionManager.handleBodyCellHover(event);
   }
 
@@ -146,18 +214,29 @@ export default class EventManager {
       return;
     }
 
-    !this.dataGrid.focused && this.dataGrid.setFocus(true);
-    this.dataGrid.cellSelectionManager.handleMouseDown(event);
+    document.addEventListener('mouseup', this.handleScrollBarMouseUp, true);
 
-    if (!this.isHeaderClicked(event)) {
+    !this.dataGrid.focused && this.dataGrid.setFocus(true);
+
+    if (!this.isHeaderClicked(event) && this.dataGrid.dataGridResize.shouldResizeDataGrid(event)) {
+      return this.dataGrid.dataGridResize.startResizing(event);
+    }
+
+    if (this.isOutsideViewport(event)) {
       return;
     }
 
+    this.dataGrid.cellSelectionManager.handleMouseDown(event);
+    this.handleStartDragging(event);
+  }
+
+  private handleStartDragging(event: MouseEvent) {
     const data = this.dataGrid.getCellData(event.clientX, event.clientY);
 
     if (
-      data.region === 'corner-header'
-      && data.column === 0
+      !data
+      || !this.isHeaderClicked(event)
+      || data.region === 'corner-header' && data.column === 0
       || data.width - data.delta < COLUMN_RESIZE_AREA_WIDTH
     ) {
       return;
@@ -167,19 +246,23 @@ export default class EventManager {
   }
 
   private handleMouseOut(event: MouseEvent): void {
-    const relatedTarget = event.relatedTarget as HTMLElement;
-
-    if (relatedTarget && (
-      this.dataGrid.node.contains(relatedTarget)
-      || relatedTarget === this.dataGrid.node
-      || relatedTarget.classList.contains('bko-menu')
-      || relatedTarget.closest('.bko-table-menu')
-    )) {
+    if (this.isNodeInsideGrid(event) || event.buttons !== 0) {
       return;
     }
 
     this.dataGrid.columnPosition.stopDragging();
     this.dataGrid.setFocus(false);
+  }
+
+  private isNodeInsideGrid(event: MouseEvent) {
+    const relatedTarget = (event.relatedTarget || event.target) as HTMLElement;
+
+    return relatedTarget && (
+      this.dataGrid.node.contains(relatedTarget)
+      || relatedTarget === this.dataGrid.node
+      || relatedTarget.classList.contains('bko-menu')
+      || relatedTarget.closest('.bko-table-menu')
+    );
   }
 
   private handleMouseWheel(event: MouseEvent, parentHandler: Function): void {
@@ -275,7 +358,11 @@ export default class EventManager {
       return;
     }
 
-    this.dataGrid.cellFocusManager.setFocusedCellByNavigationKey(code);
+    if (this.dataGrid.cellFocusManager.focusedCellData) {
+      this.dataGrid.cellFocusManager.setFocusedCellByNavigationKey(code);
+    } else if (code === KEYBOARD_KEYS.PageDown || code === KEYBOARD_KEYS.PageUp) {
+      this.dataGrid.scrollByPage(code === KEYBOARD_KEYS.PageUp ? 'up' : 'down');
+    }
 
     if (event.shiftKey) {
       this.dataGrid.cellSelectionManager.setEndCell(

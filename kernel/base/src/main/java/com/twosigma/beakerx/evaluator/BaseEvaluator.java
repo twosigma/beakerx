@@ -46,7 +46,6 @@ import java.util.concurrent.Future;
 public abstract class BaseEvaluator implements Evaluator {
 
   public static String INTERUPTED_MSG = "interrupted";
-
   protected final String shellId;
   protected final String sessionId;
   protected String outDir;
@@ -55,6 +54,8 @@ public abstract class BaseEvaluator implements Evaluator {
   protected Imports imports;
   private final CellExecutor executor;
   private Path tempFolder;
+  protected EvaluatorParameters evaluatorParameters;
+  private EvaluatorHooks cancelHooks = new EvaluatorHooks();
 
   protected ExecutorService executorService;
 
@@ -68,10 +69,12 @@ public abstract class BaseEvaluator implements Evaluator {
     classPath.add(new PathToJar(outDir));
     inspect = new Inspect();
     executorService = Executors.newSingleThreadExecutor();
+    this.evaluatorParameters = evaluatorParameters;
     init(evaluatorParameters);
   }
 
   protected TryResult evaluate(SimpleEvaluationObject seo, Callable<TryResult> callable) {
+    InternalVariable.setValue(seo);
     Future<TryResult> submit = executorService.submit(callable);
     TryResult either = null;
     try {
@@ -198,6 +201,7 @@ public abstract class BaseEvaluator implements Evaluator {
   @Override
   public void cancelExecution() {
     executor.cancelExecution();
+    cancelHooks.runHooks();
   }
 
   @Override
@@ -211,6 +215,7 @@ public abstract class BaseEvaluator implements Evaluator {
     return sessionId;
   }
 
+  @Override
   public String getOutDir() {
     return outDir;
   }
@@ -258,5 +263,10 @@ public abstract class BaseEvaluator implements Evaluator {
 
   public Inspect getInspect() {
     return inspect;
+  }
+
+  @Override
+  public void registerCancelHook(Hook hook) {
+    this.cancelHooks.registerHook(hook);
   }
 }

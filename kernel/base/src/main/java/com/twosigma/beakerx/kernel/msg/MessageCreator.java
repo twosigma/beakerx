@@ -68,10 +68,9 @@ public class MessageCreator {
   }
 
   private static Message initMessage(JupyterMessages type, Message message) {
-    Message reply = new Message();
+    Message reply = new Message(new Header(type, message.getHeader().getSession()));
     reply.setParentHeader(message.getHeader());
     reply.setIdentities(message.getIdentities());
-    reply.setHeader(new Header(type, message.getHeader().getSession()));
     return reply;
   }
 
@@ -143,14 +142,12 @@ public class MessageCreator {
   public static Message buildReplyWithOkStatus(Message message, int executionCount) {
     Message messageWithStatus = buildReplyWithoutStatus(message, executionCount);
     messageWithStatus.getContent().put("status", "ok");
-
     return messageWithStatus;
   }
 
   public static Message buildReplyWithErrorStatus(Message message, int executionCount) {
     Message messageWithStatus = buildReplyWithoutStatus(message, executionCount);
     messageWithStatus.getContent().put("status", "error");
-
     return messageWithStatus;
   }
 

@@ -20,9 +20,9 @@ import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver.Dependency;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringUtils.deleteWhitespace;
 import static org.apache.commons.lang3.StringUtils.normalizeSpace;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -72,20 +72,41 @@ public class PomFactoryTest {
     Map<String, String> repos = Maps.newHashMap();
     repos.put("repo2", "urlToRepo2");
     repos.put("repository.spring.snapshot", "http://repo.spring.io/snapshot");
-    Dependency dependency = new Dependency("", "", "");
+    Dependency dependency = Dependency.create(asList("", "", ""));
     //when
-    String pomAsString = pomFactory.createPom("/", Arrays.asList(dependency), repos);
+    String pomAsString = pomFactory.createPom("/", asList(dependency), repos);
     //then
     assertThat(removeWhitespaces(pomAsString)).contains(removeWhitespaces(EXPECTED_RESULT_BLOCK));
   }
 
   @Test
-  public void createPomWithMultipleDependencies() throws Exception{
+  public void createPomWithMultipleDependencies() throws Exception {
     Map<String, String> repos = Maps.newHashMap();
-    Dependency dependency1 = new Dependency("group", "artifact", "1.1.1");
-    Dependency dependency2 = new Dependency("other-group", "other-artifact", "1.1.1");
-    String pomAsString = pomFactory.createPom("/", Arrays.asList(dependency1, dependency2), repos);
+    Dependency dependency1 = Dependency.create(asList("group", "artifact", "1.1.1"));
+    Dependency dependency2 = Dependency.create(asList("other-group", "other-artifact", "1.1.1"));
+    String pomAsString = pomFactory.createPom("/", asList(dependency1, dependency2), repos);
     assertThat(removeWhitespaces(pomAsString).contains(removeWhitespaces(EXPECTED_MULTIPLE_DEP_POM)));
+  }
+
+  @Test
+  public void createPomWithType() throws Exception {
+    //given
+    Dependency dependency = Dependency.create(asList("group", "art", "ver", "pom"));
+    //when
+    String pomAsString = pomFactory.createPom("/", asList(dependency), Maps.newHashMap());
+    //then
+    assertThat(removeWhitespaces(pomAsString)).contains("<type>pom</type>");
+    assertThat(removeWhitespaces(pomAsString)).doesNotContain("<classifier");
+  }
+
+  @Test
+  public void createPomWithClassifier() throws Exception {
+    //given
+    Dependency dependency = Dependency.create(asList("group", "art", "ver", "pom", "Classifier"));
+    //when
+    String pomAsString = pomFactory.createPom("/", asList(dependency), Maps.newHashMap());
+    //then
+    assertThat(removeWhitespaces(pomAsString)).contains("<classifier>Classifier</classifier>");
   }
 
   private String removeWhitespaces(String pomAsString) {

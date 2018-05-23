@@ -27,12 +27,8 @@ import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 describe('HighlighterManager', () => {
   const dataStore = createStore(modelStateMock);
   const dataGrid = new BeakerXDataGrid({}, dataStore);
-  const highlighterManager = new HighlighterManager(dataGrid, [highlighterStateMock]);
+  const highlighterManager = dataGrid.highlighterManager;
   const highlighter = highlighterManager.highlighters[0];
-
-  it('should have property highlightersState', () => {
-    expect(highlighterManager).to.have.property('highlightersState');
-  });
 
   it('should have property highlighters', () => {
     expect(highlighterManager).to.have.property('highlighters');

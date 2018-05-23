@@ -22,6 +22,8 @@ import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 
+import java.lang.reflect.Constructor;
+
 import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils.splitPath;
 import static com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem.Status.ERROR;
 import static com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem.Status.OK;
@@ -50,9 +52,24 @@ public class LoadMagicMagicCommand implements MagicCommandFunctionality {
     }
 
     String clazzName = split[1];
+    return load(clazzName);
+  }
+
+  public MagicCommandOutcomeItem load(String clazzName) {
     try {
       Class<?> aClass = this.kernel.loadClass(clazzName);
-      Object instance = aClass.newInstance();
+      Constructor constructor = null;
+      try {
+        constructor = aClass.getConstructor(new Class[]{KernelFunctionality.class});
+      } catch (Exception e) {
+      }
+      Object instance = null;
+      if (constructor != null) {
+        instance = constructor.newInstance(this.kernel);
+      } else {
+        instance = aClass.newInstance();
+      }
+
       if (instance instanceof MagicCommandFunctionality) {
         MagicCommandFunctionality commandFunctionality = (MagicCommandFunctionality) instance;
         kernel.registerMagicCommandType(new MagicCommandType(commandFunctionality.getMagicCommandName(), "", commandFunctionality));

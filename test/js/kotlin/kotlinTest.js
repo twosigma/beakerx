@@ -47,12 +47,11 @@ describe('Kotlin base tests ', function () {
     });
   });
 
-  describe('(Kotlin) Press "Tab" to autocomplete code ', function(){
-    it('Autocomplete list is not empty ', function(){
+  describe('%%python magic', function () {
+    it('Should display Plot with Line ', function () {
       cellIndex += 1;
-      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
-      var completeList = beakerxPO.callAutocompleteAndGetItsList(codeCell, 'fu');
-      expect(completeList.length).toBeGreaterThan(0);
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.checkPlotWithLine(codeCell, cellIndex);
     });
   });
 

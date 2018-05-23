@@ -22,6 +22,7 @@ import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClassPathAddMvnCellMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.TestWidgetUtils;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -39,10 +40,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.ClassPathAddMvnCellMagicCommand.CLASSPATH_ADD_MVN_CELL;
 
 public class ClasspathAddMvnDepsCellMagicCommandTest {
@@ -92,7 +95,7 @@ public class ClasspathAddMvnDepsCellMagicCommandTest {
             + "com.google.code.XXXX:gson:2.6.2";
     //given
     MagicCommand command = new MagicCommand(new ClassPathAddMvnCellMagicCommand(kernel.mavenResolverParam, kernel), allCode);
-    Code code = Code.createCode(allCode, Collections.singletonList(command), NO_ERRORS, new Message());
+    Code code = Code.createCode(allCode, Collections.singletonList(command), NO_ERRORS, commMsg());
     //when
     code.execute(kernel, 1);
     //then
@@ -122,20 +125,19 @@ public class ClasspathAddMvnDepsCellMagicCommandTest {
 
   private void processMagicCommand(String allCode) {
     MagicCommand command = new MagicCommand(new ClassPathAddMvnCellMagicCommand(kernel.mavenResolverParam, kernel), allCode);
-    Code code = Code.createCode(allCode, Collections.singletonList(command), NO_ERRORS, new Message());
+    Code code = Code.createCode(allCode, Collections.singletonList(command), NO_ERRORS, commMsg());
     code.execute(kernel, 1);
   }
 
 
-  private void handleCellClasspathAddMvnDep(String allCode, List<String> expected) throws IOException {
+  private void handleCellClasspathAddMvnDep(String allCode, List<String> expected) throws Exception {
     processMagicCommand(allCode);
     String mvnDir = kernel.getTempFolder().toString() + MavenJarResolver.MVN_DIR;
     List<String> depNames = Files.walk(Paths.get(mvnDir)).map(p -> p.getFileName().toString()).collect(Collectors.toList());
 
-    List<Message> stderr = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());
-    String text = (String) stderr.get(0).getContent().get("text");
+    Optional<Message> updateMessage = EvaluatorResultTestWatcher.waitForUpdateMessage(kernel);
+    String text =  (String) TestWidgetUtils.getState(updateMessage.get()).get("value");
 
-    Assertions.assertThat(text).contains("Added jars");
     Assertions.assertThat(kernel.getClasspath().get(0)).contains(mvnDir);
     Assertions.assertThat(expected.stream()
             .allMatch(depNames::contains));

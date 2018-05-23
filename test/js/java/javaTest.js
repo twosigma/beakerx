@@ -69,7 +69,7 @@ describe('Java base tests ', function () {
   describe('Add and use jar ', function () {
     it('Add jar by %classpath magic ', function () {
       cellIndex += 1;
-      beakerxPO.runAndCheckOutputTextOfStdout(cellIndex, /Added jar:.+BeakerXClasspathTest\.jar.+/);
+      beakerxPO.runAndCheckOutputTextOfWidget(cellIndex, /BeakerXClasspathTest.jar/);
     });
     it('Check path of added jar ', function () {
       cellIndex += 1;
@@ -79,6 +79,14 @@ describe('Java base tests ', function () {
     it('Call added jar ', function () {
       cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfStdout(cellIndex, /static_123.*\s*.*object_123/);
+    });
+  });
+
+  describe('%%python magic', function () {
+    it('Should display Plot with Line ', function () {
+      cellIndex += 1;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.checkPlotWithLine(codeCell, cellIndex);
     });
   });
 

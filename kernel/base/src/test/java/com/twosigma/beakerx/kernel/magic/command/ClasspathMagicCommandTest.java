@@ -22,13 +22,16 @@ import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.kernel.PlainCode;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.TestWidgetUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Optional;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddJarMagicCommand.CLASSPATH_ADD_JAR;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,7 +62,7 @@ public class ClasspathMagicCommandTest {
     String allCode = "" +
             CLASSPATH_ADD_JAR + " " + CLASSPATH_TO_JAR_PATH + "\n" +
             "code code code";
-    Code code = CodeFactory.create(allCode, new Message(), kernel);
+    Code code = CodeFactory.create(allCode, commMsg(), kernel);
     //when
     code.execute(kernel, 1);
     //then
@@ -69,16 +72,16 @@ public class ClasspathMagicCommandTest {
   }
 
   @Test
-  public void handleClasspathAddJarWildcardMagicCommand() {
+  public void handleClasspathAddJarWildcardMagicCommand() throws InterruptedException {
     //given
     String allCode = "" +
             CLASSPATH_ADD_JAR + " " + SRC_TEST_RESOURCES + "dirWithTwoJars/*";
-    Code code = CodeFactory.create(allCode, new Message(), kernel);
+    Code code = CodeFactory.create(allCode, commMsg(), kernel);
     //when
     code.execute(kernel, 1);
     //then
-    List<Message> std = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());
-    String text = (String) std.get(0).getContent().get("text");
+    Optional<Message> updateMessage = EvaluatorResultTestWatcher.waitForUpdateMessage(kernel);
+    String text =  (String) TestWidgetUtils.getState(updateMessage.get()).get("value");
     assertThat(text).contains(FOO_JAR, "bar.jar");
     assertThat(evaluator.getResetEnvironmentCounter()).isEqualTo(0);
   }
@@ -87,7 +90,7 @@ public class ClasspathMagicCommandTest {
   public void shouldCreateMsgWithWrongMagic() {
     //given
     String jar = SRC_TEST_RESOURCES + "BeakerXClasspathTest.jar";
-    Code code = CodeFactory.create("%classpath2 add jar" + " " + jar, new Message(), kernel);
+    Code code = CodeFactory.create("%classpath2 add jar" + " " + jar, commMsg(), kernel);
     //when
     code.execute(kernel, 1);
     //then
@@ -101,7 +104,7 @@ public class ClasspathMagicCommandTest {
   public void showClasspath() {
     //given
     kernel.addJarsToClasspath(asList(new PathToJar(CLASSPATH_TO_JAR_PATH)));
-    Code code = CodeFactory.create("%classpath", new Message(), kernel);
+    Code code = CodeFactory.create("%classpath", commMsg(), kernel);
     //when
     code.execute(kernel, 1);
     //then
@@ -117,7 +120,7 @@ public class ClasspathMagicCommandTest {
     kernel.clearMessages();
     //when
     kernel.addJarsToClasspath(asList(new PathToJar(CLASSPATH_TO_JAR_PATH)));
-    Code code = CodeFactory.create("%classpath", new Message(), kernel);
+    Code code = CodeFactory.create("%classpath", commMsg(), kernel);
     code.execute(kernel, 1);
     //then
     List<Message> std = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());
@@ -126,21 +129,21 @@ public class ClasspathMagicCommandTest {
   }
 
   @Test
-  public void allowExtraWhitespaces() {
-    Code code = CodeFactory.create("%classpath  add  jar          " + CLASSPATH_TO_JAR_PATH, new Message(), kernel);
+  public void allowExtraWhitespaces() throws InterruptedException {
+    Code code = CodeFactory.create("%classpath  add  jar          " + CLASSPATH_TO_JAR_PATH, commMsg(), kernel);
     code.execute(kernel, 1);
-    List<Message> std = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());
-    String text = (String) std.get(0).getContent().get("text");
-    assertThat(text).contains("Added jar: [" + FOO_JAR + "]\n");
+    Optional<Message> updateMessage = EvaluatorResultTestWatcher.waitForUpdateMessage(kernel);
+    String text =  (String)TestWidgetUtils.getState(updateMessage.get()).get("value");
+    assertThat(text).contains(FOO_JAR);
   }
 
   @Test
-  public void allowSpacesInJarPath() {
-    Code code = CodeFactory.create("%classpath add jar \"./src/test/resources/jars/ with space.jar\"", new Message(), kernel);
+  public void allowSpacesInJarPath() throws InterruptedException {
+    Code code = CodeFactory.create("%classpath add jar \"./src/test/resources/jars/ with space.jar\"", commMsg(), kernel);
     code.execute(kernel, 1);
-    List<Message> std = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());
-    String text = (String) std.get(0).getContent().get("text");
-    assertThat(text).contains("Added jar: [ with space.jar]\n");
+    Optional<Message> updateMessage = EvaluatorResultTestWatcher.waitForUpdateMessage(kernel);
+    String text =  (String)TestWidgetUtils.getState(updateMessage.get()).get("value");
+    assertThat(text).contains("with space.jar");
   }
 
 }

@@ -96,29 +96,31 @@ public class KernelSocketsZMQ extends KernelSockets {
   }
 
   private synchronized void sendMsg(ZMQ.Socket socket, List<Message> messages) {
-    messages.forEach(message -> {
-      String header = toJson(message.getHeader());
-      String parent = toJson(message.getParentHeader());
-      String meta = toJson(message.getMetadata());
-      String content = toJson(message.getContent());
-      String digest = hmac.sign(Arrays.asList(header, parent, meta, content));
+    if (!isShutdown()) {
+      messages.forEach(message -> {
+        String header = toJson(message.getHeader());
+        String parent = toJson(message.getParentHeader());
+        String meta = toJson(message.getMetadata());
+        String content = toJson(message.getContent());
+        String digest = hmac.sign(Arrays.asList(header, parent, meta, content));
 
-      ZMsg newZmsg = new ZMsg();
-      message.getIdentities().forEach(newZmsg::add);
-      newZmsg.add(DELIM);
-      newZmsg.add(digest.getBytes(StandardCharsets.UTF_8));
-      newZmsg.add(header.getBytes(StandardCharsets.UTF_8));
-      newZmsg.add(parent.getBytes(StandardCharsets.UTF_8));
-      newZmsg.add(meta.getBytes(StandardCharsets.UTF_8));
-      newZmsg.add(content.getBytes(StandardCharsets.UTF_8));
-      message.getBuffers().forEach(x -> newZmsg.add(x));
-      newZmsg.send(socket);
-    });
+        ZMsg newZmsg = new ZMsg();
+        message.getIdentities().forEach(newZmsg::add);
+        newZmsg.add(DELIM);
+        newZmsg.add(digest.getBytes(StandardCharsets.UTF_8));
+        newZmsg.add(header.getBytes(StandardCharsets.UTF_8));
+        newZmsg.add(parent.getBytes(StandardCharsets.UTF_8));
+        newZmsg.add(meta.getBytes(StandardCharsets.UTF_8));
+        newZmsg.add(content.getBytes(StandardCharsets.UTF_8));
+        message.getBuffers().forEach(x -> newZmsg.add(x));
+        newZmsg.send(socket);
+      });
+    }
   }
 
   private Message readMessage(ZMQ.Socket socket) {
     ZMsg zmsg = null;
-    Message message = new Message();
+    Message message = null;
     try {
       zmsg = ZMsg.recvMsg(socket);
       ZFrame[] parts = new ZFrame[zmsg.size()];
@@ -133,10 +135,10 @@ public class KernelSocketsZMQ extends KernelSockets {
       verifyDelim(parts[MessageParts.DELIM]);
       verifySignatures(expectedSig, header, parent, metadata, content);
 
+      message = new Message(parse(header, Header.class));
       if (uuid != null) {
         message.getIdentities().add(uuid);
       }
-      message.setHeader(parse(header, Header.class));
       message.setParentHeader(parse(parent, Header.class));
       message.setMetadata(parse(metadata, LinkedHashMap.class));
       message.setContent(parse(content, LinkedHashMap.class));
@@ -167,6 +169,10 @@ public class KernelSocketsZMQ extends KernelSockets {
           break;
         }
       }
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    } catch (Error e) {
+      logger.error(e.toString());
     } finally {
       close();
     }
@@ -194,8 +200,7 @@ public class KernelSocketsZMQ extends KernelSockets {
     Message message = readMessage(controlSocket);
     JupyterMessages type = message.getHeader().getTypeEnum();
     if (type.equals(SHUTDOWN_REQUEST)) {
-      Message reply = new Message();
-      reply.setHeader(new Header(SHUTDOWN_REPLY, message.getHeader().getSession()));
+      Message reply = new Message(new Header(SHUTDOWN_REPLY, message.getHeader().getSession()));
       reply.setParentHeader(message.getHeader());
       reply.setContent(message.getContent());
       sendMsg(controlSocket, Collections.singletonList(reply));

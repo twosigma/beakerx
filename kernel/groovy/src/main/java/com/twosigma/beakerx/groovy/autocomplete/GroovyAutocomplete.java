@@ -102,7 +102,7 @@ public class GroovyAutocomplete {
             q.add(new AutocompleteCandidate(GroovyCompletionTypes.NAME, tx));
           }
           ret = registry.searchCandidates(q);
-          startIndex = txt.indexOf(tx) + tx.length();
+          startIndex = txt.substring(0,cur).lastIndexOf(tx) + tx.length();
         }
         break;
       }

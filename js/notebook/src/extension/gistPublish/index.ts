@@ -29,10 +29,16 @@ export function registerFeature(): void {
   }
 
   Jupyter.toolbar.add_buttons_group([{
-    'label'   : 'Publish...',
+    'label'   : ' ',
+    'id'      : 'btn_publish',
     'icon'    : 'fa-share-alt',
     'callback': beforePublish
   }]);
+
+  $('#btn_publish > span').remove();
+  $('#btn_publish').attr({
+    'title': 'Publish...',
+  });
 
   const publish_menu = $('<li>')
     .attr('id', 'publish_gist')

@@ -29,7 +29,12 @@ import {ALL_TYPES} from "@beakerx/tableDisplay/dataGrid/dataTypes";
 declare var require: Function;
 
 describe('DataGridColumn', () => {
-  const dataStore = createStore({ ...modelStateMock, values: [[null, 1], [1, null]]});
+  const dataStore = createStore({
+    ...modelStateMock,
+    types: ['integer', 'integer', 'integer'],
+    values: [[null, 1, 3], [2, null, NaN]],
+    columnNames: ['test', 'column', 'columnNan']
+  });
   const dataGrid = new BeakerXDataGrid({}, dataStore);
   const columnManager = dataGrid.columnManager;
 
@@ -46,7 +51,7 @@ describe('DataGridColumn', () => {
 
     it('should change the trigger state', () => {
       bodyDataGridColumn.handleHeaderCellHovered(
-        dataGrid, { type: COLUMN_TYPES.body, column: 0, row: 0, delta: 0, offset: 10, offsetTop: 10, region: 'column-header' }
+        dataGrid, { data: { type: COLUMN_TYPES.body, column: 0, row: 0, delta: 0, offset: 10, offsetTop: 10, region: 'column-header' } }
       );
 
       expect(bodyDataGridColumn.menu['triggerNode'].style.visibility).to.equal('visible');
@@ -60,7 +65,7 @@ describe('DataGridColumn', () => {
       expect(bodyDataGridColumn.getPosition().value).to.equal(1);
 
       bodyDataGridColumn.hide();
-      expect(bodyDataGridColumn.getPosition().value).to.equal(1);
+      expect(bodyDataGridColumn.getPosition().value).to.equal(2);
       expect(columnManager.bodyColumns[1].getPosition().value).to.equal(0);
 
       bodyDataGridColumn.show();
@@ -88,6 +93,15 @@ describe('DataGridColumn', () => {
       expect(bodyDataGridColumn.getDisplayType()).to.equal(ALL_TYPES['formatted integer']);
       expect(columnManager.bodyColumns[1].getDisplayType()).to.equal(ALL_TYPES.string);
     });
+
+    it('should have the min and max values set', () => {
+      const column = columnManager.bodyColumns[2];
+
+      expect(column).to.have.property('minValue');
+      expect(column).to.have.property('maxValue');
+      expect(column.minValue).to.equal(3);
+      expect(column.maxValue).to.equal(3);
+    });
   });
 
   describe('DataGridColumn.type === "index"', () => {
@@ -101,10 +115,11 @@ describe('DataGridColumn', () => {
       expect(indexDataGridColumn.menu).to.be.an.instanceof(IndexMenu);
     });
 
-    it('should change the trigger state', () => {
+    it('should not change the trigger state', () => {
       indexDataGridColumn.handleHeaderCellHovered(
-        dataGrid, { type: COLUMN_TYPES.index, column: 0, row: 0, delta: 0, offset: 0, offsetTop: 0, region: 'corner-header' }
+        dataGrid, { data: { type: COLUMN_TYPES.index, column: 0, row: 0, delta: 0, offset: 0, offsetTop: 0, region: 'corner-header' } }
       );
+
       expect(indexDataGridColumn.menu['triggerNode'].style.visibility).to.equal('visible');
     });
   });

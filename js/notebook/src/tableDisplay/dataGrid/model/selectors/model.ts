@@ -23,7 +23,7 @@ import IHihglighterState from "../../interface/IHighlighterState"
 export const selectModel = (state): IDataModelState => state.model;
 export const selectValues = (state) => selectModel(state).values;
 export const selectHasIndex = (state) => selectModel(state).hasIndex;
-export const selectTooltips = (state) => selectModel(state).tooltips;
+export const selectTooltips = (state) => selectModel(state).tooltips || [];
 export const selectCellHighlighters = (state): IHihglighterState[] => selectModel(state).cellHighlighters || [];
 export const selectHeadersVertical = (state) => selectModel(state).headersVertical;
 export const selectHeaderFontSize = (state) => selectModel(state).headerFontSize;

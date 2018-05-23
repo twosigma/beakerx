@@ -46,8 +46,6 @@ import static com.twosigma.beakerx.groovy.evaluator.GroovyClassLoaderFactory.new
 
 public class GroovyEvaluator extends BaseEvaluator {
 
-  public static boolean LOCAL_DEV = false;
-
   private GroovyClasspathScanner cps;
   private GroovyAutocomplete gac;
   private GroovyClassLoader groovyClassLoader;

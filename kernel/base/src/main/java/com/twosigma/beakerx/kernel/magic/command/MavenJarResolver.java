@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 public class MavenJarResolver {
@@ -160,20 +161,27 @@ public class MavenJarResolver {
 
     static final String DEFAULT_TYPE = "jar";
 
-    String groupId;
-    String artifactId;
-    String version;
-    String type = DEFAULT_TYPE;
+    private String groupId;
+    private String artifactId;
+    private String version;
+    private String type = DEFAULT_TYPE;
+    private Optional<String> classifier = Optional.empty();
 
-    public Dependency(String groupId, String artifactId, String version) {
-      this(groupId, artifactId, version, DEFAULT_TYPE);
-    }
-
-    public Dependency(String groupId, String artifactId, String version, String type) {
+    private Dependency(String groupId, String artifactId, String version) {
       this.groupId = groupId;
       this.artifactId = artifactId;
       this.version = version;
-      this.type = type;
+    }
+
+    public static Dependency create(List<String> args) {
+      Dependency dependency = new Dependency(args.get(0), args.get(1), args.get(2));
+      if (args.size() > 3) {
+        dependency.type = args.get(3);
+      }
+      if (args.size() > 4) {
+        dependency.classifier = Optional.of(args.get(4));
+      }
+      return dependency;
     }
 
     public String getGroupId() {
@@ -186,6 +194,14 @@ public class MavenJarResolver {
 
     public String getVersion() {
       return version;
+    }
+
+    public String getType() {
+      return type;
+    }
+
+    public Optional<String> getClassifier() {
+      return classifier;
     }
   }
 

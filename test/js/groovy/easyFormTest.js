@@ -52,9 +52,10 @@ describe('(Groovy) Testing of EasyForm', function () {
     });
 
     it('Should input text ', function () {
-      var tstText = 'text from user input';
+      var tstText = 'test';
       cellIndex += 1;
-      easyForm.$('input[type="text"]').setValue(tstText);
+      easyForm.$('input[type="text"]').click();
+      browser.keys('t').keys('e').keys('s').keys('t');
       expect(easyForm.$('input[type="text"]').getValue()).toBe(tstText);
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, tstText);
     });
@@ -87,9 +88,10 @@ describe('(Groovy) Testing of EasyForm', function () {
     });
 
     it('Should input text ', function () {
-      var tstText = 'text from user input';
+      var tstText = 'test';
       cellIndex += 1;
-      easyForm.$('textarea').setValue(tstText);
+      easyForm.$('textarea').click();
+      browser.keys('t').keys('e').keys('s').keys('t');
       expect(easyForm.$('textarea').getValue()).toBe(tstText);
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, tstText);
     });

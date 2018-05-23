@@ -15,6 +15,8 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.twosigma.beakerx.message.Message;
+
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -40,10 +42,16 @@ public class Layout extends Widget {
   private String width;
   private String height;
   private String visibility;
+  private String margin;
 
   public Layout() {
     super();
     openComm();
+  }
+
+  public Layout(Message parent) {
+    super();
+    openComm(parent);
   }
 
   @Override
@@ -146,12 +154,22 @@ public class Layout extends Widget {
   }
 
   @Override
-  public String getModelModuleValue(){
+  public String getModelModuleValue() {
     return MODEL_MODULE_VALUE;
   }
 
   @Override
-  public String getViewModuleValue(){
+  public String getViewModuleValue() {
     return VIEW_MODULE_VALUE;
   }
+
+  public void setMargin(String margin) {
+    this.margin = margin;
+    sendUpdate("margin", this.margin);
+  }
+
+  public void setDisplayNone() {
+    sendUpdate(DISPLAY, "none");
+  }
+
 }

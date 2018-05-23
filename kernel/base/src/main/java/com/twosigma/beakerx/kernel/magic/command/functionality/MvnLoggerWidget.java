@@ -16,8 +16,7 @@
 package com.twosigma.beakerx.kernel.magic.command.functionality;
 
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widget.HTML;
-import com.twosigma.beakerx.widget.StringWidget;
+import com.twosigma.beakerx.widget.BxHTML;
 
 import java.math.BigDecimal;
 import java.util.Timer;
@@ -30,7 +29,8 @@ import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 public class MvnLoggerWidget {
 
   static final int PERIOD = 250;
-  private StringWidget widget;
+  public static final String DOWNLOADED = "Downloaded";
+  private BxHTML widget;
   private Timer timer;
   private volatile int jarNumbers = 0;
   private volatile double sizeInKb;
@@ -38,7 +38,7 @@ public class MvnLoggerWidget {
   private volatile String currentLine;
 
   public MvnLoggerWidget(Message parentMessage) {
-    this.widget = new HTML(parentMessage);
+    this.widget = new BxHTML(parentMessage);
     this.timer = new Timer();
     this.timer.scheduleAtFixedRate(new TimerTask() {
       @Override
@@ -46,10 +46,14 @@ public class MvnLoggerWidget {
         if (jarNumbers > 0) {
           String sizeWithUnit = byteCountToDisplaySize(new Double(sizeInKb * 1000).longValue());
           String status = String.format("%d jar%s, %s downloaded at %s", jarNumbers, getPluralFormWhenNumberOfJarGreaterThanOne(), sizeWithUnit, speed);
-          widget.setValue(status + "</br>" + currentLine);
+          widget.setValue(status + "</br>" + formatCurrentLine());
         }
       }
     }, 0, PERIOD);
+  }
+
+  private String formatCurrentLine() {
+    return currentLine.replaceFirst(DOWNLOADED, "").trim().replaceFirst(":","").trim();
   }
 
   private String getPluralFormWhenNumberOfJarGreaterThanOne() {
@@ -57,7 +61,7 @@ public class MvnLoggerWidget {
   }
 
   public void sendLog(String line) {
-    if (line != null && !line.trim().isEmpty() && line.matches("Downloaded.+")) {
+    if (line != null && !line.trim().isEmpty() && line.matches(DOWNLOADED + ".+")) {
       this.currentLine = line;
       if (line.matches(".+jar.+")) {
         this.jarNumbers++;

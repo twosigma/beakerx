@@ -91,12 +91,12 @@ public class CodeFactory {
   private static String takeRestOfTheCode(Scanner scanner) {
     List<String> result = new ArrayList<>();
     while (scanner.hasNextLine()) {
-      result.add(scanner.nextLine().trim());
+      result.add(scanner.nextLine());
     }
     return String.join(System.lineSeparator(), result);
   }
 
-  private static Optional<MagicCommandFunctionality> findMagicCommandFunctionality(final List<MagicCommandType> commands, final String command) {
+  public static Optional<MagicCommandFunctionality> findMagicCommandFunctionality(final List<MagicCommandType> commands, final String command) {
     return commands.stream()
             .filter(c -> c.getMagicCommandFunctionality().matchCommand(command))
             .map(MagicCommandType::getMagicCommandFunctionality)

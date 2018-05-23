@@ -131,11 +131,12 @@ export default class RowManager {
 
     const agregationFn = (column: DataGridColumn) => {
       let prefix = ColumnFilter.getColumnNameVarPrefix(column.name);
+      let name = ColumnFilter.escapeColumnName(column.name);
 
       if (column.type === COLUMN_TYPES.index) {
-        this.expressionVars += `var ${prefix}${column.name} = row.index;`;
+        this.expressionVars += `var ${prefix}${name} = row.index;`;
       } else {
-        this.expressionVars += `var ${prefix}${column.name} = row.values[${column.index}];`;
+        this.expressionVars += `var ${prefix}${name} = row.values[${column.index}];`;
       }
     };
 
@@ -195,6 +196,8 @@ export default class RowManager {
 
   evaluateFilterExpression(row, formatFns) {
     const evalInContext = function(expression: string) {
+      "use strict";
+
       const row = { ...this.row };
       const result = eval(expression);
 

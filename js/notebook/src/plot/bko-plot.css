@@ -128,7 +128,7 @@
   height: 10px;
   margin: 0px 5px;
   display: inline-block;
-  vertical-align: middle;
+  vertical-align: baseline;
 }
 
 .plot-legendcheckbox {
@@ -312,6 +312,10 @@
 
 .svg-export .plot-legendcheckbox {
   display: none;
+}
+
+.svg-export {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .svg-export.improveFonts {

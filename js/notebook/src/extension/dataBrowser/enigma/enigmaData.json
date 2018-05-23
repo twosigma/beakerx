@@ -1,0 +1,15 @@
+{
+  "datasets": [
+    {
+      "name": "Global Food Prices Database",
+      "description": "The Global Food Prices Database has data on food prices (e.g., beans, rice, fish, and sugar) for 76 countries and some 1,500 markets.",
+      "img": "https://quandl-data-upload.s3.amazonaws.com/uploads/source/profile_image/13138/ueng.png",
+      "code": "",
+      "dataid": "8ed86473-7fb3-4e6c-8fac-60ae1f3358b5",
+      "outlink" : "https://public.enigma.com/datasets/467d9a94-1842-41af-84f5-52b273b1ca02",
+      "frequency": "Annual",
+      "refreshed": "Last month",
+      "provider": "Enigma"
+    }  
+  ]
+}

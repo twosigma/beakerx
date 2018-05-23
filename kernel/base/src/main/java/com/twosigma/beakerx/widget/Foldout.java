@@ -17,16 +17,40 @@ package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.message.Message;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class Foldout extends Box {
 
   public static final String VIEW_NAME_VALUE = "FoldoutView";
   public static final String MODEL_NAME_VALUE = "FoldoutModel";
 
-  public Foldout(Message parent) {
-    super(new ArrayList<>(), parent);
+  private FoldoutOption foldoutOption = new FoldoutOption();
+
+  public Foldout(List<Widget> children) {
+    this(children, new FoldoutOption());
+  }
+
+  public Foldout(List<Widget> children, FoldoutOption foldoutOption) {
+    super(children);
+    this.foldoutOption = foldoutOption;
+    openComm();
+  }
+
+  public Foldout(Message parent, FoldoutOption foldoutOption) {
+    super(new ArrayList<>(),parent);
+    this.foldoutOption = foldoutOption;
     openComm(parent);
+  }
+
+  @Override
+  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+    content.put("hidePreview", foldoutOption.hidePreview);
+    content.put("headerLabel", foldoutOption.headerLabel);
+    super.content(content);
+    return content;
   }
 
   @Override
@@ -47,5 +71,10 @@ public class Foldout extends Box {
   @Override
   public String getViewModuleValue() {
     return BeakerxWidget.VIEW_MODULE_VALUE;
+  }
+
+  public static class FoldoutOption {
+    public boolean hidePreview = false;
+    public String headerLabel = "Output";
   }
 }

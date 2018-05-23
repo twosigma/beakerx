@@ -73,13 +73,11 @@ public class MagicCommandOutputFoldout implements MagicCommandOutcomeItem {
   }
 
   private void sendHTML(Message message) {
-    Foldout value = new Foldout(message);
-    Label label = new Label(message);
+    Foldout.FoldoutOption foldoutOption = new Foldout.FoldoutOption();
+    foldoutOption.headerLabel = this.header;
+    Foldout value = new Foldout(message, foldoutOption);
     BxHTML content = new BxHTML(message);
-
     content.setValue(getMIMEContainer().get().getData());
-    label.setValue(this.header);
-    value.add(label);
     value.add(content);
     value.display();
   }

@@ -25,7 +25,11 @@ import com.twosigma.beakerx.kernel.magic.command.PomFactory;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableMap;
 
 public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
 
@@ -33,6 +37,10 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
   public static final String MVN = "mvn";
   public static final String CLASSPATH_ADD_MVN = CLASSPATH + " " + ADD + " " + MVN;
   public static final String ADD_MVN_FORMAT_ERROR_MESSAGE = "Wrong command format, should be" + CLASSPATH_ADD_MVN + " group name version [type classifier] or " + CLASSPATH_ADD_MVN + " group:name:version[:type:classifier]";
+
+  public static Map<String, String> DEFAULT_MAVEN_REPOS = unmodifiableMap(new HashMap<String, String>() {{
+    put("jitpack.io", "https://jitpack.io");
+  }});
 
   private MavenJarResolver.ResolverParams commandParams;
   private PomFactory pomFactory;
@@ -42,7 +50,7 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
     super(kernel);
     this.commandParams = commandParams;
     this.pomFactory = new PomFactory();
-    this.repos = new Repos();
+    resetRepo();
   }
 
   @Override
@@ -112,5 +120,6 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
 
   public void resetRepo() {
     this.repos = new Repos();
+    DEFAULT_MAVEN_REPOS.entrySet().stream().forEach(x -> repos.add(x.getKey(), x.getValue()));
   }
 }

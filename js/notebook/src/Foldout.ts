@@ -57,12 +57,18 @@ class FoldoutView extends widgets.BoxView {
 
   add_child_model(model) {
     return this.create_child_view(model).then((view: widgets.DOMWidgetView) => {
+      this.restorePreviewContent();
+
       if (view instanceof widgets.LabelView) {
         this.label.insertWidget(0, view.pWidget);
         view.pWidget.node.classList.add('foldout-label-content');
       } else {
         this.content.layout && this.content.addWidget(view.pWidget);
       }
+
+      this.updateLabelText();
+      this.updateHiddenContainer();
+      this.renderPreview();
 
       return view;
     }).catch(widgets.reject('Could not add child view to box', true));
@@ -74,6 +80,16 @@ class FoldoutView extends widgets.BoxView {
     this.label.node.classList.add('foldout-label');
     this.label.node.addEventListener('click', this.headerClickCallback.bind(this));
     this.pWidget.insertWidget(0, this.label);
+  }
+
+  updateLabelText() {
+    if (!this.label.node.querySelector('.foldout-label-content')) {
+      const label = new Widget();
+
+      label.node.classList.add('foldout-label-content');
+      label.node.innerText = DEFAULT_LABEL_TEXT;
+      this.label.insertWidget(0, label);
+    }
   }
 
   addContent() {
@@ -125,9 +141,13 @@ class FoldoutView extends widgets.BoxView {
 
   activateFoldoutCallback() {
     this.el.classList.remove('collapsed');
-    this.previewContainer.node.style.opacity = '0';
     this.content.node.style.display = 'block';
-    this.previewContentParent.appendChild(this.previewContent);
+
+    if (this.previewContent) {
+      this.previewContentParent.appendChild(this.previewContent);
+      this.previewContainer.node.style.opacity = '0';
+    }
+
     this.content.node.style.height = `${
       this.hiddenContainer.clientHeight + DEFAULT_ADDED_SPACE / 2
     }px`;
@@ -136,12 +156,15 @@ class FoldoutView extends widgets.BoxView {
   deactivateFoldoutCallback() {
     this.el.classList.add('collapsed');
     this.content.node.style.display = 'none';
-    this.previewContainer.node.appendChild(this.previewContent);
-    this.previewContainer.node.style.opacity = '1';
+
+    if (this.previewContent) {
+      this.previewContainer.node.appendChild(this.previewContent);
+      this.previewContainer.node.style.opacity = '1';
+    }
   }
 
   getPreviewContent(): HTMLElement {
-    return this.content.node.firstChild as HTMLElement;
+    return this.content.node.lastChild as HTMLElement;
   }
 
   render() {
@@ -150,21 +173,39 @@ class FoldoutView extends widgets.BoxView {
     this.el.classList.add('collapsed');
 
     this.children_views.update(this.model.get('children')).then((views) => {
-      if (!this.label.node.innerText) {
-        this.label.node.innerText = DEFAULT_LABEL_TEXT;
-      }
-
-      this.hiddenContainer.innerHTML = this.content.node.innerHTML;
-      this.previewContent = this.getPreviewContent();
-      let textLabelNode = this.label.node.firstChild as HTMLElement;
-      this.previewContainer.node.style.width = `${this.el.clientWidth - (textLabelNode.clientWidth + 40)}px`;
-
-      if (this.previewContent) {
-        this.previewContentParent = this.previewContent.parentNode as HTMLElement;
-        this.previewContainer.node.appendChild(this.previewContent);
-        this.previewContainer.node.style.opacity = '1';
-      }
+      this.updateLabelText();
+      this.updateHiddenContainer();
+      this.renderPreview();
     });
+  }
+
+  updateHiddenContainer() {
+    this.hiddenContainer.innerHTML = this.content.node.innerHTML;
+  }
+
+  restorePreviewContent() {
+    if (this.previewContent && this.previewContentParent) {
+      this.previewContentParent.appendChild(this.previewContent);
+    }
+  }
+
+  renderPreview() {
+    this.restorePreviewContent();
+    this.previewContent = this.getPreviewContent();
+
+    if (this.previewContent) {
+      let textLabelNode = this.label.node.firstChild as HTMLElement;
+
+      this.previewContainer.node.style.width = `${this.el.clientWidth - (textLabelNode.clientWidth + 40)}px`;
+      this.previewContentParent = this.previewContent.parentNode as HTMLElement;
+
+      if (this.active) {
+        return;
+      }
+
+      this.previewContainer.node.appendChild(this.previewContent);
+      this.previewContainer.node.style.opacity = '1';
+    }
   }
 
   dispose() {

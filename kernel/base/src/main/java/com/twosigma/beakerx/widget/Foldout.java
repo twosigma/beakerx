@@ -40,7 +40,7 @@ public class Foldout extends Box {
   }
 
   public Foldout(Message parent, FoldoutOption foldoutOption) {
-    super(new ArrayList<>());
+    super(new ArrayList<>(),parent);
     this.foldoutOption = foldoutOption;
     openComm(parent);
   }

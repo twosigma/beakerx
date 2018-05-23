@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClasspathAddMagicCommandTest {
@@ -49,7 +50,7 @@ public class ClasspathAddMagicCommandTest {
   public void errorWhenUnknownMagicCommand() {
     //given
     String allCode = "%unknownClasspath params";
-    Code code = CodeFactory.create(allCode, new Message(), kernel);
+    Code code = CodeFactory.create(allCode, commMsg(), kernel);
     //when
     code.execute(kernel, 1);
     //then
@@ -62,7 +63,7 @@ public class ClasspathAddMagicCommandTest {
   public void errorWhenIncompleteMagicCommand() {
     //given
     String allCode = ClasspathAddJarMagicCommand.CLASSPATH + " add garbage";
-    Code code = CodeFactory.create(allCode, new Message(), kernel);
+    Code code = CodeFactory.create(allCode, commMsg(), kernel);
     //when
     code.execute(kernel, 1);
     //then

@@ -15,6 +15,8 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.twosigma.beakerx.message.Message;
+
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -22,6 +24,14 @@ public abstract class StringWidget extends ValueWidget<String> {
 
   public static final String PLACE_HOLDER = "placeholder";
   private String placeholder = "";
+
+  public StringWidget() {
+    super();
+  }
+
+  public StringWidget(Message parent) {
+    super(parent);
+  }
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {

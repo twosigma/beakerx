@@ -17,6 +17,7 @@ package com.twosigma.beakerx.groovy.evaluator;
 
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -29,6 +30,7 @@ import com.twosigma.beakerx.message.Message;
 
 import java.util.List;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_CLOSE;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyDisplayMsg;
@@ -65,6 +67,7 @@ public class GroovyEvaluatorProgressReportingTest {
                     "}\n" +
                     "\"finished\"";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    seo.setJupyterMessage(commMsg());
     //when
     TryResult evaluate = groovyEvaluator.evaluate(seo, code);
     //then

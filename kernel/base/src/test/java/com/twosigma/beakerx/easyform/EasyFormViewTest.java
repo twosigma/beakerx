@@ -36,6 +36,7 @@ public class EasyFormViewTest {
   public void setUp() throws Exception {
     groovyKernel = new KernelTest();
     KernelManager.register(groovyKernel);
+
   }
 
   @After

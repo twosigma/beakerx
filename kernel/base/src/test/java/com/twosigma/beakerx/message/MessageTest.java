@@ -16,6 +16,7 @@
 
 package com.twosigma.beakerx.message;
 
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
@@ -23,24 +24,20 @@ import java.util.LinkedHashMap;
 
 public class MessageTest {
 
-  public static void initMessage(Message message) {
+  public static Message createMessage() {
+    Header header = new Header(JupyterMessages.COMM_MSG, "session1");
+    Message message = new Message(header);
     message.getIdentities().add("identityStr".getBytes());
-    message.setHeader(new Header());
-    message.setParentHeader(new Header());
+    message.setParentHeader(header);
     message.setMetadata(new LinkedHashMap<>());
     message.setContent(new LinkedHashMap<>());
-  }
-
-  public static Message createMessage(){
-    Message message = new Message();
-    initMessage(message);
     return message;
   }
 
   @Test
   public void createMessageWithEmptyConstructor_messageHasHeaderIsNotNull() {
     //when
-    Message message = new Message();
+    Message message = createMessage();
     //then
     Assertions.assertThat(message.getHeader()).isNotNull();
   }
@@ -48,8 +45,7 @@ public class MessageTest {
   @Test
   public void initMessageWithData_messageHasDataIsNotNull() {
     //when
-    Message message = new Message();
-    initMessage(message);
+    Message message = createMessage();
     //then
     Assertions.assertThat(message.getIdentities()).isNotEmpty();
     Assertions.assertThat(message.getHeader()).isNotNull();

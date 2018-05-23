@@ -30,6 +30,7 @@ describe('SQL base tests ', function () {
   });
 
   var imageDir = 'sql/sql';
+  var cellIndex = 0;
 
   describe('UI options. ', function () {
     it("Use new table widget. ", function () {
@@ -49,9 +50,18 @@ describe('SQL base tests ', function () {
     });
   });
 
+  describe('%%python magic', function () {
+    it('Should display Plot with Line ', function () {
+      cellIndex = 3;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.checkPlotWithLine(codeCell, cellIndex);
+    });
+  });
+
   describe('(SQL) Autocomplete cell ', function () {
     it('Autocomplete list is not empty ', function () {
-      var codeCell = beakerxPO.getCodeCellByIndex(3);
+      cellIndex += 1;
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
       var completeList = beakerxPO.callAutocompleteAndGetItsList(codeCell, 's');
       expect(completeList.length).toBeGreaterThan(0);
     });
@@ -59,7 +69,8 @@ describe('SQL base tests ', function () {
 
   describe('(SQL) Press "Shift + Tab" to display doc ', function(){
     it('doc tooltip is not empty ', function(){
-      var codeCell = beakerxPO.getCodeCellByIndex(4);
+      cellIndex += 1;
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
       var tooltip = beakerxPO.callDocAndGetItsTooltip(codeCell, 'Plot');
       expect(tooltip.getText()).toMatch(/com.twosigma.beakerx.chart.xychart.Plot/);
     });

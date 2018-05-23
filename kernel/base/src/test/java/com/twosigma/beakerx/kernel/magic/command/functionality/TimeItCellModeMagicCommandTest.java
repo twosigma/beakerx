@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TimeItCellModeMagicCommandTest {
@@ -53,7 +54,7 @@ public class TimeItCellModeMagicCommandTest {
                     "a = 15;\n" +
                     "b = 111;\n" +
                     "a * b;";
-    Code code = CodeFactory.create(allCode, new Message(), kernel);
+    Code code = CodeFactory.create(allCode, commMsg(), kernel);
     //when
     code.execute(kernel, 1);
     //then

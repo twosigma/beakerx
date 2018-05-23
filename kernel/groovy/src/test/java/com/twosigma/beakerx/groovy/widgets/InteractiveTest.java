@@ -16,6 +16,7 @@
 
 package com.twosigma.beakerx.groovy.widgets;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static com.twosigma.beakerx.kernel.comm.Comm.COMM_ID;
 import static com.twosigma.beakerx.kernel.comm.Comm.DATA;
 import static com.twosigma.beakerx.widget.strings.TextTest.verifyTextField;
@@ -93,6 +94,7 @@ public class InteractiveTest {
   private void callInteractWithStringParam(String param) throws Exception {
     String code = getInteractiveCode(param);
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    seo.setJupyterMessage(commMsg());
     //when
     groovyEvaluator.evaluate(seo, code);
   }

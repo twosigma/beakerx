@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.kernel.magic.command;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.twosigma.beakerx.KernelTest;
@@ -54,7 +55,7 @@ public class MagicCommandResultOrderTest {
             "%classpath\n" +
             "code code code";
     //when
-    Code code = CodeFactory.create(allCode, new Message(), kernel);
+    Code code = CodeFactory.create(allCode, commMsg(), kernel);
     code.execute(kernel, 1);
     //then
     PlainCode actual = (PlainCode) code.getCodeFrames().get(2);
@@ -67,7 +68,7 @@ public class MagicCommandResultOrderTest {
     String allCode = "" +
             "%classpath\n" +
             "%classpath add jar " + DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR + "\n";
-    Code code = CodeFactory.create(allCode, new Message(), kernel);
+    Code code = CodeFactory.create(allCode, commMsg(), kernel);
     //when
     code.execute(kernel, 1);
     //then
@@ -81,7 +82,7 @@ public class MagicCommandResultOrderTest {
     String allCode = "" +
             "%classpath add jar " + DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR + "\n" +
             "%classpath";
-    Code code = CodeFactory.create(allCode, new Message(), kernel);
+    Code code = CodeFactory.create(allCode, commMsg(), kernel);
     //when
     code.execute(kernel, 1);
     //then

@@ -52,11 +52,9 @@ class JavaCodeRunner implements Callable<TryResult> {
   public TryResult call() throws Exception {
     ClassLoader oldld = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader(javaEvaluator.getJavaClassLoader());
-    InternalVariable.setValue(theOutput);
     TryResult either;
     try {
       theOutput.setOutputHandler();
-      InternalVariable.setValue(theOutput);
       either = runCode(j);
     } catch (Throwable e) {
       if (e instanceof InvocationTargetException)

@@ -44,6 +44,14 @@ describe('Scala base tests ', function () {
     });
   });
 
+  describe('%%python magic', function () {
+    it('Should display Plot with Line ', function () {
+      cellIndex += 1;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.checkPlotWithLine(codeCell, cellIndex);
+    });
+  });
+
   describe('(Scala) Press "Tab" to autocomplete code ', function(){
     it('Autocomplete list is not empty ', function(){
       cellIndex += 1;

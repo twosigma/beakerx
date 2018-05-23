@@ -25,6 +25,8 @@ import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widget.SparkManager;
 import com.twosigma.beakerx.widget.SparkManagerImpl;
@@ -84,7 +86,7 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
     }
     MagicCommandOutcomeItem ui = createUI(param);
     if (ui.getStatus().equals(MagicCommandOutcomeItem.Status.OK)) {
-      options.forEach(option -> sparkOptions.get(option).run());
+      options.forEach(option -> sparkOptions.get(option).run(param.getCode().getMessage()));
     }
     return ui;
   }
@@ -150,11 +152,11 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
     return new MagicCommandOutput(MagicCommandOutput.Status.OK);
   }
 
-  private void connectToSparkSession() {
-    sparkUI.getConnectButton().onClick(new HashMap(), new Message());
+  private void connectToSparkSession(Message parent) {
+    sparkUI.getConnectButton().onClick(new HashMap(), new Message(new Header(JupyterMessages.COMM_MSG, parent.getHeader().getSession())));
   }
 
   interface SparkOption {
-    void run();
+    void run(Message parent);
   }
 }

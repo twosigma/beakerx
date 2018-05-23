@@ -20,6 +20,7 @@ import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorManager;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.evaluator.Hook;
+import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -84,6 +85,7 @@ import java.util.Map;
 import java.util.Observer;
 import java.util.Set;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static com.twosigma.beakerx.kernel.magic.command.ClasspathAddMvnDepsMagicCommandTest.TEST_MVN_CACHE;
 import static java.util.Arrays.asList;
 import static java.util.Collections.synchronizedList;
@@ -114,6 +116,10 @@ public class KernelTest implements KernelFunctionality {
     this.id = id;
     initMavenResolverParam();
     initMagicCommands();
+    SimpleEvaluationObject value = new SimpleEvaluationObject("ok");
+    Message jupyterMessage = commMsg();
+    value.setJupyterMessage(jupyterMessage);
+    InternalVariable.setValue(value);
     KernelManager.register(this);
   }
 
@@ -122,6 +128,10 @@ public class KernelTest implements KernelFunctionality {
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
     initMavenResolverParam();
     initMagicCommands();
+    SimpleEvaluationObject value = new SimpleEvaluationObject("ok");
+    Message jupyterMessage = commMsg();
+    value.setJupyterMessage(jupyterMessage);
+    InternalVariable.setValue(value);
     KernelManager.register(this);
     this.magicKernels = new HashMap<>();
   }

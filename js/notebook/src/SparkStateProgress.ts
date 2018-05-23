@@ -97,17 +97,11 @@ class SparkStateProgressView extends widgets.VBoxView {
   }
 
   private updateLabelWidths() {
-    let progressLabels = $(this.el).find('.bx-spark-stageProgressLabels');
-    let maxw = progressLabels
-      .find('.all')
-      .css({ display: 'inline-block' })
-      .innerWidth();
+    const maxWidth = `${this.progressLabelAll.offsetWidth}px`;
 
-    progressLabels.find('.done, .active, .waiting').each((i, e) => {
-      $(e)
-        .css({ display: 'inline-block' })
-        .innerWidth(maxw);
-    });
+    this.progressLabelDone.style.width = maxWidth;
+    this.progressLabelActive.style.width = maxWidth;
+    this.progressLabelWaiting.style.width = maxWidth;
   }
 
   private createWidget(): void {
@@ -188,7 +182,7 @@ class SparkStateProgressView extends widgets.VBoxView {
     let valueActive = state.active;
     let valueWaiting = max - (valueDone + valueActive);
     
-    this.progressLabels = document.createElement('p');
+    this.progressLabels = document.createElement('div');
     this.progressLabels.classList.add('bx-spark-stageProgressLabels');
     
     this.progressLabels.innerHTML = `
@@ -202,6 +196,11 @@ class SparkStateProgressView extends widgets.VBoxView {
     this.progressLabelActive = this.progressLabels.querySelector('.active');
     this.progressLabelWaiting = this.progressLabels.querySelector('.waiting');
     this.progressLabelAll = this.progressLabels.querySelector('.all');
+
+    this.progressLabelDone.style.display = 'inline-block';
+    this.progressLabelActive.style.display = 'inline-block';
+    this.progressLabelWaiting.style.display = 'inline-block';
+    this.progressLabelAll.style.display = 'inline-block';
 
     return $(this.progressLabels);
   }

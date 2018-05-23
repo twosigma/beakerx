@@ -28,6 +28,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ImportMagicCommandTest {
@@ -49,7 +50,7 @@ public class ImportMagicCommandTest {
     //given
     String allCode = "%import com.twosigma.beakerx.widget.IntSlider\n" +
             "w = new IntSlider()";
-    Code code = CodeFactory.create(allCode, new Message(), kernel);
+    Code code = CodeFactory.create(allCode, commMsg(), kernel);
     //when
     code.execute(kernel, 1);
     //then
@@ -62,12 +63,12 @@ public class ImportMagicCommandTest {
   public void removeImport() {
     //given
     String allCode = "%import com.twosigma.beakerx.widget.IntSlider\n";
-    Code code = CodeFactory.create(allCode, new Message(), kernel);
+    Code code = CodeFactory.create(allCode, commMsg(), kernel);
     code.execute(kernel, 1);
     assertThat(kernel.getImports().getImportPaths()).contains(new ImportPath("com.twosigma.beakerx.widget.IntSlider"));
     //when
     String allRemoveCode = "%unimport com.twosigma.beakerx.widget.IntSlider\n";
-    Code codeToRemove = CodeFactory.create(allRemoveCode, new Message(), kernel);
+    Code codeToRemove = CodeFactory.create(allRemoveCode, commMsg(), kernel);
     codeToRemove.execute(kernel, 2);
     //then
     assertThat(kernel.getImports().getImportPaths()).doesNotContain(new ImportPath("com.twosigma.beakerx.widget.IntSlider"));
@@ -76,7 +77,7 @@ public class ImportMagicCommandTest {
   @Test
   public void allowExtraWhitespaces() {
     String allCode = "%import       com.twosigma.beakerx.widget.IntSlider";
-    Code code = CodeFactory.create(allCode, new Message(), kernel);
+    Code code = CodeFactory.create(allCode, commMsg(), kernel);
     code.execute(kernel, 1);
     assertThat(kernel.getImports().getImportPaths()).contains(new ImportPath("com.twosigma.beakerx.widget.IntSlider"));
   }
@@ -84,7 +85,7 @@ public class ImportMagicCommandTest {
   @Test
   public void wrongImportFormat() {
     String allCode = "%import ";
-    Code wrongFormatImport = CodeFactory.create(allCode, new Message(), kernel);
+    Code wrongFormatImport = CodeFactory.create(allCode, commMsg(), kernel);
     wrongFormatImport.execute(kernel, 1);
     List<Message> std = EvaluatorResultTestWatcher.getStderr(kernel.getPublishedMessages());
     String text = (String) std.get(0).getContent().get("text");

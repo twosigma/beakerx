@@ -24,14 +24,14 @@
 [![NPM version](https://badge.fury.io/js/beakerx.svg)](http://badge.fury.io/js/beakerx)
 [![PyPI Version](https://badge.fury.io/py/beakerx.svg)](http://badge.fury.io/py/beakerx)
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/beakerx/badges/version.svg)](https://anaconda.org/conda-forge/beakerx)
-[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/twosigma/beakerx/0.16.1?filepath=StartHere.ipynb)
+[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/twosigma/beakerx/0.17.1?filepath=StartHere.ipynb)
 
 BeakerX is a collection of JVM kernels and interactive widgets for
 plotting, tables, autotranslation, and other extensions to Jupyter
 Notebook.  BeakerX is in beta and under active development.
 
 The [documentation](https://github.com/twosigma/beakerx/blob/master/StartHere.ipynb) consists of tutorial notebooks on GitHub.
-You can try it in the cloud for free with [Binder](https://mybinder.org/v2/gh/twosigma/beakerx/0.16.1?filepath=StartHere.ipynb).
+You can try it in the cloud for free with [Binder](https://mybinder.org/v2/gh/twosigma/beakerx/0.17.1?filepath=StartHere.ipynb).
 
 BeakerX is the successor to the [Beaker Notebook (source code
 archive)](https://github.com/twosigma/beaker-notebook-archive).  It
@@ -53,7 +53,7 @@ how to install and run BeakerX.
 ### Build and Install
 
 ```
-conda create -y -n beakerx 'python>=3' nodejs pandas openjdk maven
+conda create -y -n beakerx 'python>=3' nodejs pandas openjdk maven py4j
 source activate beakerx
 conda config --env --add pinned_packages 'openjdk>8.0.121'
 conda install -y -c conda-forge ipywidgets
@@ -64,7 +64,7 @@ beakerx install
 ### Build and Install for Jupyter Lab
 
 ```
-conda create -y -n labx 'python>=3' nodejs pandas openjdk maven
+conda create -y -n labx 'python>=3' nodejs pandas openjdk maven py4j
 source activate labx
 conda config --env --add pinned_packages 'openjdk>8.0.121'
 conda install -y -c conda-forge jupyterlab

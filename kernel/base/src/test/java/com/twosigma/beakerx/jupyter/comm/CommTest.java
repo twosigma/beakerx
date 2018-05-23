@@ -32,6 +32,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -57,7 +58,7 @@ public class CommTest {
     //given
     submitCodeToExecution();
     //when
-    Message parentMessage = new Message();
+    Message parentMessage = commMsg();
     comm.open(parentMessage);
     assertThat(kernel.getPublishedMessages().get(0).getParentHeader()).isEqualTo(parentMessage.getHeader());
     kernel.clearPublishedMessages();
@@ -81,7 +82,7 @@ public class CommTest {
 
   private Message submitCodeToExecution() {
     SimpleEvaluationObject value = new SimpleEvaluationObject("ok");
-    Message jupyterMessage = new Message();
+    Message jupyterMessage = commMsg();
     value.setJupyterMessage(jupyterMessage);
     InternalVariable.setValue(value);
     return jupyterMessage;

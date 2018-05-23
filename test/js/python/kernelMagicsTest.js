@@ -32,14 +32,6 @@ describe('Tests for kernel magic. ', function () {
   var cellIndex;
   var imageDir = 'python/kernelMagics';
 
-  function checkPlotWithLine(codeCell){
-    browser.waitUntil(function(){
-      return codeCell.$$('div.dtcontainer').length > 0;
-    }, 20000);
-    var dtContainer = beakerxPO.getDtContainerByIndex(cellIndex);
-    expect(dtContainer.$('path.plot-line').isVisible()).toBeTruthy();
-  }
-
   describe('UI options. ', function () {
     it("Use new table widget. ", function () {
       beakerxPO.setDataGridForTable(true, false);
@@ -87,7 +79,7 @@ describe('Tests for kernel magic. ', function () {
     it('Should display Plot with Line ', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      checkPlotWithLine(codeCell);
+      beakerxPO.checkPlotWithLine(codeCell, cellIndex);
     });
   });
 
@@ -95,7 +87,7 @@ describe('Tests for kernel magic. ', function () {
     it('Should display Plot with Line ', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      checkPlotWithLine(codeCell);
+      beakerxPO.checkPlotWithLine(codeCell, cellIndex);
     });
   });
 
@@ -103,7 +95,7 @@ describe('Tests for kernel magic. ', function () {
     it('Should display Plot with Line ', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      checkPlotWithLine(codeCell);
+      beakerxPO.checkPlotWithLine(codeCell, cellIndex);
     });
   });
 
@@ -111,7 +103,7 @@ describe('Tests for kernel magic. ', function () {
     it('Should display Plot with Line ', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      checkPlotWithLine(codeCell);
+      beakerxPO.checkPlotWithLine(codeCell, cellIndex);
     });
   });
 
@@ -119,7 +111,7 @@ describe('Tests for kernel magic. ', function () {
     it('Should display Plot with Line ', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      checkPlotWithLine(codeCell);
+      beakerxPO.checkPlotWithLine(codeCell, cellIndex);
     });
   });
 

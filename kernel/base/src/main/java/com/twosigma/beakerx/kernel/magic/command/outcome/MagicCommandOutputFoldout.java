@@ -76,7 +76,7 @@ public class MagicCommandOutputFoldout implements MagicCommandOutcomeItem {
     Foldout.FoldoutOption foldoutOption = new Foldout.FoldoutOption();
     foldoutOption.headerLabel = this.header;
     Foldout value = new Foldout(message, foldoutOption);
-    BxHTML content = new BxHTML();
+    BxHTML content = new BxHTML(message);
     content.setValue(getMIMEContainer().get().getData());
     value.add(content);
     value.display();

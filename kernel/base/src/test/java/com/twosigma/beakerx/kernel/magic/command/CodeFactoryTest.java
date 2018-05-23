@@ -22,6 +22,7 @@ import com.twosigma.beakerx.message.Message;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CodeFactoryTest {
@@ -42,7 +43,7 @@ public class CodeFactoryTest {
             "println(2)\n" +
             "%time 1+2\n";
     //when
-    Code code = CodeFactory.create(codeAsString, new Message(), kernel);
+    Code code = CodeFactory.create(codeAsString, commMsg(), kernel);
     //then
     assertThat(code.getCodeFrames().size()).isEqualTo(4);
   }
@@ -60,7 +61,7 @@ public class CodeFactoryTest {
             "%time 1+2\n" +
             "println(4)\n";
     //when
-    Code code = CodeFactory.create(codeAsString, new Message(), kernel);
+    Code code = CodeFactory.create(codeAsString, commMsg(), kernel);
     //then
     assertThat(code.getCodeFrames().size()).isEqualTo(5);
   }
@@ -76,7 +77,7 @@ public class CodeFactoryTest {
             "println(2)\n" +
             "  %time 1+2";
     //when
-    Code code = CodeFactory.create(codeAsString, new Message(), kernel);
+    Code code = CodeFactory.create(codeAsString, commMsg(), kernel);
     //then
     assertThat(code.getCodeFrames().size()).isEqualTo(4);
   }
@@ -85,8 +86,8 @@ public class CodeFactoryTest {
   public void shouldNotModifyCode() {
     String codeAsString = "%time println(\"x  y\")";
     //when
-    Code code = CodeFactory.create(codeAsString, new Message(), kernel);
+    Code code = CodeFactory.create(codeAsString, commMsg(), kernel);
     //then
-    assertThat(((MagicCommand)code.getCodeFrames().get(0)).getCommand()).isEqualTo(codeAsString);
+    assertThat(((MagicCommand) code.getCodeFrames().get(0)).getCommand()).isEqualTo(codeAsString);
   }
 }

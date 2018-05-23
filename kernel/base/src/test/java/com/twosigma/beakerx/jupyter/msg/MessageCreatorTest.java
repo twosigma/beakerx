@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.jupyter.msg;
 
+import com.twosigma.beakerx.MessageFactorTest;
 import com.twosigma.beakerx.kernel.SocketEnum;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.KernelTest;
@@ -29,6 +30,7 @@ import com.twosigma.beakerx.message.Message;
 import java.util.List;
 import java.util.Map;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static com.twosigma.beakerx.kernel.msg.MessageCreator.NULL_RESULT;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,7 +44,7 @@ public class MessageCreatorTest {
   public void setUp() throws Exception {
     kernel = new KernelTest("id1");
     seo = new SimpleEvaluationObject("code");
-    seo.setJupyterMessage(new Message());
+    seo.setJupyterMessage(commMsg());
   }
 
   @Test
@@ -116,7 +118,7 @@ public class MessageCreatorTest {
   @Test
   public void createIdleMessage_messageHasTypeIsStatus() {
     //when
-    Message message = MessageCreator.createIdleMessage(new Message());
+    Message message = MessageCreator.createIdleMessage(commMsg());
     //then
     assertThat(message.type()).isEqualTo(JupyterMessages.STATUS);
   }
@@ -124,7 +126,7 @@ public class MessageCreatorTest {
   @Test
   public void createIdleMessage_messageHasExecutionStateIsIdle() {
     //when
-    Message message = MessageCreator.createIdleMessage(new Message());
+    Message message = MessageCreator.createIdleMessage(commMsg());
     //then
     Map data = message.getContent();
     assertThat(data.get(MessageCreator.EXECUTION_STATE)).isEqualTo(MessageCreator.IDLE);
@@ -133,7 +135,7 @@ public class MessageCreatorTest {
   @Test
   public void createBusyMessage_messageHasTypeIsStatus() {
     //when
-    Message message = MessageCreator.createBusyMessage(new Message());
+    Message message = MessageCreator.createBusyMessage(commMsg());
     //then
     assertThat(message.type()).isEqualTo(JupyterMessages.STATUS);
   }
@@ -141,7 +143,7 @@ public class MessageCreatorTest {
   @Test
   public void createBusyMessage_messageHasExecutionStateIsBusy() {
     //when
-    Message message = MessageCreator.createBusyMessage(new Message());
+    Message message = MessageCreator.createBusyMessage(commMsg());
     //then
     Map data = message.getContent();
     assertThat(data.get(MessageCreator.EXECUTION_STATE)).isEqualTo(MessageCreator.BUSY);

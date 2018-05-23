@@ -26,6 +26,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Map;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.JavaScriptMagicCommand.JAVASCRIPT;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -47,7 +48,7 @@ public class JavaScriptMagicCommandTest {
                     "      d3: '//cdnjs.cloudflare.com/ajax/libs/d3/3.4.8/d3.min'\n" +
                     "  }});";
 
-    Code code = CodeFactory.create(JAVASCRIPT + System.lineSeparator() + jsCode, new Message(), kernel);
+    Code code = CodeFactory.create(JAVASCRIPT + System.lineSeparator() + jsCode, commMsg(), kernel);
     //when
     code.execute(this.kernel, 1);
     //MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
@@ -63,7 +64,7 @@ public class JavaScriptMagicCommandTest {
   public void shouldCreateMsgWithWrongMagic() {
     //given
     String jsCode = System.lineSeparator() + "alert()";
-    Code code = CodeFactory.create(JAVASCRIPT + "wrong" + jsCode, new Message(), kernel);
+    Code code = CodeFactory.create(JAVASCRIPT + "wrong" + jsCode, commMsg(), kernel);
     //when
     code.execute(kernel, 1);
     //then

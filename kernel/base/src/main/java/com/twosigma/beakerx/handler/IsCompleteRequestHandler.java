@@ -45,11 +45,10 @@ public class IsCompleteRequestHandler extends KernelHandler<Message> {
 
   private void handleMsg(Message message) {
     logger.debug("Processing is complete request");
-    Message reply = new Message();
+    Message reply = new Message(new Header(IS_COMPLETE_REPLY, message.getHeader().getSession()));
     HashMap<String, Serializable> map = new HashMap<>();
     map.put("status", "complete");
     reply.setContent(map);
-    reply.setHeader(new Header(IS_COMPLETE_REPLY, message.getHeader().getSession()));
     reply.setParentHeader(message.getHeader());
     reply.setIdentities(message.getIdentities());
     send(reply);

@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TimeCellModeMagicCommandTest {
@@ -52,7 +53,7 @@ public class TimeCellModeMagicCommandTest {
             "a = [10,20,30,40,50]; \n" +
             "a= a.sum(); \n" +
             "a*10;";
-    Code code = CodeFactory.create(allCode, new Message(), kernel);
+    Code code = CodeFactory.create(allCode, commMsg(), kernel);
     //when
     code.execute(kernel, 1);
     //then

@@ -34,6 +34,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SparkMagicCommandTest {
@@ -68,18 +69,18 @@ public class SparkMagicCommandTest {
   }
 
   private MagicCommandOutcomeItem connectToSparkSecondTime() {
-    Code code2 = Code.createCode("", new ArrayList<>(), new ArrayList<>(), new Message());
+    Code code2 = Code.createCode("", new ArrayList<>(), new ArrayList<>(),commMsg());
     MagicCommandExecutionParam param2 = new MagicCommandExecutionParam("", "", 2, code2, true);
     return sparkMagicCommand.execute(param2);
   }
 
   private MagicCommandOutcomeItem createSparkUiAndConnectToSession() {
-    Code code = Code.createCode("%%spark", new ArrayList<>(), new ArrayList<>(), new Message());
+    Code code = Code.createCode("%%spark", new ArrayList<>(), new ArrayList<>(),commMsg());
     MagicCommandExecutionParam param = new MagicCommandExecutionParam("%%spark", "", 1, code, true);
     MagicCommandOutcomeItem execute = sparkMagicCommand.execute(param);
     assertThat(execute.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.OK);
     assertThat(sparkUI.isSparkSessionIsActive()).isFalse();
-    sparkUI.getConnectButton().onClick(new HashMap(), new Message());
+    sparkUI.getConnectButton().onClick(new HashMap(), commMsg());
     return execute;
   }
 
@@ -101,7 +102,7 @@ public class SparkMagicCommandTest {
       SparkSession.Builder builder = SparkSession.builder().config(sparkConf);
 
       @Override
-      public TryResult configure(KernelFunctionality kernel, SparkUIManager sparkContextManager) {
+      public TryResult configure(KernelFunctionality kernel, SparkUIManager sparkContextManager, Message parent) {
         return TryResult.createResult("ok");
       }
 

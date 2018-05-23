@@ -39,6 +39,7 @@ import java.util.Map;
 
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.KernelExecutionTest.DEMO_JAR;
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -74,6 +75,7 @@ public class ScalaEvaluatorTest {
             "val plot = new Plot();\n" +
             "plot.setTitle(\"test title\");";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    seo.setJupyterMessage(commMsg());
     //when
     TryResult evaluate = scalaEvaluator.evaluate(seo, code);
     //then
@@ -116,6 +118,7 @@ public class ScalaEvaluatorTest {
     String code = "val table = new TableDisplay(new CSV().readFile(\"src/test/resources/tableRowsTest.csv\"))\n" +
             "table";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    seo.setJupyterMessage(commMsg());
     //when
     TryResult evaluate = scalaEvaluator.evaluate(seo, code);
     //then

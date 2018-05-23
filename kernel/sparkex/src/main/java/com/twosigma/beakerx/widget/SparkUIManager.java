@@ -112,7 +112,7 @@ public class SparkUIManager {
   private void initSparkContext(Message parentMessage) {
     KernelFunctionality kernel = KernelManager.get();
     try {
-      TryResult configure = sparkManager.configure(kernel, this);
+      TryResult configure = sparkManager.configure(kernel, this, parentMessage);
       if (configure.isError()) {
         sendError(parentMessage, kernel, configure.error());
       } else {

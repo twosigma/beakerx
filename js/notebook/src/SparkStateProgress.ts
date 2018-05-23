@@ -182,7 +182,7 @@ class SparkStateProgressView extends widgets.VBoxView {
     let valueActive = state.active;
     let valueWaiting = max - (valueDone + valueActive);
     
-    this.progressLabels = document.createElement('p');
+    this.progressLabels = document.createElement('div');
     this.progressLabels.classList.add('bx-spark-stageProgressLabels');
     
     this.progressLabels.innerHTML = `

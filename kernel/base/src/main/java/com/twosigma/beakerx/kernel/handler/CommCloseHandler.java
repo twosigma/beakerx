@@ -68,8 +68,7 @@ public class CommCloseHandler extends KernelHandler<Message> {
                     : "";
     kernel.removeComm(getString(commMap, COMM_ID));
 
-    Message reply = new Message();
-    reply.setHeader(new Header(COMM_CLOSE, message.getHeader().getSession()));
+    Message reply = new Message(new Header(COMM_CLOSE, message.getHeader().getSession()));
     HashMap<String, Serializable> map = new HashMap<>();
     map.put(DATA, new HashMap<>());
     reply.setContent(map);

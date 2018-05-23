@@ -22,6 +22,8 @@ import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathResetMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widget.TestWidgetUtils;
 import org.apache.commons.io.FileUtils;
@@ -92,7 +94,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     //given
     String allCode = CLASSPATH_ADD_MVN + " com.google.code.XXXX gson 2.6.2";
     MagicCommand command = new MagicCommand(new ClasspathAddMvnMagicCommand(kernel.mavenResolverParam, kernel), allCode);
-    Code code = Code.createCode(allCode, singletonList(command), NO_ERRORS, new Message());
+    Code code = Code.createCode(allCode, singletonList(command), NO_ERRORS, new Message(new Header(JupyterMessages.COMM_MSG, "session1")));
     //when
     code.execute(kernel, 1);
     //then
@@ -114,7 +116,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     String resetCode = CLASSPATH_RESET;
     ClasspathResetMagicCommand resetMagicCommand = MagicCommandTypesFactory.getClasspathResetMagicCommand(kernel);
     MagicCommand command = new MagicCommand(resetMagicCommand, resetCode);
-    Code code = Code.createCode(resetCode, singletonList(command), NO_ERRORS, new Message());
+    Code code = Code.createCode(resetCode, singletonList(command), NO_ERRORS, new Message(new Header(JupyterMessages.COMM_MSG, "session1")));
     code.execute(kernel, 1);
     //then
     List<Message> stderr = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());
@@ -132,7 +134,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     //given
     String allCode = CLASSPATH_ADD_MVN + " com.google.code.XXXX gson";
     MagicCommand command = new MagicCommand(new ClasspathAddMvnMagicCommand(kernel.mavenResolverParam, kernel), allCode);
-    Code code = Code.createCode(allCode, singletonList(command), NO_ERRORS, new Message());
+    Code code = Code.createCode(allCode, singletonList(command), NO_ERRORS, new Message(new Header(JupyterMessages.COMM_MSG, "session1")));
     //when
     code.execute(kernel, 1);
     //then
@@ -143,12 +145,12 @@ public class ClasspathAddMvnDepsMagicCommandTest {
 
   private void handleClasspathAddMvnDep(String allCode, String expected) throws Exception {
     MagicCommand command = new MagicCommand(new ClasspathAddMvnMagicCommand(kernel.mavenResolverParam, kernel), allCode);
-    Code code = Code.createCode(allCode, singletonList(command), NO_ERRORS, new Message());
+    Code code = Code.createCode(allCode, singletonList(command), NO_ERRORS, new Message(new Header(JupyterMessages.COMM_MSG, "session1")));
     //when
     code.execute(kernel, 1);
     //then
     Optional<Message> updateMessage = EvaluatorResultTestWatcher.waitForUpdateMessage(kernel);
-    String text =  (String)TestWidgetUtils.getState(updateMessage.get()).get("value");
+    String text = (String) TestWidgetUtils.getState(updateMessage.get()).get("value");
     assertThat(text).contains(expected);
     String mvnDir = kernel.getTempFolder().toString() + MavenJarResolver.MVN_DIR;
     Stream<Path> paths = Files.walk(Paths.get(mvnDir));

@@ -28,7 +28,7 @@ public class BxHTML extends StringWidget {
   }
 
   public BxHTML(Message parent) {
-    super();
+    super(parent);
     openComm(parent);
   }
 

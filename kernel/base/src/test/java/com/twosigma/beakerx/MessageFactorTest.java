@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,25 +13,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget;
+package com.twosigma.beakerx;
 
-public class HTML extends StringWidget {
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.message.Header;
+import com.twosigma.beakerx.message.Message;
 
-  public static final String VIEW_NAME_VALUE = "HTMLView";
-  public static final String MODEL_NAME_VALUE = "HTMLModel";
+public class MessageFactorTest {
 
-  public HTML() {
-    super();
-    openComm();
+  public static Message commMsg() {
+    return msg(JupyterMessages.COMM_MSG);
   }
 
-  @Override
-  public String getModelNameValue() {
-    return MODEL_NAME_VALUE;
-  }
-
-  @Override
-  public String getViewNameValue() {
-    return VIEW_NAME_VALUE;
+  public static Message msg(JupyterMessages type) {
+    return new Message(new Header(type, "session1"));
   }
 }

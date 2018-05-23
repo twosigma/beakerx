@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.KERNEL_PARAMETERS;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
@@ -80,6 +81,7 @@ public class KotlinEvaluatorTest {
             "plot.setTitle(\"test title\");\n" +
             "plot.display();";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    seo.setJupyterMessage(commMsg());
     //when
     TryResult evaluate = evaluator.evaluate(seo, code);
     //then
@@ -93,6 +95,7 @@ public class KotlinEvaluatorTest {
             "import com.twosigma.beakerx.chart.xychart.*\n" +
             "val plot = Plot()";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    seo.setJupyterMessage(commMsg());
     //when
     TryResult evaluate = evaluator.evaluate(seo, code);
     //then
@@ -104,6 +107,7 @@ public class KotlinEvaluatorTest {
     //given
     String code = "val plot = UndefinedPlot()";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    seo.setJupyterMessage(commMsg());
     //when
     TryResult evaluate = evaluator.evaluate(seo, code);
     //then

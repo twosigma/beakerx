@@ -37,6 +37,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
+import static com.twosigma.beakerx.MessageFactorTest.msg;
 import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
@@ -136,10 +138,7 @@ public class GroovyKernelTest extends KernelExecutionTest {
   }
 
   private Message outputWidgetUpdateMessage(String outputCommId) {
-    Message message = new Message();
-    Header header = new Header();
-    header.setTypeEnum(JupyterMessages.COMM_MSG);
-    message.setHeader(header);
+    Message message = msg(JupyterMessages.COMM_MSG);
     HashMap<String, Serializable> content = new HashMap<>();
     HashMap<String, Serializable> data = new HashMap<>();
     data.put("method", "update");
@@ -158,7 +157,7 @@ public class GroovyKernelTest extends KernelExecutionTest {
     addDemoJar();
     String path = pathToDemoClassFromAddedDemoJar() + ".*";
     //when
-    Code code = CodeFactory.create(ADD_STATIC_IMPORT + " " + path, new Message(), getKernel());
+    Code code = CodeFactory.create(ADD_STATIC_IMPORT + " " + path, commMsg(), getKernel());
     code.execute(kernel, 1);
     //then
     verifyStaticImportedDemoClassByMagicCommand(pathToDemoClassFromAddedDemoJar() + ".staticTest()");
@@ -171,7 +170,7 @@ public class GroovyKernelTest extends KernelExecutionTest {
     addDemoJar();
     String path = pathToDemoClassFromAddedDemoJar() + ".staticTest";
     //when
-    Code code = CodeFactory.create(ADD_STATIC_IMPORT + " " + path, new Message(), getKernel());
+    Code code = CodeFactory.create(ADD_STATIC_IMPORT + " " + path, commMsg(), getKernel());
     code.execute(kernel, 1);
     //then
     verifyStaticImportedDemoClassByMagicCommand(pathToDemoClassFromAddedDemoJar() + ".staticTest()");
@@ -183,7 +182,7 @@ public class GroovyKernelTest extends KernelExecutionTest {
     addDemoJar();
     String path = pathToDemoClassFromAddedDemoJar() + ".STATIC_TEST_123";
     //when
-    Code code = CodeFactory.create(ADD_STATIC_IMPORT + " " + path, new Message(), getKernel());
+    Code code = CodeFactory.create(ADD_STATIC_IMPORT + " " + path, commMsg(), getKernel());
     code.execute(kernel, 1);
     //then
     verifyStaticImportedDemoClassByMagicCommand(pathToDemoClassFromAddedDemoJar() + ".STATIC_TEST_123");
@@ -205,7 +204,7 @@ public class GroovyKernelTest extends KernelExecutionTest {
     //given
     String allCode = ADD_STATIC_IMPORT + " " + pathToDemoClassFromAddedDemoJar() + "UnknownClass";
     //when
-    Code code = CodeFactory.create(allCode, new Message(), getKernel());
+    Code code = CodeFactory.create(allCode, commMsg(), getKernel());
     code.execute(kernel, 1);
     //then
     verifyNotImportedStaticMagicCommand();
@@ -217,7 +216,7 @@ public class GroovyKernelTest extends KernelExecutionTest {
     addDemoJar();
     String path = pathToDemoClassFromAddedDemoJar() + ".STATIC_TEST_123_unknown";
     //when
-    Code code = CodeFactory.create(ADD_STATIC_IMPORT + " " + path, new Message(), getKernel());
+    Code code = CodeFactory.create(ADD_STATIC_IMPORT + " " + path, commMsg(), getKernel());
     code.execute(kernel, 1);
     //then
     verifyNotImportedStaticMagicCommand();
@@ -229,7 +228,7 @@ public class GroovyKernelTest extends KernelExecutionTest {
     addDemoJar();
     String path = pathToDemoClassFromAddedDemoJar() + ".staticTest_unknown";
     //when
-    Code code = CodeFactory.create(ADD_STATIC_IMPORT + " " + path, new Message(), getKernel());
+    Code code = CodeFactory.create(ADD_STATIC_IMPORT + " " + path, commMsg(), getKernel());
     code.execute(kernel, 1);
     //then
     verifyNotImportedStaticMagicCommand();
@@ -241,7 +240,7 @@ public class GroovyKernelTest extends KernelExecutionTest {
     addDemoJar();
     String path = "garbage";
     //when
-    Code code = CodeFactory.create(ADD_STATIC_IMPORT + " " + path, new Message(), getKernel());
+    Code code = CodeFactory.create(ADD_STATIC_IMPORT + " " + path, commMsg(), getKernel());
     code.execute(kernel, 1);
     //then
     verifyNotImportedStaticMagicCommand();

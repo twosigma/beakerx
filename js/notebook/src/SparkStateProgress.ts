@@ -161,7 +161,6 @@ class SparkStateProgressView extends widgets.VBoxView {
 
     this.progressBar = document.createElement('div');
     this.progressBar.classList.add('bx-spark-stageProgressBar');
-    this.progressBar.classList.add('progress');
 
     this.progressBar.innerHTML = `
       <div class="bx-progress-bar done" style="width: ${percentDone}%"></div>

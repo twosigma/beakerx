@@ -28,12 +28,6 @@
   max-width: 600px;
 }
 
-.bx-spark-stageProgressBar {
-  margin: 0 10px;
-  display: flex;
-  align-items: center;
-
-}
 .bx-spark-stageProgressLabels {
   margin: 0;
 }
@@ -73,10 +67,17 @@
   &.all { background-color: $bxColorDefault; }
 }
 
+.bx-spark-stageProgressBar {
+  margin: 0 10px;
+  display: flex;
+  align-items: center;
+  border-radius: .25em;
+  overflow: hidden;
+}
+
 .bx-progress-bar {
   display: inline-block;
   height: 18px;
-  border-radius: .25em;
 
   &.done { background-color: $bxColorSuccess; }
   &.active { background-color: $bxColorInfo; }

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,6 +13,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package com.twosigma.beakerx;
 
-$icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
-@import '~bootstrap-sass/assets/stylesheets/bootstrap';
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.message.Header;
+import com.twosigma.beakerx.message.Message;
+
+public class MessageFactorTest {
+
+  public static Message commMsg() {
+    return msg(JupyterMessages.COMM_MSG);
+  }
+
+  public static Message msg(JupyterMessages type) {
+    return new Message(new Header(type, "session1"));
+  }
+}

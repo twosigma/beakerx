@@ -29,6 +29,8 @@ import org.junit.Test;
 
 import java.util.HashMap;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
+
 public class EvaluatorManagerTest {
 
   private EvaluatorTest evaluator;
@@ -79,7 +81,7 @@ public class EvaluatorManagerTest {
   @Test
   public void executeCode_callEvaluatorToEvaluate() {
     String code = "test code";
-    SimpleEvaluationObject seo = PlainCode.createSimpleEvaluationObject(code, kernel, new Message(), 5);
+    SimpleEvaluationObject seo = PlainCode.createSimpleEvaluationObject(code, kernel, commMsg(), 5);
     //when
     evaluatorManager.executeCode(code, seo);
     //then

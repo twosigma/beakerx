@@ -15,6 +15,8 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.twosigma.beakerx.message.Message;
+
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -45,6 +47,11 @@ public class Layout extends Widget {
   public Layout() {
     super();
     openComm();
+  }
+
+  public Layout(Message parent) {
+    super();
+    openComm(parent);
   }
 
   @Override

@@ -7,8 +7,9 @@
 // Export widget models and views, and the npm package version number.
 module.exports = {};
 
-require('./shared/style/bootstrap.scss');
 require('./shared/style/beakerx.scss');
+require('./shared/style/tree.scss');
+require('./shared/style/spark.scss');
 require('./plot/bko-combinedplot.css');
 require('./plot/bko-plot.css');
 

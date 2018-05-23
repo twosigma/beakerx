@@ -49,9 +49,8 @@ public abstract class KernelInfoHandler extends KernelHandler<Message> {
 
   private void handleMsg(Message message) {
     logger.debug("Processing kernel info request");
-    Message reply = new Message();
+    Message reply = new Message(new Header(KERNEL_INFO_REPLY, message.getHeader().getSession()));
     reply.setContent(content());
-    reply.setHeader(new Header(KERNEL_INFO_REPLY, message.getHeader().getSession()));
     reply.setParentHeader(message.getHeader());
     reply.setIdentities(message.getIdentities());
     send(reply);

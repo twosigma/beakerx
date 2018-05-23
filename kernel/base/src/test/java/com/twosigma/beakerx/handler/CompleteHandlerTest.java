@@ -17,6 +17,7 @@
 package com.twosigma.beakerx.handler;
 
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.MessageFactorTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
@@ -109,7 +110,7 @@ public class CompleteHandlerTest {
   }
 
   private Message createAutocompleteMsg() {
-    Message message = new Message();
+    Message message = MessageFactorTest.commMsg();
     Map<String, Serializable> content = new HashMap();
     content.put(CompleteHandler.CODE, "test");
     content.put(CompleteHandler.CURSOR_POS, 0);

@@ -17,6 +17,7 @@ package com.twosigma.beakerx.message;
 
 import static com.twosigma.beakerx.kernel.Utils.timestamp;
 import static com.twosigma.beakerx.kernel.Utils.uuid;
+import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -36,7 +37,8 @@ public class Header {
   private JupyterMessages type;
   private String version;
 
-  public Header() {
+  private Header(){
+    //only for jackson
   }
 
   public Header(JupyterMessages type, String session) {
@@ -44,7 +46,7 @@ public class Header {
     id = uuid();
     username = "kernel";
     this.type = type;
-    this.session = session;
+    this.session = checkNotNull(session);
     this.version = "5.3";
   }
 
@@ -78,10 +80,6 @@ public class Header {
 
   public String getSession() {
     return session;
-  }
-
-  public void setSession(String session) {
-    this.session = session;
   }
 
   public String getType() {

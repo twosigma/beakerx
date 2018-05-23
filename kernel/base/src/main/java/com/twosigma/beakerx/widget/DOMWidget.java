@@ -43,6 +43,11 @@ public abstract class DOMWidget extends Widget {
     layout = new Layout();
   }
 
+  public DOMWidget(Message parent) {
+    super();
+    layout = new Layout(parent);
+  }
+
   @SuppressWarnings("unchecked")
   @Override
   protected void addValueChangeMsgCallback() {

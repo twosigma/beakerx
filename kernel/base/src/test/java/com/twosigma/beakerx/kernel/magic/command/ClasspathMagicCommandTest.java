@@ -31,6 +31,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Optional;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddJarMagicCommand.CLASSPATH_ADD_JAR;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -61,7 +62,7 @@ public class ClasspathMagicCommandTest {
     String allCode = "" +
             CLASSPATH_ADD_JAR + " " + CLASSPATH_TO_JAR_PATH + "\n" +
             "code code code";
-    Code code = CodeFactory.create(allCode, new Message(), kernel);
+    Code code = CodeFactory.create(allCode, commMsg(), kernel);
     //when
     code.execute(kernel, 1);
     //then
@@ -75,7 +76,7 @@ public class ClasspathMagicCommandTest {
     //given
     String allCode = "" +
             CLASSPATH_ADD_JAR + " " + SRC_TEST_RESOURCES + "dirWithTwoJars/*";
-    Code code = CodeFactory.create(allCode, new Message(), kernel);
+    Code code = CodeFactory.create(allCode, commMsg(), kernel);
     //when
     code.execute(kernel, 1);
     //then
@@ -89,7 +90,7 @@ public class ClasspathMagicCommandTest {
   public void shouldCreateMsgWithWrongMagic() {
     //given
     String jar = SRC_TEST_RESOURCES + "BeakerXClasspathTest.jar";
-    Code code = CodeFactory.create("%classpath2 add jar" + " " + jar, new Message(), kernel);
+    Code code = CodeFactory.create("%classpath2 add jar" + " " + jar, commMsg(), kernel);
     //when
     code.execute(kernel, 1);
     //then
@@ -103,7 +104,7 @@ public class ClasspathMagicCommandTest {
   public void showClasspath() {
     //given
     kernel.addJarsToClasspath(asList(new PathToJar(CLASSPATH_TO_JAR_PATH)));
-    Code code = CodeFactory.create("%classpath", new Message(), kernel);
+    Code code = CodeFactory.create("%classpath", commMsg(), kernel);
     //when
     code.execute(kernel, 1);
     //then
@@ -119,7 +120,7 @@ public class ClasspathMagicCommandTest {
     kernel.clearMessages();
     //when
     kernel.addJarsToClasspath(asList(new PathToJar(CLASSPATH_TO_JAR_PATH)));
-    Code code = CodeFactory.create("%classpath", new Message(), kernel);
+    Code code = CodeFactory.create("%classpath", commMsg(), kernel);
     code.execute(kernel, 1);
     //then
     List<Message> std = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());
@@ -129,7 +130,7 @@ public class ClasspathMagicCommandTest {
 
   @Test
   public void allowExtraWhitespaces() throws InterruptedException {
-    Code code = CodeFactory.create("%classpath  add  jar          " + CLASSPATH_TO_JAR_PATH, new Message(), kernel);
+    Code code = CodeFactory.create("%classpath  add  jar          " + CLASSPATH_TO_JAR_PATH, commMsg(), kernel);
     code.execute(kernel, 1);
     Optional<Message> updateMessage = EvaluatorResultTestWatcher.waitForUpdateMessage(kernel);
     String text =  (String)TestWidgetUtils.getState(updateMessage.get()).get("value");
@@ -138,7 +139,7 @@ public class ClasspathMagicCommandTest {
 
   @Test
   public void allowSpacesInJarPath() throws InterruptedException {
-    Code code = CodeFactory.create("%classpath add jar \"./src/test/resources/jars/ with space.jar\"", new Message(), kernel);
+    Code code = CodeFactory.create("%classpath add jar \"./src/test/resources/jars/ with space.jar\"", commMsg(), kernel);
     code.execute(kernel, 1);
     Optional<Message> updateMessage = EvaluatorResultTestWatcher.waitForUpdateMessage(kernel);
     String text =  (String)TestWidgetUtils.getState(updateMessage.get()).get("value");

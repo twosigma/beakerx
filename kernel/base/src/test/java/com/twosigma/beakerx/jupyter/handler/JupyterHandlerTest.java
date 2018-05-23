@@ -61,9 +61,8 @@ public class JupyterHandlerTest {
     content.put(TARGET_NAME, "targetName");
     content.put(TARGET_MODULE, "targetModule");
 
-    Message message = new Message();
+    Message message = new Message(initHeader(JupyterMessages.COMM_CLOSE));
     message.setIdentities(Arrays.asList("identities".getBytes()));
-    message.setHeader(initHeader(JupyterMessages.COMM_CLOSE));
     message.setContent(content);
     return message;
   }
@@ -75,9 +74,8 @@ public class JupyterHandlerTest {
     content.put(TARGET_NAME, "targetName");
     content.put(TARGET_MODULE, "targetModule");
 
-    Message message = new Message();
+    Message message = new Message(initHeader(JupyterMessages.COMM_OPEN));
     message.setIdentities(Arrays.asList("identities".getBytes()));
-    message.setHeader(initHeader(JupyterMessages.COMM_OPEN));
     message.setContent(content);
     return message;
   }
@@ -92,9 +90,8 @@ public class JupyterHandlerTest {
   }
 
   public static Message initCommMessage(Map<String, Serializable> content) {
-    Message message = new Message();
+    Message message = new Message(initHeader(JupyterMessages.COMM_MSG));
     message.setIdentities(Arrays.asList("identities".getBytes()));
-    message.setHeader(initHeader(JupyterMessages.COMM_MSG));
     message.setContent(content);
     return message;
   }
@@ -122,27 +119,23 @@ public class JupyterHandlerTest {
   }
 
   private static Message executeRequestMessage() {
-    Message message = new Message();
+    Message message = new Message(initHeader(JupyterMessages.EXECUTE_REQUEST));
     message.setIdentities(Arrays.asList("identities".getBytes()));
-    message.setHeader(initHeader(JupyterMessages.EXECUTE_REQUEST));
     message.setParentHeader(null);
     message.setMetadata(new LinkedHashMap<>());
     return message;
   }
 
   public static Message initInfoMessage() {
-    Message message = new Message();
+    Message message = new Message(initHeader(JupyterMessages.COMM_INFO_REQUEST));
     message.setIdentities(Arrays.asList("identities".getBytes()));
-    message.setHeader(initHeader(JupyterMessages.COMM_INFO_REQUEST));
     return message;
   }
 
   public static Header initHeader(JupyterMessages jupyterMessages) {
-    Header header = new Header();
+    Header header = new Header(jupyterMessages, "sessionId" + jupyterMessages.getName());
     header.setId("messageId");
     header.setUsername("username");
-    header.setSession("sessionId" + jupyterMessages.getName());
-    header.setType(jupyterMessages.getName());
     header.setVersion("5.0");
     return header;
   }
@@ -233,8 +226,7 @@ public class JupyterHandlerTest {
   @Test
   public void commInfoHandlerHandleEmptyMessage_dontThrowNullPointerException() throws Exception {
     //given
-    Message message = new Message();
-    MessageTest.initMessage(message);
+    Message message = new Message(initHeader(JupyterMessages.COMM_MSG));
     //when
     commInfoHandler.handle(message);
   }
@@ -242,17 +234,24 @@ public class JupyterHandlerTest {
   @Test
   public void commOpenHandlerHandleEmptyMessage_dontThrowNullPointerException() throws Exception {
     //given
-    Message message = new Message();
-    MessageTest.initMessage(message);
+    Message message = new Message(initHeader(JupyterMessages.COMM_MSG));
+    initMessage(message);
     //wnen
     commOpenHandler.handle(message);
+  }
+
+  public static void initMessage(Message message) {
+    message.getIdentities().add("identityStr".getBytes());
+    message.setParentHeader(message.getHeader());
+    message.setMetadata(new LinkedHashMap<>());
+    message.setContent(new LinkedHashMap<>());
   }
 
   @Test
   public void commMsgHandlerHandleEmptyMessage_dontThrowNullPointerException() throws Exception {
     //given
-    Message message = new Message();
-    MessageTest.initMessage(message);
+    Message message = new Message(initHeader(JupyterMessages.COMM_MSG));
+    initMessage(message);
     //when
     commMsgHandler.handle(message);
   }
@@ -260,8 +259,8 @@ public class JupyterHandlerTest {
   @Test
   public void commCloseHandlerHandleEmptyMessage_dontThrowNullPointerException() throws Exception {
     //given
-    Message message = new Message();
-    MessageTest.initMessage(message);
+    Message message = new Message(initHeader(JupyterMessages.COMM_MSG));
+    initMessage(message);
     //when
     commCloseHandler.handle(message);
   }

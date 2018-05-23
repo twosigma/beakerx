@@ -14,24 +14,15 @@
  *  limitations under the License.
  */
 
-import * as $ from "jquery";
+$bxBorderColor1: #cccccc;
+$bxBgColor1: #ffffff;
+$bxBgColor2: #eeeeee;
 
-export default class DOMUtils {
+$bxColorSuccess: #5cb85c;
+$bxColorInfo: #5bc0de;
+$bxColorWarning: #f0ad4e;
+$bxColorError: #ff0000;
+$bxColorDefault: #777777;
 
-  public static getRealElementHeight(el: HTMLElement): number {
-    let copyEl = $(el).clone()
-      .attr("id", null)
-      .css({
-        visibility:"hidden",
-        display:"block",
-        position:"absolute"
-      });
-    let fakeEl = $('<div>', { id: 'beakerx-tree-widget' });
-    fakeEl.appendTo($('body'));
-    copyEl.appendTo(fakeEl);
-    let h = copyEl.outerHeight();
-    copyEl.remove();
-    fakeEl.remove();
-    return h;
-  }
-}
+$bxColorLink: #337ab7;
+$bxColorHover: #23527c;

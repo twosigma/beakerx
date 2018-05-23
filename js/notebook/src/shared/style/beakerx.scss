@@ -124,7 +124,6 @@ $focusColor: #66bb6a;
     font-size: 14px;
     line-height: 1.3em;
     flex-grow: 1;
-    max-width: 600px;
     text-indent: 0;
     transition: opacity 0.1s ease-in-out;
     padding: 0 15px;
@@ -133,6 +132,11 @@ $focusColor: #66bb6a;
       text-overflow: ellipsis;
       overflow: hidden;
       white-space: nowrap;
+    }
+
+    p {
+      margin: 0;
+      padding: 0;
     }
   }
 

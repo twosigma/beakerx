@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TimeItLineModeMagicCommandTest {
@@ -48,7 +49,7 @@ public class TimeItLineModeMagicCommandTest {
   public void timeitLineMode() {
     //given
     String allCode = "%timeit -r3 -n1 sleep(1)";
-    Code code = CodeFactory.create(allCode, new Message(), kernel);
+    Code code = CodeFactory.create(allCode, commMsg(), kernel);
     //when
     code.execute(kernel, 1);
     //then

@@ -17,6 +17,7 @@ package com.twosigma.beakerx.scala.magic.command;
 
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.CodeFactory;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
@@ -24,6 +25,8 @@ import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.functionality.LoadMagicMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.scala.spark.SparkDisplayers;
 import com.twosigma.beakerx.scala.spark.SparkImplicit;
@@ -48,7 +51,7 @@ public class LoadSparkSupportMagicCommand implements MagicCommandFunctionality {
 
   @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
-    TryResult implicits = addImplicits();
+    TryResult implicits = addImplicits(param.getCode().getMessage());
     if (implicits.isError()) {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, implicits.error());
     }
@@ -57,7 +60,7 @@ public class LoadSparkSupportMagicCommand implements MagicCommandFunctionality {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Can not run spark support");
     }
     SparkDisplayers.register();
-
+    addDefaultImports();
     return new MagicCommandOutput(MagicCommandOutput.Status.OK, "Spark support enabled");
   }
 
@@ -68,10 +71,18 @@ public class LoadSparkSupportMagicCommand implements MagicCommandFunctionality {
     return magicCommandOutcomeItem;
   }
 
-  private TryResult addImplicits() {
+  private TryResult addImplicits(Message parent) {
     String codeToExecute = new SparkImplicit().codeAsString();
-    SimpleEvaluationObject seo = createSimpleEvaluationObject(codeToExecute, kernel, new Message(), 1);
+    SimpleEvaluationObject seo = createSimpleEvaluationObject(
+            codeToExecute,
+            kernel,
+            new Message(new Header(JupyterMessages.COMM_MSG, parent.getHeader().getSession())),
+            1);
     return kernel.executeCode(codeToExecute, seo);
+  }
+
+  private void addDefaultImports() {
+    kernel.addImport(new ImportPath("org.apache.spark.sql.SparkSession"));
   }
 
 }

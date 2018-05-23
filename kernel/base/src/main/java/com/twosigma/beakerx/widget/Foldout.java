@@ -25,7 +25,7 @@ public class Foldout extends Box {
   public static final String MODEL_NAME_VALUE = "FoldoutModel";
 
   public Foldout(Message parent) {
-    super(new ArrayList<>());
+    super(new ArrayList<>(), parent);
     openComm(parent);
   }
 

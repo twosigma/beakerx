@@ -25,6 +25,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.KERNEL_PARAMETERS;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
@@ -54,6 +55,7 @@ public class JavaEvaluatorTest {
             "Plot plot = new Plot(); plot.setTitle(\"test title\");\n" +
             "return plot;";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    seo.setJupyterMessage(commMsg());
     //when
     TryResult evaluate = javaEvaluator.evaluate(seo, code);
     //then

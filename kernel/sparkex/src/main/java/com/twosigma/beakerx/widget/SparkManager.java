@@ -17,13 +17,14 @@ package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.message.Message;
 import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
 import org.apache.spark.sql.SparkSession;
 
 public interface SparkManager {
 
-  TryResult configure(KernelFunctionality kernel, SparkUIManager sparkContextManager);
+  TryResult configure(KernelFunctionality kernel, SparkUIManager sparkContextManager, Message parentMessage);
 
   SparkSession getOrCreate();
 

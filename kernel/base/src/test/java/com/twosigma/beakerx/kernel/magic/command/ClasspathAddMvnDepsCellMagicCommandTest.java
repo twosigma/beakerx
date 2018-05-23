@@ -45,6 +45,7 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.ClassPathAddMvnCellMagicCommand.CLASSPATH_ADD_MVN_CELL;
 
 public class ClasspathAddMvnDepsCellMagicCommandTest {
@@ -94,7 +95,7 @@ public class ClasspathAddMvnDepsCellMagicCommandTest {
             + "com.google.code.XXXX:gson:2.6.2";
     //given
     MagicCommand command = new MagicCommand(new ClassPathAddMvnCellMagicCommand(kernel.mavenResolverParam, kernel), allCode);
-    Code code = Code.createCode(allCode, Collections.singletonList(command), NO_ERRORS, new Message());
+    Code code = Code.createCode(allCode, Collections.singletonList(command), NO_ERRORS, commMsg());
     //when
     code.execute(kernel, 1);
     //then
@@ -124,7 +125,7 @@ public class ClasspathAddMvnDepsCellMagicCommandTest {
 
   private void processMagicCommand(String allCode) {
     MagicCommand command = new MagicCommand(new ClassPathAddMvnCellMagicCommand(kernel.mavenResolverParam, kernel), allCode);
-    Code code = Code.createCode(allCode, Collections.singletonList(command), NO_ERRORS, new Message());
+    Code code = Code.createCode(allCode, Collections.singletonList(command), NO_ERRORS, commMsg());
     code.execute(kernel, 1);
   }
 

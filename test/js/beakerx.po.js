@@ -239,6 +239,7 @@ function BeakerXPageObject() {
     }
     var sx = (x !== undefined)? x : 0;
     var sy = (y !== undefined)? y : 0;
+    browser.pause(1000);
     var result = browser.execute(function(cnv, sx, sy, width, height){
       var ctx = cnv.getContext("2d");
       var imgData = ctx.getImageData(sx, sy, width, height);

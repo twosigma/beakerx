@@ -26,7 +26,6 @@ import org.apache.spark.sql.SparkSession;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +38,7 @@ public class SparkUIManager {
 
   public static final String SPARK_EXECUTOR_CORES = "spark.executor.cores";
   public static final String SPARK_SESSION_NAME = "spark";
-  public static final String CONNECT = "Connect";
+  public static final String CONNECT = "Start";
   private static final String SPARK_MASTER_DEFAULT = "local[*]";
 
   private final SparkUI sparkUI;
@@ -66,10 +65,10 @@ public class SparkUIManager {
     this.masterURL = createMasterURL();
     this.executorMemory = createExecutorMemory();
     this.executorCores = createExecutorCores();
+    this.sparkUI.addConnectButton(createConnectButton());
     this.sparkUI.addMasterUrl(masterURL);
     this.sparkUI.addExecutorCores(executorCores);
     this.sparkUI.addExecutorMemory(executorMemory);
-    this.sparkUI.addConnectButton(createConnectButton());
     this.advancedOption = new SparkConfiguration();
     this.sparkUI.addAdvanceOptions(advancedOption);
   }

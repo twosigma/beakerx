@@ -21,9 +21,8 @@ import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.message.Message;
 import org.apache.spark.sql.SparkSession;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
 
 import static com.twosigma.beakerx.kernel.PlainCode.createSimpleEvaluationObject;
 
@@ -149,20 +148,22 @@ public class SparkUIManager {
     Label appStatus = createAppStatus();
     Button disconnect = createDisconnectButton();
     HBox statusPanel = new HBox(Arrays.asList(uiLink(), appStatus, disconnect));
+    statusPanel.setDomClasses(new ArrayList<>(Arrays.asList("bx-status-panel")));
     sparkUI.add(statusPanel);
     return statusPanel;
   }
 
   private Label createAppStatus() {
     Label appStatus = new Label();
-    appStatus.setValue("Connected to " + this.sparkManager.getSparkConf().get("spark.master"));
+    appStatus.setDomClasses(new ArrayList<>(Arrays.asList("bx-connection-status", "connected")));
+    appStatus.setValue(this.sparkManager.getSparkConf().get("spark.master"));
     return appStatus;
   }
 
   private Button createDisconnectButton() {
     Button disconnect = new Button();
     disconnect.registerOnClick((content, message) -> getSparkSession().sparkContext().stop());
-    disconnect.setDescription("Disconnect");
+    disconnect.setDomClasses(new ArrayList<>(Arrays.asList("bx-button", "icon-close")));
     return disconnect;
   }
 

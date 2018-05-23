@@ -15,6 +15,8 @@
  */
 
 import * as $ from "jquery";
+import {Widget} from "@phosphor/widgets";
+import BeakerXApi from "./tree/Utils/BeakerXApi";
 
 const widgets = require('./widgets');
 
@@ -33,7 +35,10 @@ class SparkUIModel extends widgets.VBoxModel {
 }
 
 class SparkUIView extends widgets.VBoxView {
-  private connectionStatus: HTMLElement;
+  private sparkStats: Widget;
+  private connectionLabelActive: HTMLElement;
+  private connectionLabelMemory: HTMLElement;
+  private connectionLabelDead: HTMLElement;
 
   public render() {
     super.render();
@@ -76,14 +81,32 @@ class SparkUIView extends widgets.VBoxView {
     }).outerWidth();
   }
 
+  private appendSparkStats(): void {
+    this.sparkStats = new Widget();
+    this.sparkStats.node.classList.add('bx-stats');
+    this.sparkStats.node.innerHTML = `
+      <div class="active label label-info" title="Active">0</div> <div
+      class="memory label label-default" title="Storage memory">0</div> <div
+      class="dead label label-danger" title="Dead">0</div>
+    `;
+
+    this.connectionLabelActive = this.sparkStats.node.querySelector('.active');
+    this.connectionLabelMemory = this.sparkStats.node.querySelector('.memory');
+    this.connectionLabelDead = this.sparkStats.node.querySelector('.dead');
+
+    this.el.querySelector('.bx-connection-status').insertAdjacentElement('afterend', this.sparkStats.node);
+  }
+
   private processConnectionWidget() {
     this.children_views.update(this.model.get('children')).then((views) => {
       views.forEach((view) => {
-        if (view instanceof widgets.LabelView) {
-          this.connectionStatus = view.pWidget;
-          this.connectionStatus.el.classList.add('bx-spark-connectionProgressBar');
-          this.connectionStatus.el.classList.add('progress');
-        }
+        view.children_views.update(view.model.get('children')).then((views) => {
+          views.forEach((view) => {
+            if (view instanceof widgets.LabelView && view.el.classList.contains('bx-connection-status')) {
+              this.appendSparkStats();
+            }
+          });
+        });
       });
     });
   }

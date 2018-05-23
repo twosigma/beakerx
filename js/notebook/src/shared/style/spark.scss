@@ -14,9 +14,7 @@
  *  limitations under the License.
  */
 
-$colorSuccess: #4CAF50;
-$colorWhite: #ffffff;
-$colorBorder: #cfcfcf;
+@import "./variables";
 
 .foldout-preview {
   & > .bx-spark-stagePanel {
@@ -30,11 +28,12 @@ $colorBorder: #cfcfcf;
   max-width: 600px;
 }
 
-.bx-spark-connectionProgressBar,
+.bx-connection-status,
 .bx-spark-stageProgressBar {
   margin: 0 10px;
 }
 
+.bx-stats,
 .bx-spark-stageProgressLabels {
   display: block;
   line-height: 100%;
@@ -48,14 +47,31 @@ $colorBorder: #cfcfcf;
   }
 }
 
-.bx-spark-connectionProgressBar {
-  background-color: transparent;
-  border: 1px solid $colorBorder;
+.bx-stats {
+  margin: 4px 0;
   height: 20px;
-  margin: 6px;
-  line-height: 18px;
+  line-height: 17px;
+}
+
+.bx-status-panel {
+  .bx-button {
+    margin-left: 10px;
+  }
+}
+
+.bx-connection-status {
+  background-color: transparent;
+  border: 1px solid $altoColor;
+  height: 20px !important;
+  line-height: 20px !important;
+  padding: 0 1em;
+  border-radius: 3px;
+  margin: 4px 6px;
+  min-width: 160px;
 
   &.connected {
-    background-color: $colorSuccess;
+    border: none;
+    background-color: $fruitSaladColor;
+    color: $whiteColor;
   }
 }

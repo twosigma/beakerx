@@ -34,6 +34,8 @@ public interface SparkManager {
 
   SparkSession.Builder getBuilder();
 
+  String getSparkAppId();
+
   interface SparkManagerFactory {
     SparkManager create(SparkSession.Builder sparkSessionBuilder);
   }

@@ -21,8 +21,6 @@ import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.message.Message;
 import org.apache.spark.sql.SparkSession;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -132,10 +130,10 @@ public class SparkUIManager {
     seo.error(message);
   }
 
-
   public void applicationStart() {
     sparkUI.clearView();
     statusPanel = createStatusPanel();
+    sparkUI.sendUpdate("sparkAppId", sparkManager.getSparkAppId());
   }
 
   public void applicationEnd() {

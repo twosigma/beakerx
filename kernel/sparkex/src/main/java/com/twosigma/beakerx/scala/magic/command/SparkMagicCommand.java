@@ -50,6 +50,7 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
   private SparkManager.SparkManagerFactory sparkManagerFactory;
   private SparkUI sparkUI;
   private Map<String, SparkOption> sparkOptions;
+  private static boolean sparkUiCreated;
 
   public SparkMagicCommand(KernelFunctionality kernel) {
     //constructor for reflection in LoadMagicMagicCommand
@@ -76,8 +77,8 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
 
   @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
-    if (sparkUI != null && sparkUI.isSparkSessionIsActive()) {
-      return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Active spark session exists. If you want to close it run 'spark.close()'");
+    if (sparkUiCreated) {
+      return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Only one SparkUI is allowed.");
     }
     List<String> options = getOptions(param);
     MagicCommandOutcomeItem optionValidation = validateOptions(options);
@@ -87,6 +88,7 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
     MagicCommandOutcomeItem ui = createUI(param);
     if (ui.getStatus().equals(MagicCommandOutcomeItem.Status.OK)) {
       options.forEach(option -> sparkOptions.get(option).run(param.getCode().getMessage()));
+      sparkUiCreated = true;
     }
     return ui;
   }

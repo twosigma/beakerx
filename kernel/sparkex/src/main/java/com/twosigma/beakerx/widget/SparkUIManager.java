@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.TryResult;
+import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
@@ -47,12 +48,10 @@ public class SparkUIManager {
   private Text executorMemory;
   private Text executorCores;
   private SparkConfiguration advancedOption;
-
   private boolean active = false;
-
   private SparkManager sparkManager;
-
   private SparkFoldout jobPanel = null;
+  private Message currentParentHeader = null;
 
   public SparkUIManager(SparkUI sparkUI, SparkManager sparkManager) {
     this.sparkUI = sparkUI;
@@ -173,31 +172,31 @@ public class SparkUIManager {
   }
 
   void startStage(int stageId, int numTasks) {
+    if (isStartStageFromNewCell()) {
+      jobPanel = createSparkFoldout(jobPanel);
+    }
     SparkStateProgress intProgress = new SparkStateProgress(numTasks, stageId, stageId, jobLink(stageId), stageLink(stageId));
     intProgress.init();
-    clearJobPanel();
-    jobPanel = createSparkFoldout();
-    addSparkJobsToJobPanel(stageId, intProgress);
-    jobPanel.display();
-  }
-
-  private void addSparkJobsToJobPanel(int stageId, SparkStateProgress intProgress) {
-    progressBarMap.put(stageId, intProgress);
     jobPanel.add(intProgress);
+    progressBarMap.put(stageId, intProgress);
   }
 
-  private void clearJobPanel() {
-    if (jobPanel != null) {
-      jobPanel.getLayout().setDisplayNone();
-      jobPanel.close();
+  private boolean isStartStageFromNewCell() {
+    return InternalVariable.getParentHeader() != currentParentHeader;
+  }
+
+  private SparkFoldout createSparkFoldout(SparkFoldout oldJobPanel) {
+    currentParentHeader = InternalVariable.getParentHeader();
+
+    if (oldJobPanel != null) {
+      oldJobPanel.getLayout().setDisplayNone();
+      oldJobPanel.close();
     }
-  }
-
-  private SparkFoldout createSparkFoldout() {
     Label label = new Label();
     label.setValue("Spark progress");
     SparkFoldout jobPanel = new SparkFoldout();
     jobPanel.add(label);
+    jobPanel.display();
     return jobPanel;
   }
 

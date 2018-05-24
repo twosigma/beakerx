@@ -45,7 +45,7 @@ class SparkUIView extends widgets.VBoxView {
   public render() {
     super.render();
 
-    this.processConnectionWidget();
+    this.addSparkMetricsWidget();
     this.updateLabels();
   }
 
@@ -53,7 +53,7 @@ class SparkUIView extends widgets.VBoxView {
     super.update();
 
     this.connectToApi();
-    this.processConnectionWidget();
+    this.addSparkMetricsWidget();
     this.updateLabels();
   }
 
@@ -84,17 +84,20 @@ class SparkUIView extends widgets.VBoxView {
     }).outerWidth();
   }
 
-  private appendSparkStats(): void {
+  private createSparkMetricsWidget(): void {
     if (this.sparkStats) {
+      this.el.querySelector('.bx-connection-status')
+        .insertAdjacentElement('afterend', this.sparkStats.node);
+
       return;
     }
 
     this.sparkStats = new Widget();
     this.sparkStats.node.classList.add('bx-stats');
     this.sparkStats.node.innerHTML = `
-      <div class="active label label-info" title="Active">0</div> <div
-      class="memory label label-default" title="Storage memory">0</div> <div
-      class="dead label label-danger" title="Dead">0</div>
+      <div class="active label label-info" title="Active Tasks">0</div> <div
+      class="memory label label-default" title="Storage Memory">0</div> <div
+      class="dead label label-danger" title="Dead Executors">0</div>
     `;
 
     this.connectionLabelActive = this.sparkStats.node.querySelector('.active');
@@ -130,35 +133,54 @@ class SparkUIView extends widgets.VBoxView {
     const sparkUrl = `${api.getApiUrl('sparkmetrics/executors')}/${this.sparkAppId}`;
     const getMetrict = async () => {
       try {
-        const response = await fetch(sparkUrl);
+        const response = await fetch(sparkUrl, { method: 'GET', credentials: 'include' });
 
         if (!response.ok) {
-          console.log(response);
-
-          return;
+          return this.clearApiCallInterval();
         }
 
         const data = await response.json();
         this.updateMetrics(data);
-      } catch(e) {
-        clearInterval(this.apiCallIntervalId)
+      } catch(error) {
+        this.clearApiCallInterval();
       }
     };
 
+    this.clearApiCallInterval();
     this.apiCallIntervalId = setInterval(getMetrict, 1000);
   }
 
-  private updateMetrics(data: object) {
-    console.log(data);
+  private clearApiCallInterval() {
+    clearInterval(this.apiCallIntervalId);
+    this.sparkAppId = null;
   }
 
-  private processConnectionWidget() {
+  private updateMetrics(data: Array<any>) {
+    let activeTasks: number = 0;
+    let deadExecutors: number = 0;
+    let storageMemory: number = 0;
+
+    data.forEach(execData => {
+      if (execData.isActive) {
+        activeTasks += execData.activeTasks;
+        storageMemory += execData.memoryUsed;
+      } else {
+        deadExecutors += 1;
+      }
+    });
+
+    this.connectionLabelActive.innerText = `${activeTasks}`;
+    this.connectionLabelMemory.innerText = `${storageMemory}`;
+    this.connectionLabelDead.innerText = `${deadExecutors}`;
+  }
+
+  private addSparkMetricsWidget() {
     this.children_views.update(this.model.get('children')).then((views) => {
       views.forEach((view) => {
         view.children_views.update(view.model.get('children')).then((views) => {
           views.forEach((view) => {
             if (view instanceof widgets.LabelView && view.el.classList.contains('bx-connection-status')) {
-              this.appendSparkStats();
+              this.createSparkMetricsWidget();
             }
           });
         });

@@ -21,10 +21,13 @@ import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.message.Message;
+import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.twosigma.beakerx.kernel.PlainCode.createSimpleEvaluationObject;
@@ -36,15 +39,15 @@ public class SparkUIManager {
 
   public static final String SPARK_EXECUTOR_CORES = "spark.executor.cores";
   public static final String SPARK_SESSION_NAME = "spark";
-  public static final String CONNECT = "Connect";
+  public static final String CONNECT = "Start";
   private static final String SPARK_MASTER_DEFAULT = "local[*]";
 
   private final SparkUI sparkUI;
-  private Map<Integer, SparkStateProgress> progressBars = new HashMap<>();
-  private HBox statusPanel;
+  private Map<Integer, SparkStateProgress> progressBarMap = new HashMap<>();
   private Text masterURL;
   private Text executorMemory;
   private Text executorCores;
+  private SparkConfiguration advancedOption;
 
   private boolean active = false;
 
@@ -63,28 +66,35 @@ public class SparkUIManager {
     this.masterURL = createMasterURL();
     this.executorMemory = createExecutorMemory();
     this.executorCores = createExecutorCores();
+    this.sparkUI.addConnectButton(createConnectButton());
     this.sparkUI.addMasterUrl(masterURL);
     this.sparkUI.addExecutorCores(executorCores);
     this.sparkUI.addExecutorMemory(executorMemory);
-    this.sparkUI.addConnectButton(createConnectButton());
+    this.advancedOption = new SparkConfiguration();
+    this.sparkUI.addAdvanceOptions(advancedOption);
   }
 
   private Text createExecutorCores() {
     Text cores = new Text();
     cores.setDescription("Executor cores");
-    if (sparkManager.getSparkConf().contains(SPARK_EXECUTOR_CORES)) {
-      cores.setValue(sparkManager.getSparkConf().get(SPARK_EXECUTOR_CORES));
+    if (getSparkConf().contains(SPARK_EXECUTOR_CORES)) {
+      cores.setValue(getSparkConf().get(SPARK_EXECUTOR_CORES));
     } else {
       cores.setValue("10");
     }
     return cores;
   }
 
+  private SparkConf getSparkConf() {
+    List<SparkConfiguration.Configuration> list = (this.advancedOption != null) ? this.advancedOption.getConfiguration() : Collections.EMPTY_LIST;
+    return sparkManager.getSparkConf(list);
+  }
+
   private Text createExecutorMemory() {
     Text masterURL = new Text();
     masterURL.setDescription("Executor Memory");
-    if (sparkManager.getSparkConf().contains(SPARK_EXECUTOR_MEMORY)) {
-      masterURL.setValue(sparkManager.getSparkConf().get(SPARK_EXECUTOR_MEMORY));
+    if (getSparkConf().contains(SPARK_EXECUTOR_MEMORY)) {
+      masterURL.setValue(getSparkConf().get(SPARK_EXECUTOR_MEMORY));
     } else {
       masterURL.setValue("8g");
     }
@@ -94,8 +104,8 @@ public class SparkUIManager {
   private Text createMasterURL() {
     Text masterURL = new Text();
     masterURL.setDescription("Master URL");
-    if (sparkManager.getSparkConf().contains(SPARK_MASTER)) {
-      masterURL.setValue(sparkManager.getSparkConf().get(SPARK_MASTER));
+    if (getSparkConf().contains(SPARK_MASTER)) {
+      masterURL.setValue(getSparkConf().get(SPARK_MASTER));
     } else {
       masterURL.setValue(SPARK_MASTER_DEFAULT);
     }
@@ -135,29 +145,24 @@ public class SparkUIManager {
 
   public void applicationStart() {
     sparkUI.clearView();
-    statusPanel = createStatusPanel();
+    sparkUI.addStatusPanel(createStatusPanel());
   }
 
   public void applicationEnd() {
-    if (statusPanel != null) {
-      sparkUI.removeDOMWidget(statusPanel);
-      statusPanel = null;
-      active = false;
-      createSparkView();
-    }
+    sparkUI.removeStatusPanel();
+    active = false;
+    sparkUI.addView();
   }
 
   private HBox createStatusPanel() {
     Label appStatus = createAppStatus();
     Button disconnect = createDisconnectButton();
-    HBox statusPanel = new HBox(Arrays.asList(uiLink(), disconnect, appStatus));
-    sparkUI.add(statusPanel);
-    return statusPanel;
+    return new HBox(Arrays.asList(uiLink(), disconnect, appStatus));
   }
 
   private Label createAppStatus() {
     Label appStatus = new Label();
-    appStatus.setValue("Connected to " + this.sparkManager.getSparkConf().get("spark.master"));
+    appStatus.setValue("Connected to " + getSparkConf().get("spark.master"));
     return appStatus;
   }
 
@@ -178,7 +183,7 @@ public class SparkUIManager {
     SparkStateProgress intProgress = new SparkStateProgress(numTasks, stageId, stageId, jobLink(stageId), stageLink(stageId));
     intProgress.init();
     jobPanel.add(intProgress);
-    progressBars.put(stageId, intProgress);
+    progressBarMap.put(stageId, intProgress);
   }
 
   private SparkFoldout initSparkFoldout(SparkFoldout oldJobPanel) {
@@ -195,17 +200,17 @@ public class SparkUIManager {
   }
 
   void endStage(int stageId) {
-    SparkStateProgress sparkStateProgress = progressBars.get(stageId);
+    SparkStateProgress sparkStateProgress = progressBarMap.get(stageId);
     sparkStateProgress.hide();
   }
 
   void taskStart(int stageId, long taskId) {
-    SparkStateProgress intProgress = progressBars.get(stageId);
+    SparkStateProgress intProgress = progressBarMap.get(stageId);
     intProgress.addActive();
   }
 
   void taskEnd(int stageId, long taskId) {
-    SparkStateProgress intProgress = progressBars.get(stageId);
+    SparkStateProgress intProgress = progressBarMap.get(stageId);
     intProgress.addDone();
   }
 
@@ -255,5 +260,9 @@ public class SparkUIManager {
 
   public Text getExecutorCores() {
     return executorCores;
+  }
+
+  public List<SparkConfiguration.Configuration> getAdvancedOptions() {
+    return this.advancedOption.getConfiguration();
   }
 }

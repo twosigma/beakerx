@@ -118,5 +118,15 @@ describe('(Groovy) Testing Map Like Tables', function () {
       beakerxPO.checkImageData(imageData.value, imageDir, fileName);
       cellIndex += 1;
     });
+
+    it('HTML table format ', function () {
+      cellIndex += 1;
+      var fileName = 'cell9_case1.png';
+      var width = 185, height = 124;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      cellIndex += 1;
+    });
   });
 });

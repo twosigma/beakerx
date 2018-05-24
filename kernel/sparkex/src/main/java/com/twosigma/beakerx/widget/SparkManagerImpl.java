@@ -37,6 +37,7 @@ import scala.Tuple2;
 import scala.collection.Iterator;
 
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.UUID;
 
 import static com.twosigma.beakerx.kernel.PlainCode.createSimpleEvaluationObject;
@@ -59,7 +60,7 @@ public class SparkManagerImpl implements SparkManager {
   @Override
   public TryResult configure(KernelFunctionality kernel, SparkUIManager sparkContextManager, Message parentMessage) {
     this.sparkContextManager = sparkContextManager;
-    SparkConf sparkConf = configureSparkConf(getSparkConf());
+    SparkConf sparkConf = configureSparkConf(getSparkConf(sparkContextManager.getAdvancedOptions()));
     sparkSessionBuilder.config(sparkConf);
     SparkSession sparkSession = getOrCreate();
     addListener(getOrCreate().sparkContext());
@@ -106,7 +107,7 @@ public class SparkManagerImpl implements SparkManager {
     return kernel.executeCode(addSc, seo);
   }
 
-  private SparkConf createSparkConf() {
+  private SparkConf createSparkConf(List<SparkConfiguration.Configuration> configurations) {
     SparkConf sparkConf = new SparkConf();
     try {
       Field options = this.sparkSessionBuilder.getClass().getDeclaredField("org$apache$spark$sql$SparkSession$Builder$$options");
@@ -116,14 +117,19 @@ public class SparkManagerImpl implements SparkManager {
         Tuple2 x = (Tuple2) iterator.next();
         sparkConf.set((String) (x)._1, (String) (x)._2);
       }
+      configurations.forEach(x -> {
+        if (x.getName() != null) {
+          sparkConf.set(x.getName(), (x.getValue() != null) ? x.getValue() : "");
+        }
+      });
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
     return sparkConf;
   }
 
-  public SparkConf getSparkConf() {
-    return createSparkConf();
+  public SparkConf getSparkConf(List<SparkConfiguration.Configuration> configurations) {
+    return createSparkConf(configurations);
   }
 
   private SparkConf configureSparkConf(SparkConf sparkConf) {

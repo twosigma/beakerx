@@ -33,7 +33,7 @@ public abstract class Box extends ValueWidget<String> {
   public static final String VIEW_NAME_VALUE = "BoxView";
   public static final String MODEL_NAME_VALUE = "BoxModel";
 
-  List<Widget> children;
+  private List<Widget> children;
 
   public Box(List<Widget> children) {
     super();
@@ -43,6 +43,10 @@ public abstract class Box extends ValueWidget<String> {
   public Box(List<Widget> children, Message parent) {
     super(parent);
     this.children = children;
+  }
+
+  public List<Widget> getChildren() {
+    return children;
   }
 
   @Override

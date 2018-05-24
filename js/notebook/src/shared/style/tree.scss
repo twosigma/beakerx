@@ -1,0 +1,238 @@
+/*
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+@import "bxvariables";
+
+a {
+  color: $bxColorLink;
+  text-decoration: none;
+  &:focus, &:hover {
+    color: $bxColorHover;
+    text-decoration: underline;
+  }
+}
+
+#beakerx-tree-widget {
+
+  .hidden {
+    display: none;
+  }
+
+  &.isLab {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    box-sizing: border-box;
+
+    font-size: 13px;
+  }
+
+
+  * {
+    box-sizing: border-box;
+  }
+
+  fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  label {
+    font-weight: 400;
+  }
+
+  .bx-banner-widget {
+    padding: 15px;
+    .beakerx_site_link {
+      display: inline-block;
+      margin: 0 75px 0 0;
+    }
+    svg {
+      width: 154px;
+      height: 44px;
+      transform: translateY(5px);
+    }
+  }
+
+  .bx-options-widget {
+    padding: 15px 0;
+    display: flex;
+    .p-TabPanel-stackedPanel {
+      left: 15px;
+      right: 15px;
+    }
+  }
+
+  .bx-ui-options-widget,
+  .bx-jvm-options-widget {
+    left: 10px;
+    right: 10px;
+    padding: 15px;
+  }
+
+  .bx-ui-options-widget .form-check-label {
+    margin-left: 10px;
+  }
+
+  .p-TabBar {
+    min-height: 30px;
+    max-height: 30px;
+  }
+
+  .p-TabBar-content {
+    min-width: 0;
+    align-items: flex-end;
+    border-bottom: 1px solid $bxBorderColor1;
+    padding: 0 15px;
+  }
+
+  .p-TabBar-tab {
+    flex: 0 1 auto;
+    min-height: 26px;
+    max-height: 26px;
+    min-width: 35px;
+    margin-left: -1px;
+    border: 1px solid transparent;
+    padding: 4px 15px;
+  }
+
+  .p-TabBar-tab:first-child {
+    margin-left: 0;
+  }
+
+  .p-TabBar-tab.p-mod-current {
+    background-color: $bxBgColor1;
+    border-color: $bxBorderColor1;
+    border-bottom-color: transparent;
+    transform: translateY(1px);
+  }
+
+  .p-TabBar-tab:hover:not(.p-mod-current) {
+    background: $bxBgColor2;
+  }
+
+  #default_options {
+    margin: 0 0 18px 0;
+
+    .bx-wrapper {
+      display: flex;
+      align-items: stretch;
+
+      label {
+        margin: 0 6px 0 0;
+        line-height: 32px;
+      }
+
+      input {
+        height: 32px;
+        padding: 6px 12px;
+        font-size: 13px;
+        line-height: 1;
+        background-color: $bxBgColor1;
+        border: 1px solid $bxBorderColor1;
+        border-collapse: collapse;
+        border-radius: 2px 0 0 2px;
+      }
+
+      span {
+        background-color: $bxBgColor2;
+        border: 1px solid $bxBorderColor1;
+        line-height: 30px;
+        padding: 0 12px;
+        font-size: 13px;
+        border-radius: 0 2px 2px 0;
+        border-left-width: 0;
+      }
+    }
+  }
+
+  .bx-panel {
+    border: 1px solid $bxBorderColor1;
+    border-radius: 2px;
+    margin-bottom: 18px;
+
+    .bx-panel-heading {
+      background-color: $bxBgColor2;
+      padding:10px;
+      border-bottom: 1px solid $bxBorderColor1;
+
+      display: flex;
+
+      .bx-btn {
+        border: 1px solid $bxBorderColor1;
+        border-radius: 2px;
+        margin: 0 0 0 6px;
+        background-color: $bxBgColor1;
+        padding: 2px 6px;
+        font-size: 1em;
+        line-height: 1;
+
+        &:hover {
+          background-color: $bxBgColor2;
+        }
+      }
+    }
+
+    .bx-panel-body {
+      padding:10px;
+
+      .bx-form-row {
+
+        &:not(:last-child) {
+          margin-bottom: 6px;
+        }
+
+        .bx-input-text {
+          display: inline-block;
+          border: 1px solid $bxBorderColor1;
+          border-radius: 2px;
+          margin: 0 6px 0 0;
+          padding: 6px 12px;
+          font-size: 13px;
+          line-height: 1.4;
+          vertical-align: middle;
+        }
+
+        .bx-btn {
+          border: 1px solid $bxBorderColor1;
+          border-radius: 2px;
+          margin: 0;
+          background-color: $bxBgColor1;
+          padding: 6px 12px;
+          font-size: 13px;
+          line-height: 1.4;
+          vertical-align: middle;
+          height: 32px;
+
+          &:hover {
+            background-color: $bxBgColor2;
+          }
+
+        }
+
+      }
+    }
+  }
+
+  .bx-sync-indicator-widget {
+    padding: 15px;
+    .saving { color: $bxColorWarning; }
+    .saved { color: $bxColorSuccess; }
+    .errors-wrapper { color: $bxColorError; }
+  }
+
+}

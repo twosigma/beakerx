@@ -45,6 +45,7 @@ class FoldoutView extends widgets.BoxView {
   hiddenContainer: HTMLElement;
   timeoutId: number;
   active: boolean;
+  hidePreview: boolean;
 
   initialize(parameters) {
     this.addLabel();
@@ -53,16 +54,13 @@ class FoldoutView extends widgets.BoxView {
     this.addHiddenContainer();
 
     super.initialize(parameters);
+
+    this.hidePreview = this.model.get('hidePreview');
   }
 
   add_child_model(model) {
     return this.create_child_view(model).then((view: widgets.DOMWidgetView) => {
-      if (view instanceof widgets.LabelView) {
-        this.label.insertWidget(0, view.pWidget);
-        view.pWidget.node.classList.add('foldout-label-content');
-      } else {
-        this.content.layout && this.content.addWidget(view.pWidget);
-      }
+      this.content.layout && this.content.addWidget(view.pWidget);
 
       return view;
     }).catch(widgets.reject('Could not add child view to box', true));
@@ -70,9 +68,13 @@ class FoldoutView extends widgets.BoxView {
 
   addLabel() {
     this.label = new Panel();
+    let labelContent = new Widget();
 
+    labelContent.node.innerText = `${this.model.get('headerLabel') || DEFAULT_LABEL_TEXT}`;
+    labelContent.node.classList.add('foldout-label-content');
     this.label.node.classList.add('foldout-label');
     this.label.node.addEventListener('click', this.headerClickCallback.bind(this));
+    this.label.insertWidget(0, labelContent);
     this.pWidget.insertWidget(0, this.label);
   }
 
@@ -86,6 +88,10 @@ class FoldoutView extends widgets.BoxView {
   }
 
   addPreviewContent() {
+    if (this.hidePreview) {
+      return;
+    }
+
     this.previewContainer = new Widget();
     this.previewContent = document.createElement('div');
     this.previewContainer.node.classList.add('foldout-preview');
@@ -107,37 +113,54 @@ class FoldoutView extends widgets.BoxView {
     this.active = !this.active;
     this.el.classList.toggle('active', this.active);
 
-    if (this.active) {
-      this.hiddenContainer.style.width = `${this.el.clientWidth}px`;
+    this.active ? this.activateFoldout() : this.deactivateFoldout();
+  }
+
+  activateFoldout() {
+    this.hiddenContainer.style.width = `${this.el.clientWidth}px`;
+
+    if (!this.hidePreview) {
       this.previewContainer.node.style.opacity = '0';
-      this.timeoutId = setTimeout(
-        this.activateFoldoutCallback.bind(this),
-        100
-      );
-    } else {
+    }
+
+    this.timeoutId = setTimeout(
+      this.activateFoldoutCallback.bind(this),
+      100
+    );
+  }
+
+  deactivateFoldout() {
+    this.content.node.style.height = `${this.content.node.clientHeight}px`;
+
+    setTimeout(() => {
       this.content.node.style.height = `0px`;
       this.timeoutId = setTimeout(
         this.deactivateFoldoutCallback.bind(this),
         ANIMATION_DURATION
       );
-    }
+    });
   }
 
   activateFoldoutCallback() {
+    if (!this.hidePreview) {
+      this.previewContentParent.appendChild(this.previewContent);
+    }
+
+    this.hiddenContainer.innerHTML = this.content.node.innerHTML;
     this.el.classList.remove('collapsed');
-    this.previewContainer.node.style.opacity = '0';
     this.content.node.style.display = 'block';
-    this.previewContentParent.appendChild(this.previewContent);
-    this.content.node.style.height = `${
-      this.hiddenContainer.clientHeight + DEFAULT_ADDED_SPACE / 2
-    }px`;
+    this.content.node.style.height = `${this.hiddenContainer.clientHeight}px`;
+    this.timeoutId = setTimeout(() => { this.content.node.style.height = 'auto' }, ANIMATION_DURATION);
   }
 
   deactivateFoldoutCallback() {
-    this.el.classList.add('collapsed');
+    if (!this.hidePreview) {
+      this.previewContainer.node.appendChild(this.previewContent);
+      this.previewContainer.node.style.opacity = '1';
+    }
+
     this.content.node.style.display = 'none';
-    this.previewContainer.node.appendChild(this.previewContent);
-    this.previewContainer.node.style.opacity = '1';
+    this.hidePreview && this.el.classList.add('collapsed');
   }
 
   getPreviewContent(): HTMLElement {
@@ -155,16 +178,22 @@ class FoldoutView extends widgets.BoxView {
       }
 
       this.hiddenContainer.innerHTML = this.content.node.innerHTML;
-      this.previewContent = this.getPreviewContent();
-      let textLabelNode = this.label.node.firstChild as HTMLElement;
-      this.previewContainer.node.style.width = `${this.el.clientWidth - (textLabelNode.clientWidth + 40)}px`;
-
-      if (this.previewContent) {
-        this.previewContentParent = this.previewContent.parentNode as HTMLElement;
-        this.previewContainer.node.appendChild(this.previewContent);
-        this.previewContainer.node.style.opacity = '1';
-      }
+      !this.hidePreview && this.renderPreview();
     });
+  }
+
+  renderPreview() {
+    this.previewContent = this.getPreviewContent();
+
+    if (!this.previewContent) {
+      return;
+    }
+
+    let textLabelNode = this.label.node.firstChild as HTMLElement;
+    this.previewContainer.node.style.width = `${this.el.clientWidth - (textLabelNode.clientWidth + 40)}px`;
+    this.previewContentParent = this.previewContent.parentNode as HTMLElement;
+    this.previewContainer.node.appendChild(this.previewContent);
+    this.previewContainer.node.style.opacity = '1';
   }
 
   dispose() {

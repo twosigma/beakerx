@@ -30,21 +30,20 @@ export default class PropertiesWidget extends Widget {
 
   public readonly HTML_ELEMENT_TEMPLATE = `
 <fieldset>
-  <div class="panel panel-default">
-    <div class="panel-heading">
+  <div class="bx-panel">
+    <div class="bx-panel-heading">
 
-      <label>Properties</label>
+      Properties
 
       <button type="button"
         id="add_property_jvm_sett"
-        class="btn btn-default btn-xs"
-        data-original-title="add new">
+        class="bx-btn">
         <i class="fa fa-plus"></i>
       </button>
        
     </div>
     
-    <div id="properties_property" class="panel-body"></div>
+    <div id="properties_property" class="bx-panel-body"></div>
   </div>
 </fieldset>
 `;
@@ -166,13 +165,13 @@ export default class PropertiesWidget extends Widget {
 
   private createFormRowElement(): JQuery<HTMLElement> {
     return $('<div>', {
-      class: 'form-group form-inline'
+      class: 'bx-form-row'
     });
   }
 
   private createInputElement(placeholder: string, val: string = ''): JQuery<HTMLElement> {
     return $('<input>', {
-      class: 'form-control',
+      class: 'bx-input-text',
       type: 'text',
       placeholder: placeholder,
     }).val(val)
@@ -182,7 +181,7 @@ export default class PropertiesWidget extends Widget {
   private createRemoveButtonElement(): JQuery<HTMLElement> {
     return $('<button>', {
       'type': 'button',
-      'class': 'btn btn-default'
+      'class': 'bx-btn'
     }).append(
       $('<i>', { class: 'fa fa-times'})
     );

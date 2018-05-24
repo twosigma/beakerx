@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-import * as $ from "jquery";
 import {Widget} from "@phosphor/widgets";
 import BeakerXApi from "./tree/Utils/BeakerXApi";
 
@@ -44,6 +43,7 @@ class SparkUIView extends widgets.VBoxView {
 
   public render() {
     super.render();
+    this.el.classList.add('widget-spark-ui');
 
     this.addSparkMetricsWidget();
     this.updateLabels();
@@ -58,30 +58,62 @@ class SparkUIView extends widgets.VBoxView {
   }
 
   private updateLabels() {
-    setTimeout(() => {
-      let labels = this.$el.find('label');
-      let maxW = this.calculateLabelsWidth(labels);
+    const lengths = [];
+    const labels = [];
+    const noop = () => {};
+    const promise = new Promise((resolve, reject) => {
+      this.resolveChildren(this).then((views) => {
+        views.forEach((view) => {
+          this.resolveChildren(view).then((views) => {
+            views.forEach((view) => {
+              this.resolveChildren(view)
+                .then((views) => {
+                  this.collectLabels(views, lengths, labels, resolve);
+                })
+                .catch(reject);
+            });
+          }, noop);
+        });
+      }, noop);
+    });
 
-      for(let l of labels) {
-        $(l).outerWidth(maxW);
-      }
-    }, 100);
+    promise.then(() => {
+      const maxWidth = Math.max.apply(null, lengths);
+
+      labels.forEach((label) => { label.style.width = `${maxWidth}px`; });
+    }).catch(noop);
   }
 
-  private calculateLabelsWidth(labels): number {
-    let maxW = 0;
-    for(let label of labels) {
-      maxW = Math.max(maxW, this.getLabelWidth(label));
-    }
+  private resolveChildren(view) {
+    return new Promise((resolve, reject) => {
+      if (!view || !view.children_views) {
+        reject();
+      }
 
-    return Math.ceil(maxW);
+      view.children_views.update(view.model.get('children'))
+        .then(views => resolve(views));
+    });
+  }
 
+  private collectLabels(views, lengths, labels, resolve) {
+    views.forEach((view) => {
+      const label = view.el.querySelector('.widget-label');
+
+      if (!label) {
+        return true;
+      }
+
+      lengths.push(this.getLabelWidth(label));
+      labels.push(label);
+    });
+
+    resolve();
   }
 
   private getLabelWidth(labelEl): number {
-    return $(labelEl).css({
-      width: 'auto',
-    }).outerWidth();
+    labelEl.style.width = 'auto';
+
+    return labelEl.clientWidth;
   }
 
   private createSparkMetricsWidget(): void {
@@ -96,8 +128,8 @@ class SparkUIView extends widgets.VBoxView {
     this.sparkStats.node.classList.add('bx-stats');
     this.sparkStats.node.innerHTML = `
       <div class="active label label-info" title="Active Tasks">0</div> <div
-      class="memory label label-default" title="Storage Memory">0</div> <div
-      class="dead label label-danger" title="Dead Executors">0</div>
+      class="dead label label-danger" title="Dead Executors">0</div> <div
+      class="memory label label-default" title="Storage Memory">0</div>
     `;
 
     this.connectionLabelActive = this.sparkStats.node.querySelector('.active');
@@ -187,7 +219,7 @@ class SparkUIView extends widgets.VBoxView {
       });
     });
   }
-  
+
   despose() {
     super.dispose();
     clearInterval(this.apiCallIntervalId);

@@ -14,9 +14,7 @@
  *  limitations under the License.
  */
 
-@import "./variables";
-$colorBorder: #cfcfcf;
-$focusColor: #66bb6a;
+@import "bxvariables";
 
 .improveFonts .context-menu-root .context-menu-item span {
   font-family: "Lato", Helvetica, sans-serif;
@@ -25,7 +23,7 @@ $focusColor: #66bb6a;
 .bx-button {
   &[class*="icon"] {
     font: normal normal normal 14px/1 FontAwesome;
-    border: 1px solid $altoColor;
+    border: 1px solid $bxBorderColor1;
     width: auto;
     height: 24px;
     padding: 0 6px;
@@ -42,7 +40,7 @@ $focusColor: #66bb6a;
 }
 
 .bko-focused {
-  border: 1px solid $fernColor !important;
+  border: 1px solid $bxColorFocus !important;
 
   &:before {
     position: absolute;
@@ -52,7 +50,7 @@ $focusColor: #66bb6a;
     width: 5px;
     height: calc(100% + 2px);
     content: '';
-    background: $fernColor;
+    background: $bxColorFocus;
   }
 }
 
@@ -127,6 +125,11 @@ $focusColor: #66bb6a;
     }
   }
 
+  &.collapsed {
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+  }
+
   &.active {
     .foldout-label,
     .widget-label {
@@ -134,11 +137,6 @@ $focusColor: #66bb6a;
         background-position: -65px -16px;
       }
     }
-  }
-
-  &.collapsed {
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
   }
 
   .foldout-preview {
@@ -165,13 +163,14 @@ $focusColor: #66bb6a;
     font-size: 14px;
     line-height: 1.3em;
     padding: 0 2.2em;
-    border: 1px solid $silverChaliceColor;
+    border: 1px solid $bxBorderColor1;
     border-top: 0;
     border-radius: 0 0 3px 3px;
     text-overflow: ellipsis;
     overflow: hidden;
     transition: height 0.3s ease-in-out;
 
+    &:after,
     &:before {
       content: '';
       height: 10px;

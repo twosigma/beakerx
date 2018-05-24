@@ -24,11 +24,7 @@ import com.twosigma.beakerx.message.Message;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.twosigma.beakerx.kernel.PlainCode.createSimpleEvaluationObject;
 
@@ -140,10 +136,10 @@ public class SparkUIManager {
     seo.error(message);
   }
 
-
   public void applicationStart() {
     sparkUI.clearView();
     sparkUI.addStatusPanel(createStatusPanel());
+    sparkUI.sendUpdate("sparkAppId", sparkManager.getSparkAppId());
   }
 
   public void applicationEnd() {
@@ -155,19 +151,22 @@ public class SparkUIManager {
   private HBox createStatusPanel() {
     Label appStatus = createAppStatus();
     Button disconnect = createDisconnectButton();
-    return new HBox(Arrays.asList(uiLink(), disconnect, appStatus));
+    HBox connectionPanel = new HBox(Arrays.asList(uiLink(), appStatus, disconnect));
+    connectionPanel.setDomClasses(new ArrayList<>(Arrays.asList("bx-status-panel")));
+    return connectionPanel;
   }
 
   private Label createAppStatus() {
     Label appStatus = new Label();
     appStatus.setValue("Connected to " + getSparkConf().get("spark.master"));
+    appStatus.setDomClasses(new ArrayList<>(Arrays.asList("bx-connection-status", "connected")));
     return appStatus;
   }
 
   private Button createDisconnectButton() {
     Button disconnect = new Button();
     disconnect.registerOnClick((content, message) -> getSparkSession().sparkContext().stop());
-    disconnect.setDescription("Disconnect");
+    disconnect.setDomClasses(new ArrayList<>(Arrays.asList("bx-button", "icon-close")));
     return disconnect;
   }
 

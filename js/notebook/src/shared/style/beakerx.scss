@@ -122,6 +122,7 @@
       height: auto;
       display: block;
       line-height: inherit;
+      flex-shrink: 0;
     }
   }
 
@@ -142,6 +143,7 @@
   .foldout-preview {
     font-size: 14px;
     line-height: 1.3em;
+    flex-shrink: 2;
     flex-grow: 1;
     text-indent: 0;
     transition: opacity 0.1s ease-in-out;

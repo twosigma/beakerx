@@ -48,12 +48,10 @@ public class SparkUIManager {
   private Text executorMemory;
   private Text executorCores;
   private SparkConfiguration advancedOption;
-
   private boolean active = false;
-
   private SparkManager sparkManager;
-
   private SparkFoldout jobPanel = null;
+  private Message currentParentHeader = null;
 
   public SparkUIManager(SparkUI sparkUI, SparkManager sparkManager) {
     this.sparkUI = sparkUI;
@@ -173,12 +171,9 @@ public class SparkUIManager {
     return disconnect;
   }
 
-  private Message currentParentHeader = null;
-
   void startStage(int stageId, int numTasks) {
-    if (InternalVariable.getParentHeader() != currentParentHeader) {
-      currentParentHeader = InternalVariable.getParentHeader();
-      jobPanel = initSparkFoldout(jobPanel);
+    if (isStartStageFromNewCell()) {
+      jobPanel = createSparkFoldout(jobPanel);
     }
     SparkStateProgress intProgress = new SparkStateProgress(numTasks, stageId, stageId, jobLink(stageId), stageLink(stageId));
     intProgress.init();
@@ -186,7 +181,13 @@ public class SparkUIManager {
     progressBarMap.put(stageId, intProgress);
   }
 
-  private SparkFoldout initSparkFoldout(SparkFoldout oldJobPanel) {
+  private boolean isStartStageFromNewCell() {
+    return InternalVariable.getParentHeader() != currentParentHeader;
+  }
+
+  private SparkFoldout createSparkFoldout(SparkFoldout oldJobPanel) {
+    currentParentHeader = InternalVariable.getParentHeader();
+
     if (oldJobPanel != null) {
       oldJobPanel.getLayout().setDisplayNone();
       oldJobPanel.close();

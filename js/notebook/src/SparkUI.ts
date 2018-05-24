@@ -36,6 +36,8 @@ class SparkUIModel extends widgets.VBoxModel {
 
 class SparkUIView extends widgets.VBoxView {
   private sparkStats: Widget;
+  private sparkAppId: string;
+  private apiCallIntervalId: number;
   private connectionLabelActive: HTMLElement;
   private connectionLabelMemory: HTMLElement;
   private connectionLabelDead: HTMLElement;
@@ -50,6 +52,7 @@ class SparkUIView extends widgets.VBoxView {
   public update() {
     super.update();
 
+    this.connectToApi();
     this.processConnectionWidget();
     this.updateLabels();
   }
@@ -82,6 +85,10 @@ class SparkUIView extends widgets.VBoxView {
   }
 
   private appendSparkStats(): void {
+    if (this.sparkStats) {
+      return;
+    }
+
     this.sparkStats = new Widget();
     this.sparkStats.node.classList.add('bx-stats');
     this.sparkStats.node.innerHTML = `
@@ -97,6 +104,54 @@ class SparkUIView extends widgets.VBoxView {
     this.el.querySelector('.bx-connection-status').insertAdjacentElement('afterend', this.sparkStats.node);
   }
 
+  private connectToApi() {
+    let baseUrl;
+    let api;
+
+    this.sparkAppId = this.model.get('sparkAppId');
+
+    if (!this.sparkAppId) {
+      return;
+    }
+
+    try {
+      const coreutils = require('@jupyterlab/coreutils');
+      coreutils.PageConfig.getOption('pageUrl');
+      baseUrl = coreutils.PageConfig.getBaseUrl();
+    } catch(e) {
+      baseUrl = `${window.location.origin}/`;
+    }
+
+    api = new BeakerXApi(baseUrl);
+    this.setApiCallInterval(api);
+  }
+
+  private setApiCallInterval(api: BeakerXApi): void {
+    const sparkUrl = `${api.getApiUrl('sparkmetrics/executors')}/${this.sparkAppId}`;
+    const getMetrict = async () => {
+      try {
+        const response = await fetch(sparkUrl);
+
+        if (!response.ok) {
+          console.log(response);
+
+          return;
+        }
+
+        const data = await response.json();
+        this.updateMetrics(data);
+      } catch(e) {
+        clearInterval(this.apiCallIntervalId)
+      }
+    };
+
+    this.apiCallIntervalId = setInterval(getMetrict, 1000);
+  }
+
+  private updateMetrics(data: object) {
+    console.log(data);
+  }
+
   private processConnectionWidget() {
     this.children_views.update(this.model.get('children')).then((views) => {
       views.forEach((view) => {
@@ -109,6 +164,11 @@ class SparkUIView extends widgets.VBoxView {
         });
       });
     });
+  }
+  
+  despose() {
+    super.dispose();
+    clearInterval(this.apiCallIntervalId);
   }
 }
 

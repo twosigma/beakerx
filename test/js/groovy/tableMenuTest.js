@@ -83,7 +83,7 @@ describe('Testing of table Actions ', function () {
 
     it('Should display table ', function () {
       cellIndex = 0;
-      var width = 685, height = 312;
+      var width = 250, height = 150;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);

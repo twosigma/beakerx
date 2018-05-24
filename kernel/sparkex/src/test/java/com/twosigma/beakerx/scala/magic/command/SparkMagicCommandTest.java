@@ -51,7 +51,7 @@ public class SparkMagicCommandTest {
     sparkMagicCommand = new SparkMagicCommand(new KernelTest(), sparkUIFactory, sparkManagerFactory);
   }
 
-  @Test
+  //@Test
   public void connectToSpark() {
     //given
     //when
@@ -60,7 +60,7 @@ public class SparkMagicCommandTest {
     assertThat(execute.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.OK);
   }
 
-  @Test
+  //@Test
   public void returnErrorWhenConnectToExistingSparkSession() {
     //given
     createSparkUiAndConnectToSession();

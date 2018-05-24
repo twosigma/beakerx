@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.TryResult;
+import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
@@ -23,11 +24,7 @@ import com.twosigma.beakerx.message.Message;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.twosigma.beakerx.kernel.PlainCode.createSimpleEvaluationObject;
 
@@ -47,12 +44,10 @@ public class SparkUIManager {
   private Text executorMemory;
   private Text executorCores;
   private SparkConfiguration advancedOption;
-
   private boolean active = false;
-
   private SparkManager sparkManager;
-
   private SparkFoldout jobPanel = null;
+  private Message currentParentHeader = null;
 
   public SparkUIManager(SparkUI sparkUI, SparkManager sparkManager) {
     this.sparkUI = sparkUI;
@@ -141,10 +136,10 @@ public class SparkUIManager {
     seo.error(message);
   }
 
-
   public void applicationStart() {
     sparkUI.clearView();
     sparkUI.addStatusPanel(createStatusPanel());
+    sparkUI.sendUpdate("sparkAppId", sparkManager.getSparkAppId());
   }
 
   public void applicationEnd() {
@@ -156,48 +151,51 @@ public class SparkUIManager {
   private HBox createStatusPanel() {
     Label appStatus = createAppStatus();
     Button disconnect = createDisconnectButton();
-    return new HBox(Arrays.asList(uiLink(), disconnect, appStatus));
+    HBox connectionPanel = new HBox(Arrays.asList(uiLink(), appStatus, disconnect));
+    connectionPanel.setDomClasses(new ArrayList<>(Arrays.asList("bx-status-panel")));
+    return connectionPanel;
   }
 
   private Label createAppStatus() {
     Label appStatus = new Label();
     appStatus.setValue("Connected to " + getSparkConf().get("spark.master"));
+    appStatus.setDomClasses(new ArrayList<>(Arrays.asList("bx-connection-status", "connected")));
     return appStatus;
   }
 
   private Button createDisconnectButton() {
     Button disconnect = new Button();
     disconnect.registerOnClick((content, message) -> getSparkSession().sparkContext().stop());
-    disconnect.setDescription("Disconnect");
+    disconnect.setDomClasses(new ArrayList<>(Arrays.asList("bx-button", "icon-close")));
     return disconnect;
   }
 
   void startStage(int stageId, int numTasks) {
+    if (isStartStageFromNewCell()) {
+      jobPanel = createSparkFoldout(jobPanel);
+    }
     SparkStateProgress intProgress = new SparkStateProgress(numTasks, stageId, stageId, jobLink(stageId), stageLink(stageId));
     intProgress.init();
-    clearJobPanel();
-    jobPanel = createSparkFoldout();
-    addSparkJobsToJobPanel(stageId, intProgress);
-    jobPanel.display();
-  }
-
-  private void addSparkJobsToJobPanel(int stageId, SparkStateProgress intProgress) {
-    progressBarMap.put(stageId, intProgress);
     jobPanel.add(intProgress);
+    progressBarMap.put(stageId, intProgress);
   }
 
-  private void clearJobPanel() {
-    if (jobPanel != null) {
-      jobPanel.getLayout().setDisplayNone();
-      jobPanel.close();
+  private boolean isStartStageFromNewCell() {
+    return InternalVariable.getParentHeader() != currentParentHeader;
+  }
+
+  private SparkFoldout createSparkFoldout(SparkFoldout oldJobPanel) {
+    currentParentHeader = InternalVariable.getParentHeader();
+
+    if (oldJobPanel != null) {
+      oldJobPanel.getLayout().setDisplayNone();
+      oldJobPanel.close();
     }
-  }
-
-  private SparkFoldout createSparkFoldout() {
     Label label = new Label();
     label.setValue("Spark progress");
     SparkFoldout jobPanel = new SparkFoldout();
     jobPanel.add(label);
+    jobPanel.display();
     return jobPanel;
   }
 

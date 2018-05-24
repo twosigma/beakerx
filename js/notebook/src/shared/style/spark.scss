@@ -28,10 +28,6 @@
   max-width: 600px;
 }
 
-.bx-spark-stageProgressLabels {
-  margin: 0;
-}
-
 .bx-panel {
   border: 1px solid $bxBorderColor1;
   border-radius: 2px;
@@ -104,6 +100,11 @@
 }
 
 .bx-spark-stageProgressLabels {
+  margin: 0;
+}
+
+.bx-stats,
+.bx-spark-stageProgressLabels {
   display: block;
   line-height: 100%;
   height: 18px;
@@ -113,5 +114,34 @@
     display: inline-block;
     max-height: 100%;
     line-height: 150%;
+  }
+}
+
+.bx-stats {
+  margin: 4px 0;
+  height: 20px;
+  line-height: 17px;
+}
+
+.bx-status-panel {
+  .bx-button {
+    margin-left: 20px;
+  }
+}
+
+.bx-connection-status {
+  background-color: transparent;
+  border: 1px solid $bxBorderColor1;
+  height: 20px !important;
+  line-height: 20px !important;
+  padding: 0 1em;
+  border-radius: 3px;
+  margin: 4px 6px;
+  min-width: 160px;
+
+  &.connected {
+    border: none;
+    background-color: $bxColorSuccess;
+    color: $bxBgColor1;
   }
 }

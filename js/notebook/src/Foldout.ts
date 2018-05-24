@@ -14,13 +14,12 @@
  *  limitations under the License.
  */
 
-import {MessageLoop} from '@phosphor/messaging';
 import {Widget,Panel} from '@phosphor/widgets';
 
 const widgets = require('./widgets');
 const DEFAULT_LABEL_TEXT = 'Output';
-const DEFAULT_ADDED_SPACE = 22;
 const ANIMATION_DURATION = 300;
+const PREVIEW_ANIMATION_DURATION = 100;
 
 class FoldoutModel extends widgets.BoxModel {
   defaults() {
@@ -38,6 +37,7 @@ class FoldoutModel extends widgets.BoxModel {
 
 class FoldoutView extends widgets.BoxView {
   label: Panel;
+  labelContent: Widget;
   content: Panel;
   previewContainer: Widget;
   previewContent: HTMLElement;
@@ -45,6 +45,7 @@ class FoldoutView extends widgets.BoxView {
   hiddenContainer: HTMLElement;
   timeoutId: number;
   active: boolean;
+  hidePreview: boolean;
 
   initialize(parameters) {
     this.addLabel();
@@ -53,20 +54,16 @@ class FoldoutView extends widgets.BoxView {
     this.addHiddenContainer();
 
     super.initialize(parameters);
+
+    this.hidePreview = this.model.get('hidePreview');
   }
 
   add_child_model(model) {
     return this.create_child_view(model).then((view: widgets.DOMWidgetView) => {
       this.restorePreviewContent();
 
-      if (view instanceof widgets.LabelView) {
-        this.label.insertWidget(0, view.pWidget);
-        view.pWidget.node.classList.add('foldout-label-content');
-      } else {
-        this.content.layout && this.content.addWidget(view.pWidget);
-      }
+      this.content.layout && this.content.addWidget(view.pWidget);
 
-      this.updateLabelText();
       this.updateHiddenContainer();
       this.renderPreview();
 
@@ -76,20 +73,14 @@ class FoldoutView extends widgets.BoxView {
 
   addLabel() {
     this.label = new Panel();
+    this.labelContent = new Widget();
 
+    this.labelContent.node.innerText = `${this.model.get('headerLabel') || DEFAULT_LABEL_TEXT}`;
+    this.labelContent.node.classList.add('foldout-label-content');
     this.label.node.classList.add('foldout-label');
     this.label.node.addEventListener('click', this.headerClickCallback.bind(this));
+    this.label.insertWidget(0, this.labelContent);
     this.pWidget.insertWidget(0, this.label);
-  }
-
-  updateLabelText() {
-    if (!this.label.node.querySelector('.foldout-label-content')) {
-      const label = new Widget();
-
-      label.node.classList.add('foldout-label-content');
-      label.node.innerText = DEFAULT_LABEL_TEXT;
-      this.label.insertWidget(0, label);
-    }
   }
 
   addContent() {
@@ -102,6 +93,10 @@ class FoldoutView extends widgets.BoxView {
   }
 
   addPreviewContent() {
+    if (this.hidePreview) {
+      return;
+    }
+
     this.previewContainer = new Widget();
     this.previewContent = document.createElement('div');
     this.previewContainer.node.classList.add('foldout-preview');
@@ -123,44 +118,59 @@ class FoldoutView extends widgets.BoxView {
     this.active = !this.active;
     this.el.classList.toggle('active', this.active);
 
-    if (this.active) {
-      this.hiddenContainer.style.width = `${this.el.clientWidth}px`;
+    this.active ? this.activateFoldout() : this.deactivateFoldout();
+  }
+
+  activateFoldout() {
+    this.hiddenContainer.style.width = `${this.el.clientWidth}px`;
+
+    if (!this.hidePreview) {
       this.previewContainer.node.style.opacity = '0';
-      this.timeoutId = setTimeout(
-        this.activateFoldoutCallback.bind(this),
-        100
-      );
-    } else {
+    }
+
+    this.timeoutId = setTimeout(
+      this.activateFoldoutCallback.bind(this),
+      PREVIEW_ANIMATION_DURATION
+    );
+  }
+
+  deactivateFoldout() {
+    this.content.node.style.height = `${this.hiddenContainer.clientHeight}px`;
+
+    setTimeout(() => {
       this.content.node.style.height = `0px`;
       this.timeoutId = setTimeout(
         this.deactivateFoldoutCallback.bind(this),
         ANIMATION_DURATION
       );
-    }
+    });
   }
 
   activateFoldoutCallback() {
     this.el.classList.remove('collapsed');
     this.content.node.style.display = 'block';
 
-    if (this.previewContent) {
+    if (this.previewContent && !this.hidePreview) {
       this.previewContentParent.appendChild(this.previewContent);
       this.previewContainer.node.style.opacity = '0';
     }
 
-    this.content.node.style.height = `${
-      this.hiddenContainer.clientHeight + DEFAULT_ADDED_SPACE / 2
-    }px`;
+    this.content.node.style.height = `${this.hiddenContainer.clientHeight}px`;
+
+    this.timeoutId = setTimeout(
+      () => { this.content.node.style.height = 'auto' },
+      ANIMATION_DURATION
+    );
   }
 
   deactivateFoldoutCallback() {
-    this.el.classList.add('collapsed');
-    this.content.node.style.display = 'none';
-
-    if (this.previewContent) {
+    if (this.previewContent && !this.hidePreview) {
       this.previewContainer.node.appendChild(this.previewContent);
       this.previewContainer.node.style.opacity = '1';
     }
+
+    this.content.node.style.display = 'none';
+    this.el.classList.add('collapsed');
   }
 
   getPreviewContent(): HTMLElement {
@@ -173,46 +183,49 @@ class FoldoutView extends widgets.BoxView {
     this.el.classList.add('collapsed');
 
     this.children_views.update(this.model.get('children')).then((views) => {
-      this.updateLabelText();
-      this.updateHiddenContainer();
       this.renderPreview();
     });
   }
 
-  updateHiddenContainer() {
+  updateHiddenContainer(): void {
     this.hiddenContainer.innerHTML = this.content.node.innerHTML;
   }
 
-  restorePreviewContent() {
+  restorePreviewContent(): void {
     if (this.previewContent && this.previewContentParent) {
       this.previewContentParent.appendChild(this.previewContent);
     }
   }
 
-  renderPreview() {
+  renderPreview(): void {
+    if (this.hidePreview) {
+      return;
+    }
+
     this.restorePreviewContent();
     this.previewContent = this.getPreviewContent();
 
-    if (this.previewContent) {
-      let textLabelNode = this.label.node.firstChild as HTMLElement;
-
-      this.previewContainer.node.style.width = `${this.el.clientWidth - (textLabelNode.clientWidth + 40)}px`;
-      this.previewContentParent = this.previewContent.parentNode as HTMLElement;
-
-      if (this.active) {
-        return;
-      }
-
-      this.previewContainer.node.appendChild(this.previewContent);
-      this.previewContainer.node.style.opacity = '1';
+    if (!this.previewContent) {
+      return;
     }
+
+    this.previewContainer.node.style.width = `${this.el.clientWidth - (this.labelContent.node.clientWidth + 40)}px`;
+    this.previewContentParent = this.previewContent.parentNode as HTMLElement;
+
+    if (this.active) {
+      return;
+    }
+
+    this.previewContainer.node.appendChild(this.previewContent);
+    this.previewContainer.node.style.opacity = '1';
   }
 
   dispose() {
     super.dispose();
     this.content.dispose();
+    this.labelContent.dispose();
     this.label.dispose();
-    this.previewContainer.dispose();
+    this.previewContainer && this.previewContainer.dispose();
   }
 }
 

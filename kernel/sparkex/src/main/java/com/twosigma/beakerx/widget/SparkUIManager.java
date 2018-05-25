@@ -140,6 +140,8 @@ public class SparkUIManager {
     sparkUI.clearView();
     sparkUI.addStatusPanel(createStatusPanel());
     sparkUI.sendUpdate("sparkAppId", sparkManager.getSparkAppId());
+    sparkUI.sendUpdate("sparkUiWebUrl", sparkManager.getSparkUiWebUrl());
+    sparkUI.sendUpdate("sparkMasterUrl", sparkManager.getSparkMasterUrl());
   }
 
   public void applicationEnd() {
@@ -151,14 +153,14 @@ public class SparkUIManager {
   private HBox createStatusPanel() {
     Label appStatus = createAppStatus();
     Button disconnect = createDisconnectButton();
-    HBox connectionPanel = new HBox(Arrays.asList(uiLink(), appStatus, disconnect));
+    HBox connectionPanel = new HBox(Arrays.asList(appStatus, disconnect));
     connectionPanel.setDomClasses(new ArrayList<>(Arrays.asList("bx-status-panel")));
     return connectionPanel;
   }
 
   private Label createAppStatus() {
     Label appStatus = new Label();
-    appStatus.setValue("Connected to " + getSparkConf().get("spark.master"));
+    appStatus.setValue("Connected");
     appStatus.setDomClasses(new ArrayList<>(Arrays.asList("bx-connection-status", "connected")));
     return appStatus;
   }
@@ -212,18 +214,6 @@ public class SparkUIManager {
   void taskEnd(int stageId, long taskId) {
     SparkStateProgress intProgress = progressBarMap.get(stageId);
     intProgress.addDone();
-  }
-
-  private HTML uiLink() {
-    if (this.sparkManager.sparkContext().uiWebUrl().isDefined()) {
-      HTML html = new HTML();
-      html.setValue("<a target=\"_blank\" href=\"" + getSparkSession().sparkContext().uiWebUrl().get() + "\">Spark UI" + "</a>");
-      return html;
-    } else {
-      HTML html = new HTML();
-      html.setValue("<a target=\"_blank\" href=\"\">Spark UI " + "</a>");
-      return html;
-    }
   }
 
   private String stageLink(int stageId) {

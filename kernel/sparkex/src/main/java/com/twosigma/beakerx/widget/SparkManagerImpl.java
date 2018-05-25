@@ -85,6 +85,17 @@ public class SparkManagerImpl implements SparkManager {
   }
 
   @Override
+  public String getSparkUiWebUrl() {
+    return getOrCreate().sparkContext().uiWebUrl().get();
+  }
+
+  @Override
+  public String getSparkMasterUrl() {
+    RuntimeConfig conf = getOrCreate().conf();
+    return conf.getAll().get("spark.master").get();
+  }
+
+  @Override
   public SparkContext sparkContext() {
     return getOrCreate().sparkContext();
   }

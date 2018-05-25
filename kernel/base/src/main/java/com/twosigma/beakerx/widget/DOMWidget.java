@@ -21,7 +21,9 @@ import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Message;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -31,9 +33,11 @@ public abstract class DOMWidget extends Widget {
   public static final String SYNC_DATA = "state";
   public static final String MODEL_MODULE_VALUE = "@jupyter-widgets/controls";
   public static final String VIEW_MODULE_VALUE = "@jupyter-widgets/controls";
+  public static final String DOM_CLASSES = "_dom_classes";
 
   private Layout layout;
   protected Style style;
+  private List<String> domClasses = new ArrayList<>();
 
   private UpdateValueCallback updateValueCallback = () -> {
   };
@@ -75,7 +79,7 @@ public abstract class DOMWidget extends Widget {
             ret = Optional.of(sync_data.get(VALUE));
           } else if (sync_data.containsKey(INDEX)) {
             ret = Optional.of(sync_data.get(INDEX));
-          } else if (sync_data.containsKey("outputs")){
+          } else if (sync_data.containsKey("outputs")) {
             ret = Optional.of(sync_data.get("outputs"));
           }
         }
@@ -104,12 +108,12 @@ public abstract class DOMWidget extends Widget {
   }
 
   @Override
-  public String getModelModuleValue(){
+  public String getModelModuleValue() {
     return MODEL_MODULE_VALUE;
   }
 
   @Override
-  public String getViewModuleValue(){
+  public String getViewModuleValue() {
     return VIEW_MODULE_VALUE;
   }
 
@@ -125,7 +129,17 @@ public abstract class DOMWidget extends Widget {
     content.put("font_weight", "");
     content.put("background_color", null);
     content.put("color", null);
+    content.put(DOM_CLASSES, domClasses.toArray());
     return content;
+  }
+
+  public List<String> getDomClasses() {
+    return domClasses;
+  }
+
+  public void setDomClasses(List<String> domClasses) {
+    this.domClasses = checkNotNull(domClasses);
+    sendUpdate(DOM_CLASSES, this.domClasses.toArray());
   }
 
   public Layout getLayout() {

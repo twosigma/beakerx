@@ -14,6 +14,9 @@
  *  limitations under the License.
  */
 
+import {Widget} from "@phosphor/widgets";
+import BeakerXApi from "./tree/Utils/BeakerXApi";
+
 const widgets = require('./widgets');
 
 class SparkUIModel extends widgets.VBoxModel {
@@ -31,14 +34,26 @@ class SparkUIModel extends widgets.VBoxModel {
 }
 
 class SparkUIView extends widgets.VBoxView {
+  private sparkStats: Widget;
+  private sparkAppId: string;
+  private apiCallIntervalId: number;
+  private connectionLabelActive: HTMLElement;
+  private connectionLabelMemory: HTMLElement;
+  private connectionLabelDead: HTMLElement;
+
   public render() {
     super.render();
     this.el.classList.add('widget-spark-ui');
+
+    this.addSparkMetricsWidget();
     this.updateLabels();
   }
 
   public update() {
     super.update();
+
+    this.connectToApi();
+    this.addSparkMetricsWidget();
     this.updateLabels();
   }
 
@@ -99,6 +114,115 @@ class SparkUIView extends widgets.VBoxView {
     labelEl.style.width = 'auto';
 
     return labelEl.clientWidth;
+  }
+
+  private createSparkMetricsWidget(): void {
+    if (this.sparkStats) {
+      this.el.querySelector('.bx-connection-status')
+        .insertAdjacentElement('afterend', this.sparkStats.node);
+
+      return;
+    }
+
+    this.sparkStats = new Widget();
+    this.sparkStats.node.classList.add('bx-stats');
+    this.sparkStats.node.innerHTML = `
+      <div class="active label label-info" title="Active Tasks">0</div> <div
+      class="dead label label-danger" title="Dead Executors">0</div> <div
+      class="memory label label-default" title="Storage Memory">0</div>
+    `;
+
+    this.connectionLabelActive = this.sparkStats.node.querySelector('.active');
+    this.connectionLabelMemory = this.sparkStats.node.querySelector('.memory');
+    this.connectionLabelDead = this.sparkStats.node.querySelector('.dead');
+
+    this.el.querySelector('.bx-connection-status').insertAdjacentElement('afterend', this.sparkStats.node);
+  }
+
+  private connectToApi() {
+    let baseUrl;
+    let api;
+
+    this.sparkAppId = this.model.get('sparkAppId');
+
+    if (!this.sparkAppId) {
+      return;
+    }
+
+    try {
+      const coreutils = require('@jupyterlab/coreutils');
+      coreutils.PageConfig.getOption('pageUrl');
+      baseUrl = coreutils.PageConfig.getBaseUrl();
+    } catch(e) {
+      baseUrl = `${window.location.origin}/`;
+    }
+
+    api = new BeakerXApi(baseUrl);
+    this.setApiCallInterval(api);
+  }
+
+  private setApiCallInterval(api: BeakerXApi): void {
+    const sparkUrl = `${api.getApiUrl('sparkmetrics/executors')}/${this.sparkAppId}`;
+    const getMetrict = async () => {
+      try {
+        const response = await fetch(sparkUrl, { method: 'GET', credentials: 'include' });
+
+        if (!response.ok) {
+          return this.clearApiCallInterval();
+        }
+
+        const data = await response.json();
+        this.updateMetrics(data);
+      } catch(error) {
+        this.clearApiCallInterval();
+      }
+    };
+
+    this.clearApiCallInterval();
+    this.apiCallIntervalId = setInterval(getMetrict, 1000);
+  }
+
+  private clearApiCallInterval() {
+    clearInterval(this.apiCallIntervalId);
+    this.sparkAppId = null;
+  }
+
+  private updateMetrics(data: Array<any>) {
+    let activeTasks: number = 0;
+    let deadExecutors: number = 0;
+    let storageMemory: number = 0;
+
+    data.forEach(execData => {
+      if (execData.isActive) {
+        activeTasks += execData.activeTasks;
+        storageMemory += execData.memoryUsed;
+      } else {
+        deadExecutors += 1;
+      }
+    });
+
+    this.connectionLabelActive.innerText = `${activeTasks}`;
+    this.connectionLabelMemory.innerText = `${storageMemory}`;
+    this.connectionLabelDead.innerText = `${deadExecutors}`;
+  }
+
+  private addSparkMetricsWidget() {
+    this.children_views.update(this.model.get('children')).then((views) => {
+      views.forEach((view) => {
+        view.children_views.update(view.model.get('children')).then((views) => {
+          views.forEach((view) => {
+            if (view instanceof widgets.LabelView && view.el.classList.contains('bx-connection-status')) {
+              this.createSparkMetricsWidget();
+            }
+          });
+        });
+      });
+    });
+  }
+
+  despose() {
+    super.dispose();
+    clearInterval(this.apiCallIntervalId);
   }
 }
 

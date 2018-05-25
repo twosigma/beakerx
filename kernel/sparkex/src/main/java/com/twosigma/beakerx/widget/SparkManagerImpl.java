@@ -31,6 +31,7 @@ import org.apache.spark.scheduler.SparkListenerStageCompleted;
 import org.apache.spark.scheduler.SparkListenerStageSubmitted;
 import org.apache.spark.scheduler.SparkListenerTaskEnd;
 import org.apache.spark.scheduler.SparkListenerTaskStart;
+import org.apache.spark.sql.RuntimeConfig;
 import org.apache.spark.sql.SparkSession;
 import scala.Tuple2;
 import scala.collection.Iterator;
@@ -75,6 +76,12 @@ public class SparkManagerImpl implements SparkManager {
   @Override
   public SparkSession getOrCreate() {
     return sparkSessionBuilder.getOrCreate();
+  }
+
+  @Override
+  public String getSparkAppId() {
+    RuntimeConfig conf = getOrCreate().conf();
+    return conf.getAll().get("spark.app.id").get();
   }
 
   @Override

@@ -20,6 +20,7 @@ import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
@@ -27,6 +28,8 @@ import org.apache.spark.sql.SparkSession;
 import java.util.*;
 
 import static com.twosigma.beakerx.kernel.PlainCode.createSimpleEvaluationObject;
+import static com.twosigma.beakerx.widget.SparkUI.ACTIVE_SPARK_SESSION_EXISTS_IF_YOU_WANT_TO_CLOSE_IT_RUN_SPARK_CLOSE;
+import static java.util.Collections.singletonList;
 
 public class SparkUIManager {
 
@@ -44,7 +47,6 @@ public class SparkUIManager {
   private Text executorMemory;
   private Text executorCores;
   private SparkConfiguration advancedOption;
-  private boolean active = false;
   private SparkManager sparkManager;
   private SparkFoldout jobPanel = null;
   private Message currentParentHeader = null;
@@ -52,7 +54,6 @@ public class SparkUIManager {
   public SparkUIManager(SparkUI sparkUI, SparkManager sparkManager) {
     this.sparkUI = sparkUI;
     this.sparkManager = sparkManager;
-    SparkVariable.putSparkUIManager(this);
     createSparkView();
   }
 
@@ -115,12 +116,21 @@ public class SparkUIManager {
 
   private void initSparkContext(Message parentMessage) {
     KernelFunctionality kernel = KernelManager.get();
+    if (SparkUI.isActive()) {
+      sendError(parentMessage, kernel, ACTIVE_SPARK_SESSION_EXISTS_IF_YOU_WANT_TO_CLOSE_IT_RUN_SPARK_CLOSE);
+    } else {
+      SparkVariable.putSparkUIManager(this);
+      configureSparkContext(parentMessage, kernel);
+    }
+  }
+
+  private void configureSparkContext(Message parentMessage, KernelFunctionality kernel) {
     try {
       TryResult configure = sparkManager.configure(kernel, this, parentMessage);
       if (configure.isError()) {
         sendError(parentMessage, kernel, configure.error());
       } else {
-        active = true;
+        SparkUI.active();
       }
     } catch (Exception e) {
       sendError(parentMessage, kernel, e.getMessage());
@@ -132,6 +142,7 @@ public class SparkUIManager {
   }
 
   private void sendError(Message parentMessage, KernelFunctionality kernel, String message) {
+    KernelManager.get().publish(singletonList(MessageCreator.buildClearOutput(parentMessage, true)));
     SimpleEvaluationObject seo = createSimpleEvaluationObject("", kernel, parentMessage, 1);
     seo.error(message);
   }
@@ -144,7 +155,7 @@ public class SparkUIManager {
 
   public void applicationEnd() {
     sparkUI.removeStatusPanel();
-    active = false;
+    SparkUI.inActive();
     sparkUI.addView();
   }
 
@@ -244,10 +255,6 @@ public class SparkUIManager {
 
   public void cancelAllJobs() {
     getSparkSession().sparkContext().cancelAllJobs();
-  }
-
-  public boolean isActive() {
-    return active;
   }
 
   public Text getMasterURL() {

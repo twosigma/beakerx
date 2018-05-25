@@ -30,7 +30,9 @@ public class SparkUI extends VBox {
   public static final String MODEL_NAME_VALUE = "SparkUIModel";
   public static final String BEAKERX_ID = "beakerx.id";
 
-  private final SparkUIManager sparkUIManager;
+  public static final String ACTIVE_SPARK_SESSION_EXISTS_IF_YOU_WANT_TO_CLOSE_IT_RUN_SPARK_CLOSE = "Active spark session exists. If you want to close it run 'spark.close()'";
+
+  private volatile static boolean active = false;
 
   private VBox sparkConfig;
   private VBox sparkConfigPanel;
@@ -47,7 +49,7 @@ public class SparkUI extends VBox {
     this.sparkConfig = new VBox(new ArrayList<>());
     this.sparkConfigPanel = new VBox(Arrays.asList(sparkConfig));
     add(sparkConfigPanel);
-    this.sparkUIManager = new SparkUIManager(this, sparkManager);
+    new SparkUIManager(this, sparkManager);
   }
 
   @Override
@@ -74,10 +76,6 @@ public class SparkUI extends VBox {
     builder.config(SPARK_EXTRA_LISTENERS, START_STOP_SPARK_LISTENER);
     builder.config(BEAKERX_ID, UUID.randomUUID().toString());
     return builder;
-  }
-
-  public boolean isSparkSessionIsActive() {
-    return sparkUIManager.isActive();
   }
 
   public void addMasterUrl(Text masterURL) {
@@ -136,5 +134,16 @@ public class SparkUI extends VBox {
     public SparkUI create(SparkManager sparkManager) {
       return SparkUI.create(sparkManager);
     }
+  }
+
+  public static boolean isActive() {
+    return SparkUI.active;
+  }
+
+  public static void active() {
+    SparkUI.active = true;
+  }
+  public static void inActive() {
+    SparkUI.active = false;
   }
 }

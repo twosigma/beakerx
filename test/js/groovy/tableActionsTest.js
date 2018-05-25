@@ -51,13 +51,15 @@ describe('Testing of table Actions ', function () {
     it('ContextMenuItem should change table cell value ', function () {
       cellIndex = 0;
       codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell1_case1.png');
+      //beakerxPO.checkImageData(imageData.value, imageDir, 'cell1_case1.png');
 
       codeCell.rightClick('canvas', 40, 40);
       browser.click('div.p-Menu-itemLabel=plusOne');
       beakerxPO.kernelIdleIcon.waitForEnabled();
+      browser.pause(1000);
       canvas = codeCell.$('canvas');
       imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell1_case2.png');

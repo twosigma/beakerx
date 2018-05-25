@@ -253,16 +253,12 @@ function BeakerXPageObject() {
   };
 
   this.checkImageData = function(imageData, imgDir, fileName){
-// this.createTableImage(imageData, imgDir, fileName);
     var mismatchPercentage = 1;
     var absFileName = path.join(__dirname, '../resources/img', imgDir, fileName);
     var file1 = fs.readFileSync(absFileName);
     var file2 =  new Buffer(imageData, 'base64');
     resemble(file1).compareTo(file2).onComplete(function(data){
       console.log(fileName + ': misMatch=' + data.misMatchPercentage);
-      var stream = fs.createWriteStream(absFileName.replace('.png', 'dif.png'));
-      stream.write(data.getBuffer());
-      stream.end();
       expect(data.misMatchPercentage).toBeLessThan(mismatchPercentage);
     }); 
   };

@@ -123,13 +123,13 @@ describe('Tests for kernel magic. ', function () {
 
       cellIndex += 1;
       var fileName = 'cell12_case1.png';
-      var width = 500, height = 140;
+      var width = 200, height = 100;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, fileName);
     });
   });
-/* disable till it will be fixed
+/* disabled till it will be fixed
   describe('interrupt %%groovy magic ', function () {
     it('Should display KeyboardInterrupt error ', function () {
       cellIndex += 1;

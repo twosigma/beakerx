@@ -18,6 +18,7 @@ import {Widget} from "@phosphor/widgets";
 import BeakerXApi from "./tree/Utils/BeakerXApi";
 
 const widgets = require('./widgets');
+const bkUtils = require("./shared/bkUtils");
 
 class SparkUIModel extends widgets.VBoxModel {
   defaults() {
@@ -36,10 +37,20 @@ class SparkUIModel extends widgets.VBoxModel {
 class SparkUIView extends widgets.VBoxView {
   private sparkStats: Widget;
   private sparkAppId: string;
+  private sparkUiWebUrl: string;
+  private sparkMasterUrl: string;
   private apiCallIntervalId: number;
   private connectionLabelActive: HTMLElement;
   private connectionLabelMemory: HTMLElement;
   private connectionLabelDead: HTMLElement;
+  private connectionStatusElement: HTMLElement;
+
+  initialize(parameters) {
+    super.initialize(parameters);
+
+    this.openWebUi = this.openWebUi.bind(this);
+    this.openExecutors = this.openExecutors.bind(this);
+  }
 
   public render() {
     super.render();
@@ -53,8 +64,63 @@ class SparkUIView extends widgets.VBoxView {
     super.update();
 
     this.connectToApi();
+    this.addSparkUrls();
     this.addSparkMetricsWidget();
     this.updateLabels();
+  }
+
+  private addSparkUrls() {
+    if (!this.connectionStatusElement) {
+      this.connectionStatusElement = this.el.querySelector('.bx-connection-status');
+    }
+
+    if (!this.connectionStatusElement) {
+      return;
+    }
+
+    this.addSparUiWebUrl();
+    this.addMasterUrl();
+  }
+
+  private addSparUiWebUrl() {
+    if (this.sparkUiWebUrl) {
+      return;
+    }
+
+    this.sparkUiWebUrl = this.model.get("sparkUiWebUrl");
+
+    if (!this.sparkUiWebUrl) {
+      return;
+    }
+
+    this.connectionStatusElement.removeEventListener('click', this.openWebUi);
+    this.connectionStatusElement.addEventListener('click', this.openWebUi);
+    this.sparkStats.node.removeEventListener('click', this.openExecutors);
+    this.sparkStats.node.addEventListener('click', this.openExecutors);
+    this.connectionStatusElement.style.cursor = 'pointer';
+    this.sparkStats.node.style.cursor = 'pointer';
+  }
+
+  private addMasterUrl() {
+    if (this.sparkMasterUrl) {
+      return
+    }
+
+    this.sparkMasterUrl = this.model.get("sparkMasterUrl");
+
+    if (!this.sparkMasterUrl) {
+      return;
+    }
+
+    this.connectionStatusElement.setAttribute('title', this.sparkMasterUrl);
+  }
+
+  private openWebUi() {
+    window.open(this.sparkUiWebUrl, '_blank');
+  }
+
+  private openExecutors() {
+    window.open(`${this.sparkUiWebUrl}/executors`, '_blank');
   }
 
   private updateLabels() {
@@ -117,9 +183,10 @@ class SparkUIView extends widgets.VBoxView {
   }
 
   private createSparkMetricsWidget(): void {
+    this.connectionStatusElement = this.el.querySelector('.bx-connection-status');
+
     if (this.sparkStats) {
-      this.el.querySelector('.bx-connection-status')
-        .insertAdjacentElement('afterend', this.sparkStats.node);
+      this.connectionStatusElement.insertAdjacentElement('afterend', this.sparkStats.node);
 
       return;
     }
@@ -129,14 +196,14 @@ class SparkUIView extends widgets.VBoxView {
     this.sparkStats.node.innerHTML = `
       <div class="active label label-info" title="Active Tasks">0</div> <div
       class="dead label label-danger" title="Dead Executors">0</div> <div
-      class="memory label label-default" title="Storage Memory">0</div>
+      class="memory label label-default" title="Storage Memory">0.0 B</div>
     `;
 
     this.connectionLabelActive = this.sparkStats.node.querySelector('.active');
     this.connectionLabelMemory = this.sparkStats.node.querySelector('.memory');
     this.connectionLabelDead = this.sparkStats.node.querySelector('.dead');
 
-    this.el.querySelector('.bx-connection-status').insertAdjacentElement('afterend', this.sparkStats.node);
+    this.connectionStatusElement.insertAdjacentElement('afterend', this.sparkStats.node);
   }
 
   private connectToApi() {
@@ -202,7 +269,7 @@ class SparkUIView extends widgets.VBoxView {
     });
 
     this.connectionLabelActive.innerText = `${activeTasks}`;
-    this.connectionLabelMemory.innerText = `${storageMemory}`;
+    this.connectionLabelMemory.innerText = `${bkUtils.formatBytes(storageMemory)}`;
     this.connectionLabelDead.innerText = `${deadExecutors}`;
   }
 

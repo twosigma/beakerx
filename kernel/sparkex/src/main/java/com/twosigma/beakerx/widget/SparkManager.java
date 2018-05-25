@@ -38,6 +38,10 @@ public interface SparkManager {
 
   String getSparkAppId();
 
+  String getSparkUiWebUrl();
+
+  String getSparkMasterUrl();
+
   interface SparkManagerFactory {
     SparkManager create(SparkSession.Builder sparkSessionBuilder);
   }

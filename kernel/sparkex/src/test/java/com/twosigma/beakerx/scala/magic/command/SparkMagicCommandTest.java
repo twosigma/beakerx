@@ -132,6 +132,16 @@ public class SparkMagicCommandTest {
       public String getSparkAppId() {
         return "sparkAppId1";
       }
+
+      @Override
+      public String getSparkUiWebUrl() {
+        return "sparkUiWebUrl";
+      }
+
+      @Override
+      public String getSparkMasterUrl() {
+        return "sparkMasterUrl";
+      }
     };
   }
 

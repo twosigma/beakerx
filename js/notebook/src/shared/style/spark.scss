@@ -16,16 +16,16 @@
 
 @import "bxvariables";
 
+.bx-spark-stagePanel {
+  max-width: 600px;
+  margin: 8px 0;
+}
+
 .foldout-preview {
   & > .bx-spark-stagePanel {
     padding: 0 15px;
-    max-width: 600px;
     margin: 0;
   }
-}
-
-.bx-spark-jobPanel {
-  max-width: 600px;
 }
 
 .bx-panel {
@@ -110,7 +110,7 @@
   height: 18px;
   align-items: center;
 
-  .label {
+  .bx-label {
     display: inline-block;
     max-height: 100%;
     line-height: 150%;

@@ -191,10 +191,9 @@ public class SparkUIManager {
       oldJobPanel.getLayout().setDisplayNone();
       oldJobPanel.close();
     }
-    Label label = new Label();
-    label.setValue("Spark progress");
-    SparkFoldout jobPanel = new SparkFoldout();
-    jobPanel.add(label);
+    SparkFoldout.FoldoutOption foldoutOption = new SparkFoldout.FoldoutOption();
+    foldoutOption.headerLabel = "Spark progress";
+    SparkFoldout jobPanel = new SparkFoldout(new ArrayList<>(), foldoutOption);
     jobPanel.display();
     return jobPanel;
   }

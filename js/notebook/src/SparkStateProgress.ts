@@ -97,29 +97,38 @@ class SparkStateProgressView extends widgets.VBoxView {
   }
 
   private updateLabelWidths() {
-    const maxWidth = `${this.progressLabelAll.offsetWidth}px`;
+    const container = document.createElement('span');
+
+    container.style.visibility = 'hidden';
+    container.style.position = 'absolute';
+    container.innerText = '999';
+    container.classList.add('bx-label');
+
+    document.body.appendChild(container);
+    const maxWidth = `${container.offsetWidth}px`;
+    document.body.removeChild(container);
 
     this.progressLabelDone.style.width = maxWidth;
     this.progressLabelActive.style.width = maxWidth;
     this.progressLabelWaiting.style.width = maxWidth;
+    this.progressLabelAll.style.width = maxWidth;
   }
 
   private createWidget(): void {
-    this.$el.append(this.createJobPanel());
+    this.el.appendChild(this.createJobPanel());
   }
 
-  private createJobPanel(): JQuery<HTMLElement> {
+  private createJobPanel(): HTMLElement {
     let state: IState = this.model.get('state');
 
     let jobLink = this.createJobLink(state);
     let stagePanel = this.createStagePanel(state);
+    let jobPanel = document.createElement('div');
 
-    return $('<div>', {
-      class: 'bx-panel bx-spark-jobPanel'
-    }).append(
-      $('<div>', { class: 'bx-panel-heading' }).append(jobLink),
-      $('<div>', { class: 'bx-panel-body bx-spark-stagePanel' }).append(stagePanel)
-    );
+    jobPanel.classList.add('bx-spark-stagePanel');
+    jobPanel.appendChild(stagePanel[0]);
+
+    return jobPanel;
   }
 
   private createJobLink(state: IState): JQuery<HTMLElement> {
@@ -136,7 +145,7 @@ class SparkStateProgressView extends widgets.VBoxView {
     let progressLabels = this.createStageProgressLabels(state);
 
     return $('<div>', { class: 'bx-row' }).append(
-      $('<div>', { class: 'bx-col-xs-2 bx-text-right' }).append(stageLink),
+      $('<div>', { class: 'bx-text-right' }).append(stageLink),
       $('<div>', { class: 'bx-col-xs-6' }).append(progressBar),
       $('<div>', { class: 'bx-col-xs-4' }).append(progressLabels),
     );
@@ -195,11 +204,6 @@ class SparkStateProgressView extends widgets.VBoxView {
     this.progressLabelActive = this.progressLabels.querySelector('.active');
     this.progressLabelWaiting = this.progressLabels.querySelector('.waiting');
     this.progressLabelAll = this.progressLabels.querySelector('.all');
-
-    this.progressLabelDone.style.display = 'inline-block';
-    this.progressLabelActive.style.display = 'inline-block';
-    this.progressLabelWaiting.style.display = 'inline-block';
-    this.progressLabelAll.style.display = 'inline-block';
 
     return $(this.progressLabels);
   }

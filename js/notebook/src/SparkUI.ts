@@ -220,7 +220,7 @@ class SparkUIView extends widgets.VBoxView {
     });
   }
 
-  despose() {
+  dispose() {
     super.dispose();
     clearInterval(this.apiCallIntervalId);
   }

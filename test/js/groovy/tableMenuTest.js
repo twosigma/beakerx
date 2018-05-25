@@ -84,14 +84,11 @@ describe('Testing of table Actions ', function () {
     it('Should display table ', function () {
       cellIndex = 0;
       var width = 200, height = 100;
-      //var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       codeCell.moveToObject('canvas', 40, 40);
       browser.pause(500);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-     // expect(imageData.value.length).toBeGreaterThan(0);
-     // imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell1_case1.png');
     });
 

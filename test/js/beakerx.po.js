@@ -260,7 +260,7 @@ function BeakerXPageObject() {
     resemble(file1).compareTo(file2).onComplete(function(data){
       console.log(fileName + ': misMatch=' + data.misMatchPercentage);
       expect(data.misMatchPercentage).toBeLessThan(mismatchPercentage);
-    }); 
+    });
   };
 
   this.checkPlotWithLine = function(codeCell, cellIndex){

@@ -160,6 +160,7 @@ describe('Groovy base tests. ', function () {
     });
   });
 
+
   describe('%%python magic', function () {
     it('Should display Plot with Line ', function () {
       cellIndex += 1;

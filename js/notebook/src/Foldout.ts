@@ -209,7 +209,6 @@ class FoldoutView extends widgets.BoxView {
             return;
         }
 
-        this.previewContainer.node.style.width = `${this.el.clientWidth - (this.labelContent.node.clientWidth + 40)}px`;
         this.previewContentParent = this.previewContent.parentNode as HTMLElement;
 
         if (this.active) {

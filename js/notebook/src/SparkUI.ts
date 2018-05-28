@@ -124,30 +124,21 @@ class SparkUIView extends widgets.VBoxView {
   }
 
   private updateLabels() {
-    const lengths = [];
-    const labels = [];
     const noop = () => {};
-    const promise = new Promise((resolve, reject) => {
-      this.resolveChildren(this).then((views) => {
-        views.forEach((view) => {
-          this.resolveChildren(view).then((views) => {
-            views.forEach((view) => {
-              this.resolveChildren(view)
-                .then((views) => {
-                  this.collectLabels(views, lengths, labels, resolve);
-                })
-                .catch(reject);
-            });
-          }, noop);
-        });
-      }, noop);
-    });
 
-    promise.then(() => {
-      const maxWidth = Math.max.apply(null, lengths);
-
-      labels.forEach((label) => { label.style.width = `${maxWidth}px`; });
-    }).catch(noop);
+    this.resolveChildren(this).then((views) => {
+      views.forEach((view) => {
+        this.resolveChildren(view).then((views) => {
+          views.forEach((view) => {
+            this.resolveChildren(view)
+              .then((views) => {
+                this.setLabelsWidth(views);
+              })
+              .catch(noop);
+          });
+        }, noop);
+      });
+    }, noop);
   }
 
   private resolveChildren(view) {
@@ -161,7 +152,10 @@ class SparkUIView extends widgets.VBoxView {
     });
   }
 
-  private collectLabels(views, lengths, labels, resolve) {
+  private setLabelsWidth(views) {
+    let labels = [];
+    let lengths = [];
+
     views.forEach((view) => {
       const label = view.el.querySelector('.widget-label');
 
@@ -173,7 +167,8 @@ class SparkUIView extends widgets.VBoxView {
       labels.push(label);
     });
 
-    resolve();
+    const maxWidth = Math.max.apply(null, lengths);
+    labels.forEach((label) => { label.style.width = `${maxWidth}px`; });
   }
 
   private getLabelWidth(labelEl): number {

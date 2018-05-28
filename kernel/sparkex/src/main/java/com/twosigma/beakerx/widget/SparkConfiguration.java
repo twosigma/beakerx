@@ -42,7 +42,8 @@ public class SparkConfiguration extends VBox {
 
   private Button createAddButton() {
     Button add = new Button();
-    add.setDescription("+");
+    add.setTooltip("Add property");
+    add.setDomClasses(new ArrayList<>(Arrays.asList("bx-button", "icon-add")));
     add.registerOnClick((content, message) -> addProperty());
     return add;
   }
@@ -53,7 +54,7 @@ public class SparkConfiguration extends VBox {
     Text value = new Text();
     value.setPlaceholder("value");
     Button remove = new Button();
-    remove.setDescription("-");
+    remove.setDomClasses(new ArrayList<>(Arrays.asList("bx-button", "icon-close")));
     PropertyItem propertyItem = new PropertyItem(name, value, remove);
     remove.registerOnClick((content, message) -> this.properties.getWidget().removeDOMWidget(propertyItem));
     this.properties.add(propertyItem);

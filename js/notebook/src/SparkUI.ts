@@ -39,11 +39,15 @@ class SparkUIView extends widgets.VBoxView {
   private sparkAppId: string;
   private sparkUiWebUrl: string;
   private sparkMasterUrl: string;
+  private sparkDefaultMasterUrl: string;
   private apiCallIntervalId: number;
   private connectionLabelActive: HTMLElement;
   private connectionLabelMemory: HTMLElement;
   private connectionLabelDead: HTMLElement;
   private connectionStatusElement: HTMLElement;
+  private masterUrlInput: HTMLInputElement;
+  private executorCoresInput: HTMLInputElement;
+  private executorMemoryInput: HTMLInputElement;
 
   initialize(parameters) {
     super.initialize(parameters);
@@ -66,6 +70,7 @@ class SparkUIView extends widgets.VBoxView {
     this.connectToApi();
     this.addSparkUrls();
     this.addSparkMetricsWidget();
+    this.addDefaultMasterUrl();
     this.updateLabels();
   }
 
@@ -115,6 +120,37 @@ class SparkUIView extends widgets.VBoxView {
     this.connectionStatusElement.setAttribute('title', this.sparkMasterUrl);
   }
 
+  private addDefaultMasterUrl() {
+    this.sparkDefaultMasterUrl = this.model.get('sparkDefaultMasterUrl');
+
+    if (!this.sparkDefaultMasterUrl) {
+      return;
+    }
+
+    this.masterUrlInput = this.el.querySelector('.bx-spark-master-url input');
+    this.executorCoresInput = this.el.querySelector('.bx-spark-executor-cores input');
+    this.executorMemoryInput = this.el.querySelector('.bx-spark-executor-memory input');
+
+    if (this.masterUrlInput) {
+      this.toggleExecutorConfigInputs();
+      this.masterUrlInput.onchange = this.toggleExecutorConfigInputs.bind(this);
+    }
+  }
+
+  private toggleExecutorConfigInputs() {
+    if (!this.masterUrlInput) {
+      return;
+    }
+
+    if (this.masterUrlInput.value === this.sparkDefaultMasterUrl) {
+      this.executorCoresInput.setAttribute('disabled', 'disabled');
+      this.executorMemoryInput.setAttribute('disabled', 'disabled');
+    } else {
+      this.executorCoresInput.removeAttribute('disabled');
+      this.executorMemoryInput.removeAttribute('disabled');
+    }
+  }
+
   private openWebUi() {
     window.open(this.sparkUiWebUrl, '_blank');
   }
@@ -124,30 +160,22 @@ class SparkUIView extends widgets.VBoxView {
   }
 
   private updateLabels() {
-    const lengths = [];
-    const labels = [];
     const noop = () => {};
-    const promise = new Promise((resolve, reject) => {
-      this.resolveChildren(this).then((views) => {
-        views.forEach((view) => {
-          this.resolveChildren(view).then((views) => {
-            views.forEach((view) => {
-              this.resolveChildren(view)
-                .then((views) => {
-                  this.collectLabels(views, lengths, labels, resolve);
-                })
-                .catch(reject);
-            });
-          }, noop);
-        });
-      }, noop);
-    });
 
-    promise.then(() => {
-      const maxWidth = Math.max.apply(null, lengths);
-
-      labels.forEach((label) => { label.style.width = `${maxWidth}px`; });
-    }).catch(noop);
+    this.resolveChildren(this).then((views) => {
+      views.forEach((view) => {
+        this.resolveChildren(view).then((views) => {
+          views.forEach((view) => {
+            this.resolveChildren(view)
+              .then((views) => {
+                this.setLabelsWidth(views);
+                this.addDefaultMasterUrl();
+              })
+              .catch(noop);
+          });
+        }, noop);
+      });
+    }, noop);
   }
 
   private resolveChildren(view) {
@@ -161,7 +189,10 @@ class SparkUIView extends widgets.VBoxView {
     });
   }
 
-  private collectLabels(views, lengths, labels, resolve) {
+  private setLabelsWidth(views): void {
+    let labels = [];
+    let lengths = [];
+
     views.forEach((view) => {
       const label = view.el.querySelector('.widget-label');
 
@@ -173,7 +204,8 @@ class SparkUIView extends widgets.VBoxView {
       labels.push(label);
     });
 
-    resolve();
+    const maxWidth = Math.max.apply(null, lengths);
+    labels.forEach((label) => { label.style.width = `${maxWidth}px`; });
   }
 
   private getLabelWidth(labelEl): number {

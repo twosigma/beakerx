@@ -91,10 +91,6 @@ class SparkUIView extends widgets.VBoxView {
   }
 
   private addSparUiWebUrl() {
-    if (this.sparkUiWebUrl) {
-      return;
-    }
-
     this.sparkUiWebUrl = this.model.get("sparkUiWebUrl");
 
     if (!this.sparkUiWebUrl) {
@@ -110,10 +106,6 @@ class SparkUIView extends widgets.VBoxView {
   }
 
   private addMasterUrl() {
-    if (this.sparkMasterUrl) {
-      return
-    }
-
     this.sparkMasterUrl = this.model.get("sparkMasterUrl");
 
     if (!this.sparkMasterUrl) {
@@ -162,7 +154,6 @@ class SparkUIView extends widgets.VBoxView {
           views.forEach((view) => {
             this.resolveChildren(view)
               .then((views) => {
-                this.setLabelsWidth(views);
                 this.handleLocalMasterUrl();
               })
               .catch(noop);
@@ -181,31 +172,6 @@ class SparkUIView extends widgets.VBoxView {
       view.children_views.update(view.model.get('children'))
         .then(views => resolve(views));
     });
-  }
-
-  private setLabelsWidth(views): void {
-    let labels = [];
-    let lengths = [];
-
-    views.forEach((view) => {
-      const label = view.el.querySelector('.widget-label');
-
-      if (!label) {
-        return true;
-      }
-
-      lengths.push(this.getLabelWidth(label));
-      labels.push(label);
-    });
-
-    const maxWidth = Math.max.apply(null, lengths);
-    labels.forEach((label) => { label.style.width = `${maxWidth}px`; });
-  }
-
-  private getLabelWidth(labelEl): number {
-    labelEl.style.width = 'auto';
-
-    return labelEl.clientWidth;
   }
 
   private createSparkMetricsWidget(): void {

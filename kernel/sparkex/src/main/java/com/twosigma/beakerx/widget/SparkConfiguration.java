@@ -77,9 +77,10 @@ public class SparkConfiguration extends VBox {
 
   private PropertyItem createPropertyItem(Text nameWidget, Text valueWidget) {
     nameWidget.setPlaceholder("name");
+    nameWidget.setDomClasses(new ArrayList<>(asList("bx-config-name")));
     valueWidget.setPlaceholder("value");
     Button remove = new Button();
-    remove.setDescription("-");
+    remove.setDomClasses(new ArrayList<>(asList("bx-button", "icon-close")));
     PropertyItem propertyItem = new PropertyItem(nameWidget, valueWidget, remove);
     remove.registerOnClick((content, message) -> this.properties.getWidget().removeDOMWidget(propertyItem));
     return propertyItem;

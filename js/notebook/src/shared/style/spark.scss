@@ -147,3 +147,30 @@
     color: $bxBgColor1;
   }
 }
+
+.widget-spark-ui {
+  .bx-spark-config {
+    width: 606px;
+    max-width: 99%;
+
+    .widget-label {
+      margin-right: 10px;
+      width: 292px;
+    }
+
+    input {
+      width: 300px;
+      margin: 2px;
+    }
+
+    input,
+    .widget-label {
+      flex-grow: 1;
+      flex-shrink: 1;
+    }
+  }
+
+  .bx-config-name input {
+    text-align: right;
+  }
+}

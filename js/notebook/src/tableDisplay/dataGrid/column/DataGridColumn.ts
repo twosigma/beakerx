@@ -18,10 +18,9 @@ import ColumnMenu from "../headerMenu/ColumnMenu";
 import IndexMenu from "../headerMenu/IndexMenu";
 import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import {IColumnOptions} from "../interface/IColumn";
-import { ICellData } from "../interface/ICell";
 import { CellRenderer, DataModel, TextRenderer } from "@phosphor/datagrid";
 import {ALL_TYPES, getDisplayType, isDoubleWithPrecision} from "../dataTypes";
-import { minmax, filter } from '@phosphor/algorithm';
+import { minmax, filter, each } from '@phosphor/algorithm';
 import { HIGHLIGHTER_TYPE } from "../interface/IHighlighterState";
 import ColumnManager, { COLUMN_CHANGED_TYPES, IBkoColumnsChangedArgs } from "./ColumnManager";
 import ColumnFilter from "./ColumnFilter";
@@ -58,6 +57,10 @@ import {
 } from "../model/reducer";
 import {RENDERER_TYPE} from "../interface/IRenderer";
 import DataGridCell from "../cell/DataGridCell";
+import {ColumnValuesIterator} from "./ColumnValuesIterator";
+import {DataGridHelpers} from "../dataGridHelpers";
+import getStringSize = DataGridHelpers.getStringSize;
+import {selectDataFontSize} from "../model/selectors/model";
 
 export default class DataGridColumn {
   index: number;
@@ -135,7 +138,8 @@ export default class DataGridColumn {
     const position = this.getPosition();
 
     this.assignFormatFn();
-    this.dataGrid.dataGridResize.setInitialSectionWidth({ index: position.value }, position.region, this.type);
+    this.recalculateLongestStringValue(displayType);
+    this.dataGrid.dataGridResize.setInitialSectionWidth({ index: position.value }, position.region);
   }
 
   setTimeDisplayType(timeUnit) {
@@ -309,16 +313,32 @@ export default class DataGridColumn {
   }
 
   addMinMaxValues() {
+    let stringMinMax;
+    let minMax;
     let dataType = this.getDataType();
-    let valueResolver = this.dataGrid.model.getColumnValueResolver(dataType);
+    let displayType = this.getDisplayType();
     let valuesIterator = this.dataGrid.model.getColumnValuesIterator(this);
-    let minMax = minmax(
-      filter(valuesIterator, (value) => !Number.isNaN(valueResolver(value))),
-      this.getMinMaxValuesIterator(dataType, valueResolver)
+    let valueResolver = this.dataGrid.model.getColumnValueResolver(
+      displayType === ALL_TYPES.html ? displayType : dataType
     );
+
+    if (dataType === ALL_TYPES.html || displayType === ALL_TYPES.html) {
+      this.resizeHTMLRows(valuesIterator);
+    } else if (dataType === ALL_TYPES.string || dataType === ALL_TYPES['formatted integer']) {
+      stringMinMax = minmax(valuesIterator, ColumnValuesIterator.longestString(valueResolver));
+    } else {
+      minMax = minmax(
+        filter(valuesIterator, (value) => !Number.isNaN(valueResolver(value))),
+        ColumnValuesIterator.minMax(valueResolver)
+      );
+    }
 
     this.minValue = minMax ? minMax[0] : null;
     this.maxValue = minMax ? minMax[1] : null;
+
+    if (stringMinMax) {
+      this.longestStringValue = stringMinMax[1];
+    }
   }
 
   resetState() {
@@ -337,7 +357,7 @@ export default class DataGridColumn {
     this.assignFormatFn();
 
     const position = this.getPosition();
-    this.dataGrid.dataGridResize.setInitialSectionWidth(this, position.region, this.type);
+    this.dataGrid.dataGridResize.setInitialSectionWidth(this, position.region);
     this.dataGrid.dataGridResize.updateWidgetWidth();
   }
 
@@ -370,27 +390,32 @@ export default class DataGridColumn {
     this.dataGrid.columnPosition.updateAll();
   }
 
-  private getMinMaxValuesIterator(dataType: ALL_TYPES, valueResolver: Function): (a:any, b:any) => number {
-    return (a:any, b:any) => {
-      let value1 = valueResolver(a);
-      let value2 = valueResolver(b);
-
-      if (dataType === ALL_TYPES.string || dataType === ALL_TYPES['formatted integer'] || dataType === ALL_TYPES.html) {
-        let aLength = value1 ? value1.length : 0;
-        let bLength = value2 ? value2.length : 0;
-        let longer = aLength > bLength ? value1 : value2;
-
-        if (!this.longestStringValue || this.longestStringValue.length < String(longer).length) {
-          this.longestStringValue = longer;
-        }
-      }
-
-      if (value1 === value2) {
-        return 0;
-      }
-
-      return value1 < value2 ? -1 : 1;
+  recalculateLongestStringValue(displayType: ALL_TYPES|string) {
+    if (displayType !== ALL_TYPES.string && displayType !== ALL_TYPES.html ) {
+      return;
     }
+
+    this.longestStringValue = null;
+    this.addMinMaxValues();
+  }
+
+  private resizeHTMLRows(valuesIterator) {
+    let fontSize = selectDataFontSize(this.store.state);
+    let longest;
+
+    each(valuesIterator, (value, index) => {
+      let size = getStringSize(value, fontSize);
+
+      if (!longest || longest.width < size.width) {
+        longest = { width: size.width, value };
+      }
+
+      if (size.height > this.dataGrid.rowSections.sectionSize(index)) {
+        this.dataGrid.resizeSection('row', index, size.height);
+      }
+    });
+
+    this.longestStringValue = longest && longest.value;
   }
 
   private updateColumnFilter(filter: string) {

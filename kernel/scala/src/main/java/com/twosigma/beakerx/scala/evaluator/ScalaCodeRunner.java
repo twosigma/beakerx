@@ -43,7 +43,6 @@ class ScalaCodeRunner implements Callable<TryResult> {
     TryResult either;
     try {
       theOutput.setOutputHandler();
-      InternalVariable.setValue(theOutput);
       either = scalaEvaluator.getShell().evaluate(theOutput, theCode);
     } catch (Throwable e) {
       if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {

@@ -29,6 +29,7 @@ import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 public class MvnLoggerWidget {
 
   static final int PERIOD = 250;
+  public static final String DOWNLOADED = "Downloaded";
   private BxHTML widget;
   private Timer timer;
   private volatile int jarNumbers = 0;
@@ -45,10 +46,14 @@ public class MvnLoggerWidget {
         if (jarNumbers > 0) {
           String sizeWithUnit = byteCountToDisplaySize(new Double(sizeInKb * 1000).longValue());
           String status = String.format("%d jar%s, %s downloaded at %s", jarNumbers, getPluralFormWhenNumberOfJarGreaterThanOne(), sizeWithUnit, speed);
-          widget.setValue(status + "</br>" + currentLine);
+          widget.setValue(status + "</br>" + formatCurrentLine());
         }
       }
     }, 0, PERIOD);
+  }
+
+  private String formatCurrentLine() {
+    return currentLine.replaceFirst(DOWNLOADED, "").trim().replaceFirst(":","").trim();
   }
 
   private String getPluralFormWhenNumberOfJarGreaterThanOne() {
@@ -56,7 +61,7 @@ public class MvnLoggerWidget {
   }
 
   public void sendLog(String line) {
-    if (line != null && !line.trim().isEmpty() && line.matches("Downloaded.+")) {
+    if (line != null && !line.trim().isEmpty() && line.matches(DOWNLOADED + ".+")) {
       this.currentLine = line;
       if (line.matches(".+jar.+")) {
         this.jarNumbers++;

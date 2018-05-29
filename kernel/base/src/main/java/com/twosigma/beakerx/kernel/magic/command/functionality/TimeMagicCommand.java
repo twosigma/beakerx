@@ -21,6 +21,7 @@ import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
+import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -113,7 +114,7 @@ public abstract class TimeMagicCommand implements MagicCommandFunctionality {
     if (timeItOption.getNumber() < 0) {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Number of execution must be bigger then 0");
     }
-    int number = timeItOption.getNumber() == 0 ? getBestNumber(codeToExecute, showResult) : timeItOption.getNumber();
+    int number = timeItOption.getNumber() == 0 ? getBestNumber(codeToExecute, showResult,message) : timeItOption.getNumber();
 
     if (timeItOption.getRepeat() == 0) {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Repeat value must be bigger then 0");
@@ -211,15 +212,15 @@ public abstract class TimeMagicCommand implements MagicCommandFunctionality {
     return options;
   }
 
-  private int getBestNumber(String codeToExecute, boolean showResult) {
+  private int getBestNumber(String codeToExecute, boolean showResult, Message message) {
     for (int value = 0; value < 10; ) {
       Double numberOfExecution = Math.pow(10, value);
       CompletableFuture<Boolean> keepLooking = new CompletableFuture<>();
 
       Long startTime = System.nanoTime();
       IntStream.range(0, numberOfExecution.intValue()).forEach(indexOfExecution -> {
-
-        SimpleEvaluationObject simpleEvaluationObject = createSimpleEvaluationObject(codeToExecute, kernel, new Message(), 0);
+        SimpleEvaluationObject simpleEvaluationObject = createSimpleEvaluationObject(
+                codeToExecute, kernel, new Message(new Header(message.type(), message.getHeader().getSession())), 0);
         if (!showResult) {
           simpleEvaluationObject.noResult();
         }

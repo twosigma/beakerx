@@ -25,17 +25,54 @@ import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.message.Header;
+import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.SparkEngineImpl;
 import com.twosigma.beakerx.widget.SparkUI;
+import com.twosigma.beakerx.widget.SparkUiDefaultsImpl;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
+
+import java.io.File;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.Arrays.asList;
+import static java.util.Arrays.copyOfRange;
 
 public class SparkMagicCommand implements MagicCommandFunctionality {
 
   public static final String SPARK = "%%sparkRunner";
   private KernelFunctionality kernel;
+  private SparkUI.SparkUIFactory sparkUIFactory;
+  private SparkUI sparkUI;
+  private Map<String, SparkOption> sparkOptions;
 
   public SparkMagicCommand(KernelFunctionality kernel) {
+    //constructor for reflection in LoadMagicMagicCommand
+    this(
+            kernel,
+            new SparkUI.SparkUIFactoryImpl(
+                    new SparkEngineImpl.SparkEngineFactoryImpl(),
+                    new SparkUiDefaultsImpl(
+                            Paths.get(System.getProperty("user.home") + File.separator + ".jupyter" + File.separator + "beakerx.json"))));
+
+  }
+
+  SparkMagicCommand(KernelFunctionality kernel, SparkUI.SparkUIFactory sparkUIFactory) {
     this.kernel = kernel;
+    this.sparkUIFactory = sparkUIFactory;
+    configureOptions();
+  }
+
+  private void configureOptions() {
+    this.sparkOptions = new HashMap<>();
+    this.sparkOptions.put("--connect", this::connectToSparkSession);
+    this.sparkOptions.put("-c", this::connectToSparkSession);
   }
 
   @Override
@@ -45,6 +82,39 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
 
   @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
+    if (sparkUI != null && sparkUI.isActive()) {
+      return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Active spark session exists. If you want to close it run 'spark.close()'");
+    }
+    List<String> options = getOptions(param);
+    MagicCommandOutcomeItem optionValidation = validateOptions(options);
+    if (optionValidation.getStatus().equals(MagicCommandOutput.Status.ERROR)) {
+      return optionValidation;
+    }
+    MagicCommandOutcomeItem ui = createUI(param);
+    if (ui.getStatus().equals(MagicCommandOutcomeItem.Status.OK)) {
+      options.forEach(option -> sparkOptions.get(option).run(param.getCode().getMessage()));
+    }
+    return ui;
+  }
+
+  private MagicCommandOutcomeItem validateOptions(List<String> options) {
+    for (String option : options) {
+      if (!sparkOptions.containsKey(option)) {
+        return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Unknown option " + option);
+      }
+    }
+    return new MagicCommandOutput(MagicCommandOutput.Status.OK);
+  }
+
+  private List<String> getOptions(MagicCommandExecutionParam param) {
+    String[] parts = param.getCommand().split(" ");
+    if (parts.length == 1) {
+      return new ArrayList<>();
+    }
+    return asList(copyOfRange(parts, 1, parts.length));
+  }
+
+  private MagicCommandOutcomeItem createUI(MagicCommandExecutionParam param) {
     SimpleEvaluationObject seo = PlainCode.createSimpleEvaluationObject(param.getCommandCodeBlock(), kernel, param.getCode().getMessage(), param.getExecutionCount());
     if (param.getCommandCodeBlock().isEmpty()) {
       InternalVariable.setValue(seo);
@@ -70,9 +140,14 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
     }
   }
 
-  private MagicCommandOutcomeItem createSparkUI(SparkSession.Builder spaBuilder) {
-    SparkUI sparkUI = SparkUI.create(spaBuilder);
+  private MagicCommandOutcomeItem createSparkUI(SparkSession.Builder builder) {
+    this.sparkUI = sparkUIFactory.create(builder);
     return displaySparkUI(sparkUI);
+  }
+
+  private MagicCommandOutcomeItem createSparkUI(SparkConf sparkConf) {
+    SparkSession.Builder builder = SparkSession.builder().config(sparkConf);
+    return createSparkUI(builder);
   }
 
   private MagicCommandOutcomeItem displaySparkUI(SparkUI sparkUI) {
@@ -80,8 +155,11 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
     return new MagicCommandOutput(MagicCommandOutput.Status.OK);
   }
 
-  private MagicCommandOutcomeItem createSparkUI(SparkConf sparkConf) {
-    SparkUI sparkUI = SparkUI.create(sparkConf);
-    return displaySparkUI(sparkUI);
+  private void connectToSparkSession(Message parent) {
+    sparkUI.getConnectButton().onClick(new HashMap(), new Message(new Header(JupyterMessages.COMM_MSG, parent.getHeader().getSession())));
+  }
+
+  interface SparkOption {
+    void run(Message parent);
   }
 }

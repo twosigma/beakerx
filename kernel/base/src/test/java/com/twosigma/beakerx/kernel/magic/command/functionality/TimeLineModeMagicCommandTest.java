@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TimeLineModeMagicCommandTest {
@@ -48,9 +49,9 @@ public class TimeLineModeMagicCommandTest {
   public void timeLineMode() {
     //given
     String allCode = "%time 2*128";
-    Code code = CodeFactory.create(allCode, new Message(), kernel);
+    Code code = CodeFactory.create(allCode, commMsg(), kernel);
     //when
-    code.getCodeFrames().get(code.getCodeFrames().size()-1).executeLastFrame(code, this.kernel, new Message(), 1);
+    code.getCodeFrames().get(code.getCodeFrames().size() - 1).executeLastFrame(code, this.kernel, commMsg(), 1);
     code.execute(kernel, 1);
     //then
     List<Message> std = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());

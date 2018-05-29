@@ -24,14 +24,14 @@
 [![NPM version](https://badge.fury.io/js/beakerx.svg)](http://badge.fury.io/js/beakerx)
 [![PyPI Version](https://badge.fury.io/py/beakerx.svg)](http://badge.fury.io/py/beakerx)
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/beakerx/badges/version.svg)](https://anaconda.org/conda-forge/beakerx)
-[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/twosigma/beakerx/0.16.1?filepath=StartHere.ipynb)
+[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/twosigma/beakerx/0.17.1?filepath=StartHere.ipynb)
 
 BeakerX is a collection of JVM kernels and interactive widgets for
 plotting, tables, autotranslation, and other extensions to Jupyter
 Notebook.  BeakerX is in beta and under active development.
 
 The [documentation](https://github.com/twosigma/beakerx/blob/master/StartHere.ipynb) consists of tutorial notebooks on GitHub.
-You can try it in the cloud for free with [Binder](https://mybinder.org/v2/gh/twosigma/beakerx/0.16.1?filepath=StartHere.ipynb).
+You can try it in the cloud for free with [Binder](https://mybinder.org/v2/gh/twosigma/beakerx/0.17.1?filepath=StartHere.ipynb).
 
 BeakerX is the successor to the [Beaker Notebook (source code
 archive)](https://github.com/twosigma/beaker-notebook-archive).  It
@@ -53,7 +53,7 @@ how to install and run BeakerX.
 ### Build and Install
 
 ```
-conda create -y -n beakerx 'python>=3' nodejs pandas openjdk maven
+conda create -y -n beakerx 'python>=3' nodejs pandas openjdk maven py4j
 source activate beakerx
 conda config --env --add pinned_packages 'openjdk>8.0.121'
 conda install -y -c conda-forge ipywidgets
@@ -64,7 +64,7 @@ beakerx install
 ### Build and Install for Jupyter Lab
 
 ```
-conda create -y -n labx 'python>=3' nodejs pandas openjdk maven
+conda create -y -n labx 'python>=3' nodejs pandas openjdk maven py4j
 source activate labx
 conda config --env --add pinned_packages 'openjdk>8.0.121'
 conda install -y -c conda-forge jupyterlab
@@ -121,27 +121,44 @@ The code is organized into subdirectories as follows:
 * [beakerx](beakerx) The Python packages.  The main beakerx package has:
 
   * a customized KernelSpec to allow BeakerX to configure the JVMs
-    started to run the kernels,
+    that run the kernels,
 
   * a server extension for the javadoc, settings, and version
     endpoints,
   
   * the beakerx command line program, which has the bkr2ipynb
-    converter as well as install and uninstall functions,
+    converter, the py4j server, utilities, install, and uninstall
+    functions.
   
   * the Python API for the runtime (tables, plots, easyform),
     including automatically installing a displayer for pandas tables,
     and autotranslation;
   
-  * the webpack (compiled JavaScript, TypeScript, CSS, fonts, images);
-    and
+  * the nbextension webpack (compiled JavaScript, TypeScript, CSS,
+    fonts, images); and
 
-  * the compiled Java JARs.
+  * the compiled Java JARs of each of the kernels, and a directory of
+    shared JARs.
 
   There is a separate python package (beakerx_magics) for the
-  `%%groovy` magic so it can always be loaded *without* loading the
-  regular beakerx package (which would turn on display of pandas
-  tables with our table widget).
+  `%%groovy` magic so it can be loaded *without* loading the regular
+  beakerx package (which would turn on display of pandas tables with
+  our table widget).
+
+  BeakerX [configures ipython](beakerx/beakerx/install.py#L140) to
+  automatically load the magics in the beakerx_magics package,
+  `%load_ext` is not required.
+
+  The [groovy magic](beakerx/beakerx_magics/kernel_magic.py) uses the standard Jupyter API,
+  jupyter_client.manager.KernelManager to start the kernel.
+  It then proxies Comm into the inner kernel.
+  
+  This package also has the py4j support for the `%%python` magic.  In
+  order for the JVM kernels to be able to start Jupyter kernels they
+  need to be able to call into Python.  There is a `beakerx
+  py4j_server` subcommand for this purpose (for internal use, not for
+  the user).  It calls into the groovy magic with its Comm proxy,
+  implemented in Python.
 
 * [doc](doc) Documentation consisting of executable tutorial
   notebooks.  [StartHere.ipynb](StartHere.ipynb) at the top level

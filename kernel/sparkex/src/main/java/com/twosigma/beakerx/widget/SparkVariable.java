@@ -15,39 +15,23 @@
  */
 package com.twosigma.beakerx.widget;
 
-import org.apache.spark.SparkConf;
-import org.apache.spark.SparkContext;
 import org.apache.spark.sql.SparkSession;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.twosigma.beakerx.widget.SparkUI.BEAKERX_ID;
 
 public class SparkVariable {
 
-  private static Map<String, SparkContextManager> manager = new HashMap<>();
-  private static SparkContext sparkContext;
-  private static SparkSession sparkSession;
+  private static SparkUIApi sparkUI = null;
+  private static SparkSession sparkSession = null;
 
-  static void putSparkContextManager(SparkConf sparkConf, SparkContextManager sparkContextManager) {
-    manager.put(sparkConf.get(BEAKERX_ID), sparkContextManager);
+  static void putSparkUI(SparkUIApi ui) {
+    sparkUI = ui;
   }
 
-  public static SparkContextManager getSparkContextManager(String BEAKERX_ID) {
-    return manager.get(BEAKERX_ID);
-  }
-
-  static void putSparkContext(SparkContext sc) {
-    sparkContext = sc;
-  }
-
-  public static SparkContext getSparkContext() {
-    return sparkContext;
+  public static SparkUIApi getSparkUI() {
+    return sparkUI;
   }
 
   public static void cancelAllJobs() {
-    manager.values().forEach(SparkContextManager::cancelAllJobs);
+    sparkUI.cancelAllJobs();
   }
 
   public static void putSparkSession(SparkSession sSession) {
@@ -55,6 +39,7 @@ public class SparkVariable {
   }
 
   public static SparkSession getSparkSession() {
+    //method is used by initSparkContextInShell
     return sparkSession;
   }
 }

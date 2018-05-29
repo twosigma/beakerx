@@ -15,8 +15,9 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.twosigma.beakerx.message.Message;
+
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,10 +33,20 @@ public abstract class Box extends ValueWidget<String> {
   public static final String VIEW_NAME_VALUE = "BoxView";
   public static final String MODEL_NAME_VALUE = "BoxModel";
 
-  List<Widget> children;
+  private List<Widget> children;
 
   public Box(List<Widget> children) {
+    super();
     this.children = children;
+  }
+
+  public Box(List<Widget> children, Message parent) {
+    super(parent);
+    this.children = children;
+  }
+
+  public List<Widget> getChildren() {
+    return children;
   }
 
   @Override
@@ -44,6 +55,11 @@ public abstract class Box extends ValueWidget<String> {
     content.put(CHILDREN, commIds.toArray());
     super.content(content);
     return content;
+  }
+
+  public void add(Widget widget,Message parent) {
+    this.children.add(widget);
+    updateChildren(parent);
   }
 
   public void add(Widget widget) {
@@ -65,6 +81,10 @@ public abstract class Box extends ValueWidget<String> {
   private void updateChildren() {
     List<String> commIds = comIds();
     sendUpdate(CHILDREN, commIds.toArray());
+  }
+  private void updateChildren(Message parent) {
+    List<String> commIds = comIds();
+    sendUpdate(CHILDREN, commIds.toArray(),parent);
   }
 
   private List<String> comIds() {

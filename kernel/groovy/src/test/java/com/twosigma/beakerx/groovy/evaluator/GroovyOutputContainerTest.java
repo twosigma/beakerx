@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.groovy.evaluator;
 
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.MessageFactorTest;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorManager;
@@ -38,7 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class GroovyOutputContainerTest {
 
-  public static final Message HEADER_MESSAGE = new Message();
+  public static final Message HEADER_MESSAGE = MessageFactorTest.commMsg();
   private EvaluatorManager groovyEvaluatorManager;
   private KernelTest groovyKernel;
 

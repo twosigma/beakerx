@@ -23,6 +23,7 @@ import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.util.Preconditions;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ import java.util.Map;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_CLOSE;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_OPEN;
+import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 import static java.util.Collections.EMPTY_LIST;
 import static java.util.Collections.singletonList;
 
@@ -140,15 +142,12 @@ public class Comm {
 
   public void open(Message parentMessage) {
     getParentMessageStrategy = () -> parentMessage;
-    open();
+    doOpen(parentMessage, Buffer.EMPTY);
   }
 
   private void doOpen(Message parentMessage, Buffer buffer) {
-    Message message = new Message();
-    message.setHeader(new Header(COMM_OPEN, parentMessage != null ? parentMessage.getHeader().getSession() : null));
-    if (parentMessage != null) {
-      message.setParentHeader(parentMessage.getHeader());
-    }
+    Message message = new Message(new Header(COMM_OPEN, parentMessage.getHeader().getSession()));
+    message.setParentHeader(parentMessage.getHeader());
     HashMap<String, Serializable> map = new HashMap<>();
     map.put(COMM_ID, getCommId());
     map.put(TARGET_NAME, getTargetName());
@@ -178,8 +177,7 @@ public class Comm {
         handler.handle(parentMessage);
       }
     }
-    Message message = new Message();
-    message.setHeader(new Header(COMM_CLOSE, parentMessage != null ? parentMessage.getHeader().getSession() : null));
+    Message message = new Message(new Header(COMM_CLOSE, parentMessage.getHeader().getSession()));
     if (parentMessage != null) {
       message.setParentHeader(parentMessage.getHeader());
     }
@@ -207,6 +205,16 @@ public class Comm {
     kernel.publish(singletonList(message));
   }
 
+  public Message createMessage(JupyterMessages type, Buffer buffer, Comm.Data data, Message parent) {
+    HashMap<String, Serializable> map = new HashMap<>(6);
+    if (type != JupyterMessages.DISPLAY_DATA) {
+      map.put(COMM_ID, getCommId());
+    }
+    map.put(DATA, data.getData());
+    map.put(METADATA, metadata);
+    return create(type, buffer, map, parent);
+  }
+
   public Message createMessage(JupyterMessages type, Buffer buffer, Comm.Data data) {
     HashMap<String, Serializable> map = new HashMap<>(6);
     if (type != JupyterMessages.DISPLAY_DATA) {
@@ -217,17 +225,18 @@ public class Comm {
     return create(type, buffer, map);
   }
 
+  private Message create(JupyterMessages type, Comm.Buffer buffer, Map<String, Serializable> content, Message parent) {
+    return messageMessage(type, buffer, content, parent);
+  }
+
   private Message create(JupyterMessages type, Comm.Buffer buffer, Map<String, Serializable> content) {
-    Message parentMessage = getParentMessage();
-    return messageMessage(type, buffer, content, parentMessage);
+    return messageMessage(type, buffer, content, getParentMessage());
   }
 
   public static Message messageMessage(JupyterMessages type, Buffer buffer, Map<String, Serializable> content, Message parentMessage) {
-    Message message = new Message();
-    message.setHeader(new Header(type, parentMessage != null ? parentMessage.getHeader().getSession() : null));
-    if (parentMessage != null) {
-      message.setParentHeader(parentMessage.getHeader());
-    }
+    Message message = new Message(new Header(type, parentMessage.getHeader().getSession()));
+    checkNotNull(parentMessage);
+    message.setParentHeader(parentMessage.getHeader());
     message.setContent(content);
     message.setMetadata(buildMetadata());
     if (!buffer.isEmpty()) {
@@ -256,6 +265,21 @@ public class Comm {
   public void sendUpdate(final String propertyName, final Object value) {
     Message message = createUpdateMessage(propertyName, value);
     kernel.publish(singletonList(message));
+  }
+
+  public void sendUpdate(final String propertyName, final Object value, Message parent) {
+    Message message = createUpdateMessage(propertyName, value, parent);
+    kernel.publish(singletonList(message));
+  }
+
+  public Message createUpdateMessage(String propertyName, Object value, Message parent) {
+    HashMap<String, Serializable> content = new HashMap<>();
+    content.put(METHOD, UPDATE);
+    HashMap<Object, Object> state = new HashMap<>();
+    state.put(propertyName, value);
+    content.put(STATE, state);
+    content.put(BUFFER_PATHS, new HashMap<>());
+    return this.createMessage(COMM_MSG, Buffer.EMPTY, new Comm.Data(content), parent);
   }
 
   public Message createUpdateMessage(String propertyName, Object value) {

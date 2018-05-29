@@ -104,6 +104,10 @@ var NotebookPageObject = function () {
     browser.$('button.btn.btn-default.btn-sm.btn-primary').click();
   };
 
+  this.clickInterruptKernel = function () {
+    browser.$('button[data-jupyter-action="jupyter-notebook:interrupt-kernel"]').click();
+  };
+
   this.getAllOutputAreaChildren = function (codeCell) {
     return codeCell.$$('div.output_area');
   };

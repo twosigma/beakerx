@@ -26,6 +26,7 @@ import org.junit.Test;
 
 import java.util.Optional;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MvnLoggerWidgetTest {
@@ -47,7 +48,7 @@ public class MvnLoggerWidgetTest {
   @Test
   public void sendLogMessage() throws Exception {
     //given
-    Message parentMessage = new Message();
+    Message parentMessage = commMsg();
     sut = new MvnLoggerWidget(parentMessage);
     //when
     sut.sendLog("Downloaded: https://repo/someJar.jar (6 KB at 62.7 KB/sec)");

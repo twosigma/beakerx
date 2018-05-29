@@ -30,6 +30,7 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 import static com.twosigma.beakerx.sql.magic.command.DataSourcesMagicCommand.DATASOURCES;
@@ -59,6 +60,7 @@ public class SQLEvaluatorTest {
   public void evaluateSql() throws Exception {
     //given
     SimpleEvaluationObject seo = new SimpleEvaluationObject(SQLForColorTable.CREATE_AND_SELECT_ALL);
+    seo.setJupyterMessage(commMsg());
     //when
     TryResult evaluate = sqlEvaluator.evaluate(seo, seo.getExpression());
     //then

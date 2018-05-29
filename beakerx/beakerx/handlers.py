@@ -23,6 +23,39 @@ import tornado
 import os
 
 
+class SparkMetricsExecutorsHandler(APIHandler):
+    def data_received(self, chunk):
+        pass
+
+    @web.authenticated
+    @tornado.web.asynchronous
+    def get(self, id):
+
+        def handle_response(response):
+            self.finish(response.body)
+
+        url = "http://localhost:4040/api/v1/applications/" + id + "/allexecutors"
+        req = tornado.httpclient.HTTPRequest(
+            url=url,
+            method=self.request.method,
+            body=self.request.body,
+            headers=self.request.headers,
+            follow_redirects=False,
+            allow_nonstandard_methods=True
+        )
+
+        client = tornado.httpclient.AsyncHTTPClient()
+        try:
+            client.fetch(req, handle_response)
+        except tornado.httpclient.HTTPError as e:
+            if hasattr(e, 'response') and e.response:
+                handle_response(e.response)
+            else:
+                self.set_status(500)
+                self.write('Internal server error:\n' + str(e))
+                self.finish()
+
+
 class SettingsHandler(APIHandler):
     def data_received(self, chunk):
         pass
@@ -69,10 +102,12 @@ def load_jupyter_server_extension(nbapp):
     web_app = nbapp.web_app
     host_pattern = '.*$'
     settings_route_pattern = url_path_join(web_app.settings['base_url'], '/beakerx', '/settings')
+    spark_metrics_executors_route_pattern = url_path_join(web_app.settings['base_url'], '/beakerx', '/sparkmetrics/executors/(.*)')
     version_route_pattern = url_path_join(web_app.settings['base_url'], '/beakerx', '/version')
     javadoc_route_pattern = url_path_join(web_app.settings['base_url'], '/static', '/javadoc/(.*)')
     javadoc_lab_route_pattern = url_path_join(web_app.settings['base_url'], '/javadoc/(.*)')
     web_app.add_handlers(host_pattern, [(settings_route_pattern, SettingsHandler)])
+    web_app.add_handlers(host_pattern, [(spark_metrics_executors_route_pattern, SparkMetricsExecutorsHandler)])
     web_app.add_handlers(host_pattern, [(version_route_pattern, VersionHandler)])
     web_app.add_handlers(host_pattern, [(javadoc_route_pattern, JavaDoc)])
     web_app.add_handlers(host_pattern, [(javadoc_lab_route_pattern, JavaDoc)])

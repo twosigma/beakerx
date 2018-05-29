@@ -65,7 +65,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     executeRequestHandler.handle(magicMessage);
     waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(8);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(11);
   }
 
   @Test
@@ -77,7 +77,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     executeRequestHandler.handle(magicMessage);
     waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(7);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(10);
   }
 
   @Test
@@ -90,7 +90,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     executeRequestHandler.handle(magicMessage);
     waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(8);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(11);
   }
 
   @Test
@@ -167,7 +167,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     executeRequestHandler.handle(magicMessage);
     waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(7);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(10);
     //assertThat(kernel.getSentMessages().size()).isEqualTo(1);
     assertThat(kernel.getCode()).isNull();
   }
@@ -182,7 +182,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     executeRequestHandler.handle(magicMessage);
     waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(8);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(11);
     assertThat(kernel.getCode()).isEqualTo("code code code");
   }
 
@@ -198,7 +198,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     executeRequestHandler.handle(magicMessage);
     waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(8);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(11);
   }
 
   @Test
@@ -213,6 +213,6 @@ public class ExecuteRequestHandlerMagicCommandTest {
     executeRequestHandler.handle(magicMessage);
     waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(9);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(12);
   }
 }

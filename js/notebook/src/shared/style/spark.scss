@@ -14,27 +14,134 @@
  *  limitations under the License.
  */
 
-.bx-spark-stateProgress {
-  h3 {
-    text-indent: 16px;
-    &:focus {
-      outline: none;
-    }
-    &.ui-state-active .ui-icon {
-      background-image: url("~jquery-ui/themes/base/images/ui-icons_444444_256x240.png");
-    }
-  }
-  .ui-accordion-header.ui-state-active {
-    border: 1px solid #c5c5c5;
-    background: #e6e6e6;
-    color: #333333;
+@import "bxvariables";
+
+.bx-spark-stagePanel {
+  max-width: 600px;
+  margin: 8px 0;
+}
+
+.foldout-preview {
+  & > .bx-spark-stagePanel {
+    padding: 0 15px;
+    margin: 0;
   }
 }
 
-.bx-spark-jobPanel {
-  max-width: 600px;
+.bx-panel {
+  border: 1px solid $bxBorderColor1;
+  border-radius: 2px;
+  margin-bottom: 18px;
+
+  .bx-panel-heading {
+    background-color: $bxBgColor2;
+    padding: 10px;
+    border-bottom: 1px solid $bxBorderColor1;
+
+    display: flex;
+  }
+
+  .bx-panel-body {
+    padding: 10px;
+  }
+}
+
+.bx-label {
+  display: inline;
+  padding: .2em .6em .3em;
+  font-size: 75%;
+  font-weight: bold;
+  line-height: 1;
+  text-align: center;
+  vertical-align: baseline;
+  border-radius: .25em;
+  color: #ffffff;
+
+  &.done { background-color: $bxColorSuccess; }
+  &.active { background-color: $bxColorInfo; }
+  &.waiting { background-color: $bxColorWarning; }
+  &.all { background-color: $bxColorDefault; }
 }
 
 .bx-spark-stageProgressBar {
   margin: 0 10px;
+  display: flex;
+  align-items: center;
+  border-radius: .25em;
+  overflow: hidden;
+}
+
+.bx-progress-bar {
+  display: inline-block;
+  height: 18px;
+
+  &.done { background-color: $bxColorSuccess; }
+  &.active { background-color: $bxColorInfo; }
+  &.waiting { background-color: $bxColorWarning; }
+}
+
+.bx-row {
+  display: flex;
+  .bx-text-right {
+    text-align: right;
+  }
+  .bx-col-xs-2 {
+    display: inline-block;
+    width: 16.66%;
+  }
+  .bx-col-xs-4 {
+    display: inline-block;
+    width: 33.33%;
+  }
+  .bx-col-xs-6 {
+    display: inline-block;
+    width: 50%;
+  }
+}
+
+.bx-spark-stageProgressLabels {
+  margin: 0;
+}
+
+.bx-stats,
+.bx-spark-stageProgressLabels {
+  display: block;
+  line-height: 100%;
+  height: 18px;
+  align-items: center;
+
+  .bx-label {
+    display: inline-block;
+    max-height: 100%;
+    line-height: 150%;
+  }
+}
+
+.bx-stats {
+  margin: 4px 0;
+  height: 20px;
+  line-height: 17px;
+}
+
+.bx-status-panel {
+  .bx-button {
+    margin-left: 20px;
+  }
+}
+
+.bx-connection-status {
+  background-color: transparent;
+  border: 1px solid $bxBorderColor1;
+  height: 20px !important;
+  line-height: 20px !important;
+  padding: 0 1em;
+  border-radius: 3px;
+  margin: 4px 6px;
+  min-width: 160px;
+
+  &.connected {
+    border: none;
+    background-color: $bxColorSuccess;
+    color: $bxBgColor1;
+  }
 }

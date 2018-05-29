@@ -34,8 +34,6 @@ import {
 import {BeakerXDataStore} from "./store/BeakerXDataStore";
 import formatTimestamp = DataGridHelpers.formatTimestamp;
 
-const bkUtils = require('../../shared/bkUtils');
-
 export const DEFAULT_TIME_FORMAT = 'YYYYMMDD HH:mm:ss.SSS ZZ';
 
 export class DataFormatter {

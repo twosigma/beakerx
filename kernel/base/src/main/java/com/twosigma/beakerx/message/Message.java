@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.message;
 
 import static com.twosigma.beakerx.kernel.Utils.timestamp;
+import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.util.Preconditions;
 
 @JsonPropertyOrder({"identities", "header", "parentHeader", "metadata", "content"})
 public class Message {
@@ -37,8 +39,8 @@ public class Message {
   private Map<String, Serializable> content;
   private List<byte[]> buffers = new ArrayList<>();
 
-  public Message() {
-    header = new Header();
+  public Message(Header header) {
+    this.header = checkNotNull(header);
     header.setDate(timestamp());
   }
 
@@ -56,10 +58,6 @@ public class Message {
 
   public Header getHeader() {
     return header;
-  }
-
-  public void setHeader(Header header) {
-    this.header = header;
   }
 
   public Header getParentHeader() {

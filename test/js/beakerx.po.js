@@ -109,6 +109,9 @@ function BeakerXPageObject() {
   this.runCellToGetCanvas = function (index) {
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
+    browser.waitUntil(function(){
+      return codeCell.$$('canvas').length > 0;
+    });
     return codeCell.$('canvas');
   };
 
@@ -236,6 +239,7 @@ function BeakerXPageObject() {
     }
     var sx = (x !== undefined)? x : 0;
     var sy = (y !== undefined)? y : 0;
+    browser.pause(1000);
     var result = browser.execute(function(cnv, sx, sy, width, height){
       var ctx = cnv.getContext("2d");
       var imgData = ctx.getImageData(sx, sy, width, height);
@@ -257,6 +261,14 @@ function BeakerXPageObject() {
       console.log(fileName + ': misMatch=' + data.misMatchPercentage);
       expect(data.misMatchPercentage).toBeLessThan(mismatchPercentage);
     });
+  };
+
+  this.checkPlotWithLine = function(codeCell, cellIndex){
+    browser.waitUntil(function(){
+      return codeCell.$$('div.dtcontainer').length > 0;
+    }, 30000);
+    var dtContainer = this.getDtContainerByIndex(cellIndex);
+    expect(dtContainer.$('path.plot-line').isVisible()).toBeTruthy();
   };
 
 };

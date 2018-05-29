@@ -51,3 +51,66 @@ pre {
 .plot-tick {
   stroke: var(--jp-border-color0);
 }
+
+#beakerx-tree-widget {
+  color: var(--jp-content-font-color1);
+}
+
+#beakerx-tree-widget svg {
+  fill: var(--jp-content-font-color1);
+}
+
+#beakerx-tree-widget .p-TabBar-content {
+  border-color: var(--jp-border-color2);
+}
+
+#beakerx-tree-widget .p-TabBar-tab.p-mod-current {
+  background-color: var(--jp-layout-color1);
+  border-color: var(--jp-border-color2);
+}
+
+#beakerx-tree-widget .p-TabBar-tab {
+  background-color: var(--jp-layout-color2);
+}
+
+#beakerx-tree-widget .p-TabBar-tab:hover:not(.p-mod-current) {
+  background-color: var(--jp-layout-color0);
+}
+
+#beakerx-tree-widget #default_options .bx-wrapper input {
+  background-color: var(--jp-layout-color1);
+  color: var(--jp-content-font-color1);
+  border-color: var(--jp-border-color2);
+}
+#beakerx-tree-widget #default_options .bx-wrapper span {
+  background-color: var(--jp-layout-color0);
+  border-color: var(--jp-border-color2);
+}
+
+#beakerx-tree-widget .bx-panel .bx-panel-heading {
+  background-color: var(--jp-layout-color1);
+}
+
+#beakerx-tree-widget .bx-panel,
+#beakerx-tree-widget .bx-panel .bx-panel-heading,
+#beakerx-tree-widget .bx-panel .bx-panel-body {
+  border-color: var(--jp-border-color2);
+}
+
+#beakerx-tree-widget .bx-panel .bx-panel-heading .bx-btn,
+#beakerx-tree-widget .bx-panel .bx-panel-body .bx-form-row .bx-btn {
+  background-color: var(--jp-layout-color2);
+  color: var(--jp-content-font-color2);
+  border-color: var(--jp-border-color2);
+}
+
+#beakerx-tree-widget .bx-panel .bx-panel-heading .bx-btn:hover,
+#beakerx-tree-widget .bx-panel .bx-panel-body .bx-form-row .bx-btn:hover {
+  background-color: var(--jp-layout-color0);
+}
+
+#beakerx-tree-widget .bx-panel .bx-panel-body .bx-form-row .bx-input-text {
+  background-color: var(--jp-layout-color1);
+  color: var(--jp-content-font-color1);
+  border-color: var(--jp-border-color2);
+}

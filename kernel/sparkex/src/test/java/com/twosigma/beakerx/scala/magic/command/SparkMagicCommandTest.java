@@ -22,10 +22,10 @@ import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widget.SparkConfiguration;
-import com.twosigma.beakerx.widget.SparkUIManager;
-import com.twosigma.beakerx.widget.SparkManager;
+import com.twosigma.beakerx.widget.SparkUIApi;
+import com.twosigma.beakerx.widget.SparkEngine;
 import com.twosigma.beakerx.widget.SparkUI;
+import com.twosigma.beakerx.widget.SparkUiDefaults;
 import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
 import org.apache.spark.sql.SparkSession;
@@ -34,7 +34,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 
 import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,9 +46,8 @@ public class SparkMagicCommandTest {
 
   @Before
   public void setUp() {
-    SparkManager.SparkManagerFactory sparkManagerFactory = createSparkManagerFactory();
     SparkUI.SparkUIFactory sparkUIFactory = createSparkUIFactory();
-    sparkMagicCommand = new SparkMagicCommand(new KernelTest(), sparkUIFactory, sparkManagerFactory);
+    sparkMagicCommand = new SparkMagicCommand(new KernelTest(), sparkUIFactory);
   }
 
   @Test
@@ -71,78 +70,92 @@ public class SparkMagicCommandTest {
   }
 
   private MagicCommandOutcomeItem connectToSparkSecondTime() {
-    Code code2 = Code.createCode("", new ArrayList<>(), new ArrayList<>(),commMsg());
+    Code code2 = Code.createCode("", new ArrayList<>(), new ArrayList<>(), commMsg());
     MagicCommandExecutionParam param2 = new MagicCommandExecutionParam("", "", 2, code2, true);
     return sparkMagicCommand.execute(param2);
   }
 
   private MagicCommandOutcomeItem createSparkUiAndConnectToSession() {
-    Code code = Code.createCode("%%spark", new ArrayList<>(), new ArrayList<>(),commMsg());
+    Code code = Code.createCode("%%spark", new ArrayList<>(), new ArrayList<>(), commMsg());
     MagicCommandExecutionParam param = new MagicCommandExecutionParam("%%spark", "", 1, code, true);
     MagicCommandOutcomeItem execute = sparkMagicCommand.execute(param);
     assertThat(execute.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.OK);
-    assertThat(sparkUI.isSparkSessionIsActive()).isFalse();
+    assertThat(sparkUI.isActive()).isFalse();
     sparkUI.getConnectButton().onClick(new HashMap(), commMsg());
     return execute;
   }
 
   private SparkUI.SparkUIFactory createSparkUIFactory() {
     return new SparkUI.SparkUIFactory() {
-      private SparkUI.SparkUIFactoryImpl factory = new SparkUI.SparkUIFactoryImpl();
+
+      private SparkUI.SparkUIFactoryImpl factory = new SparkUI.SparkUIFactoryImpl(new SparkManagerFactoryTest(), new SparkUiDefaults() {
+        @Override
+        public void saveSparkConf(SparkConf sparkConf) {
+
+        }
+
+        @Override
+        public void loadDefaults(SparkSession.Builder builder) {
+
+        }
+      });
 
       @Override
-      public SparkUI create(SparkManager sparkManager) {
-        sparkUI = factory.create(sparkManager);
+      public SparkUI create(SparkSession.Builder builder) {
+        sparkUI = factory.create(builder);
         return sparkUI;
       }
     };
   }
 
-  public static SparkManager.SparkManagerFactory createSparkManagerFactory() {
-    return sparkSessionBuilder -> new SparkManager() {
-      SparkConf sparkConf = new SparkConf();
-      SparkSession.Builder builder = SparkSession.builder().config(sparkConf);
 
-      @Override
-      public TryResult configure(KernelFunctionality kernel, SparkUIManager sparkContextManager, Message parent) {
-        return TryResult.createResult("ok");
-      }
+  static class SparkManagerFactoryTest implements SparkEngine.SparkEngineFactory {
 
-      @Override
-      public SparkSession getOrCreate() {
-        return null;
-      }
+    @Override
+    public SparkEngine create(SparkSession.Builder sparkSessionBuilder) {
+      return new SparkEngine() {
+        @Override
+        public TryResult configure(KernelFunctionality kernel, SparkUIApi spark, Message parentMessage) {
+          return TryResult.createResult("ok");
+        }
 
-      @Override
-      public SparkConf getSparkConf(List<SparkConfiguration.Configuration> configurations) {
-        return sparkConf;
-      }
+        @Override
+        public SparkSession getOrCreate() {
+          return null;
+        }
 
-      @Override
-      public SparkContext sparkContext() {
-        return null;
-      }
+        @Override
+        public SparkConf getSparkConf() {
+          return new SparkConf();
+        }
 
-      @Override
-      public SparkSession.Builder getBuilder() {
-        return builder;
-      }
+        @Override
+        public SparkContext sparkContext() {
+          return null;
+        }
 
-      @Override
-      public String getSparkAppId() {
-        return "sparkAppId1";
-      }
+        @Override
+        public String getSparkAppId() {
+          return "sparkAppId1";
+        }
 
-      @Override
-      public String getSparkUiWebUrl() {
-        return "sparkUiWebUrl";
-      }
+        @Override
+        public Map<String, String> getAdvanceSettings() {
+          return new HashMap<>();
+        }
 
-      @Override
-      public String getSparkMasterUrl() {
-        return "sparkMasterUrl";
-      }
-    };
+        @Override
+        public String getSparkUiWebUrl() {
+          return "";
+        }
+
+        @Override
+        public String getSparkMasterUrl() {
+          return "";
+        }
+      };
+    }
   }
+
 
 }

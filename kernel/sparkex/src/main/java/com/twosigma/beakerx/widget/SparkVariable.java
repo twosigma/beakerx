@@ -20,16 +20,16 @@ import org.apache.spark.sql.SparkSession;
 
 public class SparkVariable {
 
-  private static SparkUIManager manager = null;
+  private static SparkUIApi sparkUI = null;
   private static SparkContext sparkContext;
   private static SparkSession sparkSession;
 
-  static void putSparkUIManager(SparkUIManager sparkUIManager) {
-    manager = sparkUIManager;
+  static void putSparkUI(SparkUIApi ui) {
+    sparkUI = ui;
   }
 
-  public static SparkUIManager getSparkUIManager() {
-    return manager;
+  public static SparkUIApi getSparkUI() {
+    return sparkUI;
   }
 
   static void putSparkContext(SparkContext sc) {
@@ -41,7 +41,7 @@ public class SparkVariable {
   }
 
   public static void cancelAllJobs() {
-    manager.cancelAllJobs();
+    sparkUI.cancelAllJobs();
   }
 
   public static void putSparkSession(SparkSession sSession) {

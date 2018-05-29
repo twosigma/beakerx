@@ -321,7 +321,7 @@ public class SparkUI extends VBox implements SparkUIApi {
   }
 
   public void clearView() {
-    sparkConfigPanel.getLayout().setDisplayNone();
+    remove(sparkConfigPanel);
     sparkConfigPanel = null;
   }
 

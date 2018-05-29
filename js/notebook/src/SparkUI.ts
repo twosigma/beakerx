@@ -55,6 +55,8 @@ class SparkUIView extends widgets.VBoxView {
 
     this.openWebUi = this.openWebUi.bind(this);
     this.openExecutors = this.openExecutors.bind(this);
+    this.updateChildren = this.updateChildren.bind(this);
+    this.toggleExecutorConfigInputs = this.toggleExecutorConfigInputs.bind(this);
   }
 
   public render() {
@@ -122,17 +124,14 @@ class SparkUIView extends widgets.VBoxView {
   }
 
   private handleLocalMasterUrl() {
-    if (this.masterUrlInput) {
-      return;
-    }
-
     this.masterUrlInput = this.el.querySelector('.bx-spark-master-url input');
     this.executorCoresInput = this.el.querySelector('.bx-spark-executor-cores input');
     this.executorMemoryInput = this.el.querySelector('.bx-spark-executor-memory input');
 
     if (this.masterUrlInput) {
       this.toggleExecutorConfigInputs();
-      this.masterUrlInput.addEventListener('keyup', this.toggleExecutorConfigInputs.bind(this), true);
+      this.masterUrlInput.removeEventListener('keyup', this.toggleExecutorConfigInputs, true);
+      this.masterUrlInput.addEventListener('keyup', this.toggleExecutorConfigInputs, true);
     }
   }
 

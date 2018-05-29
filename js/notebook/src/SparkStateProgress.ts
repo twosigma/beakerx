@@ -18,7 +18,6 @@ import * as $ from "jquery";
 import "./shared/style/spark.scss";
 
 const widgets = require('./widgets');
-const accordion = require('jquery-ui/ui/widgets/accordion');
 
 interface IState {
   done: number;
@@ -55,8 +54,16 @@ class SparkStateProgressModel extends widgets.VBoxModel {
 }
 
 class SparkStateProgressView extends widgets.VBoxView {
-
-  private showTimeout: number;
+  progressBar: HTMLElement;
+  progressBarDone: HTMLElement;
+  progressBarActive: HTMLElement;
+  progressBarWaiting: HTMLElement;
+  
+  progressLabels: HTMLElement;
+  progressLabelDone: HTMLElement;
+  progressLabelActive: HTMLElement;
+  progressLabelWaiting: HTMLElement;
+  progressLabelAll: HTMLElement;
 
   render() {
     super.render();
@@ -64,9 +71,6 @@ class SparkStateProgressView extends widgets.VBoxView {
   }
 
   update() {
-    let progressBar = this.$el.find('.bx-spark-stageProgressBar');
-    let progressLabels = $(this.el).find('.bx-spark-stageProgressLabels');
-
     let state = this.model.get('state');
 
     let max = state.numberOfTasks;
@@ -78,83 +82,53 @@ class SparkStateProgressView extends widgets.VBoxView {
     let percentActive = 100.0 * valueActive / max;
     let percentWaiting = 100.0 - (percentDone + percentActive);
 
-    progressBar.find('.progress-bar-success').css({ width: `${percentDone}%` });
-    progressBar.find('.progress-bar-info').css({ width: `${percentActive}%` });
-    progressBar.find('.progress-bar-warning').css({ width: `${percentWaiting}%` });
+    this.progressBarDone.style.width = `${percentDone}%`;
+    this.progressBarActive.style.width = `${percentActive}%`;
+    this.progressBarWaiting.style.width = `${percentWaiting}%`;
 
-    progressLabels.find('.done').text(valueDone);
-    progressLabels.find('.active').text(valueActive);
-    progressLabels.find('.waiting').text(valueWaiting);
-    progressLabels.find('.all').text(max);
+    this.progressLabelDone.innerText = `${valueDone}`;
+    this.progressLabelActive.innerText = `${valueActive}`;
+    this.progressLabelWaiting.innerText = `${valueWaiting}`;
+    this.progressLabelAll.innerText = max;
 
     this.updateLabelWidths();
 
-    if (this.model.get('hide')) {
-      this.hideProgress();
-    }
     return super.update();
   }
 
   private updateLabelWidths() {
-    let progressLabels = $(this.el).find('.bx-spark-stageProgressLabels');
-    let maxw = progressLabels
-      .find('.all')
-      .css({ display: 'inline-block' })
-      .innerWidth();
+    const container = document.createElement('span');
 
-    progressLabels.find('.done, .active, .waiting').each((i, e) => {
-      $(e)
-        .css({ display: 'inline-block' })
-        .innerWidth(maxw);
-    });
-  }
+    container.style.visibility = 'hidden';
+    container.style.position = 'absolute';
+    container.innerText = '999';
+    container.classList.add('bx-label');
 
-  private hideProgress() {
-    clearTimeout(this.showTimeout);
-    let widget: any = $(this.el).find('.bx-spark-stateProgress');
-    widget.accordion( "option", "active",  false);
-  }
+    document.body.appendChild(container);
+    const maxWidth = `${container.offsetWidth}px`;
+    document.body.removeChild(container);
 
-  private showProgress() {
-    let widget: any = $(this.el).find('.bx-spark-stateProgress');
-    widget.accordion( "option", "active",  0);
+    this.progressLabelDone.style.width = maxWidth;
+    this.progressLabelActive.style.width = maxWidth;
+    this.progressLabelWaiting.style.width = maxWidth;
+    this.progressLabelAll.style.width = maxWidth;
   }
 
   private createWidget(): void {
-    let widget: any = $('<div>', {
-      class: 'bx-spark-stateProgress'
-    }).append(
-      $('<h3>', { text: 'Spark Progress' }),
-      $('<div>').append(this.createJobPanel()),
-    );
-
-    widget.accordion({
-      active: false,
-      collapsible: true,
-      heightStyle: "content",
-    }).on( "accordionactivate", ( event, ui ) => {
-      this.updateLabelWidths();
-    });
-
-    widget.appendTo(this.el);
-
-    this.showTimeout = setTimeout(() => {
-      this.showProgress();
-    }, 3000);
+    this.el.appendChild(this.createJobPanel());
   }
 
-  private createJobPanel(): JQuery<HTMLElement> {
+  private createJobPanel(): HTMLElement {
     let state: IState = this.model.get('state');
 
     let jobLink = this.createJobLink(state);
     let stagePanel = this.createStagePanel(state);
+    let jobPanel = document.createElement('div');
 
-    return $('<div>', {
-      class: 'panel panel-default bx-spark-jobPanel'
-    }).append(
-      $('<div>', { class: 'panel-heading' }).append(jobLink),
-      $('<div>', { class: 'panel-body container-fluid bx-spark-stagePanel' }).append(stagePanel)
-    );
+    jobPanel.classList.add('bx-spark-stagePanel');
+    jobPanel.appendChild(stagePanel[0]);
+
+    return jobPanel;
   }
 
   private createJobLink(state: IState): JQuery<HTMLElement> {
@@ -170,10 +144,10 @@ class SparkStateProgressView extends widgets.VBoxView {
     let progressBar = this.createStageProgressBar(state);
     let progressLabels = this.createStageProgressLabels(state);
 
-    return $('<div>', { class: 'row' }).append(
-      $('<div>', { class: 'col-xs-2 text-right' }).append(stageLink),
-      $('<div>', { class: 'col-xs-6' }).append(progressBar),
-      $('<div>', { class: 'col-xs-4' }).append(progressLabels),
+    return $('<div>', { class: 'bx-row' }).append(
+      $('<div>', { class: 'bx-text-right' }).append(stageLink),
+      $('<div>', { class: 'bx-col-xs-6' }).append(progressBar),
+      $('<div>', { class: 'bx-col-xs-4' }).append(progressLabels),
     );
   }
 
@@ -194,22 +168,20 @@ class SparkStateProgressView extends widgets.VBoxView {
     let percentActive = 100.0 * valueActive / max;
     let percentWaiting = 100.0 - (percentDone + percentActive);
 
-    return $('<div>', {
-      class: 'bx-spark-stageProgressBar progress',
-    }).append(
-      $('<div>', {
-        class: 'progress-bar progress-bar-success',
-        css: { width: `${percentDone}%` }
-      }),
-      $('<div>', {
-        class: 'progress-bar progress-bar-info',
-        css: { width: `${percentActive}%` }
-      }),
-      $('<div>', {
-        class: 'progress-bar progress-bar-warning',
-        css: { width: `${percentWaiting}%` }
-      }),
-    );
+    this.progressBar = document.createElement('div');
+    this.progressBar.classList.add('bx-spark-stageProgressBar');
+
+    this.progressBar.innerHTML = `
+      <div class="bx-progress-bar done" style="width: ${percentDone}%"></div>
+      <div class="bx-progress-bar active" style="width: ${percentActive}%"></div>
+      <div class="bx-progress-bar waiting" style="width: ${percentWaiting}%"></div>
+    `;
+
+    this.progressBarDone = this.progressBar.querySelector('.done');
+    this.progressBarActive = this.progressBar.querySelector('.active');
+    this.progressBarWaiting = this.progressBar.querySelector('.waiting');
+
+    return $(this.progressBar);
   }
 
   private createStageProgressLabels(state: IState): JQuery<HTMLElement> {
@@ -217,40 +189,23 @@ class SparkStateProgressView extends widgets.VBoxView {
     let valueDone = state.done;
     let valueActive = state.active;
     let valueWaiting = max - (valueDone + valueActive);
+    
+    this.progressLabels = document.createElement('div');
+    this.progressLabels.classList.add('bx-spark-stageProgressLabels');
+    
+    this.progressLabels.innerHTML = `
+      <span class="bx-label done" title="Done">${valueDone}</span> <span
+      class="bx-label active" title="Active">${valueActive}</span> <span
+      class="bx-label waiting" title="Waiting">${valueWaiting}</span> <span
+      class="bx-label all" title="All tasks">${max}</span>
+    `;
+    
+    this.progressLabelDone = this.progressLabels.querySelector('.done');
+    this.progressLabelActive = this.progressLabels.querySelector('.active');
+    this.progressLabelWaiting = this.progressLabels.querySelector('.waiting');
+    this.progressLabelAll = this.progressLabels.querySelector('.all');
 
-    return $('<p>', {
-      class: 'bx-spark-stageProgressLabels',
-    }).append(
-      $('<span>', {
-        class: 'done label label-success',
-        title: "Done",
-        text: valueDone,
-      }),
-
-      " ",
-
-      $('<span>', {
-        class: 'active label label-info',
-        title: "Active",
-        text: valueActive,
-      }),
-
-      " ",
-
-      $('<span>', {
-        class: 'waiting label label-warning',
-        title: "Waiting",
-        text: valueWaiting,
-      }),
-
-      " ",
-
-      $('<span>', {
-        class: 'all label label-default',
-        title: "All tasks",
-        text: max,
-      }),
-    );
+    return $(this.progressLabels);
   }
 
 }

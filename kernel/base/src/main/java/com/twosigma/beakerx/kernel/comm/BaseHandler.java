@@ -63,9 +63,8 @@ public abstract class BaseHandler<T> extends KernelHandler<Message> {
   protected Message createReplyMessage(Message message, Serializable responceData) {
     Message ret = null;
     if (message != null) {
-      ret = new Message();
+      ret = new Message(new Header(COMM_MSG, message.getHeader().getSession()));
       Map<String, Serializable> commMap = message.getContent();
-      ret.setHeader(new Header(COMM_MSG, message.getHeader().getSession()));
       HashMap<String, Serializable> map = new HashMap<>();
       map.put(COMM_ID, getString(commMap, COMM_ID));
       map.put(DATA, responceData);

@@ -17,7 +17,7 @@ package com.twosigma.beakerx.kernel.handler;
 
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
-import com.twosigma.beakerx.kernel.PythonMagicManager;
+import com.twosigma.beakerx.kernel.MagicKernelManager;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.message.Message;
 import org.slf4j.Logger;
@@ -46,14 +46,15 @@ public class CommMsgHandler extends KernelHandler<Message> {
 
   private void handleMsg(Message message) {
     Map<String, Serializable> commMap = message.getContent();
-    Comm comm = kernel.getComm(getString(commMap, COMM_ID));
+    String commId = getString(commMap, COMM_ID);
+    Comm comm = kernel.getComm(commId);
     logger.debug("Comm message handling, target name: " + (comm != null ? comm.getTargetName() : "undefined"));
     if (comm != null) {
       comm.handleMsg(message);
     } else {
-      PythonMagicManager pythonMagicManager = kernel.getPythonMagicManager();
-      if (pythonMagicManager != null) {
-        List<Message> messages = pythonMagicManager.handleMsg(message);
+      MagicKernelManager magicKernelManager = kernel.getManagerByCommId(commId);
+      if (magicKernelManager != null) {
+        List<Message> messages = magicKernelManager.handleMsg(message);
         if (!messages.isEmpty()) {
           kernel.publish(messages);
           return;

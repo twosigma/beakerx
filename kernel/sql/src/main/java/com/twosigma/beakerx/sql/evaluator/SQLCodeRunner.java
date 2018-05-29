@@ -46,7 +46,6 @@ class SQLCodeRunner implements Callable<TryResult> {
   public TryResult call() throws Exception {
     TryResult either;
     try {
-      InternalVariable.setValue(simpleEvaluationObject);
       Object r = sqlEvaluator.executeQuery(simpleEvaluationObject.getExpression(), namespaceClient, sqlEvaluator.defaultConnectionString, sqlEvaluator.namedConnectionString);
       either = TryResult.createResult(r);
     } catch (SQLException e) {

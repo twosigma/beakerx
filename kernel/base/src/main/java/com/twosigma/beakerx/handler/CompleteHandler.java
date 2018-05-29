@@ -57,8 +57,7 @@ public class CompleteHandler extends KernelHandler<Message> {
   }
 
   private Message createMsg(Message message, int cursorPos, AutocompleteResult autocomplete) {
-    Message reply = new Message();
-    reply.setHeader(new Header(COMPLETE_REPLY, message.getHeader().getSession()));
+    Message reply = new Message(new Header(COMPLETE_REPLY, message.getHeader().getSession()));
     reply.setIdentities(message.getIdentities());
     reply.setParentHeader(message.getHeader());
     Map<String, Serializable> content = new HashMap<>();

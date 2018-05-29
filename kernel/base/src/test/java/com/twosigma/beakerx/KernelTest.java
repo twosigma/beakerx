@@ -20,6 +20,7 @@ import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorManager;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.evaluator.Hook;
+import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -30,9 +31,10 @@ import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.kernel.NoSuchKernelException;
 import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.kernel.PythonEntryPoint;
-import com.twosigma.beakerx.kernel.PythonMagicManager;
+import com.twosigma.beakerx.kernel.MagicKernelManager;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandWhichThrowsException;
@@ -53,12 +55,18 @@ import com.twosigma.beakerx.kernel.magic.command.functionality.JSMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.JavaScriptMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.LoadMagicMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.LsMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.PythonMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.kernelMagic.ClojureMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.kernelMagic.GroovyMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.kernelMagic.JavaMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.kernelMagic.KernelMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.kernelMagic.KotlinMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.kernelMagic.PythonMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeCellModeMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeItCellModeMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeItLineModeMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeLineModeMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.UnImportMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.kernelMagic.ScalaMagicCommand;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
@@ -77,6 +85,7 @@ import java.util.Map;
 import java.util.Observer;
 import java.util.Set;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static com.twosigma.beakerx.kernel.magic.command.ClasspathAddMvnDepsMagicCommandTest.TEST_MVN_CACHE;
 import static java.util.Arrays.asList;
 import static java.util.Collections.synchronizedList;
@@ -92,7 +101,7 @@ public class KernelTest implements KernelFunctionality {
   private EvaluatorManager evaluatorManager;
   private String code;
   private Path tempFolder;
-  private PythonMagicManager pythonMagicManager;
+  private Map<String, MagicKernelManager> magicKernels;
 
   public MavenJarResolver.ResolverParams mavenResolverParam = null;
 
@@ -107,6 +116,10 @@ public class KernelTest implements KernelFunctionality {
     this.id = id;
     initMavenResolverParam();
     initMagicCommands();
+    SimpleEvaluationObject value = new SimpleEvaluationObject("ok");
+    Message jupyterMessage = commMsg();
+    value.setJupyterMessage(jupyterMessage);
+    InternalVariable.setValue(value);
     KernelManager.register(this);
   }
 
@@ -115,8 +128,12 @@ public class KernelTest implements KernelFunctionality {
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
     initMavenResolverParam();
     initMagicCommands();
+    SimpleEvaluationObject value = new SimpleEvaluationObject("ok");
+    Message jupyterMessage = commMsg();
+    value.setJupyterMessage(jupyterMessage);
+    InternalVariable.setValue(value);
     KernelManager.register(this);
-    this.pythonMagicManager = new PythonMagicManager();
+    this.magicKernels = new HashMap<>();
   }
 
   private void initMavenResolverParam() {
@@ -153,7 +170,13 @@ public class KernelTest implements KernelFunctionality {
             new MagicCommandType(TimeItLineModeMagicCommand.TIMEIT_LINE, "", new TimeItLineModeMagicCommand(this)),
             new MagicCommandType(TimeItCellModeMagicCommand.TIMEIT_CELL, "", new TimeItCellModeMagicCommand(this)),
             new MagicCommandType(LoadMagicMagicCommand.LOAD_MAGIC, "", new LoadMagicMagicCommand(this)),
-            new MagicCommandType(PythonMagicCommand.PYTHON, "", new PythonMagicCommand(this))
+            new MagicCommandType(KernelMagicCommand.KERNEL, "", new KernelMagicCommand(this)),
+            new MagicCommandType(PythonMagicCommand.PYTHON, "", new PythonMagicCommand(this)),
+            new MagicCommandType(ScalaMagicCommand.SCALA, "", new ScalaMagicCommand(this)),
+            new MagicCommandType(KotlinMagicCommand.KOTLIN, "", new KotlinMagicCommand(this)),
+            new MagicCommandType(JavaMagicCommand.JAVA, "", new JavaMagicCommand(this)),
+            new MagicCommandType(GroovyMagicCommand.GROOVY, "", new GroovyMagicCommand(this)),
+            new MagicCommandType(ClojureMagicCommand.CLOJURE, "", new ClojureMagicCommand(this))
     ));
   }
 
@@ -372,8 +395,10 @@ public class KernelTest implements KernelFunctionality {
     } else {
       removeTempFolder();
     }
-    if (pythonMagicManager != null) {
-      pythonMagicManager.exit();
+    if (magicKernels != null) {
+      for (MagicKernelManager manager : magicKernels.values()) {
+        manager.exit();
+      }
     }
   }
 
@@ -390,12 +415,20 @@ public class KernelTest implements KernelFunctionality {
   }
 
   @Override
-  public PythonEntryPoint getPythonEntryPoint() {
-    return pythonMagicManager.getPythonEntryPoint();
+  public PythonEntryPoint getPythonEntryPoint(String kernelName) throws NoSuchKernelException {
+    MagicKernelManager manager = magicKernels.get(kernelName);
+    if (manager == null) {
+      manager = new MagicKernelManager(kernelName);
+      magicKernels.put(kernelName, manager);
+    }
+    return manager.getPythonEntryPoint();
   }
 
   @Override
-  public PythonMagicManager getPythonMagicManager() {
-    return pythonMagicManager;
+  public MagicKernelManager getManagerByCommId(String commId) {
+    return null;
   }
+
+  @Override
+  public void addCommIdManagerMapping(String commId, String kernel) {}
 }

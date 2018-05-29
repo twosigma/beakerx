@@ -24,6 +24,7 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DeclareEnumGroovyEvaluatorTest {
@@ -58,7 +59,7 @@ public class DeclareEnumGroovyEvaluatorTest {
 
   private TryResult runCode(String code) {
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
-    Message message = new Message();
+    Message message = commMsg();
     seo.setJupyterMessage(message);
     return groovyEvaluator.evaluate(seo, code);
   }

@@ -25,10 +25,9 @@ import java.util.HashMap;
 public class MessageFactoryTest {
 
   public static Message getExecuteRequestMessage(String code) {
-    Message message = new Message();
-    Header header = new Header();
+    Header header = new Header(JupyterMessages.COMM_MSG,"session1");
+    Message message = new Message(header);
     header.setTypeEnum(JupyterMessages.EXECUTE_REQUEST);
-    message.setHeader(header);
     HashMap<String, Serializable> content = new HashMap<>();
     content.put("code", code);
     message.setContent(content);

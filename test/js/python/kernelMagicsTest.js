@@ -21,7 +21,7 @@ describe('Tests for kernel magic. ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/test/ipynb/python/kernelMagicsTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/ipynb/python/KernelMagicsTest.ipynb');
     beakerxPO.openUIWindow();
   });
 
@@ -31,14 +31,6 @@ describe('Tests for kernel magic. ', function () {
 
   var cellIndex;
   var imageDir = 'python/kernelMagics';
-
-  function checkPlotWithLine(codeCell){
-    browser.waitUntil(function(){
-      return codeCell.$$('div.dtcontainer').length > 0;
-    }, 20000);
-    var dtContainer = beakerxPO.getDtContainerByIndex(cellIndex);
-    expect(dtContainer.$('path.plot-line').isVisible()).toBeTruthy();
-  }
 
   describe('UI options. ', function () {
     it("Use new table widget. ", function () {
@@ -87,7 +79,7 @@ describe('Tests for kernel magic. ', function () {
     it('Should display Plot with Line ', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      checkPlotWithLine(codeCell);
+      beakerxPO.checkPlotWithLine(codeCell, cellIndex);
     });
   });
 
@@ -95,7 +87,7 @@ describe('Tests for kernel magic. ', function () {
     it('Should display Plot with Line ', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      checkPlotWithLine(codeCell);
+      beakerxPO.checkPlotWithLine(codeCell, cellIndex);
     });
   });
 
@@ -103,7 +95,7 @@ describe('Tests for kernel magic. ', function () {
     it('Should display Plot with Line ', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      checkPlotWithLine(codeCell);
+      beakerxPO.checkPlotWithLine(codeCell, cellIndex);
     });
   });
 
@@ -111,7 +103,7 @@ describe('Tests for kernel magic. ', function () {
     it('Should display Plot with Line ', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      checkPlotWithLine(codeCell);
+      beakerxPO.checkPlotWithLine(codeCell, cellIndex);
     });
   });
 
@@ -119,7 +111,7 @@ describe('Tests for kernel magic. ', function () {
     it('Should display Plot with Line ', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      checkPlotWithLine(codeCell);
+      beakerxPO.checkPlotWithLine(codeCell, cellIndex);
     });
   });
 
@@ -131,11 +123,21 @@ describe('Tests for kernel magic. ', function () {
 
       cellIndex += 1;
       var fileName = 'cell12_case1.png';
-      var width = 500, height = 140;
+      var width = 200, height = 100;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, fileName);
     });
   });
-
+/* disabled till it will be fixed
+  describe('interrupt %%groovy magic ', function () {
+    it('Should display KeyboardInterrupt error ', function () {
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      browser.pause(500);
+      beakerxPO.clickInterruptKernel();
+      beakerxPO.waitAndCheckOutputTextOfStderr(cellIndex, /KeyboardInterrupt/);
+    });
+  });
+*/
 });

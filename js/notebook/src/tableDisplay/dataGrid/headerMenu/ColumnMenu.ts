@@ -15,8 +15,7 @@
  */
 
 import { createColumnMenuItems } from './createColumnMenuItems';
-import HeaderMenu, { ITriggerOptions } from "./HeaderMenu";
-import DataGridColumn from "../column/DataGridColumn";
+import HeaderMenu from "./HeaderMenu";
 
 export default class ColumnMenu extends HeaderMenu {
   protected buildMenu(): void {

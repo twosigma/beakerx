@@ -47,6 +47,14 @@ describe('Kotlin base tests ', function () {
     });
   });
 
+  describe('%%python magic', function () {
+    it('Should display Plot with Line ', function () {
+      cellIndex += 1;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.checkPlotWithLine(codeCell, cellIndex);
+    });
+  });
+
   describe('(Kotlin) Press "Shift + Tab" to display doc ', function(){
     it('doc tooltip is not empty ', function(){
       cellIndex += 1;

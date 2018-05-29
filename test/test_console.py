@@ -47,7 +47,7 @@ def test_lsmagic():
     for kernel in kernels:        
         result = 0
         p, pexpect, t = start_console(kernel)
-        p.sendline('%lsmagic')
+        p.sendline('1+1')
         try:
             if kernel == 'groovy':
                 p.expect(r'Available magic commands:', timeout=t)

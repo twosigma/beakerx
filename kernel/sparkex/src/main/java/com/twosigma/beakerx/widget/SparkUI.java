@@ -107,7 +107,7 @@ public class SparkUI extends VBox implements SparkUIApi {
     this.addMasterUrl(masterURL);
     this.addExecutorCores(executorCores);
     this.addExecutorMemory(executorMemory);
-    this.advancedOption = new SparkConfiguration(sparkEngine.getAdvanceSettings());
+    this.advancedOption = new SparkConfiguration(sparkEngine.getAdvanceSettings(),sparkEngine.sparkVersion());
     this.addAdvanceOptions(advancedOption);
   }
 

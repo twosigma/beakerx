@@ -148,6 +148,11 @@ public class SparkMagicCommandTest {
         public String getSparkMasterUrl() {
           return "";
         }
+
+        @Override
+        public String sparkVersion() {
+          return null;
+        }
       };
     }
   }

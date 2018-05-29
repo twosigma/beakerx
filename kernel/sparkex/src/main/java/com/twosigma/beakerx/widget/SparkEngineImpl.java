@@ -36,10 +36,12 @@ import org.apache.spark.sql.SparkSession;
 import scala.Tuple2;
 import scala.collection.Iterator;
 
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -59,7 +61,7 @@ public class SparkEngineImpl implements SparkEngine {
 
   private SparkSession.Builder sparkSessionBuilder;
 
-  private SparkEngineImpl(SparkSession.Builder sparkSessionBuilder) {
+  SparkEngineImpl(SparkSession.Builder sparkSessionBuilder) {
     this.sparkSessionBuilder = sparkSessionBuilder;
     configureSparkSessionBuilder(this.sparkSessionBuilder);
   }
@@ -99,6 +101,19 @@ public class SparkEngineImpl implements SparkEngine {
   public String getSparkMasterUrl() {
     RuntimeConfig conf = getOrCreate().conf();
     return conf.getAll().get("spark.master").get();
+  }
+
+  @Override
+  public String sparkVersion() {
+    try {
+      InputStream sparkProps = Thread.currentThread().getContextClassLoader().
+              getResourceAsStream("spark-version-info.properties");
+      Properties props = new Properties();
+      props.load(sparkProps);
+      return props.getProperty("version");
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private TryResult initSparkContextInShell(KernelFunctionality kernel, Message parent) {

@@ -61,8 +61,8 @@ var NotebookPageObject = function () {
   }
 
   this.setProperty = function (key, value) {
-    $('div.form-group > input[placeholder="name"]').setValue(key);
-    $('div.form-group > input[placeholder="value"]').setValue(value);
+    $('div#properties_property input[placeholder="name"]').setValue(key);
+    $('div#properties_property input[placeholder="value"]').setValue(value);
     browser.pause(2000);
   };
 

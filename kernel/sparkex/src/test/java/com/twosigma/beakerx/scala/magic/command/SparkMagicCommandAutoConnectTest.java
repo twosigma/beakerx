@@ -19,16 +19,17 @@ import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
-import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widget.SparkManager;
+import com.twosigma.beakerx.widget.SparkEngine;
 import com.twosigma.beakerx.widget.SparkUI;
+import com.twosigma.beakerx.widget.SparkUiDefaults;
+import org.apache.spark.SparkConf;
+import org.apache.spark.sql.SparkSession;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 
 import static com.twosigma.beakerx.MessageFactorTest.commMsg;
-import static com.twosigma.beakerx.scala.magic.command.SparkMagicCommandTest.createSparkManagerFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SparkMagicCommandAutoConnectTest {
@@ -38,9 +39,8 @@ public class SparkMagicCommandAutoConnectTest {
 
   @Before
   public void setUp() {
-    SparkManager.SparkManagerFactory sparkManagerFactory = createSparkManagerFactory();
-    SparkUI.SparkUIFactory sparkUIFactory = createSparkUIFactory();
-    sparkMagicCommand = new SparkMagicCommand(new KernelTest(), sparkUIFactory, sparkManagerFactory);
+    SparkUI.SparkUIFactory sparkUIFactory = createSparkUIFactory(new SparkMagicCommandTest.SparkManagerFactoryTest());
+    sparkMagicCommand = new SparkMagicCommand(new KernelTest(), sparkUIFactory);
   }
 
   @Test
@@ -60,7 +60,7 @@ public class SparkMagicCommandAutoConnectTest {
     MagicCommandOutcomeItem execute = createSparkUi("--connect");
     //then
     assertThat(execute.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.OK);
-    assertThat(sparkUI.isSparkSessionIsActive()).isTrue();
+    assertThat(sparkUI.isActive()).isTrue();
   }
 
   @Test
@@ -70,7 +70,7 @@ public class SparkMagicCommandAutoConnectTest {
     MagicCommandOutcomeItem execute = createSparkUi("-c");
     //then
     assertThat(execute.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.OK);
-    assertThat(sparkUI.isSparkSessionIsActive()).isTrue();
+    assertThat(sparkUI.isActive()).isTrue();
   }
 
   private MagicCommandOutcomeItem createSparkUi(String option) {
@@ -80,13 +80,23 @@ public class SparkMagicCommandAutoConnectTest {
     return execute;
   }
 
-  private SparkUI.SparkUIFactory createSparkUIFactory() {
+  private SparkUI.SparkUIFactory createSparkUIFactory(SparkEngine.SparkEngineFactory sparkManagerFactory) {
     return new SparkUI.SparkUIFactory() {
-      private SparkUI.SparkUIFactoryImpl factory = new SparkUI.SparkUIFactoryImpl();
+      private SparkUI.SparkUIFactoryImpl factory = new SparkUI.SparkUIFactoryImpl(sparkManagerFactory, new SparkUiDefaults() {
+        @Override
+        public void saveSparkConf(SparkConf sparkConf) {
+
+        }
+
+        @Override
+        public void loadDefaults(SparkSession.Builder builder) {
+
+        }
+      });
 
       @Override
-      public SparkUI create(SparkManager sparkManager) {
-        sparkUI = factory.create(sparkManager);
+      public SparkUI create(SparkSession.Builder builder) {
+        sparkUI = factory.create(builder);
         return sparkUI;
       }
     };

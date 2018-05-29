@@ -20,6 +20,8 @@ import BeakerXApi from "./tree/Utils/BeakerXApi";
 const widgets = require('./widgets');
 const bkUtils = require("./shared/bkUtils");
 
+const SPARK_LOCAL_MASTER_URL_PREFIX = 'local';
+
 class SparkUIModel extends widgets.VBoxModel {
   defaults() {
     return {
@@ -39,7 +41,6 @@ class SparkUIView extends widgets.VBoxView {
   private sparkAppId: string;
   private sparkUiWebUrl: string;
   private sparkMasterUrl: string;
-  private sparkDefaultMasterUrl: string;
   private apiCallIntervalId: number;
   private connectionLabelActive: HTMLElement;
   private connectionLabelMemory: HTMLElement;
@@ -61,7 +62,7 @@ class SparkUIView extends widgets.VBoxView {
     this.el.classList.add('widget-spark-ui');
 
     this.addSparkMetricsWidget();
-    this.updateLabels();
+    this.updateChildren();
   }
 
   public update() {
@@ -70,8 +71,8 @@ class SparkUIView extends widgets.VBoxView {
     this.connectToApi();
     this.addSparkUrls();
     this.addSparkMetricsWidget();
-    this.addDefaultMasterUrl();
-    this.updateLabels();
+    this.handleLocalMasterUrl();
+    this.updateChildren();
   }
 
   private addSparkUrls() {
@@ -120,10 +121,8 @@ class SparkUIView extends widgets.VBoxView {
     this.connectionStatusElement.setAttribute('title', this.sparkMasterUrl);
   }
 
-  private addDefaultMasterUrl() {
-    this.sparkDefaultMasterUrl = this.model.get('sparkDefaultMasterUrl');
-
-    if (!this.sparkDefaultMasterUrl) {
+  private handleLocalMasterUrl() {
+    if (this.masterUrlInput) {
       return;
     }
 
@@ -133,16 +132,12 @@ class SparkUIView extends widgets.VBoxView {
 
     if (this.masterUrlInput) {
       this.toggleExecutorConfigInputs();
-      this.masterUrlInput.onchange = this.toggleExecutorConfigInputs.bind(this);
+      this.masterUrlInput.addEventListener('keyup', this.toggleExecutorConfigInputs.bind(this), true);
     }
   }
 
   private toggleExecutorConfigInputs() {
-    if (!this.masterUrlInput) {
-      return;
-    }
-
-    if (this.masterUrlInput.value === this.sparkDefaultMasterUrl) {
+    if (this.masterUrlInput.value.indexOf(SPARK_LOCAL_MASTER_URL_PREFIX) === 0) {
       this.executorCoresInput.setAttribute('disabled', 'disabled');
       this.executorMemoryInput.setAttribute('disabled', 'disabled');
     } else {
@@ -159,7 +154,7 @@ class SparkUIView extends widgets.VBoxView {
     window.open(`${this.sparkUiWebUrl}/executors`, '_blank');
   }
 
-  private updateLabels() {
+  private updateChildren() {
     const noop = () => {};
 
     this.resolveChildren(this).then((views) => {
@@ -169,7 +164,7 @@ class SparkUIView extends widgets.VBoxView {
             this.resolveChildren(view)
               .then((views) => {
                 this.setLabelsWidth(views);
-                this.addDefaultMasterUrl();
+                this.handleLocalMasterUrl();
               })
               .catch(noop);
           });

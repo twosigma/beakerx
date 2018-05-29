@@ -20,6 +20,8 @@ import BeakerXApi from "./tree/Utils/BeakerXApi";
 const widgets = require('./widgets');
 const bkUtils = require("./shared/bkUtils");
 
+const SPARK_LOCAL_MASTER_URL_PREFIX = 'local';
+
 class SparkUIModel extends widgets.VBoxModel {
   defaults() {
     return {
@@ -44,12 +46,17 @@ class SparkUIView extends widgets.VBoxView {
   private connectionLabelMemory: HTMLElement;
   private connectionLabelDead: HTMLElement;
   private connectionStatusElement: HTMLElement;
+  private masterUrlInput: HTMLInputElement;
+  private executorCoresInput: HTMLInputElement;
+  private executorMemoryInput: HTMLInputElement;
 
   initialize(parameters) {
     super.initialize(parameters);
 
     this.openWebUi = this.openWebUi.bind(this);
     this.openExecutors = this.openExecutors.bind(this);
+    this.updateChildren = this.updateChildren.bind(this);
+    this.toggleExecutorConfigInputs = this.toggleExecutorConfigInputs.bind(this);
   }
 
   public render() {
@@ -57,7 +64,7 @@ class SparkUIView extends widgets.VBoxView {
     this.el.classList.add('widget-spark-ui');
 
     this.addSparkMetricsWidget();
-    this.updateLabels();
+    this.updateChildren();
   }
 
   public update() {
@@ -66,7 +73,8 @@ class SparkUIView extends widgets.VBoxView {
     this.connectToApi();
     this.addSparkUrls();
     this.addSparkMetricsWidget();
-    this.updateLabels();
+    this.handleLocalMasterUrl();
+    this.updateChildren();
   }
 
   private addSparkUrls() {
@@ -115,6 +123,28 @@ class SparkUIView extends widgets.VBoxView {
     this.connectionStatusElement.setAttribute('title', this.sparkMasterUrl);
   }
 
+  private handleLocalMasterUrl() {
+    this.masterUrlInput = this.el.querySelector('.bx-spark-master-url input');
+    this.executorCoresInput = this.el.querySelector('.bx-spark-executor-cores input');
+    this.executorMemoryInput = this.el.querySelector('.bx-spark-executor-memory input');
+
+    if (this.masterUrlInput) {
+      this.toggleExecutorConfigInputs();
+      this.masterUrlInput.removeEventListener('keyup', this.toggleExecutorConfigInputs, true);
+      this.masterUrlInput.addEventListener('keyup', this.toggleExecutorConfigInputs, true);
+    }
+  }
+
+  private toggleExecutorConfigInputs() {
+    if (this.masterUrlInput.value.indexOf(SPARK_LOCAL_MASTER_URL_PREFIX) === 0) {
+      this.executorCoresInput.setAttribute('disabled', 'disabled');
+      this.executorMemoryInput.setAttribute('disabled', 'disabled');
+    } else {
+      this.executorCoresInput.removeAttribute('disabled');
+      this.executorMemoryInput.removeAttribute('disabled');
+    }
+  }
+
   private openWebUi() {
     window.open(this.sparkUiWebUrl, '_blank');
   }
@@ -123,31 +153,23 @@ class SparkUIView extends widgets.VBoxView {
     window.open(`${this.sparkUiWebUrl}/executors`, '_blank');
   }
 
-  private updateLabels() {
-    const lengths = [];
-    const labels = [];
+  private updateChildren() {
     const noop = () => {};
-    const promise = new Promise((resolve, reject) => {
-      this.resolveChildren(this).then((views) => {
-        views.forEach((view) => {
-          this.resolveChildren(view).then((views) => {
-            views.forEach((view) => {
-              this.resolveChildren(view)
-                .then((views) => {
-                  this.collectLabels(views, lengths, labels, resolve);
-                })
-                .catch(reject);
-            });
-          }, noop);
-        });
-      }, noop);
-    });
 
-    promise.then(() => {
-      const maxWidth = Math.max.apply(null, lengths);
-
-      labels.forEach((label) => { label.style.width = `${maxWidth}px`; });
-    }).catch(noop);
+    this.resolveChildren(this).then((views) => {
+      views.forEach((view) => {
+        this.resolveChildren(view).then((views) => {
+          views.forEach((view) => {
+            this.resolveChildren(view)
+              .then((views) => {
+                this.setLabelsWidth(views);
+                this.handleLocalMasterUrl();
+              })
+              .catch(noop);
+          });
+        }, noop);
+      });
+    }, noop);
   }
 
   private resolveChildren(view) {
@@ -161,7 +183,10 @@ class SparkUIView extends widgets.VBoxView {
     });
   }
 
-  private collectLabels(views, lengths, labels, resolve) {
+  private setLabelsWidth(views): void {
+    let labels = [];
+    let lengths = [];
+
     views.forEach((view) => {
       const label = view.el.querySelector('.widget-label');
 
@@ -173,7 +198,8 @@ class SparkUIView extends widgets.VBoxView {
       labels.push(label);
     });
 
-    resolve();
+    const maxWidth = Math.max.apply(null, lengths);
+    labels.forEach((label) => { label.style.width = `${maxWidth}px`; });
   }
 
   private getLabelWidth(labelEl): number {

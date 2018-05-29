@@ -32,8 +32,6 @@ public interface SparkEngine {
 
   SparkConf getSparkConf();
 
-  SparkContext sparkContext();
-
   String getSparkAppId();
 
   Map<String, String> getAdvanceSettings();

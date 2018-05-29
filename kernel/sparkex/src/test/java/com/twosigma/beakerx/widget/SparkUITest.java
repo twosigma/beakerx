@@ -110,11 +110,6 @@ public class SparkUITest {
     }
 
     @Override
-    public SparkContext sparkContext() {
-      return getOrCreate().sparkContext();
-    }
-
-    @Override
     public String getSparkAppId() {
       return SPARK_APP_ID_MOCK;
     }

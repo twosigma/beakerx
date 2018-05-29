@@ -130,11 +130,6 @@ public class SparkMagicCommandTest {
         }
 
         @Override
-        public SparkContext sparkContext() {
-          return null;
-        }
-
-        @Override
         public String getSparkAppId() {
           return "sparkAppId1";
         }

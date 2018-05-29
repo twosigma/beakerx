@@ -102,11 +102,6 @@ public class SparkEngineImpl implements SparkEngine {
     return conf.getAll().get("spark.master").get();
   }
 
-  @Override
-  public SparkContext sparkContext() {
-    return getOrCreate().sparkContext();
-  }
-
   private TryResult initSparkContextInShell(KernelFunctionality kernel, Message parent) {
     String addSc = String.format(("import com.twosigma.beakerx.widget.SparkVariable\n" +
                     "val %s = SparkVariable.getSparkSession()\n" +

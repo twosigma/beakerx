@@ -109,11 +109,13 @@ public class SparkUI extends VBox implements SparkUIApi {
     this.addExecutorMemory(executorMemory);
     this.advancedOption = new SparkConfiguration(sparkEngine.getAdvanceSettings());
     this.addAdvanceOptions(advancedOption);
+    this.sendUpdate("sparkDefaultMasterUrl", SPARK_MASTER_DEFAULT);
   }
 
   private Text createExecutorCores() {
     Text cores = new Text();
     cores.setDescription("Executor cores");
+    cores.setDomClasses(new ArrayList<>(Arrays.asList("bx-spark-executor-cores")));
     if (getSparkConf().contains(SPARK_EXECUTOR_CORES)) {
       cores.setValue(getSparkConf().get(SPARK_EXECUTOR_CORES));
     } else {
@@ -127,19 +129,21 @@ public class SparkUI extends VBox implements SparkUIApi {
   }
 
   private Text createExecutorMemory() {
-    Text masterURL = new Text();
-    masterURL.setDescription("Executor Memory");
+    Text memory = new Text();
+    memory.setDescription("Executor Memory");
+    memory.setDomClasses(new ArrayList<>(Arrays.asList("bx-spark-executor-memory")));
     if (getSparkConf().contains(SPARK_EXECUTOR_MEMORY)) {
-      masterURL.setValue(getSparkConf().get(SPARK_EXECUTOR_MEMORY));
+      memory.setValue(getSparkConf().get(SPARK_EXECUTOR_MEMORY));
     } else {
-      masterURL.setValue("8g");
+      memory.setValue("8g");
     }
-    return masterURL;
+    return memory;
   }
 
   private Text createMasterURL() {
     Text masterURL = new Text();
     masterURL.setDescription("Master URL");
+    masterURL.setDomClasses(new ArrayList<>(Arrays.asList("bx-spark-master-url")));
     if (getSparkConf().contains(SPARK_MASTER)) {
       masterURL.setValue(getSparkConf().get(SPARK_MASTER));
     } else {

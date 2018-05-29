@@ -21,7 +21,6 @@ import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.message.Message;
 import org.apache.spark.SparkConf;
-import org.apache.spark.SparkContext;
 import org.apache.spark.sql.SparkSession;
 import org.junit.After;
 import org.junit.Before;
@@ -127,6 +126,11 @@ public class SparkUITest {
     @Override
     public String getSparkMasterUrl() {
       return "";
+    }
+
+    @Override
+    public String sparkVersion() {
+      return null;
     }
   }
 

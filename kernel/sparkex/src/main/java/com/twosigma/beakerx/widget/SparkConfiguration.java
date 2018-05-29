@@ -16,12 +16,12 @@
 package com.twosigma.beakerx.widget;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static java.util.Arrays.asList;
 import static java.util.Collections.EMPTY_LIST;
-import static java.util.Collections.singletonList;
 
 public class SparkConfiguration extends VBox {
 
@@ -30,15 +30,22 @@ public class SparkConfiguration extends VBox {
 
   private Button add;
   private HBox header;
-  private Properties properties;
+  private PropertiesWidget properties;
 
-  SparkConfiguration(Map<String, String> advancedSettings) {
+  SparkConfiguration(Map<String, String> advancedSettings, String sparkVersion) {
     super(new ArrayList<>());
     this.add = createAddButton();
-    this.header = new HBox(singletonList(this.add));
+    this.header = new HBox(asList(this.add, sparkVersionWidget(sparkVersion)));
     List<PropertyItem> propertyItems = createPropertyItems(advancedSettings);
-    this.properties = new Properties(propertyItems);
-    add(new VBox(Arrays.asList(this.header, this.properties.getWidget())));
+    this.properties = new PropertiesWidget(propertyItems);
+    add(new VBox(asList(this.header, this.properties.getWidget())));
+  }
+
+  private HTML sparkVersionWidget(String version) {
+    HTML html = new HTML();
+    String ap = String.format("https://spark.apache.org/docs/%s/configuration.html#available-properties", version);
+    html.setValue("<a target=\"_blank\" href=\"" + ap + "\">Available properties" + "</a>");
+    return html;
   }
 
   private List<PropertyItem> createPropertyItems(Map<String, String> advancedSettings) {
@@ -49,7 +56,8 @@ public class SparkConfiguration extends VBox {
 
   private Button createAddButton() {
     Button add = new Button();
-    add.setDescription("+");
+    add.setTooltip("Add property");
+    add.setDomClasses(new ArrayList<>(asList("bx-button", "icon-add")));
     add.registerOnClick((content, message) -> addProperty());
     return add;
   }
@@ -69,9 +77,10 @@ public class SparkConfiguration extends VBox {
 
   private PropertyItem createPropertyItem(Text nameWidget, Text valueWidget) {
     nameWidget.setPlaceholder("name");
+    nameWidget.setDomClasses(new ArrayList<>(asList("bx-config-name")));
     valueWidget.setPlaceholder("value");
     Button remove = new Button();
-    remove.setDescription("-");
+    remove.setDomClasses(new ArrayList<>(asList("bx-button", "icon-close")));
     PropertyItem propertyItem = new PropertyItem(nameWidget, valueWidget, remove);
     remove.registerOnClick((content, message) -> this.properties.getWidget().removeDOMWidget(propertyItem));
     return propertyItem;

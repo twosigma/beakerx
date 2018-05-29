@@ -107,7 +107,7 @@ public class SparkUI extends VBox implements SparkUIApi {
     this.addMasterUrl(masterURL);
     this.addExecutorCores(executorCores);
     this.addExecutorMemory(executorMemory);
-    this.advancedOption = new SparkConfiguration(sparkEngine.getAdvanceSettings());
+    this.advancedOption = new SparkConfiguration(sparkEngine.getAdvanceSettings(),sparkEngine.sparkVersion());
     this.addAdvanceOptions(advancedOption);
     this.sendUpdate("sparkDefaultMasterUrl", SPARK_MASTER_DEFAULT);
   }
@@ -115,7 +115,7 @@ public class SparkUI extends VBox implements SparkUIApi {
   private Text createExecutorCores() {
     Text cores = new Text();
     cores.setDescription("Executor cores");
-    cores.setDomClasses(new ArrayList<>(Arrays.asList("bx-spark-executor-cores")));
+    cores.setDomClasses(new ArrayList<>(Arrays.asList("bx-spark-config", "bx-spark-executor-cores")));
     if (getSparkConf().contains(SPARK_EXECUTOR_CORES)) {
       cores.setValue(getSparkConf().get(SPARK_EXECUTOR_CORES));
     } else {
@@ -131,7 +131,7 @@ public class SparkUI extends VBox implements SparkUIApi {
   private Text createExecutorMemory() {
     Text memory = new Text();
     memory.setDescription("Executor Memory");
-    memory.setDomClasses(new ArrayList<>(Arrays.asList("bx-spark-executor-memory")));
+    memory.setDomClasses(new ArrayList<>(Arrays.asList("bx-spark-config", "bx-spark-executor-memory")));
     if (getSparkConf().contains(SPARK_EXECUTOR_MEMORY)) {
       memory.setValue(getSparkConf().get(SPARK_EXECUTOR_MEMORY));
     } else {
@@ -143,7 +143,7 @@ public class SparkUI extends VBox implements SparkUIApi {
   private Text createMasterURL() {
     Text masterURL = new Text();
     masterURL.setDescription("Master URL");
-    masterURL.setDomClasses(new ArrayList<>(Arrays.asList("bx-spark-master-url")));
+    masterURL.setDomClasses(new ArrayList<>(Arrays.asList("bx-spark-config", "bx-spark-master-url")));
     if (getSparkConf().contains(SPARK_MASTER)) {
       masterURL.setValue(getSparkConf().get(SPARK_MASTER));
     } else {

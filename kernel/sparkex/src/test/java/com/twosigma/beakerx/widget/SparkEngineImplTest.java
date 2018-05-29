@@ -1,3 +1,4 @@
+
 /*
  *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
@@ -15,28 +16,20 @@
  */
 package com.twosigma.beakerx.widget;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import org.apache.spark.sql.SparkSession;
+import org.junit.Test;
 
-public class Properties {
+import static org.assertj.core.api.Assertions.assertThat;
 
-  private final VBox widget;
+public class SparkEngineImplTest {
 
-  public Properties(List<PropertyItem> children) {
-    this.widget = new VBox(children.stream().map(x -> (Widget) x).collect(Collectors.toList()));
-  }
-
-  public List<PropertyItem> getItems() {
-    return this.widget.getChildren().stream()
-            .map(x -> (PropertyItem) x)
-            .collect(Collectors.toList());
-  }
-
-  public VBox getWidget() {
-    return widget;
-  }
-
-  public void add(PropertyItem propertyItem) {
-    this.widget.add(propertyItem);
+  @Test
+  public void sparkVersion() {
+    //given
+    SparkEngineImpl sparkEngine = new SparkEngineImpl(SparkSession.builder());
+    //when
+    String version = sparkEngine.sparkVersion();
+    //then
+    assertThat(version).isEqualTo("2.2.1");
   }
 }

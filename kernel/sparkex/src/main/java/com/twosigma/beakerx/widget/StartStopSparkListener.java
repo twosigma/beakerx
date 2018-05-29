@@ -29,14 +29,14 @@ public class StartStopSparkListener extends SparkListener {
   @Override
   public void onApplicationStart(SparkListenerApplicationStart applicationStart) {
     super.onApplicationStart(applicationStart);
-    SparkUIManager sparkUIManager = SparkVariable.getSparkUIManager();
-    sparkUIManager.applicationStart();
+    SparkUIApi sparkUI = SparkVariable.getSparkUI();
+    sparkUI.applicationStart();
   }
 
   @Override
   public void onApplicationEnd(SparkListenerApplicationEnd applicationEnd) {
     super.onApplicationEnd(applicationEnd);
-    SparkUIManager sparkUIManager = SparkVariable.getSparkUIManager();
-    sparkUIManager.applicationEnd();
+    SparkUIApi sparkUI = SparkVariable.getSparkUI();
+    sparkUI.applicationEnd();
   }
 }

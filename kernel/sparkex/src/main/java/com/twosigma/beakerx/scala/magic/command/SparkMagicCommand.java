@@ -28,12 +28,14 @@ import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widget.SparkManager;
-import com.twosigma.beakerx.widget.SparkManagerImpl;
+import com.twosigma.beakerx.widget.SparkEngineImpl;
 import com.twosigma.beakerx.widget.SparkUI;
+import com.twosigma.beakerx.widget.SparkUiDefaultsImpl;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,19 +49,23 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
   public static final String SPARK = "%%sparkRunner";
   private KernelFunctionality kernel;
   private SparkUI.SparkUIFactory sparkUIFactory;
-  private SparkManager.SparkManagerFactory sparkManagerFactory;
   private SparkUI sparkUI;
   private Map<String, SparkOption> sparkOptions;
 
   public SparkMagicCommand(KernelFunctionality kernel) {
     //constructor for reflection in LoadMagicMagicCommand
-    this(kernel, new SparkUI.SparkUIFactoryImpl(), new SparkManagerImpl.SparkManagerFactoryImpl());
+    this(
+            kernel,
+            new SparkUI.SparkUIFactoryImpl(
+                    new SparkEngineImpl.SparkEngineFactoryImpl(),
+                    new SparkUiDefaultsImpl(
+                            Paths.get(System.getProperty("user.home") + File.separator + ".jupyter" + File.separator + "beakerx.json"))));
+
   }
 
-  SparkMagicCommand(KernelFunctionality kernel, SparkUI.SparkUIFactory sparkUIFactory, SparkManager.SparkManagerFactory sparkManagerFactory) {
+  SparkMagicCommand(KernelFunctionality kernel, SparkUI.SparkUIFactory sparkUIFactory) {
     this.kernel = kernel;
     this.sparkUIFactory = sparkUIFactory;
-    this.sparkManagerFactory = sparkManagerFactory;
     configureOptions();
   }
 
@@ -76,7 +82,7 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
 
   @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
-    if (sparkUI != null && sparkUI.isSparkSessionIsActive()) {
+    if (sparkUI != null && sparkUI.isActive()) {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Active spark session exists. If you want to close it run 'spark.close()'");
     }
     List<String> options = getOptions(param);
@@ -135,16 +141,13 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
   }
 
   private MagicCommandOutcomeItem createSparkUI(SparkSession.Builder builder) {
-    SparkManager sparkManager = sparkManagerFactory.create(builder);
-    this.sparkUI = sparkUIFactory.create(sparkManager);
+    this.sparkUI = sparkUIFactory.create(builder);
     return displaySparkUI(sparkUI);
   }
 
   private MagicCommandOutcomeItem createSparkUI(SparkConf sparkConf) {
     SparkSession.Builder builder = SparkSession.builder().config(sparkConf);
-    SparkManager sparkManager = sparkManagerFactory.create(builder);
-    this.sparkUI = sparkUIFactory.create(sparkManager);
-    return displaySparkUI(sparkUI);
+    return createSparkUI(builder);
   }
 
   private MagicCommandOutcomeItem displaySparkUI(SparkUI sparkUI) {

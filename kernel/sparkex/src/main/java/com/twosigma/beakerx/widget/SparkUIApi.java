@@ -15,31 +15,31 @@
  */
 package com.twosigma.beakerx.widget;
 
-import org.apache.spark.sql.SparkSession;
+import java.util.List;
 
-public class SparkVariable {
+public interface SparkUIApi {
 
-  private static SparkUIApi sparkUI = null;
-  private static SparkSession sparkSession = null;
+  List<SparkConfiguration.Configuration> getAdvancedOptions();
 
-  static void putSparkUI(SparkUIApi ui) {
-    sparkUI = ui;
-  }
+  Text getMasterURL();
 
-  public static SparkUIApi getSparkUI() {
-    return sparkUI;
-  }
+  Text getExecutorMemory();
 
-  public static void cancelAllJobs() {
-    sparkUI.cancelAllJobs();
-  }
+  Text getExecutorCores();
 
-  public static void putSparkSession(SparkSession sSession) {
-    sparkSession = sSession;
-  }
+  void startStage(int stageId, int numTasks);
 
-  public static SparkSession getSparkSession() {
-    //method is used by initSparkContextInShell
-    return sparkSession;
-  }
+  void endStage(int stageId);
+
+  void taskStart(int stageId, long taskId);
+
+  void taskEnd(int stageId, long taskId);
+
+  void applicationStart();
+
+  void applicationEnd();
+
+  void cancelAllJobs();
+
+  boolean isActive();
 }

@@ -14,18 +14,11 @@
  *  limitations under the License.
  */
 
-var widgets = require('./widgets');
-var BeakerXApi = require('./tree/Utils/BeakerXApi').default;
 var _ = require('underscore');
 var $ = require('jquery');
-
+var widgets = require('./widgets');
 var DataGridScope = require('./tableDisplay/dataGrid').DataGridScope;
-var TableScope = require('./tableDisplay/tableScope');
 
-require('datatables.net-dt/css/jquery.dataTables.css');
-require('datatables.net-colreorder-dt/css/colReorder.dataTables.css');
-require('datatables.net-fixedcolumns-dt/css/fixedColumns.dataTables.css');
-require('datatables.net-keytable-dt/css/keyTable.dataTables.css');
 require('./tableDisplay/css/datatables.scss');
 
 var TableDisplayModel = widgets.DOMWidgetModel.extend({
@@ -56,7 +49,7 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
       if (tableModel.tooManyRows) {
         that.showWarning(tableModel);
       }
-      that.initTableDisplay(tableModel);
+      that.initDataGridTable(tableModel);
 
       that.listenTo(that.model, 'beakerx-tabSelected', function() {
         that._currentScope && that._currentScope.adjustRedraw();
@@ -88,33 +81,6 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
     this.handleModellUpdate();
   },
 
-  initTableDisplay: function(data) {
-    var baseUrl;
-    var api;
-    var self = this;
-
-    try {
-      var coreutils = require('@jupyterlab/coreutils');
-      coreutils.PageConfig.getOption('pageUrl');
-      baseUrl = coreutils.PageConfig.getBaseUrl();
-    } catch(e) {
-      baseUrl = '/';
-    }
-
-    api = new BeakerXApi(baseUrl);
-    api.loadSettings()
-      .then(function (settings) { self.resolveWidget(settings, data); })
-      .catch(function () { self.resolveWidget(api.DEFAULT_SETTINGS, data); });
-  },
-
-  resolveWidget: function(settings, data) {
-    if (!settings || !settings.ui_options || !settings.ui_options.use_data_grid) {
-      this.initDatatablesTable(data);
-    } else {
-      this.initDataGridTable(data);
-    }
-  },
-
   showWarning: function(data) {
     var rowLength = data.rowLength;
     var rowLimit = data.rowLimit;
@@ -135,22 +101,6 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
     });
 
     this._currentScope.render();
-  },
-
-  initDatatablesTable: function(data) {
-    this._currentScope = new TableScope('wrap_'+this.model.model_id);
-    var tmpl = this._currentScope.buildTemplate();
-    var tmplElement = $(tmpl);
-
-    tmplElement.appendTo(this.$el);
-
-    this._currentScope.setWidgetModel(this.model);
-    this._currentScope.setModelData(data);
-    this._currentScope.setElement(tmplElement.children('.dtcontainer'));
-    this._currentScope.enableJupyterKeyHandler();
-    this._currentScope.run();
-    this._currentScope.initColumLimitModal();
-    this._currentScope.setWidgetView(this);
   }
 
 });

@@ -114,3 +114,24 @@ pre {
   color: var(--jp-content-font-color1);
   border-color: var(--jp-border-color2);
 }
+
+.p-DataGrid {
+  border-color: var(--jp-border-color2);
+}
+.p-DataGrid-viewport {
+  border-color: var(--jp-border-color2);
+}
+
+.p-DataGrid-scrollBar {
+  border-color: var(--jp-border-color2) !important;
+}
+.p-DataGrid-scrollBar .p-ScrollBar-button {
+  background-color: var(--jp-layout-color0);
+}
+.p-DataGrid-scrollBar .p-ScrollBar-track {
+  background-color: var(--jp-layout-color2);
+}
+.p-DataGrid-scrollBar .p-ScrollBar-thumb {
+  background-color: var(--jp-layout-color0);
+  border-color: var(--jp-border-color2) !important;
+}

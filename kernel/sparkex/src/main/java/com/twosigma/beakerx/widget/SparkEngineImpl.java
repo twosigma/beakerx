@@ -66,12 +66,11 @@ public class SparkEngineImpl implements SparkEngine {
 
   @Override
   public TryResult configure(KernelFunctionality kernel, SparkUIApi sparkUI, Message parentMessage) {
-    SparkConf sparkConf = createSparkConf(sparkUI.getAdvancedOptions(), getSparkConf());
+    SparkConf sparkConf = createSparkConf(sparkUI.getAdvancedOptions(), getSparkConfBasedOn(this.sparkSessionBuilder));
     sparkConf = configureSparkConf(sparkConf, sparkUI);
     this.sparkSessionBuilder = SparkSession.builder().config(sparkConf);
     SparkSession sparkSession = getOrCreate();
     addListener(getOrCreate().sparkContext(), sparkUI);
-    SparkVariable.putSparkContext(getOrCreate().sparkContext());
     SparkVariable.putSparkSession(sparkSession);
     TryResult tryResultSparkContext = initSparkContextInShell(kernel, parentMessage);
     if (!tryResultSparkContext.isError()) {

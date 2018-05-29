@@ -15,14 +15,12 @@
  */
 package com.twosigma.beakerx.widget;
 
-import org.apache.spark.SparkContext;
 import org.apache.spark.sql.SparkSession;
 
 public class SparkVariable {
 
   private static SparkUIApi sparkUI = null;
-  private static SparkContext sparkContext;
-  private static SparkSession sparkSession;
+  private static SparkSession sparkSession = null;
 
   static void putSparkUI(SparkUIApi ui) {
     sparkUI = ui;
@@ -30,14 +28,6 @@ public class SparkVariable {
 
   public static SparkUIApi getSparkUI() {
     return sparkUI;
-  }
-
-  static void putSparkContext(SparkContext sc) {
-    sparkContext = sc;
-  }
-
-  public static SparkContext getSparkContext() {
-    return sparkContext;
   }
 
   public static void cancelAllJobs() {
@@ -49,6 +39,7 @@ public class SparkVariable {
   }
 
   public static SparkSession getSparkSession() {
+    //method is used by initSparkContextInShell
     return sparkSession;
   }
 }

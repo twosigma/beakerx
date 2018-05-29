@@ -22,17 +22,25 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
 import org.apache.spark.sql.SparkSession;
 
+import java.util.List;
+
 public interface SparkManager {
 
   TryResult configure(KernelFunctionality kernel, SparkUIManager sparkContextManager, Message parentMessage);
 
   SparkSession getOrCreate();
 
-  SparkConf getSparkConf();
+  SparkConf getSparkConf(List<SparkConfiguration.Configuration> configurations);
 
   SparkContext sparkContext();
 
   SparkSession.Builder getBuilder();
+
+  String getSparkAppId();
+
+  String getSparkUiWebUrl();
+
+  String getSparkMasterUrl();
 
   interface SparkManagerFactory {
     SparkManager create(SparkSession.Builder sparkSessionBuilder);

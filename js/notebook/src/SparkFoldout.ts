@@ -34,7 +34,9 @@ class SparkFoldoutModel extends widgets.BoxModel {
 
 class SparkFoldoutView extends Foldout.FoldoutView {
   getPreviewContent(): HTMLElement {
-    return this.content.node.querySelector('.bx-spark-stagePanel');
+    const panels = this.content.node.querySelectorAll('.bx-spark-stagePanel');
+
+    return panels.item(panels.length - 1) as HTMLElement;
   }
 }
 

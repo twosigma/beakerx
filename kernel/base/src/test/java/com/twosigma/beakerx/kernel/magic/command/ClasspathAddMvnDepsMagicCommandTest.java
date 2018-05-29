@@ -49,9 +49,11 @@ import java.util.zip.ZipFile;
 
 import static com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand.ADD_MVN_FORMAT_ERROR_MESSAGE;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand.CLASSPATH_ADD_MVN;
+import static com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand.DEFAULT_MAVEN_REPOS;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathResetMagicCommand.CLASSPATH_RESET;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class ClasspathAddMvnDepsMagicCommandTest {
 
@@ -112,6 +114,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     kernel.clearMessages();
     ClasspathAddMvnMagicCommand mvnMagicCommand = MagicCommandTypesFactory.getClasspathAddMvnMagicCommand(kernel);
     mvnMagicCommand.addRepo("jcenter", "jcenter");
+    assertTrue(mvnMagicCommand.getRepos().get().size() == DEFAULT_MAVEN_REPOS.size() + 1);
     //when
     String resetCode = CLASSPATH_RESET;
     ClasspathResetMagicCommand resetMagicCommand = MagicCommandTypesFactory.getClasspathResetMagicCommand(kernel);
@@ -126,7 +129,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     Assert.assertFalse(cache);
     boolean jars = Files.exists(Paths.get(mvnMagicCommand.getCommandParams().getPathToNotebookJars()));
     Assert.assertFalse(jars);
-    Assert.assertTrue(mvnMagicCommand.getRepos().get().isEmpty());
+    assertTrue(mvnMagicCommand.getRepos().get().size() == DEFAULT_MAVEN_REPOS.size());
   }
 
   @Test

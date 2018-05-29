@@ -22,6 +22,7 @@ import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.SparkConfiguration;
 import com.twosigma.beakerx.widget.SparkUIManager;
 import com.twosigma.beakerx.widget.SparkManager;
 import com.twosigma.beakerx.widget.SparkUI;
@@ -33,6 +34,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -112,7 +114,7 @@ public class SparkMagicCommandTest {
       }
 
       @Override
-      public SparkConf getSparkConf() {
+      public SparkConf getSparkConf(List<SparkConfiguration.Configuration> configurations) {
         return sparkConf;
       }
 
@@ -124,6 +126,21 @@ public class SparkMagicCommandTest {
       @Override
       public SparkSession.Builder getBuilder() {
         return builder;
+      }
+
+      @Override
+      public String getSparkAppId() {
+        return "sparkAppId1";
+      }
+
+      @Override
+      public String getSparkUiWebUrl() {
+        return "sparkUiWebUrl";
+      }
+
+      @Override
+      public String getSparkMasterUrl() {
+        return "sparkMasterUrl";
       }
     };
   }

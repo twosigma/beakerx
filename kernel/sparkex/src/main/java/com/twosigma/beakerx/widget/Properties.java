@@ -16,34 +16,27 @@
 package com.twosigma.beakerx.widget;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class SparkFoldout extends Foldout {
+public class Properties {
 
-  public static final String VIEW_NAME_VALUE = "SparkFoldoutView";
-  public static final String MODEL_NAME_VALUE = "SparkFoldoutModel";
+  private final VBox widget;
 
-  public SparkFoldout(List<Widget> children, FoldoutOption foldoutOption) {
-    super(children, foldoutOption);
-    openComm();
+  public Properties(List<PropertyItem> children) {
+    this.widget = new VBox(children.stream().map(x -> (Widget) x).collect(Collectors.toList()));
   }
 
-  @Override
-  public String getModelNameValue() {
-    return MODEL_NAME_VALUE;
+  public List<PropertyItem> getItems() {
+    return this.widget.getChildren().stream()
+            .map(x -> (PropertyItem) x)
+            .collect(Collectors.toList());
   }
 
-  @Override
-  public String getViewNameValue() {
-    return VIEW_NAME_VALUE;
+  public VBox getWidget() {
+    return widget;
   }
 
-  @Override
-  public String getModelModuleValue() {
-    return BeakerxWidget.MODEL_MODULE_VALUE;
-  }
-
-  @Override
-  public String getViewModuleValue() {
-    return BeakerxWidget.VIEW_MODULE_VALUE;
+  public void add(PropertyItem propertyItem) {
+    this.widget.add(propertyItem);
   }
 }

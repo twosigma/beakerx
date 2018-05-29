@@ -18,6 +18,7 @@ package com.twosigma.beakerx.widget;
 import org.apache.spark.sql.SparkSession;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
 
 import static com.twosigma.beakerx.widget.StartStopSparkListener.START_STOP_SPARK_LISTENER;
@@ -31,8 +32,10 @@ public class SparkUI extends VBox {
 
   private final SparkUIManager sparkUIManager;
 
-  private VBox vBox;
+  private VBox sparkConfig;
+  private VBox sparkConfigPanel;
   private Button connectButton;
+  private HBox statusPanel;
 
   private static SparkUI create(SparkManager sparkManager) {
     return new SparkUI(sparkManager);
@@ -41,8 +44,9 @@ public class SparkUI extends VBox {
   private SparkUI(SparkManager sparkManager) {
     super(new ArrayList<>());
     configureSparkSessionBuilder(sparkManager.getBuilder());
-    this.vBox = new VBox(new ArrayList<>());
-    add(vBox);
+    this.sparkConfig = new VBox(new ArrayList<>());
+    this.sparkConfigPanel = new VBox(Arrays.asList(sparkConfig));
+    add(sparkConfigPanel);
     this.sparkUIManager = new SparkUIManager(this, sparkManager);
   }
 
@@ -77,31 +81,50 @@ public class SparkUI extends VBox {
   }
 
   public void addMasterUrl(Text masterURL) {
-    vBox.add(masterURL);
+    sparkConfig.add(masterURL);
   }
 
   public void addExecutorCores(Text executorCores) {
-    vBox.add(executorCores);
+    sparkConfig.add(executorCores);
   }
 
   public void addExecutorMemory(Text executorMemory) {
-    vBox.add(executorMemory);
+    sparkConfig.add(executorMemory);
   }
 
   public void addConnectButton(Button connect) {
     this.connectButton = connect;
-    vBox.add(connectButton);
+    sparkConfig.add(connectButton);
   }
 
   public void clearView() {
-    removeDOMWidget(vBox);
-    connectButton = null;
-    this.vBox = new VBox(new ArrayList<>());
-    add(vBox);
+    sparkConfigPanel.getLayout().setDisplayNone();
+    sparkConfigPanel = null;
+  }
+
+  public void addView() {
+    this.sparkConfigPanel = new VBox(Arrays.asList(sparkConfig));
+    add(sparkConfigPanel);
   }
 
   public Button getConnectButton() {
     return connectButton;
+  }
+
+  public void addAdvanceOptions(SparkConfiguration advancedOption) {
+    this.sparkConfig.add(advancedOption);
+  }
+
+  public void addStatusPanel(HBox statusPanel) {
+    this.statusPanel = statusPanel;
+    add(statusPanel);
+  }
+
+  public void removeStatusPanel() {
+    if (statusPanel != null) {
+      removeDOMWidget(statusPanel);
+      statusPanel = null;
+    }
   }
 
   public interface SparkUIFactory {

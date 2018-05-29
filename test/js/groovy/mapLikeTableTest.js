@@ -42,81 +42,84 @@ describe('(Groovy) Testing Map Like Tables', function () {
     it('A basic table is rendered correctly ', function () {
       cellIndex = 0;
       var fileName = 'cell1_case1.png';
-      var width = 130, height = 65;
+      var width = 120, height = 60;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      expect(imageData.value.length).toBeGreaterThan(0);
+      imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, fileName);
-      cellIndex += 1;
     });
 
     it('An ArrayList is rendered correctly ', function () {
-      cellIndex += 1;
+      cellIndex += 2;
       var fileName = 'cell2_case1.png';
       var width = 130, height = 65;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, fileName);
-      cellIndex += 1;
     });
 
     it('A Map is rendered correctly ', function () {
-      cellIndex += 1;
+      cellIndex += 2;
       var fileName = 'cell3_case1.png';
       var width = 130, height = 65;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, fileName);
-      cellIndex += 1;
     });
 
     it('A Map is rendered correctly ', function () {
-      cellIndex += 1;
+      cellIndex += 2;
       var fileName = 'cell4_case1.png';
       var width = 130, height = 90;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, fileName);
-      cellIndex += 1;
     });
 
     it('A List inside a List is rendered correctly ', function () {
-      cellIndex += 1;
+      cellIndex += 2;
       var fileName = 'cell5_case1.png';
       var width = 180, height = 43;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, fileName);
-      cellIndex += 1;
     });
 
     it('A Map inside a List is rendered correctly ', function () {
-      cellIndex += 1;
+      cellIndex += 2;
       var fileName = 'cell6_case1.png';
       var width = 210, height = 43;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, fileName);
-      cellIndex += 1;
     });
 
     it('Table with "&", "/", ">" values ', function () {
-      cellIndex += 1;
+      cellIndex += 2;
       var fileName = 'cell7_case1.png';
       var width = 250, height = 43;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, fileName);
-      cellIndex += 1;
     });
 
     it('Display object is rendered correctly ', function () {
-      cellIndex += 1;
+      cellIndex += 2;
       var fileName = 'cell8_case1.png';
       var width = 155, height = 43;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, fileName);
-      cellIndex += 1;
+    });
+
+    it('HTML table format ', function () {
+      cellIndex += 2;
+      var fileName = 'cell9_case1.png';
+      var width = 185, height = 124;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
     });
   });
 });

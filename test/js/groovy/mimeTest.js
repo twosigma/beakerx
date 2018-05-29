@@ -202,5 +202,13 @@ describe('(Groovy) Testing of MIME types', function () {
 
       expect(codeCell.$('div.output_subarea > img').isEnabled()).toBeTruthy();
     });
+
+    it('Cell displays an image element from byte array', function () {
+      cellIndex += 1;
+
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+
+      expect(codeCell.$('div.output_subarea > img').isEnabled()).toBeTruthy();
+    });
   });
 });

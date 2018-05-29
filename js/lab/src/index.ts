@@ -22,7 +22,7 @@ import BeakerxExtension from './plugin';
 import BeakerxTreeJupyterLabPlugin from "./tree";
 import RequirejsLoader from "./plugin/requirejs";
 
-import { themeLightPlugin, themeDarkPlugin } from "./theme/index";
+import { themeLightPlugin, themeDarkPlugin } from './theme';
 
 const beakerx = require('../lib/index.js');
 

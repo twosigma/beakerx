@@ -33,7 +33,6 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
   public readonly SHOW_PUBLICATION_SELECTOR = '#show_publication';
   public readonly SHOW_CATALOG_SELECTOR = '#show_catalog';
   public readonly AUTO_SAVE_SELECTOR = '#auto_save';
-  public readonly USE_DATA_GRID_SELECTOR = '#use_data_grid';
 
   public readonly UI_OPTIONS = [
     {
@@ -72,12 +71,6 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
       label: 'Autosave notebooks',
       isLabSupported: true,
     },
-    {
-      id: 'use_data_grid',
-      name: 'use_data_grid',
-      label: 'New table widget',
-      isLabSupported: true,
-    },
   ];
 
   public readonly HTML_ELEMENT_TEMPLATE = `
@@ -108,7 +101,6 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
         this.SHOW_PUBLICATION_SELECTOR,
         this.SHOW_CATALOG_SELECTOR,
         this.AUTO_SAVE_SELECTOR,
-        this.USE_DATA_GRID_SELECTOR,
       ].join(','))
       .on('change', this.optionsChangedHandler.bind(this));
   }
@@ -122,7 +114,6 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
     this.setShowPublication(options.show_publication);
     this.setShowCatalog(options.show_catalog);
     this.setAutoSave(options.auto_save);
-    this.setUseDataGrid(options.use_data_grid);
   }
 
   protected onActivateRequest(): void {
@@ -211,12 +202,6 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
   private setAutoSave(checked: boolean) {
     this.$node
       .find(this.AUTO_SAVE_SELECTOR)
-      .prop('checked', checked);
-  }
-
-  private setUseDataGrid(checked: boolean) {
-    this.$node
-      .find(this.USE_DATA_GRID_SELECTOR)
       .prop('checked', checked);
   }
 

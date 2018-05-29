@@ -18,26 +18,33 @@ package com.twosigma.beakerx.widget;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-
 import static java.util.Collections.EMPTY_LIST;
 import static java.util.Collections.singletonList;
 
 public class SparkConfiguration extends VBox {
 
-  public static final String VIEW_NAME_VALUE = "SparkConfigurationView";
-  public static final String MODEL_NAME_VALUE = "SparkConfigurationModel";
+  static final String VIEW_NAME_VALUE = "SparkConfigurationView";
+  static final String MODEL_NAME_VALUE = "SparkConfigurationModel";
 
   private Button add;
   private HBox header;
   private Properties properties;
 
-  public SparkConfiguration() {
+  SparkConfiguration(Map<String, String> advancedSettings) {
     super(new ArrayList<>());
     this.add = createAddButton();
     this.header = new HBox(singletonList(this.add));
-    this.properties = new Properties(new ArrayList<>());
+    List<PropertyItem> propertyItems = createPropertyItems(advancedSettings);
+    this.properties = new Properties(propertyItems);
     add(new VBox(Arrays.asList(this.header, this.properties.getWidget())));
+  }
+
+  private List<PropertyItem> createPropertyItems(Map<String, String> advancedSettings) {
+    return advancedSettings.entrySet().stream()
+            .map(x -> createPropertyItem(x.getKey(), x.getValue()))
+            .collect(Collectors.toList());
   }
 
   private Button createAddButton() {
@@ -49,15 +56,26 @@ public class SparkConfiguration extends VBox {
   }
 
   private void addProperty() {
-    Text name = new Text();
-    name.setPlaceholder("name");
-    Text value = new Text();
-    value.setPlaceholder("value");
-    Button remove = new Button();
-    remove.setDomClasses(new ArrayList<>(Arrays.asList("bx-button", "icon-close")));
-    PropertyItem propertyItem = new PropertyItem(name, value, remove);
-    remove.registerOnClick((content, message) -> this.properties.getWidget().removeDOMWidget(propertyItem));
+    PropertyItem propertyItem = createPropertyItem(new Text(), new Text());
     this.properties.add(propertyItem);
+  }
+
+  private PropertyItem createPropertyItem(String name, String value) {
+    Text nameWidget = new Text();
+    nameWidget.setValue(name);
+    Text valueWidget = new Text();
+    valueWidget.setValue(value);
+    return createPropertyItem(nameWidget, valueWidget);
+  }
+
+  private PropertyItem createPropertyItem(Text nameWidget, Text valueWidget) {
+    nameWidget.setPlaceholder("name");
+    valueWidget.setPlaceholder("value");
+    Button remove = new Button();
+    remove.setDescription("-");
+    PropertyItem propertyItem = new PropertyItem(nameWidget, valueWidget, remove);
+    remove.registerOnClick((content, message) -> this.properties.getWidget().removeDOMWidget(propertyItem));
+    return propertyItem;
   }
 
   @Override

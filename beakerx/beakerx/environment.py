@@ -34,7 +34,8 @@ default_config = """
             "auto_save": true,
             "use_data_grid": true,
             "show_catalog": false
-        }
+        },
+        "spark_options":{}
     }
 }
 """

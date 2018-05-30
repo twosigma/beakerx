@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.scala.table
 
+import java.util
 import java.util.concurrent.TimeUnit
 
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter
@@ -40,17 +41,25 @@ object TableDisplay {
     new com.twosigma.beakerx.table.TableDisplay(javaListOfList, co.asJava, cl.asJava)
   }
 
-  private def create(v: Array[Map[String, Any]]): com.twosigma.beakerx.table.TableDisplay = {
-    val javaStandardized: Array[java.util.Map[String, Object]] = v.map(v => v.mapValues(_.asInstanceOf[Object]).asJava)
-
+  def create(v: Array[Map[String, Any]]): com.twosigma.beakerx.table.TableDisplay = {
+    val javaStandardized: Array[util.Map[String, Object]] = toJavaMap(v)
     new com.twosigma.beakerx.table.TableDisplay(javaStandardized)
   }
 
-  private def create(v: Seq[Map[String, Any]]): com.twosigma.beakerx.table.TableDisplay = {
-    val javaMaps: Seq[java.util.Map[String, Object]] = v.map(m => m.mapValues(_.asInstanceOf[Object]).asJava)
-    val javaCollection: java.util.Collection[java.util.Map[String, Object]] = javaMaps.asJava
+  def toJavaMap(v: Array[Map[String, Any]]) = {
+    val javaStandardized: Array[util.Map[String, Object]] = v.map(v => v.mapValues(_.asInstanceOf[Object]).asJava)
+    javaStandardized
+  }
 
+  def create(v: Seq[Map[String, Any]]): com.twosigma.beakerx.table.TableDisplay = {
+    val javaCollection: util.Collection[util.Map[String, Object]] = toJavaCollection(v)
     new com.twosigma.beakerx.table.TableDisplay(javaCollection)
+  }
+
+  def toJavaCollection(v: Seq[Map[String, Any]]) = {
+    val javaMaps: Seq[util.Map[String, Object]] = v.map(m => m.mapValues(_.asInstanceOf[Object]).asJava)
+    val javaCollection: util.Collection[util.Map[String, Object]] = javaMaps.asJava
+    javaCollection
   }
 
   private def create(v: Seq[Map[String, Any]], serializer: BeakerObjectConverter): com.twosigma.beakerx.table.TableDisplay = {

@@ -148,15 +148,23 @@ var NotebookPageObject = function () {
     browser.window(browser.windowHandles().value[0]);
   };
 
-  this.openJVMOptions = function(){
+  this.setJVMProperties = function (heapSize, key, value, url) {
     this.openUIWindow();
     browser.window(browser.windowHandles().value[1]);
     browser.waitForEnabled('a#beakerx_tab');
     browser.click('a#beakerx_tab');
     browser.$$('li.p-TabBar-tab')[0].click();
-  };
 
-  this.focusOnNotebookTab = function(){
+    browser.$('input#heap_GB').waitForEnabled();
+    this.setHeapSize(heapSize);
+    if(key == null){
+      this.removeProperty();
+    }
+    else {
+      this.addPropertyPair();
+      this.setProperty(key, value);
+    }
+
     browser.pause(2000);
     browser.window();
     browser.window(browser.windowHandles().value[0]);

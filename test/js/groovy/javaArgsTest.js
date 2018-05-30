@@ -20,17 +20,10 @@ var beakerxPO;
 describe('(Groovy) Java Properties and Heap Size tests', function () {
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-
-    beakerxPO.openJVMOptions('/test/ipynb/groovy/JavaArgsTest.ipynb');
-    $('input#heap_GB').waitForEnabled();
-    beakerxPO.setHeapSize('5');
-    beakerxPO.addPropertyPair();
-    beakerxPO.setProperty('myproperty', 'cookies');
-    beakerxPO.focusOnNotebookTab();
   });
 
-  afterEach(function () {
-    beakerxPO.saveAndCloseNotebook();
+  afterAll(function () {
+    beakerxPO.closeAndHaltNotebook();
   });
 
   var cellIndex;
@@ -38,7 +31,9 @@ describe('(Groovy) Java Properties and Heap Size tests', function () {
   describe('Test Java properties and heap size', function () {
 
     it('Proper max memory is displayed when setting heap size to 5GB', function () {
+      beakerxPO.setJVMProperties('5', 'myproperty', 'cookies', '/test/ipynb/groovy/JavaArgsTest.ipynb');
       beakerxPO.runNotebookByUrl('/test/ipynb/groovy/JavaArgsTest.ipynb', '/JavaArgsTest.ipynb');
+
       cellIndex = 0;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var heapSize = parseFloat(beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText()).toFixed(1);
@@ -47,21 +42,16 @@ describe('(Groovy) Java Properties and Heap Size tests', function () {
     });
 
     it('Correct property is set', function () {
-      beakerxPO.runNotebookByUrl('/test/ipynb/groovy/JavaArgsTest.ipynb', '/JavaArgsTest.ipynb');
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       expect(beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText()).toBe('cookies');
+      beakerxPO.saveAndCloseNotebook();
     });
 
     it('Proper max memory is displayed when setting heap size to 3GB', function () {
-      beakerxPO.openJVMOptions();
-      $('input#heap_GB').waitForEnabled();
-      beakerxPO.setHeapSize('3');
-      beakerxPO.addPropertyPair();
-      beakerxPO.setProperty('myproperty', 'cream');
-      beakerxPO.focusOnNotebookTab();
-
+      beakerxPO.setJVMProperties('3', 'myproperty', 'cream');
       beakerxPO.runNotebookByUrl('/test/ipynb/groovy/JavaArgsTest.ipynb', '/JavaArgsTest.ipynb');
+
       cellIndex = 0;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var heapSize = parseFloat(beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText()).toFixed(1);
@@ -70,21 +60,19 @@ describe('(Groovy) Java Properties and Heap Size tests', function () {
     });
 
     it('Correct property is set after change', function () {
-      beakerxPO.runNotebookByUrl('/test/ipynb/groovy/JavaArgsTest.ipynb');
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       expect(beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText()).toBe('cream');
+      beakerxPO.saveAndCloseNotebook();
     });
 
     it('Correct property is displayed after clearing the form', function () {
-      beakerxPO.openJVMOptions();
-      beakerxPO.removeProperty();
-      beakerxPO.focusOnNotebookTab();
+      beakerxPO.setJVMProperties('', null, null);
+      beakerxPO.runNotebookByUrl('/test/ipynb/groovy/JavaArgsTest.ipynb', '/JavaArgsTest.ipynb');
 
-      beakerxPO.runNotebookByUrl('/test/ipynb/groovy/JavaArgsTest.ipynb');
       cellIndex = 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       expect(beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText()).toBe('null');
-    }); 
+    });
   });
 });

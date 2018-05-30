@@ -176,19 +176,38 @@ var LabPageObject = function () {
     browser.$$('li.p-TabBar-tab')[9].click();
   };
 
-  this.openJVMOptions = function(notebook){
-    if(notebook != null){
-      this.runNotebookByUrl(notebook);
+  this.setJVMProperties = function (heapSize, key, value, url) {
+    if(url != null){
+      this.runNotebookByUrl(url);
     }
     this.openUIWindow();
     browser.click('div.p-CommandPalette-itemLabel=BeakerX Options');
     var uiPanel = browser.$('div#beakerx-tree-widget');
     uiPanel.$$('li.p-TabBar-tab')[0].click();
-  };
 
-  this.focusOnNotebookTab = function(){
+    browser.$('input#heap_GB').waitForEnabled();
+    this.setHeapSize(heapSize);
+    if(key == null){
+      this.removeProperty();
+    }
+    else {
+      this.addPropertyPair();
+      this.setProperty(key, value);
+    }
+
     browser.$$('li.p-TabBar-tab')[0].click();
-    browser.$('div.p-DockPanel-tabBar').click('li[data-type="document-title"]');
+    browser.pause(2000);
+    if(url != null) {
+      browser.$('div.p-DockPanel-tabBar').click('li[data-type="document-title"]');
+
+      browser.click('div=File');
+      var closeAndCleanupMenuItem = browser.$('li[data-command="filemenu:close-and-cleanup"]');
+      closeAndCleanupMenuItem.waitForEnabled();
+      closeAndCleanupMenuItem.click();
+      var acceptDialogButton = browser.$('button.jp-Dialog-button.jp-mod-accept.jp-mod-warn.jp-mod-styled');
+      acceptDialogButton.waitForEnabled();
+      acceptDialogButton.click();
+    }
   }
 
 };

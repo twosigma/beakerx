@@ -15,15 +15,14 @@
  */
 
 import { Widget } from '@phosphor/widgets';
+import { RendererMap } from "@phosphor/datagrid";
 import { BeakerXDataGrid } from './BeakerXDataGrid';
-import { silverStripeStyle } from './style/dataGridStyle';
 import IDataGridScopeOptions from "./interface/IDataGridScopeOptions";
 import DataGridContextMenu from "./contextMenu/DataGridContextMenu";
 import ColumnLimitModal from "./modal/ColumnLimitModal";
-import createStore, {BeakerXDataStore} from "./store/BeakerXDataStore";
-import {selectModel} from "./model/selectors";
-import {DataGridHelpers} from "./dataGridHelpers";
-import {RendererMap} from "@phosphor/datagrid";
+import createStore, { BeakerXDataStore } from "./store/BeakerXDataStore";
+import { selectModel } from "./model/selectors";
+import BeakerXThemeHelper from "../../BeakerXThemeHelper";
 
 export class DataGridScope {
   contextMenu: DataGridContextMenu;
@@ -41,7 +40,7 @@ export class DataGridScope {
     this.tableDisplayView = options.widgetView;
     this.dataGrid = new BeakerXDataGrid(
       {
-        style: silverStripeStyle,
+        style: BeakerXThemeHelper.getStyle(),
         cellRenderers: new RendererMap({ priority: ['body|{dataType: html}','body|'] })
       },
       this.store

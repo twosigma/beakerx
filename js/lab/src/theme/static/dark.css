@@ -135,3 +135,9 @@ pre {
   background-color: var(--jp-layout-color0);
   border-color: var(--jp-border-color2) !important;
 }
+
+.p-DataGrid-scrollCorner {
+  background-color: var(--jp-layout-color0);
+  border-color: var(--jp-border-color2);
+
+}

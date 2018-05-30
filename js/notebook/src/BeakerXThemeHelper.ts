@@ -18,28 +18,27 @@ import { DataGrid } from "@phosphor/datagrid";
 import { DEFAULT_BORDER_COLOR } from "./tableDisplay/dataGrid/style/dataGridStyle";
 
 export default class BeakerXThemeHelper {
-  public static _isDark: boolean = false;
 
-  public static set isDark(isDark: boolean) {
-    this._isDark = isDark;
+  public static get isDark(): boolean {
+    return document.body.classList.contains('bx-dark-theme');
   }
 
   public static getStyle(): DataGrid.IStyle {
-      return this._isDark ?
+      return this.isDark ?
         this.getDarkStyle() :
         this.getLightStyle();
   }
 
   public static get DEFAULT_DATA_FONT_COLOR(): string {
-    return this._isDark ? '#ffffff': '#000000';
+    return this.isDark ? '#ffffff': '#000000';
   }
 
   public static get DEFAULT_HEADER_FONT_COLOR(): string {
-    return this._isDark ? '#ffffff': '#515A5A';
+    return this.isDark ? '#ffffff': '#515A5A';
   }
 
   public static get DEFAULT_HIGHLIGHT_COLOR(): string {
-    return this._isDark ? '#dfdfdf': '#6ba2c7';
+    return this.isDark ? '#dfdfdf': '#6ba2c7';
   }
 
   public static get DEFAULT_CELL_BACKGROUND(): string {
@@ -47,7 +46,7 @@ export default class BeakerXThemeHelper {
   }
 
   public static get FOCUSED_CELL_BACKGROUND(): string {
-    return this._isDark ? 'rgb(99, 99, 99)' : 'rgb(200, 200, 200)';
+    return this.isDark ? 'rgb(99, 99, 99)' : 'rgb(200, 200, 200)';
   }
 
   private static getDarkStyle(): DataGrid.IStyle {

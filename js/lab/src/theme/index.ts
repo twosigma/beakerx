@@ -55,6 +55,7 @@ export const themeDarkPlugin: JupyterLabPlugin<void> = {
     manager.register({
       name: 'BeakerX Dark',
       load: (): Promise<void> => {
+        document.body.classList.add('bx-dark-theme')
         return new Promise<void>((resolve, reject) => {
           Promise.all([
             manager.loadCSS('@jupyterlab/theme-dark-extension/index.css'),
@@ -67,6 +68,7 @@ export const themeDarkPlugin: JupyterLabPlugin<void> = {
         });
       },
       unload: (): Promise<void> => {
+        document.body.classList.remove('bx-dark-theme')
         return Promise.resolve(void 0);
       }
     });

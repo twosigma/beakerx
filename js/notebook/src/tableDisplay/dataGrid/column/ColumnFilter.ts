@@ -22,6 +22,7 @@ import getEventKeyCode = DataGridHelpers.getEventKeyCode;
 import {KEYBOARD_KEYS} from "../event/enums";
 import {Widget} from "@phosphor/widgets";
 import throttle = DataGridHelpers.throttle;
+import hasUpperCaseLetter = DataGridHelpers.hasUpperCaseLetter;
 
 export const FILTER_INPUT_TOOLTIP = 'filter with an expression with a variable defined for each column and $ means the current column.  eg "$ > 5".';
 export const SEARCH_INPUT_TOOLTIP = 'search for a substring, show only matching rows.';
@@ -154,9 +155,13 @@ export default class ColumnFilter {
   }
 
   private createSearchExpression(value: any) {
-    const expression = `String($).indexOf("${String(value)}") !== -1`;
+    const cellValueFormatter = hasUpperCaseLetter(value)
+      ? 'String($)'
+      : 'String($).toLowerCase()';
 
-    return this.createFilterExpression(expression);
+    return this.createFilterExpression(
+      `${cellValueFormatter}.indexOf("${String(value)}") !== -1`
+    );
   }
 
   private addInputNode(options: { x, y, width, height }): void {

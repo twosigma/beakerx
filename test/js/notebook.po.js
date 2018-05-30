@@ -24,46 +24,8 @@ var NotebookPageObject = function () {
     this.kernelIdleIcon.waitForEnabled();
   };
 
-  this.runJupyterRoot = function () {
-    browser.url('http://127.0.0.1:8888/tree/');
-    browser.pause(2000);
-    $$('ul#tabs > li')[3].waitForEnabled();
-  };
-
-  this.goToJVMOptions = function () {
-    $$('ul#tabs > li')[3].click();
-    $('ul.p-TabBar-content').waitForEnabled();
-  }
-
-  this.setHeapSize = function (value) {
-    var heapSizeInput = $('input#heap_GB');
-    var heapSizeResult = $('span.result-text');
-
-    heapSizeInput.setValue(value);
-    heapSizeResult.waitForExist();
-    browser.pause(2500);
-  };
-
-  this.getPropertyFormGroupByIndex = function (index) {
-    var formGroups = $$('div.form-inline');
-    return formGroups[index];
-  };
-
-  this.addPropertyPair = function () {
-    var addPropertyButton = $('button#add_property_jvm_sett');
-    addPropertyButton.click();
-  };
-
-  this.removeProperty = function () {
-    var deleteButton = $('button > i.fa-times');
-    deleteButton.click();
-    browser.pause(2000);
-  }
-
-  this.setProperty = function (key, value) {
-    $('div#properties_property input[placeholder="name"]').setValue(key);
-    $('div#properties_property input[placeholder="value"]').setValue(value);
-    browser.pause(2000);
+  this.clickSaveNotebook = function () {
+    browser.click('button[data-jupyter-action="jupyter-notebook:save-notebook"]');
   };
 
   this.closeAndHaltNotebook = function () {
@@ -72,6 +34,19 @@ var NotebookPageObject = function () {
     browser.waitForEnabled('=Close and Halt');
     browser.click('=Close and Halt');
     browser.endAll();
+  };
+
+  this.saveAndCloseNotebook = function () {
+    this.clickCellAllOutputClear();
+    this.clickSaveNotebook();
+    browser.waitUntil(function () {
+      var autosaveStatus = $('span.autosave_status').getText();
+
+      return autosaveStatus === '(autosaved)';
+    }, 4000);
+    browser.click('=File');
+    browser.waitForEnabled('=Close and Halt');
+    browser.click('=Close and Halt');
   };
 
   this.clickCellAllOutputClear = function () {
@@ -173,6 +148,19 @@ var NotebookPageObject = function () {
     browser.window(browser.windowHandles().value[0]);
   };
 
+  this.openJVMOptions = function(){
+    this.openUIWindow();
+    browser.window(browser.windowHandles().value[1]);
+    browser.waitForEnabled('a#beakerx_tab');
+    browser.click('a#beakerx_tab');
+    browser.$$('li.p-TabBar-tab')[0].click();
+  };
+
+  this.focusOnNotebookTab = function(){
+    browser.pause(2000);
+    browser.window();
+    browser.window(browser.windowHandles().value[0]);
+  }
 
 };
 module.exports = NotebookPageObject;

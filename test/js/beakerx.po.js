@@ -32,10 +32,6 @@ function BeakerXPageObject() {
     BeakerXPageObject.prototype = Object.create(NotebookPageObject);
   }
 
-  this.clickSaveNotebook = function () {
-    browser.click('button[data-jupyter-action="jupyter-notebook:save-notebook"]');
-  };
-
   this.clickPublish = function () {
     browser.$('button[title="Publish..."]').click();
   };
@@ -269,6 +265,34 @@ function BeakerXPageObject() {
     }, 30000);
     var dtContainer = this.getDtContainerByIndex(cellIndex);
     expect(dtContainer.$('path.plot-line').isVisible()).toBeTruthy();
+  };
+
+  this.setHeapSize = function (value) {
+    var heapSizeInput = browser.$('input#heap_GB');
+    heapSizeInput.setValue(value);
+    browser.waitUntil(function(){
+      var indicator = browser.$('span.saved');
+      return indicator.isVisible();
+    });
+  };
+
+  this.addPropertyPair = function () {
+    var addPropertyButton = $('button#add_property_jvm_sett');
+    addPropertyButton.click();
+  };
+
+  this.setProperty = function (key, value) {
+    browser.$('div#properties_property input[placeholder="name"]').setValue(key);
+    browser.$('div#properties_property input[placeholder="value"]').setValue(value);
+    browser.waitUntil(function(){
+      var indicator = browser.$('span.saved');
+      return indicator.isVisible();
+    });
+  };
+
+  this.removeProperty = function () {
+    var deleteButton = $('button > i.fa-times');
+    deleteButton.click();
   };
 
 };

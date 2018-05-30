@@ -17,8 +17,8 @@
 import IHihglighterState, { HIGHLIGHTER_STYLE } from "../interface/IHighlighterState";
 import { CellRenderer } from "@phosphor/datagrid";
 import DataGridColumn from "../column/DataGridColumn";
-import {DEFAULT_CELL_BACKGROUND} from "../style/dataGridStyle";
 import {BeakerXDataGridModel} from "../model/BeakerXDataGridModel";
+import BeakerXThemeHelper from "../../../BeakerXThemeHelper";
 
 export default class Highlighter {
   column: DataGridColumn;
@@ -37,7 +37,7 @@ export default class Highlighter {
   }
 
   getBackgroundColor(config: CellRenderer.ICellConfig) {
-    return DEFAULT_CELL_BACKGROUND;
+    return BeakerXThemeHelper.DEFAULT_CELL_BACKGROUND;
   }
 
   getValueToHighlight(config: CellRenderer.ICellConfig) {

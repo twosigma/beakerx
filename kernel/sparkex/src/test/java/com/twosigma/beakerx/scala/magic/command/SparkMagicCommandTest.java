@@ -26,9 +26,11 @@ import com.twosigma.beakerx.widget.SparkUIApi;
 import com.twosigma.beakerx.widget.SparkEngine;
 import com.twosigma.beakerx.widget.SparkUI;
 import com.twosigma.beakerx.widget.SparkUiDefaults;
+import com.twosigma.beakerx.widget.TestWidgetUtils;
 import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
 import org.apache.spark.sql.SparkSession;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,11 +45,18 @@ public class SparkMagicCommandTest {
 
   private SparkMagicCommand sparkMagicCommand;
   public SparkUI sparkUI;
+  private KernelTest kernel;
 
   @Before
   public void setUp() {
     SparkUI.SparkUIFactory sparkUIFactory = createSparkUIFactory();
-    sparkMagicCommand = new SparkMagicCommand(new KernelTest(), sparkUIFactory);
+    kernel = new KernelTest();
+    sparkMagicCommand = new SparkMagicCommand(kernel, sparkUIFactory);
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    SparkUI.inActive();
   }
 
   @Test
@@ -64,15 +73,19 @@ public class SparkMagicCommandTest {
     //given
     createSparkUiAndConnectToSession();
     //when
-    MagicCommandOutcomeItem execute2 = connectToSparkSecondTime();
+    connectToSparkSecondTime();
     //then
-    assertThat(execute2.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.ERROR);
+    Message message = kernel.getPublishedMessages().get(kernel.getPublishedMessages().size() - 1);
+    String text = (String) TestWidgetUtils.getContent(message).get("text");
+    assertThat(text).contains("Active spark session exists");
   }
 
   private MagicCommandOutcomeItem connectToSparkSecondTime() {
     Code code2 = Code.createCode("", new ArrayList<>(), new ArrayList<>(), commMsg());
     MagicCommandExecutionParam param2 = new MagicCommandExecutionParam("", "", 2, code2, true);
-    return sparkMagicCommand.execute(param2);
+    MagicCommandOutcomeItem execute = sparkMagicCommand.execute(param2);
+    sparkUI.getConnectButton().onClick(new HashMap(), commMsg());
+    return execute;
   }
 
   private MagicCommandOutcomeItem createSparkUiAndConnectToSession() {
@@ -80,8 +93,9 @@ public class SparkMagicCommandTest {
     MagicCommandExecutionParam param = new MagicCommandExecutionParam("%%spark", "", 1, code, true);
     MagicCommandOutcomeItem execute = sparkMagicCommand.execute(param);
     assertThat(execute.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.OK);
-    assertThat(sparkUI.isActive()).isFalse();
+    assertThat(SparkUI.isActive()).isFalse();
     sparkUI.getConnectButton().onClick(new HashMap(), commMsg());
+    assertThat(SparkUI.isActive()).isTrue();
     return execute;
   }
 

@@ -117,10 +117,5 @@ public class StartStopSparkListenerTest {
     public void cancelAllJobs() {
 
     }
-
-    @Override
-    public boolean isActive() {
-      return false;
-    }
   }
 }

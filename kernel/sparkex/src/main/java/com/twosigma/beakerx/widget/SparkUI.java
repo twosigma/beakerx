@@ -20,6 +20,7 @@ import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
@@ -35,6 +36,8 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
 public class SparkUI extends VBox implements SparkUIApi {
+
+  private static final String ACTIVE_SPARK_SESSION_EXISTS_IF_YOU_WANT_TO_CLOSE_IT_RUN_SPARK_CLOSE = "Active spark session exists. If you want to close it run 'spark.close()'";
 
   public static final String SPARK_REPL_CLASS_OUTPUT_DIR = "spark.repl.class.outputDir";
   public static final String SPARK_APP_NAME = "spark.app.name";
@@ -60,12 +63,12 @@ public class SparkUI extends VBox implements SparkUIApi {
   private Text executorMemory;
   private Text executorCores;
   private SparkConfiguration advancedOption;
-  private boolean active = false;
   private SparkFoldout jobPanel = null;
   private Message currentParentHeader = null;
-
   private SparkEngine sparkEngine;
   private SparkUiDefaults sparkUiDefaults;
+
+  private volatile static boolean active = false;
 
   SparkUI(SparkSession.Builder builder, SparkEngine.SparkEngineFactory sparkEngineFactory, SparkUiDefaults sparkUiDefaults) {
     super(new ArrayList<>());
@@ -75,7 +78,6 @@ public class SparkUI extends VBox implements SparkUIApi {
     this.sparkConfig = new VBox(new ArrayList<>());
     this.sparkConfigPanel = new VBox(singletonList(sparkConfig));
     add(sparkConfigPanel);
-    SparkVariable.putSparkUI(this);
     createSparkView();
   }
 
@@ -107,7 +109,7 @@ public class SparkUI extends VBox implements SparkUIApi {
     this.addMasterUrl(masterURL);
     this.addExecutorCores(executorCores);
     this.addExecutorMemory(executorMemory);
-    this.advancedOption = new SparkConfiguration(sparkEngine.getAdvanceSettings(),sparkEngine.sparkVersion());
+    this.advancedOption = new SparkConfiguration(sparkEngine.getAdvanceSettings(), sparkEngine.sparkVersion());
     this.addAdvanceOptions(advancedOption);
     this.sendUpdate("sparkDefaultMasterUrl", SPARK_MASTER_DEFAULT);
   }
@@ -161,12 +163,21 @@ public class SparkUI extends VBox implements SparkUIApi {
 
   private void initSparkContext(Message parentMessage) {
     KernelFunctionality kernel = KernelManager.get();
+    if (SparkUI.isActive()) {
+      sendError(parentMessage, kernel, ACTIVE_SPARK_SESSION_EXISTS_IF_YOU_WANT_TO_CLOSE_IT_RUN_SPARK_CLOSE);
+    } else {
+      SparkVariable.putSparkUI(this);
+      configureSparkContext(parentMessage, kernel);
+    }
+  }
+
+  private void configureSparkContext(Message parentMessage, KernelFunctionality kernel) {
     try {
       TryResult configure = sparkEngine.configure(kernel, this, parentMessage);
       if (configure.isError()) {
         sendError(parentMessage, kernel, configure.error());
       } else {
-        active = true;
+        SparkUI.active();
         saveSparkConf(sparkEngine.getSparkConf());
       }
     } catch (Exception e) {
@@ -179,6 +190,7 @@ public class SparkUI extends VBox implements SparkUIApi {
   }
 
   private void sendError(Message parentMessage, KernelFunctionality kernel, String message) {
+    KernelManager.get().publish(singletonList(MessageCreator.buildClearOutput(parentMessage, true)));
     SimpleEvaluationObject seo = createSimpleEvaluationObject("", kernel, parentMessage, 1);
     seo.error(message);
   }
@@ -193,7 +205,7 @@ public class SparkUI extends VBox implements SparkUIApi {
 
   public void applicationEnd() {
     removeStatusPanel();
-    active = false;
+    SparkUI.inActive();
     addView();
   }
 
@@ -282,11 +294,6 @@ public class SparkUI extends VBox implements SparkUIApi {
     getSparkSession().sparkContext().cancelAllJobs();
   }
 
-  @Override
-  public boolean isActive() {
-    return active;
-  }
-
   public Text getMasterURL() {
     return masterURL;
   }
@@ -371,5 +378,17 @@ public class SparkUI extends VBox implements SparkUIApi {
     public SparkUI create(SparkSession.Builder builder) {
       return new SparkUI(builder, sparkEngineFactory, sparkUiDefaults);
     }
+  }
+
+  public static boolean isActive() {
+    return SparkUI.active;
+  }
+
+  public static void active() {
+    SparkUI.active = true;
+  }
+
+  public static void inActive() {
+    SparkUI.active = false;
   }
 }

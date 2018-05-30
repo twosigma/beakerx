@@ -24,6 +24,7 @@ import com.twosigma.beakerx.widget.SparkUI;
 import com.twosigma.beakerx.widget.SparkUiDefaults;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,6 +44,11 @@ public class SparkMagicCommandAutoConnectTest {
     sparkMagicCommand = new SparkMagicCommand(new KernelTest(), sparkUIFactory);
   }
 
+  @After
+  public void tearDown() throws Exception {
+    SparkUI.inActive();
+  }
+
   @Test
   public void unknownOption() {
     //given
@@ -60,7 +66,7 @@ public class SparkMagicCommandAutoConnectTest {
     MagicCommandOutcomeItem execute = createSparkUi("--connect");
     //then
     assertThat(execute.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.OK);
-    assertThat(sparkUI.isActive()).isTrue();
+    assertThat(SparkUI.isActive()).isTrue();
   }
 
   @Test
@@ -70,7 +76,7 @@ public class SparkMagicCommandAutoConnectTest {
     MagicCommandOutcomeItem execute = createSparkUi("-c");
     //then
     assertThat(execute.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.OK);
-    assertThat(sparkUI.isActive()).isTrue();
+    assertThat(SparkUI.isActive()).isTrue();
   }
 
   private MagicCommandOutcomeItem createSparkUi(String option) {

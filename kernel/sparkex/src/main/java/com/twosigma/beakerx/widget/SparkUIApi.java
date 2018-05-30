@@ -40,6 +40,4 @@ public interface SparkUIApi {
   void applicationEnd();
 
   void cancelAllJobs();
-
-  boolean isActive();
 }

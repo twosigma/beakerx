@@ -215,6 +215,7 @@ public class SparkUI extends VBox implements SparkUIApi {
   private Button createDisconnectButton() {
     Button disconnect = new Button();
     disconnect.registerOnClick((content, message) -> getSparkSession().sparkContext().stop());
+    disconnect.setTooltip("Stop Spark Session");
     disconnect.setDomClasses(new ArrayList<>(Arrays.asList("bx-button", "icon-close")));
     return disconnect;
   }

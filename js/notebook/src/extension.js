@@ -37,6 +37,7 @@ require('./shared/style/beakerx.scss');
 require('./plot/bko-combinedplot.css');
 require('./plot/bko-plot.css');
 require('./extension/dataBrowser/dataBrowser.css');
+require('./extension/tableOfContents/toc.css');
 
 define([
   'services/config',
@@ -51,6 +52,7 @@ define([
   './shared/bkCoreManager',
   'big.js',
   './extension/UIOptionsHelper',
+  './extension/tableOfContents/index',
 ], function(
   configmod,
   comm,
@@ -63,7 +65,8 @@ define([
   plotApi,
   bkCoreManager,
   big,
-  UIOptionsHelper
+  UIOptionsHelper,
+  tocUtils
 ) {
   "use strict";
 
@@ -147,6 +150,7 @@ define([
 
   function callback_notebook_loaded () {
     initCellUtils.enableInitializationCellsFeature(options);
+    tocUtils.toc_init();
     installKernelHandler();
   }
 

@@ -16,8 +16,9 @@
 
 define([
   'jquery',
-  'jquery-ui/ui/widget'
-], function($, jquiWidget) {
+  'jquery-ui/ui/widget',
+  'jquery-ui/ui/widgets/tooltip'
+], function($, jquiWidget, tooltip) {
 
   $( function() {
     $.widget('custom.combobox', {

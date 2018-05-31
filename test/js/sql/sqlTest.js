@@ -22,7 +22,6 @@ describe('SQL base tests ', function () {
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/sql/SQLTest.ipynb');
-    beakerxPO.openUIWindow();
   }, 2);
 
   afterAll(function () {
@@ -31,12 +30,6 @@ describe('SQL base tests ', function () {
 
   var imageDir = 'sql/sql';
   var cellIndex = 0;
-
-  describe('UI options. ', function () {
-    it("Use new table widget. ", function () {
-      beakerxPO.setDataGridForTable(true, false);
-    });
-  });
 
   describe('Create and select table (H2 database) ', function () {
     it('Output contains table ', function () {

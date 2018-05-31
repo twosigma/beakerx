@@ -22,7 +22,6 @@ describe('Testing of table Actions ', function () {
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/groovy/TableActionsTest.ipynb');
-    beakerxPO.openUIWindow();
   }, 2);
 
   afterAll(function () {
@@ -38,12 +37,6 @@ describe('Testing of table Actions ', function () {
   var cellIndex;
   var imageDir = 'groovy/tableActions';
   var width = 130, height = 65;
-
-  describe('UI options. ', function () {
-    it("Use new table widget. ", function () {
-      beakerxPO.setDataGridForTable(true, false);
-    });
-  });
 
   describe('ContextMenuItem action ', function () {
     var codeCell;

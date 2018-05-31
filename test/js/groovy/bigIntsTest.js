@@ -22,7 +22,6 @@ describe('Large Integers in Tables ', function () {
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/groovy/BigIntsTest.ipynb');
-    beakerxPO.openUIWindow();
   }, 2);
 
   afterAll(function () {
@@ -31,12 +30,6 @@ describe('Large Integers in Tables ', function () {
 
   var cellIndex;
   var imageDir = 'groovy/bigInts';
-
-  describe('UI options. ', function () {
-    it("Use new table widget. ", function () {
-      beakerxPO.setDataGridForTable(true, false);
-    });
-  });
 
   describe('64-bit Longs ', function () {
     it('Should display 64-bit Longs values ', function () {

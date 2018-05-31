@@ -24,7 +24,6 @@ describe('Tests for combination of code and magics. ', function () {
     beakerxPO = new BeakerXPageObject();
     plotHelper = new PlotHelperObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/groovy/TablesawTest.ipynb');
-    beakerxPO.openUIWindow();
   });
 
   afterAll(function () {
@@ -33,12 +32,6 @@ describe('Tests for combination of code and magics. ', function () {
 
   var cellIndex;
   var imageDir = 'groovy/tablesaw';
-
-  describe('UI options. ', function () {
-    it("Use new table widget. ", function () {
-      beakerxPO.setDataGridForTable(true, false);
-    });
-  });
 
   describe('Import tablesaw jars. ', function () {
     it('Output contains names of jars. ', function () {

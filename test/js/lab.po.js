@@ -165,17 +165,6 @@ var LabPageObject = function () {
     browser.$$('li.p-TabBar-tab')[9].click();
   };
 
-  this.setDataGridForTable = function(isDataGrid, closeUIWindow){
-    browser.click('div.p-CommandPalette-itemLabel=BeakerX Options');
-    var uiPanel = browser.$('div#beakerx-tree-widget');
-    uiPanel.$$('li.p-TabBar-tab')[1].click();
-    var checkBox = uiPanel.$('input#use_data_grid');
-    if(checkBox.isSelected() ? !isDataGrid : isDataGrid){
-      browser.click('input#use_data_grid');
-    }
-    browser.$$('li.p-TabBar-tab')[9].click();
-  };
-
   this.setJVMProperties = function (heapSize, key, value, url) {
     if(url != null){
       this.runNotebookByUrl(url);

@@ -22,7 +22,6 @@ describe('Testing of table Actions ', function () {
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/groovy/TableMenuTest.ipynb');
-    beakerxPO.openUIWindow();
   }, 2);
 
   afterAll(function () {
@@ -71,12 +70,6 @@ describe('Testing of table Actions ', function () {
 
   var cellIndex;
   var imageDir = 'groovy/tableMenu';
-
-  describe('UI options. ', function () {
-    it("Use new table widget. ", function () {
-      beakerxPO.setDataGridForTable(true, false);
-    });
-  });
 
   describe('Show/Hide menu Items ', function () {
     var maxWidth;

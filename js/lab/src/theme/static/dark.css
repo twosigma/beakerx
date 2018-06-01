@@ -139,5 +139,23 @@ pre {
 .p-DataGrid-scrollCorner {
   background-color: var(--jp-layout-color0);
   border-color: var(--jp-border-color2);
+}
 
+.foldout-widget.widget-box > .foldout-label {
+  color: var(--jp-content-font-color1);
+  background-color: var(--jp-layout-color1);
+  border-color: var(--jp-border-color2);
+}
+
+.foldout-widget.widget-box > .foldout-content {
+  border-color: var(--jp-border-color2);
+}
+
+.foldout-widget.widget-box > .foldout-label:before {
+  background-image: var(--jp-icon-caretright);
+}
+
+.foldout-widget.widget-box.active .foldout-label:before,
+.foldout-widget.widget-box.active .widget-label:before {
+  background-image: var(--jp-icon-caretdown);
 }

@@ -16,6 +16,31 @@
 
 @import "bxvariables";
 
+.label {
+  display: inline;
+  padding: .2em .6em .3em;
+  font-size: 75%;
+  font-weight: bold;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .25em;
+}
+
+.label-info {
+  background-color: $bxColorInfo;
+}
+
+.label-danger {
+  background-color: $bxColorError;
+}
+
+.label-default {
+  background-color: $bxColorDefault;
+}
+
 .bx-spark-stagePanel {
   max-width: 600px;
   margin: 8px 0;
@@ -126,6 +151,8 @@
 .bx-status-panel {
   .bx-button {
     margin-left: 20px;
+    height: 24px;
+    padding: 0 6px;
   }
 }
 
@@ -143,5 +170,32 @@
     border: none;
     background-color: $bxColorSuccess;
     color: $bxBgColor1;
+  }
+}
+
+.widget-spark-ui {
+  .bx-spark-config {
+    width: 606px;
+    max-width: 99%;
+
+    .widget-label {
+      margin-right: 10px;
+      width: 292px;
+    }
+
+    input {
+      width: 300px;
+      margin: 2px;
+    }
+
+    input,
+    .widget-label {
+      flex-grow: 1;
+      flex-shrink: 1;
+    }
+  }
+
+  .bx-config-name input {
+    text-align: right;
   }
 }

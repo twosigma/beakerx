@@ -15,31 +15,28 @@
  */
 package com.twosigma.beakerx.widget;
 
-import org.apache.spark.sql.SparkSession;
+import java.util.List;
+import java.util.stream.Collectors;
 
-public class SparkVariable {
+public class PropertiesWidget {
 
-  private static SparkUIApi sparkUI = null;
-  private static SparkSession sparkSession = null;
+  private final VBox widget;
 
-  static void putSparkUI(SparkUIApi ui) {
-    sparkUI = ui;
+  public PropertiesWidget(List<PropertyItem> children) {
+    this.widget = new VBox(children.stream().map(x -> (Widget) x).collect(Collectors.toList()));
   }
 
-  public static SparkUIApi getSparkUI() {
-    return sparkUI;
+  public List<PropertyItem> getItems() {
+    return this.widget.getChildren().stream()
+            .map(x -> (PropertyItem) x)
+            .collect(Collectors.toList());
   }
 
-  public static void cancelAllJobs() {
-    sparkUI.cancelAllJobs();
+  public VBox getWidget() {
+    return widget;
   }
 
-  public static void putSparkSession(SparkSession sSession) {
-    sparkSession = sSession;
-  }
-
-  public static SparkSession getSparkSession() {
-    //method is used by initSparkContextInShell
-    return sparkSession;
+  public void add(PropertyItem propertyItem) {
+    this.widget.add(propertyItem);
   }
 }

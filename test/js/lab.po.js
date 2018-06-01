@@ -18,7 +18,7 @@ var LabPageObject = function () {
 
   this.kernelIdleIcon = $('div.jp-Toolbar-kernelStatus.jp-CircleIcon');
 
-  this.runNotebookByUrl = function(url){
+  this.runNotebookByUrl = function(url, shortName){
     console.log('jupyter lab application');
     browser.url('http://127.0.0.1:8888/lab');
     browser.waitUntil(function(){
@@ -26,7 +26,7 @@ var LabPageObject = function () {
     });
     browser.$('div.p-Widget.jp-DirListing.jp-FileBrowser-listing').waitForEnabled();
     browser.pause(2000);
-    var dirs = url.split('/');
+    var dirs = (shortName != null)? shortName.split('/') : url.split('/');
     var i = 0;
     while(dirs.length > i){
       var dirName = dirs[i];
@@ -49,9 +49,29 @@ var LabPageObject = function () {
     });
   };
 
+  this.clickSaveNotebook = function () {
+    browser.click('div=File');
+    var saveMenuItem = browser.$$('li[data-command="docmanager:save"]')[1];
+    saveMenuItem.waitForEnabled();
+    saveMenuItem.click();
+
+  };
+
   /* Close and Shutdown Notebook */
   this.closeAndHaltNotebook = function () {
     this.clearAllOutputs();
+    browser.click('div=File');
+    var closeAndCleanupMenuItem = browser.$('li[data-command="filemenu:close-and-cleanup"]');
+    closeAndCleanupMenuItem.waitForEnabled();
+    closeAndCleanupMenuItem.click();
+    var acceptDialogButton = browser.$('button.jp-Dialog-button.jp-mod-accept.jp-mod-warn.jp-mod-styled');
+    acceptDialogButton.waitForEnabled();
+    acceptDialogButton.click();
+  };
+
+  this.saveAndCloseNotebook = function () {
+    this.clearAllOutputs();
+    this.clickSaveNotebook();
     browser.click('div=File');
     var closeAndCleanupMenuItem = browser.$('li[data-command="filemenu:close-and-cleanup"]');
     closeAndCleanupMenuItem.waitForEnabled();
@@ -145,16 +165,39 @@ var LabPageObject = function () {
     browser.$$('li.p-TabBar-tab')[9].click();
   };
 
-  this.setDataGridForTable = function(isDataGrid, closeUIWindow){
+  this.setJVMProperties = function (heapSize, key, value, url) {
+    if(url != null){
+      this.runNotebookByUrl(url);
+    }
+    this.openUIWindow();
     browser.click('div.p-CommandPalette-itemLabel=BeakerX Options');
     var uiPanel = browser.$('div#beakerx-tree-widget');
-    uiPanel.$$('li.p-TabBar-tab')[1].click();
-    var checkBox = uiPanel.$('input#use_data_grid');
-    if(checkBox.isSelected() ? !isDataGrid : isDataGrid){
-      browser.click('input#use_data_grid');
+    uiPanel.$$('li.p-TabBar-tab')[0].click();
+
+    browser.$('input#heap_GB').waitForEnabled();
+    this.setHeapSize(heapSize);
+    if(key == null){
+      this.removeProperty();
     }
-    browser.$$('li.p-TabBar-tab')[9].click();
-  };
+    else {
+      this.addPropertyPair();
+      this.setProperty(key, value);
+    }
+
+    browser.$$('li.p-TabBar-tab')[0].click();
+    browser.pause(2000);
+    if(url != null) {
+      browser.$('div.p-DockPanel-tabBar').click('li[data-type="document-title"]');
+
+      browser.click('div=File');
+      var closeAndCleanupMenuItem = browser.$('li[data-command="filemenu:close-and-cleanup"]');
+      closeAndCleanupMenuItem.waitForEnabled();
+      closeAndCleanupMenuItem.click();
+      var acceptDialogButton = browser.$('button.jp-Dialog-button.jp-mod-accept.jp-mod-warn.jp-mod-styled');
+      acceptDialogButton.waitForEnabled();
+      acceptDialogButton.click();
+    }
+  }
 
 };
 module.exports = LabPageObject;

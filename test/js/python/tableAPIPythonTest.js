@@ -22,7 +22,6 @@ describe('Testing of table (python)', function () {
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/python/TableAPIPythonTest.ipynb');
-    beakerxPO.openUIWindow();
   });
 
   afterAll(function () {
@@ -31,12 +30,6 @@ describe('Testing of table (python)', function () {
 
   var cellIndex;
   var imageDir = 'python/tableAPI';
-
-  describe('UI options. ', function () {
-    it("Use new table widget. ", function () {
-      beakerxPO.setDataGridForTable(true, false);
-    });
-  });
 
   describe("Data types for TableDisplay", function(){
 

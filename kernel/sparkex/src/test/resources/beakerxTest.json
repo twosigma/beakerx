@@ -1,0 +1,13 @@
+{
+  "beakerx": {
+    "jvm_options": {
+      "other": [],
+      "properties": {}
+    },
+    "spark_options": {},
+    "ui_options": {
+      "auto_close": true
+    },
+    "version": 2.0
+  }
+}

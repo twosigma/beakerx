@@ -159,3 +159,7 @@ pre {
 .foldout-widget.widget-box.active .widget-label:before {
   background-image: var(--jp-icon-caretdown);
 }
+
+.bx-button[class*="icon"]  {
+  border-color: var(--jp-border-color2);
+}

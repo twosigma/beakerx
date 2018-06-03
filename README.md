@@ -212,7 +212,7 @@ See [RELEASE.md](RELEASE.md).
 
 ## Attribution
 
-Beaker contains and depends on many projects including:
+BeakerX contains and depends on many projects including:
 
 The kernel is originally derived from
 [lappsgrid](https://github.com/lappsgrid-incubator/jupyter-groovy-kernel),
@@ -228,6 +228,9 @@ The Java support uses Adrian Witas' org.abstractmeta.toolbox.
 Copyright (c) 2001-2007, Fernando Perez
 Copyright (c) 2001, Janko Hauser
 Copyright (c) 2001, Nathaniel Gray
+
+The table of contents and init cells extensions come from:
+<a href="https://github.com/ipython-contrib/jupyter_contrib_nbextensions/blob/master/COPYING.rst">IPython-contrib</a> Copyright (c) 2013-2015, IPython-contrib Developers
 
 <a href="http://www.scala-lang.org/license.html">Scala</a> Copyright (c) 2002-2015 EPFL
       Copyright (c) 2011-2015 Typesafe, Inc.

@@ -15,14 +15,14 @@
  */
 package com.twosigma.beakerx.scala.spark
 
-import java.util
+import java.{lang, util}
 
 import com.twosigma.beakerx.mimetype.MIMEContainer
 import jupyter.{Displayer, Displayers}
 import java.util.{HashMap, Map}
 
 import com.twosigma.beakerx.widget.PreviewTableDisplay
-import com.twosigma.beakerx.widget.PreviewTableDisplay.PreviewAllRows
+import com.twosigma.beakerx.widget.PreviewTableDisplay.{Count, Rows}
 
 object SparkDisplayers {
 
@@ -37,9 +37,15 @@ object SparkDisplayers {
 
   def displayPreview(ds: org.apache.spark.sql.Dataset[_]): Unit = {
     val preview = com.twosigma.beakerx.scala.table.TableDisplay.toJavaCollection(Seq(ds.schema.fields.map { col => col.name -> col.dataType.typeName }.toMap))
-    val previewWidget = new PreviewTableDisplay(preview, new PreviewAllRows {
-      override def get(rows: Int): Array[util.Map[String, AnyRef]] = com.twosigma.beakerx.scala.table.TableDisplay.toJavaMap(takeRows(ds, rows))
-    })
+    val previewWidget = new PreviewTableDisplay(
+      preview,
+      new Rows {
+        override def get(rows: Int): Array[util.Map[String, AnyRef]] = com.twosigma.beakerx.scala.table.TableDisplay.toJavaMap(takeRows(ds, rows))
+      },
+      new Count {
+        override def get(): lang.Long = ds.count()
+      }
+    )
     previewWidget.display()
   }
 

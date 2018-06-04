@@ -26,17 +26,30 @@ import static java.util.Arrays.asList;
 public class PreviewTableDisplay {
 
   public static int ROWS = 1000;
+  private final HBox countButton;
   private VBox panel;
   private Collection<Map<String, Object>> preview;
-  private PreviewAllRows previewAllRows;
+  private Rows previewAllRows;
   private List<Widget> previewContent;
   private List<Widget> rowsContent;
 
-  public PreviewTableDisplay(Collection<Map<String, Object>> previewRows, PreviewAllRows previewAllRows) {
-    this.previewAllRows = previewAllRows;
+  public PreviewTableDisplay(Collection<Map<String, Object>> previewRows, Rows allRows, Count count) {
+    this.previewAllRows = allRows;
     this.preview = previewRows;
-    this.previewContent = asList(createShowRowsButton(), new TableDisplay(this.preview));
+    this.countButton = createCountButton(count);
+    this.previewContent = asList(new HBox(asList(createShowRowsButton(), this.countButton)), new TableDisplay(this.preview));
     this.panel = new VBox(previewContent);
+  }
+
+  private HBox createCountButton(Count count) {
+    Label label = new Label();
+    Button button = new Button();
+    button.setDescription("Count rows");
+    button.registerOnClick((content, message) -> {
+      Long aLong = count.get();
+      label.setValue(aLong);
+    });
+    return new HBox(asList(button, label));
   }
 
   private Button createShowRowsButton() {
@@ -44,7 +57,7 @@ public class PreviewTableDisplay {
     button.setDescription("Show rows");
     button.registerOnClick((content, message) -> {
       if (this.rowsContent == null) {
-        this.rowsContent = asList(createHideRowsButton(), new TableDisplay(previewAllRows.get(ROWS)));
+        this.rowsContent = asList(new HBox(asList(createHideRowsButton(), countButton)), new TableDisplay(previewAllRows.get(ROWS)));
       }
       changeContent(this.rowsContent);
     });
@@ -71,8 +84,12 @@ public class PreviewTableDisplay {
     this.panel.display();
   }
 
-  public interface PreviewAllRows {
+  public interface Rows {
     Map<String, Object>[] get(int rows);
+  }
+
+  public interface Count {
+    Long get();
   }
 
 }

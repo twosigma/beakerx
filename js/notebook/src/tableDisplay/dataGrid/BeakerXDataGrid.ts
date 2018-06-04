@@ -35,9 +35,7 @@ import CellTooltipManager from "./cell/CellTooltipManager";
 import * as bkUtils from '../../shared/bkUtils';
 import {BeakerXDataStore} from "./store/BeakerXDataStore";
 import {
-  selectCellHighlighters,
   selectHasIndex,
-  selectTooltips,
   selectValues
 } from "./model/selectors";
 import throttle = DataGridHelpers.throttle;
@@ -163,6 +161,10 @@ export class BeakerXDataGrid extends DataGrid {
 
   setFocus(focus: boolean) {
     this.focused = focus;
+
+    try {
+      window.beakerx.tableFocused = this.focused;
+    } catch(e) {}
 
     if (focus) {
       this.node.focus();

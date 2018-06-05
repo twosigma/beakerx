@@ -89,16 +89,20 @@ public class SparkEngineImpl implements SparkEngine {
   private TryResult createSparkSession(SparkUIApi sparkUI, Message parentMessage) {
     sparkUI.startSpinner(parentMessage);
     try {
-      SparkSession orCreate = getOrCreate();
-      return TryResult.createResult(orCreate);
+      SparkSession sparkSession = getOrCreate();
+      return TryResult.createResult(sparkSession);
     } catch (Exception e) {
-      StringWriter sw = new StringWriter();
-      PrintWriter pw = new PrintWriter(sw);
-      e.printStackTrace(pw);
-      return TryResult.createError(sw.toString());
+      return TryResult.createError(formatError(e));
     } finally {
       sparkUI.stopSpinner();
     }
+  }
+
+  private String formatError(Exception e) {
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    e.printStackTrace(pw);
+    return sw.toString();
   }
 
   @Override
@@ -109,7 +113,7 @@ public class SparkEngineImpl implements SparkEngine {
   @Override
   public String getSparkAppId() {
     RuntimeConfig conf = getOrCreate().conf();
-    return conf.getAll().get("spark.app.id").get();
+    return conf.getAll().get(SPARK_APP_ID).get();
   }
 
   @Override
@@ -120,7 +124,7 @@ public class SparkEngineImpl implements SparkEngine {
   @Override
   public String getSparkMasterUrl() {
     RuntimeConfig conf = getOrCreate().conf();
-    return conf.getAll().get("spark.master").get();
+    return conf.getAll().get(SPARK_MASTER).get();
   }
 
   @Override

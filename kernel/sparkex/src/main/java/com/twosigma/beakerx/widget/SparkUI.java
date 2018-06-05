@@ -79,17 +79,14 @@ public class SparkUI extends VBox implements SparkUIApi {
     return BeakerxWidget.VIEW_MODULE_VALUE;
   }
 
-  Spinner spinner;
-
   @Override
   public void startSpinner(Message parentMessage) {
-    this.spinner = new Spinner(parentMessage);
-    add(spinner);
+    this.sparkUIForm.startSpinner(parentMessage);
   }
 
   @Override
   public void stopSpinner() {
-    remove(spinner);
+    this.sparkUIForm.stopSpinner();
   }
 
   private void initSparkContext(Message parentMessage) {

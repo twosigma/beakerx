@@ -15,16 +15,17 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.twosigma.beakerx.message.Message;
 import org.apache.spark.SparkConf;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXECUTOR_CORES;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXECUTOR_MEMORY;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_MASTER;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_MASTER_DEFAULT;
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
 public class SparkUIForm extends VBox {
@@ -39,6 +40,8 @@ public class SparkUIForm extends VBox {
   private SparkEngine sparkEngine;
   private SparkUI.OnSparkButtonAction onStartAction;
   private Button connectButton;
+  private Spinner spinner;
+  private HBox spinnerPanel;
 
   public SparkUIForm(SparkEngine sparkEngine, SparkUI.OnSparkButtonAction onStartAction) {
     super(new ArrayList<>());
@@ -59,10 +62,21 @@ public class SparkUIForm extends VBox {
     this.add(advancedOption);
   }
 
-  public void addConnectButton(Button connect) {
+  private void addConnectButton(Button connect) {
     this.connectButton = connect;
     this.errors = new HBox(new ArrayList<>());
-    add(new VBox(Arrays.asList(connectButton, this.errors)));
+    this.spinnerPanel = new HBox();
+    HBox hBox = new HBox(asList(connectButton, spinnerPanel));
+    add(new VBox(asList(hBox, this.errors)));
+  }
+
+  public void startSpinner(Message parentMessage) {
+    this.spinner = new Spinner(parentMessage);
+    spinnerPanel.add(spinner, parentMessage);
+  }
+
+  public void stopSpinner() {
+    spinnerPanel.remove(spinner);
   }
 
   private SparkConf getSparkConf() {
@@ -72,7 +86,7 @@ public class SparkUIForm extends VBox {
   private Text createMasterURL() {
     Text masterURL = new Text();
     masterURL.setDescription("Master URL");
-    masterURL.setDomClasses(new ArrayList<>(Arrays.asList("bx-spark-config", "bx-spark-master-url")));
+    masterURL.setDomClasses(new ArrayList<>(asList("bx-spark-config", "bx-spark-master-url")));
     if (getSparkConf().contains(SPARK_MASTER)) {
       masterURL.setValue(getSparkConf().get(SPARK_MASTER));
     } else {
@@ -91,7 +105,7 @@ public class SparkUIForm extends VBox {
   private Text createExecutorMemory() {
     Text memory = new Text();
     memory.setDescription("Executor Memory");
-    memory.setDomClasses(new ArrayList<>(Arrays.asList("bx-spark-config", "bx-spark-executor-memory")));
+    memory.setDomClasses(new ArrayList<>(asList("bx-spark-config", "bx-spark-executor-memory")));
     if (getSparkConf().contains(SPARK_EXECUTOR_MEMORY)) {
       memory.setValue(getSparkConf().get(SPARK_EXECUTOR_MEMORY));
     } else {
@@ -103,7 +117,7 @@ public class SparkUIForm extends VBox {
   private Text createExecutorCores() {
     Text cores = new Text();
     cores.setDescription("Executor cores");
-    cores.setDomClasses(new ArrayList<>(Arrays.asList("bx-spark-config", "bx-spark-executor-cores")));
+    cores.setDomClasses(new ArrayList<>(asList("bx-spark-config", "bx-spark-executor-cores")));
     if (getSparkConf().contains(SPARK_EXECUTOR_CORES)) {
       cores.setValue(getSparkConf().get(SPARK_EXECUTOR_CORES));
     } else {

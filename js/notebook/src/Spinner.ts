@@ -123,10 +123,10 @@ class SpinnerView extends widgets.DOMWidgetView {
       '  animation-delay: 0s;\n' +
       '}\n' +
       '.lds-spinner {\n' +
-      '  width: 200px !important;\n' +
-      '  height: 200px !important;\n' +
-      '  -webkit-transform: translate(-100px, -100px) scale(1) translate(100px, 100px);\n' +
-      '  transform: translate(-100px, -100px) scale(1) translate(100px, 100px);\n' +
+      '  width: 30px !important;\n' +
+      '  height: 30px !important;\n' +
+      '  -webkit-transform: translate(-15px, -15px) scale(0.15) translate(15px, 15px);\n' +
+      '  transform: translate(-15px, -15px) scale(0.15) translate(15px, 15px);\n' +
       '}\n' +
       '</style></div>'
   }

@@ -18,7 +18,8 @@ import IHihglighterState, { HIGHLIGHTER_STYLE } from "../interface/IHighlighterS
 import DataGridColumn from "../column/DataGridColumn";
 import Highlighter from "./Highlighter";
 import {CellRenderer} from "@phosphor/datagrid";
-import {DEFAULT_CELL_BACKGROUND, formatColor} from "../style/dataGridStyle";
+import {formatColor} from "../style/dataGridStyle";
+import BeakerXThemeHelper from "../../../BeakerXThemeHelper";
 
 export default class ValueHighlighter extends Highlighter {
   constructor(column: DataGridColumn, state: IHihglighterState) {
@@ -29,6 +30,6 @@ export default class ValueHighlighter extends Highlighter {
   }
 
   getBackgroundColor(config: CellRenderer.ICellConfig) {
-    return this.state.colors && formatColor(this.state.colors[config.row]) || DEFAULT_CELL_BACKGROUND;
+    return this.state.colors && formatColor(this.state.colors[config.row]) || BeakerXThemeHelper.DEFAULT_CELL_BACKGROUND;
   }
 }

@@ -30,7 +30,6 @@ import CellManager from "./cell/CellManager";
 import {DataGridHelpers} from "./dataGridHelpers";
 import EventManager from "./event/EventManager";
 import CellFocusManager from "./cell/CellFocusManager";
-import {DEFAULT_HIGHLIGHT_COLOR} from "./style/dataGridStyle";
 import CellTooltipManager from "./cell/CellTooltipManager";
 import * as bkUtils from '../../shared/bkUtils';
 import {BeakerXDataStore} from "./store/BeakerXDataStore";
@@ -47,6 +46,7 @@ import {SectionList} from "@phosphor/datagrid/lib/sectionlist";
 import ColumnRegion = DataModel.ColumnRegion;
 import {DataGridResize} from "./DataGridResize";
 import {ALL_TYPES} from "./dataTypes";
+import BeakerXThemeHelper from "../../BeakerXThemeHelper";
 
 export class BeakerXDataGrid extends DataGrid {
   id: string;
@@ -207,7 +207,7 @@ export class BeakerXDataGrid extends DataGrid {
     }
 
     if (msg.type === 'paint-request' && this.columnPosition.dropCellData) {
-      this.colorizeColumnBorder(this.columnPosition.dropCellData, DEFAULT_HIGHLIGHT_COLOR);
+      this.colorizeColumnBorder(this.columnPosition.dropCellData, BeakerXThemeHelper.DEFAULT_HIGHLIGHT_COLOR);
     }
 
     return true;

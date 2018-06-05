@@ -15,11 +15,12 @@
  */
 
 import * as d3scale from 'd3-scale';
-import {DEFAULT_CELL_BACKGROUND, formatColor, getDefaultColor} from "../style/dataGridStyle";
+import { formatColor, getDefaultColor } from "../style/dataGridStyle";
 import Highlighter from "./Highlighter";
 import IHihglighterState from "../interface/IHighlighterState";
 import DataGridColumn from "../column/DataGridColumn";
-import {CellRenderer} from "@phosphor/datagrid";
+import { CellRenderer } from "@phosphor/datagrid";
+import BeakerXThemeHelper from "../../../BeakerXThemeHelper";
 
 export default class HeatmapHighlighter extends Highlighter {
   colorScale: Function;
@@ -39,7 +40,7 @@ export default class HeatmapHighlighter extends Highlighter {
     const value = this.getValueToHighlight(config);
 
     if (isNaN(value)) {
-      return DEFAULT_CELL_BACKGROUND;
+      return BeakerXThemeHelper.DEFAULT_CELL_BACKGROUND;
     }
 
     return this.colorScale(value);

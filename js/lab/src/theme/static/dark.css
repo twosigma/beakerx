@@ -1,0 +1,165 @@
+/*
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+@import './fonts.css';
+
+body {
+  background-color: var(--jp-layout-color3);
+}
+
+pre {
+  background-color: var(--jp-layout-color2);
+  color: var(--jp-content-font-color2);
+}
+
+.plot-plotcontainer,
+.combplot-plotcontainer {
+  background-color: var(--jp-layout-color2);
+  fill: var(--jp-content-font-color2);
+}
+
+.plot-coverbox,
+.combplot-plotcoverbox {
+  fill: var(--jp-layout-color2);
+}
+
+.plot-title {
+  color: var(--jp-content-font-color2);
+}
+
+.plot-legend {
+  background-color: var(--jp-layout-color2);
+  color: var(--jp-content-font-color2);
+  border-color: var(--jp-border-color2);
+}
+
+.plot-gridline-base,
+.plot-gridline,
+.plot-tick {
+  stroke: var(--jp-border-color0);
+}
+
+#beakerx-tree-widget {
+  color: var(--jp-content-font-color1);
+}
+
+#beakerx-tree-widget svg {
+  fill: var(--jp-content-font-color1);
+}
+
+#beakerx-tree-widget .p-TabBar-content {
+  border-color: var(--jp-border-color2);
+}
+
+#beakerx-tree-widget .p-TabBar-tab.p-mod-current {
+  background-color: var(--jp-layout-color1);
+  border-color: var(--jp-border-color2);
+}
+
+#beakerx-tree-widget .p-TabBar-tab {
+  background-color: var(--jp-layout-color2);
+}
+
+#beakerx-tree-widget .p-TabBar-tab:hover:not(.p-mod-current) {
+  background-color: var(--jp-layout-color0);
+}
+
+#beakerx-tree-widget #default_options .bx-wrapper input {
+  background-color: var(--jp-layout-color1);
+  color: var(--jp-content-font-color1);
+  border-color: var(--jp-border-color2);
+}
+#beakerx-tree-widget #default_options .bx-wrapper span {
+  background-color: var(--jp-layout-color0);
+  border-color: var(--jp-border-color2);
+}
+
+#beakerx-tree-widget .bx-panel .bx-panel-heading {
+  background-color: var(--jp-layout-color1);
+}
+
+#beakerx-tree-widget .bx-panel,
+#beakerx-tree-widget .bx-panel .bx-panel-heading,
+#beakerx-tree-widget .bx-panel .bx-panel-body {
+  border-color: var(--jp-border-color2);
+}
+
+#beakerx-tree-widget .bx-panel .bx-panel-heading .bx-btn,
+#beakerx-tree-widget .bx-panel .bx-panel-body .bx-form-row .bx-btn {
+  background-color: var(--jp-layout-color2);
+  color: var(--jp-content-font-color2);
+  border-color: var(--jp-border-color2);
+}
+
+#beakerx-tree-widget .bx-panel .bx-panel-heading .bx-btn:hover,
+#beakerx-tree-widget .bx-panel .bx-panel-body .bx-form-row .bx-btn:hover {
+  background-color: var(--jp-layout-color0);
+}
+
+#beakerx-tree-widget .bx-panel .bx-panel-body .bx-form-row .bx-input-text {
+  background-color: var(--jp-layout-color1);
+  color: var(--jp-content-font-color1);
+  border-color: var(--jp-border-color2);
+}
+
+.p-DataGrid {
+  border-color: var(--jp-border-color2);
+}
+.p-DataGrid-viewport {
+  border-color: var(--jp-border-color2);
+}
+
+.p-DataGrid-scrollBar {
+  border-color: var(--jp-border-color2) !important;
+}
+.p-DataGrid-scrollBar .p-ScrollBar-button {
+  background-color: var(--jp-layout-color0);
+}
+.p-DataGrid-scrollBar .p-ScrollBar-track {
+  background-color: var(--jp-layout-color2);
+}
+.p-DataGrid-scrollBar .p-ScrollBar-thumb {
+  background-color: var(--jp-layout-color0);
+  border-color: var(--jp-border-color2) !important;
+}
+
+.p-DataGrid-scrollCorner {
+  background-color: var(--jp-layout-color0);
+  border-color: var(--jp-border-color2);
+}
+
+.foldout-widget.widget-box > .foldout-label {
+  color: var(--jp-content-font-color1);
+  background-color: var(--jp-layout-color1);
+  border-color: var(--jp-border-color2);
+}
+
+.foldout-widget.widget-box > .foldout-content {
+  border-color: var(--jp-border-color2);
+}
+
+.foldout-widget.widget-box > .foldout-label:before {
+  background-image: var(--jp-icon-caretright);
+}
+
+.foldout-widget.widget-box.active .foldout-label:before,
+.foldout-widget.widget-box.active .widget-label:before {
+  background-image: var(--jp-icon-caretdown);
+}
+
+.bx-button[class*="icon"]  {
+  border-color: var(--jp-border-color2);
+}

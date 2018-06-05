@@ -23,11 +23,11 @@ import HighlighterFactory from "./HighlighterFactory";
 import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import { each, iter, filter, toArray } from "@phosphor/algorithm";
 import { CellRenderer } from "@phosphor/datagrid";
-import {DEFAULT_CELL_BACKGROUND} from "../style/dataGridStyle";
 import DataGridColumn from "../column/DataGridColumn";
 import {selectCellHighlighters} from "../model/selectors/model";
 import {DataGridColumnAction} from "../store/DataGridAction";
 import {ADD_COLUMN_HIGHLIGHTER, REMOVE_COLUMN_HIGHLIGHTER} from "../model/reducer";
+import BeakerXThemeHelper from "../../../BeakerXThemeHelper";
 
 export default class HighlighterManager {
   highlighters: Highlighter[];
@@ -159,7 +159,7 @@ export default class HighlighterManager {
   }
 
   getCellBackground(config: CellRenderer.ICellConfig): string {
-    let background = DEFAULT_CELL_BACKGROUND;
+    let background = BeakerXThemeHelper.DEFAULT_CELL_BACKGROUND;
     let column = this.dataGrid.getColumn(config);
 
     each(

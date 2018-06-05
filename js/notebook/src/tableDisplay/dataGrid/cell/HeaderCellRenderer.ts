@@ -14,20 +14,15 @@
  *  limitations under the License.
  */
 
-import {CellRenderer, GraphicsContext} from "@phosphor/datagrid";
+import { CellRenderer, GraphicsContext } from "@phosphor/datagrid";
 import BeakerXCellRenderer from "./BeakerXCellRenderer";
-import {
-  selectDataFontSize,
-  selectFontColor,
-  selectHeaderFontSize,
-  selectHeadersVertical, selectRenderer
-} from "../model/selectors";
-import {DEFAULT_CELL_BACKGROUND} from "../style/dataGridStyle";
+import { selectHeadersVertical } from "../model/selectors";
+import BeakerXThemeHelper from "../../../BeakerXThemeHelper";
 
 export default class HeaderCellRenderer extends BeakerXCellRenderer {
 
   getBackgroundColor(config: CellRenderer.ICellConfig): string {
-    return DEFAULT_CELL_BACKGROUND;
+    return BeakerXThemeHelper.DEFAULT_CELL_BACKGROUND;
   }
 
   drawText(gc: GraphicsContext, config: CellRenderer.ICellConfig): void {

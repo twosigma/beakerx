@@ -85,12 +85,7 @@ export default class ColumnManager {
   }
 
   addColumns() {
-    let bodyColumns: DataGridColumn[] = [];
-    let indexColumns: DataGridColumn[] = [];
-
-    this.columns[COLUMN_TYPES.index] = indexColumns;
-    this.columns[COLUMN_TYPES.body] = bodyColumns;
-
+    this.createColumnsMap();
     this.addIndexColumns();
     this.addBodyColumns();
   }
@@ -120,7 +115,7 @@ export default class ColumnManager {
     );
   }
 
-  destroy() {
+  destroy(): void {
     this.destroyAllColumns();
     Signal.disconnectAll(this);
   }
@@ -298,9 +293,19 @@ export default class ColumnManager {
     this.columns[type].push(column);
   }
 
+  private createColumnsMap() {
+    let bodyColumns: DataGridColumn[] = [];
+    let indexColumns: DataGridColumn[] = [];
+
+    this.columns[COLUMN_TYPES.index] = indexColumns;
+    this.columns[COLUMN_TYPES.body] = bodyColumns;
+  }
+
   private destroyAllColumns() {
     this.indexColumns.forEach((column: DataGridColumn) => column.destroy());
     this.bodyColumns.forEach((column: DataGridColumn) => column.destroy());
+
+    this.createColumnsMap();
 
     Signal.disconnectAll(this);
   }

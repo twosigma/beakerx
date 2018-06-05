@@ -22,8 +22,6 @@ import {
 } from '@beakerx/tableDisplay/dataGrid/headerMenu/createFormatMenuItems';
 import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import { scopeData, TIME_UNIT_FORMATS } from '@beakerx/tableDisplay/consts';
-import menuOptionsMock from "../mock/menuOptionsMock";
-import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 import modelStateMock from "../mock/modelStateMock";
 import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
@@ -36,12 +34,7 @@ describe('createFormatMenuItems', () => {
   before(() => {
     dataStore = createStore(modelStateMock);
     dataGrid = new BeakerXDataGrid({}, dataStore);
-    column = new DataGridColumn({
-      index: 0,
-      type: COLUMN_TYPES.index,
-      name: 'index',
-      menuOptions: menuOptionsMock
-    }, dataGrid, dataGrid.columnManager);
+    column = dataGrid.columnManager.columns[COLUMN_TYPES.index][0];
   });
 
   after(() => {

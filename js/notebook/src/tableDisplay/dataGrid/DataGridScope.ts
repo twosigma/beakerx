@@ -28,9 +28,9 @@ import {RendererMap} from "@phosphor/datagrid";
 export class DataGridScope {
   contextMenu: DataGridContextMenu;
 
-  readonly dataGrid: BeakerXDataGrid;
-  readonly element: HTMLElement;
-  readonly store: BeakerXDataStore;
+  private element: HTMLElement;
+  private store: BeakerXDataStore;
+  private dataGrid: BeakerXDataGrid;
   private tableDisplayModel: any;
   private tableDisplayView: any;
 
@@ -62,9 +62,14 @@ export class DataGridScope {
     Widget.attach(this.dataGrid, this.element);
   }
 
-  doDestroy() {
+  doDestroy(): void {
     this.dataGrid.destroy();
     this.contextMenu.destroy();
+
+    setTimeout(() => {
+      this.dataGrid = null;
+      this.store = null;
+    });
   }
 
   updateModelData(newData) {
@@ -93,5 +98,9 @@ export class DataGridScope {
 
   initColumnLimitModal() {
     return new ColumnLimitModal(this.dataGrid, this.element);
+  }
+
+  setInitialSize() {
+    this.dataGrid.setInitialSize();
   }
 }

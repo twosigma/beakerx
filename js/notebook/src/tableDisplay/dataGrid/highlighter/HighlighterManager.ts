@@ -46,6 +46,13 @@ export default class HighlighterManager {
     this.createHighlighters();
   }
 
+  destroy(): void {
+    this.dataGrid = null;
+    this.highlighters = [];
+    this.cachedHighlighters.forEach(highlighter => highlighter.destroy());
+    this.cachedHighlighters.clear();
+  }
+
   createHighlighters() {
     const state = selectCellHighlighters(this.dataGrid.store.state);
 

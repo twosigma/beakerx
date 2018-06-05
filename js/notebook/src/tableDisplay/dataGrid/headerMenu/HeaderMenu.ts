@@ -26,11 +26,6 @@ import {DataGridHelpers} from "../dataGridHelpers";
 import getEventKeyCode = DataGridHelpers.getEventKeyCode;
 import {KEYBOARD_KEYS} from "../event/enums";
 
-export interface ITriggerOptions {
-  x: number,
-  y: number
-}
-
 export default abstract class HeaderMenu implements MenuInterface {
   columnIndex: number;
 
@@ -57,6 +52,7 @@ export default abstract class HeaderMenu implements MenuInterface {
     this.column = column;
 
     this.handleKeydownEvent = this.handleKeydownEvent.bind(this);
+    this.handleMenuTriggerClick = this.handleMenuTriggerClick.bind(this);
 
     this.addTrigger();
     this.buildMenu();
@@ -121,6 +117,17 @@ export default abstract class HeaderMenu implements MenuInterface {
 
   destroy(): void {
     this.menu.isAttached && this.menu.dispose();
+
+    this.triggerNode.removeEventListener('mousedown', this.handleMenuTriggerClick);
+    this.triggerNode.remove();
+    this.triggerNode = null;
+
+    setTimeout(() => {
+      this.commands = null;
+      this.viewport = null;
+      this.dataGrid = null;
+      this.column = null;
+    });
   }
 
   toggleMenu(submenuIndex?: number): void {
@@ -224,6 +231,7 @@ export default abstract class HeaderMenu implements MenuInterface {
   }
 
   protected addTrigger():void {
+    this.triggerNode && this.triggerNode.remove();
     this.triggerNode = document.createElement('span');
 
     this.triggerNode.style.height = `${HeaderMenu.DEFAULT_TRIGGER_HEIGHT}px`;
@@ -233,11 +241,13 @@ export default abstract class HeaderMenu implements MenuInterface {
     this.triggerNode.style.cursor = 'pointer';
     this.triggerNode.classList.add('bko-column-header-menu');
     this.triggerNode.classList.add('bko-menu');
-    this.triggerNode.addEventListener('mousedown', (event) => {
-      event.preventDefault();
+    this.triggerNode.addEventListener('mousedown', this.handleMenuTriggerClick);
+  }
 
-      this.toggleMenu();
-    });
+  private handleMenuTriggerClick(event) {
+    event.preventDefault();
+
+    this.toggleMenu();
   }
 
   protected getMenuPosition(trigger: any) {

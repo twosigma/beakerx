@@ -45,6 +45,7 @@
   "files": [
     "dist/**/*.js",
     "lib/*",
-    "src/theme/static/*.css"
+    "src/theme/static/*.css",
+    "src/theme/static/fonts/**/*"
   ]
 }

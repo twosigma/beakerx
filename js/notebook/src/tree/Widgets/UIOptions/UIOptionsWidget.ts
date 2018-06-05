@@ -51,7 +51,7 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
       id: 'improve_fonts',
       name: 'improve_fonts',
       label: 'Customize fonts (Roboto Mono and Lato)',
-      isLabSupported: false,
+      isLabSupported: true,
     },
     {
       id: 'show_publication',

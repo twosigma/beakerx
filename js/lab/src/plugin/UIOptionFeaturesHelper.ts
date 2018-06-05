@@ -26,6 +26,7 @@ export default class UIOptionFeaturesHelper {
   private showPublicationFeature: ShowPublicationFeature;
   private autoCloseBracketsFeature: AutoCloseBracketsFeature;
   private autoSaveFeature: AutoSaveFeature;
+  private improveFontsFeature: ImproveFontsFeature;
 
   constructor(
     private app: JupyterLab,
@@ -39,6 +40,7 @@ export default class UIOptionFeaturesHelper {
     this.showPublicationFeature = new ShowPublicationFeature(this.panel);
     this.autoCloseBracketsFeature = new AutoCloseBracketsFeature(this.panel);
     this.autoSaveFeature = new AutoSaveFeature(this.settings, this.app.commands);
+    this.improveFontsFeature = new ImproveFontsFeature();
 
     this.app.shell.activeChanged.connect((sender, args) => {
       if (args.newValue !== this.panel) {
@@ -71,12 +73,14 @@ export default class UIOptionFeaturesHelper {
     this.showPublicationFeature.init(data.beakerx.ui_options.show_publication);
     this.autoCloseBracketsFeature.init(data.beakerx.ui_options.auto_close)
     this.autoSaveFeature.init(data.beakerx.ui_options.auto_save);
+    this.improveFontsFeature.init(data.beakerx.ui_options.improve_fonts);
   }
 
   private updateFeatures(data): void {
     this.showPublicationFeature.update(data.beakerx.ui_options.show_publication);
     this.autoCloseBracketsFeature.update(data.beakerx.ui_options.auto_close)
     this.autoSaveFeature.update(data.beakerx.ui_options.auto_save);
+    this.improveFontsFeature.update(data.beakerx.ui_options.improve_fonts);
   }
 
   private loadSettings(): Promise<any> {
@@ -164,4 +168,22 @@ class AutoSaveFeature implements IUIOptionsFeature {
         }
       });
   }
+}
+
+class ImproveFontsFeature implements IUIOptionsFeature {
+
+  public init(isEnabled: boolean): void {
+    if (isEnabled) {
+      document.body.classList.add('improveFonts');
+    }
+  }
+
+  public update(isEnabled: boolean): void {
+    if (isEnabled) {
+      document.body.classList.add('improveFonts');
+    } else {
+      document.body.classList.remove('improveFonts');
+    }
+  }
+
 }

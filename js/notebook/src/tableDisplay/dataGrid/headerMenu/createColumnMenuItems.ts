@@ -24,6 +24,10 @@ import {SORT_ORDER} from "../column/enums";
 import {selectColumnsFrozenCount, selectVisibleColumnsFrozenCount} from "../model/selectors";
 
 export function createColumnMenuItems(column: DataGridColumn): MenuItem[] {
+  if (!column || !column.dataGrid) {
+    return [];
+  }
+
   return [
     {
       title: 'Hide column',
@@ -49,57 +53,57 @@ export function createColumnMenuItems(column: DataGridColumn): MenuItem[] {
     {
       title: 'Sort Ascending',
       separator: true,
-      isChecked: (column) => column.getSortOrder() === SORT_ORDER.ASC,
+      isChecked: (column) => column && column.getSortOrder() === SORT_ORDER.ASC,
       action: (column) => column.sort(SORT_ORDER.ASC)
     },
     {
       title: 'Sort Descending',
-      isChecked: (column) => column.getSortOrder() === SORT_ORDER.DESC,
+      isChecked: (column) => column && column.getSortOrder() === SORT_ORDER.DESC,
       action: (column) => column.sort(SORT_ORDER.DESC)
     },
     {
       title: 'No Sort',
-      isChecked: (column) => column.getSortOrder() === SORT_ORDER.NO_SORT,
+      isChecked: (column) => column && column.getSortOrder() === SORT_ORDER.NO_SORT,
       action: (column) => column.sort(SORT_ORDER.NO_SORT)
     },
     {
       title: 'Align Left',
       separator: true,
-      isChecked: (column) => column.getAlignment() === LEFT,
+      isChecked: (column) => column && column.getAlignment() === LEFT,
       action: (column) => { column.setAlignment(LEFT) }
     },
     {
       title: 'Align Center',
-      isChecked: (column) => column.getAlignment() === CENTER,
+      isChecked: (column) => column && column.getAlignment() === CENTER,
       action: (column) => { column.setAlignment(CENTER) }
     },
     {
       title: 'Align Right',
-      isChecked: (column) => column.getAlignment() === RIGHT,
+      isChecked: (column) => column && column.getAlignment() === RIGHT,
       action: (column) => { column.setAlignment(RIGHT) }
     },
     {
       title: 'Heatmap',
       shortcut: 'H',
       separator: true,
-      isChecked: (column) => column.getHighlighter(HIGHLIGHTER_TYPE.heatmap).length,
+      isChecked: (column) => column && column.getHighlighter(HIGHLIGHTER_TYPE.heatmap).length,
       action: (column) => column.toggleHighlighter(HIGHLIGHTER_TYPE.heatmap)
     },
     {
       title: 'Data Bars',
       shortcut: 'B',
-      isChecked: (column) => !!column.getRenderer(),
+      isChecked: (column) => column && !!column.getRenderer(),
       action: (column) => column.toggleDataBarsRenderer()
     },
     {
       title: 'Color by unique',
       shortcut: 'U',
-      isChecked: (column) => column.getHighlighter(HIGHLIGHTER_TYPE.uniqueEntries).length,
+      isChecked: (column) => column && column.getHighlighter(HIGHLIGHTER_TYPE.uniqueEntries).length,
       action: (column) => column.toggleHighlighter(HIGHLIGHTER_TYPE.uniqueEntries)
     },
     {
       title: 'Fix Left',
-      isChecked: (column) => column.isFrozen(),
+      isChecked: (column) => column && column.isFrozen(),
       action: (column) => column.toggleColumnFrozen()
     },
     {

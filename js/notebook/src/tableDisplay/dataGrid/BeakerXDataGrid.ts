@@ -156,7 +156,7 @@ export class BeakerXDataGrid extends DataGrid {
   }
 
   resize(args?: any): void {
-    this.dataGridResize.resize();
+    this.dataGridResize && this.dataGridResize.resize();
   }
 
   setFocus(focus: boolean) {
@@ -186,10 +186,34 @@ export class BeakerXDataGrid extends DataGrid {
   }
 
   destroy() {
+    this.model && this.model.destroy();
     this.eventManager.destroy();
     this.columnManager.destroy();
+    this.columnPosition.destroy();
+    this.cellFocusManager.destroy();
+    this.cellManager.destroy();
+    this.cellSelectionManager.destroy();
+    this.cellTooltipManager.destroy();
+    this.highlighterManager.destroy();
+    this.dataGridResize.destroy();
+    this.rowManager.destroy();
+    this.dispose();
 
     Signal.disconnectAll(this);
+
+    setTimeout(() => {
+      this.cellSelectionManager = null;
+      this.cellTooltipManager = null;
+      this.highlighterManager = null;
+      this.cellFocusManager = null;
+      this.dataGridResize = null;
+      this.columnPosition = null;
+      this.columnManager = null;
+      this.eventManager = null;
+      this.cellManager = null;
+      this.rowManager = null;
+      this.store = null;
+    });
   }
 
   onAfterAttach(msg) {
@@ -243,14 +267,13 @@ export class BeakerXDataGrid extends DataGrid {
   }
 
   private addCellRenderers() {
-    let cellRendererFactory = new CellRendererFactory(this);
-    let defaultRenderer = cellRendererFactory.getRenderer();
-    let headerCellRenderer = cellRendererFactory.getHeaderRenderer();
+    let defaultRenderer = CellRendererFactory.getRenderer(this);
+    let headerCellRenderer = CellRendererFactory.getHeaderRenderer(this);
 
     this.cellRenderers.set(
       'body',
       { dataType: ALL_TYPES[ALL_TYPES.html] },
-      cellRendererFactory.getRenderer(ALL_TYPES.html)
+      CellRendererFactory.getRenderer(this, ALL_TYPES.html)
     );
     this.cellRenderers.set('body', {}, defaultRenderer);
     this.cellRenderers.set('column-header', {}, headerCellRenderer);
@@ -259,6 +282,6 @@ export class BeakerXDataGrid extends DataGrid {
   }
 
   private handleStateChanged() {
-    this.model.reset();
+    this.model && this.model.reset();
   }
 }

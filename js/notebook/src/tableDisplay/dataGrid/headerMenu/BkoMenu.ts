@@ -21,6 +21,11 @@ export default class BkoMenu extends Menu {
   keepOpen: boolean|undefined;
   trigger: HTMLElement;
 
+  dispose() {
+    delete this.trigger;
+    super.dispose();
+  }
+
   triggerActiveItem(): void {
     if (!this.keepOpen) {
       super.triggerActiveItem();
@@ -37,7 +42,7 @@ export default class BkoMenu extends Menu {
     }
 
     const command = item.command, args = item.args;
-    if (this.commands.isEnabled(command, args)) {
+    if (this.commands && this.commands.isEnabled(command, args)) {
       this.commands.execute(command, args);
     }
   }

@@ -40,6 +40,13 @@ export default class RowManager {
     this.evaluateFilterExpression = this.evaluateFilterExpression.bind(this);
   }
 
+  destroy(): void {
+    this.rows = [];
+    this.sortedBy = null;
+    this.columnManager = null;
+    this.rowsIterator = null;
+  }
+
   createRows(data, hasIndex) {
     hasIndex ? this.createRowsWithIndex(data) : this.createRowsWithGeneratedIndex(data);
   }
@@ -86,7 +93,7 @@ export default class RowManager {
     this.rows = this.rows.sort((row1, row2) => {
       let value1 = columnValueResolver(resolverFn(row1, columnIndex));
       let value2 = columnValueResolver(resolverFn(row2, columnIndex));
-      let result = this.compareSortedValues(value1, value2)
+      let result = this.compareSortedValues(value1, value2);
 
       return shouldReverse ? -result : result;
     });

@@ -91,6 +91,20 @@ export default class ColumnFilter {
     this.filterInput.blur();
   }
 
+  destroy(): void {
+    this.filterWidget.dispose();
+
+    setTimeout(() => {
+      this.dataGrid = null;
+      this.column = null;
+      this.filterWidget = null;
+      this.filterNode = null;
+      this.filterIcon = null;
+      this.clearIcon = null;
+      this.filterInput = null;
+    });
+  }
+
   private updateInputPosition() {
     const position = this.column.getPosition();
     const offset = this.dataGrid.getColumnOffset(

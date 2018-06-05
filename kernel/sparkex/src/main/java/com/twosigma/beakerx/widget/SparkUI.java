@@ -17,7 +17,6 @@ package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.InternalVariable;
-import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.message.Message;
@@ -30,7 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.twosigma.beakerx.kernel.PlainCode.createSimpleEvaluationObject;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
@@ -54,6 +52,7 @@ public class SparkUI extends VBox implements SparkUIApi {
   private VBox sparkConfig;
   private VBox sparkConfigPanel;
   private Button connectButton;
+  private HBox errors;
   private HBox statusPanel;
   private Map<Integer, SparkStateProgress> progressBarMap = new HashMap<>();
   private Text masterURL;
@@ -107,7 +106,7 @@ public class SparkUI extends VBox implements SparkUIApi {
     this.addMasterUrl(masterURL);
     this.addExecutorCores(executorCores);
     this.addExecutorMemory(executorMemory);
-    this.advancedOption = new SparkConfiguration(sparkEngine.getAdvanceSettings(),sparkEngine.sparkVersion());
+    this.advancedOption = new SparkConfiguration(sparkEngine.getAdvanceSettings(), sparkEngine.sparkVersion());
     this.addAdvanceOptions(advancedOption);
     this.sendUpdate("sparkDefaultMasterUrl", SPARK_MASTER_DEFAULT);
   }
@@ -159,31 +158,53 @@ public class SparkUI extends VBox implements SparkUIApi {
     return connect;
   }
 
+  Spinner spinner;
+
+  public void startSpinner(Message parentMessage) {
+    this.spinner = new Spinner(parentMessage);
+    add(spinner);
+  }
+
+  public void stopSpinner() {
+    remove(spinner);
+  }
+
   private void initSparkContext(Message parentMessage) {
     KernelFunctionality kernel = KernelManager.get();
+    clearErrors();
     try {
       TryResult configure = sparkEngine.configure(kernel, this, parentMessage);
       if (configure.isError()) {
-        sendError(parentMessage, kernel, configure.error());
+        sendError(configure.error());
       } else {
         active = true;
         saveSparkConf(sparkEngine.getSparkConf());
+        applicationStart();
       }
     } catch (Exception e) {
-      sendError(parentMessage, kernel, e.getMessage());
+      sendError(e.getMessage());
     }
+  }
+
+  private void clearErrors() {
+    errors.removeAllChildren();
   }
 
   private SparkSession getSparkSession() {
     return sparkEngine.getOrCreate();
   }
 
-  private void sendError(Message parentMessage, KernelFunctionality kernel, String message) {
-    SimpleEvaluationObject seo = createSimpleEvaluationObject("", kernel, parentMessage, 1);
-    seo.error(message);
+  private void sendError(String message) {
+    clearErrors();
+    BxHTML label = new BxHTML();
+    label.setValue(message);
+    Foldout.FoldoutOption foldoutOption = new Foldout.FoldoutOption();
+    foldoutOption.headerLabel = "Error";
+    Foldout value = new Foldout(singletonList(label), foldoutOption);
+    this.errors.add(value);
   }
 
-  public void applicationStart() {
+  private void applicationStart() {
     clearView();
     addStatusPanel(createStatusPanel());
     sendUpdate(SPARK_APP_ID, sparkEngine.getSparkAppId());
@@ -191,10 +212,13 @@ public class SparkUI extends VBox implements SparkUIApi {
     sendUpdate("sparkMasterUrl", sparkEngine.getSparkMasterUrl());
   }
 
+  @Override
   public void applicationEnd() {
-    removeStatusPanel();
-    active = false;
-    addView();
+    if (active) {
+      removeStatusPanel();
+      active = false;
+      addView();
+    }
   }
 
   private HBox createStatusPanel() {
@@ -318,7 +342,8 @@ public class SparkUI extends VBox implements SparkUIApi {
 
   public void addConnectButton(Button connect) {
     this.connectButton = connect;
-    sparkConfig.add(connectButton);
+    this.errors = new HBox(new ArrayList<>());
+    sparkConfig.add(new VBox(Arrays.asList(connectButton, this.errors)));
   }
 
   public void clearView() {
@@ -346,7 +371,7 @@ public class SparkUI extends VBox implements SparkUIApi {
 
   public void removeStatusPanel() {
     if (statusPanel != null) {
-      removeDOMWidget(statusPanel);
+      remove(statusPanel);
       statusPanel = null;
     }
   }

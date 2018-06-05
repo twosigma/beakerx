@@ -37,6 +37,8 @@ import scala.Tuple2;
 import scala.collection.Iterator;
 
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
@@ -71,14 +73,32 @@ public class SparkEngineImpl implements SparkEngine {
     SparkConf sparkConf = createSparkConf(sparkUI.getAdvancedOptions(), getSparkConfBasedOn(this.sparkSessionBuilder));
     sparkConf = configureSparkConf(sparkConf, sparkUI);
     this.sparkSessionBuilder = SparkSession.builder().config(sparkConf);
-    SparkSession sparkSession = getOrCreate();
+    TryResult sparkSessionTry = createSparkSession(sparkUI, parentMessage);
+    if (sparkSessionTry.isError()) {
+      return sparkSessionTry;
+    }
     addListener(getOrCreate().sparkContext(), sparkUI);
-    SparkVariable.putSparkSession(sparkSession);
+    SparkVariable.putSparkSession(getOrCreate());
     TryResult tryResultSparkContext = initSparkContextInShell(kernel, parentMessage);
     if (!tryResultSparkContext.isError()) {
       kernel.registerCancelHook(SparkVariable::cancelAllJobs);
     }
     return tryResultSparkContext;
+  }
+
+  private TryResult createSparkSession(SparkUIApi sparkUI, Message parentMessage) {
+    sparkUI.startSpinner(parentMessage);
+    try {
+      SparkSession orCreate = getOrCreate();
+      return TryResult.createResult(orCreate);
+    } catch (Exception e) {
+      StringWriter sw = new StringWriter();
+      PrintWriter pw = new PrintWriter(sw);
+      e.printStackTrace(pw);
+      return TryResult.createError(sw.toString());
+    } finally {
+      sparkUI.stopSpinner();
+    }
   }
 
   @Override

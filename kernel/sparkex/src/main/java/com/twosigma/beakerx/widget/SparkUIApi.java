@@ -15,6 +15,8 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.twosigma.beakerx.message.Message;
+
 import java.util.List;
 
 public interface SparkUIApi {
@@ -35,11 +37,13 @@ public interface SparkUIApi {
 
   void taskEnd(int stageId, long taskId);
 
-  void applicationStart();
-
   void applicationEnd();
 
   void cancelAllJobs();
 
   boolean isActive();
+
+  void startSpinner(Message message);
+
+  void stopSpinner();
 }

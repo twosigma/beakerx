@@ -67,3 +67,11 @@ div.output_text {
 .improveFonts .cm-header-6 {
   font-family: "Lato", Helvetica, sans-serif;
 }
+
+.improveFonts .jp-RenderedText pre {
+  font-family: "Roboto Mono", monospace, sans-serif;
+}
+
+.improveFonts .jp-RenderedMarkdown {
+  font-family: "Lato", Helvetica, sans-serif;
+}

@@ -32,6 +32,11 @@ export default class CellFocusManager {
     this.focusedCellData = null;
   }
 
+  destroy(): void {
+    this.dataGrid = null;
+    this.focusedCellData = null;
+  }
+
   setFocusedCell(cellData: ICellData|null) {
     this.focusedCellData = cellData;
   }

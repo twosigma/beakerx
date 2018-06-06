@@ -50,4 +50,10 @@ export default class Highlighter {
 
     return valueResolver(value);
   }
+
+  destroy(): void {
+    this.column = null;
+    this.model = null;
+    this.state = null;
+  }
 }

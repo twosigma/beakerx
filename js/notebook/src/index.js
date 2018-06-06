@@ -28,11 +28,11 @@ module.exports = {};
 
 var loadedModules = [
   require("./Plot"),
-  require("./TableDisplay"),
   require("./EasyForm"),
   require("./TabView"),
   require("./GridView"),
   require("./CyclingDisplayBox"),
+  require("./TableDisplay").default,
   require("./SparkUI").default,
   require("./Spinner").default,
   require("./SparkStateProgress").default,

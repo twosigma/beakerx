@@ -73,14 +73,11 @@ class TableDisplayView extends widgets.DOMWidgetView {
   }
 
   showWarning(data) {
-    const rowLength = data.rowLength;
-    const rowLimit = data.rowLimit;
+    const rowLimitMsg = data.rowLimitMsg;
     const modal = document.createElement('div');
 
     modal.setAttribute('id', this.wrapperId);
-    modal.innerHTML = `<p class="ansired">Note: table is too big to display.
-      The limit is ${rowLimit} rows, but this table has ${rowLength} rows. 
-      The first 10000 rows are displayed as a preview.</p>`;
+    modal.innerHTML = `<p class="ansired">${rowLimitMsg}</p>`;
 
     this.el.appendChild(modal);
   }

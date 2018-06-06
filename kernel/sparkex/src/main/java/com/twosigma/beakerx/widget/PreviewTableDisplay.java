@@ -29,12 +29,12 @@ public class PreviewTableDisplay {
   private final HBox countButton;
   private VBox panel;
   private Collection<Map<String, Object>> preview;
-  private Rows previewAllRows;
+  private Rows allRows;
   private List<Widget> previewContent;
   private List<Widget> rowsContent;
 
   public PreviewTableDisplay(Collection<Map<String, Object>> previewRows, Rows allRows, Count count) {
-    this.previewAllRows = allRows;
+    this.allRows = allRows;
     this.preview = previewRows;
     this.countButton = createCountButton(count);
     this.previewContent = asList(new HBox(asList(createShowRowsButton(), this.countButton)), new TableDisplay(this.preview));
@@ -57,7 +57,11 @@ public class PreviewTableDisplay {
     button.setDescription("Preview " + ROWS + " Rows");
     button.registerOnClick((content, message) -> {
       if (this.rowsContent == null) {
-        this.rowsContent = asList(countButton, new TableDisplay(previewAllRows.get(ROWS)));
+        TableDisplay tableDisplay = new TableDisplay(allRows.get(ROWS + 1));
+        tableDisplay.ROWS_LIMIT = ROWS;
+        tableDisplay.ROW_LIMIT_TO_INDEX = ROWS;
+        tableDisplay.setRowLimitMsg("Note: showing a preview of a non-materialized Spark RDD");
+        this.rowsContent = asList(countButton, tableDisplay);
       }
       changeContent(this.rowsContent);
     });

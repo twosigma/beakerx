@@ -21,6 +21,7 @@ var loadedModules = [
   require("./GridView"),
   require("./CyclingDisplayBox"),
   require("./SparkUI").default,
+  require("./Spinner").default,
   require("./SparkStateProgress").default,
   require("./SparkConfiguration").default,
   require("./HTMLPre").default,

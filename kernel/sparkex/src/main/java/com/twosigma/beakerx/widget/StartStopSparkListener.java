@@ -17,20 +17,12 @@ package com.twosigma.beakerx.widget;
 
 import org.apache.spark.scheduler.SparkListener;
 import org.apache.spark.scheduler.SparkListenerApplicationEnd;
-import org.apache.spark.scheduler.SparkListenerApplicationStart;
 
 public class StartStopSparkListener extends SparkListener {
 
   public static final String START_STOP_SPARK_LISTENER = "com.twosigma.beakerx.widget.StartStopSparkListener";
 
   public StartStopSparkListener() {
-  }
-
-  @Override
-  public void onApplicationStart(SparkListenerApplicationStart applicationStart) {
-    super.onApplicationStart(applicationStart);
-    SparkUIApi sparkUI = SparkVariable.getSparkUI();
-    sparkUI.applicationStart();
   }
 
   @Override

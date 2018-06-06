@@ -34,6 +34,7 @@ var loadedModules = [
   require("./CyclingDisplayBox"),
   require("./TableDisplay").default,
   require("./SparkUI").default,
+  require("./Spinner").default,
   require("./SparkStateProgress").default,
   require("./SparkConfiguration").default,
   require("./HTMLPre").default,

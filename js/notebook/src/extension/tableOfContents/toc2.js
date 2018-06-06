@@ -46,7 +46,7 @@ define([
   // default values for per-notebook configurable parameters
   var metadata_settings = {
     nav_menu: {},
-    number_sections: true,
+    number_sections: false,
     sideBar: false,
     skip_h1_title: false,
     base_numbering: 1,

@@ -26,7 +26,6 @@ import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXECUTOR_MEMORY;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_MASTER;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_MASTER_DEFAULT;
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 
 public class SparkUIForm extends VBox {
 
@@ -60,18 +59,18 @@ public class SparkUIForm extends VBox {
     this.add(executorMemory);
     this.advancedOption = new SparkConfiguration(sparkEngine.getAdvanceSettings(), sparkEngine.sparkVersion());
     this.add(advancedOption);
+    this.errors = new HBox(new ArrayList<>());
+    this.add(this.errors);
   }
 
   private void addConnectButton(Button connect) {
     this.connectButton = connect;
-    this.errors = new HBox(new ArrayList<>());
     this.spinnerPanel = new HBox();
-    HBox hBox = new HBox(asList(connectButton, spinnerPanel));
-    add(new VBox(asList(hBox, this.errors)));
+    add(new HBox(asList(connectButton, spinnerPanel)));
   }
 
   public void startSpinner(Message parentMessage) {
-    this.spinner = new Spinner(parentMessage);
+    this.spinner = new Spinner(parentMessage, "Connecting to " + masterURL.getValue());
     spinnerPanel.add(spinner, parentMessage);
   }
 
@@ -146,10 +145,7 @@ public class SparkUIForm extends VBox {
     clearErrors();
     BxHTML label = new BxHTML();
     label.setValue(message);
-    Foldout.FoldoutOption foldoutOption = new Foldout.FoldoutOption();
-    foldoutOption.headerLabel = "Error";
-    Foldout value = new Foldout(singletonList(label), foldoutOption);
-    this.errors.add(value);
+    this.errors.add(label);
   }
 
   public void clearErrors() {

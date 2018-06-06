@@ -18,10 +18,15 @@ package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.message.Message;
 
+import java.io.Serializable;
+import java.util.HashMap;
+
 public class Spinner extends DOMWidget {
 
   public static final String VIEW_NAME_VALUE = "SpinnerView";
   public static final String MODEL_NAME_VALUE = "SpinnerModel";
+
+  private String title = null;
 
   public Spinner() {
     super();
@@ -29,9 +34,19 @@ public class Spinner extends DOMWidget {
   }
 
 
-  public Spinner(Message message) {
+  public Spinner(Message message, String title) {
     super(message);
+    this.title = title;
     openComm(message);
+  }
+
+  @Override
+  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+    super.content(content);
+    if (title != null) {
+      content.put("title", title);
+    }
+    return content;
   }
 
   @Override

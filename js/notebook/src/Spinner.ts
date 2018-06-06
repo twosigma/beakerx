@@ -16,7 +16,9 @@ class SpinnerModel extends widgets.DOMWidgetModel {
 
 class SpinnerView extends widgets.DOMWidgetView {
   public render() {
-    this.el.innerHTML = '<div class="lds-css ng-scope">\n' +
+    let title = this.model.get('title');
+
+    this.el.innerHTML = `<div title="${title}" class="lds-css ng-scope">\n` +
       '<div class="lds-spinner" style="100%;height:100%"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>\n' +
       '<style type="text/css">@keyframes lds-spinner {\n' +
       '  0% {\n' +

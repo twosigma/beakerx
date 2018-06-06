@@ -20,6 +20,7 @@ import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.kernel.msg.StacktraceHtmlPrinter;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import org.apache.spark.SparkConf;
@@ -37,8 +38,6 @@ import scala.Tuple2;
 import scala.collection.Iterator;
 
 import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
@@ -99,10 +98,8 @@ public class SparkEngineImpl implements SparkEngine {
   }
 
   private String formatError(Exception e) {
-    StringWriter sw = new StringWriter();
-    PrintWriter pw = new PrintWriter(sw);
-    e.printStackTrace(pw);
-    return sw.toString();
+    String[] print = StacktraceHtmlPrinter.print(Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString).toArray(String[]::new));
+    return String.join(System.lineSeparator(), print);
   }
 
   @Override

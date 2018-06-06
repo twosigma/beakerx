@@ -31,6 +31,11 @@ public class StacktraceHtmlPrinter extends StacktracePrinter {
     return INSTANCE.doPrint(escaped);
   }
 
+  public static String printRedBold(String input) {
+    String escaped = StringEscapeUtils.escapeHtml4(input);
+    return INSTANCE.startRedBold() + escaped + INSTANCE.endRedBold();
+  }
+
   @Override
   public String startRedBold() {
     return "<div style=\"font-weight: bold; " + FONT + "\">";

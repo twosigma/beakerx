@@ -53,20 +53,20 @@ public class SparkUIForm extends VBox {
     this.masterURL = createMasterURL();
     this.executorMemory = createExecutorMemory();
     this.executorCores = createExecutorCores();
-    this.addConnectButton(createConnectButton());
+    this.errors = new HBox(new ArrayList<>());
+    this.errors.setDomClasses(asList("bx-spark-connect-error"));
+    this.addConnectButton(createConnectButton(), this.errors);
     this.add(masterURL);
     this.add(executorCores);
     this.add(executorMemory);
     this.advancedOption = new SparkConfiguration(sparkEngine.getAdvanceSettings(), sparkEngine.sparkVersion());
     this.add(advancedOption);
-    this.errors = new HBox(new ArrayList<>());
-    this.add(this.errors);
   }
 
-  private void addConnectButton(Button connect) {
+  private void addConnectButton(Button connect, HBox errors) {
     this.connectButton = connect;
     this.spinnerPanel = new HBox();
-    add(new HBox(asList(connectButton, spinnerPanel)));
+    add(new HBox(asList(connectButton, spinnerPanel, errors)));
   }
 
   public void startSpinner(Message parentMessage) {

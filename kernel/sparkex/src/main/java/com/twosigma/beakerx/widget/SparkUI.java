@@ -19,6 +19,7 @@ import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.kernel.msg.StacktraceHtmlPrinter;
 import com.twosigma.beakerx.message.Message;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
@@ -36,6 +37,7 @@ public class SparkUI extends VBox implements SparkUIApi {
   public static final String MODEL_NAME_VALUE = "SparkUIModel";
   public static final String SPARK_MASTER_DEFAULT = "local[*]";
   private static final String SPARK_APP_ID = "sparkAppId";
+  public static final String ERROR_CREATING_SPARK_SESSION = "Error creating SparkSession, see the console log for more explanation";
 
   private final SparkUIForm sparkUIForm;
   private VBox sparkUIFormPanel;
@@ -95,14 +97,14 @@ public class SparkUI extends VBox implements SparkUIApi {
     try {
       TryResult configure = sparkEngine.configure(kernel, this, parentMessage);
       if (configure.isError()) {
-        this.sparkUIForm.sendError(configure.error());
+        this.sparkUIForm.sendError(StacktraceHtmlPrinter.printRedBold(ERROR_CREATING_SPARK_SESSION));
       } else {
         active = true;
         saveSparkConf(sparkEngine.getSparkConf());
         applicationStart();
       }
     } catch (Exception e) {
-      this.sparkUIForm.sendError(e.getMessage());
+      this.sparkUIForm.sendError(StacktraceHtmlPrinter.printRedBold(e.getMessage()));
     }
   }
 

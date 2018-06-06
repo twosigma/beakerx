@@ -39,7 +39,7 @@ public class SparkVariable {
   }
 
   public static SparkSession getSparkSession() {
-    //method is used by initSparkContextInShell
+    //method should be only used by initSparkContextInShell
     return sparkSession;
   }
 }

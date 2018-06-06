@@ -29,7 +29,7 @@ interface IState {
   jobLink: string;
 }
 
-class SparkStateProgressModel extends widgets.VBoxModel {
+export class SparkStateProgressModel extends widgets.VBoxModel {
   defaults() {
     return {
       ...super.defaults(),
@@ -53,7 +53,7 @@ class SparkStateProgressModel extends widgets.VBoxModel {
   }
 }
 
-class SparkStateProgressView extends widgets.VBoxView {
+export class SparkStateProgressView extends widgets.VBoxView {
   progressBar: HTMLElement;
   progressBarDone: HTMLElement;
   progressBarActive: HTMLElement;

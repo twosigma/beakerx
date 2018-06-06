@@ -21,7 +21,7 @@ const DEFAULT_LABEL_TEXT = 'Output';
 const ANIMATION_DURATION = 300;
 const PREVIEW_ANIMATION_DURATION = 100;
 
-class FoldoutModel extends widgets.BoxModel {
+export class FoldoutModel extends widgets.BoxModel {
     defaults() {
         return {
             ...super.defaults(),
@@ -35,7 +35,7 @@ class FoldoutModel extends widgets.BoxModel {
     }
 }
 
-class FoldoutView extends widgets.BoxView {
+export class FoldoutView extends widgets.BoxView {
     label: Panel;
     labelContent: Widget;
     content: Panel;

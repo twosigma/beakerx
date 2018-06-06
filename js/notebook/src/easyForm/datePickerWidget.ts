@@ -14,33 +14,33 @@
  *  limitations under the License.
  */
 
-var widgets = require('../widgets').default;
-var _ = require('underscore');
-var moment = require('moment');
+import * as moment from 'moment-timezone/builds/moment-timezone-with-data';
+import widgets from '../widgets';
 
-var Flatpickr = require("flatpickr");
+const Flatpickr = require("flatpickr");
 
-var DatePickerModel = widgets.StringModel.extend({
-  defaults: function() {
-    return _.extend({}, widgets.StringModel.prototype.defaults.apply(this), {
+export class DatePickerModel extends widgets.StringModel {
+  defaults() {
+    return {
+      ...super.defaults(),
       _view_name: "DatePickerView",
       _model_name: "DatePickerModel",
       _model_module: 'beakerx',
       _view_module: 'beakerx',
       _model_module_version: BEAKERX_MODULE_VERSION,
       _view_module_version: BEAKERX_MODULE_VERSION
-    });
+    }
   }
-});
+}
 
-var datepickerOpts = {
+const datepickerOpts = {
   dateFormat: 'Ymd',
   dateTimeFormat: 'Ymd H:i'
 };
 
-var DatePickerView = widgets.LabeledDOMWidgetView.extend({
-  render: function() {
-    DatePickerView.__super__.render.apply(this);
+export class DatePickerView extends widgets.LabeledDOMWidgetView {
+  render() {
+    super.render.apply(this);
 
     this.el.classList.add('jupyter-widgets');
     this.el.classList.add('widget-inline-hbox');
@@ -50,9 +50,9 @@ var DatePickerView = widgets.LabeledDOMWidgetView.extend({
 
     this.initDatePicker();
     this.update();
-  },
+  }
 
-  initDatePicker: function() {
+  initDatePicker() {
     var that = this;
     var showTime = this.model.get('showTime');
     var dateFormat = showTime ? datepickerOpts.dateTimeFormat : datepickerOpts.dateFormat;
@@ -87,9 +87,9 @@ var DatePickerView = widgets.LabeledDOMWidgetView.extend({
     this.displayed.then(function() {
 
     });
-  },
+  }
 
-  update: function(options) {
+  update(options?: any) {
     if (options === undefined || options.updated_view != this) {
       var newValue = this.model.get('value');
 
@@ -101,22 +101,22 @@ var DatePickerView = widgets.LabeledDOMWidgetView.extend({
       this.datepicker.disabled = disabled;
     }
 
-    DatePickerView.__super__.update.apply(this);
-  },
+    super.update.apply(this);
+  }
 
-  events: function () {
+  events() {
     return {
       "change input": "handleChanging"
     };
-  },
+  }
 
-  setValueToModel: function(value) {
+  setValueToModel(value) {
     this.model.set('value', value, {updated_view: this});
     this.touch();
   }
-});
+}
 
-module.exports = {
-  DatePickerModel: DatePickerModel,
-  DatePickerView: DatePickerView
+export default {
+  DatePickerModel,
+  DatePickerView
 };

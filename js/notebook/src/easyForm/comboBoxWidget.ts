@@ -19,7 +19,7 @@ import * as $ from 'jquery';
 
 const comboBox = require('../comboBox/jQueryComboBox');
 
-class ComboBoxModel extends widgets.SelectModel {
+export class ComboBoxModel extends widgets.SelectModel {
   defaults() {
     return {
       ...super.defaults(),
@@ -33,7 +33,7 @@ class ComboBoxModel extends widgets.SelectModel {
   }
 }
 
-class ComboBoxView extends widgets.SelectView {
+export class ComboBoxView extends widgets.SelectView {
   render(): void {
     super.render();
 

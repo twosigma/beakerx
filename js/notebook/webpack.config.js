@@ -116,7 +116,7 @@ module.exports = [
     // custom widget.
     // It must be an amd module
     //
-    entry: './src/index.js',
+    entry: './src/index.ts',
     output: {
       filename: 'index.js',
       path: path.resolve(__dirname, '../../beakerx/beakerx/static'),

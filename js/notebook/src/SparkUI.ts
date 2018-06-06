@@ -22,7 +22,7 @@ const bkUtils = require("./shared/bkUtils");
 
 const SPARK_LOCAL_MASTER_URL_PREFIX = 'local';
 
-class SparkUIModel extends widgets.VBoxModel {
+export class SparkUIModel extends widgets.VBoxModel {
   defaults() {
     return {
       ...super.defaults(),
@@ -36,7 +36,7 @@ class SparkUIModel extends widgets.VBoxModel {
   }
 }
 
-class SparkUIView extends widgets.VBoxView {
+export class SparkUIView extends widgets.VBoxView {
   private sparkStats: Widget;
   private sparkAppId: string;
   private sparkUiWebUrl: string;

@@ -14,28 +14,34 @@
  *  limitations under the License.
  */
 
-var widgets = require('./widgets').default;
-var _ = require('underscore');
+import widgets from './widgets';
 
-var TabModel = widgets.TabModel.extend({
-  _model_name : 'TabModel',
-  _view_name : 'TabView',
-  _model_module : 'beakerx',
-  _view_module : 'beakerx',
-  _model_module_version: BEAKERX_MODULE_VERSION,
-  _view_module_version: BEAKERX_MODULE_VERSION
-});
+export class TabModel extends widgets.TabModel {
+  defaults() {
+    return {
+      ...super.defaults(),
+      _model_name: 'TabModel',
+      _view_name: 'TabView',
+      _model_module: 'beakerx',
+      _view_module: 'beakerx',
+      _model_module_version: BEAKERX_MODULE_VERSION,
+      _view_module_version: BEAKERX_MODULE_VERSION
+    }
+  }
+}
 
-var TabView = widgets.TabView.extend({
-  render: function() {
-    TabView.__super__.render.apply(this);
+export class TabView extends widgets.TabView {
+  render() {
+    super.render.apply(this);
     this.$el.addClass('beaker-tab-view');
-  },
-  _onTabChanged: function(tabBar, tabs) {
-    TabView.__super__._onTabChanged.apply(this, arguments);
+  }
+
+  _onTabChanged(tabBar, tabs) {
+    super._onTabChanged.apply(this, arguments);
     this._triggerSelectEventForChildren(tabs.currentIndex);
-  },
-  _triggerSelectEventForChildren: function(currentIndex) {
+  }
+
+  _triggerSelectEventForChildren(currentIndex) {
     if (this.childrenViews._models && this.childrenViews._models.length) {
       var currentModel = this.childrenViews._models[currentIndex];
       if (currentModel && currentModel.trigger) {
@@ -43,9 +49,9 @@ var TabView = widgets.TabView.extend({
       }
     }
   }
-});
+}
 
-module.exports = {
-  TabModel: TabModel,
-  TabView: TabView
+export default {
+  TabModel,
+  TabView
 };

@@ -17,7 +17,7 @@
 import widgets from './widgets';
 import { DataGridScope } from './tableDisplay/dataGrid';
 
-class TableDisplayModel extends widgets.DOMWidgetModel {
+export class TableDisplayModel extends widgets.DOMWidgetModel {
   defaults() {
     return {
       ...super.defaults(),
@@ -32,7 +32,7 @@ class TableDisplayModel extends widgets.DOMWidgetModel {
 }
 
 // Custom View. Renders the widget model.
-class TableDisplayView extends widgets.DOMWidgetView {
+export class TableDisplayView extends widgets.DOMWidgetView {
   private _currentScope: DataGridScope;
 
   render(): void {

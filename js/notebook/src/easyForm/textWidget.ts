@@ -18,7 +18,7 @@ import widgets from '../widgets';
 
 export const TEXT_INPUT_WIDTH_UNIT = 'px';
 
-class TextModel extends widgets.TextModel {
+export class TextModel extends widgets.TextModel {
   defaults() {
     return {
       ...super.defaults(),
@@ -32,7 +32,7 @@ class TextModel extends widgets.TextModel {
   }
 }
 
-class TextView extends widgets.TextView {
+export class TextView extends widgets.TextView {
   handleKeypress(e) {
     if (e.keyCode == 13) {
       this.send({ event: 'submit' });

@@ -23,6 +23,7 @@ export {
   StyleView,
   WidgetModel,
   WidgetView,
+  unpack_models,
 } from "@jupyter-widgets/base";
 
 export * from "@jupyter-widgets/controls";

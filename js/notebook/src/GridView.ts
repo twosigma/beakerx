@@ -14,28 +14,32 @@
  *  limitations under the License.
  */
 
-var widgets = require('./widgets').default;
-var _ = require('underscore');
+import widgets from './widgets';
 
-require('./gridView/grid-view.scss');
+import './gridView/grid-view.scss';
 
-var GridViewModel = widgets.VBoxModel.extend({
-  _model_name : 'GridViewModel',
-  _view_name : 'GridView',
-  _model_module : 'beakerx',
-  _view_module : 'beakerx',
-  _model_module_version: BEAKERX_MODULE_VERSION,
-  _view_module_version: BEAKERX_MODULE_VERSION
-});
+export class GridViewModel extends widgets.VBoxModel {
+  defaults() {
+    return {
+      ...super.defaults(),
+      _model_name: 'GridViewModel',
+      _view_name: 'GridView',
+      _model_module: 'beakerx',
+      _view_module: 'beakerx',
+      _model_module_version: BEAKERX_MODULE_VERSION,
+      _view_module_version: BEAKERX_MODULE_VERSION
+    }
+  }
+}
 
-var GridView = widgets.VBoxView.extend({
-  render: function() {
-    GridView.__super__.render.apply(this);
+export class GridView extends widgets.VBoxView {
+  render() {
+    super.render.apply(this);
     this.$el.addClass('beaker-grid-view');
   }
-});
+}
 
-module.exports = {
-  GridViewModel: GridViewModel,
-  GridView: GridView
+export default {
+  GridViewModel,
+  GridView
 };

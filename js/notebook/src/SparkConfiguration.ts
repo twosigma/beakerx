@@ -16,7 +16,7 @@
 
 import widgets from './widgets';
 
-class SparkConfigurationModel extends widgets.VBoxModel {
+export class SparkConfigurationModel extends widgets.VBoxModel {
   defaults() {
     return {
       ...super.defaults(),
@@ -30,7 +30,7 @@ class SparkConfigurationModel extends widgets.VBoxModel {
   }
 }
 
-class SparkConfigurationView extends widgets.VBoxView {}
+export class SparkConfigurationView extends widgets.VBoxView {}
 
 export default {
     SparkConfigurationModel,

@@ -16,7 +16,7 @@
 
 import widgets from '../widgets';
 
-class CheckboxModel extends widgets.CheckboxModel {
+export class CheckboxModel extends widgets.CheckboxModel {
   defaults() {
     return {
       ...super.defaults(),
@@ -30,7 +30,7 @@ class CheckboxModel extends widgets.CheckboxModel {
   }
 }
 
-class CheckboxView extends widgets.CheckboxView {
+export class CheckboxView extends widgets.CheckboxView {
   render() {
     super.render();
 

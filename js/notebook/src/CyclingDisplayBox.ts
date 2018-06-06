@@ -14,69 +14,71 @@
  *  limitations under the License.
  */
 
-var widgets = require('./widgets').default;
-var _ = require('underscore');
+import widgets from './widgets';
 
-var interval = undefined;
-var period = undefined;
-var currentWidgetIndex = 0;
+let interval = undefined;
+let period = undefined;
+let currentWidgetIndex = 0;
 
-var CyclingDisplayBoxModel = widgets.BoxModel.extend({
-  _model_name : 'CyclingDisplayBoxModel',
-  _view_name : 'CyclingDisplayBoxView',
-  _model_module : 'beakerx',
-  _view_module : 'beakerx',
-  _model_module_version: BEAKERX_MODULE_VERSION,
-  _view_module_version: BEAKERX_MODULE_VERSION
-});
+export class CyclingDisplayBoxModel extends widgets.BoxModel {
+  defaults() {
+    return {
+      ...super.defaults(),
+      _model_name: 'CyclingDisplayBoxModel',
+      _view_name: 'CyclingDisplayBoxView',
+      _model_module: 'beakerx',
+      _view_module: 'beakerx',
+      _model_module_version: BEAKERX_MODULE_VERSION,
+      _view_module_version: BEAKERX_MODULE_VERSION
+    }
+  }
+}
 
-var CyclingDisplayBoxView = widgets.BoxView.extend({
-  
-  initialize: function() {
-    CyclingDisplayBoxView.__super__.initialize.apply(this, arguments);
+export class CyclingDisplayBoxView extends widgets.BoxView {
+  initialize() {
+    super.initialize.apply(this, arguments);
     this.interval = undefined;
     this.period = this.model.get("period");
-  },
+  }
 
-  update_children: function() {
-    var that = this;
+  update_children() {
     if(this.interval){
       clearInterval(this.interval);
     }
 
-    that.draw_widget();
+    this.draw_widget();
     if(this.period){
-      this.interval = setInterval(function() {
-        var max = that.model.get('children').length - 1; 
+      this.interval = setInterval(() => {
+        let max = this.model.get('children').length - 1;
+
         if(currentWidgetIndex >= max){
           currentWidgetIndex = 0;
-        }else{
+        } else {
           currentWidgetIndex++;
         }
-        that.draw_widget();
-        
+
+        this.draw_widget();
       }, this.period);
     } 
-  },
+  }
   
-  draw_widget: function() {
-    var element = this.model.get('children')[currentWidgetIndex];
+  draw_widget() {
+    const element = this.model.get('children')[currentWidgetIndex];
+
     if(element && this.children_views){
       this.children_views.update([element])
         .then(function(views) {
-          var heights = views.map(function (view) {
+          let heights = views.map((view) => {
             return view.$el.height();
           });
 
           views[0].$el.parent().css('min-height', Math.max.apply(null, heights));
         });
     }
-  },
-  
+  }
+}
 
-});
-
-module.exports = {
-  CyclingDisplayBoxView: CyclingDisplayBoxView,
-  CyclingDisplayBoxModel: CyclingDisplayBoxModel
+export default {
+  CyclingDisplayBoxView,
+  CyclingDisplayBoxModel
 };

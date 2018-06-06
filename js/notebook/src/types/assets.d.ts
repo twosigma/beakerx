@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 
+declare var __webpack_public_path__: string;
 declare var BEAKERX_MODULE_VERSION: string;
 declare var require: Function;
 declare var Jupyter: any;

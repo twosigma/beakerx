@@ -16,7 +16,7 @@
 
 import widgets from '../widgets';
 
-class SelectMultipleModel extends widgets.SelectMultipleModel {
+export class SelectMultipleModel extends widgets.SelectMultipleModel {
   defaults() {
     return {
       ...super.defaults(),
@@ -30,7 +30,7 @@ class SelectMultipleModel extends widgets.SelectMultipleModel {
   }
 }
 
-class SelectMultipleView extends widgets.SelectMultipleView {
+export class SelectMultipleView extends widgets.SelectMultipleView {
   update() {
     super.update.apply(this);
 

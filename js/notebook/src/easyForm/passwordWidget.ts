@@ -15,10 +15,9 @@
  */
 
 import widgets from '../widgets';
+import { TEXT_INPUT_WIDTH_UNIT } from './textWidget';
 
-export const TEXT_INPUT_WIDTH_UNIT = 'px';
-
-class PasswordModel extends widgets.PasswordModel {
+export class PasswordModel extends widgets.PasswordModel {
   defaults() {
     return {
       ...super.defaults(),
@@ -32,7 +31,7 @@ class PasswordModel extends widgets.PasswordModel {
   }
 }
 
-class PasswordView extends widgets.PasswordView {
+export class PasswordView extends widgets.PasswordView {
   handleKeypress(e) {
     if (e.keyCode == 13) {
       this.send({ event: 'submit' });

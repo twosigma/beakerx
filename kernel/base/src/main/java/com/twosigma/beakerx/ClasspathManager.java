@@ -18,10 +18,13 @@ package com.twosigma.beakerx;
 import com.twosigma.beakerx.kernel.KernelManager;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ClasspathManager {
 
   public static List<String> getJars() {
-    return KernelManager.get().getClasspath().getPathsAsStrings();
+    List<String> pathsAsStrings = KernelManager.get().getClasspath().getPathsAsStrings();
+    return pathsAsStrings.stream()
+            .filter(x -> x.endsWith(".jar")).collect(Collectors.toList());
   }
 }

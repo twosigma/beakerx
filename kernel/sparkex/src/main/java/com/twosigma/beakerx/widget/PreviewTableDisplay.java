@@ -26,7 +26,6 @@ import static java.util.Arrays.asList;
 public class PreviewTableDisplay {
 
   public static int ROWS = 10;
-  private final HBox countButton;
   private VBox panel;
   private Collection<Map<String, Object>> preview;
   private Rows allRows;
@@ -36,20 +35,8 @@ public class PreviewTableDisplay {
   public PreviewTableDisplay(Collection<Map<String, Object>> previewRows, Rows allRows, Count count) {
     this.allRows = allRows;
     this.preview = previewRows;
-    this.countButton = createCountButton(count);
-    this.previewContent = asList(new HBox(asList(createShowRowsButton(), this.countButton)), new TableDisplay(this.preview));
+    this.previewContent = asList(createShowRowsButton(), new TableDisplay(this.preview));
     this.panel = new VBox(previewContent);
-  }
-
-  private HBox createCountButton(Count count) {
-    Label label = new Label();
-    Button button = new Button();
-    button.setDescription("Count rows");
-    button.registerOnClick((content, message) -> {
-      Long aLong = count.get();
-      label.setValue(aLong);
-    });
-    return new HBox(asList(button, label));
   }
 
   private Button createShowRowsButton() {
@@ -60,8 +47,8 @@ public class PreviewTableDisplay {
         TableDisplay tableDisplay = new TableDisplay(allRows.get(ROWS + 1));
         tableDisplay.ROWS_LIMIT = ROWS;
         tableDisplay.ROW_LIMIT_TO_INDEX = ROWS;
-        tableDisplay.setRowLimitMsg("Note: showing a preview of a non-materialized Spark RDD");
-        this.rowsContent = asList(countButton, tableDisplay);
+        tableDisplay.setRowLimitMsg(String.format("Note: materializing a %s row preview of a Spark RDD", ROWS));
+        this.rowsContent = asList(tableDisplay);
       }
       changeContent(this.rowsContent);
     });

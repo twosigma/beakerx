@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-const widgets = require('../widgets');
+import widgets from '../widgets';
 
 class CheckboxModel extends widgets.CheckboxModel {
   defaults() {

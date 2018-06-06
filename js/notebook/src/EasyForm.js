@@ -15,14 +15,14 @@
  */
 
 var ENTER_KEY_CODE = 13;
-var widgets = require('./widgets');
+var widgets = require('./widgets').default;
 var _ = require('underscore');
-var selectMultipleWidget = require('./easyForm/selectMultipleWidget');
-var selectMultipleSingleWidget = require('./easyForm/selectMultipleSingleWidget');
+var selectMultipleWidget = require('./easyForm/selectMultipleWidget').default;
+var selectMultipleSingleWidget = require('./easyForm/selectMultipleSingleWidget').default;
 var datePickerWidget = require('./easyForm/datePickerWidget');
 var comboBoxWidget = require('./easyForm/comboBoxWidget').default;
 var textWidget = require('./easyForm/textWidget').default;
-var passwordWidget = require('./easyForm/passwordWidget').default
+var passwordWidget = require('./easyForm/passwordWidget').default;
 var TextareaWidget = require('./easyForm/TextareaWidget').default;
 var checkboxWidget = require('./easyForm/checkboxWidget').default;
 

@@ -2,6 +2,36 @@
 # yarn lockfile v1
 
 
+"@jupyter-widgets/base@^1.1.10":
+  version "1.1.10"
+  resolved "https://registry.yarnpkg.com/@jupyter-widgets/base/-/base-1.1.10.tgz#e9fdd3451098a416b5ccccdff6203d5aeed6fe8b"
+  dependencies:
+    "@jupyterlab/services" "^1.0.1 || ^2.0.0"
+    "@phosphor/coreutils" "^1.2.0"
+    "@phosphor/messaging" "^1.2.1"
+    "@phosphor/widgets" "^1.3.0"
+    "@types/backbone" "^1.3.33"
+    "@types/lodash" "^4.14.66"
+    backbone "1.2.3"
+    base64-js "^1.2.1"
+    jquery "^3.1.1"
+    lodash "^4.17.4"
+
+"@jupyter-widgets/controls@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@jupyter-widgets/controls/-/controls-1.2.1.tgz#ceecf45e96f7cb716ea3e0302830bccc243c91a9"
+  dependencies:
+    "@jupyter-widgets/base" "^1.1.10"
+    "@phosphor/algorithm" "^1.1.0"
+    "@phosphor/domutils" "^1.1.0"
+    "@phosphor/messaging" "^1.2.1"
+    "@phosphor/signaling" "^1.2.0"
+    "@phosphor/widgets" "^1.3.0"
+    d3-format "^0.5.1"
+    jquery "^3.1.1"
+    jquery-ui "^1.12.1"
+    underscore "^1.8.3"
+
 "@jupyterlab/coreutils@^1.0.10":
   version "1.0.10"
   resolved "https://registry.yarnpkg.com/@jupyterlab/coreutils/-/coreutils-1.0.10.tgz#259347ec4021e2f1a36b84be4e084631f8fa53a9"
@@ -17,7 +47,45 @@
     path-posix "~1.0.0"
     url-parse "~1.1.9"
 
-"@phosphor/algorithm@^1.1.2":
+"@jupyterlab/coreutils@^1.1.3":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@jupyterlab/coreutils/-/coreutils-1.1.3.tgz#079ff19faeaffcb6cb243c3fb0c737f6ea661b5a"
+  dependencies:
+    "@phosphor/algorithm" "^1.1.2"
+    "@phosphor/coreutils" "^1.3.0"
+    "@phosphor/disposable" "^1.1.2"
+    "@phosphor/signaling" "^1.2.2"
+    ajv "~5.1.6"
+    comment-json "^1.1.3"
+    minimist "~1.2.0"
+    moment "~2.21.0"
+    path-posix "~1.0.0"
+    url-parse "~1.1.9"
+
+"@jupyterlab/observables@^1.0.10":
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/@jupyterlab/observables/-/observables-1.0.10.tgz#dbc9da5988ebf3acc35effd24a1c598b13592fb5"
+  dependencies:
+    "@phosphor/algorithm" "^1.1.2"
+    "@phosphor/coreutils" "^1.3.0"
+    "@phosphor/disposable" "^1.1.2"
+    "@phosphor/messaging" "^1.2.2"
+    "@phosphor/signaling" "^1.2.2"
+
+"@jupyterlab/services@^1.0.1 || ^2.0.0":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@jupyterlab/services/-/services-2.0.3.tgz#376f06093b693e7d1037d01b5a542ec27a84a052"
+  dependencies:
+    "@jupyterlab/coreutils" "^1.1.3"
+    "@jupyterlab/observables" "^1.0.10"
+    "@phosphor/algorithm" "^1.1.2"
+    "@phosphor/coreutils" "^1.3.0"
+    "@phosphor/disposable" "^1.1.2"
+    "@phosphor/signaling" "^1.2.2"
+    node-fetch "~1.7.3"
+    ws "~1.1.4"
+
+"@phosphor/algorithm@^1.1.0", "@phosphor/algorithm@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@phosphor/algorithm/-/algorithm-1.1.2.tgz#fd1de9104c9a7f34e92864586ddf2e7f2e7779e8"
 
@@ -38,7 +106,18 @@
     "@phosphor/keyboard" "^1.1.2"
     "@phosphor/signaling" "^1.2.2"
 
-"@phosphor/coreutils@^1.3.0":
+"@phosphor/commands@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@phosphor/commands/-/commands-1.5.0.tgz#68c137008e2d536828405fd4ebab43675d65d42b"
+  dependencies:
+    "@phosphor/algorithm" "^1.1.2"
+    "@phosphor/coreutils" "^1.3.0"
+    "@phosphor/disposable" "^1.1.2"
+    "@phosphor/domutils" "^1.1.2"
+    "@phosphor/keyboard" "^1.1.2"
+    "@phosphor/signaling" "^1.2.2"
+
+"@phosphor/coreutils@^1.2.0", "@phosphor/coreutils@^1.3.0":
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@phosphor/coreutils/-/coreutils-1.3.0.tgz#63292d381c012c5ab0d0196e83ced829b7e04a42"
 
@@ -67,7 +146,7 @@
   dependencies:
     "@phosphor/algorithm" "^1.1.2"
 
-"@phosphor/domutils@^1.1.2":
+"@phosphor/domutils@^1.1.0", "@phosphor/domutils@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@phosphor/domutils/-/domutils-1.1.2.tgz#e2efeb052f398c42b93b89e9bab26af15cc00514"
 
@@ -82,7 +161,7 @@
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@phosphor/keyboard/-/keyboard-1.1.2.tgz#3e32234451764240a98e148034d5a8797422dd1f"
 
-"@phosphor/messaging@^1.2.2":
+"@phosphor/messaging@^1.2.1", "@phosphor/messaging@^1.2.2":
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@phosphor/messaging/-/messaging-1.2.2.tgz#7d896ddd3797b94a347708ded13da5783db75c14"
   dependencies:
@@ -93,7 +172,7 @@
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@phosphor/properties/-/properties-1.1.2.tgz#78cc77eff452839da02255de48e814946cc09a28"
 
-"@phosphor/signaling@^1.2.2":
+"@phosphor/signaling@^1.2.0", "@phosphor/signaling@^1.2.2":
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@phosphor/signaling/-/signaling-1.2.2.tgz#3fcf97ca88e38bfb357fe8fe6bf7513347a514a9"
   dependencies:
@@ -104,6 +183,22 @@
   resolved "https://registry.yarnpkg.com/@phosphor/virtualdom/-/virtualdom-1.1.2.tgz#ce55c86eef31e5d0e26b1dc96ea32bd684458f41"
   dependencies:
     "@phosphor/algorithm" "^1.1.2"
+
+"@phosphor/widgets@^1.3.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@phosphor/widgets/-/widgets-1.6.0.tgz#ebba8008b6b13247d03e73e5f3872c90d2c9c78f"
+  dependencies:
+    "@phosphor/algorithm" "^1.1.2"
+    "@phosphor/commands" "^1.5.0"
+    "@phosphor/coreutils" "^1.3.0"
+    "@phosphor/disposable" "^1.1.2"
+    "@phosphor/domutils" "^1.1.2"
+    "@phosphor/dragdrop" "^1.3.0"
+    "@phosphor/keyboard" "^1.1.2"
+    "@phosphor/messaging" "^1.2.2"
+    "@phosphor/properties" "^1.1.2"
+    "@phosphor/signaling" "^1.2.2"
+    "@phosphor/virtualdom" "^1.1.2"
 
 "@phosphor/widgets@^1.5.0":
   version "1.5.0"
@@ -127,13 +222,28 @@
   dependencies:
     samsam "1.3.0"
 
+"@types/backbone@^1.3.33":
+  version "1.3.42"
+  resolved "https://registry.yarnpkg.com/@types/backbone/-/backbone-1.3.42.tgz#b4cc7efb5bd5808f17485ad4e8271f862a967deb"
+  dependencies:
+    "@types/jquery" "*"
+    "@types/underscore" "*"
+
 "@types/chai@^4.1.1":
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.1.2.tgz#f1af664769cfb50af805431c407425ed619daa21"
 
+"@types/jquery@*":
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-3.3.2.tgz#8700226bdde24b6f98e3a60126dbaab3b2a3ab41"
+
 "@types/jquery@^3.3.0":
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-3.3.1.tgz#55758d44d422756d6329cbf54e6d41931d7ba28f"
+
+"@types/lodash@^4.14.66":
+  version "4.14.109"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.109.tgz#b1c4442239730bf35cabaf493c772b18c045886d"
 
 "@types/mocha@^2.2.46":
   version "2.2.48"
@@ -146,6 +256,10 @@
 "@types/strip-json-comments@0.0.30":
   version "0.0.30"
   resolved "https://registry.yarnpkg.com/@types/strip-json-comments/-/strip-json-comments-0.0.30.tgz#9aa30c04db212a9a0649d6ae6fd50accc40748a1"
+
+"@types/underscore@*":
+  version "1.8.8"
+  resolved "https://registry.yarnpkg.com/@types/underscore/-/underscore-1.8.8.tgz#510fe1ca5e7fa87fccd405b9a8b566d420bc3d1b"
 
 abab@^1.0.4:
   version "1.0.4"
@@ -486,6 +600,12 @@ babylon@^6.18.0:
   version "6.18.0"
   resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.18.0.tgz#af2f3b88fa6f5c1e4c634d1a0f8eac4f55b395e3"
 
+backbone@1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/backbone/-/backbone-1.2.3.tgz#c22cfd07fc86ebbeae61d18929ed115e999d65b9"
+  dependencies:
+    underscore ">=1.7.0"
+
 balanced-match@^0.4.2:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-0.4.2.tgz#cb3f3e3c732dc0f01ee70b403f302e61d7709838"
@@ -505,6 +625,10 @@ base64-inline-loader@^1.1.1:
 base64-js@^1.0.2:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.2.3.tgz#fb13668233d9614cf5fb4bce95a9ba4096cdf801"
+
+base64-js@^1.2.1:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.3.0.tgz#cab1e6118f051095e58b5281aea8c1cd22bfc0e3"
 
 base@^0.11.1:
   version "0.11.2"
@@ -1315,6 +1439,10 @@ d3-format@1, d3-format@1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/d3-format/-/d3-format-1.2.2.tgz#1a39c479c8a57fe5051b2e67a3bee27061a74e7a"
 
+d3-format@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/d3-format/-/d3-format-0.5.1.tgz#9447d7c95c84b15d34c138975dbf0489a412e405"
+
 d3-geo@1.9.1:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/d3-geo/-/d3-geo-1.9.1.tgz#157e3b0f917379d0f73bebfff3be537f49fa7356"
@@ -1628,6 +1756,12 @@ elliptic@^6.0.0:
 emojis-list@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/emojis-list/-/emojis-list-2.1.0.tgz#4daa4d9db00f9819880c79fa457ae5b09a1fd389"
+
+encoding@^0.1.11:
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/encoding/-/encoding-0.1.12.tgz#538b66f3ee62cd1ab51ec323829d1f9480c74beb"
+  dependencies:
+    iconv-lite "~0.4.13"
 
 end-of-stream@^1.0.0, end-of-stream@^1.1.0:
   version "1.4.1"
@@ -2421,6 +2555,12 @@ iconv-lite@0.4, iconv-lite@0.4.19:
   version "0.4.19"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.19.tgz#f7468f60135f5e5dad3399c0a81be9a1603a082b"
 
+iconv-lite@~0.4.13:
+  version "0.4.23"
+  resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.23.tgz#297871f63be507adcfbfca715d0cd0eed84e9a63"
+  dependencies:
+    safer-buffer ">= 2.1.2 < 3"
+
 icss-replace-symbols@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/icss-replace-symbols/-/icss-replace-symbols-1.1.0.tgz#06ea6f83679a7749e386cfe1fe812ae5db223ded"
@@ -2682,7 +2822,7 @@ is-property@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/is-property/-/is-property-1.0.2.tgz#57fe1c4e48474edd65b09911f26b1cd4095dda84"
 
-is-stream@^1.1.0:
+is-stream@^1.0.1, is-stream@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/is-stream/-/is-stream-1.1.0.tgz#12d4a3dd4e68e0b79ceb8dbc84173ae80d91ca44"
 
@@ -2781,7 +2921,7 @@ jquery-ui@^1.12.1:
   version "1.12.1"
   resolved "https://registry.yarnpkg.com/jquery-ui/-/jquery-ui-1.12.1.tgz#bcb4045c8dd0539c134bc1488cdd3e768a7a9e51"
 
-jquery@^3.3.1:
+jquery@^3.1.1, jquery@^3.3.1:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.3.1.tgz#958ce29e81c9790f31be7792df5d4d95fc57fbca"
 
@@ -3368,6 +3508,13 @@ no-case@^2.2.0:
   dependencies:
     lower-case "^1.1.1"
 
+node-fetch@~1.7.3:
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-1.7.3.tgz#980f6f72d85211a5347c6b2bc18c5b84c3eb47ef"
+  dependencies:
+    encoding "^0.1.11"
+    is-stream "^1.0.1"
+
 node-gyp@^3.3.1:
   version "3.6.2"
   resolved "https://registry.yarnpkg.com/node-gyp/-/node-gyp-3.6.2.tgz#9bfbe54562286284838e750eac05295853fa1c60"
@@ -3616,6 +3763,10 @@ optionator@^0.8.1:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
     wordwrap "~1.0.0"
+
+options@>=0.0.5:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/options/-/options-0.0.6.tgz#ec22d312806bb53e731773e7cdaefcf1c643128f"
 
 os-browserify@^0.3.0:
   version "0.3.0"
@@ -4531,6 +4682,10 @@ safe-regex@^1.1.0:
   dependencies:
     ret "~0.1.10"
 
+"safer-buffer@>= 2.1.2 < 3":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
+
 samsam@1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/samsam/-/samsam-1.3.0.tgz#8d1d9350e25622da30de3e44ba692b5221ab7c50"
@@ -5245,6 +5400,14 @@ uid-number@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/uid-number/-/uid-number-0.0.6.tgz#0ea10e8035e8eb5b8e4449f06da1c730663baa81"
 
+ultron@1.0.x:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/ultron/-/ultron-1.0.2.tgz#ace116ab557cd197386a4e88f4685378c8b2e4fa"
+
+underscore@>=1.7.0:
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.9.1.tgz#06dce34a0e68a7babc29b365b8e74b8925203961"
+
 underscore@^1.8.3:
   version "1.8.3"
   resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.8.3.tgz#4f3fb53b106e6097fcf9cb4109f2a5e9bdfa5022"
@@ -5544,6 +5707,13 @@ ws@^4.0.0:
   dependencies:
     async-limiter "~1.0.0"
     safe-buffer "~5.1.0"
+
+ws@~1.1.4:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-1.1.5.tgz#cbd9e6e75e09fc5d2c90015f21f0c40875e0dd51"
+  dependencies:
+    options ">=0.0.5"
+    ultron "1.0.x"
 
 xml-char-classes@^1.0.0:
   version "1.0.0"

@@ -15,9 +15,9 @@
  */
 
 import * as $ from "jquery";
-import "./shared/style/spark.scss";
+import widgets from './widgets';
 
-const widgets = require('./widgets');
+import "./shared/style/spark.scss";
 
 interface IState {
   done: number;

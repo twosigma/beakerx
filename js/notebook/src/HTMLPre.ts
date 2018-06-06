@@ -17,7 +17,7 @@
 const widgets: {
   StringModel: new() => { defaults(): any },
   DescriptionView: new() => { el: any, model: any },
-} = require('./widgets');
+} = require('./widgets').default;
 
 class HTMLPreModel extends widgets.StringModel {
   defaults() {

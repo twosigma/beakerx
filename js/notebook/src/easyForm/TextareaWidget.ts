@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-const widgets = require('../widgets');
+import widgets from '../widgets';
 
 import { TEXT_INPUT_WIDTH_UNIT } from './textWidget';
 

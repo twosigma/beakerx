@@ -16,8 +16,8 @@
 
 import {Widget} from "@phosphor/widgets";
 import BeakerXApi from "./tree/Utils/BeakerXApi";
+import widgets from './widgets';
 
-const widgets = require('./widgets');
 const bkUtils = require("./shared/bkUtils");
 
 const SPARK_LOCAL_MASTER_URL_PREFIX = 'local';
@@ -267,7 +267,7 @@ class SparkUIView extends widgets.VBoxView {
 
   private addSparkMetricsWidget() {
     this.children_views.update(this.model.get('children')).then((views) => {
-      views.forEach((view) => {
+      views.forEach((view: any) => {
         view.children_views.update(view.model.get('children')).then((views) => {
           views.forEach((view) => {
             if (view instanceof widgets.LabelView && view.el.classList.contains('bx-connection-status')) {
@@ -280,7 +280,6 @@ class SparkUIView extends widgets.VBoxView {
   }
 
   dispose(): void {
-    super.dispose();
     clearInterval(this.apiCallIntervalId);
   }
 }

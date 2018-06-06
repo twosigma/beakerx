@@ -15,8 +15,8 @@
  */
 
 import {Widget,Panel} from '@phosphor/widgets';
+import widgets from './widgets';
 
-const widgets = require('./widgets');
 const DEFAULT_LABEL_TEXT = 'Output';
 const ANIMATION_DURATION = 300;
 const PREVIEW_ANIMATION_DURATION = 100;

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import * as widgets from './widgets';
+import widgets from './widgets';
 import { DataGridScope } from './tableDisplay/dataGrid';
 
 class TableDisplayModel extends widgets.DOMWidgetModel {
@@ -35,7 +35,7 @@ class TableDisplayModel extends widgets.DOMWidgetModel {
 class TableDisplayView extends widgets.DOMWidgetView {
   private _currentScope: DataGridScope;
 
-  render() {
+  render(): void {
     this._currentScope = null;
     this.$el.addClass('beaker-table-display');
 
@@ -57,12 +57,12 @@ class TableDisplayView extends widgets.DOMWidgetView {
     });
   }
 
-  handleModellUpdate() {
+  handleModellUpdate(): void {
     this._currentScope.updateModelData(this.model.get('model'));
     this._currentScope.doResetAll();
   }
 
-  handleUpdateData() {
+  handleUpdateData(): void {
     const change = this.model.get('updateData');
     const currentModel = this.model.get('model');
 
@@ -70,7 +70,7 @@ class TableDisplayView extends widgets.DOMWidgetView {
     this.handleModellUpdate();
   }
 
-  showWarning(data) {
+  showWarning(data): void {
     const rowLimitMsg = data.rowLimitMsg;
     const modal = document.createElement('div');
 
@@ -80,7 +80,7 @@ class TableDisplayView extends widgets.DOMWidgetView {
     this.el.appendChild(modal);
   }
 
-  initDataGridTable(data) {
+  initDataGridTable(data: any): void {
     this._currentScope = new DataGridScope({
       element: this.el,
       data: data,
@@ -91,7 +91,7 @@ class TableDisplayView extends widgets.DOMWidgetView {
     this._currentScope.render();
   }
 
-  remove() {
+  remove(): void {
     this._currentScope && this._currentScope.doDestroy();
 
     if (this.pWidget) {
@@ -105,6 +105,6 @@ class TableDisplayView extends widgets.DOMWidgetView {
 }
 
 export default {
-  TableDisplayModel: TableDisplayModel,
-  TableDisplayView: TableDisplayView
+  TableDisplayModel,
+  TableDisplayView
 };

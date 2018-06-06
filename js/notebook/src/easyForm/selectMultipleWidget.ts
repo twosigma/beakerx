@@ -14,36 +14,34 @@
  *  limitations under the License.
  */
 
-var widgets = require('../widgets');
-var _ = require('underscore');
+import widgets from '../widgets';
 
-var SelectMultipleSingleModel = widgets.SelectModel.extend({
-  defaults: function() {
-    return _.extend({}, widgets.SelectModel.prototype.defaults.apply(this), {
-      _view_name: "SelectMultipleSingleView",
-      _model_name: "SelectMultipleSingleModel",
+class SelectMultipleModel extends widgets.SelectMultipleModel {
+  defaults() {
+    return {
+      ...super.defaults(),
+      _view_name: "SelectMultipleView",
+      _model_name: "SelectMultipleModel",
       _model_module: 'beakerx',
       _view_module: 'beakerx',
       _model_module_version: BEAKERX_MODULE_VERSION,
       _view_module_version: BEAKERX_MODULE_VERSION
-    });
+    }
   }
-});
+}
 
-var SelectMultipleSingleView = widgets.SelectView.extend({
-  update: function() {
-    SelectMultipleSingleView.__super__.update.apply(this);
+class SelectMultipleView extends widgets.SelectMultipleView {
+  update() {
+    super.update.apply(this);
+
     var size = this.model.get('size');
     if (size !== undefined) {
       $(this.listbox).attr('size', size);
     }
-    $(this.el)
-    .removeClass('widget-select')
-    .addClass('widget-select-multiple');
   }
-});
+}
 
-module.exports = {
-  SelectMultipleSingleModel: SelectMultipleSingleModel,
-  SelectMultipleSingleView: SelectMultipleSingleView
+export default {
+  SelectMultipleModel,
+  SelectMultipleView
 };

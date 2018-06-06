@@ -14,10 +14,14 @@
  *  limitations under the License.
  */
 
-const baseWidgets = require('@jupyter-widgets/base');
-const controlWidgets = require('@jupyter-widgets/controls');
+/// <reference path='widgets.d.ts'/>
+
+const base = require('@jupyter-widgets/base');
+const controls = require('@jupyter-widgets/controls');
 
 export const widgets = {
-  ...baseWidgets,
-  ...controlWidgets
+  ...base,
+  ...controls
 };
+
+export default widgets;

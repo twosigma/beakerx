@@ -14,25 +14,22 @@
  *  limitations under the License.
  */
 
-import widgets from './widgets';
+import {DOMWidgetModel,DOMWidgetView} from "@jupyter-widgets/base/lib/index";
+import {DataGridScope} from "./tableDisplay/dataGrid";
 
-class SparkConfigurationModel extends widgets.VBoxModel {
-  defaults() {
-    return {
-      ...super.defaults(),
-      _view_name: "SparkConfigurationView",
-      _model_name: "SparkConfigurationModel",
-      _model_module: 'beakerx',
-      _view_module: 'beakerx',
-      _model_module_version: BEAKERX_MODULE_VERSION,
-      _view_module_version: BEAKERX_MODULE_VERSION,
-    };
-  }
+declare class TableDisplayModel extends DOMWidgetModel {}
+declare class TableDisplayView extends DOMWidgetView {
+  private _currentScope: DataGridScope;
+
+  render(): void
+  handleModellUpdate(): void
+  handleUpdateData(): void
+  showWarning(data: any): void
+  initDataGridTable(data: any): void
+  remove(): void
 }
 
-class SparkConfigurationView extends widgets.VBoxView {}
-
-export default {
-    SparkConfigurationModel,
-    SparkConfigurationView
-};
+export {
+  TableDisplayModel,
+  TableDisplayView
+}

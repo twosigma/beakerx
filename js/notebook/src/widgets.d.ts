@@ -1,5 +1,5 @@
 /*
- *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,12 +14,15 @@
  *  limitations under the License.
  */
 
-declare var BEAKERX_MODULE_VERSION: string;
-declare var require: Function;
-declare var Jupyter: any;
-declare var beakerx: any;
+export {
+  DOMWidgetView,
+  DOMWidgetModel,
+  LayoutModel,
+  LayoutView,
+  StyleModel,
+  StyleView,
+  WidgetModel,
+  WidgetView,
+} from "@jupyter-widgets/base";
 
-declare module '*.woff' {
-  const value: any;
-  export default value;
-}
+export * from "@jupyter-widgets/controls";

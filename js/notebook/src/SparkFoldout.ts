@@ -15,8 +15,7 @@
  */
 
 import Foldout from "./Foldout";
-
-const widgets = require('./widgets');
+import widgets from './widgets';
 
 class SparkFoldoutModel extends widgets.BoxModel {
   defaults() {

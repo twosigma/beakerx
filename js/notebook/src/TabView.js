@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-var widgets = require('./widgets');
+var widgets = require('./widgets').default;
 var _ = require('underscore');
 
 var TabModel = widgets.TabModel.extend({

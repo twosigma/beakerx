@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-const widgets = require('../widgets');
+import widgets from '../widgets';
 
 export const TEXT_INPUT_WIDTH_UNIT = 'px';
 

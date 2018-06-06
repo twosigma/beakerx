@@ -14,25 +14,12 @@
  *  limitations under the License.
  */
 
-import widgets from './widgets';
+import {VBoxView,VBoxModel} from "@jupyter-widgets/controls/lib/index";
 
-class SparkConfigurationModel extends widgets.VBoxModel {
-  defaults() {
-    return {
-      ...super.defaults(),
-      _view_name: "SparkConfigurationView",
-      _model_name: "SparkConfigurationModel",
-      _model_module: 'beakerx',
-      _view_module: 'beakerx',
-      _model_module_version: BEAKERX_MODULE_VERSION,
-      _view_module_version: BEAKERX_MODULE_VERSION,
-    };
-  }
+declare class SparkUIModel extends VBoxModel {}
+declare class SparkUIView extends VBoxView {}
+
+export {
+  SparkUIView,
+  SparkUIModel
 }
-
-class SparkConfigurationView extends widgets.VBoxView {}
-
-export default {
-    SparkConfigurationModel,
-    SparkConfigurationView
-};

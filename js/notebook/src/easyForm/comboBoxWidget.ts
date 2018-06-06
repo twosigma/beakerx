@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
-const widgets = require('../widgets');
-const comboBox = require('../comboBox/jQueryComboBox');
-
+import widgets from '../widgets';
 import * as $ from 'jquery';
+
+const comboBox = require('../comboBox/jQueryComboBox');
 
 class ComboBoxModel extends widgets.SelectModel {
   defaults() {

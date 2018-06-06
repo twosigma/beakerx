@@ -14,25 +14,23 @@
  *  limitations under the License.
  */
 
-import widgets from './widgets';
+import {VBoxView,VBoxModel} from "@jupyter-widgets/controls/lib/index";
 
-class SparkConfigurationModel extends widgets.VBoxModel {
-  defaults() {
-    return {
-      ...super.defaults(),
-      _view_name: "SparkConfigurationView",
-      _model_name: "SparkConfigurationModel",
-      _model_module: 'beakerx',
-      _view_module: 'beakerx',
-      _model_module_version: BEAKERX_MODULE_VERSION,
-      _view_module_version: BEAKERX_MODULE_VERSION,
-    };
-  }
+declare class SparkStateProgressModel extends VBoxModel {}
+declare class SparkStateProgressView extends VBoxView {
+  progressBar: HTMLElement;
+  progressBarDone: HTMLElement;
+  progressBarActive: HTMLElement;
+  progressBarWaiting: HTMLElement;
+
+  progressLabels: HTMLElement;
+  progressLabelDone: HTMLElement;
+  progressLabelActive: HTMLElement;
+  progressLabelWaiting: HTMLElement;
+  progressLabelAll: HTMLElement;
 }
 
-class SparkConfigurationView extends widgets.VBoxView {}
-
-export default {
-    SparkConfigurationModel,
-    SparkConfigurationView
-};
+export {
+  SparkStateProgressModel,
+  SparkStateProgressView
+}

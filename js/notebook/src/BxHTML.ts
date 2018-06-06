@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-const widgets = require('./widgets');
+import widgets from './widgets';
 
 class BxHTMLModel extends widgets.HTMLModel {
     defaults() {

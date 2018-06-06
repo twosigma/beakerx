@@ -14,33 +14,37 @@
  *  limitations under the License.
  */
 
-var widgets = require('../widgets');
-var _ = require('underscore');
+import widgets from '../widgets';
 
-var SelectMultipleModel = widgets.SelectMultipleModel.extend({
-  defaults: function() {
-    return _.extend({}, widgets.SelectMultipleModel.prototype.defaults.apply(this), {
-      _view_name: "SelectMultipleView",
-      _model_name: "SelectMultipleModel",
+class SelectMultipleSingleModel extends widgets.SelectModel {
+  defaults() {
+    return {
+      ...super.defaults(),
+      _view_name: "SelectMultipleSingleView",
+      _model_name: "SelectMultipleSingleModel",
       _model_module: 'beakerx',
       _view_module: 'beakerx',
       _model_module_version: BEAKERX_MODULE_VERSION,
       _view_module_version: BEAKERX_MODULE_VERSION
-    });
+    };
   }
-});
+}
 
-var SelectMultipleView = widgets.SelectMultipleView.extend({
-  update: function() {
-    SelectMultipleView.__super__.update.apply(this);
-    var size = this.model.get('size');
+class SelectMultipleSingleView extends widgets.SelectView {
+  update() {
+    super.update.apply(this);
+
+    const size = this.model.get('size');
     if (size !== undefined) {
       $(this.listbox).attr('size', size);
     }
+    $(this.el)
+    .removeClass('widget-select')
+    .addClass('widget-select-multiple');
   }
-});
+}
 
-module.exports = {
-  SelectMultipleModel: SelectMultipleModel,
-  SelectMultipleView: SelectMultipleView
+export default {
+  SelectMultipleSingleModel,
+  SelectMultipleSingleView
 };

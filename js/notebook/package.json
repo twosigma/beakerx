@@ -34,6 +34,8 @@
     "stats": "webpack --env production --profile --json > stats.json"
   },
   "devDependencies": {
+    "@jupyter-widgets/base": "^1.1.10",
+    "@jupyter-widgets/controls": "^1.2.1",
     "@types/chai": "^4.1.1",
     "@types/jquery": "^3.3.0",
     "@types/mocha": "^2.2.46",

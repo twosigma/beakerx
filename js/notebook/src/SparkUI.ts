@@ -59,7 +59,7 @@ class SparkUIView extends widgets.VBoxView {
     this.toggleExecutorConfigInputs = this.toggleExecutorConfigInputs.bind(this);
   }
 
-  public render() {
+  public render(): void {
     super.render();
     this.el.classList.add('widget-spark-ui');
 
@@ -67,7 +67,7 @@ class SparkUIView extends widgets.VBoxView {
     this.updateChildren();
   }
 
-  public update() {
+  public update(): void {
     super.update();
 
     this.connectToApi();
@@ -279,7 +279,7 @@ class SparkUIView extends widgets.VBoxView {
     });
   }
 
-  dispose() {
+  dispose(): void {
     super.dispose();
     clearInterval(this.apiCallIntervalId);
   }

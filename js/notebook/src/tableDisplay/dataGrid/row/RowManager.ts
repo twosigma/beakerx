@@ -19,7 +19,7 @@ import { MapIterator, iter, toArray, filter } from '@phosphor/algorithm';
 import DataGridColumn from "../column/DataGridColumn";
 import ColumnManager from "../column/ColumnManager";
 import {COLUMN_TYPES, SORT_ORDER} from "../column/enums";
-import {DEFAULT_PAGE_LENGTH} from "../../consts";
+import {DEFAULT_PAGE_LENGTH} from "../consts";
 import ColumnFilter from "../column/ColumnFilter";
 
 export default class RowManager {

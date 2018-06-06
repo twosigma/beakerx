@@ -21,7 +21,7 @@ import {
   getDoublePrecisionByType
 } from './dataTypes';
 import { DataGridHelpers } from './dataGridHelpers';
-import { TIME_UNIT_FORMATS } from '../consts';
+import { TIME_UNIT_FORMATS } from './consts';
 import {CellRenderer} from "@phosphor/datagrid";
 import {IColumnState} from "./interface/IColumn";
 import {

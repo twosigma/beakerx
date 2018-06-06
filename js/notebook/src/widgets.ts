@@ -14,7 +14,10 @@
  *  limitations under the License.
  */
 
-var baseWidgets = require('@jupyter-widgets/base');
-var controlWidgets = require('@jupyter-widgets/controls');
+const baseWidgets = require('@jupyter-widgets/base');
+const controlWidgets = require('@jupyter-widgets/controls');
 
-module.exports = Object.assign({}, baseWidgets, controlWidgets);
+export const widgets = {
+  ...baseWidgets,
+  ...controlWidgets
+};

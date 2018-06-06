@@ -17,8 +17,6 @@
 import * as widgets from './widgets';
 import { DataGridScope } from './tableDisplay/dataGrid';
 
-import './tableDisplay/css/datatables.scss';
-
 class TableDisplayModel extends widgets.DOMWidgetModel {
   defaults() {
     return {

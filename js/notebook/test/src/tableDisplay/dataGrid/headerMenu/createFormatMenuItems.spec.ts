@@ -21,7 +21,7 @@ import {
   createTimeSubitems
 } from '@beakerx/tableDisplay/dataGrid/headerMenu/createFormatMenuItems';
 import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
-import { scopeData, TIME_UNIT_FORMATS } from '@beakerx/tableDisplay/consts';
+import { scopeData, TIME_UNIT_FORMATS } from '@beakerx/tableDisplay/dataGrid/consts';
 import modelStateMock from "../mock/modelStateMock";
 import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";

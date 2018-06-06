@@ -19,7 +19,7 @@ import { createFormatMenuItems } from './createFormatMenuItems';
 import DataGridColumn from "../column/DataGridColumn";
 import { selectBodyColumnStates } from "../column/selectors";
 import {COLUMN_TYPES} from "../column/enums";
-import {DEFAULT_PAGE_LENGTH, scopeData} from "../../consts";
+import {DEFAULT_PAGE_LENGTH, scopeData} from "../consts";
 
 export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
 

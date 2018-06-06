@@ -25,7 +25,7 @@ import static java.util.Arrays.asList;
 
 public class PreviewTableDisplay {
 
-  public static int ROWS = 1000;
+  public static int ROWS = 10;
   private final HBox countButton;
   private VBox panel;
   private Collection<Map<String, Object>> preview;
@@ -54,10 +54,10 @@ public class PreviewTableDisplay {
 
   private Button createShowRowsButton() {
     Button button = new Button();
-    button.setDescription("Show rows");
+    button.setDescription("Preview " + ROWS + " Rows");
     button.registerOnClick((content, message) -> {
       if (this.rowsContent == null) {
-        this.rowsContent = asList(new HBox(asList(createHideRowsButton(), countButton)), new TableDisplay(previewAllRows.get(ROWS)));
+        this.rowsContent = asList(countButton, new TableDisplay(previewAllRows.get(ROWS)));
       }
       changeContent(this.rowsContent);
     });
@@ -69,15 +69,6 @@ public class PreviewTableDisplay {
     panel.close();
     panel = new VBox(content);
     panel.display();
-  }
-
-  private Button createHideRowsButton() {
-    Button button = new Button();
-    button.setDescription("Hide rows");
-    button.registerOnClick((content, message) -> {
-      changeContent(this.previewContent);
-    });
-    return button;
   }
 
   public void display() {

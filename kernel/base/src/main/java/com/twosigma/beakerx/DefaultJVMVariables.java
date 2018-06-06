@@ -44,6 +44,7 @@ public class DefaultJVMVariables {
     addImports(
             "com.twosigma.beakerx.NamespaceClient",
             "com.twosigma.beakerx.widget.OutputManager",
+            "com.twosigma.beakerx.ClasspathManager",
             "com.twosigma.beakerx.chart.Color",
             "com.twosigma.beakerx.chart.GradientColor",
             "com.twosigma.beakerx.chart.legend.*",

@@ -24,6 +24,11 @@ import {DEFAULT_PAGE_LENGTH, scopeData} from "../../consts";
 export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
 
   const dataGrid = column.dataGrid;
+
+  if (!dataGrid) {
+    return [];
+  }
+
   const createShowColumnSubmenu = (): MenuItem[] => {
     const items: MenuItem[] = [];
     const columnsStates = selectBodyColumnStates(dataGrid.store.state);
@@ -33,7 +38,7 @@ export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
         title: state.name,
         id: `column_${state.name}`,
         isChecked: () => {
-          let column = dataGrid.columnManager.getColumnByName(state.name);
+          let column = dataGrid.columnManager && dataGrid.columnManager.getColumnByName(state.name);
 
           return column && column.getVisible();
         },

@@ -32,10 +32,6 @@ describe('BeakerXDataGrid', () => {
     dataGrid = new BeakerXDataGrid({}, dataStore);
   });
 
-  after(() => {
-    dataGrid.destroy();
-  });
-
   it('should create the columnManager', () => {
     expect(dataGrid.columnManager).to.be.an.instanceof(ColumnManager);
   });

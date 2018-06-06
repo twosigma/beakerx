@@ -22,7 +22,6 @@ describe('Tests for kernel magic. ', function () {
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/python/KernelMagicsTest.ipynb');
-    beakerxPO.openUIWindow();
   });
 
   afterAll(function () {
@@ -31,12 +30,6 @@ describe('Tests for kernel magic. ', function () {
 
   var cellIndex;
   var imageDir = 'python/kernelMagics';
-
-  describe('UI options. ', function () {
-    it("Use new table widget. ", function () {
-      beakerxPO.setDataGridForTable(true, false);
-    });
-  });
 
   describe('%%groovy ', function () {
     it('Should display stdout and execute results ', function () {

@@ -56,6 +56,17 @@ export class BeakerXDataGridModel extends DataModel {
     this.addProperties(store, columnManager, rowManager);
   }
 
+  destroy(): void {
+    this.dataFormatter.destroy();
+
+    setTimeout(() => {
+      this.store = null;
+      this.dataFormatter = null;
+      this.columnManager = null;
+      this.rowManager = null;
+    });
+  }
+
   reset() {
     this.emitChanged({ type: 'model-reset' });
   }

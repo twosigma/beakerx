@@ -14,14 +14,14 @@
  *  limitations under the License.
  */
 
-import {BeakerXDataGrid} from "../BeakerXDataGrid";
-import {ICellData} from "../interface/ICell";
-import {CellRenderer} from "@phosphor/datagrid";
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
+import { ICellData } from "../interface/ICell";
+import { CellRenderer } from "@phosphor/datagrid";
 import DataGridColumn from "../column/DataGridColumn";
-import {DEFAULT_CELL_BACKGROUND, FOCUSED_CELL_BACKGROUND} from "../style/dataGridStyle";
-import {selectVisibleBodyColumns} from "../column/selectors";
-import {KEYBOARD_KEYS} from "../event/enums";
-import {selectColumnsFrozenNames} from "../model/selectors";
+import { selectVisibleBodyColumns } from "../column/selectors";
+import { KEYBOARD_KEYS } from "../event/enums";
+import { selectColumnsFrozenNames } from "../model/selectors";
+import BeakerXThemeHelper from "../../../BeakerXThemeHelper";
 
 export default class CellFocusManager {
   dataGrid: BeakerXDataGrid;
@@ -29,6 +29,11 @@ export default class CellFocusManager {
 
   constructor(dataGrid: BeakerXDataGrid) {
     this.dataGrid = dataGrid;
+    this.focusedCellData = null;
+  }
+
+  destroy(): void {
+    this.dataGrid = null;
     this.focusedCellData = null;
   }
 
@@ -65,7 +70,7 @@ export default class CellFocusManager {
     const cellType = DataGridColumn.getColumnTypeByRegion(config.region, config.column);
 
     if (!this.focusedCellData || cellType !== this.focusedCellData.type) {
-      return DEFAULT_CELL_BACKGROUND;
+      return BeakerXThemeHelper.DEFAULT_CELL_BACKGROUND;
     }
 
     return (
@@ -73,8 +78,8 @@ export default class CellFocusManager {
       && config.column === this.focusedCellData.column
       && config.region === this.focusedCellData.region
     )
-      ? FOCUSED_CELL_BACKGROUND
-      : DEFAULT_CELL_BACKGROUND;
+      ? BeakerXThemeHelper.FOCUSED_CELL_BACKGROUND
+      : BeakerXThemeHelper.DEFAULT_CELL_BACKGROUND;
   }
 
   private setRightFocusedCell() {

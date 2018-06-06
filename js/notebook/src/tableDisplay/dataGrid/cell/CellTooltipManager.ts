@@ -37,6 +37,17 @@ export default class CellTooltipManager {
     this.dataGrid.cellHovered.connect(this.handleCellHovered, this);
   }
 
+  destroy(): void {
+    this.activeTooltips.forEach(tooltip => tooltip.destroy());
+
+    setTimeout(() => {
+      this.dataGrid = null;
+      this.activeTooltips = null;
+      this.tooltips = null;
+      this.lastData = null;
+    });
+  }
+
   hideTooltips() {
     let tooltip;
 

@@ -17,7 +17,6 @@
 import createHeaderContextMenuItems from './createHeaderContextMenuItems';
 import createCellContextMenuItems from './createCellContextMenuItems';
 import BkoContextMenu from '../../../contextMenu/BkoContextMenu';
-import {BeakerXDataGrid} from "../BeakerXDataGrid";
 import {DataGridScope} from "../DataGridScope";
 
 export default class DataGridContextMenu extends BkoContextMenu {

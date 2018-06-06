@@ -52,6 +52,18 @@ export default class ColumnPosition {
     this.moveDraggedHeader = this.moveDraggedHeader.bind(this);
   }
 
+  destroy() {
+    this.draggableHeaderCanvas.remove();
+
+    setTimeout(() => {
+      this.dataGrid = null;
+      this.store = null;
+      this.grabbedCellData = null;
+      this.dropCellData = null;
+      this.draggableHeaderCanvas = null;
+    });
+  }
+
   startDragging(data: ICellData) {
     this.debounceDragStart(data);
   }

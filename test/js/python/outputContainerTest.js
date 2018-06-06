@@ -22,7 +22,6 @@ describe('(Groovy) Output Containers ', function () {
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/python/OutputContainersTest.ipynb');
-    beakerxPO.openUIWindow();
   });
 
   afterAll(function () {
@@ -38,12 +37,6 @@ describe('(Groovy) Output Containers ', function () {
   function widgetTableIsVisible(widget){
     return widget.isVisible('div.p-Widget.p-DataGrid-viewport');
   }
-
-  describe('UI options. ', function () {
-    it("Use new table widget. ", function () {
-      beakerxPO.setDataGridForTable(true, false);
-    });
-  });
 
   describe('(Python) Without output. ', function() {
     it("Cell doesn't have output. ", function () {

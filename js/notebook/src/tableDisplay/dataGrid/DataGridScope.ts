@@ -15,22 +15,21 @@
  */
 
 import { Widget } from '@phosphor/widgets';
+import { RendererMap } from "@phosphor/datagrid";
 import { BeakerXDataGrid } from './BeakerXDataGrid';
-import { silverStripeStyle } from './style/dataGridStyle';
 import IDataGridScopeOptions from "./interface/IDataGridScopeOptions";
 import DataGridContextMenu from "./contextMenu/DataGridContextMenu";
 import ColumnLimitModal from "./modal/ColumnLimitModal";
-import createStore, {BeakerXDataStore} from "./store/BeakerXDataStore";
-import {selectModel} from "./model/selectors";
-import {DataGridHelpers} from "./dataGridHelpers";
-import {RendererMap} from "@phosphor/datagrid";
+import createStore, { BeakerXDataStore } from "./store/BeakerXDataStore";
+import { selectModel } from "./model/selectors";
+import BeakerXThemeHelper from "../../BeakerXThemeHelper";
 
 export class DataGridScope {
   contextMenu: DataGridContextMenu;
 
-  readonly dataGrid: BeakerXDataGrid;
-  readonly element: HTMLElement;
-  readonly store: BeakerXDataStore;
+  private element: HTMLElement;
+  private store: BeakerXDataStore;
+  private dataGrid: BeakerXDataGrid;
   private tableDisplayModel: any;
   private tableDisplayView: any;
 
@@ -41,7 +40,7 @@ export class DataGridScope {
     this.tableDisplayView = options.widgetView;
     this.dataGrid = new BeakerXDataGrid(
       {
-        style: silverStripeStyle,
+        style: BeakerXThemeHelper.getStyle(),
         cellRenderers: new RendererMap({ priority: ['body|{dataType: html}','body|'] })
       },
       this.store
@@ -62,9 +61,14 @@ export class DataGridScope {
     Widget.attach(this.dataGrid, this.element);
   }
 
-  doDestroy() {
+  doDestroy(): void {
     this.dataGrid.destroy();
     this.contextMenu.destroy();
+
+    setTimeout(() => {
+      this.dataGrid = null;
+      this.store = null;
+    });
   }
 
   updateModelData(newData) {
@@ -93,5 +97,9 @@ export class DataGridScope {
 
   initColumnLimitModal() {
     return new ColumnLimitModal(this.dataGrid, this.element);
+  }
+
+  setInitialSize() {
+    this.dataGrid.setInitialSize();
   }
 }

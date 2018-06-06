@@ -36,6 +36,12 @@ export default class CellSelectionManager {
     this.dataGrid = dataGrid;
   }
 
+  destroy(): void {
+    this.dataGrid = null;
+    this.startCellData = null;
+    this.endCellData = null;
+  }
+
   setStartCell(cellData: ICellData) {
     this.startCellData = cellData;
   }

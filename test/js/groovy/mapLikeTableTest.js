@@ -22,7 +22,6 @@ describe('(Groovy) Testing Map Like Tables', function () {
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/groovy/MapLikeTableTest.ipynb');
-    beakerxPO.openUIWindow();
   });
 
   afterAll(function () {
@@ -31,12 +30,6 @@ describe('(Groovy) Testing Map Like Tables', function () {
 
   var cellIndex;
   var imageDir = 'groovy/mapLikeTable';
-
-  describe('UI options. ', function () {
-    it("Use new table widget. ", function () {
-      beakerxPO.setDataGridForTable(true, false);
-    });
-  });
 
   describe('Table display ', function () {
     it('A basic table is rendered correctly ', function () {

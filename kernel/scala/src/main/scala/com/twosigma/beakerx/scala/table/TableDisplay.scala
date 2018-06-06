@@ -46,7 +46,7 @@ object TableDisplay {
     new com.twosigma.beakerx.table.TableDisplay(javaStandardized)
   }
 
-  def toJavaMap(v: Array[Map[String, Any]]) = {
+  def toJavaMap(v: Array[Map[String, Any]]): Array[util.Map[String, Object]] = {
     val javaStandardized: Array[util.Map[String, Object]] = v.map(v => v.mapValues(_.asInstanceOf[Object]).asJava)
     javaStandardized
   }
@@ -56,7 +56,7 @@ object TableDisplay {
     new com.twosigma.beakerx.table.TableDisplay(javaCollection)
   }
 
-  def toJavaCollection(v: Seq[Map[String, Any]]) = {
+  def toJavaCollection(v: Seq[Map[String, Any]]): util.Collection[util.Map[String, Object]] = {
     val javaMaps: Seq[util.Map[String, Object]] = v.map(m => m.mapValues(_.asInstanceOf[Object]).asJava)
     val javaCollection: util.Collection[util.Map[String, Object]] = javaMaps.asJava
     javaCollection
@@ -71,7 +71,7 @@ object TableDisplay {
 
 }
 
-class TableDisplay private(tableDisplay: com.twosigma.beakerx.table.TableDisplay) extends DisplayableWidget{
+class TableDisplay private(tableDisplay: com.twosigma.beakerx.table.TableDisplay) extends DisplayableWidget {
   def this(v: Map[_, _]) = {
     this(TableDisplay.create(v))
   }

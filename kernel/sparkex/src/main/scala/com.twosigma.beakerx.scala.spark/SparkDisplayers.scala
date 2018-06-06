@@ -24,6 +24,8 @@ import java.util.{HashMap, Map}
 import com.twosigma.beakerx.widget.PreviewTableDisplay
 import com.twosigma.beakerx.widget.PreviewTableDisplay.{Count, Rows}
 
+import scala.collection.immutable.ListMap
+
 object SparkDisplayers {
 
   def register() {
@@ -36,7 +38,9 @@ object SparkDisplayers {
   }
 
   def displayPreview(ds: org.apache.spark.sql.Dataset[_]): Unit = {
-    val preview = com.twosigma.beakerx.scala.table.TableDisplay.toJavaCollection(Seq(ds.schema.fields.map { col => col.name -> col.dataType.typeName }.toMap))
+    val tuples = ds.schema.fields.map { col => col.name -> col.dataType.typeName }
+    val list: ListMap[String, Any] = toListFromTuples(tuples)
+    val preview = com.twosigma.beakerx.scala.table.TableDisplay.fromSeqListMapToJavaCollection(Seq(list))
     val previewWidget = new PreviewTableDisplay(
       preview,
       new Rows {
@@ -48,6 +52,7 @@ object SparkDisplayers {
     )
     previewWidget.display()
   }
+
 
   def displayDataset(ds: org.apache.spark.sql.Dataset[_], rows: Int = 20): Unit = {
     val t: com.twosigma.beakerx.table.TableDisplay = tableDisplay(ds, rows)
@@ -64,7 +69,20 @@ object SparkDisplayers {
   private def takeRows(ds: org.apache.spark.sql.Dataset[_], rows: Int) = {
     val columns = ds.columns
     val rowVals = ds.toDF.take(rows)
-    val maps = rowVals map (row => (columns zip row.toSeq).toMap)
+    val maps = rowVals map (row => toListMap(columns zip row.toSeq))
     maps
   }
+
+  private def toListMap(tuples: Array[(String, Any)]): ListMap[String, Any] = {
+    var list: ListMap[String, Any] = ListMap()
+    tuples.foreach(x => list += x._1 -> x._2)
+    list
+  }
+
+  private def toListFromTuples(tuples: Array[(String, String)]) = {
+    var list: ListMap[String, Any] = ListMap()
+    tuples.foreach(x => list += x._1 -> x._2)
+    list
+  }
+
 }

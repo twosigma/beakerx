@@ -26,6 +26,7 @@ import com.twosigma.beakerx.table.renderer.TableDisplayCellRenderer
 import com.twosigma.beakerx.widget.DisplayableWidget
 
 import scala.collection.JavaConverters._
+import scala.collection.immutable.ListMap
 
 
 object TableDisplay {
@@ -51,12 +52,23 @@ object TableDisplay {
     javaStandardized
   }
 
+  def toJavaMap(v: Array[ListMap[String, Any]]): Array[util.Map[String, Object]] = {
+    val javaStandardized: Array[util.Map[String, Object]] = v.map(v => v.mapValues(_.asInstanceOf[Object]).asJava)
+    javaStandardized
+  }
+
   def create(v: Seq[Map[String, Any]]): com.twosigma.beakerx.table.TableDisplay = {
     val javaCollection: util.Collection[util.Map[String, Object]] = toJavaCollection(v)
     new com.twosigma.beakerx.table.TableDisplay(javaCollection)
   }
 
   def toJavaCollection(v: Seq[Map[String, Any]]): util.Collection[util.Map[String, Object]] = {
+    val javaMaps: Seq[util.Map[String, Object]] = v.map(m => m.mapValues(_.asInstanceOf[Object]).asJava)
+    val javaCollection: util.Collection[util.Map[String, Object]] = javaMaps.asJava
+    javaCollection
+  }
+
+  def fromSeqListMapToJavaCollection(v: Seq[ListMap[String, Any]]): util.Collection[util.Map[String, Object]] = {
     val javaMaps: Seq[util.Map[String, Object]] = v.map(m => m.mapValues(_.asInstanceOf[Object]).asJava)
     val javaCollection: util.Collection[util.Map[String, Object]] = javaMaps.asJava
     javaCollection

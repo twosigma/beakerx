@@ -16,6 +16,31 @@
 
 @import "bxvariables";
 
+.label {
+  display: inline;
+  padding: .2em .6em .3em;
+  font-size: 75%;
+  font-weight: bold;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .25em;
+}
+
+.label-info {
+  background-color: $bxColorInfo;
+}
+
+.label-danger {
+  background-color: $bxColorError;
+}
+
+.label-default {
+  background-color: $bxColorDefault;
+}
+
 .bx-spark-stagePanel {
   max-width: 600px;
   margin: 8px 0;
@@ -172,5 +197,9 @@
 
   .bx-config-name input {
     text-align: right;
+  }
+
+  .bx-spark-connect-error {
+    margin-left: 20px;
   }
 }

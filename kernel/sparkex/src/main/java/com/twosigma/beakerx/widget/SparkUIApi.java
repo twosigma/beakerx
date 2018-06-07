@@ -15,9 +15,22 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.twosigma.beakerx.message.Message;
+
+import java.util.Arrays;
 import java.util.List;
 
 public interface SparkUIApi {
+
+  String SPARK_REPL_CLASS_OUTPUT_DIR = "spark.repl.class.outputDir";
+  String SPARK_APP_NAME = "spark.app.name";
+  String SPARK_MASTER = "spark.master";
+  String SPARK_EXECUTOR_MEMORY = "spark.executor.memory";
+  String SPARK_EXECUTOR_CORES = "spark.executor.cores";
+  String SPARK_EXTRA_LISTENERS = "spark.extraListeners";
+  String BEAKERX_ID = "beakerx.id";
+  List<String> STANDARD_SETTINGS = Arrays.asList(SPARK_MASTER, SPARK_EXECUTOR_MEMORY, SPARK_EXECUTOR_CORES, SPARK_APP_NAME, BEAKERX_ID, SPARK_EXTRA_LISTENERS, SPARK_REPL_CLASS_OUTPUT_DIR);
+  String SPARK_SESSION_NAME = "spark";
 
   List<SparkConfiguration.Configuration> getAdvancedOptions();
 
@@ -35,9 +48,11 @@ public interface SparkUIApi {
 
   void taskEnd(int stageId, long taskId);
 
-  void applicationStart();
-
   void applicationEnd();
 
   void cancelAllJobs();
+
+  void startSpinner(Message message);
+
+  void stopSpinner();
 }

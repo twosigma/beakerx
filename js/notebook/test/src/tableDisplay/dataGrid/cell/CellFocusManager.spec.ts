@@ -20,13 +20,10 @@ import modelStateMock from "../mock/modelStateMock";
 import CellFocusManager from "@beakerx/tableDisplay/dataGrid/cell/CellFocusManager";
 import cellDataMock from "../mock/cellDataMock";
 import cellConfigMock from "../mock/cellConfigMock";
-import {
-  DEFAULT_CELL_BACKGROUND,
-  FOCUSED_CELL_BACKGROUND
-} from "@beakerx/tableDisplay/dataGrid/style/dataGridStyle";
 import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
-import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
-import {KEYBOARD_KEYS} from "@beakerx/tableDisplay/dataGrid/event/enums";
+import { COLUMN_TYPES } from "@beakerx/tableDisplay/dataGrid/column/enums";
+import { KEYBOARD_KEYS } from "@beakerx/tableDisplay/dataGrid/event/enums";
+import BeakerXThemeHelper from "@beakerx/BeakerXThemeHelper";
 
 describe('CellFocusManager', () => {
   let dataGrid;
@@ -63,8 +60,8 @@ describe('CellFocusManager', () => {
   it('should implement getFocussedCellBackground method', () => {
     expect(cellFocusManager).to.have.property('getFocussedCellBackground');
     expect(cellFocusManager.getFocussedCellBackground).to.be.a('Function');
-    expect(cellFocusManager.getFocussedCellBackground(cellConfigMock)).to.equal(FOCUSED_CELL_BACKGROUND);
-    expect(cellFocusManager.getFocussedCellBackground({ ...cellConfigMock, column: 1 })).to.equal(DEFAULT_CELL_BACKGROUND);
+    expect(cellFocusManager.getFocussedCellBackground(cellConfigMock)).to.equal(BeakerXThemeHelper.FOCUSED_CELL_BACKGROUND);
+    expect(cellFocusManager.getFocussedCellBackground({ ...cellConfigMock, column: 1 })).to.equal(BeakerXThemeHelper.DEFAULT_CELL_BACKGROUND);
   });
 
   it('should implement setFocusedCellByNavigationKey method', () => {

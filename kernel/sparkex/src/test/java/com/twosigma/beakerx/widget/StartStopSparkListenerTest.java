@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.twosigma.beakerx.message.Message;
 import org.apache.spark.scheduler.SparkListenerApplicationEnd;
 import org.apache.spark.scheduler.SparkListenerApplicationStart;
 import org.assertj.core.api.Assertions;
@@ -35,20 +36,6 @@ public class StartStopSparkListenerTest {
   }
 
   @Test
-  public void onApplicationStart() {
-    //given
-    StartStopSparkListener listener = new StartStopSparkListener();
-    //when
-    listener.onApplicationStart(eventStart());
-    //then
-    Assertions.assertThat(sparkUIMock.started).isTrue();
-  }
-
-  private SparkListenerApplicationStart eventStart() {
-    return new SparkListenerApplicationStart("an1", Option.empty(), 111, "su1", Option.empty(), Option.empty());
-  }
-
-  @Test
   public void onApplicationEnd() {
     //given
     StartStopSparkListener listener = new StartStopSparkListener();
@@ -60,7 +47,6 @@ public class StartStopSparkListenerTest {
 
   static class SparkUIMock implements SparkUIApi {
 
-    private boolean started = false;
     private boolean ended = false;
 
     @Override
@@ -104,17 +90,22 @@ public class StartStopSparkListenerTest {
     }
 
     @Override
-    public void applicationStart() {
-      started = true;
-    }
-
-    @Override
     public void applicationEnd() {
       ended = true;
     }
 
     @Override
     public void cancelAllJobs() {
+
+    }
+
+    @Override
+    public void startSpinner(Message message) {
+
+    }
+
+    @Override
+    public void stopSpinner() {
 
     }
   }

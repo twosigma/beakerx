@@ -57,8 +57,7 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
             kernel,
             new SparkUI.SparkUIFactoryImpl(
                     new SparkEngineImpl.SparkEngineFactoryImpl(),
-                    new SparkUiDefaultsImpl(
-                            Paths.get(System.getProperty("user.home") + File.separator + ".jupyter" + File.separator + "beakerx.json"))));
+                    new SparkUiDefaultsImpl(Paths.get((System.getenv("JUPYTER_CONFIG_DIR") != null ? System.getenv("JUPYTER_CONFIG_DIR") : (System.getProperty("user.home") + File.separator + ".jupyter")) + File.separator + "beakerx.json"))));
 
   }
 

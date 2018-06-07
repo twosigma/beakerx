@@ -25,6 +25,8 @@ import java.util.Map;
 
 public interface SparkEngine {
 
+  String SPARK_APP_ID = "spark.app.id";
+
   TryResult configure(KernelFunctionality kernel, SparkUIApi sparkUI, Message parentMessage);
 
   SparkSession getOrCreate();

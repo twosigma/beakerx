@@ -15,10 +15,7 @@
  */
 package com.twosigma.beakerx.kernel.msg;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class TracebackPrinter {
+public class TracebackPrinter extends StacktracePrinter {
 
   private static final String PREFIX = "\033[";
   private static final String RED_COLOR = "31";
@@ -29,28 +26,29 @@ public class TracebackPrinter {
   static final String RED_BOLD = PREFIX + BOLD_DISPLAY + ";" + RED_COLOR + "m";
   static final String RED = PREFIX + NORMAL_DISPLAY + ";" + RED_COLOR + "m";
 
-  private static final String COM_TWOSIGMA_BEAKER = "com.twosigma.beaker";
+  private static final StacktracePrinter INSTANCE = new TracebackPrinter();
 
   public static String[] print(String[] input) {
-    if (input == null) {
-      return new String[0];
-    }
-    return mark(input);
+    return INSTANCE.doPrint(input);
   }
 
-  private static String[] mark(String[] input) {
-    boolean shouldBeBold = true;
-    List<String> ret = new ArrayList<>();
-    for (String line : input) {
-      if (line != null) {
-        if (!line.contains(COM_TWOSIGMA_BEAKER) && shouldBeBold) {
-          ret.add(RED_BOLD + line + END);
-        } else {
-          shouldBeBold = false;
-          ret.add(RED + line + END);
-        }
-      }
-    }
-    return ret.toArray(new String[0]);
+  @Override
+  public String startRedBold() {
+    return RED_BOLD;
+  }
+
+  @Override
+  public String endRedBold() {
+    return END;
+  }
+
+  @Override
+  public String startRed() {
+    return RED;
+  }
+
+  @Override
+  public String endRed() {
+    return END;
   }
 }

@@ -25,7 +25,6 @@ describe('Groovy base tests. ', function () {
     beakerxPO = new BeakerXPageObject();
     plotHelper = new PlotHelperObject();
     beakerxPO.runNotebookByUrl('/test/ipynb/groovy/GroovyTest.ipynb');
-    beakerxPO.openUIWindow();
   }, 2);
 
   afterAll(function () {
@@ -34,12 +33,6 @@ describe('Groovy base tests. ', function () {
 
   var cellIndex;
   var imageDir = 'groovy/groovy';
-
-  describe('UI options. ', function () {
-    it("Use new table widget. ", function () {
-      beakerxPO.setDataGridForTable(true, false);
-    });
-  });
 
   describe('Define local and global variables. ', function () {
     it('Execute result output contains "2". ', function () {

@@ -31,37 +31,33 @@ describe('(Groovy) Testing Enum Support', function () {
 
   describe('(Groovy) Enum', function () {
     var testValues = {
-      null: 'null',
-      colors: '[BLUE, RED, WHITE]',
-      car: 'Car@'
+      null: /null/,
+      colors: /BLUE, RED, WHITE/,
+      car_color: /RED/
     };
 
     it('Cell enumerates colors', function () {
       cellIndex = 0;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$('div.output_result').getText()).toBe(testValues.null);
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, testValues.null);
     });
 
     it('Cell properly displays a list of colors', function () {
       cellIndex += 1;
-      codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$('div.output_result').getText()).toBe(testValues.colors);
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, testValues.colors);
     });
 
     it('Cell sets up a car class', function () {
       cellIndex += 1;
-      codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$('div.output_result').getText()).toBe(testValues.null);
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, testValues.null);
     });
 
-    it('Cell properly displays a list of colors', function () {
+    it('Cell properly displays enum value', function () {
       cellIndex += 1;
-      codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$('div.output_result').getText()).toContain(testValues.car);
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, testValues.car_color);
     });
   });
 });

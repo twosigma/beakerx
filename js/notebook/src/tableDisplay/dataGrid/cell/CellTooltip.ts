@@ -33,6 +33,11 @@ export default class CellTooltip {
     }
   }
 
+  destroy(): void {
+    this.container = null;
+    this.node = null;
+  }
+
   show(x: number, y: number): void {
     if (this.container.contains(this.node)) {
       return;

@@ -207,4 +207,8 @@ export namespace DataGridHelpers {
   export function formatTimestamp(timestamp, tz, format) {
     return applyTimezone(timestamp, tz).format(format);
   }
+
+  export function hasUpperCaseLetter(value: string) {
+    return /[A-Z]+/gm.test(value);
+  }
 }

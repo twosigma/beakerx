@@ -43,7 +43,7 @@ import static com.twosigma.beakerx.kernel.magic.command.functionality.LoadMagicM
 import static com.twosigma.beakerx.kernel.magic.command.functionality.UnImportMagicCommand.UNIMPORT;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
+public abstract class KernelExecutionTest extends ClasspathManagerTest {
 
   public static final String DEMO_RESOURCES_JAR = "../../doc/resources/jar";
   public static final String DEMO_JAR_NAME = "demo.jar";
@@ -143,7 +143,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     Code code = CodeFactory.create(allCode, commMsg(), getKernel());
     code.execute(getKernel(), 1);
     Optional<Message> updateMessage = EvaluatorResultTestWatcher.waitForUpdateMessage(getKernelSocketsService().getKernelSockets());
-    String text =  (String) TestWidgetUtils.getState(updateMessage.get()).get("value");
+    String text = (String) TestWidgetUtils.getState(updateMessage.get()).get("value");
     assertThat(text).contains("loadMagicJarDemo.jar");
   }
 
@@ -185,7 +185,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     Code code = CodeFactory.create(allCode, commMsg(), getKernel());
     code.execute(getKernel(), 1);
     Optional<Message> updateMessage = EvaluatorResultTestWatcher.waitForUpdateMessage(getKernelSocketsService().getKernelSockets());
-    String text =  (String) TestWidgetUtils.getState(updateMessage.get()).get("value");
+    String text = (String) TestWidgetUtils.getState(updateMessage.get()).get("value");
     assertThat(text).contains("demo.jar");
   }
 
@@ -196,10 +196,11 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     String path = pathToDemoClassFromAddedDemoJar();
     //when
     Code code = CodeFactory.create(IMPORT + " " + path, commMsg(), getKernel());
-    code.execute(kernel,1);
+    code.execute(kernel, 1);
     //then
     verifyImportedDemoClassByMagicCommand();
   }
+
   private void verifyImportedDemoClassByMagicCommand() throws InterruptedException {
     String allCode = getObjectTestMethodFromAddedDemoJar();
     Message message = getExecuteRequestMessage(allCode);
@@ -230,7 +231,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     String allCode = IMPORT + " " + path.substring(0, path.lastIndexOf(".")) + ".*";
     //when
     Code code = CodeFactory.create(allCode, commMsg(), getKernel());
-    code.execute(kernel,1);
+    code.execute(kernel, 1);
     //then
     verifyImportedDemoClassByMagicCommand();
   }
@@ -243,7 +244,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     addDemoJar();
     //when
     Code code = CodeFactory.create(allCode, commMsg(), getKernel());
-    code.execute(kernel,1);
+    code.execute(kernel, 1);
     //then
     List<Message> std = waitForStderr(getKernelSocketsService().getKernelSockets());
     String text = (String) std.get(0).getContent().get("text");
@@ -256,7 +257,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     String allCode = IMPORT + " " + pathToDemoClassFromAddedDemoJar() + "UnknownClass";
     //when
     Code code = CodeFactory.create(allCode, commMsg(), getKernel());
-    code.execute(kernel,1);
+    code.execute(kernel, 1);
     //then
     List<Message> std = waitForStderr(getKernelSocketsService().getKernelSockets());
     String text = (String) std.get(0).getContent().get("text");
@@ -269,10 +270,10 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     addDemoJar();
     String path = pathToDemoClassFromAddedDemoJar();
     Code code = CodeFactory.create(IMPORT + " " + path, commMsg(), getKernel());
-    code.execute(kernel,1);
+    code.execute(kernel, 1);
     //when
     Code code2 = CodeFactory.create(UNIMPORT + " " + path, commMsg(), getKernel());
-    code2.execute(kernel,2);
+    code2.execute(kernel, 2);
     //then
     //assertThat(status).isEqualTo(MagicCommandOutcomeItem.Status.OK);
     verifyUnImportedDemoClassByMagicCommand();

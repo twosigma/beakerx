@@ -31,6 +31,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class TestWidgetUtils {
 
@@ -94,7 +95,6 @@ public class TestWidgetUtils {
     if (null != data) {
       return (Map) ((Map) data).getOrDefault(Comm.STATE, null);
     }
-
     return null;
   }
 
@@ -154,5 +154,21 @@ public class TestWidgetUtils {
 
   public static List<Message> getOpenMessages(List<Message> messages) {
     return SearchMessages.getListMessagesByType(messages, JupyterMessages.COMM_OPEN);
+  }
+
+  public static List<Message> stateContains(List<Message> messages, String attribute, String text) {
+    List<Message> result = messages.stream()
+            .filter(message -> {
+              Map state = TestWidgetUtils.getState(message);
+              if (state != null) {
+                Object expected = state.get(attribute);
+                if (expected != null) {
+                  return ((String) expected).contains(text);
+                }
+              }
+              return false;
+            })
+            .collect(Collectors.toList());
+    return result;
   }
 }

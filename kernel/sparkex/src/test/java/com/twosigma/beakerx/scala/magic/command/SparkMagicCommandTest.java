@@ -26,9 +26,7 @@ import com.twosigma.beakerx.widget.SparkUIApi;
 import com.twosigma.beakerx.widget.SparkEngine;
 import com.twosigma.beakerx.widget.SparkUI;
 import com.twosigma.beakerx.widget.SparkUiDefaults;
-import com.twosigma.beakerx.widget.TestWidgetUtils;
 import org.apache.spark.SparkConf;
-import org.apache.spark.SparkContext;
 import org.apache.spark.sql.SparkSession;
 import org.junit.After;
 import org.junit.Before;
@@ -36,9 +34,11 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.twosigma.beakerx.MessageFactorTest.commMsg;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.stateContains;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SparkMagicCommandTest {
@@ -72,12 +72,12 @@ public class SparkMagicCommandTest {
   public void returnErrorWhenConnectToExistingSparkSession() {
     //given
     createSparkUiAndConnectToSession();
+    kernel.clearMessages();
     //when
     connectToSparkSecondTime();
     //then
-    Message message = kernel.getPublishedMessages().get(kernel.getPublishedMessages().size() - 1);
-    String text = (String) TestWidgetUtils.getContent(message).get("text");
-    assertThat(text).contains("Active spark session exists");
+    List<Message> messages = stateContains(kernel.getPublishedMessages(), "value", "Active spark session exists");
+    assertThat(messages.size()).isEqualTo(1);
   }
 
   private MagicCommandOutcomeItem connectToSparkSecondTime() {

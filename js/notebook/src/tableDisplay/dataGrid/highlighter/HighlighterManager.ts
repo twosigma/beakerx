@@ -37,7 +37,7 @@ export default class HighlighterManager {
   constructor(dataGrid: BeakerXDataGrid) {
     this.dataGrid = dataGrid;
     this.highlighters = [];
-    this.cachedHighlighters = new Map();
+    this.cachedHighlighters = new Map<string, Highlighter>();
 
     this.createHighlighter = this.createHighlighter.bind(this);
     this.registerHighlighter = this.registerHighlighter.bind(this);

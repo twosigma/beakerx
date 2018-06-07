@@ -1,0 +1,31 @@
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
+import { ICellData } from "../interface/ICell";
+import { BeakerXDataStore } from "../store/BeakerXDataStore";
+import DataGridColumn from "./DataGridColumn";
+import { IColumnPosition } from "../interface/IColumn";
+export default class ColumnPosition {
+    dataGrid: BeakerXDataGrid;
+    store: BeakerXDataStore;
+    grabbedCellData: ICellData | null;
+    dropCellData: ICellData | null;
+    draggableHeaderCanvas: HTMLCanvasElement;
+    draggableHeaderOffsetLeft: number | null;
+    dragStartTimeoutId: number;
+    constructor(dataGrid: BeakerXDataGrid);
+    destroy(): void;
+    startDragging(data: ICellData): void;
+    stopDragging(): void;
+    isDragging(): boolean;
+    reset(): void;
+    getColumnByPosition(position: IColumnPosition): DataGridColumn;
+    dropColumn(): void;
+    setPosition(column: DataGridColumn, position: IColumnPosition): void;
+    updateAll(): void;
+    moveDraggedHeader(event: MouseEvent): boolean;
+    private debounceDragStart(data);
+    private handleDragStart(data);
+    private moveColumn();
+    private toggleGrabbing(enable);
+    private attachDraggableHeader(data);
+    private handleCellHovered(sender, {data, event});
+}

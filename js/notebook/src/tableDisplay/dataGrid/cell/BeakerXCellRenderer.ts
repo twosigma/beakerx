@@ -27,7 +27,7 @@ import getStringSize = DataGridHelpers.getStringSize;
 import retrieveUrl = DataGridHelpers.retrieveUrl;
 import BeakerXThemeHelper from "../../../BeakerXThemeHelper";
 
-interface ICellRendererOptions {
+export interface ICellRendererOptions {
   font?: string,
   color?: string,
   text?: any,

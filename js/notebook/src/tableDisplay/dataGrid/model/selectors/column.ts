@@ -26,6 +26,8 @@ import {
 import {getAlignmentByChar} from "../../column/columnAlignment";
 import {IColumnPosition} from "../../interface/IColumn";
 import {ALL_TYPES} from "../../dataTypes";
+import Highlighter from "../../highlighter/Highlighter";
+import IHihglighterState from "../../interface/IHighlighterState";
 
 export const DEFAULT_INDEX_COLUMN_NAME = 'index';
 
@@ -186,7 +188,7 @@ export const selectColumnHighlighters = createSelector(
     (state, columnName) => columnName,
     (state, columnName, highlighterType) => highlighterType
   ],
-  (highlighters, columnName, highlighterType) => highlighters.filter(
+  (highlighters, columnName, highlighterType): IHihglighterState[] => highlighters.filter(
     highlighter => highlighter.colName === columnName && highlighter.type === highlighterType
   )
 );

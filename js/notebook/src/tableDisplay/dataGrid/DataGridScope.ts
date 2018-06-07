@@ -23,6 +23,7 @@ import ColumnLimitModal from "./modal/ColumnLimitModal";
 import createStore, { BeakerXDataStore } from "./store/BeakerXDataStore";
 import { selectModel } from "./model/selectors";
 import BeakerXThemeHelper from "../../BeakerXThemeHelper";
+import IDataModelState from "./interface/IDataGridModelState";
 
 export class DataGridScope {
   contextMenu: DataGridContextMenu;
@@ -53,7 +54,7 @@ export class DataGridScope {
     this.initColumnLimitModal();
   }
 
-  get state() {
+  get state(): IDataModelState {
     return selectModel(this.store.state);
   }
 

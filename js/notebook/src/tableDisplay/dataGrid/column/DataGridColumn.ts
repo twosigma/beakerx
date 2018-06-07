@@ -61,6 +61,7 @@ import {ColumnValuesIterator} from "./ColumnValuesIterator";
 import {DataGridHelpers} from "../dataGridHelpers";
 import getStringSize = DataGridHelpers.getStringSize;
 import {selectDataFontSize} from "../model/selectors/model";
+import Highlighter from "../highlighter/Highlighter";
 
 export default class DataGridColumn {
   index: number;
@@ -272,7 +273,7 @@ export default class DataGridColumn {
     return selectRenderer(this.store.state, this);
   }
 
-  getHighlighter(highlighterType: HIGHLIGHTER_TYPE) {
+  getHighlighter(highlighterType: HIGHLIGHTER_TYPE): Highlighter[]  {
     return this.dataGrid.highlighterManager.getColumnHighlighters(this, highlighterType);
   }
 

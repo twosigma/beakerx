@@ -176,6 +176,9 @@ define([
   };
 
   function highlight_toc_item(evt, data) {
+    if (!data.cell) {
+      return;
+    }
     var c = $(data.cell.element);
     if (c.length < 1) {
       return;

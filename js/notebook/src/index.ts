@@ -22,7 +22,7 @@
 // url for the notebook is not known at build time and is therefore computed
 // dynamically.
 
-/// <reference path='./index.d.ts'/>
+/// <reference path='./types/index.d.ts'/>
 
 __webpack_public_path__ = document.querySelector('body').getAttribute('data-base-url') + 'nbextensions/beakerx/';
 
@@ -47,30 +47,3 @@ export const PlotModel = Plot.PlotModel;
 export const PlotView = Plot.PlotView;
 
 export const version = require('../package.json').version;
-// var loadedModules = [
-//   require("./Plot"),
-//   require("./EasyForm"),
-//   require("./TabView"),
-//   require("./GridView"),
-//   require("./CyclingDisplayBox"),
-  // require("./TableDisplay").default,
-  // require("./SparkUI").default,
-  // require("./SparkStateProgress").default,
-  // require("./SparkConfiguration").default,
-  // require("./HTMLPre").default,
-  // require("./BxHTML").default,
-  // require("./Foldout").default,
-  // require("./SparkFoldout").default,
-// ];
-//
-// for (var i in loadedModules) {
-//   if (loadedModules.hasOwnProperty(i)) {
-//     var loadedModule = loadedModules[i];
-//     for (var target_name in loadedModule) {
-//       if (loadedModule.hasOwnProperty(target_name)) {
-//         module.exports[target_name] = loadedModule[target_name];
-//       }
-//     }
-//   }
-// }
-

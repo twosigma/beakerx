@@ -14,10 +14,7 @@
  *  limitations under the License.
  */
 
-const widgets: {
-  StringModel: new() => { defaults(): any },
-  DescriptionView: new() => { el: any, model: any },
-} = require('./widgets').default;
+import widgets from './widgets';
 
 export class HTMLPreModel extends widgets.StringModel {
   defaults() {

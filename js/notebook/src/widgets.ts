@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-/// <reference path='widgets.d.ts'/>
+/// <reference path='./types/widgets.d.ts'/>
 
 const base = require('@jupyter-widgets/base');
 const controls = require('@jupyter-widgets/controls');

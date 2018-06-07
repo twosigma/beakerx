@@ -20,6 +20,7 @@ import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.kernel.msg.StacktraceHtmlPrinter;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import org.apache.spark.SparkConf;
@@ -71,14 +72,34 @@ public class SparkEngineImpl implements SparkEngine {
     SparkConf sparkConf = createSparkConf(sparkUI.getAdvancedOptions(), getSparkConfBasedOn(this.sparkSessionBuilder));
     sparkConf = configureSparkConf(sparkConf, sparkUI);
     this.sparkSessionBuilder = SparkSession.builder().config(sparkConf);
-    SparkSession sparkSession = getOrCreate();
+    TryResult sparkSessionTry = createSparkSession(sparkUI, parentMessage);
+    if (sparkSessionTry.isError()) {
+      return sparkSessionTry;
+    }
     addListener(getOrCreate().sparkContext(), sparkUI);
-    SparkVariable.putSparkSession(sparkSession);
+    SparkVariable.putSparkSession(getOrCreate());
     TryResult tryResultSparkContext = initSparkContextInShell(kernel, parentMessage);
     if (!tryResultSparkContext.isError()) {
       kernel.registerCancelHook(SparkVariable::cancelAllJobs);
     }
     return tryResultSparkContext;
+  }
+
+  private TryResult createSparkSession(SparkUIApi sparkUI, Message parentMessage) {
+    sparkUI.startSpinner(parentMessage);
+    try {
+      SparkSession sparkSession = getOrCreate();
+      return TryResult.createResult(sparkSession);
+    } catch (Exception e) {
+      return TryResult.createError(formatError(e));
+    } finally {
+      sparkUI.stopSpinner();
+    }
+  }
+
+  private String formatError(Exception e) {
+    String[] print = StacktraceHtmlPrinter.print(Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString).toArray(String[]::new));
+    return String.join(System.lineSeparator(), print);
   }
 
   @Override
@@ -89,7 +110,7 @@ public class SparkEngineImpl implements SparkEngine {
   @Override
   public String getSparkAppId() {
     RuntimeConfig conf = getOrCreate().conf();
-    return conf.getAll().get("spark.app.id").get();
+    return conf.getAll().get(SPARK_APP_ID).get();
   }
 
   @Override
@@ -100,7 +121,7 @@ public class SparkEngineImpl implements SparkEngine {
   @Override
   public String getSparkMasterUrl() {
     RuntimeConfig conf = getOrCreate().conf();
-    return conf.getAll().get("spark.master").get();
+    return conf.getAll().get(SPARK_MASTER).get();
   }
 
   @Override

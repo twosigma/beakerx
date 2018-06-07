@@ -17,53 +17,35 @@ package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.InternalVariable;
-import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.kernel.msg.StacktraceHtmlPrinter;
 import com.twosigma.beakerx.message.Message;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.twosigma.beakerx.kernel.PlainCode.createSimpleEvaluationObject;
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 
 public class SparkUI extends VBox implements SparkUIApi {
 
-  public static final String SPARK_REPL_CLASS_OUTPUT_DIR = "spark.repl.class.outputDir";
-  public static final String SPARK_APP_NAME = "spark.app.name";
-  public static final String SPARK_MASTER = "spark.master";
-  public static final String SPARK_EXECUTOR_MEMORY = "spark.executor.memory";
-  public static final String SPARK_EXECUTOR_CORES = "spark.executor.cores";
-  public static final String SPARK_EXTRA_LISTENERS = "spark.extraListeners";
-  public static final String BEAKERX_ID = "beakerx.id";
-  public static final List<String> STANDARD_SETTINGS = Arrays.asList(SPARK_MASTER, SPARK_EXECUTOR_MEMORY, SPARK_EXECUTOR_CORES, SPARK_APP_NAME, BEAKERX_ID, SPARK_EXTRA_LISTENERS, SPARK_REPL_CLASS_OUTPUT_DIR);
   public static final String VIEW_NAME_VALUE = "SparkUIView";
   public static final String MODEL_NAME_VALUE = "SparkUIModel";
-  static final String SPARK_SESSION_NAME = "spark";
-  static final String CONNECT = "Start";
-  private static final String SPARK_MASTER_DEFAULT = "local[*]";
-  public static final String SPARK_APP_ID = "sparkAppId";
+  public static final String SPARK_MASTER_DEFAULT = "local[*]";
+  private static final String SPARK_APP_ID = "sparkAppId";
+  public static final String ERROR_CREATING_SPARK_SESSION = "Error creating SparkSession, see the console log for more explanation";
 
-  private VBox sparkConfig;
-  private VBox sparkConfigPanel;
-  private Button connectButton;
+  private final SparkUIForm sparkUIForm;
+  private VBox sparkUIFormPanel;
   private HBox statusPanel;
   private Map<Integer, SparkStateProgress> progressBarMap = new HashMap<>();
-  private Text masterURL;
-  private Text executorMemory;
-  private Text executorCores;
-  private SparkConfiguration advancedOption;
   private boolean active = false;
   private SparkFoldout jobPanel = null;
   private Message currentParentHeader = null;
-
   private SparkEngine sparkEngine;
   private SparkUiDefaults sparkUiDefaults;
 
@@ -72,11 +54,11 @@ public class SparkUI extends VBox implements SparkUIApi {
     this.sparkUiDefaults = sparkUiDefaults;
     this.sparkUiDefaults.loadDefaults(builder);
     this.sparkEngine = sparkEngineFactory.create(builder);
-    this.sparkConfig = new VBox(new ArrayList<>());
-    this.sparkConfigPanel = new VBox(singletonList(sparkConfig));
-    add(sparkConfigPanel);
+    this.sparkUIFormPanel = new VBox(new ArrayList<>());
+    add(sparkUIFormPanel);
     SparkVariable.putSparkUI(this);
-    createSparkView();
+    this.sparkUIForm = new SparkUIForm(sparkEngine, this::initSparkContext);
+    this.sparkUIFormPanel.add(sparkUIForm);
   }
 
   @Override
@@ -99,78 +81,30 @@ public class SparkUI extends VBox implements SparkUIApi {
     return BeakerxWidget.VIEW_MODULE_VALUE;
   }
 
-  private void createSparkView() {
-    this.masterURL = createMasterURL();
-    this.executorMemory = createExecutorMemory();
-    this.executorCores = createExecutorCores();
-    this.addConnectButton(createConnectButton());
-    this.addMasterUrl(masterURL);
-    this.addExecutorCores(executorCores);
-    this.addExecutorMemory(executorMemory);
-    this.advancedOption = new SparkConfiguration(sparkEngine.getAdvanceSettings(),sparkEngine.sparkVersion());
-    this.addAdvanceOptions(advancedOption);
-    this.sendUpdate("sparkDefaultMasterUrl", SPARK_MASTER_DEFAULT);
+  @Override
+  public void startSpinner(Message parentMessage) {
+    this.sparkUIForm.startSpinner(parentMessage);
   }
 
-  private Text createExecutorCores() {
-    Text cores = new Text();
-    cores.setDescription("Executor cores");
-    cores.setDomClasses(new ArrayList<>(Arrays.asList("bx-spark-config", "bx-spark-executor-cores")));
-    if (getSparkConf().contains(SPARK_EXECUTOR_CORES)) {
-      cores.setValue(getSparkConf().get(SPARK_EXECUTOR_CORES));
-    } else {
-      cores.setValue("10");
-    }
-    return cores;
-  }
-
-  private SparkConf getSparkConf() {
-    return sparkEngine.getSparkConf();
-  }
-
-  private Text createExecutorMemory() {
-    Text memory = new Text();
-    memory.setDescription("Executor Memory");
-    memory.setDomClasses(new ArrayList<>(Arrays.asList("bx-spark-config", "bx-spark-executor-memory")));
-    if (getSparkConf().contains(SPARK_EXECUTOR_MEMORY)) {
-      memory.setValue(getSparkConf().get(SPARK_EXECUTOR_MEMORY));
-    } else {
-      memory.setValue("8g");
-    }
-    return memory;
-  }
-
-  private Text createMasterURL() {
-    Text masterURL = new Text();
-    masterURL.setDescription("Master URL");
-    masterURL.setDomClasses(new ArrayList<>(Arrays.asList("bx-spark-config", "bx-spark-master-url")));
-    if (getSparkConf().contains(SPARK_MASTER)) {
-      masterURL.setValue(getSparkConf().get(SPARK_MASTER));
-    } else {
-      masterURL.setValue(SPARK_MASTER_DEFAULT);
-    }
-    return masterURL;
-  }
-
-  private Button createConnectButton() {
-    Button connect = new Button();
-    connect.setDescription(CONNECT);
-    connect.registerOnClick((content, message) -> initSparkContext(message));
-    return connect;
+  @Override
+  public void stopSpinner() {
+    this.sparkUIForm.stopSpinner();
   }
 
   private void initSparkContext(Message parentMessage) {
     KernelFunctionality kernel = KernelManager.get();
+    this.sparkUIForm.clearErrors();
     try {
       TryResult configure = sparkEngine.configure(kernel, this, parentMessage);
       if (configure.isError()) {
-        sendError(parentMessage, kernel, configure.error());
+        this.sparkUIForm.sendError(StacktraceHtmlPrinter.printRedBold(ERROR_CREATING_SPARK_SESSION));
       } else {
         active = true;
         saveSparkConf(sparkEngine.getSparkConf());
+        applicationStart();
       }
     } catch (Exception e) {
-      sendError(parentMessage, kernel, e.getMessage());
+      this.sparkUIForm.sendError(StacktraceHtmlPrinter.printRedBold(e.getMessage()));
     }
   }
 
@@ -178,46 +112,29 @@ public class SparkUI extends VBox implements SparkUIApi {
     return sparkEngine.getOrCreate();
   }
 
-  private void sendError(Message parentMessage, KernelFunctionality kernel, String message) {
-    SimpleEvaluationObject seo = createSimpleEvaluationObject("", kernel, parentMessage, 1);
-    seo.error(message);
-  }
-
-  public void applicationStart() {
+  private void applicationStart() {
     clearView();
-    addStatusPanel(createStatusPanel());
+    this.statusPanel = new SparkUIStatus(message -> getSparkSession().sparkContext().stop());
+    add(this.statusPanel);
     sendUpdate(SPARK_APP_ID, sparkEngine.getSparkAppId());
     sendUpdate("sparkUiWebUrl", sparkEngine.getSparkUiWebUrl());
     sendUpdate("sparkMasterUrl", sparkEngine.getSparkMasterUrl());
   }
 
+  @Override
   public void applicationEnd() {
-    removeStatusPanel();
-    active = false;
-    addView();
+    if (active) {
+      removeStatusPanel();
+      active = false;
+      addView();
+    }
   }
 
-  private HBox createStatusPanel() {
-    Label appStatus = createAppStatus();
-    Button disconnect = createDisconnectButton();
-    HBox connectionPanel = new HBox(Arrays.asList(appStatus, disconnect));
-    connectionPanel.setDomClasses(new ArrayList<>(Arrays.asList("bx-status-panel")));
-    return connectionPanel;
-  }
-
-  private Label createAppStatus() {
-    Label appStatus = new Label();
-    appStatus.setValue("Connected");
-    appStatus.setDomClasses(new ArrayList<>(Arrays.asList("bx-connection-status", "connected")));
-    return appStatus;
-  }
-
-  private Button createDisconnectButton() {
-    Button disconnect = new Button();
-    disconnect.registerOnClick((content, message) -> getSparkSession().sparkContext().stop());
-    disconnect.setTooltip("Stop Spark Session");
-    disconnect.setDomClasses(new ArrayList<>(Arrays.asList("bx-button", "icon-close")));
-    return disconnect;
+  private void removeStatusPanel() {
+    if (statusPanel != null) {
+      remove(statusPanel);
+      statusPanel = null;
+    }
   }
 
   public void startStage(int stageId, int numTasks) {
@@ -289,66 +206,33 @@ public class SparkUI extends VBox implements SparkUIApi {
   }
 
   public Text getMasterURL() {
-    return masterURL;
+    return this.sparkUIForm.getMasterURL();
   }
 
   public Text getExecutorMemory() {
-    return executorMemory;
+    return this.sparkUIForm.getExecutorMemory();
   }
 
   public Text getExecutorCores() {
-    return executorCores;
+    return this.sparkUIForm.getExecutorCores();
   }
 
   public List<SparkConfiguration.Configuration> getAdvancedOptions() {
-    return this.advancedOption.getConfiguration();
-  }
-
-  public void addMasterUrl(Text masterURL) {
-    sparkConfig.add(masterURL);
-  }
-
-  public void addExecutorCores(Text executorCores) {
-    sparkConfig.add(executorCores);
-  }
-
-  public void addExecutorMemory(Text executorMemory) {
-    sparkConfig.add(executorMemory);
-  }
-
-  public void addConnectButton(Button connect) {
-    this.connectButton = connect;
-    sparkConfig.add(connectButton);
+    return this.sparkUIForm.getAdvancedOptions();
   }
 
   public void clearView() {
-    remove(sparkConfigPanel);
-    sparkConfigPanel = null;
+    remove(sparkUIFormPanel);
+    sparkUIFormPanel = null;
   }
 
   public void addView() {
-    this.sparkConfigPanel = new VBox(asList(sparkConfig));
-    add(sparkConfigPanel);
+    this.sparkUIFormPanel = new VBox(asList(this.sparkUIForm));
+    add(sparkUIFormPanel);
   }
 
   public Button getConnectButton() {
-    return connectButton;
-  }
-
-  public void addAdvanceOptions(SparkConfiguration advancedOption) {
-    this.sparkConfig.add(advancedOption);
-  }
-
-  public void addStatusPanel(HBox statusPanel) {
-    this.statusPanel = statusPanel;
-    add(statusPanel);
-  }
-
-  public void removeStatusPanel() {
-    if (statusPanel != null) {
-      removeDOMWidget(statusPanel);
-      statusPanel = null;
-    }
+    return this.sparkUIForm.getConnectButton();
   }
 
   void saveSparkConf(SparkConf sparkConf) {
@@ -372,5 +256,10 @@ public class SparkUI extends VBox implements SparkUIApi {
     public SparkUI create(SparkSession.Builder builder) {
       return new SparkUI(builder, sparkEngineFactory, sparkUiDefaults);
     }
+  }
+
+  @FunctionalInterface
+  public interface OnSparkButtonAction {
+    void run(Message message);
   }
 }

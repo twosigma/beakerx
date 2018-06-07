@@ -15,26 +15,30 @@
  */
 package com.twosigma.beakerx.kernel.msg;
 
-public class TracebackPrinter extends StacktracePrinter {
+import org.apache.commons.text.StringEscapeUtils;
 
-  private static final String PREFIX = "\033[";
-  private static final String RED_COLOR = "31";
-  private static final String BOLD_DISPLAY = "1";
-  private static final String NORMAL_DISPLAY = "0";
+import java.util.Arrays;
 
-  static final String END = PREFIX + "0;0m";
-  static final String RED_BOLD = PREFIX + BOLD_DISPLAY + ";" + RED_COLOR + "m";
-  static final String RED = PREFIX + NORMAL_DISPLAY + ";" + RED_COLOR + "m";
+public class StacktraceHtmlPrinter extends StacktracePrinter {
 
-  private static final StacktracePrinter INSTANCE = new TracebackPrinter();
+  private static final String FONT = "font-size: 14px;font-family: 'Roboto Mono', monospace, sans-serif; color: #B22B31;";
+  private static String END = "</div>";
+
+  private static final StacktracePrinter INSTANCE = new StacktraceHtmlPrinter();
 
   public static String[] print(String[] input) {
-    return INSTANCE.doPrint(input);
+    String[] escaped = Arrays.stream(input).map(StringEscapeUtils::escapeHtml4).toArray(String[]::new);
+    return INSTANCE.doPrint(escaped);
+  }
+
+  public static String printRedBold(String input) {
+    String escaped = StringEscapeUtils.escapeHtml4(input);
+    return INSTANCE.startRedBold() + escaped + INSTANCE.endRedBold();
   }
 
   @Override
   public String startRedBold() {
-    return RED_BOLD;
+    return "<div style=\"font-weight: bold; " + FONT + "\">";
   }
 
   @Override
@@ -44,11 +48,13 @@ public class TracebackPrinter extends StacktracePrinter {
 
   @Override
   public String startRed() {
-    return RED;
+    return "<div style=\"" + FONT + "\">";
   }
 
   @Override
   public String endRed() {
     return END;
   }
+
+
 }

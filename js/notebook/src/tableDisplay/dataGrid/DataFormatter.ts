@@ -56,6 +56,10 @@ export class DataFormatter {
     this.html = this.html.bind(this);
   }
 
+  destroy(): void {
+    this.store = null;
+  }
+
   get stringFormatForColumn() {
     return selectStringFormatForColumn(this.store.state);
   }

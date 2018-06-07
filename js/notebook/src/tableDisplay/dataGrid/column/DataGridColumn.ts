@@ -363,6 +363,16 @@ export default class DataGridColumn {
 
   destroy() {
     this.menu.destroy();
+    this.columnFilter.destroy();
+
+    setTimeout(() => {
+      this.menu = null;
+      this.dataGrid = null;
+      this.store = null;
+      this.columnManager = null;
+      this.columnFilter = null;
+      this.formatFn = null;
+    });
   }
 
   toggleDataBarsRenderer(enable?: boolean) {

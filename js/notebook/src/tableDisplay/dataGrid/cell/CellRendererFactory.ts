@@ -21,22 +21,16 @@ import HeaderCellRenderer from "./HeaderCellRenderer";
 import DefaultCellRenderer from "./DefaultCellRenderer";
 
 export class CellRendererFactory {
-  private dataGrid: BeakerXDataGrid;
-
-  constructor(dataGrid: BeakerXDataGrid) {
-    this.dataGrid = dataGrid;
-  }
-
-  getRenderer(dataType?: ALL_TYPES) {
+  static getRenderer(dataGrid: BeakerXDataGrid, dataType?: ALL_TYPES) {
     switch (dataType) {
       case ALL_TYPES.html:
-        return new HTMLCellRenderer(this.dataGrid);
+        return new HTMLCellRenderer(dataGrid);
       default:
-        return new DefaultCellRenderer(this.dataGrid);
+        return new DefaultCellRenderer(dataGrid);
     }
   }
 
-  getHeaderRenderer() {
-    return new HeaderCellRenderer(this.dataGrid)
+  static getHeaderRenderer(dataGrid) {
+    return new HeaderCellRenderer(dataGrid)
   }
 }

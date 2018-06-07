@@ -13,22 +13,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget;
+package com.twosigma.beakerx;
 
-import org.apache.spark.scheduler.SparkListener;
-import org.apache.spark.scheduler.SparkListenerApplicationEnd;
+import com.twosigma.beakerx.kernel.KernelManager;
 
-public class StartStopSparkListener extends SparkListener {
+import java.util.List;
+import java.util.stream.Collectors;
 
-  public static final String START_STOP_SPARK_LISTENER = "com.twosigma.beakerx.widget.StartStopSparkListener";
+public class ClasspathManager {
 
-  public StartStopSparkListener() {
-  }
-
-  @Override
-  public void onApplicationEnd(SparkListenerApplicationEnd applicationEnd) {
-    super.onApplicationEnd(applicationEnd);
-    SparkUIApi sparkUI = SparkVariable.getSparkUI();
-    sparkUI.applicationEnd();
+  public static List<String> getJars() {
+    List<String> pathsAsStrings = KernelManager.get().getClasspath().getPathsAsStrings();
+    return pathsAsStrings.stream()
+            .filter(x -> x.endsWith(".jar")).collect(Collectors.toList());
   }
 }

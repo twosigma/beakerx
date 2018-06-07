@@ -18,6 +18,7 @@ package com.twosigma.beakerx.widget;
 import com.twosigma.beakerx.message.Message;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,7 +58,7 @@ public abstract class Box extends ValueWidget<String> {
     return content;
   }
 
-  public void add(Widget widget,Message parent) {
+  public void add(Widget widget, Message parent) {
     this.children.add(widget);
     updateChildren(parent);
   }
@@ -67,9 +68,9 @@ public abstract class Box extends ValueWidget<String> {
     updateChildren();
   }
 
-  public void removeDOMWidget(DOMWidget widget) {
-    widget.getLayout().setDisplayNone();
-    remove(widget);
+  public void removeAllChildren() {
+    List<Widget> ch = new ArrayList<>(getChildren());
+    ch.forEach(this::remove);
   }
 
   public void remove(Widget widget) {
@@ -82,9 +83,10 @@ public abstract class Box extends ValueWidget<String> {
     List<String> commIds = comIds();
     sendUpdate(CHILDREN, commIds.toArray());
   }
+
   private void updateChildren(Message parent) {
     List<String> commIds = comIds();
-    sendUpdate(CHILDREN, commIds.toArray(),parent);
+    sendUpdate(CHILDREN, commIds.toArray(), parent);
   }
 
   private List<String> comIds() {

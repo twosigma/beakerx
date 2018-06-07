@@ -49,6 +49,11 @@ export default class CellManager {
     this.dataGrid.cellHovered.connect(this.handleCellHovered, this);
   }
 
+  destroy(): void {
+    this.dataGrid = null;
+    this.hoveredCellData = null;
+  }
+
   repaintRow(cellData) {
     if(
       !cellData

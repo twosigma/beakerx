@@ -182,5 +182,9 @@ export default abstract class BkoContextMenu implements MenuInterface {
 
   unbind(): void {
     this.scope.element[0].removeEventListener('contextmenu', this.handleContextMenu);
+
+    setTimeout(() => {
+      this.scope = null;
+    });
   }
 }

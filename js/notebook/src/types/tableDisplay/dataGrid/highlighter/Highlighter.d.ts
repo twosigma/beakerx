@@ -1,3 +1,4 @@
+/// <reference path="../../../index.d.ts" />
 import IHihglighterState from "../interface/IHighlighterState";
 import { CellRenderer } from "@phosphor/datagrid";
 import DataGridColumn from "../column/DataGridColumn";

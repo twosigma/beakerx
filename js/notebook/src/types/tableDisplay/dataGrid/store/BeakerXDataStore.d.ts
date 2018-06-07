@@ -1,4 +1,3 @@
-/// <reference types="lodash" />
 import { DataStore } from "@phosphor/datastore";
 import IDataModelState from "../interface/IDataGridModelState";
 import { IColumnsState, IColumnState } from "../interface/IColumn";

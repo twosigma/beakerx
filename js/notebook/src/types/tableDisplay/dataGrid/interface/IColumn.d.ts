@@ -1,4 +1,3 @@
-/// <reference types="lodash" />
 import DataGridColumn from "../column/DataGridColumn";
 import { DataModel, TextRenderer } from "@phosphor/datagrid";
 import { ALL_TYPES } from "../dataTypes";

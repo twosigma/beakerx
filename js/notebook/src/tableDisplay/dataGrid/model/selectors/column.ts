@@ -26,7 +26,6 @@ import {
 import {getAlignmentByChar} from "../../column/columnAlignment";
 import {IColumnPosition} from "../../interface/IColumn";
 import {ALL_TYPES} from "../../dataTypes";
-import Highlighter from "../../highlighter/Highlighter";
 import IHihglighterState from "../../interface/IHighlighterState";
 
 export const DEFAULT_INDEX_COLUMN_NAME = 'index';

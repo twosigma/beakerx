@@ -39,11 +39,7 @@ export * from './TabView';
 export * from './GridView';
 export * from './CyclingDisplayBox';
 export * from './EasyForm';
+export * from './Plot';
 export * from './Spinner';
-
-const Plot = require('./Plot');
-
-export const PlotModel = Plot.PlotModel;
-export const PlotView = Plot.PlotView;
 
 export const version = require('../package.json').version;

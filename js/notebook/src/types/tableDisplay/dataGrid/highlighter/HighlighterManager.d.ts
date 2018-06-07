@@ -1,4 +1,4 @@
-/// <reference types="lodash" />
+/// <reference path="../../../index.d.ts" />
 import IHihglighterState, { HIGHLIGHTER_TYPE } from "../interface/IHighlighterState";
 import Highlighter from "./Highlighter";
 import { BeakerXDataGrid } from "../BeakerXDataGrid";

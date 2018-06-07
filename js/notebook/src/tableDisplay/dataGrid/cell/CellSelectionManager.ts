@@ -18,6 +18,7 @@ import {CellRenderer} from "@phosphor/datagrid";
 import ICellConfig = CellRenderer.ICellConfig;
 import {ICellData} from "../interface/ICell";
 import {BeakerXDataGrid} from "../BeakerXDataGrid";
+import BeakerXThemeHelper from "../../../BeakerXThemeHelper";
 
 export interface IRangeCells {
   startCell: ICellData,
@@ -25,7 +26,6 @@ export interface IRangeCells {
 }
 
 export default class CellSelectionManager {
-  selectedCellColor = '#B0BED9';
   startCellData: ICellData|null;
   endCellData: ICellData|null;
   enabled: boolean;
@@ -154,7 +154,7 @@ export default class CellSelectionManager {
       return '';
     }
 
-    return this.isSelected(config) ? this.selectedCellColor : '';
+    return this.isSelected(config) ? BeakerXThemeHelper.SELECTED_CELL_BACKGROUND : '';
   }
 
   handleMouseDown(event: MouseEvent) {

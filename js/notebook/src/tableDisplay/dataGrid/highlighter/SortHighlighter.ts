@@ -18,10 +18,9 @@ import IHihglighterState, { HIGHLIGHTER_STYLE } from "../interface/IHighlighterS
 import DataGridColumn from "../column/DataGridColumn";
 import Highlighter from "./Highlighter";
 import {CellRenderer} from "@phosphor/datagrid";
+import BeakerXThemeHelper from "../../../BeakerXThemeHelper";
 
 export default class SortHighlighter extends Highlighter {
-  oddRowColor = 'rgb(249, 249, 249)';
-  evenRowColor = 'rgb(241, 241, 241)';
 
   constructor(column: DataGridColumn, state: IHihglighterState) {
     super(column, state);
@@ -30,6 +29,8 @@ export default class SortHighlighter extends Highlighter {
   }
 
   getBackgroundColor(config: CellRenderer.ICellConfig) {
-    return config.row % 2 === 0 ? this.evenRowColor : this.oddRowColor;
+    return config.row % 2 === 0 ?
+      BeakerXThemeHelper.HIGHLIGHTED_CELL_BACKGROUND_EVEN :
+      BeakerXThemeHelper.HIGHLIGHTED_CELL_BACKGROUND_ODD;
   }
 }

@@ -49,6 +49,18 @@ export default class BeakerXThemeHelper {
     return this.isDark ? 'rgb(99, 99, 99)' : 'rgb(200, 200, 200)';
   }
 
+  public static get SELECTED_CELL_BACKGROUND(): string {
+    return this.isDark ? '#4f4126' : '#B0BED9';
+  }
+
+  public static get HIGHLIGHTED_CELL_BACKGROUND_EVEN(): string {
+    return this.isDark ? 'rgb(34, 34, 34)' : 'rgb(241, 241, 241)';
+  }
+
+  public  static get HIGHLIGHTED_CELL_BACKGROUND_ODD(): string {
+    return this.isDark ? 'rgb(26, 26, 26)' : 'rgb(249, 249, 249)';
+  }
+
   private static getDarkStyle(): DataGrid.IStyle {
     return {
     ...DataGrid.defaultStyle,

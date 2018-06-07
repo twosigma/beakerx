@@ -6,8 +6,6 @@
     "module": "ES2015",
     "target": "es5",
     "allowJs": true,
-    "declaration": true,
-    "declarationDir": "./types",
     "moduleResolution": "Node",
     "noEmit": true,
     "lib": ["dom", "es5", "es2015"],

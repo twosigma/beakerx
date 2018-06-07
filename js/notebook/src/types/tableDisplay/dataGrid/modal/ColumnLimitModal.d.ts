@@ -1,4 +1,3 @@
-import '../../../global.env';
 import ColumnManager from "../column/ColumnManager";
 import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import { BeakerXDataStore } from "../store/BeakerXDataStore";

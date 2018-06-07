@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import './../global.env';
+/// <reference path='../types/index.d.ts'/>
 
 import BeakerXApi from "../tree/Utils/BeakerXApi";
 import * as GistPublish from "./gistPublish/index";

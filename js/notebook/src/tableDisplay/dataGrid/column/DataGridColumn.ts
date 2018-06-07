@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+/// <reference path='../../../types/index.d.ts'/>
+
 import ColumnMenu from "../headerMenu/ColumnMenu";
 import IndexMenu from "../headerMenu/IndexMenu";
 import { BeakerXDataGrid } from "../BeakerXDataGrid";

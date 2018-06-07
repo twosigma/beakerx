@@ -33,7 +33,7 @@ import static java.util.Arrays.asList;
 
 public class SparkUI extends VBox implements SparkUIApi {
 
-  private static final String ACTIVE_SPARK_SESSION_EXISTS_IF_YOU_WANT_TO_CLOSE_IT_RUN_SPARK_CLOSE = "Active spark session exists. If you want to close it run 'spark.close()'";
+  public static final String ONE_SPARK_SESSION_MSG_ERROR = "Cannot have more than one Spark session open in the same notebook.";
 
   public static final String VIEW_NAME_VALUE = "SparkUIView";
   public static final String MODEL_NAME_VALUE = "SparkUIModel";
@@ -99,7 +99,7 @@ public class SparkUI extends VBox implements SparkUIApi {
     this.sparkUIForm.clearErrors();
     KernelFunctionality kernel = KernelManager.get();
     if (SparkUI.isActive()) {
-      this.sparkUIForm.sendError(StacktraceHtmlPrinter.printRedBold(ACTIVE_SPARK_SESSION_EXISTS_IF_YOU_WANT_TO_CLOSE_IT_RUN_SPARK_CLOSE));
+      this.sparkUIForm.sendError(StacktraceHtmlPrinter.printRedBold(ONE_SPARK_SESSION_MSG_ERROR));
     } else {
       SparkVariable.putSparkUI(this);
       configureSparkContext(parentMessage, kernel);

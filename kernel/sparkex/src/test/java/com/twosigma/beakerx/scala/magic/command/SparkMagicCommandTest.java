@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.twosigma.beakerx.MessageFactorTest.commMsg;
+import static com.twosigma.beakerx.widget.SparkUI.ONE_SPARK_SESSION_MSG_ERROR;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.stateContains;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -76,7 +77,7 @@ public class SparkMagicCommandTest {
     //when
     connectToSparkSecondTime();
     //then
-    List<Message> messages = stateContains(kernel.getPublishedMessages(), "value", "Active spark session exists");
+    List<Message> messages = stateContains(kernel.getPublishedMessages(), "value", ONE_SPARK_SESSION_MSG_ERROR);
     assertThat(messages.size()).isEqualTo(1);
   }
 

@@ -126,7 +126,7 @@ public class SparkUI extends VBox implements SparkUIApi {
   }
 
   private void applicationStart() {
-    clearView();
+    clearSparkUIFormPanel();
     this.statusPanel = new SparkUIStatus(message -> getSparkSession().sparkContext().stop());
     add(this.statusPanel);
     sendUpdate(SPARK_APP_ID, sparkEngine.getSparkAppId());
@@ -136,11 +136,9 @@ public class SparkUI extends VBox implements SparkUIApi {
 
   @Override
   public void applicationEnd() {
-    if (active) {
-      removeStatusPanel();
-      active = false;
-      addView();
-    }
+    removeStatusPanel();
+    SparkUI.inActive();
+    addSparkUIFormPanel();
   }
 
   private void removeStatusPanel() {
@@ -229,14 +227,18 @@ public class SparkUI extends VBox implements SparkUIApi {
     return this.sparkUIForm.getAdvancedOptions();
   }
 
-  public void clearView() {
-    remove(sparkUIFormPanel);
-    sparkUIFormPanel = null;
+  private void clearSparkUIFormPanel() {
+    if (sparkUIFormPanel != null) {
+      remove(sparkUIFormPanel);
+      sparkUIFormPanel = null;
+    }
   }
 
-  public void addView() {
-    this.sparkUIFormPanel = new VBox(asList(this.sparkUIForm));
-    add(sparkUIFormPanel);
+  private void addSparkUIFormPanel() {
+    if (sparkUIFormPanel == null) {
+      this.sparkUIFormPanel = new VBox(asList(this.sparkUIForm));
+      add(sparkUIFormPanel);
+    }
   }
 
   public Button getConnectButton() {

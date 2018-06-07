@@ -60,7 +60,6 @@ public class SparkMagicCommandTest {
     SparkUI.inActive();
   }
 
-  @Test
   public void connectToSpark() {
     //given
     //when
@@ -69,7 +68,6 @@ public class SparkMagicCommandTest {
     assertThat(execute.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.OK);
   }
 
-  @Test
   public void returnErrorWhenConnectToExistingSparkSession() {
     //given
     createSparkUiAndConnectToSession();

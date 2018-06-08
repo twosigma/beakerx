@@ -707,13 +707,15 @@ define([
           newmodel.data.push(item);
         }
       }
+      var mtextc = document.body.classList.contains('bx-dark-theme') ? "" : "black";
+
       if (model.texts != null) {
         for (var i = 0; i < model.texts.length; i++) {
           var mtext = model.texts[i];
           var item = {
             "type" : "text",
 
-            "color" : mtext.color != null ? "#" + mtext.color.substr(3) : "black",
+            "color" : mtext.color != null ? "#" + mtext.color.substr(3) : mtextc,
             "color_opacity" : mtext.color != null ? parseInt(mtext.color.substr(1,2), 16) / 255 : 1,
             "show_pointer" : mtext.show_pointer,
             "pointer_angle" : mtext.pointer_angle,

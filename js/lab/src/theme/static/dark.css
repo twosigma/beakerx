@@ -192,3 +192,8 @@ pre {
 .bko-table-menu .p-Menu-content [data-type="submenu"] > .p-Menu-itemSubmenuIcon:after {
   color: var(--jp-ui-font-color0);
 }
+
+.text-line-style {
+  fill: var(--jp-content-font-color2);
+  stroke: var(--jp-content-font-color2);
+}

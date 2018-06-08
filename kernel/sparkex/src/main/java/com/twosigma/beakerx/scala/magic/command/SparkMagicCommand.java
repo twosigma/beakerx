@@ -25,9 +25,8 @@ import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
-import com.twosigma.beakerx.kernel.msg.JupyterMessages;
-import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.SingleSparkSession;
 import com.twosigma.beakerx.widget.SparkEngineImpl;
 import com.twosigma.beakerx.widget.SparkUI;
 import com.twosigma.beakerx.widget.SparkUiDefaultsImpl;
@@ -47,6 +46,8 @@ import static java.util.Arrays.copyOfRange;
 public class SparkMagicCommand implements MagicCommandFunctionality {
 
   public static final String SPARK = "%%sparkRunner";
+  public static final SingleSparkSession SINGLE_SPARK_SESSION = new SingleSparkSessionImpl();
+
   private KernelFunctionality kernel;
   private SparkUI.SparkUIFactory sparkUIFactory;
   private Map<String, SparkOption> sparkOptions;
@@ -57,8 +58,10 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
             kernel,
             new SparkUI.SparkUIFactoryImpl(
                     new SparkEngineImpl.SparkEngineFactoryImpl(),
-                    new SparkUiDefaultsImpl(Paths.get((System.getenv("JUPYTER_CONFIG_DIR") != null ? System.getenv("JUPYTER_CONFIG_DIR") : (System.getProperty("user.home") + File.separator + ".jupyter")) + File.separator + "beakerx.json"))));
-
+                    new SparkUiDefaultsImpl(Paths.get((System.getenv("JUPYTER_CONFIG_DIR") != null ? System.getenv("JUPYTER_CONFIG_DIR") : (System.getProperty("user.home") + File.separator + ".jupyter")) + File.separator + "beakerx.json")),
+                    SINGLE_SPARK_SESSION
+            )
+    );
   }
 
   SparkMagicCommand(KernelFunctionality kernel, SparkUI.SparkUIFactory sparkUIFactory) {
@@ -158,4 +161,24 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
   interface SparkOption {
     void run(SparkUI sparkUI, Message parent);
   }
+
+  public static class SingleSparkSessionImpl implements SingleSparkSession {
+    private boolean active = false;
+
+    @Override
+    public boolean isActive() {
+      return active;
+    }
+
+    @Override
+    public void active() {
+      active = true;
+    }
+
+    @Override
+    public void inActive() {
+      active = false;
+    }
+  }
+
 }

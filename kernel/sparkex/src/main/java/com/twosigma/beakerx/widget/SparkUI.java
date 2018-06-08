@@ -41,8 +41,6 @@ public class SparkUI extends VBox implements SparkUIApi {
   private static final String SPARK_APP_ID = "sparkAppId";
   public static final String ERROR_CREATING_SPARK_SESSION = "Error creating SparkSession, see the console log for more explanation";
 
-  private volatile static boolean active = false;
-
   private final SparkUIForm sparkUIForm;
   private VBox sparkUIFormPanel;
   private HBox statusPanel;
@@ -51,10 +49,12 @@ public class SparkUI extends VBox implements SparkUIApi {
   private Message currentParentHeader = null;
   private SparkEngine sparkEngine;
   private SparkUiDefaults sparkUiDefaults;
+  private SingleSparkSession singleSparkSession;
 
-  SparkUI(SparkSession.Builder builder, SparkEngine.SparkEngineFactory sparkEngineFactory, SparkUiDefaults sparkUiDefaults) {
+  SparkUI(SparkSession.Builder builder, SparkEngine.SparkEngineFactory sparkEngineFactory, SparkUiDefaults sparkUiDefaults, SingleSparkSession singleSparkSession) {
     super(new ArrayList<>());
     this.sparkUiDefaults = sparkUiDefaults;
+    this.singleSparkSession = singleSparkSession;
     this.sparkUiDefaults.loadDefaults(builder);
     this.sparkEngine = sparkEngineFactory.create(builder);
     this.sparkUIFormPanel = new VBox(new ArrayList<>());
@@ -98,7 +98,7 @@ public class SparkUI extends VBox implements SparkUIApi {
   private void initSparkContext(Message parentMessage) {
     this.sparkUIForm.clearErrors();
     KernelFunctionality kernel = KernelManager.get();
-    if (SparkUI.isActive()) {
+    if (singleSparkSession.isActive()) {
       this.sparkUIForm.sendError(StacktraceHtmlPrinter.printRedBold(ONE_SPARK_SESSION_MSG_ERROR));
     } else {
       SparkVariable.putSparkUI(this);
@@ -112,7 +112,7 @@ public class SparkUI extends VBox implements SparkUIApi {
       if (configure.isError()) {
         this.sparkUIForm.sendError(StacktraceHtmlPrinter.printRedBold(ERROR_CREATING_SPARK_SESSION));
       } else {
-        SparkUI.active();
+        singleSparkSession.active();
         saveSparkConf(sparkEngine.getSparkConf());
         applicationStart();
       }
@@ -137,7 +137,7 @@ public class SparkUI extends VBox implements SparkUIApi {
   @Override
   public void applicationEnd() {
     removeStatusPanel();
-    SparkUI.inActive();
+    singleSparkSession.inActive();
     addSparkUIFormPanel();
   }
 
@@ -256,32 +256,22 @@ public class SparkUI extends VBox implements SparkUIApi {
   public static class SparkUIFactoryImpl implements SparkUIFactory {
     SparkEngine.SparkEngineFactory sparkEngineFactory;
     SparkUiDefaults sparkUiDefaults;
+    private SingleSparkSession singleSparkSession;
 
-    public SparkUIFactoryImpl(SparkEngine.SparkEngineFactory sparkEngineFactory, SparkUiDefaults sparkUiDefaults) {
+    public SparkUIFactoryImpl(SparkEngine.SparkEngineFactory sparkEngineFactory, SparkUiDefaults sparkUiDefaults, SingleSparkSession singleSparkSession) {
       this.sparkEngineFactory = sparkEngineFactory;
       this.sparkUiDefaults = sparkUiDefaults;
+      this.singleSparkSession = singleSparkSession;
     }
 
     @Override
     public SparkUI create(SparkSession.Builder builder) {
-      return new SparkUI(builder, sparkEngineFactory, sparkUiDefaults);
+      return new SparkUI(builder, sparkEngineFactory, sparkUiDefaults, singleSparkSession);
     }
   }
 
   @FunctionalInterface
   public interface OnSparkButtonAction {
     void run(Message message);
-  }
-
-  public static boolean isActive() {
-    return SparkUI.active;
-  }
-
-  public static void active() {
-    SparkUI.active = true;
-  }
-
-  public static void inActive() {
-    SparkUI.active = false;
   }
 }

@@ -26,6 +26,15 @@ export namespace EventHelpers {
     )
   }
 
+  export function isInsideGrid(event) {
+    const relatedTarget = (event.relatedTarget || event.target) as HTMLElement;
+
+    return relatedTarget && (
+      relatedTarget.classList.contains('p-DataGrid')
+      || relatedTarget.closest('.p-DataGrid')
+    )
+  }
+
   export function isInsideGridNode(event: MouseEvent, gridNode: HTMLElement) {
     const relatedTarget = (event.relatedTarget || event.target) as HTMLElement;
 

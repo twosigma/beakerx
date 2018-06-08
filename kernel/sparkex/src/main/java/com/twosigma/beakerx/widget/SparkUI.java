@@ -33,17 +33,20 @@ import static java.util.Arrays.asList;
 
 public class SparkUI extends VBox implements SparkUIApi {
 
+  public static final String ONE_SPARK_SESSION_MSG_ERROR = "Cannot have more than one Spark session open in the same notebook.";
+
   public static final String VIEW_NAME_VALUE = "SparkUIView";
   public static final String MODEL_NAME_VALUE = "SparkUIModel";
   public static final String SPARK_MASTER_DEFAULT = "local[*]";
   private static final String SPARK_APP_ID = "sparkAppId";
   public static final String ERROR_CREATING_SPARK_SESSION = "Error creating SparkSession, see the console log for more explanation";
 
+  private volatile static boolean active = false;
+
   private final SparkUIForm sparkUIForm;
   private VBox sparkUIFormPanel;
   private HBox statusPanel;
   private Map<Integer, SparkStateProgress> progressBarMap = new HashMap<>();
-  private boolean active = false;
   private SparkFoldout jobPanel = null;
   private Message currentParentHeader = null;
   private SparkEngine sparkEngine;
@@ -91,15 +94,25 @@ public class SparkUI extends VBox implements SparkUIApi {
     this.sparkUIForm.stopSpinner();
   }
 
+
   private void initSparkContext(Message parentMessage) {
-    KernelFunctionality kernel = KernelManager.get();
     this.sparkUIForm.clearErrors();
+    KernelFunctionality kernel = KernelManager.get();
+    if (SparkUI.isActive()) {
+      this.sparkUIForm.sendError(StacktraceHtmlPrinter.printRedBold(ONE_SPARK_SESSION_MSG_ERROR));
+    } else {
+      SparkVariable.putSparkUI(this);
+      configureSparkContext(parentMessage, kernel);
+    }
+  }
+
+  private void configureSparkContext(Message parentMessage, KernelFunctionality kernel) {
     try {
       TryResult configure = sparkEngine.configure(kernel, this, parentMessage);
       if (configure.isError()) {
         this.sparkUIForm.sendError(StacktraceHtmlPrinter.printRedBold(ERROR_CREATING_SPARK_SESSION));
       } else {
-        active = true;
+        SparkUI.active();
         saveSparkConf(sparkEngine.getSparkConf());
         applicationStart();
       }
@@ -113,7 +126,7 @@ public class SparkUI extends VBox implements SparkUIApi {
   }
 
   private void applicationStart() {
-    clearView();
+    clearSparkUIFormPanel();
     this.statusPanel = new SparkUIStatus(message -> getSparkSession().sparkContext().stop());
     add(this.statusPanel);
     sendUpdate(SPARK_APP_ID, sparkEngine.getSparkAppId());
@@ -123,11 +136,9 @@ public class SparkUI extends VBox implements SparkUIApi {
 
   @Override
   public void applicationEnd() {
-    if (active) {
-      removeStatusPanel();
-      active = false;
-      addView();
-    }
+    removeStatusPanel();
+    SparkUI.inActive();
+    addSparkUIFormPanel();
   }
 
   private void removeStatusPanel() {
@@ -200,11 +211,6 @@ public class SparkUI extends VBox implements SparkUIApi {
     getSparkSession().sparkContext().cancelAllJobs();
   }
 
-  @Override
-  public boolean isActive() {
-    return active;
-  }
-
   public Text getMasterURL() {
     return this.sparkUIForm.getMasterURL();
   }
@@ -221,14 +227,18 @@ public class SparkUI extends VBox implements SparkUIApi {
     return this.sparkUIForm.getAdvancedOptions();
   }
 
-  public void clearView() {
-    remove(sparkUIFormPanel);
-    sparkUIFormPanel = null;
+  private void clearSparkUIFormPanel() {
+    if (sparkUIFormPanel != null) {
+      remove(sparkUIFormPanel);
+      sparkUIFormPanel = null;
+    }
   }
 
-  public void addView() {
-    this.sparkUIFormPanel = new VBox(asList(this.sparkUIForm));
-    add(sparkUIFormPanel);
+  private void addSparkUIFormPanel() {
+    if (sparkUIFormPanel == null) {
+      this.sparkUIFormPanel = new VBox(asList(this.sparkUIForm));
+      add(sparkUIFormPanel);
+    }
   }
 
   public Button getConnectButton() {
@@ -261,5 +271,17 @@ public class SparkUI extends VBox implements SparkUIApi {
   @FunctionalInterface
   public interface OnSparkButtonAction {
     void run(Message message);
+  }
+
+  public static boolean isActive() {
+    return SparkUI.active;
+  }
+
+  public static void active() {
+    SparkUI.active = true;
+  }
+
+  public static void inActive() {
+    SparkUI.active = false;
   }
 }

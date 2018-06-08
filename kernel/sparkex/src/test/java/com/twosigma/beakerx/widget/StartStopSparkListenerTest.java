@@ -100,11 +100,6 @@ public class StartStopSparkListenerTest {
     }
 
     @Override
-    public boolean isActive() {
-      return false;
-    }
-
-    @Override
     public void startSpinner(Message message) {
 
     }

@@ -27,30 +27,39 @@ import com.twosigma.beakerx.widget.SparkEngine;
 import com.twosigma.beakerx.widget.SparkUI;
 import com.twosigma.beakerx.widget.SparkUiDefaults;
 import org.apache.spark.SparkConf;
-import org.apache.spark.SparkContext;
 import org.apache.spark.sql.SparkSession;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.twosigma.beakerx.MessageFactorTest.commMsg;
+import static com.twosigma.beakerx.widget.SparkUI.ONE_SPARK_SESSION_MSG_ERROR;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.stateContains;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SparkMagicCommandTest {
 
   private SparkMagicCommand sparkMagicCommand;
   public SparkUI sparkUI;
+  private KernelTest kernel;
 
   @Before
   public void setUp() {
     SparkUI.SparkUIFactory sparkUIFactory = createSparkUIFactory();
-    sparkMagicCommand = new SparkMagicCommand(new KernelTest(), sparkUIFactory);
+    kernel = new KernelTest();
+    sparkMagicCommand = new SparkMagicCommand(kernel, sparkUIFactory);
   }
 
-  @Test
+  @After
+  public void tearDown() throws Exception {
+    SparkUI.inActive();
+  }
+
   public void connectToSpark() {
     //given
     //when
@@ -59,20 +68,23 @@ public class SparkMagicCommandTest {
     assertThat(execute.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.OK);
   }
 
-  @Test
   public void returnErrorWhenConnectToExistingSparkSession() {
     //given
     createSparkUiAndConnectToSession();
+    kernel.clearMessages();
     //when
-    MagicCommandOutcomeItem execute2 = connectToSparkSecondTime();
+    connectToSparkSecondTime();
     //then
-    assertThat(execute2.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.ERROR);
+    List<Message> messages = stateContains(kernel.getPublishedMessages(), "value", ONE_SPARK_SESSION_MSG_ERROR);
+    assertThat(messages.size()).isEqualTo(1);
   }
 
   private MagicCommandOutcomeItem connectToSparkSecondTime() {
     Code code2 = Code.createCode("", new ArrayList<>(), new ArrayList<>(), commMsg());
     MagicCommandExecutionParam param2 = new MagicCommandExecutionParam("", "", 2, code2, true);
-    return sparkMagicCommand.execute(param2);
+    MagicCommandOutcomeItem execute = sparkMagicCommand.execute(param2);
+    sparkUI.getConnectButton().onClick(new HashMap(), commMsg());
+    return execute;
   }
 
   private MagicCommandOutcomeItem createSparkUiAndConnectToSession() {
@@ -80,8 +92,9 @@ public class SparkMagicCommandTest {
     MagicCommandExecutionParam param = new MagicCommandExecutionParam("%%spark", "", 1, code, true);
     MagicCommandOutcomeItem execute = sparkMagicCommand.execute(param);
     assertThat(execute.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.OK);
-    assertThat(sparkUI.isActive()).isFalse();
+    assertThat(SparkUI.isActive()).isFalse();
     sparkUI.getConnectButton().onClick(new HashMap(), commMsg());
+    assertThat(SparkUI.isActive()).isTrue();
     return execute;
   }
 

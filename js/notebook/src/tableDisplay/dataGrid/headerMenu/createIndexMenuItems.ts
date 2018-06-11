@@ -63,7 +63,7 @@ export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
       items.push({
         title: `${scopeData.rowsToDisplayMenu[1][index]}`,
         id: `rows_${scopeData.rowsToDisplayMenu[1][index]}`,
-        isChecked: () => item === dataGrid.rowManager.rowsToShow,
+        isChecked: () => dataGrid.rowManager && item === dataGrid.rowManager.rowsToShow,
         action: () => dataGrid.rowManager.setRowsToShow(item)
       })
     });

@@ -203,3 +203,27 @@
     margin-left: 20px;
   }
 }
+
+.bx-toolbar-spark-widget {
+  display: inline-block;
+  overflow: hidden;
+  margin-top: 0;
+  margin-left: 5px;
+  max-height: 24px;
+  vertical-align: middle;
+  float: right;
+  font-size: 14px;
+  line-height: 16px;
+
+  .bx-status-panel > .p-Widget {
+    margin-top: 2px;
+  }
+
+  .bx-connection-status {
+    height: 18px !important;
+  }
+
+  .bx-stats {
+    line-height: 14px;
+  }
+}

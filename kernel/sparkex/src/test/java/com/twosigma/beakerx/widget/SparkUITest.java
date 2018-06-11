@@ -20,6 +20,7 @@ import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.scala.magic.command.SparkMagicCommand;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 import org.junit.After;
@@ -37,13 +38,15 @@ public class SparkUITest {
   SparkUI sparkUI;
   SparkUiDefaultsImplMock sparkUiDefaults;
   KernelTest kernel;
+  SingleSparkSession singleSparkSession;
 
   @Before
   public void setUp() throws Exception {
+    singleSparkSession = new SparkMagicCommand.SingleSparkSessionImpl();
     kernel = new KernelTest();
     KernelManager.register(kernel);
     sparkUiDefaults = new SparkUiDefaultsImplMock();
-    sparkUI = new SparkUI(SparkSession.builder(), sparkSessionBuilder -> new SparkManagerImplTest(), sparkUiDefaults);
+    sparkUI = new SparkUI(SparkSession.builder(), sparkSessionBuilder -> new SparkManagerImplTest(), sparkUiDefaults, singleSparkSession);
   }
 
   @After
@@ -56,7 +59,7 @@ public class SparkUITest {
     //given
     SparkUiDefaultsImplMock sparkUiDefaults = new SparkUiDefaultsImplMock();
     //when
-    new SparkUI(SparkSession.builder(), sparkSessionBuilder -> new SparkManagerImplTest(), sparkUiDefaults);
+    new SparkUI(SparkSession.builder(), sparkSessionBuilder -> new SparkManagerImplTest(), sparkUiDefaults, singleSparkSession);
     //then
     assertThat(sparkUiDefaults.loaded).isTrue();
   }

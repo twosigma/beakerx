@@ -52,8 +52,6 @@ public interface SparkUIApi {
 
   void cancelAllJobs();
 
-  boolean isActive();
-
   void startSpinner(Message message);
 
   void stopSpinner();

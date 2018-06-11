@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,9 +15,8 @@
  */
 
 import * as moment from 'moment-timezone/builds/moment-timezone-with-data';
+import flatpickr from "flatpickr";
 import widgets from '../widgets';
-
-const Flatpickr = require("flatpickr");
 
 export class DatePickerModel extends widgets.StringModel {
   defaults() {
@@ -39,6 +38,10 @@ const datepickerOpts = {
 };
 
 export class DatePickerView extends widgets.LabeledDOMWidgetView {
+  private flatpickr: any;
+  private datepicker: any;
+  private button: any;
+
   render() {
     super.render.apply(this);
 
@@ -53,29 +56,31 @@ export class DatePickerView extends widgets.LabeledDOMWidgetView {
   }
 
   initDatePicker() {
-    var that = this;
-    var showTime = this.model.get('showTime');
-    var dateFormat = showTime ? datepickerOpts.dateTimeFormat : datepickerOpts.dateFormat;
+    const showTime = this.model.get('showTime');
+    const dateFormat = showTime ? datepickerOpts.dateTimeFormat : datepickerOpts.dateFormat;
 
     this.flatpickr = null;
 
-    this.datepicker = $('<input type="text" placeholder="Select Date.." data-input />')
+    this.datepicker = $('<input type="text" placeholder="Select Date.." data-input >')
       .addClass('form-control');
 
-    this.button = $("<a tabindex='-1' title='Select date' class='date-picker-button ui-button ui-widget ui-state-default ui-button-icon-only custom-combobox-toggle ui-corner-right' role='button' aria-disabled='false' data-toggle>" +
-                     "<span class='ui-button-icon-primary ui-icon ui-icon-triangle-1-s'></span><span class='ui-button-text'></span>" +
-                     "</a>");
+    this.button = $(`
+      <a tabindex='-1' title='Select date' class='date-picker-button ui-button ui-widget ui-state-default ui-button-icon-only custom-combobox-toggle ui-corner-right' role='button' aria-disabled='false' data-toggle>
+        <span class='ui-button-icon-primary ui-icon ui-icon-triangle-1-s'></span>
+        <span class='ui-button-text'></span>
+      </a>`
+    );
 
-    var onChange = function(selectedDates, dateStr) {
+    const onChange = (selectedDates, dateStr) => {
       if (dateStr) {
-        that.setValueToModel(dateStr);
+        this.setValueToModel(dateStr);
       }
     };
 
     this.datepicker.appendTo(this.$el);
     this.button.appendTo(this.$el);
 
-    that.flatpickr = new Flatpickr(that.el, {
+    this.flatpickr = flatpickr(this.el, {
       enableTime: showTime,
       dateFormat: dateFormat,
       onChange: onChange,
@@ -84,30 +89,30 @@ export class DatePickerView extends widgets.LabeledDOMWidgetView {
       allowInput: true
     });
 
-    this.displayed.then(function() {
+    this.datepicker[0].addEventListener('keyup', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
 
-    });
+      const dateStr = this.datepicker[0].value;
+      if (dateStr && dateStr.length >= 8 && moment(dateStr).isValid()) {
+        this.flatpickr.setDate(dateStr, true, this.flatpickr.config.dateFormat);
+      }
+    }, true);
   }
 
   update(options?: any) {
     if (options === undefined || options.updated_view != this) {
-      var newValue = this.model.get('value');
+      const newValue = this.model.get('value');
 
       if (this.flatpickr && this.flatpickr.input.value != newValue) {
         this.flatpickr.setDate(newValue);
       }
 
-      var disabled = this.model.get('disabled');
+      const disabled = this.model.get('disabled');
       this.datepicker.disabled = disabled;
     }
 
     super.update.apply(this);
-  }
-
-  events() {
-    return {
-      "change input": "handleChanging"
-    };
   }
 
   setValueToModel(value) {

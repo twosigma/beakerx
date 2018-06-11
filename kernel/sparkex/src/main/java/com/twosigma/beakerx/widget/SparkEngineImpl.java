@@ -55,6 +55,7 @@ import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXTRA_LISTENERS;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_MASTER;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_REPL_CLASS_OUTPUT_DIR;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_SESSION_NAME;
+import static com.twosigma.beakerx.widget.SparkUI.SPARK_CONTEXT_NAME;
 import static com.twosigma.beakerx.widget.SparkUI.STANDARD_SETTINGS;
 import static com.twosigma.beakerx.widget.StartStopSparkListener.START_STOP_SPARK_LISTENER;
 
@@ -140,11 +141,12 @@ public class SparkEngineImpl implements SparkEngine {
   private TryResult initSparkContextInShell(KernelFunctionality kernel, Message parent) {
     String addSc = String.format(("import com.twosigma.beakerx.widget.SparkVariable\n" +
                     "val %s = SparkVariable.getSparkSession()\n" +
+                    "val %s = %s.sparkContext\n" +
                     "import org.apache.spark.SparkContext._\n" +
                     "import %s.implicits._\n" +
                     "import %s.sql\n" +
                     "import org.apache.spark.sql.functions._\n"),
-            SPARK_SESSION_NAME, SPARK_SESSION_NAME, SPARK_SESSION_NAME);
+            SPARK_SESSION_NAME, SPARK_CONTEXT_NAME, SPARK_SESSION_NAME, SPARK_SESSION_NAME, SPARK_SESSION_NAME);
 
     SimpleEvaluationObject seo = createSimpleEvaluationObject(addSc, kernel, new Message(new Header(JupyterMessages.COMM_MSG, parent.getHeader().getSession())), 1);
     return kernel.executeCode(addSc, seo);

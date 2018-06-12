@@ -33,7 +33,8 @@ window.HTMLCanvasElement.prototype.getContext = function() {
   return {
     drawImage: function() {},
     setTransform: function() {},
-    scale: function() {}
+    scale: function() {},
+    save: function() {}
   };
 };
 

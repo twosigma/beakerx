@@ -59,6 +59,7 @@ class SparkUIView extends widgets.VBoxView {
     this.openExecutors = this.openExecutors.bind(this);
     this.updateChildren = this.updateChildren.bind(this);
     this.toggleExecutorConfigInputs = this.toggleExecutorConfigInputs.bind(this);
+    this.handleToolbarSparkClick = this.handleToolbarSparkClick.bind(this);
   }
 
   public render() {
@@ -73,7 +74,6 @@ class SparkUIView extends widgets.VBoxView {
     super.update();
 
     this.connectToApi();
-    this.addSparkUrls();
     this.addSparkMetricsWidget();
     this.handleLocalMasterUrl();
     this.updateChildren();
@@ -92,7 +92,7 @@ class SparkUIView extends widgets.VBoxView {
     this.addMasterUrl();
   }
 
-  private addSparUiWebUrl() {
+  private addSparUiWebUrl(): void {
     this.sparkUiWebUrl = this.model.get("sparkUiWebUrl");
 
     if (!this.sparkUiWebUrl) {
@@ -105,6 +105,28 @@ class SparkUIView extends widgets.VBoxView {
     this.sparkStats.node.addEventListener('click', this.openExecutors);
     this.connectionStatusElement.style.cursor = 'pointer';
     this.sparkStats.node.style.cursor = 'pointer';
+
+    this.bindToolbarSparkEvents();
+  }
+
+  private bindToolbarSparkEvents(): void {
+    if (!this.toolbarSparkStats) {
+      return;
+    }
+
+    this.toolbarSparkStats.node.addEventListener('click', this.handleToolbarSparkClick);
+  }
+
+  private handleToolbarSparkClick(event): void {
+    const relatedTarget = (event.relatedTarget || event.target) as HTMLElement;
+
+    if (relatedTarget.classList.contains('bx-connection-status')) {
+      return this.openWebUi();
+    }
+
+    if (relatedTarget.classList.contains('label')) {
+      return this.openExecutors();
+    }
   }
 
   private addMasterUrl() {
@@ -158,6 +180,7 @@ class SparkUIView extends widgets.VBoxView {
               .then((views) => {
                 this.handleLocalMasterUrl();
                 this.appendToToolbar();
+                this.addSparkUrls();
               })
               .catch(noop);
           });
@@ -328,6 +351,7 @@ class SparkUIView extends widgets.VBoxView {
             if (view instanceof widgets.LabelView && view.el.classList.contains('bx-connection-status')) {
               this.createSparkMetricsWidget();
               this.appendToToolbar();
+              this.addSparkUrls();
             }
           });
         });

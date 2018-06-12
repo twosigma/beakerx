@@ -191,7 +191,7 @@ class SparkUIView extends widgets.VBoxView {
     this.sparkStats.node.innerHTML = `
       <div class="active label label-info" title="Active Tasks">0</div> <div
       class="dead label label-danger" title="Dead Executors">0</div> <div
-      class="memory label label-default" title="Storage Memory">0.0 B</div>
+      class="memory label label-default" title="Storage Memory">0 KB</div>
     `;
 
     this.connectionLabelActive = this.sparkStats.node.querySelector('.active');

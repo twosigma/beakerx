@@ -36,7 +36,7 @@ public class KotlinKernelInfoHandler extends KernelInfoHandler {
     languageInfo.put("version", VERSION);
     languageInfo.put("mimetype", "");
     languageInfo.put("file_extension", ".kt");
-    languageInfo.put("codemirror_mode", "kt");
+    languageInfo.put("codemirror_mode", "kotlin");
     languageInfo.put("nbconverter_exporter", "");
     return languageInfo;
   }

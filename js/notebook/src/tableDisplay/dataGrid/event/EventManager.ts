@@ -31,6 +31,7 @@ import retrieveUrl = DataGridHelpers.retrieveUrl;
 import {EventHelpers} from "./helpers";
 import isOutsideNode = EventHelpers.isOutsideNode;
 import isInsideGridNode = EventHelpers.isInsideGridNode;
+import isInsideGrid = EventHelpers.isInsideGrid;
 
 const COLUMN_RESIZE_AREA_WIDTH = 4;
 
@@ -189,7 +190,7 @@ export default class EventManager {
   }
 
   private isOutsideGrid(event) {
-    return isOutsideNode(event, this.dataGrid.node);
+    return !isInsideGrid(event);
   }
 
   private handleCellHover(event) {

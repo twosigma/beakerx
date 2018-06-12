@@ -31,6 +31,7 @@ public interface SparkUIApi {
   String BEAKERX_ID = "beakerx.id";
   List<String> STANDARD_SETTINGS = Arrays.asList(SPARK_MASTER, SPARK_EXECUTOR_MEMORY, SPARK_EXECUTOR_CORES, SPARK_APP_NAME, BEAKERX_ID, SPARK_EXTRA_LISTENERS, SPARK_REPL_CLASS_OUTPUT_DIR);
   String SPARK_SESSION_NAME = "spark";
+  String SPARK_CONTEXT_NAME = "sc";
 
   List<SparkConfiguration.Configuration> getAdvancedOptions();
 
@@ -51,8 +52,6 @@ public interface SparkUIApi {
   void applicationEnd();
 
   void cancelAllJobs();
-
-  boolean isActive();
 
   void startSpinner(Message message);
 

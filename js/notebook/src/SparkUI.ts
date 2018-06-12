@@ -38,10 +38,12 @@ export class SparkUIModel extends widgets.VBoxModel {
 
 export class SparkUIView extends widgets.VBoxView {
   private sparkStats: Widget;
+  private toolbarSparkStats: Widget;
   private sparkAppId: string;
   private sparkUiWebUrl: string;
   private sparkMasterUrl: string;
   private apiCallIntervalId: number;
+  private toolbarStatusContainer: HTMLElement|null;
   private connectionLabelActive: HTMLElement;
   private connectionLabelMemory: HTMLElement;
   private connectionLabelDead: HTMLElement;
@@ -155,6 +157,7 @@ export class SparkUIView extends widgets.VBoxView {
             this.resolveChildren(view)
               .then((views) => {
                 this.handleLocalMasterUrl();
+                this.appendToToolbar();
               })
               .catch(noop);
           });
@@ -196,6 +199,53 @@ export class SparkUIView extends widgets.VBoxView {
     this.connectionLabelDead = this.sparkStats.node.querySelector('.dead');
 
     this.connectionStatusElement.insertAdjacentElement('afterend', this.sparkStats.node);
+  }
+
+  private appendToToolbar(): void {
+    if (!this.el.querySelector('.bx-status-panel')) {
+      return;
+    }
+
+    if (this.toolbarStatusContainer && this.toolbarStatusContainer.contains(this.toolbarSparkStats.node)) {
+      this.propagateToolbarWidget();
+
+      return;
+    }
+
+    const toolbarContainer = this.el.closest('.jp-NotebookPanel') || this.el.closest('.notebook_app');
+
+    if (!toolbarContainer) {
+      return;
+    }
+
+    const toolbar = toolbarContainer.querySelector('#maintoolbar-container') || toolbarContainer.querySelector('.jp-NotebookPanel-toolbar');
+
+    if (!toolbar) {
+      return;
+    }
+
+    this.toolbarSparkStats = new Widget();
+    this.toolbarStatusContainer = toolbar;
+    this.toolbarSparkStats.node.classList.add('bx-toolbar-spark-widget');
+    this.propagateToolbarWidget();
+    this.appendToolbarSparkStats();
+  }
+
+  private propagateToolbarWidget() {
+    this.toolbarSparkStats.node.innerHTML = `<div class="p-Widget bx-status-panel widget-box widget-hbox">
+      ${this.connectionStatusElement.outerHTML}
+      ${this.sparkStats.node.outerHTML}
+    </div>`;
+  }
+
+  private appendToolbarSparkStats() {
+    const spacer: HTMLElement|null = this.toolbarStatusContainer.querySelector('.jp-Toolbar-spacer');
+
+    if (spacer) {
+      spacer.insertAdjacentElement("afterend", this.toolbarSparkStats.node);
+    } else {
+      this.toolbarStatusContainer.appendChild(this.toolbarSparkStats.node);
+    }
   }
 
   private connectToApi() {
@@ -244,6 +294,10 @@ export class SparkUIView extends widgets.VBoxView {
   private clearApiCallInterval() {
     clearInterval(this.apiCallIntervalId);
     this.sparkAppId = null;
+
+    if (!this.el.querySelector('.bx-status-panel')) {
+      this.toolbarSparkStats.node.innerHTML = '';
+    }
   }
 
   private updateMetrics(data: Array<any>) {
@@ -263,6 +317,7 @@ export class SparkUIView extends widgets.VBoxView {
     this.connectionLabelActive.innerText = `${activeTasks}`;
     this.connectionLabelMemory.innerText = `${bkUtils.formatBytes(storageMemory)}`;
     this.connectionLabelDead.innerText = `${deadExecutors}`;
+    this.propagateToolbarWidget();
   }
 
   private addSparkMetricsWidget() {
@@ -272,6 +327,7 @@ export class SparkUIView extends widgets.VBoxView {
           views.forEach((view) => {
             if (view instanceof widgets.LabelView && view.el.classList.contains('bx-connection-status')) {
               this.createSparkMetricsWidget();
+              this.appendToToolbar();
             }
           });
         });
@@ -279,8 +335,11 @@ export class SparkUIView extends widgets.VBoxView {
     });
   }
 
-  dispose(): void {
-    clearInterval(this.apiCallIntervalId);
+  dispose() {
+    super.dispose();
+    this.clearApiCallInterval();
+    this.sparkStats && this.sparkStats.isAttached && this.sparkStats.dispose();
+    this.toolbarSparkStats && this.toolbarSparkStats.isAttached && this.toolbarSparkStats.dispose();
   }
 }
 

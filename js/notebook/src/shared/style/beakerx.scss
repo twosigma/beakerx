@@ -185,6 +185,13 @@
   }
 }
 
+.bx-dark-theme {
+  .ui-icon,
+  .ui-widget-content .ui-icon {
+    background-image: url("~jquery-ui/themes/base/images/ui-icons_ffffff_256x240.png");
+  }
+}
+
 @media (min-width: 1200px) {
   .container.toolbar {
     width: 100%;

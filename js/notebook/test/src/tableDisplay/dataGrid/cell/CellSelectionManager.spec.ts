@@ -23,6 +23,7 @@ import cellConfigMock from "../mock/cellConfigMock";
 import cellDataMock from "../mock/cellDataMock";
 import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
+import BeakerXThemeHelper from "@beakerx/BeakerXThemeHelper";
 
 describe('CellSelectionManager', () => {
   let dataGrid;
@@ -115,7 +116,7 @@ describe('CellSelectionManager', () => {
     expect(cellSelectionManager).to.have.property('getBackgroundColor');
     expect(cellSelectionManager.getBackgroundColor).to.be.a('Function');
 
-    expect(cellSelectionManager.getBackgroundColor(cellConfigMock)).to.equal(cellSelectionManager.selectedCellColor);
+    expect(cellSelectionManager.getBackgroundColor(cellConfigMock)).to.equal(BeakerXThemeHelper.SELECTED_CELL_BACKGROUND);
     expect(cellSelectionManager.getBackgroundColor({ ...cellConfigMock, column: 4 })).to.equal('');
   });
 

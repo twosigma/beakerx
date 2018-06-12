@@ -121,6 +121,14 @@ pre {
 .p-DataGrid-viewport {
   border-color: var(--jp-border-color2);
 }
+.p-DataGrid-viewport input[type="text"] {
+  background-color: var(--jp-layout-color1);
+  color: var(--jp-content-font-color1);
+  border-color: var(--jp-border-color2);
+}
+.input-clear span {
+  color: var(--jp-content-font-color1);
+}
 
 .p-DataGrid-scrollBar {
   border-color: var(--jp-border-color2) !important;
@@ -162,4 +170,30 @@ pre {
 
 .bx-button[class*="icon"]  {
   border-color: var(--jp-border-color2);
+}
+
+.bko-table-menu {
+  background-color: var(--jp-layout-color0);
+}
+
+.bko-table-menu .p-Menu-content .p-Menu-item {
+  color: var(--jp-ui-font-color0);
+}
+
+.bko-table-menu .p-Menu-content .p-Menu-item:hover {
+  background-color: var(--jp-layout-color2);
+  color: var(--jp-ui-font-color0);
+}
+
+.p-Menu-item.p-mod-active {
+  background-color: var(--jp-layout-color2);
+}
+
+.bko-table-menu .p-Menu-content [data-type="submenu"] > .p-Menu-itemSubmenuIcon:after {
+  color: var(--jp-ui-font-color0);
+}
+
+.text-line-style {
+  fill: var(--jp-content-font-color2);
+  stroke: var(--jp-content-font-color2);
 }

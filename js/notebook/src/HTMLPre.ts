@@ -14,12 +14,9 @@
  *  limitations under the License.
  */
 
-const widgets: {
-  StringModel: new() => { defaults(): any },
-  DescriptionView: new() => { el: any, model: any },
-} = require('./widgets');
+import widgets from './widgets';
 
-class HTMLPreModel extends widgets.StringModel {
+export class HTMLPreModel extends widgets.StringModel {
   defaults() {
     return {
       ...super.defaults(),
@@ -33,7 +30,7 @@ class HTMLPreModel extends widgets.StringModel {
   }
 }
 
-class HTMLPreView extends widgets.DescriptionView {
+export class HTMLPreView extends widgets.DescriptionView {
   render() {
     const pre = document.createElement('pre');
 

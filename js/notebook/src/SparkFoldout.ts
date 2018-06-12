@@ -15,10 +15,9 @@
  */
 
 import Foldout from "./Foldout";
+import widgets from './widgets';
 
-const widgets = require('./widgets');
-
-class SparkFoldoutModel extends widgets.BoxModel {
+export class SparkFoldoutModel extends widgets.BoxModel {
   defaults() {
     return {
       ...super.defaults(),
@@ -32,7 +31,7 @@ class SparkFoldoutModel extends widgets.BoxModel {
   }
 }
 
-class SparkFoldoutView extends Foldout.FoldoutView {
+export class SparkFoldoutView extends Foldout.FoldoutView {
   getPreviewContent(): HTMLElement {
     const panels = this.content.node.querySelectorAll('.bx-spark-stagePanel');
 

@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "allowJs": true,
+    "declaration": true,
+    "declarationDir": "../dist",
     "noImplicitAny": false,
     "noEmitOnError": true,
     "noUnusedLocals": true,

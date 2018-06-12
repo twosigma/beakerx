@@ -16,20 +16,20 @@
 
 import './global.env';
 import { IJupyterWidgetRegistry } from '@jupyter-widgets/base';
+import { IPlugin } from '@phosphor/application';
 import { JupyterLab, JupyterLabPlugin } from '@jupyterlab/application';
 import { ISettingRegistry } from "@jupyterlab/coreutils";
 import BeakerxExtension from './plugin';
 import BeakerxTreeJupyterLabPlugin from "./tree";
 import RequirejsLoader from "./plugin/requirejs";
-
 import { themeLightPlugin, themeDarkPlugin } from './theme';
 
-const beakerx = require('../lib/index.js');
+export const beakerx = require('../lib/index.js');
 
-const beakerx_ext = {
+export const beakerx_ext: JupyterLabPlugin<void>|IPlugin<JupyterLab, void> = {
   id: 'beakerx',
   requires: [IJupyterWidgetRegistry, ISettingRegistry],
-  activate: (app: JupyterLab, widgets: IJupyterWidgetRegistry, settings: ISettingRegistry) => {
+  activate: (app: JupyterLab, widgets: IJupyterWidgetRegistry, settings: ISettingRegistry): void => {
     widgets.registerWidget({
       name: 'beakerx',
       version: beakerx.version,
@@ -41,9 +41,9 @@ const beakerx_ext = {
   autoStart: true
 };
 
-const tree_ext = BeakerxTreeJupyterLabPlugin;
+export const tree_ext: JupyterLabPlugin<void> = BeakerxTreeJupyterLabPlugin;
 
-const requirejs_ext: JupyterLabPlugin<void> = {
+export const requirejs_ext: JupyterLabPlugin<void> = {
   id: 'beakerx:requirejs',
   autoStart: true,
   requires: [],
@@ -52,8 +52,8 @@ const requirejs_ext: JupyterLabPlugin<void> = {
   }
 };
 
-const beakerx_theme_light_ext = themeLightPlugin;
-const beakerx_theme_dark_ext = themeDarkPlugin;
+export const beakerx_theme_light_ext: JupyterLabPlugin<void> = themeLightPlugin;
+export const beakerx_theme_dark_ext: JupyterLabPlugin<void> = themeDarkPlugin;
 
 export default [
   requirejs_ext,

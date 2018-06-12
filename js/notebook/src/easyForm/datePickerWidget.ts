@@ -16,8 +16,7 @@
 
 import * as moment from 'moment-timezone/builds/moment-timezone-with-data';
 import flatpickr from "flatpickr";
-
-var widgets = require('../widgets');
+import widgets from '../widgets';
 
 export class DatePickerModel extends widgets.StringModel {
   defaults() {

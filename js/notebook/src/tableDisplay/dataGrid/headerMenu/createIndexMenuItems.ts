@@ -19,7 +19,7 @@ import { createFormatMenuItems } from './createFormatMenuItems';
 import DataGridColumn from "../column/DataGridColumn";
 import { selectBodyColumnStates } from "../column/selectors";
 import {COLUMN_TYPES} from "../column/enums";
-import {DEFAULT_PAGE_LENGTH, scopeData} from "../../consts";
+import {DEFAULT_PAGE_LENGTH, scopeData} from "../consts";
 
 export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
 
@@ -63,7 +63,7 @@ export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
       items.push({
         title: `${scopeData.rowsToDisplayMenu[1][index]}`,
         id: `rows_${scopeData.rowsToDisplayMenu[1][index]}`,
-        isChecked: () => item === dataGrid.rowManager.rowsToShow,
+        isChecked: () => dataGrid.rowManager && item === dataGrid.rowManager.rowsToShow,
         action: () => dataGrid.rowManager.setRowsToShow(item)
       })
     });

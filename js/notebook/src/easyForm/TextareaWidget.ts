@@ -14,13 +14,12 @@
  *  limitations under the License.
  */
 
-const widgets = require('../widgets');
-
+import widgets from '../widgets';
 import { TEXT_INPUT_WIDTH_UNIT } from './textWidget';
 
 const TEXT_INPUT_HEIGHT_UNIT = 'px';
 
-class TextareaModel extends widgets.TextareaModel {
+export class TextareaModel extends widgets.TextareaModel {
   defaults() {
     return {
       ...super.defaults(),
@@ -34,7 +33,7 @@ class TextareaModel extends widgets.TextareaModel {
   }
 }
 
-class TextareaView extends widgets.TextareaView {
+export class TextareaView extends widgets.TextareaView {
   render() {
     super.render.call(this);
 

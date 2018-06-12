@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-import '../global.env';
+/// <reference path='../types/index.d.ts'/>
 
-interface IInitCellsOptions {
+export interface IInitCellsOptions {
   run_on_kernel_ready: boolean,
   run_untrusted?: boolean
 }

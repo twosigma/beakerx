@@ -23,7 +23,7 @@ import {ICellData} from "../interface/ICell";
 import {DataGridHelpers} from "../dataGridHelpers";
 import isUrl = DataGridHelpers.isUrl;
 
-interface ICellDataOptions {
+export interface ICellDataOptions {
   row: number,
   column: number,
   value: any,

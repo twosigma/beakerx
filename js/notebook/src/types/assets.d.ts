@@ -14,6 +14,13 @@
  *  limitations under the License.
  */
 
+/// <reference types='node'/>
+
+declare var __webpack_public_path__: string;
+declare var BEAKERX_MODULE_VERSION: string;
+declare var Jupyter: any;
+declare var beakerx: any;
+
 declare module '*.woff' {
   const value: any;
   export default value;

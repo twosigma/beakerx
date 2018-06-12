@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-const widgets = require('./widgets');
+import widgets from './widgets';
 
-class BxHTMLModel extends widgets.HTMLModel {
+export class BxHTMLModel extends widgets.HTMLModel {
     defaults() {
         return {
             ...super.defaults(),
@@ -30,7 +30,7 @@ class BxHTMLModel extends widgets.HTMLModel {
     }
 }
 
-class BxHTMLView extends widgets.HTMLView {
+export class BxHTMLView extends widgets.HTMLView {
     render() {
         super.render();
         this.content.style.lineHeight = "20px";

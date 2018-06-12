@@ -14,12 +14,12 @@
  *  limitations under the License.
  */
 
-const widgets = require('../widgets');
-const comboBox = require('../comboBox/jQueryComboBox');
-
+import widgets from '../widgets';
 import * as $ from 'jquery';
 
-class ComboBoxModel extends widgets.SelectModel {
+const comboBox = require('../comboBox/jQueryComboBox');
+
+export class ComboBoxModel extends widgets.SelectModel {
   defaults() {
     return {
       ...super.defaults(),
@@ -33,7 +33,7 @@ class ComboBoxModel extends widgets.SelectModel {
   }
 }
 
-class ComboBoxView extends widgets.SelectView {
+export class ComboBoxView extends widgets.SelectView {
   render(): void {
     super.render();
 

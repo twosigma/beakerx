@@ -17,7 +17,7 @@
 import * as sinon from 'sinon';
 import { expect, assert } from 'chai';
 import { DataFormatter } from '@beakerx/tableDisplay/dataGrid/DataFormatter';
-import { TIME_UNIT_FORMATS } from '@beakerx/tableDisplay/consts';
+import { TIME_UNIT_FORMATS } from '@beakerx/tableDisplay/dataGrid/consts';
 import * as moment from 'moment-timezone/builds/moment-timezone-with-data';
 import modelStateMock from "./mock/modelStateMock";
 import {BeakerXDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";

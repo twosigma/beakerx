@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import consts from "../consts";
+import consts from "./consts";
 
 export enum ALL_TYPES {
   'string',

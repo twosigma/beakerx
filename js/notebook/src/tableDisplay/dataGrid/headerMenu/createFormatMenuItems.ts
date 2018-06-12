@@ -15,7 +15,7 @@
  */
 
 import MenuItem from "../../../shared/interfaces/menuItemInterface";
-import { TIME_UNIT_FORMATS, scopeData } from '../../consts';
+import { TIME_UNIT_FORMATS, scopeData } from '../consts';
 import { ALL_TYPES, getAllowedTypesByType } from "../dataTypes";
 import DataGridColumn from "../column/DataGridColumn";
 

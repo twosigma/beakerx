@@ -16,13 +16,13 @@
 
 import {Widget} from "@phosphor/widgets";
 import BeakerXApi from "./tree/Utils/BeakerXApi";
+import widgets from './widgets';
 
-const widgets = require('./widgets');
 const bkUtils = require("./shared/bkUtils");
 
 const SPARK_LOCAL_MASTER_URL_PREFIX = 'local';
 
-class SparkUIModel extends widgets.VBoxModel {
+export class SparkUIModel extends widgets.VBoxModel {
   defaults() {
     return {
       ...super.defaults(),
@@ -36,7 +36,7 @@ class SparkUIModel extends widgets.VBoxModel {
   }
 }
 
-class SparkUIView extends widgets.VBoxView {
+export class SparkUIView extends widgets.VBoxView {
   private sparkStats: Widget;
   private toolbarSparkStats: Widget;
   private sparkAppId: string;
@@ -61,7 +61,7 @@ class SparkUIView extends widgets.VBoxView {
     this.toggleExecutorConfigInputs = this.toggleExecutorConfigInputs.bind(this);
   }
 
-  public render() {
+  public render(): void {
     super.render();
     this.el.classList.add('widget-spark-ui');
 
@@ -69,7 +69,7 @@ class SparkUIView extends widgets.VBoxView {
     this.updateChildren();
   }
 
-  public update() {
+  public update(): void {
     super.update();
 
     this.connectToApi();
@@ -322,7 +322,7 @@ class SparkUIView extends widgets.VBoxView {
 
   private addSparkMetricsWidget() {
     this.children_views.update(this.model.get('children')).then((views) => {
-      views.forEach((view) => {
+      views.forEach((view: any) => {
         view.children_views.update(view.model.get('children')).then((views) => {
           views.forEach((view) => {
             if (view instanceof widgets.LabelView && view.el.classList.contains('bx-connection-status')) {

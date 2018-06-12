@@ -92,17 +92,13 @@ export default class ColumnFilter {
   }
 
   destroy(): void {
-    this.filterWidget.dispose();
-
-    setTimeout(() => {
-      this.dataGrid = null;
-      this.column = null;
-      this.filterWidget = null;
-      this.filterNode = null;
-      this.filterIcon = null;
-      this.clearIcon = null;
-      this.filterInput = null;
-    });
+    this.dataGrid = null;
+    this.column = null;
+    this.filterWidget = null;
+    this.filterNode = null;
+    this.filterIcon = null;
+    this.clearIcon = null;
+    this.filterInput = null;
   }
 
   private updateInputPosition() {

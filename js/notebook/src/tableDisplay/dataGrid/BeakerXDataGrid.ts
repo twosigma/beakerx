@@ -197,7 +197,6 @@ export class BeakerXDataGrid extends DataGrid {
     this.highlighterManager.destroy();
     this.dataGridResize.destroy();
     this.rowManager.destroy();
-    this.dispose();
 
     Signal.disconnectAll(this);
 

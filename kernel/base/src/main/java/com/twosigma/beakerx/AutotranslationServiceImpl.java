@@ -15,5 +15,20 @@
  */
 package com.twosigma.beakerx;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class AutotranslationServiceImpl implements AutotranslationService {
+
+  private Map<String, String> cache = new HashMap<>();
+
+  @Override
+  public String update(String name, String json) {
+    return cache.put(name, json);
+  }
+
+  @Override
+  public String get(String name) {
+    return cache.get(name);
+  }
 }

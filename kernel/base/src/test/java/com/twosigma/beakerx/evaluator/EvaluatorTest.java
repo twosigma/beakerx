@@ -208,6 +208,11 @@ public class EvaluatorTest extends BaseEvaluator {
     }
 
     @Override
+    public String update(String name, Object value) {
+      return null;
+    }
+
+    @Override
     public Object set(String name, Object value) {
       return null;
     }

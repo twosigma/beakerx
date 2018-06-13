@@ -24,6 +24,8 @@ public interface BeakerxClient {
 
   void delBeaker();
 
+  String update(String name, Object value);
+
   Object set(String name, Object value);
 
   Object get(final String name);

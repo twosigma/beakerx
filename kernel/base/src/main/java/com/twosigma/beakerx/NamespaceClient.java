@@ -71,13 +71,25 @@ public class NamespaceClient implements BeakerxClient {
   }
 
   @Override
+  public synchronized String update(String name, Object value) {
+    try {
+      String json = getJson(value);
+      autotranslationService.update(name, json);
+      return json;
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
   public synchronized Object set(String name, Object value) {
+    String json = update(name, value);
     try {
       Comm c = getAutotranslationComm();
       HashMap<String, Serializable> data = new HashMap<>();
       HashMap<String, Serializable> state = new HashMap<>();
       state.put("name", name);
-      state.put("value", getJson(value));
+      state.put("value", json);
       state.put("sync", true);
       data.put("state", state);
       data.put("buffer_paths", new HashMap<>());
@@ -110,7 +122,7 @@ public class NamespaceClient implements BeakerxClient {
   //TODO : Not Implemented
   @Override
   public synchronized Object get(final String name) {
-    throw new RuntimeException("This option is not implemented now");
+    return autotranslationService.get(name);
   }
 
   @Override

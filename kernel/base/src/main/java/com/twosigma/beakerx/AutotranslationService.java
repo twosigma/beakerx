@@ -16,4 +16,8 @@
 package com.twosigma.beakerx;
 
 public interface AutotranslationService {
+
+  String update(String name, String json);
+
+  String get(String name);
 }

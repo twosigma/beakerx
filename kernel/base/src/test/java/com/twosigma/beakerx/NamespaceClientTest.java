@@ -129,5 +129,15 @@ public class NamespaceClientTest {
 
   public static class AutotranslationServiceTestImpl implements AutotranslationService {
 
+    @Override
+    public String update(String name, String json) {
+      return "";
+    }
+
+    @Override
+    public String get(String name) {
+      return null;
+    }
+
   }
 }

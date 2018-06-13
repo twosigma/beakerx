@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static com.twosigma.beakerx.widget.SparkUI.ONE_SPARK_SESSION_MSG_ERROR;
@@ -160,14 +161,30 @@ public class SparkMagicCommandTest {
   }
 
   static class SparkUiDefaultsImplTest implements SparkUiDefaults {
+
     @Override
-    public void saveSparkConf(SparkConf sparkConf) {
+    public void saveSparkConf(HashMap sparkConf, String profileName) {
 
     }
 
     @Override
     public void loadDefaults(SparkSession.Builder builder) {
 
+    }
+
+    @Override
+    public Set<String> getProfiles() {
+      return null;
+    }
+
+    @Override
+    public void removeSparkConf(String profileName) {
+
+    }
+
+    @Override
+    public Map<String, Object> loadProfile(String profileName) {
+      return null;
     }
   }
 

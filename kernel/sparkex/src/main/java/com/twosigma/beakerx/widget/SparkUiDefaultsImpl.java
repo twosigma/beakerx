@@ -21,14 +21,17 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 import scala.Tuple2;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.twosigma.beakerx.widget.SparkUI.BEAKERX_ID;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_APP_NAME;
@@ -44,6 +47,8 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
   public static final String PROPERTIES = "properties";
   public static final String SPARK_OPTIONS = "spark_options";
   public static final String BEAKERX = "beakerx";
+
+  private Set<String> profiles = new HashSet<>();
   private Gson gson = new GsonBuilder().setPrettyPrinting().create();
   private Path path;
 
@@ -52,14 +57,18 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
   }
 
   @Override
-  @SuppressWarnings("unchecked")
-  public void saveSparkConf(SparkConf sparkConf) {
-    Map<String, Object> newSparkConf = toMap(sparkConf);
+  public void saveSparkConf(HashMap sparkConf, String profileName) {
     try {
       Map<String, Map> map = beakerxJsonAsMap(path);
-      map.get(BEAKERX).put(SPARK_OPTIONS, newSparkConf);
+      Map<String, Map> sparkOptions = (Map<String, Map>) map.get(BEAKERX).get(SPARK_OPTIONS);
+      if (sparkOptions == null) {
+        sparkOptions = new HashMap<>();
+        map.get(BEAKERX).put(SPARK_OPTIONS, sparkOptions);
+      }
+      sparkOptions.put(profileName, sparkConf);
       String content = gson.toJson(map);
       Files.write(path, content.getBytes(StandardCharsets.UTF_8));
+      profiles.add(profileName);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -68,12 +77,42 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
   @Override
   public void loadDefaults(SparkSession.Builder builder) {
     SparkConf sparkConf = SparkEngineImpl.getSparkConfBasedOn(builder);
-    Map<String, Map> beakerxJson = beakerxJsonAsMap(path);
-    Map<String, Object> map = getOptions(beakerxJson);
+    Map<String, Object> map = loadProfile(null);
     if (map != null) {
       map.entrySet().stream()
               .filter(x -> !sparkConf.contains(x.getKey()))
               .forEach(x -> addToBuilder(builder, x.getKey(), x.getValue()));
+    }
+  }
+
+  public Set<String> getProfiles() {
+    return profiles;
+  }
+
+  @Override
+  public Map<String, Object> loadProfile(String profileName) {
+    Map<String, Object> profile = new HashMap<>();
+    Map<String, Map> beakerxJson = beakerxJsonAsMap(path);
+    Map<String, Object> sparkConfProfiles = getOptions(beakerxJson);
+    if (sparkConfProfiles != null && sparkConfProfiles.keySet().size() > 0) {
+      profiles = new HashSet<>(sparkConfProfiles.keySet());
+      String profileKey = profileName != null && profiles.contains(profileName) ? profileName : profiles.iterator().next();
+      profile = (Map<String, Object>) sparkConfProfiles.get(profileKey);
+    }
+    return profile;
+  }
+
+  @Override
+  public void removeSparkConf(String profileName) {
+    try {
+      Map<String, Map> map = beakerxJsonAsMap(path);
+      Map<String, Map> sparkOptions = (Map<String, Map>) map.get(BEAKERX).get(SPARK_OPTIONS);
+      sparkOptions.remove(profileName);
+      String content = gson.toJson(map);
+      Files.write(path, content.getBytes(StandardCharsets.UTF_8));
+      profiles.remove(profileName);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
   }
 

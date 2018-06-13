@@ -1,0 +1,12 @@
+{
+  "beakerx": {
+    "jvm_options": {
+      "other": [],
+      "properties": {}
+    },
+    "ui_options": {
+      "auto_close": true
+    },
+    "version": 2.0
+  }
+}

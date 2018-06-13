@@ -29,6 +29,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -87,13 +90,28 @@ public class SparkMagicCommandAutoConnectTest {
     return new SparkUI.SparkUIFactory() {
       private SparkUI.SparkUIFactoryImpl factory = new SparkUI.SparkUIFactoryImpl(sparkManagerFactory, new SparkUiDefaults() {
         @Override
-        public void saveSparkConf(SparkConf sparkConf) {
+        public void saveSparkConf(HashMap sparkConf, String profileName) {
 
         }
 
         @Override
         public void loadDefaults(SparkSession.Builder builder) {
 
+        }
+
+        @Override
+        public Set<String> getProfiles() {
+          return null;
+        }
+
+        @Override
+        public void removeSparkConf(String profileName) {
+
+        }
+
+        @Override
+        public Map<String, Object> loadProfile(String profileName) {
+          return null;
         }
       }, singleSparkSession);
 

@@ -46,11 +46,11 @@ export default class BeakerXThemeHelper {
   }
 
   public static get FOCUSED_CELL_BACKGROUND(): string {
-    return this.isDark ? 'rgb(99, 99, 99)' : 'rgb(200, 200, 200)';
+    return this.isDark ? '#198e1d' : '#c8c8c8';
   }
 
   public static get SELECTED_CELL_BACKGROUND(): string {
-    return this.isDark ? '#4f4126' : '#B0BED9';
+    return this.isDark ? '#266196' : '#B0BED9';
   }
 
   public static get HIGHLIGHTED_CELL_BACKGROUND_EVEN(): string {

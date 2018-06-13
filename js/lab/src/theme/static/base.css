@@ -25,6 +25,8 @@
   min-width: 0;
   flex-shrink: 1;
   outline: none !important;
+  height: var(--jp-widgets-inline-height);
+  line-height: var(--jp-widgets-inline-height);
 }
 
 .widget-text input[type="password"]:focus {
@@ -37,4 +39,27 @@
   background-color: var(--jp-widgets-input-background-color);
   color: var(--jp-widgets-input-color);
   font-size: var(--jp-widgets-font-size);
+}
+
+.easyform-combobox-input {
+  box-sizing: border-box;
+  border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color) !important;
+  background-color: var(--jp-widgets-input-background-color);
+  color: var(--jp-widgets-input-color);
+  font-size: var(--jp-widgets-font-size);
+  padding: var(--jp-widgets-input-padding) calc( var(--jp-widgets-input-padding) * 2 );
+  outline: none !important;
+  height: calc(var(--jp-widgets-inline-height) + 2px);
+  line-height: var(--jp-widgets-inline-height);
+}
+
+.easyform-combobox-toggle {
+  border-color: var(--jp-widgets-input-border-color);
+  background-color: var(--jp-widgets-input-background-color);
+}
+.easyform-combobox-toggle:focus,
+.easyform-combobox-toggle:active,
+.easyform-combobox-toggle:hover {
+  border-color: var(--jp-widgets-input-focus-border-color);
+  background-color: var(--jp-widgets-input-background-color);
 }

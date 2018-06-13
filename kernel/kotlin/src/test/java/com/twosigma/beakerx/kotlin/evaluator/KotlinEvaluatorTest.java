@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.kotlin.evaluator;
 
 import com.twosigma.beakerx.TryResult;
+import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.KernelManager;
@@ -42,7 +43,7 @@ public class KotlinEvaluatorTest {
 
   @BeforeClass
   public static void setUp() throws Exception {
-    evaluator = new KotlinEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS);
+    evaluator = new KotlinEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS, new EvaluatorTest.BeakexClientTestImpl());
     KotlinKernelMock kernel = new KotlinKernelMock("id", evaluator);
     KernelManager.register(kernel);
   }

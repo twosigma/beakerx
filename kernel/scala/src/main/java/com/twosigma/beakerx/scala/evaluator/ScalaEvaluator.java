@@ -17,6 +17,8 @@
 package com.twosigma.beakerx.scala.evaluator;
 
 import com.google.inject.Provider;
+import com.twosigma.beakerx.AutotranslationServiceImpl;
+import com.twosigma.beakerx.BeakerxClient;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
@@ -57,11 +59,11 @@ public class ScalaEvaluator extends BaseEvaluator {
   private ScalaEvaluatorGlue shell;
 
   public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, EvaluatorParameters evaluatorParameters) {
-    this(id, sId, osp, new BeakerCellExecutor("scala"), new BeakerxObjectFactoryImpl(), new TempFolderFactoryImpl(), evaluatorParameters);
+    this(id, sId, osp, new BeakerCellExecutor("scala"), new BeakerxObjectFactoryImpl(), new TempFolderFactoryImpl(), evaluatorParameters, new NamespaceClient(sId, new AutotranslationServiceImpl()));
   }
 
-  public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, CellExecutor cellExecutor, BeakerxObjectFactory beakerxObjectFactory, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters) {
-    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters);
+  public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, CellExecutor cellExecutor, BeakerxObjectFactory beakerxObjectFactory, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters, BeakerxClient beakerxClient) {
+    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient);
     this.objectSerializerProvider = osp;
     this.beakerxObjectFactory = beakerxObjectFactory;
     this.classLoader = newClassLoader();
@@ -135,11 +137,11 @@ public class ScalaEvaluator extends BaseEvaluator {
 
   private ScalaEvaluatorGlue createNewEvaluator(ScalaEvaluatorGlue shell) {
     ScalaEvaluatorGlue newEvaluator = createNewEvaluator();
-    setLineId(newEvaluator,shell.interpreter().lastRequest().lineRep().lineId());
+    setLineId(newEvaluator, shell.interpreter().lastRequest().lineRep().lineId());
     return newEvaluator;
   }
 
-  private void setLineId(ScalaEvaluatorGlue newEvaluator,int lines) {
+  private void setLineId(ScalaEvaluatorGlue newEvaluator, int lines) {
     for (int i = newEvaluator.interpreter().lastRequest().lineRep().lineId(); i < lines; i++) {
       newEvaluator.evaluate2("\"\"");
     }
@@ -153,8 +155,6 @@ public class ScalaEvaluator extends BaseEvaluator {
       addImportsToShell(shell, getImports().getImportPaths());
     }
     logger.debug("creating beaker object");
-    // ensure object is created
-    NamespaceClient.getBeaker(getSessionId());
     String r = shell.evaluate2(this.beakerxObjectFactory.create(getSessionId()));
     if (r != null && !r.isEmpty()) {
       logger.warn("ERROR creating beaker object: {}", r);

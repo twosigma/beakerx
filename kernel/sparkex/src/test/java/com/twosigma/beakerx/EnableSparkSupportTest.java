@@ -57,7 +57,8 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
             TestBeakerCellExecutor.cellExecutor(),
             new NoBeakerxObjectTestFactory(),
             EvaluatorTest.getTestTempFolderFactory(),
-            getKernelParameters());
+            getKernelParameters()
+            , new EvaluatorTest.BeakexClientTestImpl());
     return new Scala(sessionId,
             evaluator,
             kernelSocketsFactory,
@@ -95,12 +96,12 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
     String peoplePath = EnableSparkSupportTest.class.getClassLoader().getResource("people.json").getPath();
     String code =
             "val spark = SparkSession\n" +
-            "    .builder\n" +
-            "    .appName(\"jupyter\")\n" +
-            "    .master(\"local[*]\")\n" +
-            "    .getOrCreate()\n" +
-            "val ds = spark.read.json(\"file://" + peoplePath + "\")\n"
-            + returnStatement;
+                    "    .builder\n" +
+                    "    .appName(\"jupyter\")\n" +
+                    "    .master(\"local[*]\")\n" +
+                    "    .getOrCreate()\n" +
+                    "val ds = spark.read.json(\"file://" + peoplePath + "\")\n"
+                    + returnStatement;
 
     Message messageWithCode = MessageFactoryTest.getExecuteRequestMessage(code);
     getKernelSocketsService().handleMsg(messageWithCode);

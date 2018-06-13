@@ -43,8 +43,8 @@ public class ScalaKernelTest extends KernelExecutionTest {
 
   @Override
   protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
-    ScalaEvaluator evaluator = new ScalaEvaluator(sessionId, sessionId, null, cellExecutor(), new NoBeakerxObjectTestFactory(), getTestTempFolderFactory(), EvaluatorTest.KERNEL_PARAMETERS);
-    return new Scala(sessionId, evaluator, kernelSocketsFactory, closeKernelAction, getCacheFolderFactory(),new CustomMagicCommandsEmptyImpl());
+    ScalaEvaluator evaluator = new ScalaEvaluator(sessionId, sessionId, null, cellExecutor(), new NoBeakerxObjectTestFactory(), getTestTempFolderFactory(), EvaluatorTest.KERNEL_PARAMETERS, new EvaluatorTest.BeakexClientTestImpl());
+    return new Scala(sessionId, evaluator, kernelSocketsFactory, closeKernelAction, getCacheFolderFactory(), new CustomMagicCommandsEmptyImpl());
   }
 
   @Override
@@ -91,7 +91,7 @@ public class ScalaKernelTest extends KernelExecutionTest {
     //then
     Optional<Message> result = waitForErrorMessage(getKernelSocketsService().getKernelSockets());
     assertThat(result).isPresent();
-    assertThat((String)result.get().getContent().get("text")).contains("not found");
+    assertThat((String) result.get().getContent().get("text")).contains("not found");
   }
 
   private void runStatement(String code) throws InterruptedException {

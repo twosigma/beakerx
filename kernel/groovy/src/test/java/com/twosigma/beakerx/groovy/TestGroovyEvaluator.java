@@ -15,7 +15,9 @@
  */
 package com.twosigma.beakerx.groovy;
 
+import com.twosigma.beakerx.BeakerxClient;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beakerx.groovy.kernel.GroovyDefaultVariables;
@@ -29,23 +31,37 @@ import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor
 
 public class TestGroovyEvaluator {
 
+  public static BaseEvaluator groovyEvaluator(BeakerxClient client) {
+    GroovyEvaluator evaluator = new GroovyEvaluator(
+            "id",
+            "sid",
+            cellExecutor(),
+            getTestTempFolderFactory(),
+            getKernelParameters(),
+            client);
+    return evaluator;
+  }
+
+
   public static BaseEvaluator groovyEvaluator() {
     GroovyEvaluator evaluator = new GroovyEvaluator(
             "id",
             "sid",
             cellExecutor(),
             getTestTempFolderFactory(),
-            getKernelParameters());
+            getKernelParameters(),
+            new EvaluatorTest.BeakexClientTestImpl());
     return evaluator;
   }
 
   public static BaseEvaluator groovyEvaluator(TempFolderFactory tempFolderFactory) {
     GroovyEvaluator evaluator = new GroovyEvaluator(
-        "id",
-        "sid",
-        cellExecutor(),
-        tempFolderFactory,
-        getKernelParameters());
+            "id",
+            "sid",
+            cellExecutor(),
+            tempFolderFactory,
+            getKernelParameters(),
+            new EvaluatorTest.BeakexClientTestImpl());
     return evaluator;
   }
 

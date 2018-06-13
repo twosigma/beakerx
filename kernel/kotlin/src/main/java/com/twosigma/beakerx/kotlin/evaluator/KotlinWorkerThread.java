@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.kotlin.evaluator;
 
-import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
 
@@ -37,34 +36,19 @@ class KotlinWorkerThread implements Callable<TryResult> {
 
   @Override
   public TryResult call() throws Exception {
-    NamespaceClient nc = null;
     TryResult either;
     try {
-
-      nc = NamespaceClient.getBeaker(kotlinEvaluator.getSessionId());
-      nc.setOutputObj(j.outputObject);
-
       j.outputObject.started();
 
       try {
         KotlinCodeRunner kotlinCodeRunner = new KotlinCodeRunner(j.outputObject, kotlinEvaluator.getClassLoader(), kotlinEvaluator.getRepl(), j.codeToBeExecuted);
         either = kotlinEvaluator.executeTask(kotlinCodeRunner);
-        if (nc != null) {
-          nc.setOutputObj(null);
-          nc = null;
-        }
-
       } catch (Exception e) {
         either = TryResult.createError(e.getMessage());
       }
     } catch (Throwable e) {
       e.printStackTrace();
       either = TryResult.createError(e.getMessage());
-    } finally {
-      if (nc != null) {
-        nc.setOutputObj(null);
-        nc = null;
-      }
     }
     return either;
   }

@@ -15,10 +15,10 @@
  */
 package com.twosigma.beakerx.evaluator;
 
+import com.twosigma.beakerx.BeakerxClient;
 import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.inspect.Inspect;
 import com.twosigma.beakerx.inspect.InspectResult;
-import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
@@ -54,16 +54,23 @@ public abstract class BaseEvaluator implements Evaluator {
   protected Imports imports;
   private final CellExecutor executor;
   private Path tempFolder;
+  private BeakerxClient beakerxClient;
   protected EvaluatorParameters evaluatorParameters;
   private EvaluatorHooks cancelHooks = new EvaluatorHooks();
 
   protected ExecutorService executorService;
 
-  public BaseEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters) {
+  public BaseEvaluator(String id,
+                       String sId,
+                       CellExecutor cellExecutor,
+                       TempFolderFactory tempFolderFactory,
+                       EvaluatorParameters evaluatorParameters,
+                       BeakerxClient beakerxClient) {
     shellId = id;
     sessionId = sId;
     executor = cellExecutor;
     tempFolder = tempFolderFactory.createTempFolder();
+    this.beakerxClient = beakerxClient;
     outDir = getOrCreateFile(tempFolder.toString() + File.separator + "outDir").getPath();
     classPath = new Classpath();
     classPath.add(new PathToJar(outDir));
@@ -98,6 +105,11 @@ public abstract class BaseEvaluator implements Evaluator {
 
   public ClassLoader getClassLoaderForImport() {
     return getClassLoader();
+  }
+
+  @Override
+  public BeakerxClient getBeakerx() {
+    return beakerxClient;
   }
 
   @Override
@@ -227,7 +239,7 @@ public abstract class BaseEvaluator implements Evaluator {
 
   @Override
   public void exit() {
-    NamespaceClient.delBeaker(getSessionId());
+    beakerxClient.delBeaker();
     removeTempFolder();
   }
 

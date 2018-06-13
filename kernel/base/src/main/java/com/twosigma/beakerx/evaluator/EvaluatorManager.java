@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.evaluator;
 
+import com.twosigma.beakerx.BeakerxClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.inspect.InspectResult;
@@ -117,5 +118,9 @@ public class EvaluatorManager {
 
   public void registerCancelHook(Hook hook) {
     evaluator.registerCancelHook(hook);
+  }
+
+  public BeakerxClient getBeakerx() {
+    return evaluator.getBeakerx();
   }
 }

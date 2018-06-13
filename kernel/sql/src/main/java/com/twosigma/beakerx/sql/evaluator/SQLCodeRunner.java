@@ -15,9 +15,8 @@
  */
 package com.twosigma.beakerx.sql.evaluator;
 
-import com.twosigma.beakerx.NamespaceClient;
+import com.twosigma.beakerx.BeakerxClient;
 import com.twosigma.beakerx.TryResult;
-import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.sql.ReadVariableException;
 import org.slf4j.Logger;
@@ -34,9 +33,9 @@ class SQLCodeRunner implements Callable<TryResult> {
 
   private SQLEvaluator sqlEvaluator;
   private final SimpleEvaluationObject simpleEvaluationObject;
-  private final NamespaceClient namespaceClient;
+  private final BeakerxClient namespaceClient;
 
-  SQLCodeRunner(SQLEvaluator sqlEvaluator, SimpleEvaluationObject seo, NamespaceClient namespaceClient) {
+  SQLCodeRunner(SQLEvaluator sqlEvaluator, SimpleEvaluationObject seo, BeakerxClient namespaceClient) {
     this.sqlEvaluator = sqlEvaluator;
     this.simpleEvaluationObject = seo;
     this.namespaceClient = namespaceClient;

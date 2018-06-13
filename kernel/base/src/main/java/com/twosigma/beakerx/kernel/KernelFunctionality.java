@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.kernel;
 
+import com.twosigma.beakerx.BeakerxClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Hook;
@@ -98,4 +99,6 @@ public interface KernelFunctionality {
   MagicKernelManager getManagerByCommId(String commId);
 
   void addCommIdManagerMapping(String commId, String kernel);
+
+  BeakerxClient getBeakerx();
 }

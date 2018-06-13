@@ -431,4 +431,9 @@ public class KernelTest implements KernelFunctionality {
 
   @Override
   public void addCommIdManagerMapping(String commId, String kernel) {}
+
+  @Override
+  public BeakerxClient getBeakerx() {
+    return null;
+  }
 }

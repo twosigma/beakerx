@@ -32,25 +32,26 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.SynchronousQueue;
 
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_ENUMS_USING_TO_STRING;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
+import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 
-public class NamespaceClient {
+public class NamespaceClient implements BeakerxClient {
 
-  private static Map<String, NamespaceClient> nsClients = new ConcurrentHashMap<>();
-  private static String currentSession;
   private static Map<String, SynchronousQueue<Object>> messagePool = new HashMap<>();
   private ObjectMapper objectMapper;
   private BeakerObjectConverter objectSerializer;
-  private SimpleEvaluationObject currentCeo = null;
   private Comm autotranslationComm = null;
   private Comm codeCellsComm = null;
   private Comm tagRunComm = null;
+  private String session;
+  private AutotranslationService autotranslationService;
 
-  public NamespaceClient() {
+  public NamespaceClient(String session, AutotranslationService autotranslationService) {
+    this.session = checkNotNull(session);
+    this.autotranslationService = autotranslationService;
     SimpleModule module = TableDisplayToJson.tableDisplayModule();
     objectMapper = new ObjectMapper();
     objectMapper.enable(WRITE_ENUMS_USING_TO_STRING);
@@ -58,53 +59,36 @@ public class NamespaceClient {
     objectSerializer = new BasicObjectSerializer();
   }
 
+  @Override
   public synchronized void showProgressUpdate(String message, int progress) {
     SimpleEvaluationObject seo = InternalVariable.getSimpleEvaluationObject();
     seo.structuredUpdate(message, progress);
   }
 
-  public SimpleEvaluationObject getOutputObj() {
-    return currentCeo;
+  @Override
+  public synchronized void delBeaker() {
+    //clear autotranslation
   }
 
-  public synchronized void setOutputObj(SimpleEvaluationObject input) {
-    currentCeo = input;
-  }
-
-  public synchronized static NamespaceClient getBeaker() {
-    if (currentSession != null) {
-      return nsClients.get(currentSession);
+  @Override
+  public synchronized Object set(String name, Object value) {
+    try {
+      Comm c = getAutotranslationComm();
+      HashMap<String, Serializable> data = new HashMap<>();
+      HashMap<String, Serializable> state = new HashMap<>();
+      state.put("name", name);
+      state.put("value", getJson(value));
+      state.put("sync", true);
+      data.put("state", state);
+      data.put("buffer_paths", new HashMap<>());
+      c.send(COMM_MSG, Comm.Buffer.EMPTY, new Comm.Data(data));
+      return value;
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
-    return null;
   }
 
-  public synchronized static NamespaceClient getBeaker(String session) {
-    currentSession = session;
-    if (!nsClients.containsKey(session)) {
-      nsClients.put(session, new NamespaceClient());
-    }
-    return nsClients.get(currentSession);
-  }
-
-  public synchronized static void delBeaker(String sessionId) {
-    nsClients.remove(sessionId);
-    currentSession = null;
-  }
-
-  public synchronized Object set(String name, Object value) throws IOException {
-    Comm c = getAutotranslationComm();
-    HashMap<String, Serializable> data = new HashMap<>();
-    HashMap<String, Serializable> state = new HashMap<>();
-    state.put("name", name);
-    state.put("value", getJson(value));
-    state.put("sync", true);
-    data.put("state", state);
-    data.put("buffer_paths", new HashMap<>());
-    c.send(COMM_MSG, Comm.Buffer.EMPTY, new Comm.Data(data));
-    return value;
-  }
-
-  protected String getJson(Object value) throws IOException {
+  private String getJson(Object value) throws IOException {
     StringWriter sw = new StringWriter();
     JsonGenerator jgen = objectMapper.getFactory().createGenerator(sw);
     objectSerializer.writeObject(value, jgen, true);
@@ -124,11 +108,13 @@ public class NamespaceClient {
   }
 
   //TODO : Not Implemented
+  @Override
   public synchronized Object get(final String name) {
     throw new RuntimeException("This option is not implemented now");
   }
 
-  public static SynchronousQueue<Object> getMessageQueue(String channel) {
+  @Override
+  public SynchronousQueue<Object> getMessageQueue(String channel) {
     SynchronousQueue<Object> result = messagePool.get(channel);
     if (result == null) {
       result = new SynchronousQueue<Object>();
@@ -137,7 +123,7 @@ public class NamespaceClient {
     return result;
   }
 
-  protected Comm getAutotranslationComm() {
+  private Comm getAutotranslationComm() {
     if (autotranslationComm == null) {
       autotranslationComm = new Comm(TargetNamesEnum.BEAKER_AUTOTRANSLATION);
       autotranslationComm.open();
@@ -145,7 +131,7 @@ public class NamespaceClient {
     return autotranslationComm;
   }
 
-  protected Comm getCodeCellsComm() {
+  private Comm getCodeCellsComm() {
     if (codeCellsComm == null) {
       codeCellsComm = new Comm(TargetNamesEnum.BEAKER_GETCODECELLS);
       codeCellsComm.open();
@@ -153,7 +139,7 @@ public class NamespaceClient {
     return codeCellsComm;
   }
 
-  protected Comm getTagRunComm() {
+  private Comm getTagRunComm() {
     if (tagRunComm == null) {
       tagRunComm = new Comm(TargetNamesEnum.BEAKER_TAG_RUN);
       tagRunComm.open();
@@ -161,22 +147,27 @@ public class NamespaceClient {
     return tagRunComm;
   }
 
-
-  public List<CodeCell> getCodeCells(String tagFilter) throws IOException, InterruptedException {
+  @Override
+  public List<CodeCell> getCodeCells(String tagFilter) {
     // first send message to get cells
-    Comm c = getCodeCellsComm();
-    HashMap<String, Serializable> data = new HashMap<>();
-    HashMap<String, Serializable> state = new HashMap<>();
-    state.put("name", "CodeCells");
-    state.put("value", getJson(tagFilter));
-    data.put("state", state);
-    data.put("buffer_paths", new HashMap<>());
-    c.send(COMM_MSG, Comm.Buffer.EMPTY, new Comm.Data(data));
-    // block
-    Object cells = getMessageQueue("CodeCells").take();
-    return (List<CodeCell>) cells;
+    try {
+      Comm c = getCodeCellsComm();
+      HashMap<String, Serializable> data = new HashMap<>();
+      HashMap<String, Serializable> state = new HashMap<>();
+      state.put("name", "CodeCells");
+      state.put("value", getJson(tagFilter));
+      data.put("state", state);
+      data.put("buffer_paths", new HashMap<>());
+      c.send(COMM_MSG, Comm.Buffer.EMPTY, new Comm.Data(data));
+      // block
+      Object cells = getMessageQueue("CodeCells").take();
+      return (List<CodeCell>) cells;
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
+  @Override
   public synchronized void runByTag(String tag) {
     Comm c = getTagRunComm();
     HashMap<String, Serializable> data = new HashMap<>();

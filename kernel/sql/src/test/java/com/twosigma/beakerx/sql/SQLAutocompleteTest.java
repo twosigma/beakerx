@@ -17,6 +17,7 @@ package com.twosigma.beakerx.sql;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
@@ -41,7 +42,7 @@ public class SQLAutocompleteTest {
 
   @Before
   public void setUp() throws Exception {
-    sqlEvaluator = new SQLEvaluator("shellId1", "sessionId1", cellExecutor(), getTestTempFolderFactory(), kernelParameters());
+    sqlEvaluator = new SQLEvaluator("shellId1", "sessionId1", cellExecutor(), getTestTempFolderFactory(), kernelParameters(), new EvaluatorTest.BeakexClientTestImpl());
     sqlEvaluator.setShellOptions(kernelParameters());
     kernelTest = new KernelTest("id1", sqlEvaluator);
   }
@@ -98,7 +99,7 @@ public class SQLAutocompleteTest {
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
   }
 
-  private void givenColorTable()  {
+  private void givenColorTable() {
     SimpleEvaluationObject seo = new SimpleEvaluationObject(SQLForColorTable.CREATE_AND_SELECT_ALL);
     sqlEvaluator.evaluate(seo, SQLForColorTable.CREATE_AND_SELECT_ALL);
   }

@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.javash.evaluator;
 
-import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
 
@@ -33,20 +32,12 @@ class JavaWorkerThread implements Callable<TryResult> {
 
   @Override
   public TryResult call() throws Exception {
-    NamespaceClient nc = null;
     TryResult r;
     try {
-      nc = NamespaceClient.getBeaker(javaEvaluator.getSessionId());
-      nc.setOutputObj(j.outputObject);
       r = javaEvaluator.executeTask(new JavaCodeRunner(javaEvaluator, j.outputObject, j));
     } catch (Throwable e) {
       e.printStackTrace();
       r = TryResult.createError(e.getLocalizedMessage());
-    } finally {
-      if (nc != null) {
-        nc.setOutputObj(null);
-        nc = null;
-      }
     }
     return r;
   }

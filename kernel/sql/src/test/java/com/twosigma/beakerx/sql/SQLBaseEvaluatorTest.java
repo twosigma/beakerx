@@ -24,7 +24,6 @@ import com.twosigma.beakerx.sql.evaluator.SQLEvaluator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +38,7 @@ public class SQLBaseEvaluatorTest extends EvaluatorBaseTest {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    evaluator = new SQLEvaluator("shellId1", "sessionId1", cellExecutor(), getTestTempFolderFactory(), kernelParameters());
+    evaluator = new SQLEvaluator("shellId1", "sessionId1", cellExecutor(), getTestTempFolderFactory(), kernelParameters(), new EvaluatorTest.BeakexClientTestImpl());
     evaluator.setShellOptions(kernelParameters());
   }
 
@@ -50,13 +49,13 @@ public class SQLBaseEvaluatorTest extends EvaluatorBaseTest {
 
   @Override
   protected BaseEvaluator createNewEvaluator() {
-    SQLEvaluator evaluator = new SQLEvaluator("shellId1", "sessionId1", cellExecutor(), getTestTempFolderFactory(),kernelParameters());
+    SQLEvaluator evaluator = new SQLEvaluator("shellId1", "sessionId1", cellExecutor(), getTestTempFolderFactory(), kernelParameters(), new EvaluatorTest.BeakexClientTestImpl());
     return evaluator;
   }
 
   @Override
   protected BaseEvaluator createNewEvaluator(TempFolderFactory tempFolderFactory) {
-    SQLEvaluator evaluator = new SQLEvaluator("shellId1", "sessionId1", cellExecutor(), tempFolderFactory, kernelParameters());
+    SQLEvaluator evaluator = new SQLEvaluator("shellId1", "sessionId1", cellExecutor(), tempFolderFactory, kernelParameters(), new EvaluatorTest.BeakexClientTestImpl());
     return evaluator;
   }
 

@@ -39,7 +39,8 @@ public class ClojureAutocompleteTest {
             "sid",
             cellExecutor(),
             EvaluatorTest.getTestTempFolderFactory(),
-            KERNEL_PARAMETERS
+            KERNEL_PARAMETERS,
+            new EvaluatorTest.BeakexClientTestImpl()
     );
   }
 

@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.kernel;
 
+import com.twosigma.beakerx.BeakerxClient;
 import com.twosigma.beakerx.BeakerxDefaultDisplayers;
 import com.twosigma.beakerx.DisplayerDataMapper;
 import com.twosigma.beakerx.TryResult;
@@ -78,8 +79,12 @@ public abstract class Kernel implements KernelFunctionality {
             new EnvCacheFolderFactory(), customMagicCommands);
   }
 
-  protected Kernel(final String sessionId, final Evaluator evaluator, final KernelSocketsFactory kernelSocketsFactory,
-                   CloseKernelAction closeKernelAction, CacheFolderFactory cacheFolderFactory, CustomMagicCommandsFactory customMagicCommands) {
+  protected Kernel(final String sessionId,
+                   final Evaluator evaluator,
+                   final KernelSocketsFactory kernelSocketsFactory,
+                   CloseKernelAction closeKernelAction,
+                   CacheFolderFactory cacheFolderFactory,
+                   CustomMagicCommandsFactory customMagicCommands) {
     this.sessionId = sessionId;
     this.cacheFolderFactory = cacheFolderFactory;
     this.kernelSocketsFactory = kernelSocketsFactory;
@@ -95,6 +100,11 @@ public abstract class Kernel implements KernelFunctionality {
     DisplayerDataMapper.init();
     configureSignalHandler();
     initJvmRepr();
+  }
+
+  @Override
+  public BeakerxClient getBeakerx() {
+    return this.evaluatorManager.getBeakerx();
   }
 
   public abstract CommOpenHandler getCommOpenHandler(Kernel kernel);
@@ -302,12 +312,12 @@ public abstract class Kernel implements KernelFunctionality {
 
   @Override
   public PythonEntryPoint getPythonEntryPoint(String kernelName) throws NoSuchKernelException {
-      MagicKernelManager manager = magicKernels.get(kernelName);
-      if (manager == null) {
-        manager = new MagicKernelManager(kernelName);
-        magicKernels.put(kernelName, manager);
-      }
-      return manager.getPythonEntryPoint();
+    MagicKernelManager manager = magicKernels.get(kernelName);
+    if (manager == null) {
+      manager = new MagicKernelManager(kernelName);
+      magicKernels.put(kernelName, manager);
+    }
+    return manager.getPythonEntryPoint();
   }
 
   @Override
@@ -317,7 +327,7 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   @Override
-  public void addCommIdManagerMapping(String commId, String kernel){
+  public void addCommIdManagerMapping(String commId, String kernel) {
     commKernelMapping.put(commId, kernel);
   }
 }

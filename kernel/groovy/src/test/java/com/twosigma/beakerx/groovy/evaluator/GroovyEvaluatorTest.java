@@ -16,7 +16,7 @@
 
 package com.twosigma.beakerx.groovy.evaluator;
 
-import com.twosigma.beakerx.NamespaceClient;
+import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.groovy.kernel.GroovyDefaultVariables;
 import com.twosigma.beakerx.groovy.kernel.GroovyKernelMock;
 import com.twosigma.beakerx.kernel.KernelManager;
@@ -54,11 +54,11 @@ public class GroovyEvaluatorTest {
     params.put(CLASSPATH, var.getClassPath());
     EvaluatorParameters kernelParameters = new EvaluatorParameters(params);
 
-    GroovyEvaluator groovyEvaluator = new GroovyEvaluator("123", "345", cellExecutor(), getTestTempFolderFactory(), kernelParameters);
+    GroovyEvaluator groovyEvaluator = new GroovyEvaluator("123", "345", cellExecutor(), getTestTempFolderFactory(), kernelParameters, new EvaluatorTest.BeakexClientTestImpl());
     groovyEvaluator.setShellOptions(kernelParameters);
     groovyClassLoader = newEvaluator(groovyEvaluator.getImports(), groovyEvaluator.getClasspath(), groovyEvaluator.getOutDir(), icz, newParentClassLoader(groovyEvaluator.getClasspath()));
     scriptBinding = new Binding();
-    scriptBinding.setVariable("beaker", NamespaceClient.getBeaker("345"));
+    scriptBinding.setVariable("beaker", groovyEvaluator.getBeakerx());
     groovyKernel = new GroovyKernelMock("groovyEvaluatorTest", groovyEvaluator);
     KernelManager.register(groovyKernel);
   }

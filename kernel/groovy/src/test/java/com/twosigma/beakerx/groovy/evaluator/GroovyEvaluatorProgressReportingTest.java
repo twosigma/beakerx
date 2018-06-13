@@ -15,9 +15,10 @@
  */
 package com.twosigma.beakerx.groovy.evaluator;
 
+import com.twosigma.beakerx.AutotranslationServiceImpl;
+import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
-import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -42,13 +43,14 @@ import static com.twosigma.beakerx.evaluator.Evaluator.BEAKER_VARIABLE_NAME;
 
 public class GroovyEvaluatorProgressReportingTest {
 
+  public static final String GROOVY_EVALUATOR_PROGRESS_REPORTING_TEST = "groovyEvaluatorProgressReportingTest";
   private BaseEvaluator groovyEvaluator;
   private KernelTest groovyKernel;
 
   @Before
   public void setUp() throws Exception {
-    groovyEvaluator = TestGroovyEvaluator.groovyEvaluator();
-    groovyKernel = new KernelTest("groovyEvaluatorProgressReportingTest", groovyEvaluator);
+    groovyEvaluator = TestGroovyEvaluator.groovyEvaluator(new NamespaceClient(GROOVY_EVALUATOR_PROGRESS_REPORTING_TEST, new AutotranslationServiceImpl()));
+    groovyKernel = new KernelTest(GROOVY_EVALUATOR_PROGRESS_REPORTING_TEST, groovyEvaluator);
     KernelManager.register(groovyKernel);
   }
 

@@ -34,7 +34,7 @@ public class NamespaceClientShowProgressReportingTest {
 
   @Before
   public void setUp() {
-    namespaceClient = NamespaceClient.getBeaker(SESSION_ID);
+    namespaceClient = new NamespaceClient(SESSION_ID, new NamespaceClientTest.AutotranslationServiceTestImpl());
     kernel = new KernelTest();
     KernelManager.register(kernel);
   }

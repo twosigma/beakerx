@@ -40,11 +40,17 @@ import java.util.HashMap;
 
 public class Groovy extends Kernel {
 
-  private Groovy(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
+  private Groovy(final String id,
+                 final Evaluator evaluator,
+                 KernelSocketsFactory kernelSocketsFactory) {
     super(id, evaluator, kernelSocketsFactory, new CustomMagicCommandsEmptyImpl());
   }
 
-  public Groovy(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction, CacheFolderFactory cacheFolderFactory) {
+  public Groovy(final String id,
+                final Evaluator evaluator,
+                KernelSocketsFactory kernelSocketsFactory,
+                CloseKernelAction closeKernelAction,
+                CacheFolderFactory cacheFolderFactory) {
     super(id, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory, new CustomMagicCommandsEmptyImpl());
   }
 

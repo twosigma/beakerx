@@ -15,10 +15,8 @@
  */
 package com.twosigma.beakerx.groovy.evaluator;
 
-import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
-import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import groovy.lang.Script;
 import org.codehaus.groovy.runtime.StackTraceUtils;
@@ -91,7 +89,7 @@ class GroovyCodeRunner implements Callable<TryResult> {
   }
 
   private Object runScript(Script script) {
-    groovyEvaluator.getScriptBinding().setVariable(Evaluator.BEAKER_VARIABLE_NAME, NamespaceClient.getBeaker(groovyEvaluator.getSessionId()));
+    groovyEvaluator.getScriptBinding().setVariable(Evaluator.BEAKER_VARIABLE_NAME, groovyEvaluator.getBeakerx());
     script.setBinding(groovyEvaluator.getScriptBinding());
     return script.run();
   }

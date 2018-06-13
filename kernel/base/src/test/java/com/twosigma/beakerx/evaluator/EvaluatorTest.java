@@ -16,6 +16,8 @@
 
 package com.twosigma.beakerx.evaluator;
 
+import com.twosigma.beakerx.BeakerxClient;
+import com.twosigma.beakerx.CodeCell;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.inspect.InspectResult;
@@ -35,6 +37,8 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.SynchronousQueue;
 
 public class EvaluatorTest extends BaseEvaluator {
 
@@ -55,7 +59,7 @@ public class EvaluatorTest extends BaseEvaluator {
   }
 
   public EvaluatorTest(String id, String sId, CellExecutor cellExecutor, EvaluatorParameters kernelParameters) {
-    super(id, sId, cellExecutor, getTestTempFolderFactory(), kernelParameters);
+    super(id, sId, cellExecutor, getTestTempFolderFactory(), kernelParameters, new BeakexClientTestImpl());
   }
 
   @Override
@@ -188,6 +192,45 @@ public class EvaluatorTest extends BaseEvaluator {
 
   public int getResetEnvironmentCounter() {
     return resetEnvironmentCounter;
+  }
+
+
+  public static class BeakexClientTestImpl implements BeakerxClient {
+
+    @Override
+    public void showProgressUpdate(String message, int progress) {
+
+    }
+
+    @Override
+    public void delBeaker() {
+
+    }
+
+    @Override
+    public Object set(String name, Object value) {
+      return null;
+    }
+
+    @Override
+    public Object get(String name) {
+      return null;
+    }
+
+    @Override
+    public SynchronousQueue<Object> getMessageQueue(String channel) {
+      return null;
+    }
+
+    @Override
+    public List<CodeCell> getCodeCells(String tagFilter) {
+      return null;
+    }
+
+    @Override
+    public void runByTag(String tag) {
+
+    }
   }
 
 }

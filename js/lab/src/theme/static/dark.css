@@ -27,29 +27,34 @@ pre {
 
 .plot-plotcontainer,
 .combplot-plotcontainer {
-  background-color: var(--jp-layout-color2);
-  fill: var(--jp-content-font-color2);
+  background-color: var(--jp-layout-color0);
+  fill: var(--jp-content-font-color0);
 }
 
 .plot-coverbox,
 .combplot-plotcoverbox {
-  fill: var(--jp-layout-color2);
+  fill: var(--jp-layout-color0);
 }
 
 .plot-title {
-  color: var(--jp-content-font-color2);
+  color: var(--jp-content-font-color0);
 }
 
 .plot-legend {
-  background-color: var(--jp-layout-color2);
-  color: var(--jp-content-font-color2);
-  border-color: var(--jp-border-color2);
+  background-color: var(--jp-layout-color0);
+  color: var(--jp-content-font-color0);
+  border-color: var(--jp-border-color0);
 }
 
 .plot-gridline-base,
 .plot-gridline,
 .plot-tick {
   stroke: var(--jp-border-color0);
+}
+
+.plot-tooltip {
+  background-color: var(--jp-layout-color1);
+  color: var(--jp-content-font-color1);
 }
 
 #beakerx-tree-widget {

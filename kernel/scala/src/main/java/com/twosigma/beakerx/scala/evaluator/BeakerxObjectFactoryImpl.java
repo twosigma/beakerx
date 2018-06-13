@@ -18,20 +18,20 @@ package com.twosigma.beakerx.scala.evaluator;
 public class BeakerxObjectFactoryImpl implements BeakerxObjectFactory {
 
   @Override
-  public String create(String sessionId) {
-    return "import com.twosigma.beakerx.NamespaceClient\n" +
+  public String create() {
+    return "import com.twosigma.beakerx.BeakerxClientManager\n" +
             "import language.dynamics\n" +
-            "var _beaker = NamespaceClient.getBeaker(\"" + sessionId + "\")\n" +
-            "object beaker extends Dynamic {\n" +
-            "  def selectDynamic( field : String ) = _beaker.get(field)\n" +
+            "var _beakerx = BeakerxClientManager.get()\n" +
+            "object beakerx extends Dynamic {\n" +
+            "  def selectDynamic( field : String ) = _beakerx.get(field)\n" +
             "  def updateDynamic (field : String)(value : Any) : Any = {\n" +
-            "    _beaker.set(field,value)\n" +
+            "    _beakerx.set(field,value)\n" +
             "    return value\n" +
             "  }\n" +
             "  def applyDynamic(methodName: String)(args: AnyRef*) = {\n" +
             "    def argtypes = args.map(_.getClass)\n" +
-            "    def method = _beaker.getClass.getMethod(methodName, argtypes: _*)\n" +
-            "    method.invoke(_beaker,args: _*)\n" +
+            "    def method = _beakerx.getClass.getMethod(methodName, argtypes: _*)\n" +
+            "    method.invoke(_beakerx,args: _*)\n" +
             "  }\n" +
             "}\n";
   }

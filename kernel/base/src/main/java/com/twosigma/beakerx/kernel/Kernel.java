@@ -102,11 +102,6 @@ public abstract class Kernel implements KernelFunctionality {
     initJvmRepr();
   }
 
-  @Override
-  public BeakerxClient getBeakerx() {
-    return this.evaluatorManager.getBeakerx();
-  }
-
   public abstract CommOpenHandler getCommOpenHandler(Kernel kernel);
 
   public abstract KernelHandler<Message> getKernelInfoHandler(Kernel kernel);

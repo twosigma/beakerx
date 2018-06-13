@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,9 +13,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.scala.evaluator;
+package com.twosigma.beakerx;
 
-public interface BeakerxObjectFactory {
 
-  String create();
+public class BeakerxClientManager {
+
+  private static BeakerxClient beakerxClientInst;
+
+  public static BeakerxClient register(BeakerxClient beakerxClient) {
+    beakerxClientInst = beakerxClient;
+    return beakerxClientInst;
+  }
+
+  public static BeakerxClient get() {
+    return beakerxClientInst;
+  }
 }

@@ -59,7 +59,14 @@ public class ScalaEvaluator extends BaseEvaluator {
   private ScalaEvaluatorGlue shell;
 
   public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, EvaluatorParameters evaluatorParameters) {
-    this(id, sId, osp, new BeakerCellExecutor("scala"), new BeakerxObjectFactoryImpl(), new TempFolderFactoryImpl(), evaluatorParameters, new NamespaceClient(sId, new AutotranslationServiceImpl()));
+    this(id,
+            sId,
+            osp,
+            new BeakerCellExecutor("scala"),
+            new BeakerxObjectFactoryImpl(),
+            new TempFolderFactoryImpl(),
+            evaluatorParameters,
+            new NamespaceClient(sId, new AutotranslationServiceImpl()));
   }
 
   public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, CellExecutor cellExecutor, BeakerxObjectFactory beakerxObjectFactory, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters, BeakerxClient beakerxClient) {
@@ -155,7 +162,7 @@ public class ScalaEvaluator extends BaseEvaluator {
       addImportsToShell(shell, getImports().getImportPaths());
     }
     logger.debug("creating beaker object");
-    String r = shell.evaluate2(this.beakerxObjectFactory.create(getSessionId()));
+    String r = shell.evaluate2(this.beakerxObjectFactory.create());
     if (r != null && !r.isEmpty()) {
       logger.warn("ERROR creating beaker object: {}", r);
     }

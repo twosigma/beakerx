@@ -15,9 +15,12 @@
  */
 package com.twosigma.beakerx.kernel.comm;
 
+import com.twosigma.beakerx.BeakerxClientManager;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.message.Message;
+
 import java.util.Map;
+
 import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 public class AutotranslationHandler extends BaseHandler<Boolean> {
@@ -34,9 +37,8 @@ public class AutotranslationHandler extends BaseHandler<Boolean> {
   }
 
   private void handleMsg(Message message, KernelFunctionality kernel) {
-    System.out.println(message);
     Map<String, Object> data = (Map) message.getContent().get("data");
-    kernel.getBeakerx().update((String) data.get("name"), data.get("value"));
+    BeakerxClientManager.get().update((String) data.get("name"), data.get("value"));
   }
 
   @Override

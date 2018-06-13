@@ -18,7 +18,7 @@ package com.twosigma.beakerx.scala.evaluator;
 public class NoBeakerxObjectTestFactory implements BeakerxObjectFactory {
 
   @Override
-  public String create(String sessionId) {
+  public String create() {
     return "()";
   }
 }

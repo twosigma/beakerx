@@ -99,6 +99,4 @@ public interface KernelFunctionality {
   MagicKernelManager getManagerByCommId(String commId);
 
   void addCommIdManagerMapping(String commId, String kernel);
-
-  BeakerxClient getBeakerx();
 }

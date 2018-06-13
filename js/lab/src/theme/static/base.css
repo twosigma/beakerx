@@ -30,7 +30,7 @@
 }
 
 .widget-text input[type="password"]:focus {
-  border-color: var(--jp-widgets-input-focus-border-color)
+  border-color: var(--jp-widgets-input-focus-border-color);
 }
 
 
@@ -39,6 +39,9 @@
   background-color: var(--jp-widgets-input-background-color);
   color: var(--jp-widgets-input-color);
   font-size: var(--jp-widgets-font-size);
+}
+.widget-select-multiple select:focus {
+  border-color: var(--jp-widgets-input-focus-border-color);
 }
 
 .easyform-combobox-input {

@@ -14,11 +14,10 @@
  *  limitations under the License.
  */
 
+import * as sinon from 'sinon';
 import { expect } from 'chai';
 import { createIndexMenuItems } from '@beakerx/tableDisplay/dataGrid/headerMenu/createIndexMenuItems';
 import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
-import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
-import menuOptionsMock from "../mock/menuOptionsMock";
 import modelStateMock from "../mock/modelStateMock";
 import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
@@ -27,16 +26,13 @@ describe('createIndexMenuItems', () => {
   let dataGrid;
   let dataStore;
   let column;
+  let indexMenuItems;
 
   before(() => {
     dataStore = createStore(modelStateMock);
     dataGrid = new BeakerXDataGrid({}, dataStore);
-    column = new DataGridColumn({
-      index: 0,
-      type: COLUMN_TYPES.index,
-      name: 'index',
-      menuOptions: menuOptionsMock
-    }, dataGrid, dataGrid.columnManager);
+    column = dataGrid.columnManager.columns[COLUMN_TYPES.index][0];
+    indexMenuItems = createIndexMenuItems(column);
   });
 
   after(() => {
@@ -48,6 +44,121 @@ describe('createIndexMenuItems', () => {
 
     expect(indexMenuItems).to.be.an.instanceof(Array);
     expect(indexMenuItems).to.have.length(13);
+  });
+
+  it('should not create index menu items', () => {
+    const indexMenuItems = createIndexMenuItems({});
+
+    expect(indexMenuItems).to.be.an.instanceof(Array);
+    expect(indexMenuItems).to.have.length(0);
+  });
+
+  it('should call columnManager.showAllColumns', () => {
+    const stub = sinon.stub(column.columnManager, 'showAllColumns');
+
+    indexMenuItems[0].action();
+
+    expect(stub.calledOnce).to.be.true;
+
+    stub.restore();
+  });
+
+  it('should call column.hide', () => {
+    const column = dataGrid.columnManager.columns[COLUMN_TYPES.body][0];
+    const stub = sinon.stub(column, 'hide');
+
+    indexMenuItems[2].action();
+
+    expect(stub.calledOnce).to.be.true;
+
+    stub.restore();
+  });
+
+  it('should call cellSelectionManager.clear', () => {
+    const stub = sinon.stub(dataGrid.cellSelectionManager, 'clear');
+
+    indexMenuItems[5].action();
+
+    expect(stub.calledOnce).to.be.true;
+
+    stub.restore();
+  });
+
+  it('should call cellManager.copyToClipboard', () => {
+    const stub = sinon.stub(dataGrid.cellManager, 'copyToClipboard');
+
+    indexMenuItems[6].action();
+
+    expect(stub.calledOnce).to.be.true;
+
+    stub.restore();
+  });
+
+  it('should call cellManager.CSVDownload', () => {
+    const stub = sinon.stub(dataGrid.cellManager, 'CSVDownload');
+
+    indexMenuItems[7].action();
+    indexMenuItems[8].action();
+
+    expect(stub.calledTwice).to.be.true;
+
+    stub.restore();
+  });
+
+  it('should call columnManager.showSearch', () => {
+    const stub = sinon.stub(dataGrid.columnManager, 'showSearch');
+
+    indexMenuItems[9].action();
+
+    expect(stub.calledOnce).to.be.true;
+
+    stub.restore();
+  });
+
+  it('should call columnManager.showFilters', () => {
+    const stub = sinon.stub(dataGrid.columnManager, 'showFilters');
+
+    indexMenuItems[10].action();
+
+    expect(stub.calledOnce).to.be.true;
+
+    stub.restore();
+  });
+
+  it('should call columnManager.resetFilters', () => {
+    const stub = sinon.stub(dataGrid.columnManager, 'resetFilters');
+
+    indexMenuItems[11].action();
+
+    expect(stub.calledOnce).to.be.true;
+
+    stub.restore();
+  });
+
+  it('should call reset methods', () => {
+    const columnManagerMock = sinon.mock(dataGrid.columnManager);
+    const rowManagerMock = sinon.mock(dataGrid.rowManager);
+    const removeHighlightersStub = sinon.stub(dataGrid.highlighterManager, 'removeHighlighters');
+    const clearSelectionStub = sinon.stub(dataGrid.cellSelectionManager, 'clear');
+
+    rowManagerMock.expects('resetSorting');
+    rowManagerMock.expects('setRowsToShow');
+    columnManagerMock.expects('resetFilters');
+    columnManagerMock.expects('showAllColumns');
+    columnManagerMock.expects('resetColumnsAlignment');
+    columnManagerMock.expects('resetColumnPositions');
+
+    indexMenuItems[12].action();
+
+    rowManagerMock.verify();
+    columnManagerMock.verify();
+    expect(clearSelectionStub.calledOnce).to.be.true;
+    expect(removeHighlightersStub.calledOnce).to.be.true;
+
+    rowManagerMock.restore();
+    columnManagerMock.restore();
+    removeHighlightersStub.restore();
+    clearSelectionStub.restore();
   });
 
 });

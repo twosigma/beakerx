@@ -61,6 +61,14 @@ export default class BeakerXThemeHelper {
     return this.isDark ? 'rgb(26, 26, 26)' : 'rgb(249, 249, 249)';
   }
 
+  public  static get MIN_LIGHTNESS_VALUE(): number {
+    return this.isDark ? 15 : 35;
+  }
+
+  public  static get MIN_SATURATION_VALUE(): number {
+    return this.isDark ? 15 : 35;
+  }
+
   private static getDarkStyle(): DataGrid.IStyle {
     return {
     ...DataGrid.defaultStyle,

@@ -46,11 +46,11 @@ export default class BeakerXThemeHelper {
   }
 
   public static get FOCUSED_CELL_BACKGROUND(): string {
-    return this.isDark ? '#198e1d' : '#c8c8c8';
+    return this.isDark ? '#66bb6a' : '#c8c8c8';
   }
 
   public static get SELECTED_CELL_BACKGROUND(): string {
-    return this.isDark ? '#266196' : '#B0BED9';
+    return this.isDark ? '#2196F3' : '#B0BED9';
   }
 
   public static get HIGHLIGHTED_CELL_BACKGROUND_EVEN(): string {
@@ -66,9 +66,10 @@ export default class BeakerXThemeHelper {
     ...DataGrid.defaultStyle,
       voidColor: '#636363',
       backgroundColor: '#212121',
-      headerBackgroundColor: '#212121',
+      headerBackgroundColor: '#252525',
       rowBackgroundColor: i => i % 2 === 0 ? '#424242' : '',
-      gridLineColor: '#111111'
+      gridLineColor: '#626262',
+      headerGridLineColor: '#626262',
     };
   }
 

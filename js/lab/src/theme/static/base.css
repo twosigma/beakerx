@@ -40,6 +40,8 @@
   color: var(--jp-widgets-input-color);
   font-size: var(--jp-widgets-font-size);
 }
+
+.widget-select select:focus,
 .widget-select-multiple select:focus {
   border-color: var(--jp-widgets-input-focus-border-color);
 }
@@ -65,4 +67,28 @@
 .easyform-combobox-toggle:hover {
   border-color: var(--jp-widgets-input-focus-border-color);
   background-color: var(--jp-widgets-input-background-color);
+}
+
+.beaker-easyform-container .datepicker-container.flatpickr input[type="text"] {
+  box-sizing: border-box;
+  border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
+  background-color: var(--jp-widgets-input-background-color);
+  color: var(--jp-widgets-input-color);
+  font-size: var(--jp-widgets-font-size);
+  padding: var(--jp-widgets-input-padding) calc( var(--jp-widgets-input-padding) * 2 );
+  outline: none !important;
+  height: var(--jp-widgets-inline-height);
+  line-height: var(--jp-widgets-inline-height);
+  border-right-width: 0;
+}
+
+.beaker-easyform-container .datepicker-container.flatpickr .date-picker-button {
+  border-color: var(--jp-widgets-input-border-color);
+  background-color: var(--jp-widgets-input-background-color);
+}
+.beaker-easyform-container .datepicker-container.flatpickr .date-picker-button:focus,
+.beaker-easyform-container .datepicker-container.flatpickr .date-picker-button:active,
+.beaker-easyform-container .datepicker-container.flatpickr .date-picker-button:hover {
+  border-color: var(--jp-widgets-input-focus-border-color);
+  outline: none !important;
 }

@@ -17,6 +17,8 @@
 import {Widget} from "@phosphor/widgets";
 import BeakerXApi from "./tree/Utils/BeakerXApi";
 import widgets from './widgets';
+import Timer = NodeJS.Timer;
+import {ToolbarSparkConnectionStatus} from "./sparkUI/toolbarSparkConnectionStatus";
 
 const bkUtils = require("./shared/bkUtils");
 
@@ -37,20 +39,20 @@ export class SparkUIModel extends widgets.VBoxModel {
 }
 
 export class SparkUIView extends widgets.VBoxView {
-  private sparkStats: Widget;
-  private toolbarSparkStats: Widget;
+  sparkStats: Widget;
+  connectionStatusElement: HTMLElement;
+
   private sparkAppId: string;
   private sparkUiWebUrl: string;
   private sparkMasterUrl: string;
-  private apiCallIntervalId: number;
-  private toolbarStatusContainer: HTMLElement|null;
+  private apiCallIntervalId: Timer;
   private connectionLabelActive: HTMLElement;
   private connectionLabelMemory: HTMLElement;
   private connectionLabelDead: HTMLElement;
-  private connectionStatusElement: HTMLElement;
   private masterUrlInput: HTMLInputElement;
   private executorCoresInput: HTMLInputElement;
   private executorMemoryInput: HTMLInputElement;
+  private toolbarSparkConnectionStatus: ToolbarSparkConnectionStatus;
 
   initialize(parameters) {
     super.initialize(parameters);
@@ -59,7 +61,8 @@ export class SparkUIView extends widgets.VBoxView {
     this.openExecutors = this.openExecutors.bind(this);
     this.updateChildren = this.updateChildren.bind(this);
     this.toggleExecutorConfigInputs = this.toggleExecutorConfigInputs.bind(this);
-    this.handleToolbarSparkClick = this.handleToolbarSparkClick.bind(this);
+
+    this.toolbarSparkConnectionStatus = new ToolbarSparkConnectionStatus(this);
   }
 
   public render(): void {
@@ -79,6 +82,14 @@ export class SparkUIView extends widgets.VBoxView {
     this.updateChildren();
   }
 
+  public openWebUi(): void {
+    window.open(this.sparkUiWebUrl, '_blank');
+  }
+
+  public openExecutors(): void {
+    window.open(`${this.sparkUiWebUrl}/executors`, '_blank');
+  }
+
   private addSparkUrls() {
     if (!this.connectionStatusElement) {
       this.connectionStatusElement = this.el.querySelector('.bx-connection-status');
@@ -88,11 +99,11 @@ export class SparkUIView extends widgets.VBoxView {
       return;
     }
 
-    this.addSparUiWebUrl();
+    this.addSparkUiWebUrl();
     this.addMasterUrl();
   }
 
-  private addSparUiWebUrl(): void {
+  private addSparkUiWebUrl(): void {
     this.sparkUiWebUrl = this.model.get("sparkUiWebUrl");
 
     if (!this.sparkUiWebUrl) {
@@ -105,28 +116,7 @@ export class SparkUIView extends widgets.VBoxView {
     this.sparkStats.node.addEventListener('click', this.openExecutors);
     this.connectionStatusElement.style.cursor = 'pointer';
     this.sparkStats.node.style.cursor = 'pointer';
-
-    this.bindToolbarSparkEvents();
-  }
-
-  private bindToolbarSparkEvents(): void {
-    if (!this.toolbarSparkStats) {
-      return;
-    }
-
-    this.toolbarSparkStats.node.addEventListener('click', this.handleToolbarSparkClick);
-  }
-
-  private handleToolbarSparkClick(event): void {
-    const relatedTarget = (event.relatedTarget || event.target) as HTMLElement;
-
-    if (relatedTarget.classList.contains('bx-connection-status')) {
-      return this.openWebUi();
-    }
-
-    if (relatedTarget.classList.contains('label')) {
-      return this.openExecutors();
-    }
+    this.toolbarSparkConnectionStatus.bindToolbarSparkEvents();
   }
 
   private addMasterUrl() {
@@ -161,14 +151,6 @@ export class SparkUIView extends widgets.VBoxView {
     }
   }
 
-  private openWebUi() {
-    window.open(this.sparkUiWebUrl, '_blank');
-  }
-
-  private openExecutors() {
-    window.open(`${this.sparkUiWebUrl}/executors`, '_blank');
-  }
-
   private updateChildren() {
     const noop = () => {};
 
@@ -179,7 +161,7 @@ export class SparkUIView extends widgets.VBoxView {
             this.resolveChildren(view)
               .then((views) => {
                 this.handleLocalMasterUrl();
-                this.appendToToolbar();
+                this.toolbarSparkConnectionStatus.append();
                 this.addSparkUrls();
               })
               .catch(noop);
@@ -190,7 +172,7 @@ export class SparkUIView extends widgets.VBoxView {
   }
 
   private resolveChildren(view) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       if (!view || !view.children_views) {
         reject();
       }
@@ -224,53 +206,6 @@ export class SparkUIView extends widgets.VBoxView {
     this.connectionStatusElement.insertAdjacentElement('afterend', this.sparkStats.node);
   }
 
-  private appendToToolbar(): void {
-    if (!this.el.querySelector('.bx-status-panel')) {
-      return;
-    }
-
-    if (this.toolbarStatusContainer && this.toolbarStatusContainer.contains(this.toolbarSparkStats.node)) {
-      this.propagateToolbarWidget();
-
-      return;
-    }
-
-    const toolbarContainer = this.el.closest('.jp-NotebookPanel') || this.el.closest('.notebook_app');
-
-    if (!toolbarContainer) {
-      return;
-    }
-
-    const toolbar = toolbarContainer.querySelector('#maintoolbar-container') || toolbarContainer.querySelector('.jp-NotebookPanel-toolbar');
-
-    if (!toolbar) {
-      return;
-    }
-
-    this.toolbarSparkStats = new Widget();
-    this.toolbarStatusContainer = toolbar;
-    this.toolbarSparkStats.node.classList.add('bx-toolbar-spark-widget');
-    this.propagateToolbarWidget();
-    this.appendToolbarSparkStats();
-  }
-
-  private propagateToolbarWidget() {
-    this.toolbarSparkStats.node.innerHTML = `<div class="p-Widget bx-status-panel widget-box widget-hbox">
-      ${this.connectionStatusElement.outerHTML}
-      ${this.sparkStats.node.outerHTML}
-    </div>`;
-  }
-
-  private appendToolbarSparkStats() {
-    const spacer: HTMLElement|null = this.toolbarStatusContainer.querySelector('.jp-Toolbar-spacer');
-
-    if (spacer) {
-      spacer.insertAdjacentElement("afterend", this.toolbarSparkStats.node);
-    } else {
-      this.toolbarStatusContainer.appendChild(this.toolbarSparkStats.node);
-    }
-  }
-
   private connectToApi() {
     let baseUrl;
     let api;
@@ -300,12 +235,14 @@ export class SparkUIView extends widgets.VBoxView {
         const response = await fetch(sparkUrl, { method: 'GET', credentials: 'include' });
 
         if (!response.ok) {
+          this.toolbarSparkConnectionStatus.destroy();
           return this.clearApiCallInterval();
         }
 
         const data = await response.json();
         this.updateMetrics(data);
       } catch(error) {
+        this.toolbarSparkConnectionStatus.destroy();
         this.clearApiCallInterval();
       }
     };
@@ -319,7 +256,7 @@ export class SparkUIView extends widgets.VBoxView {
     this.sparkAppId = null;
 
     if (!this.el.querySelector('.bx-status-panel')) {
-      this.toolbarSparkStats.node.innerHTML = '';
+      this.toolbarSparkConnectionStatus.clear();
     }
   }
 
@@ -340,7 +277,7 @@ export class SparkUIView extends widgets.VBoxView {
     this.connectionLabelActive.innerText = `${activeTasks}`;
     this.connectionLabelMemory.innerText = `${bkUtils.formatBytes(storageMemory)}`;
     this.connectionLabelDead.innerText = `${deadExecutors}`;
-    this.propagateToolbarWidget();
+    this.toolbarSparkConnectionStatus.propagateToolbarWidget();
   }
 
   private addSparkMetricsWidget() {
@@ -350,7 +287,7 @@ export class SparkUIView extends widgets.VBoxView {
           views.forEach((view) => {
             if (view instanceof widgets.LabelView && view.el.classList.contains('bx-connection-status')) {
               this.createSparkMetricsWidget();
-              this.appendToToolbar();
+              this.toolbarSparkConnectionStatus.append();
               this.addSparkUrls();
             }
           });
@@ -363,7 +300,11 @@ export class SparkUIView extends widgets.VBoxView {
     super.dispose();
     this.clearApiCallInterval();
     this.sparkStats && this.sparkStats.isAttached && this.sparkStats.dispose();
-    this.toolbarSparkStats && this.toolbarSparkStats.isAttached && this.toolbarSparkStats.dispose();
+    this.toolbarSparkConnectionStatus.destroy();
+  }
+
+  remove() {
+    this.toolbarSparkConnectionStatus.destroy();
   }
 }
 

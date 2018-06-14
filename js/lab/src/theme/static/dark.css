@@ -15,6 +15,7 @@
  */
 
 @import './fonts.css';
+@import './base.css';
 
 body {
   background-color: var(--jp-layout-color3);
@@ -27,29 +28,34 @@ pre {
 
 .plot-plotcontainer,
 .combplot-plotcontainer {
-  background-color: var(--jp-layout-color2);
-  fill: var(--jp-content-font-color2);
+  background-color: var(--jp-layout-color0);
+  fill: var(--jp-content-font-color0);
 }
 
 .plot-coverbox,
 .combplot-plotcoverbox {
-  fill: var(--jp-layout-color2);
+  fill: var(--jp-layout-color0);
 }
 
 .plot-title {
-  color: var(--jp-content-font-color2);
+  color: var(--jp-content-font-color0);
 }
 
 .plot-legend {
-  background-color: var(--jp-layout-color2);
-  color: var(--jp-content-font-color2);
-  border-color: var(--jp-border-color2);
+  background-color: var(--jp-layout-color0);
+  color: var(--jp-content-font-color0);
+  border-color: var(--jp-border-color0);
 }
 
 .plot-gridline-base,
 .plot-gridline,
 .plot-tick {
   stroke: var(--jp-border-color0);
+}
+
+.plot-tooltip {
+  background-color: var(--jp-layout-color1);
+  color: var(--jp-content-font-color1);
 }
 
 #beakerx-tree-widget {
@@ -116,8 +122,9 @@ pre {
 }
 
 .p-DataGrid {
-  border-color: var(--jp-border-color2);
+  border-color: transparent;
 }
+
 .p-DataGrid-viewport {
   border-color: var(--jp-border-color2);
 }
@@ -142,6 +149,12 @@ pre {
 .p-DataGrid-scrollBar .p-ScrollBar-thumb {
   background-color: var(--jp-layout-color0);
   border-color: var(--jp-border-color2) !important;
+}
+
+.p-DataGrid-tooltip {
+  background-color: var(--jp-layout-color1);
+  color: var(--jp-content-font-color1);
+  border-color: var(--jp-border-color1);
 }
 
 .p-DataGrid-scrollCorner {
@@ -196,4 +209,87 @@ pre {
 .text-line-style {
   fill: var(--jp-content-font-color2);
   stroke: var(--jp-content-font-color2);
+}
+
+.beaker-fieldset {
+  border-color: var(--jp-border-color2);
+}
+
+.beaker-fieldset legend {
+  color: var(--jp-content-font-color0);
+}
+
+.flatpickr-calendar {
+  background-color: var(--jp-layout-color2);
+  color: var(--jp-content-font-color2);
+  border-color: var(--jp-border-color2);
+  -webkit-box-shadow: 1px 0 0 var(--jp-border-color2), -1px 0 0 var(--jp-border-color2), 0 1px 0 var(--jp-border-color2), 0 -1px 0 var(--jp-border-color2), 0 3px 13px rgba(0,0,0,0.08);
+  box-shadow: 1px 0 0 var(--jp-border-color2), -1px 0 0 var(--jp-border-color2), 0 1px 0 var(--jp-border-color2), 0 -1px 0 var(--jp-border-color2), 0 3px 13px rgba(0,0,0,0.08);
+}
+
+.flatpickr-calendar.multiMonth .flatpickr-days .dayContainer:nth-child(n+2) .flatpickr-day.inRange:nth-child(7n+1) {
+  -webkit-box-shadow: -2px 0 0 var(--jp-border-color2), 5px 0 0 var(--jp-border-color2);
+  box-shadow: -2px 0 0 var(--jp-border-color2), 5px 0 0 var(--jp-border-color2);
+}
+.flatpickr-calendar.showTimeInput.hasTime .flatpickr-time {
+  border-top: 1px solid var(--jp-border-color2);
+}
+.flatpickr-calendar.arrowTop:before {
+  border-bottom-color: var(--jp-border-color2);
+}
+.flatpickr-calendar.arrowTop:after {
+  border-bottom-color: var(--jp-border-color2);
+}
+.flatpickr-calendar.arrowBottom:before {
+  border-top-color: var(--jp-border-color2);
+}
+.flatpickr-calendar.arrowBottom:after {
+  border-top-color: var(--jp-border-color2);
+}
+.flatpickr-months .flatpickr-month {
+  color: rgba(255,255,255,0.9);
+  fill: rgba(255,255,255,0.9);
+}
+.flatpickr-months .flatpickr-prev-month,
+.flatpickr-months .flatpickr-next-month {
+  color: rgba(255,255,255,0.9);
+  fill: rgba(255,255,255,0.9);
+}
+
+.flatpickr-day {
+  color: rgba(255,255,255,0.9);
+}
+
+.flatpickr-day.inRange,
+.flatpickr-day.prevMonthDay.inRange,
+.flatpickr-day.nextMonthDay.inRange,
+.flatpickr-day.today.inRange,
+.flatpickr-day.prevMonthDay.today.inRange,
+.flatpickr-day.nextMonthDay.today.inRange,
+.flatpickr-day:hover,
+.flatpickr-day.prevMonthDay:hover,
+.flatpickr-day.nextMonthDay:hover,
+.flatpickr-day:focus,
+.flatpickr-day.prevMonthDay:focus,
+.flatpickr-day.nextMonthDay:focus {
+  background-color: var(--jp-layout-color3);
+  border-color: var(--jp-layout-color3);
+}
+
+.flatpickr-day.disabled,
+.flatpickr-day.disabled:hover,
+.flatpickr-day.prevMonthDay,
+.flatpickr-day.nextMonthDay,
+.flatpickr-day.notAllowed,
+.flatpickr-day.notAllowed.prevMonthDay,
+.flatpickr-day.notAllowed.nextMonthDay {
+  color: rgba(255,255,255,0.3);
+}
+
+span.flatpickr-weekday {
+  color: rgba(255,255,255,0.54);
+}
+
+.lds-spinner div {
+  background-color: #2196F3;
 }

@@ -46,11 +46,11 @@ export default class BeakerXThemeHelper {
   }
 
   public static get FOCUSED_CELL_BACKGROUND(): string {
-    return this.isDark ? 'rgb(99, 99, 99)' : 'rgb(200, 200, 200)';
+    return this.isDark ? '#66bb6a' : '#c8c8c8';
   }
 
   public static get SELECTED_CELL_BACKGROUND(): string {
-    return this.isDark ? '#4f4126' : '#B0BED9';
+    return this.isDark ? '#2196F3' : '#B0BED9';
   }
 
   public static get HIGHLIGHTED_CELL_BACKGROUND_EVEN(): string {
@@ -61,14 +61,23 @@ export default class BeakerXThemeHelper {
     return this.isDark ? 'rgb(26, 26, 26)' : 'rgb(249, 249, 249)';
   }
 
+  public  static get MIN_LIGHTNESS_VALUE(): number {
+    return this.isDark ? 15 : 35;
+  }
+
+  public  static get MIN_SATURATION_VALUE(): number {
+    return this.isDark ? 15 : 35;
+  }
+
   private static getDarkStyle(): DataGrid.IStyle {
     return {
     ...DataGrid.defaultStyle,
       voidColor: '#636363',
       backgroundColor: '#212121',
-      headerBackgroundColor: '#212121',
+      headerBackgroundColor: '#252525',
       rowBackgroundColor: i => i % 2 === 0 ? '#424242' : '',
-      gridLineColor: '#111111'
+      gridLineColor: '#626262',
+      headerGridLineColor: '#626262',
     };
   }
 

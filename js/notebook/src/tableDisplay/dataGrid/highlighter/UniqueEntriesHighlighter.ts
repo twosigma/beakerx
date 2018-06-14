@@ -24,8 +24,6 @@ import BeakerXThemeHelper from "../../../BeakerXThemeHelper";
 
 const MAX_HUE_VALUE = 360;
 const DEFAULT_HSL_COMPONENT_STEPS_COUNT = 50;
-const MIN_SATURATION_VALUE = 35;
-const MIN_LIGHTNESS_VALUE = 35;
 
 export default class UniqueEntriesHighlighter extends Highlighter {
   uniqueValues: any[] = [];
@@ -95,8 +93,8 @@ export default class UniqueEntriesHighlighter extends Highlighter {
         lightnessStepCount += 1;
       }
 
-      let saturation = MIN_SATURATION_VALUE + saturationRatio * DEFAULT_HSL_COMPONENT_STEPS_COUNT;
-      let lightness = MIN_LIGHTNESS_VALUE + lightnessRatio * DEFAULT_HSL_COMPONENT_STEPS_COUNT;
+      let saturation = BeakerXThemeHelper.MIN_SATURATION_VALUE + saturationRatio * DEFAULT_HSL_COMPONENT_STEPS_COUNT;
+      let lightness = BeakerXThemeHelper.MIN_LIGHTNESS_VALUE + lightnessRatio * DEFAULT_HSL_COMPONENT_STEPS_COUNT;
 
       return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
     }

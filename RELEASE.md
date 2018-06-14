@@ -145,3 +145,9 @@ Wait for the conda packages to become available.  Then update the
 version of the mybinder link in the README, and push to master.  If
 the conda package isn't ready then mybinder will cache the old
 version forever.
+
+Update Web Site
+---------------
+
+In https://github.com/twosigma/beakerx-www, update the binder link in
+_data/main_project.yaml and binder.html.

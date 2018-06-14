@@ -46,8 +46,11 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
+
 
 public class SQL extends Kernel {
+  private final static Logger logger = Logger.getLogger(SQL.class.getName());
 
   private SQL(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
     super(sessionId, evaluator, kernelSocketsFactory, new SQLCustomMagicCommandsImpl());
@@ -67,21 +70,55 @@ public class SQL extends Kernel {
     return new SQLKernelInfoHandler(kernel);
   }
 
+
+
+
   public static void main(final String[] args) throws InterruptedException, IOException {
     KernelRunner.run(() -> {
+      System.out.println("SQL.java running");
       String id = uuid();
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
               new KernelConfigurationFile(args));
-      SQLEvaluator evaluator = new SQLEvaluator(id, id, getKernelParameters());
+      EvaluatorParameters params = getKernelParameters();
+      // xcxc
+      System.out.println(params);
+      SQLEvaluator evaluator = new SQLEvaluator(id, id, params);
+      evaluator.setShellOptions(params);
       return new SQL(id, evaluator, kernelSocketsFactory);
     });
   }
 
   private static EvaluatorParameters getKernelParameters() {
+    System.out.println("SQL.java getting kernel parameters");
     HashMap<String, Object> kernelParameters = new HashMap<>();
     kernelParameters.put(IMPORTS, new DefaultJVMVariables().getImports());
+    String uri = getDefaultConnectionString();
+    if (uri != null) {
+      logger.info("Setting default connection string to " + uri);
+      kernelParameters.put("%defaultDatasource", uri);
+    }
+    // "{%defaultDatasource=jdbc:trysettingitbydefault}"
     return new EvaluatorParameters(kernelParameters);
   }
+
+  private static String getDefaultConnectionString() {
+    String uri = System.getenv("BEAKER_JDBC_DEFAULT_CONNECTION");
+
+    if (uri != null && uri.contains("jdbc:")) {
+      return uri;
+    }
+    else if (uri != null)
+    {
+      logger.warning("Ignoring incorrectly formatted BEAKER_JDBC_DEFAULT_CONNECTION" + uri);
+      return null;
+    }
+    else
+    {
+      return null;
+    }
+
+  }
+
 
   static class SQLCustomMagicCommandsImpl implements CustomMagicCommandsFactory {
     @Override

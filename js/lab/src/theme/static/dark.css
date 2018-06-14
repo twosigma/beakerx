@@ -289,3 +289,7 @@ pre {
 span.flatpickr-weekday {
   color: rgba(255,255,255,0.54);
 }
+
+.lds-spinner div {
+  background-color: #2196F3;
+}

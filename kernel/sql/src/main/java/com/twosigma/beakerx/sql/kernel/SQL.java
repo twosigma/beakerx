@@ -75,13 +75,10 @@ public class SQL extends Kernel {
 
   public static void main(final String[] args) throws InterruptedException, IOException {
     KernelRunner.run(() -> {
-      System.out.println("SQL.java running");
       String id = uuid();
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
               new KernelConfigurationFile(args));
       EvaluatorParameters params = getKernelParameters();
-      // xcxc
-      System.out.println(params);
       SQLEvaluator evaluator = new SQLEvaluator(id, id, params);
       evaluator.setShellOptions(params);
       return new SQL(id, evaluator, kernelSocketsFactory);
@@ -89,7 +86,6 @@ public class SQL extends Kernel {
   }
 
   private static EvaluatorParameters getKernelParameters() {
-    System.out.println("SQL.java getting kernel parameters");
     HashMap<String, Object> kernelParameters = new HashMap<>();
     kernelParameters.put(IMPORTS, new DefaultJVMVariables().getImports());
     String uri = getDefaultConnectionString();
@@ -109,7 +105,7 @@ public class SQL extends Kernel {
     }
     else if (uri != null)
     {
-      logger.warning("Ignoring incorrectly formatted BEAKER_JDBC_DEFAULT_CONNECTION" + uri);
+      logger.warning("Ignoring incorrectly formatted BEAKER_JDBC_DEFAULT_CONNECTION: " + uri);
       return null;
     }
     else

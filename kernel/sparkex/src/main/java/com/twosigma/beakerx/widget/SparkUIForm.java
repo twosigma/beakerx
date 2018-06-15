@@ -24,12 +24,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXECUTOR_CORES;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXECUTOR_MEMORY;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_MASTER;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_MASTER_DEFAULT;
+import static com.twosigma.beakerx.widget.SparkUIApi.SPARK_ADVANCED_OPTIONS;
+import static com.twosigma.beakerx.widget.SparkUiDefaults.DEFAULT_PROFILE;
 import static java.util.Arrays.asList;
 
 public class SparkUIForm extends VBox {
@@ -76,10 +77,11 @@ public class SparkUIForm extends VBox {
   }
 
   private HBox createProfileManagement() {
+    List profiles = sparkUiDefaults.getProfiles();
     ComboBox profileComboBox = new ComboBox(true);
     profileComboBox.setEditable(true);
-    profileComboBox.setOptions(this.sparkUiDefaults.getProfiles());
-    profileComboBox.setValue(profileComboBox.getOptions().length > 0 ? profileComboBox.getOptions()[0] : "");
+    profileComboBox.setOptions(this.sparkUiDefaults.getProfileNames());
+    profileComboBox.setValue(profiles == null || profiles.size() ==0 ? "" : sparkUiDefaults.getProfiles().get(0).get("name"));
     profileComboBox.setDescription(PROFILE_DESC);
     profileComboBox.register(this::loadProfile);
     profileComboBox.setDomClasses(asList("bx-spark-config"));
@@ -99,10 +101,14 @@ public class SparkUIForm extends VBox {
 
   private void loadProfile() {
     String profileName = this.profile.getValue();
-    if (!this.sparkUiDefaults.getProfiles().contains(profileName)) {
+    if (!this.sparkUiDefaults.getProfileNames().contains(profileName)) {
       return;
     }
-    Map<String, Object> profileData = this.sparkUiDefaults.loadProfile(profileName);
+    sparkUiDefaults.loadProfiles();
+    Map<String, Object> profileData =
+            (Map<String, Object>) sparkUiDefaults
+                    .getProfileByName(profileName)
+                    .getOrDefault("spark_options", new HashMap<>());
     if (profileData.size() > 0) {
       this.masterURL.setValue(profileData.getOrDefault(SparkUI.SPARK_MASTER, SparkUI.SPARK_MASTER_DEFAULT));
       this.executorCores.setValue(profileData.getOrDefault(SparkUI.SPARK_EXECUTOR_CORES, SparkUI.SPARK_EXECUTOR_CORES_DEFAULT));
@@ -118,19 +124,44 @@ public class SparkUIForm extends VBox {
   }
 
   private void saveProfile() {
-    HashMap<String, Object> profileConfig = new HashMap<>();
-    profileConfig.put(SparkUI.SPARK_MASTER, getMasterURL().getValue());
-    profileConfig.put(SparkUI.SPARK_EXECUTOR_CORES, getExecutorCores().getValue());
-    profileConfig.put(SparkUI.SPARK_EXECUTOR_MEMORY, getExecutorMemory().getValue());
-    profileConfig.put(SparkUI.SPARK_ADVANCED_OPTIONS, getAdvancedOptions());
-    sparkUiDefaults.saveSparkConf(profileConfig, this.profile.getValue());
-    this.profile.setOptions(sparkUiDefaults.getProfiles());
+    if (profile.getValue().equals(DEFAULT_PROFILE)) {
+      return;
+    }
+    HashMap sparkConfig = getCurrentConfig();
+    HashMap<String, Object> sparkProfile = new HashMap<>();
+    sparkProfile.put("name", profile.getValue());
+    sparkProfile.put("spark_options", sparkConfig);
+    sparkUiDefaults.saveProfile(sparkProfile);
+    profile.setOptions(sparkUiDefaults.getProfileNames());
+  }
+
+  private HashMap<String, Object> getCurrentConfig() {
+    HashMap<String, Object> sparkConfig = new HashMap<>();
+    sparkConfig.put(SparkUI.SPARK_MASTER, getMasterURL().getValue());
+    sparkConfig.put(SparkUI.SPARK_EXECUTOR_CORES, getExecutorCores().getValue());
+    sparkConfig.put(SparkUI.SPARK_EXECUTOR_MEMORY, getExecutorMemory().getValue());
+    sparkConfig.put(SparkUI.SPARK_ADVANCED_OPTIONS, getAdvancedOptions());
+    return sparkConfig;
+  }
+
+
+  public void saveDefaults() {
+    HashMap sparkConfig = getCurrentConfig();
+    HashMap<String, Object> sparkProfile = new HashMap<>();
+    sparkProfile.put("name", DEFAULT_PROFILE);
+    sparkProfile.put("spark_options", sparkConfig);
+    sparkUiDefaults.saveProfile(sparkProfile);
+    profile.setOptions(sparkUiDefaults.getProfileNames());
   }
 
   private void removeProfile() {
+    if (profile.getValue().equals(DEFAULT_PROFILE)) {
+      return;
+    }
     sparkUiDefaults.removeSparkConf(profile.getValue());
-    this.profile.setOptions(sparkUiDefaults.getProfiles());
-    this.profile.setValue("");
+    profile.setOptions(sparkUiDefaults.getProfileNames());
+    profile.setValue(DEFAULT_PROFILE);
+    loadProfile();
   }
 
   private void addConnectButton(Button connect, HBox errors) {
@@ -225,4 +256,5 @@ public class SparkUIForm extends VBox {
   public Button getConnectButton() {
     return connectButton;
   }
+
 }

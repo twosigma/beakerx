@@ -23,9 +23,9 @@ import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widget.SingleSparkSession;
-import com.twosigma.beakerx.widget.SparkUIApi;
 import com.twosigma.beakerx.widget.SparkEngine;
 import com.twosigma.beakerx.widget.SparkUI;
+import com.twosigma.beakerx.widget.SparkUIApi;
 import com.twosigma.beakerx.widget.SparkUiDefaults;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static com.twosigma.beakerx.widget.SparkUI.ONE_SPARK_SESSION_MSG_ERROR;
@@ -162,8 +161,9 @@ public class SparkMagicCommandTest {
 
   static class SparkUiDefaultsImplTest implements SparkUiDefaults {
 
+
     @Override
-    public void saveSparkConf(HashMap sparkConf, String profileName) {
+    public void saveSparkConf(List<Map<String, Object>> sparkConf) {
 
     }
 
@@ -173,7 +173,12 @@ public class SparkMagicCommandTest {
     }
 
     @Override
-    public Set<String> getProfiles() {
+    public List<Map<String, Object>> getProfiles() {
+      return null;
+    }
+
+    @Override
+    public Map<String, Object> getProfileByName(String name) {
       return null;
     }
 
@@ -183,9 +188,20 @@ public class SparkMagicCommandTest {
     }
 
     @Override
-    public Map<String, Object> loadProfile(String profileName) {
+    public void loadProfiles() {
+
+    }
+
+    @Override
+    public void saveProfile(Map<String, Object> profile) {
+
+    }
+
+    @Override
+    public List<String> getProfileNames() {
       return null;
     }
+
   }
 
 

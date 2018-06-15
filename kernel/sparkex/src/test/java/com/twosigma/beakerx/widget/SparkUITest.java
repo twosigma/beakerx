@@ -28,10 +28,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SparkUITest {
@@ -71,7 +70,7 @@ public class SparkUITest {
     public boolean loaded = false;
 
     @Override
-    public void saveSparkConf(HashMap sparkConf, String profileName) {
+    public void saveSparkConf(List<Map<String, Object>> sparkConf) {
       saved = true;
     }
 
@@ -81,7 +80,12 @@ public class SparkUITest {
     }
 
     @Override
-    public Set<String> getProfiles() {
+    public List<Map<String, Object>> getProfiles() {
+      return null;
+    }
+
+    @Override
+    public Map<String, Object> getProfileByName(String name) {
       return null;
     }
 
@@ -91,7 +95,17 @@ public class SparkUITest {
     }
 
     @Override
-    public Map<String, Object> loadProfile(String profileName) {
+    public void loadProfiles() {
+
+    }
+
+    @Override
+    public void saveProfile(Map<String, Object> profile) {
+
+    }
+
+    @Override
+    public List<String> getProfileNames() {
       return null;
     }
   }

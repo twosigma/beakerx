@@ -17,19 +17,26 @@ package com.twosigma.beakerx.widget;
 
 import org.apache.spark.sql.SparkSession;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public interface SparkUiDefaults {
 
-  void saveSparkConf(HashMap sparkConf, String profileName);
+  String DEFAULT_PROFILE = "Default";
+
+  void saveSparkConf(List<Map<String, Object>> sparkConf);
 
   void loadDefaults(SparkSession.Builder builder);
 
-  Set<String> getProfiles();
+  List<Map<String, Object>> getProfiles();
+
+  Map<String, Object> getProfileByName(String name);
 
   void removeSparkConf(String profileName);
 
-  Map<String, Object> loadProfile(String profileName);
+  void loadProfiles();
+
+  void saveProfile(Map<String, Object> profile);
+
+  List<String> getProfileNames();
 }

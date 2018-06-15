@@ -23,15 +23,13 @@ import com.twosigma.beakerx.widget.SingleSparkSession;
 import com.twosigma.beakerx.widget.SparkEngine;
 import com.twosigma.beakerx.widget.SparkUI;
 import com.twosigma.beakerx.widget.SparkUiDefaults;
-import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -89,8 +87,9 @@ public class SparkMagicCommandAutoConnectTest {
   private SparkUI.SparkUIFactory createSparkUIFactory(SparkEngine.SparkEngineFactory sparkManagerFactory, SingleSparkSession singleSparkSession) {
     return new SparkUI.SparkUIFactory() {
       private SparkUI.SparkUIFactoryImpl factory = new SparkUI.SparkUIFactoryImpl(sparkManagerFactory, new SparkUiDefaults() {
+
         @Override
-        public void saveSparkConf(HashMap sparkConf, String profileName) {
+        public void saveSparkConf(List<Map<String, Object>> sparkConf) {
 
         }
 
@@ -100,7 +99,12 @@ public class SparkMagicCommandAutoConnectTest {
         }
 
         @Override
-        public Set<String> getProfiles() {
+        public List<Map<String, Object>> getProfiles() {
+          return null;
+        }
+
+        @Override
+        public Map<String, Object> getProfileByName(String name) {
           return null;
         }
 
@@ -110,9 +114,20 @@ public class SparkMagicCommandAutoConnectTest {
         }
 
         @Override
-        public Map<String, Object> loadProfile(String profileName) {
+        public void loadProfiles() {
+
+        }
+
+        @Override
+        public void saveProfile(Map<String, Object> profile) {
+
+        }
+
+        @Override
+        public List<String> getProfileNames() {
           return null;
         }
+
       }, singleSparkSession);
 
       @Override

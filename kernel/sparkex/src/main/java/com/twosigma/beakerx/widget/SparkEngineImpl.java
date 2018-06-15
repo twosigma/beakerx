@@ -156,6 +156,9 @@ public class SparkEngineImpl implements SparkEngine {
     SparkConf sparkConf = new SparkConf();
     sparkConf.set(SPARK_EXTRA_LISTENERS, old.get(SPARK_EXTRA_LISTENERS));
     sparkConf.set(BEAKERX_ID, old.get(BEAKERX_ID));
+    if (old.contains(SPARK_APP_NAME)) {
+      sparkConf.set(SPARK_APP_NAME, old.get(SPARK_APP_NAME));
+    }
     configurations.forEach(x -> {
       if (x.getName() != null) {
         sparkConf.set(x.getName(), (x.getValue() != null) ? x.getValue() : "");

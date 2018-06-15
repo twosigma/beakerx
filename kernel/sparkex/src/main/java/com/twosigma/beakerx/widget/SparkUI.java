@@ -21,7 +21,6 @@ import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.msg.StacktraceHtmlPrinter;
 import com.twosigma.beakerx.message.Message;
-import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 
 import java.util.ArrayList;
@@ -117,6 +116,7 @@ public class SparkUI extends VBox implements SparkUIApi {
         this.sparkUIForm.sendError(StacktraceHtmlPrinter.printRedBold(ERROR_CREATING_SPARK_SESSION));
       } else {
         singleSparkSession.active();
+        sparkUIForm.saveDefaults();
         applicationStart();
       }
     } catch (Exception e) {

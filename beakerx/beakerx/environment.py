@@ -35,7 +35,7 @@ default_config = """
             "use_data_grid": true,
             "show_catalog": false
         },
-        "spark_options":{}
+        "spark_profiles": []
     }
 }
 """

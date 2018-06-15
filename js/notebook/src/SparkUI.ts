@@ -46,6 +46,7 @@ export class SparkUIView extends widgets.VBoxView {
   private sparkUiWebUrl: string;
   private sparkMasterUrl: string;
   private apiCallIntervalId: Timer;
+  private toolbarStatusContainer: HTMLElement|null;
   private connectionLabelActive: HTMLElement;
   private connectionLabelMemory: HTMLElement;
   private connectionLabelDead: HTMLElement;
@@ -88,6 +89,32 @@ export class SparkUIView extends widgets.VBoxView {
 
   public openExecutors(): void {
     window.open(`${this.sparkUiWebUrl}/executors`, '_blank');
+  }
+
+  private handleFormState() {
+    const startButton = this.el.querySelector('.bx-spark-connect');
+
+    if (this.el.querySelector('.bx-status-panel')) {
+      this.setFormReadonly(startButton);
+    } else {
+      this.setFormEditable(startButton);
+    }
+  }
+
+  private setFormReadonly(startButton) {
+    this.masterUrlInput && this.masterUrlInput.setAttribute('readonly', 'readonly');
+    this.executorCoresInput && this.executorCoresInput.setAttribute('readonly', 'readonly');
+    this.executorMemoryInput && this.executorMemoryInput.setAttribute('readonly', 'readonly');
+
+    startButton && startButton.setAttribute('disabled', 'disabled');
+  }
+
+  private setFormEditable(startButton) {
+    this.masterUrlInput && this.masterUrlInput.removeAttribute('readonly');
+    this.executorCoresInput && this.executorCoresInput.removeAttribute('readonly');
+    this.executorMemoryInput && this.executorMemoryInput.removeAttribute('readonly');
+
+    startButton && startButton.removeAttribute('disabled');
   }
 
   private addSparkUrls() {
@@ -153,6 +180,7 @@ export class SparkUIView extends widgets.VBoxView {
 
   private updateChildren() {
     const noop = () => {};
+    let updateTimer: Timer;
 
     this.resolveChildren(this).then((views) => {
       views.forEach((view) => {
@@ -160,11 +188,17 @@ export class SparkUIView extends widgets.VBoxView {
           views.forEach((view) => {
             this.resolveChildren(view)
               .then((views) => {
-                this.handleLocalMasterUrl();
-                this.toolbarSparkConnectionStatus.append();
-                this.addSparkUrls();
-              })
-              .catch(noop);
+                views.forEach((view) => {
+                  clearTimeout(updateTimer);
+                  updateTimer = setTimeout(() => {
+                    this.handleLocalMasterUrl();
+                    this.toolbarSparkConnectionStatus.append();
+                    this.addSparkUrls();
+                    this.handleFormState();
+                    this.toggleExecutorConfigInputs();
+                  }, 10);
+                });
+              }, noop);
           });
         }, noop);
       });
@@ -281,14 +315,19 @@ export class SparkUIView extends widgets.VBoxView {
   }
 
   private addSparkMetricsWidget() {
+    let updateTimer: Timer;
+
     this.children_views.update(this.model.get('children')).then((views) => {
       views.forEach((view: any) => {
         view.children_views.update(view.model.get('children')).then((views) => {
           views.forEach((view) => {
             if (view instanceof widgets.LabelView && view.el.classList.contains('bx-connection-status')) {
-              this.createSparkMetricsWidget();
-              this.toolbarSparkConnectionStatus.append();
-              this.addSparkUrls();
+              clearTimeout(updateTimer);
+              updateTimer = setTimeout(() => {
+                this.createSparkMetricsWidget();
+                this.toolbarSparkConnectionStatus.append();
+                this.addSparkUrls();
+              }, 10);
             }
           });
         });

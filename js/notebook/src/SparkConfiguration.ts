@@ -15,6 +15,7 @@
  */
 
 import widgets from './widgets';
+import Timer = NodeJS.Timer;
 
 export class SparkConfigurationModel extends widgets.VBoxModel {
   defaults() {
@@ -30,7 +31,73 @@ export class SparkConfigurationModel extends widgets.VBoxModel {
   }
 }
 
-export class SparkConfigurationView extends widgets.VBoxView {}
+export class SparkConfigurationView extends widgets.VBoxView {
+  update() {
+    super.update();
+    this.updateChildren();
+  }
+
+  render() {
+    super.render();
+    this.updateChildren();
+  }
+
+  private handleFormState() {
+    const configButtons = this.el.querySelectorAll('.bx-spark-configuration .bx-button');
+    const configurationInputs = this.el.querySelectorAll('.bx-spark-configuration input');
+
+    if (this.el.closest('.bx-disabled')) {
+      this.setFormReadonly(configButtons, configurationInputs);
+    } else {
+      this.setFormEditable(configButtons, configurationInputs);
+    }
+  }
+
+  private setFormReadonly(configButtons, configurationInputs) {
+    configurationInputs && configurationInputs.forEach(input => input.setAttribute('readonly', 'readonly'));
+    configButtons && configButtons.forEach(button => button.setAttribute('disabled', 'disabled'));
+  }
+
+  private setFormEditable(configButtons, configurationInputs) {
+    configurationInputs && configurationInputs.forEach(input => input.removeAttribute('readonly'));
+    configButtons && configButtons.forEach(button => button.removeAttribute('readonly'));
+  }
+
+  private updateChildren() {
+    const noop = () => {};
+    let updateTimer: Timer;
+
+    this.resolveChildren(this).then((views) => {
+      views.forEach((view) => {
+        this.resolveChildren(view).then(() => {
+          views.forEach((view) => {
+            this.resolveChildren(view).then(() => {
+              views.forEach((view) => {
+                this.resolveChildren(view).then(() => {
+                  clearTimeout(updateTimer);
+                  updateTimer = setTimeout(() => {
+                    this.handleFormState();
+                  }, 10);
+                }, noop);
+              });
+            }, noop);
+          });
+        }, noop);
+      });
+    }, noop);
+  }
+
+  private resolveChildren(view) {
+    return new Promise((resolve, reject) => {
+      if (!view || !view.children_views) {
+        reject();
+      }
+
+      view.children_views.update(view.model.get('children'))
+        .then(views => resolve(views));
+    });
+  }
+}
 
 export default {
     SparkConfigurationModel,

@@ -68,6 +68,16 @@ public abstract class Box extends ValueWidget<String> {
     updateChildren();
   }
 
+  public void add(int index, Widget widget) {
+    this.children.add(index, widget);
+    updateChildren();
+  }
+
+  public void add(int index, Widget widget, Message parent) {
+    this.children.add(index, widget);
+    updateChildren(parent);
+  }
+
   public void removeAllChildren() {
     List<Widget> ch = new ArrayList<>(getChildren());
     ch.forEach(this::remove);

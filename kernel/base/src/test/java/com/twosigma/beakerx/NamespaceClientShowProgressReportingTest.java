@@ -28,13 +28,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class NamespaceClientShowProgressReportingTest {
 
-  private static String SESSION_ID = "sessionId";
   private NamespaceClient namespaceClient;
   private KernelTest kernel;
 
   @Before
   public void setUp() {
-    namespaceClient = new NamespaceClient(SESSION_ID, new NamespaceClientTest.AutotranslationServiceTestImpl());
+    namespaceClient = new NamespaceClient(new NamespaceClientTest.AutotranslationServiceTestImpl());
     kernel = new KernelTest();
     KernelManager.register(kernel);
   }

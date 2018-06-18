@@ -16,6 +16,7 @@
 
 package com.twosigma.beakerx.evaluator;
 
+import com.twosigma.beakerx.AutotranslationServiceImpl;
 import com.twosigma.beakerx.BeakerxClient;
 import com.twosigma.beakerx.CodeCell;
 import com.twosigma.beakerx.TryResult;
@@ -235,6 +236,11 @@ public class EvaluatorTest extends BaseEvaluator {
     @Override
     public void runByTag(String tag) {
 
+    }
+
+    @Override
+    public String getContext() {
+      return null;
     }
   }
 

@@ -41,7 +41,6 @@ def _jupyter_server_extension_paths():
     return [dict(module="beakerx")]
 
 beakerx = BeakerX()
-
 def run():
     try:
         parse()

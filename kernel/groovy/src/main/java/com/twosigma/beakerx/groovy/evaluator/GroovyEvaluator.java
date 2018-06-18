@@ -56,13 +56,13 @@ public class GroovyEvaluator extends BaseEvaluator {
   private ImportCustomizer icz;
   private BeakerXUrlClassLoader beakerxUrlClassLoader;
 
-  public GroovyEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters) {
+  public GroovyEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerxClient beakerxClient) {
     this(id,
             sId,
             new BeakerCellExecutor("groovy"),
             new TempFolderFactoryImpl(),
             evaluatorParameters,
-            new NamespaceClient(sId, new AutotranslationServiceImpl()));
+            beakerxClient);
   }
 
   public GroovyEvaluator(String id,

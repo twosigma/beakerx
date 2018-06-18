@@ -23,6 +23,8 @@ import tornado
 import os
 
 
+from .flask_server import start_flask_server
+
 class SparkMetricsExecutorsHandler(APIHandler):
     def data_received(self, chunk):
         pass
@@ -99,6 +101,8 @@ class JavaDoc(web.StaticFileHandler, IPythonHandler):
 
 
 def load_jupyter_server_extension(nbapp):
+    start_flask_server()
+
     web_app = nbapp.web_app
     host_pattern = '.*$'
     settings_route_pattern = url_path_join(web_app.settings['base_url'], '/beakerx', '/settings')

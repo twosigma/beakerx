@@ -418,7 +418,7 @@ public class KernelTest implements KernelFunctionality {
   public PythonEntryPoint getPythonEntryPoint(String kernelName) throws NoSuchKernelException {
     MagicKernelManager manager = magicKernels.get(kernelName);
     if (manager == null) {
-      manager = new MagicKernelManager(kernelName);
+      manager = new MagicKernelManager(kernelName,"kernelTestContext");
       magicKernels.put(kernelName, manager);
     }
     return manager.getPythonEntryPoint();

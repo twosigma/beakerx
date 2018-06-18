@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.groovy;
 
+import com.twosigma.beakerx.AutotranslationService;
 import com.twosigma.beakerx.BeakerxClient;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
@@ -30,6 +31,30 @@ import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFact
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 
 public class TestGroovyEvaluator {
+
+  public static AutotranslationService autotranslationService() {
+    return new AutotranslationService() {
+      @Override
+      public String update(String name, String json) {
+        return null;
+      }
+
+      @Override
+      public String get(String name) {
+        return null;
+      }
+
+      @Override
+      public String close() {
+        return null;
+      }
+
+      @Override
+      public String getContextAsString() {
+        return null;
+      }
+    };
+  }
 
   public static BaseEvaluator groovyEvaluator(BeakerxClient client) {
     GroovyEvaluator evaluator = new GroovyEvaluator(

@@ -21,7 +21,9 @@ import static java.util.Arrays.stream;
 
 import clojure.lang.LazySeq;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twosigma.beakerx.AutotranslationServiceImpl;
 import com.twosigma.beakerx.DisplayerDataMapper;
+import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.clojure.evaluator.ClojureEvaluator;
 import com.twosigma.beakerx.clojure.handlers.ClojureCommOpenHandler;
 import com.twosigma.beakerx.clojure.handlers.ClojureKernelInfoHandler;
@@ -75,9 +77,14 @@ public class Clojure extends Kernel {
   public static void main(final String[] args) throws InterruptedException, IOException {
     KernelRunner.run(() -> {
       String id = uuid();
+      KernelConfigurationFile configurationFile = new KernelConfigurationFile(args);
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
-              new KernelConfigurationFile(args));
-      ClojureEvaluator evaluator = new ClojureEvaluator(id, id, getKernelParameters());
+              configurationFile);
+      ClojureEvaluator evaluator = new ClojureEvaluator(
+              id,
+              id,
+              getKernelParameters(),
+              NamespaceClient.create(id, configurationFile));
       return new Clojure(id, evaluator, kernelSocketsFactory);
     });
   }

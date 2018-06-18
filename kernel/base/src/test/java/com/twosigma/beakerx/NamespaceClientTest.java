@@ -33,13 +33,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class NamespaceClientTest {
 
-  private static String SESSION_ID = "sessionId";
   private NamespaceClient namespaceClient;
   private KernelTest kernel;
 
   @Before
   public void setUp() {
-    namespaceClient = new NamespaceClient(SESSION_ID, new AutotranslationServiceTestImpl());
+    namespaceClient = new NamespaceClient(new AutotranslationServiceTestImpl());
     kernel = new KernelTest();
     KernelManager.register(kernel);
   }
@@ -131,7 +130,7 @@ public class NamespaceClientTest {
 
     @Override
     public String update(String name, String json) {
-      return "";
+      return null;
     }
 
     @Override
@@ -139,5 +138,14 @@ public class NamespaceClientTest {
       return null;
     }
 
+    @Override
+    public String close() {
+      return null;
+    }
+
+    @Override
+    public String getContextAsString() {
+      return null;
+    }
   }
 }

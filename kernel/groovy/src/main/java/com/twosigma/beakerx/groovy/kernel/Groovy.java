@@ -18,6 +18,8 @@ package com.twosigma.beakerx.groovy.kernel;
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.kernel.Utils.uuid;
 
+import com.twosigma.beakerx.AutotranslationServiceImpl;
+import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.groovy.comm.GroovyCommOpenHandler;
 import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
@@ -67,9 +69,14 @@ public class Groovy extends Kernel {
   public static void main(final String[] args) throws InterruptedException, IOException {
     KernelRunner.run(() -> {
       String id = uuid();
+      KernelConfigurationFile configurationFile = new KernelConfigurationFile(args);
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
-              new KernelConfigurationFile(args));
-      GroovyEvaluator evaluator = new GroovyEvaluator(id, id, getEvaluatorParameters());
+              configurationFile);
+
+      GroovyEvaluator evaluator = new GroovyEvaluator(id,
+              id,
+              getEvaluatorParameters(),
+              NamespaceClient.create(id, configurationFile));
       return new Groovy(id, evaluator, kernelSocketsFactory);
     });
   }

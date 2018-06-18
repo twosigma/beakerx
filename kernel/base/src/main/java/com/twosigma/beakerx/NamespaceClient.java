@@ -19,6 +19,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.twosigma.beakerx.evaluator.InternalVariable;
+import com.twosigma.beakerx.kernel.KernelConfigurationFile;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -36,7 +37,6 @@ import java.util.concurrent.SynchronousQueue;
 
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_ENUMS_USING_TO_STRING;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
-import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 
 public class NamespaceClient implements BeakerxClient {
 
@@ -46,11 +46,9 @@ public class NamespaceClient implements BeakerxClient {
   private Comm autotranslationComm = null;
   private Comm codeCellsComm = null;
   private Comm tagRunComm = null;
-  private String session;
   private AutotranslationService autotranslationService;
 
-  public NamespaceClient(String session, AutotranslationService autotranslationService) {
-    this.session = checkNotNull(session);
+  public NamespaceClient(AutotranslationService autotranslationService) {
     this.autotranslationService = autotranslationService;
     SimpleModule module = TableDisplayToJson.tableDisplayModule();
     objectMapper = new ObjectMapper();
@@ -67,7 +65,12 @@ public class NamespaceClient implements BeakerxClient {
 
   @Override
   public synchronized void delBeaker() {
-    //clear autotranslation
+    autotranslationService.close();
+  }
+
+  @Override
+  public synchronized Object get(final String name) {
+    return autotranslationService.get(name);
   }
 
   @Override
@@ -117,12 +120,6 @@ public class NamespaceClient implements BeakerxClient {
   //TODO : Not Implemented
   public Object unset(String name) {
     throw new RuntimeException("This option is not implemented now");
-  }
-
-  //TODO : Not Implemented
-  @Override
-  public synchronized Object get(final String name) {
-    return autotranslationService.get(name);
   }
 
   @Override
@@ -190,4 +187,16 @@ public class NamespaceClient implements BeakerxClient {
     c.send(COMM_MSG, Comm.Buffer.EMPTY, new Comm.Data(data));
   }
 
+  @Override
+  public String getContext() {
+    return this.autotranslationService.getContextAsString();
+  }
+
+  public static NamespaceClient create(String id, KernelConfigurationFile configurationFile) {
+    if (configurationFile.getContext().isPresent()) {
+      return new NamespaceClient(AutotranslationServiceImpl.createAsSubkernel(configurationFile.getContext().get()));
+    } else {
+      return new NamespaceClient(AutotranslationServiceImpl.createAsMainKernel(id));
+    }
+  }
 }

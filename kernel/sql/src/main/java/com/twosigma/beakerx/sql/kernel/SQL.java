@@ -20,7 +20,9 @@ import static com.twosigma.beakerx.kernel.Utils.uuid;
 import static com.twosigma.beakerx.sql.magic.command.DataSourcesMagicCommand.DATASOURCES;
 import static com.twosigma.beakerx.sql.magic.command.DefaultDataSourcesMagicCommand.DEFAULT_DATASOURCE;
 
+import com.twosigma.beakerx.AutotranslationServiceImpl;
 import com.twosigma.beakerx.DefaultJVMVariables;
+import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.kernel.CacheFolderFactory;
@@ -70,9 +72,13 @@ public class SQL extends Kernel {
   public static void main(final String[] args) throws InterruptedException, IOException {
     KernelRunner.run(() -> {
       String id = uuid();
+      KernelConfigurationFile configurationFile = new KernelConfigurationFile(args);
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
-              new KernelConfigurationFile(args));
-      SQLEvaluator evaluator = new SQLEvaluator(id, id, getKernelParameters());
+              configurationFile);
+      SQLEvaluator evaluator = new SQLEvaluator(id,
+              id,
+              getKernelParameters(),
+              NamespaceClient.create(id, configurationFile));
       return new SQL(id, evaluator, kernelSocketsFactory);
     });
   }

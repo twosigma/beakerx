@@ -49,7 +49,7 @@ public class GroovyEvaluatorProgressReportingTest {
 
   @Before
   public void setUp() throws Exception {
-    groovyEvaluator = TestGroovyEvaluator.groovyEvaluator(new NamespaceClient(GROOVY_EVALUATOR_PROGRESS_REPORTING_TEST, new AutotranslationServiceImpl()));
+    groovyEvaluator = TestGroovyEvaluator.groovyEvaluator(new NamespaceClient(TestGroovyEvaluator.autotranslationService()));
     groovyKernel = new KernelTest(GROOVY_EVALUATOR_PROGRESS_REPORTING_TEST, groovyEvaluator);
     KernelManager.register(groovyKernel);
   }

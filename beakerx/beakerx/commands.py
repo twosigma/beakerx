@@ -58,10 +58,11 @@ def py4j_server_subparser(subparser):
     py4j_server_parser.add_argument("--port")
     py4j_server_parser.add_argument("--pyport")
     py4j_server_parser.add_argument("--kernel")
+    py4j_server_parser.add_argument("--context")
 
 
 def start_py4j_server(args):
-    Py4JServer(args.port, args.pyport, args.kernel)
+    Py4JServer(args.port, args.pyport, args.kernel, args.context)
 
 
 def run_jupyter(jupyter_commands):
@@ -69,7 +70,6 @@ def run_jupyter(jupyter_commands):
 
 
 def init_parser():
-
     parser = argparse.ArgumentParser()
     parser.add_argument('--version', action='version', version=beakerx.__version__)
     parser.set_defaults(func=run_jupyter)
@@ -91,4 +91,3 @@ def parse():
         args.func(args)
     else:
         parser.parse_args(jupyter_commands)
-

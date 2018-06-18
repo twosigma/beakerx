@@ -15,7 +15,9 @@
  */
 package com.twosigma.beakerx.scala.kernel;
 
+import com.twosigma.beakerx.AutotranslationServiceImpl;
 import com.twosigma.beakerx.DisplayerDataMapper;
+import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.kernel.CacheFolderFactory;
@@ -73,12 +75,15 @@ public class Scala extends Kernel {
   public static void main(final String[] args) {
     KernelRunner.run(() -> {
       String id = uuid();
-      ScalaEvaluator se = new ScalaEvaluator(id, id,
+      KernelConfigurationFile configurationFile = new KernelConfigurationFile(args);
+      KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(configurationFile);
+      ScalaEvaluator se = new ScalaEvaluator(id,
+              id,
               null,
-              getKernelParameters());//TODO check what to put, need for autotranslation
+              getKernelParameters(),
+              NamespaceClient.create(id, configurationFile));
 
       //js.setupAutoTranslation(); -- uncomment
-      KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(new KernelConfigurationFile(args));
       return new Scala(id, se, kernelSocketsFactory);
     });
   }

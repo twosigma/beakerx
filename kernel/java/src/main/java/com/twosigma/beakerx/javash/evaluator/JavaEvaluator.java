@@ -47,8 +47,8 @@ public class JavaEvaluator extends BaseEvaluator {
   private JavaAutocomplete jac;
   private JavaBeakerXUrlClassLoader loader = null;
 
-  public JavaEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters) {
-    this(id, sId, new BeakerCellExecutor("javash"), new TempFolderFactoryImpl(), evaluatorParameters, new NamespaceClient(sId, new AutotranslationServiceImpl()));
+  public JavaEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerxClient beakerxClient) {
+    this(id, sId, new BeakerCellExecutor("javash"), new TempFolderFactoryImpl(), evaluatorParameters, beakerxClient);
   }
 
   public JavaEvaluator(String id,

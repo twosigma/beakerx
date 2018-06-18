@@ -70,8 +70,8 @@ public class SQLEvaluator extends BaseEvaluator {
   private JDBCClient jdbcClient;
   private DynamicClassLoaderSimple loader;
 
-  public SQLEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters) {
-    this(id, sId, new BeakerCellExecutor("sql"), new TempFolderFactoryImpl(), evaluatorParameters, new NamespaceClient(sId, new AutotranslationServiceImpl()));
+  public SQLEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerxClient beakerxClient) {
+    this(id, sId, new BeakerCellExecutor("sql"), new TempFolderFactoryImpl(), evaluatorParameters, beakerxClient);
   }
 
   public SQLEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters, BeakerxClient beakerxClient) {

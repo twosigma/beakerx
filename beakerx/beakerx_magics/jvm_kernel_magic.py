@@ -21,17 +21,18 @@ import sys
 
 class JVMKernelMagic:
 
-    def __init__(self, kernel_name):
+    def __init__(self, kernel_name, context):
         self.km = None
         self.kc = None
         self.comms = []
         self.kernel_name = kernel_name
+        self.context = context
         self.start()
 
     def start(self):
         self.km = KernelManager()
         self.km.kernel_name = self.kernel_name
-        self.km.start_kernel()
+        self.km.start_kernel(extra_arguments=[self.context])
         self.kc = self.km.client()
         self.kc.start_channels()
         self.kc.wait_for_ready()
@@ -66,8 +67,8 @@ class JVMKernelMagic:
 
 class PythonEntryPoint(object):
 
-    def __init__(self, kernel_name):
-        self.pm = JVMKernelMagic(kernel_name)
+    def __init__(self, kernel_name, context):
+        self.pm = JVMKernelMagic(kernel_name, context)
 
     def evaluate(self, code):
         print('code for evaluate {}'.format(code))
@@ -95,9 +96,9 @@ class PythonEntryPoint(object):
 
 
 class Py4JServer:
-    def __init__(self, port, pyport, kernel_name):
+    def __init__(self, port, pyport, kernel_name, context):
         try:
-            pep = PythonEntryPoint(kernel_name)
+            pep = PythonEntryPoint(kernel_name, context)
         except NoSuchKernel:
             sys.exit(2)
         ClientServer(
@@ -108,4 +109,4 @@ class Py4JServer:
 
 
 if __name__ == '__main__':
-    Py4JServer(sys.argv[1], sys.argv[2], sys.argv[3])
+    Py4JServer(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])

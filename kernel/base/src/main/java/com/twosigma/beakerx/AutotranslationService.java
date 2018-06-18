@@ -20,4 +20,8 @@ public interface AutotranslationService {
   String update(String name, String json);
 
   String get(String name);
+
+  String close();
+
+  String getContextAsString();
 }

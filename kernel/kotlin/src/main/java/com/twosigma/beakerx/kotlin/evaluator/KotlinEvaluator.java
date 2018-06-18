@@ -54,8 +54,8 @@ public class KotlinEvaluator extends BaseEvaluator {
   private ReplClassLoader loader = null;
   private BeakerXUrlClassLoader kotlinClassLoader;
 
-  public KotlinEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters) {
-    this(id, sId, new BeakerCellExecutor("kotlin"), new TempFolderFactoryImpl(), evaluatorParameters, new NamespaceClient(sId, new AutotranslationServiceImpl()));
+  public KotlinEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerxClient beakerxClient) {
+    this(id, sId, new BeakerCellExecutor("kotlin"), new TempFolderFactoryImpl(), evaluatorParameters, beakerxClient);
   }
 
   public KotlinEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters, BeakerxClient beakerxClient) {

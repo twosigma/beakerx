@@ -68,13 +68,13 @@ public class ClojureEvaluator extends BaseEvaluator {
     init();
   }
 
-  public ClojureEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters) {
+  public ClojureEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerxClient beakerxClient) {
     this(id,
             sId,
             new BeakerCellExecutor("clojure"),
             new TempFolderFactoryImpl(),
             evaluatorParameters,
-            new NamespaceClient(sId, new AutotranslationServiceImpl()));
+            beakerxClient);
   }
 
   @Override

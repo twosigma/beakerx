@@ -35,4 +35,6 @@ public interface BeakerxClient {
   List<CodeCell> getCodeCells(String tagFilter);
 
   void runByTag(String tag);
+
+  String getContext();
 }

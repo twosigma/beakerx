@@ -58,7 +58,7 @@ public class ScalaEvaluator extends BaseEvaluator {
   private BeakerXUrlClassLoader classLoader;
   private ScalaEvaluatorGlue shell;
 
-  public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, EvaluatorParameters evaluatorParameters) {
+  public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, EvaluatorParameters evaluatorParameters, BeakerxClient beakerxClient) {
     this(id,
             sId,
             osp,
@@ -66,7 +66,7 @@ public class ScalaEvaluator extends BaseEvaluator {
             new BeakerxObjectFactoryImpl(),
             new TempFolderFactoryImpl(),
             evaluatorParameters,
-            new NamespaceClient(sId, new AutotranslationServiceImpl()));
+            beakerxClient);
   }
 
   public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, CellExecutor cellExecutor, BeakerxObjectFactory beakerxObjectFactory, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters, BeakerxClient beakerxClient) {

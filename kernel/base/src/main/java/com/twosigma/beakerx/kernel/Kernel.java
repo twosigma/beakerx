@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.kernel;
 
+import com.google.gson.Gson;
 import com.twosigma.beakerx.BeakerxClient;
 import com.twosigma.beakerx.BeakerxDefaultDisplayers;
 import com.twosigma.beakerx.DisplayerDataMapper;
@@ -309,7 +310,7 @@ public abstract class Kernel implements KernelFunctionality {
   public PythonEntryPoint getPythonEntryPoint(String kernelName) throws NoSuchKernelException {
     MagicKernelManager manager = magicKernels.get(kernelName);
     if (manager == null) {
-      manager = new MagicKernelManager(kernelName);
+      manager = new MagicKernelManager(kernelName, evaluatorManager.getBeakerx().getContext());
       magicKernels.put(kernelName, manager);
     }
     return manager.getPythonEntryPoint();

@@ -47,7 +47,7 @@ public class SparkUiDefaultsImplTest {
   private final String PROFILE1 = "profile_1";
   private final String PROFILE2 = "profile_2";
   private final String NAME = "name";
-  private final String SPARK_OPT = "spark_options";
+  private final String SPARK_OPT = "config";
 
   @Before
   public void setUp() {
@@ -136,8 +136,8 @@ public class SparkUiDefaultsImplTest {
 
   private Map getOptions(String profileName, Path path) {
     Map<String, Map> beakerxTestJson = sut.beakerxJsonAsMap(path).get(BEAKERX);
-    List<Map<String, Object>> profiles = (List<Map<String, Object>>) beakerxTestJson.get("spark_profiles");
-    return profiles.stream().filter(x -> x.get(NAME).equals(profileName)).map(x -> (Map) x.get(SPARK_OPTIONS)).findFirst().orElse(null);
+    List<Map<String, Object>> profiles = (List<Map<String, Object>>) beakerxTestJson.get("spark_options").get("profiles");
+    return profiles.stream().filter(x -> x.get(NAME).equals(profileName)).map(x -> (Map) x.get(SPARK_OPT)).findFirst().orElse(null);
   }
 
   @Test

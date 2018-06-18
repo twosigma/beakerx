@@ -204,8 +204,8 @@
 }
 
 .bx-spark-save-button {
-    margin-left: 40px;
-    width: 60px;
+    margin-left: 10px;
+    width: 80px;
 }
 
 .bx-toolbar-spark-widget {
@@ -229,5 +229,11 @@
 
   .bx-stats {
     line-height: 14px;
+  }
+}
+
+.bx-spark-profile {
+  .widget-label {
+    width: 140px !important
   }
 }

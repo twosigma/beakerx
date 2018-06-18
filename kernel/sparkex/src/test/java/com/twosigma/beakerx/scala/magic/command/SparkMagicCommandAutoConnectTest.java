@@ -128,6 +128,16 @@ public class SparkMagicCommandAutoConnectTest {
           return null;
         }
 
+        @Override
+        public void saveProfileName(String profileName) {
+
+        }
+
+        @Override
+        public String getCurrentProfileName() {
+          return null;
+        }
+
       }, singleSparkSession);
 
       @Override

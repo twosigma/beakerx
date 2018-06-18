@@ -17,6 +17,7 @@ package com.twosigma.beakerx.widget;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.internal.LinkedTreeMap;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 import scala.Tuple2;
@@ -49,11 +50,14 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
   public static final String PROPERTIES = "properties";
   public static final String SPARK_OPTIONS = "spark_options";
   public static final String BEAKERX = "beakerx";
-  private static final Object SPARK_PROFILES = "spark_profiles";
+  private static final String SPARK_PROFILES = "profiles";
+  private static final String CURRENT_PROFILE = "current_profile";
+  private static final String CONFIG = "config";
 
   private List<Map<String, Object>> profiles = new ArrayList<>();
   private Gson gson = new GsonBuilder().setPrettyPrinting().create();
   private Path path;
+  private String currentProfile = DEFAULT_PROFILE;
 
   public SparkUiDefaultsImpl(Path path) {
     this.path = path;
@@ -62,7 +66,8 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
   public void saveSparkConf(List<Map<String, Object>> profiles) {
     try {
       Map<String, Map> map = beakerxJsonAsMap(path);
-      map.get(BEAKERX).put(SPARK_PROFILES, profiles == null ? new ArrayList<>() : profiles);
+      Map<String, Object> sparkOptions = (Map<String, Object>) map.get(BEAKERX).getOrDefault(SPARK_OPTIONS, new HashMap<>());
+      sparkOptions.put(SPARK_PROFILES, profiles == null ? new ArrayList<>() : profiles);
       String content = gson.toJson(map);
       Files.write(path, content.getBytes(StandardCharsets.UTF_8));
       this.profiles = profiles;
@@ -75,7 +80,7 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
   public void loadDefaults(SparkSession.Builder builder) {
     SparkConf sparkConf = SparkEngineImpl.getSparkConfBasedOn(builder);
     loadProfiles();
-    Map<String, Object> map = (Map<String, Object>) getProfileByName(DEFAULT_PROFILE).get(SPARK_OPTIONS);
+    Map<String, Object> map = (Map<String, Object>) getProfileByName(currentProfile).get(CONFIG);
     if (map != null) {
       map.entrySet().stream()
               .filter(x -> !sparkConf.contains(x.getKey()))
@@ -96,11 +101,13 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
   @Override
   public void loadProfiles() {
     Map<String, Map> beakerxJson = beakerxJsonAsMap(path);
-    List<Map<String, Object>> profiles = (List<Map<String, Object>>) beakerxJson.get(BEAKERX).get(SPARK_PROFILES);
+    Map sparkOptions = (Map) beakerxJson.get(BEAKERX).getOrDefault(SPARK_OPTIONS, new HashMap<>());
+    List<Map<String, Object>> profiles = (List<Map<String, Object>>) sparkOptions.get(SPARK_PROFILES);
+    currentProfile = (String) sparkOptions.getOrDefault(CURRENT_PROFILE, DEFAULT_PROFILE);
     if (profiles == null) {
       Map<String, Object> defaultProfile = new HashMap<>();
       defaultProfile.put("name", DEFAULT_PROFILE);
-      defaultProfile.put(SPARK_OPTIONS, new HashMap<>());
+      defaultProfile.put(CONFIG, new HashMap<>());
       profiles = new ArrayList<>();
       profiles.add(defaultProfile);
     }
@@ -124,6 +131,24 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
   @Override
   public List<String> getProfileNames() {
     return profiles.stream().map(x -> (String) x.get("name")).collect(Collectors.toList());
+  }
+
+  @Override
+  public void saveProfileName(String profileName) {
+    try {
+      Map<String, Map> beakerxJson = beakerxJsonAsMap(path);
+      beakerxJson.get(BEAKERX).put(CURRENT_PROFILE, profileName);
+      String content = gson.toJson(beakerxJson);
+      Files.write(path, content.getBytes(StandardCharsets.UTF_8));
+      currentProfile = profileName;
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  public String getCurrentProfileName() {
+    return currentProfile;
   }
 
   @Override

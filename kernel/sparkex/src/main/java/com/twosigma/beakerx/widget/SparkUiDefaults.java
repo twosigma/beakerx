@@ -39,4 +39,8 @@ public interface SparkUiDefaults {
   void saveProfile(Map<String, Object> profile);
 
   List<String> getProfileNames();
+
+  void saveProfileName(String profileName);
+
+  String getCurrentProfileName();
 }

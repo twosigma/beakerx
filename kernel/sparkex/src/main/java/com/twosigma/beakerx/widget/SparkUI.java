@@ -117,6 +117,7 @@ public class SparkUI extends VBox implements SparkUIApi {
       } else {
         singleSparkSession.active();
         sparkUIForm.saveDefaults();
+        sparkUiDefaults.saveProfileName(sparkUIForm.getProfileName());
         applicationStart();
       }
     } catch (Exception e) {

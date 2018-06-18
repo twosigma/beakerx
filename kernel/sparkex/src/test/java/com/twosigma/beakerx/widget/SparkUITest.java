@@ -108,6 +108,16 @@ public class SparkUITest {
     public List<String> getProfileNames() {
       return null;
     }
+
+    @Override
+    public void saveProfileName(String profileName) {
+
+    }
+
+    @Override
+    public String getCurrentProfileName() {
+      return null;
+    }
   }
 
   static class SparkManagerImplTest implements SparkEngine {

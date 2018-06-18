@@ -202,6 +202,16 @@ public class SparkMagicCommandTest {
       return null;
     }
 
+    @Override
+    public void saveProfileName(String profileName) {
+
+    }
+
+    @Override
+    public String getCurrentProfileName() {
+      return null;
+    }
+
   }
 
 

@@ -20,7 +20,6 @@ import static com.twosigma.beakerx.kernel.Utils.uuid;
 import static com.twosigma.beakerx.sql.magic.command.DataSourcesMagicCommand.DATASOURCES;
 import static com.twosigma.beakerx.sql.magic.command.DefaultDataSourcesMagicCommand.DEFAULT_DATASOURCE;
 
-import com.twosigma.beakerx.AutotranslationServiceImpl;
 import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.Evaluator;
@@ -48,8 +47,11 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class SQL extends Kernel {
+
+  private final static Logger logger = Logger.getLogger(SQL.class.getName());
 
   private SQL(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
     super(sessionId, evaluator, kernelSocketsFactory, new SQLCustomMagicCommandsImpl());
@@ -75,10 +77,12 @@ public class SQL extends Kernel {
       KernelConfigurationFile configurationFile = new KernelConfigurationFile(args);
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
               configurationFile);
+      EvaluatorParameters params = getKernelParameters();
       SQLEvaluator evaluator = new SQLEvaluator(id,
               id,
-              getKernelParameters(),
+              params,
               NamespaceClient.create(id, configurationFile));
+      evaluator.setShellOptions(params);
       return new SQL(id, evaluator, kernelSocketsFactory);
     });
   }
@@ -87,6 +91,24 @@ public class SQL extends Kernel {
     HashMap<String, Object> kernelParameters = new HashMap<>();
     kernelParameters.put(IMPORTS, new DefaultJVMVariables().getImports());
     return new EvaluatorParameters(kernelParameters);
+  }
+
+  private static String getDefaultConnectionString() {
+    String uri = System.getenv("BEAKER_JDBC_DEFAULT_CONNECTION");
+
+    if (uri != null && uri.contains("jdbc:")) {
+      return uri;
+    }
+    else if (uri != null)
+    {
+      logger.warning("Ignoring incorrectly formatted BEAKER_JDBC_DEFAULT_CONNECTION: " + uri);
+      return null;
+    }
+    else
+    {
+      return null;
+    }
+
   }
 
   static class SQLCustomMagicCommandsImpl implements CustomMagicCommandsFactory {

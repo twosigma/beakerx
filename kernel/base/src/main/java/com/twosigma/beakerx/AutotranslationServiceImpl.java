@@ -21,13 +21,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gson.Gson;
-import org.apache.http.client.fluent.Form;
 import org.apache.http.client.fluent.Request;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.http.entity.ContentType;
 
 public class AutotranslationServiceImpl implements AutotranslationService {
 
   public static final String AUTHORIZATION = "Authorization";
+  public static final String LOCALHOST = "http://localhost:";
+  public static final String AUTOTRANSLTION = "/autotransltion/";
   private final String contextAsString;
   private final AutotranslationContext context;
 
@@ -49,8 +51,7 @@ public class AutotranslationServiceImpl implements AutotranslationService {
     Map map = gson.fromJson(configuration, Map.class);
     String c = (String) map.get("contextId");
     String port = (String) map.get("port");
-    AutotranslationContext context = new AutotranslationContext(c, port);
-    this.context = context;
+    this.context = new AutotranslationContext(c, port);
     this.contextAsString = configuration;
   }
 
@@ -60,14 +61,10 @@ public class AutotranslationServiceImpl implements AutotranslationService {
 
   @Override
   public String update(String name, String json) {
-    Form form = Form.form()
-            .add("name", name)
-            .add("json", json)
-            .add("sessionId", this.context.getContextId());
     try {
-      String reply = Request.Post("http://localhost:" + this.context.getPort() + "/autotransltion/")
+      String reply = Request.Post(LOCALHOST + this.context.getPort() + AUTOTRANSLTION)
               .addHeader(AUTHORIZATION, auth())
-              .bodyForm(form.build())
+              .bodyString(createBody(name, json), ContentType.APPLICATION_JSON)
               .execute().returnContent().asString();
       if (!reply.equals("ok")) {
         throw new RuntimeException(reply);
@@ -76,6 +73,31 @@ public class AutotranslationServiceImpl implements AutotranslationService {
       throw new RuntimeException(e);
     }
     return json;
+  }
+
+  @Override
+  public String get(String name) {
+    String valueString = "";
+    try {
+      valueString = Request
+              .Get(LOCALHOST + this.context.getPort() + AUTOTRANSLTION + this.context.getContextId() + "/" + name)
+              .addHeader(AUTHORIZATION, auth())
+              .execute()
+              .returnContent()
+              .asString();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    return valueString;
+  }
+
+  private String createBody(String name, String json) {
+    Map<String, String> context = new HashMap<>();
+    context.put("name", name);
+    context.put("json", json);
+    context.put("sessionId", this.context.getContextId());
+    Gson gson = new Gson();
+    return gson.toJson(context);
   }
 
   private String auth() {
@@ -93,21 +115,6 @@ public class AutotranslationServiceImpl implements AutotranslationService {
 
   private static String flaskServerPort() {
     return System.getenv("BEAKERX_FLASK_SERVER_PORT");
-  }
-
-  @Override
-  public String get(String name) {
-    String valueString = null;
-    try {
-      valueString = Request.Get("http://localhost:" + this.context.getPort() + "/autotransltion/" + this.context.getContextId() + "/" + name)
-              .addHeader(AUTHORIZATION, auth())
-              .execute()
-              .returnContent()
-              .asString();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-    return valueString;
   }
 
   @Override

@@ -170,13 +170,11 @@ define([
       if (!window.beakerx) {
         var handler = {
           get: function (obj, prop) {
-            console.log("get value from server -> ", prop);
             return prop in obj ? obj[prop] : undefined;
           },
 
           set: function (obj, prop, value) {
             obj[prop] = value;
-            console.log("send value to server -> ", prop, value, " ,current obj:", obj);
             var comm = Jupyter.notebook.kernel.comm_manager.new_comm('beaker.autotranslation', null, null, null, utils.uuid());
             var data = {
             };

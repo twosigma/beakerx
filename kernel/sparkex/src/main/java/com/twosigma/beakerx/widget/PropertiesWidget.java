@@ -39,4 +39,12 @@ public class PropertiesWidget {
   public void add(PropertyItem propertyItem) {
     this.widget.add(propertyItem);
   }
+
+  public void disable() {
+    getItems().forEach(x -> x.disable());
+  }
+
+  public void enable() {
+    getItems().forEach(x -> x.enable());
+  }
 }

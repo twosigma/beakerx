@@ -125,6 +125,16 @@ public class SparkConfiguration extends VBox {
     add(new VBox(asList(this.header, this.properties.getWidget())));
   }
 
+  public void setDisabledToAll() {
+    this.add.setDisabled(true);
+    this.properties.disable();
+  }
+
+  public void setEnabledToAll() {
+    this.add.setDisabled(false);
+    this.properties.enable();
+  }
+
   public static class Configuration {
 
     private String name;

@@ -22,6 +22,7 @@ import static java.util.Arrays.stream;
 import clojure.lang.LazySeq;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twosigma.beakerx.DisplayerDataMapper;
+import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.clojure.evaluator.ClojureEvaluator;
 import com.twosigma.beakerx.clojure.handlers.ClojureCommOpenHandler;
 import com.twosigma.beakerx.clojure.handlers.ClojureKernelInfoHandler;
@@ -78,8 +79,13 @@ public class Clojure extends Kernel {
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
               new KernelConfigurationFile(args));
       ClojureEvaluator evaluator = new ClojureEvaluator(id, id, getKernelParameters());
+      initNamespaceClient(id);
       return new Clojure(id, evaluator, kernelSocketsFactory);
     });
+  }
+
+  private static void initNamespaceClient(String id) {
+    NamespaceClient.getBeaker(id);
   }
 
   @Override

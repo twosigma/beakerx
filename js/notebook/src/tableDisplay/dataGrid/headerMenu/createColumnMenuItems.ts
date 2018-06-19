@@ -21,7 +21,7 @@ import { CENTER, LEFT, RIGHT } from "../column/columnAlignment";
 import {HIGHLIGHTER_TYPE} from "../interface/IHighlighterState";
 import {selectVisibleBodyColumns} from "../column/selectors";
 import {SORT_ORDER} from "../column/enums";
-import {selectColumnsFrozenCount, selectVisibleColumnsFrozenCount} from "../model/selectors";
+import {selectVisibleColumnsFrozenCount} from "../model/selectors";
 
 export function createColumnMenuItems(column: DataGridColumn): MenuItem[] {
   if (!column || !column.dataGrid) {

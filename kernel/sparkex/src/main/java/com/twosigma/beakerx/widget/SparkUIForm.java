@@ -255,6 +255,7 @@ public class SparkUIForm extends VBox {
   private Button createConnectButton() {
     Button connect = new Button();
     connect.setDescription(CONNECT);
+    connect.setDomClasses(new ArrayList<>(asList("bx-spark-connect")));
     connect.registerOnClick((content, message) -> onStartAction.run(message));
     return connect;
   }

@@ -130,9 +130,9 @@ public class SparkUI extends VBox implements SparkUIApi {
   }
 
   private void applicationStart() {
-    clearSparkUIFormPanel();
     this.statusPanel = new SparkUIStatus(message -> getSparkSession().sparkContext().stop());
-    add(this.statusPanel);
+    this.sparkUIForm.setDomClasses(new ArrayList<>(asList("bx-disabled")));
+    add(0, this.statusPanel);
     sendUpdate(SPARK_APP_ID, sparkEngine.getSparkAppId());
     sendUpdate("sparkUiWebUrl", sparkEngine.getSparkUiWebUrl());
     sendUpdate("sparkMasterUrl", sparkEngine.getSparkMasterUrl());
@@ -140,9 +140,9 @@ public class SparkUI extends VBox implements SparkUIApi {
 
   @Override
   public void applicationEnd() {
+    this.sparkUIForm.setDomClasses(new ArrayList<>());
     removeStatusPanel();
     singleSparkSession.inActive();
-    addSparkUIFormPanel();
   }
 
   private void removeStatusPanel() {

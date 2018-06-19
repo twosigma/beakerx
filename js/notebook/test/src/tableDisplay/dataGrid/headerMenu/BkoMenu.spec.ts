@@ -14,16 +14,24 @@
  *  limitations under the License.
  */
 
+import * as sinon from 'sinon';
 import { expect } from 'chai';
-import { Menu } from '@phosphor/widgets';
+import {Menu, Widget} from '@phosphor/widgets';
 import BkoMenu from '@beakerx/tableDisplay/dataGrid/headerMenu/BkoMenu';
 import {CommandRegistry} from '@phosphor/commands';
+import {Message} from '@phosphor/messaging';
 
 describe('BkoMenu', () => {
   let bkoMenu;
+  let commands;
+  let menuItem;
 
   before(() => {
-    bkoMenu = new BkoMenu({ commands: new CommandRegistry() });
+    commands = new CommandRegistry();
+    bkoMenu = new BkoMenu({ commands });
+
+    commands.addCommand('test', { execute: () => {} });
+    bkoMenu.addItem({command: 'test', submenu: bkoMenu, type: 'submenu'});
   });
 
   after(() => {
@@ -35,8 +43,26 @@ describe('BkoMenu', () => {
   });
 
   it('should implement the triggerActiveItem method', () => {
+    const stub = sinon.stub(commands, 'execute');
+
     expect(bkoMenu).to.have.property('triggerActiveItem');
     expect(bkoMenu.triggerActiveItem).to.be.a('Function');
+
+    bkoMenu.triggerActiveItem();
+    expect(stub.called).to.be.false;
+
+    bkoMenu.keepOpen = true;
+    bkoMenu.triggerActiveItem();
+    expect(stub.called).to.be.false;
+
+    bkoMenu.activateNextItem();
+    bkoMenu.setFlag(Widget.Flag.IsAttached);
+    bkoMenu.triggerActiveItem();
+
+    expect(stub.calledOnce).to.be.true;
+    bkoMenu.clearFlag(Widget.Flag.IsAttached);
+
+    stub.restore();
   });
 
   it('should implement the close method', () => {
@@ -50,8 +76,36 @@ describe('BkoMenu', () => {
   });
 
   it('should implement the onActivateRequest method', () => {
+    const stub = sinon.stub(bkoMenu, 'show');
+
+    bkoMenu.onActivateRequest(new Message('activate'));
+
     expect(bkoMenu).to.have.property('onActivateRequest');
     expect(bkoMenu.onActivateRequest).to.be.a('Function');
+    expect(stub.called).to.be.false;
+
+    stub.restore();
+  });
+
+  it('should call show and hide methods', () => {
+    const parentMenu = new BkoMenu({ commands });
+    const stub = sinon.stub(bkoMenu, 'show');
+    const stubHide = sinon.stub(bkoMenu, 'hide');
+
+    parentMenu.addItem({command: 'test', submenu: bkoMenu, type: 'submenu'});
+    parentMenu.contentNode.appendChild(document.createElement('div'));
+    parentMenu.activateNextItem();
+
+    bkoMenu['_parentMenu'] = parentMenu;
+    bkoMenu.onActivateRequest(new Message('activate-request'));
+
+    expect(stub.called).to.be.true;
+
+    bkoMenu.onBeforeAttach();
+
+    expect(stubHide.called).to.be.true;
+
+    stub.restore();
   });
 
 });

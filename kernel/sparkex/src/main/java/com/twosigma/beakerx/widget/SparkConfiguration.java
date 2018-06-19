@@ -38,7 +38,9 @@ public class SparkConfiguration extends VBox {
     this.header = new HBox(asList(this.add, sparkVersionWidget(sparkVersion)));
     List<PropertyItem> propertyItems = createPropertyItems(advancedSettings);
     this.properties = new PropertiesWidget(propertyItems);
-    add(new VBox(asList(this.header, this.properties.getWidget())));
+    VBox configuration = new VBox(asList(this.header, this.properties.getWidget()));
+    configuration.setDomClasses(new ArrayList<>(asList("bx-spark-configuration")));
+    add(configuration);
   }
 
   private HTML sparkVersionWidget(String version) {

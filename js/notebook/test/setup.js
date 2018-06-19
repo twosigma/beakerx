@@ -27,11 +27,14 @@ global.HTMLSpanElement = window.HTMLSpanElement;
 global.HTMLInputElement = window.HTMLInputElement;
 global.MouseEvent = window.MouseEvent;
 global.KeyboardEvent = window.KeyboardEvent;
+global.Image = window.Image;
 
 window.HTMLCanvasElement.prototype.getContext = function() {
   return {
     drawImage: function() {},
-    scale: function() {}
+    setTransform: function() {},
+    scale: function() {},
+    save: function() {}
   };
 };
 

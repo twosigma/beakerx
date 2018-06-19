@@ -22,7 +22,7 @@ import java.util.Map;
 
 public interface SparkUiDefaults {
 
-  String DEFAULT_PROFILE = "Default";
+  String DEFAULT_PROFILE = "";
 
   void saveSparkConf(List<Map<String, Object>> sparkConf);
 

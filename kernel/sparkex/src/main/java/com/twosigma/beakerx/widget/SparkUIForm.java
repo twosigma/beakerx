@@ -110,7 +110,6 @@ public class SparkUIForm extends VBox {
   }
 
   private HBox createProfileManagement() {
-    List profiles = sparkUiDefaults.getProfiles();
     Dropdown profileDropdown = new Dropdown();
     profileDropdown.setOptions(this.sparkUiDefaults.getProfileNames());
     profileDropdown.setValue(this.sparkUiDefaults.getCurrentProfileName());

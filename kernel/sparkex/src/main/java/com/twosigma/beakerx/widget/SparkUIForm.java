@@ -208,7 +208,6 @@ public class SparkUIForm extends VBox {
     sparkProfile.put("name", DEFAULT_PROFILE);
     sparkProfile.put(CONFIG, sparkConfig);
     sparkUiDefaults.saveProfile(sparkProfile);
-    profile.setOptions(sparkUiDefaults.getProfileNames());
   }
 
   private void removeProfile() {

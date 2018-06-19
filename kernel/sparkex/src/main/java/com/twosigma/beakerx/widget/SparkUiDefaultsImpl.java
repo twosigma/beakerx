@@ -68,6 +68,7 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
       Map<String, Map> map = beakerxJsonAsMap(path);
       Map<String, Object> sparkOptions = (Map<String, Object>) map.get(BEAKERX).getOrDefault(SPARK_OPTIONS, new HashMap<>());
       sparkOptions.put(SPARK_PROFILES, profiles == null ? new ArrayList<>() : profiles);
+      map.get(BEAKERX).put(SPARK_OPTIONS, sparkOptions);
       String content = gson.toJson(map);
       Files.write(path, content.getBytes(StandardCharsets.UTF_8));
       this.profiles = profiles;
@@ -136,9 +137,11 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
   @Override
   public void saveProfileName(String profileName) {
     try {
-      Map<String, Map> beakerxJson = beakerxJsonAsMap(path);
-      beakerxJson.get(BEAKERX).put(CURRENT_PROFILE, profileName);
-      String content = gson.toJson(beakerxJson);
+      Map<String, Map> map = beakerxJsonAsMap(path);
+      Map<String, Object> sparkOptions = (Map<String, Object>) map.get(BEAKERX).getOrDefault(SPARK_OPTIONS, new HashMap<>());
+      sparkOptions.put(CURRENT_PROFILE, profileName);
+      map.get(BEAKERX).put(SPARK_OPTIONS, sparkOptions);
+      String content = gson.toJson(map);
       Files.write(path, content.getBytes(StandardCharsets.UTF_8));
       currentProfile = profileName;
     } catch (IOException e) {

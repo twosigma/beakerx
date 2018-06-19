@@ -38,7 +38,11 @@ import java.util.stream.IntStream;
 
 import static com.twosigma.beakerx.widget.SparkUI.BEAKERX_ID;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_APP_NAME;
+import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXECUTOR_CORES_DEFAULT;
+import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXECUTOR_MEMORY_DEFAULT;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXTRA_LISTENERS;
+import static com.twosigma.beakerx.widget.SparkUI.SPARK_MASTER_DEFAULT;
+import static com.twosigma.beakerx.widget.SparkUIApi.SPARK_ADVANCED_OPTIONS;
 import static com.twosigma.beakerx.widget.SparkUIApi.SPARK_EXECUTOR_CORES;
 import static com.twosigma.beakerx.widget.SparkUIApi.SPARK_EXECUTOR_MEMORY;
 import static com.twosigma.beakerx.widget.SparkUIApi.SPARK_MASTER;
@@ -106,13 +110,19 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
     List<Map<String, Object>> profiles = (List<Map<String, Object>>) sparkOptions.get(SPARK_PROFILES);
     currentProfile = (String) sparkOptions.getOrDefault(CURRENT_PROFILE, DEFAULT_PROFILE);
     if (profiles == null) {
+      //save default config if it doesn't exist
       Map<String, Object> defaultProfile = new HashMap<>();
       defaultProfile.put("name", DEFAULT_PROFILE);
-      defaultProfile.put(CONFIG, new HashMap<>());
-      profiles = new ArrayList<>();
-      profiles.add(defaultProfile);
+      Map config = new HashMap();
+      config.put(SPARK_MASTER, SPARK_MASTER_DEFAULT);
+      config.put(SPARK_EXECUTOR_CORES, SPARK_EXECUTOR_CORES_DEFAULT);
+      config.put(SPARK_EXECUTOR_MEMORY, SPARK_EXECUTOR_MEMORY_DEFAULT);
+      config.put(SPARK_ADVANCED_OPTIONS, new ArrayList<>());
+      defaultProfile.put(CONFIG, config);
+      saveProfile(defaultProfile);
+    } else {
+      this.profiles = profiles;
     }
-    this.profiles = profiles;
   }
 
   @Override

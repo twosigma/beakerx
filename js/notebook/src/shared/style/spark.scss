@@ -203,6 +203,11 @@
   }
 }
 
+.bx-spark-save-button {
+    margin-left: 10px;
+    width: 80px;
+}
+
 .bx-toolbar-spark-widget {
   display: inline-block;
   overflow: hidden;
@@ -326,7 +331,7 @@
       -webkit-transform: rotate(300deg);
       transform: rotate(300deg);
       -webkit-animation-delay: -0.083333333333333s;
-      animation-delay: -0.083333333333333s;
+      animation-delay: -0.083333333333AAA333s;
     }
     &:nth-child(12) {
       -webkit-transform: rotate(330deg);
@@ -334,5 +339,11 @@
       -webkit-animation-delay: 0s;
       animation-delay: 0s;
     }
+  }
+}
+
+.bx-spark-profile {
+  .widget-label {
+    width: 140px !important
   }
 }

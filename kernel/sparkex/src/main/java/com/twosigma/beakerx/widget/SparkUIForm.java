@@ -15,23 +15,39 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.google.gson.internal.LinkedTreeMap;
 import com.twosigma.beakerx.message.Message;
 import org.apache.spark.SparkConf;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXECUTOR_CORES;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXECUTOR_MEMORY;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_MASTER;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_MASTER_DEFAULT;
+import static com.twosigma.beakerx.widget.SparkUiDefaults.DEFAULT_PROFILE;
 import static java.util.Arrays.asList;
 
 public class SparkUIForm extends VBox {
 
   static final String CONNECT = "Start";
+  static final String PROFILE_DESC = "Profile";
+  private static final String OK_BUTTON_DESC = "Create";
+  private static final String CANCEL_BUTTON_DESC = "Cancel";
+  private static final String PROFILE_NAME_PLC_HOLD = "Enter profile name...";
+  private static final String NEW_PROFILE_DESC = "New profile";
+  private static final String SAVE_PROFILE_TOOLTIP = "Save profile";
+  private static final String NEW_PROFILE_TOOLTIP = "Create new profile";
+  private static final String REMOVE_PROFILE_TOOLTIP = "Delete this profile";
 
   private HBox errors;
+  private HBox profileManagement;
+  private Dropdown profile;
+  private Text newProfileName;
   private Text masterURL;
   private Text executorMemory;
   private Text executorCores;
@@ -41,26 +57,161 @@ public class SparkUIForm extends VBox {
   private Button connectButton;
   private Spinner spinner;
   private HBox spinnerPanel;
+  private SparkUiDefaults sparkUiDefaults;
+  private HBox profileModal;
 
-  public SparkUIForm(SparkEngine sparkEngine, SparkUI.OnSparkButtonAction onStartAction) {
+  public SparkUIForm(SparkEngine sparkEngine, SparkUiDefaults sparkUiDefaults, SparkUI.OnSparkButtonAction onStartAction) {
     super(new ArrayList<>());
     this.sparkEngine = sparkEngine;
     this.onStartAction = onStartAction;
+    this.sparkUiDefaults = sparkUiDefaults;
     createSparkView();
   }
 
   private void createSparkView() {
+    this.profileModal = createProfileModal();
+    this.profileManagement = createProfileManagement();
     this.masterURL = createMasterURL();
     this.executorMemory = createExecutorMemory();
     this.executorCores = createExecutorCores();
     this.errors = new HBox(new ArrayList<>());
     this.errors.setDomClasses(asList("bx-spark-connect-error"));
     this.addConnectButton(createConnectButton(), this.errors);
+    this.add(profileModal);
+    this.add(profileManagement);
     this.add(masterURL);
     this.add(executorCores);
     this.add(executorMemory);
     this.advancedOption = new SparkConfiguration(sparkEngine.getAdvanceSettings(), sparkEngine.sparkVersion());
     this.add(advancedOption);
+  }
+
+  private HBox createProfileModal() {
+    newProfileName = new Text();
+    newProfileName.setPlaceholder(PROFILE_NAME_PLC_HOLD);
+    newProfileName.setDescription(NEW_PROFILE_DESC);
+    newProfileName.setDomClasses(asList("bx-spark-config"));
+
+    Button okButton = new Button();
+    okButton.setDescription(OK_BUTTON_DESC);
+    okButton.registerOnClick(this::createProfileOK);
+    okButton.setDomClasses(asList("bx-button", "bx-spark-save-button"));
+    okButton.setTooltip(NEW_PROFILE_TOOLTIP);
+
+    Button cancelButton = new Button();
+    cancelButton.setDescription(CANCEL_BUTTON_DESC);
+    cancelButton.registerOnClick(this::createProfileCancel);
+    cancelButton.setDomClasses(asList("bx-button", "bx-spark-save-button"));
+
+    HBox modal = new HBox(asList(newProfileName, okButton, cancelButton));
+    modal.setDomClasses(asList("hidden"));
+    return modal;
+  }
+
+  private HBox createProfileManagement() {
+    Dropdown profileDropdown = new Dropdown();
+    profileDropdown.setOptions(this.sparkUiDefaults.getProfileNames());
+    profileDropdown.setValue(this.sparkUiDefaults.getCurrentProfileName());
+    profileDropdown.setDescription(PROFILE_DESC);
+    profileDropdown.register(this::loadProfile);
+    profileDropdown.setDomClasses(asList("bx-spark-config", "bx-spark-profile"));
+    this.profile = profileDropdown;
+
+    Button saveButton = new Button();
+    saveButton.setDescription("Save");
+    saveButton.registerOnClick((content, message) -> saveProfile());
+    saveButton.setDomClasses(asList("bx-button", "bx-spark-save-button"));
+    saveButton.setTooltip(SAVE_PROFILE_TOOLTIP);
+
+    Button newButton = new Button();
+    newButton.registerOnClick((content, message) -> newProfile());
+    newButton.setDomClasses(asList("bx-button", "icon-add"));
+    newButton.setTooltip(NEW_PROFILE_TOOLTIP);
+
+    Button removeButton = new Button();
+    removeButton.registerOnClick((content, message) -> removeProfile());
+    removeButton.setDomClasses(asList("bx-button", "icon-close"));
+    removeButton.setTooltip(REMOVE_PROFILE_TOOLTIP);
+
+    return new HBox(Arrays.asList(profileDropdown, saveButton,  newButton, removeButton));
+  }
+
+  private void loadProfile() {
+    String profileName = this.profile.getValue();
+    if (!this.sparkUiDefaults.getProfileNames().contains(profileName)) {
+      return;
+    }
+    sparkUiDefaults.loadProfiles();
+    Map<String, Object> profileData =
+            (Map<String, Object>) sparkUiDefaults
+                    .getProfileByName(profileName);
+    if (profileData.size() > 0) {
+      this.masterURL.setValue(profileData.getOrDefault(SparkUI.SPARK_MASTER, SparkUI.SPARK_MASTER_DEFAULT));
+      this.executorCores.setValue(profileData.getOrDefault(SparkUI.SPARK_EXECUTOR_CORES, SparkUI.SPARK_EXECUTOR_CORES_DEFAULT));
+      this.executorMemory.setValue(profileData.getOrDefault(SparkUI.SPARK_EXECUTOR_MEMORY, SparkUI.SPARK_EXECUTOR_MEMORY_DEFAULT));
+      Map<String, String> advancedSettings = new HashMap<>();
+      ((ArrayList<LinkedTreeMap>)profileData.getOrDefault(SparkUI.SPARK_ADVANCED_OPTIONS, SparkUI.SPARK_ADVANCED_OPTIONS_DEFAULT))
+              .stream()
+              .forEach(x -> {
+                advancedSettings.put(x.get("name").toString(), x.get("value").toString());
+              });
+      this.advancedOption.setConfiguration(advancedSettings);
+    }
+  }
+
+  private void saveProfile() {
+    if (profile.getValue().equals(DEFAULT_PROFILE)) {
+      return;
+    }
+    HashMap sparkProfile = getCurrentConfig();
+    sparkProfile.put("name", profile.getValue());
+    sparkUiDefaults.saveProfile(sparkProfile);
+    profile.setOptions(sparkUiDefaults.getProfileNames());
+    profile.setValue(sparkProfile.get("name"));
+  }
+
+  private void newProfile() {
+    profileManagement.setDomClasses(asList("hidden"));
+    profileModal.setDomClasses(new ArrayList<>(0));
+  }
+
+  private void createProfileOK(HashMap hashMap, Message message) {
+    profileModal.setDomClasses(asList("hidden"));
+    profileManagement.setDomClasses(new ArrayList<>(0));
+    profile.setValue(newProfileName.getValue());
+    saveProfile();
+    newProfileName.setValue("");
+  }
+
+  private void createProfileCancel(HashMap hashMap, Message message) {
+    profileModal.setDomClasses(asList("hidden"));
+    profileManagement.setDomClasses(new ArrayList<>(0));
+  }
+
+  private HashMap<String, Object> getCurrentConfig() {
+    HashMap<String, Object> sparkConfig = new HashMap<>();
+    sparkConfig.put(SparkUI.SPARK_MASTER, getMasterURL().getValue());
+    sparkConfig.put(SparkUI.SPARK_EXECUTOR_CORES, getExecutorCores().getValue());
+    sparkConfig.put(SparkUI.SPARK_EXECUTOR_MEMORY, getExecutorMemory().getValue());
+    sparkConfig.put(SparkUI.SPARK_ADVANCED_OPTIONS, getAdvancedOptions());
+    return sparkConfig;
+  }
+
+
+  public void saveDefaults() {
+    HashMap sparkProfile = getCurrentConfig();
+    sparkProfile.put("name", DEFAULT_PROFILE);
+    sparkUiDefaults.saveProfile(sparkProfile);
+  }
+
+  private void removeProfile() {
+    if (profile.getValue().equals(DEFAULT_PROFILE)) {
+      return;
+    }
+    sparkUiDefaults.removeSparkConf(profile.getValue());
+    profile.setOptions(sparkUiDefaults.getProfileNames());
+    profile.setValue(DEFAULT_PROFILE);
+    loadProfile();
   }
 
   private void addConnectButton(Button connect, HBox errors) {
@@ -109,7 +260,7 @@ public class SparkUIForm extends VBox {
     if (getSparkConf().contains(SPARK_EXECUTOR_MEMORY)) {
       memory.setValue(getSparkConf().get(SPARK_EXECUTOR_MEMORY));
     } else {
-      memory.setValue("8g");
+      memory.setValue(SparkUI.SPARK_EXECUTOR_MEMORY_DEFAULT);
     }
     return memory;
   }
@@ -121,7 +272,7 @@ public class SparkUIForm extends VBox {
     if (getSparkConf().contains(SPARK_EXECUTOR_CORES)) {
       cores.setValue(getSparkConf().get(SPARK_EXECUTOR_CORES));
     } else {
-      cores.setValue("10");
+      cores.setValue(SparkUI.SPARK_EXECUTOR_CORES_DEFAULT);
     }
     return cores;
   }
@@ -156,4 +307,20 @@ public class SparkUIForm extends VBox {
   public Button getConnectButton() {
     return connectButton;
   }
+
+  public String getProfileName() {
+    return profile.getValue();
+  }
+
+
+  public void setAllToDisabled() {
+    this.profileManagement.getChildren().stream().map(x -> (ValueWidget) x).forEach(x -> x.setDisabled(true));
+    this.advancedOption.setDisabledToAll();
+  }
+
+  public void setAllToEnabled() {
+    this.profileManagement.getChildren().stream().map(x -> (ValueWidget) x).forEach(x -> x.setDisabled(false));
+    this.advancedOption.setEnabledToAll();
+  }
+
 }

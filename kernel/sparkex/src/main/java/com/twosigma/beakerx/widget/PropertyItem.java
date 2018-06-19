@@ -38,4 +38,16 @@ public class PropertyItem extends HBox {
   public String getValueAsString() {
     return value.getValue();
   }
+
+  public void disable() {
+    name.setDisabled(true);
+    value.setDisabled(true);
+    remove.setDisabled(true);
+  }
+
+  public void enable() {
+    name.setDisabled(false);
+    value.setDisabled(false);
+    remove.setDisabled(false);
+  }
 }

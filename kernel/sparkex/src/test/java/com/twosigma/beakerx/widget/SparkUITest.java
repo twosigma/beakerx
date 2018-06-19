@@ -28,9 +28,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SparkUITest {
@@ -64,28 +64,59 @@ public class SparkUITest {
     assertThat(sparkUiDefaults.loaded).isTrue();
   }
 
-  @Test
-  public void saveDefaultsWhenConnectToSparkSession() {
-    //given
-    //when
-    sparkUI.getConnectButton().onClick(new HashMap(), commMsg());
-    //then
-    assertThat(sparkUiDefaults.saved).isTrue();
-  }
-
   static class SparkUiDefaultsImplMock implements SparkUiDefaults {
 
     public boolean saved = false;
     public boolean loaded = false;
 
     @Override
-    public void saveSparkConf(SparkConf sparkConf) {
+    public void saveSparkConf(List<Map<String, Object>> sparkConf) {
       saved = true;
     }
 
     @Override
     public void loadDefaults(SparkSession.Builder builder) {
       loaded = true;
+    }
+
+    @Override
+    public List<Map<String, Object>> getProfiles() {
+      return null;
+    }
+
+    @Override
+    public Map<String, Object> getProfileByName(String name) {
+      return null;
+    }
+
+    @Override
+    public void removeSparkConf(String profileName) {
+
+    }
+
+    @Override
+    public void loadProfiles() {
+
+    }
+
+    @Override
+    public void saveProfile(Map<String, Object> profile) {
+
+    }
+
+    @Override
+    public List<String> getProfileNames() {
+      return null;
+    }
+
+    @Override
+    public void saveProfileName(String profileName) {
+
+    }
+
+    @Override
+    public String getCurrentProfileName() {
+      return null;
     }
   }
 

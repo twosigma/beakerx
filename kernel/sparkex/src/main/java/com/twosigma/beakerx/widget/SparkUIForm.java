@@ -36,7 +36,6 @@ public class SparkUIForm extends VBox {
 
   static final String CONNECT = "Start";
   static final String PROFILE_DESC = "Profile";
-  private static final String CONFIG = "config";
   private static final String OK_BUTTON_DESC = "Create";
   private static final String CANCEL_BUTTON_DESC = "Cancel";
   private static final String PROFILE_NAME_PLC_HOLD = "Enter profile name...";
@@ -145,8 +144,7 @@ public class SparkUIForm extends VBox {
     sparkUiDefaults.loadProfiles();
     Map<String, Object> profileData =
             (Map<String, Object>) sparkUiDefaults
-                    .getProfileByName(profileName)
-                    .getOrDefault(CONFIG, new HashMap<>());
+                    .getProfileByName(profileName);
     if (profileData.size() > 0) {
       this.masterURL.setValue(profileData.getOrDefault(SparkUI.SPARK_MASTER, SparkUI.SPARK_MASTER_DEFAULT));
       this.executorCores.setValue(profileData.getOrDefault(SparkUI.SPARK_EXECUTOR_CORES, SparkUI.SPARK_EXECUTOR_CORES_DEFAULT));
@@ -165,10 +163,8 @@ public class SparkUIForm extends VBox {
     if (profile.getValue().equals(DEFAULT_PROFILE)) {
       return;
     }
-    HashMap sparkConfig = getCurrentConfig();
-    HashMap<String, Object> sparkProfile = new HashMap<>();
+    HashMap sparkProfile = getCurrentConfig();
     sparkProfile.put("name", profile.getValue());
-    sparkProfile.put(CONFIG, sparkConfig);
     sparkUiDefaults.saveProfile(sparkProfile);
     profile.setOptions(sparkUiDefaults.getProfileNames());
     profile.setValue(sparkProfile.get("name"));
@@ -203,10 +199,8 @@ public class SparkUIForm extends VBox {
 
 
   public void saveDefaults() {
-    HashMap sparkConfig = getCurrentConfig();
-    HashMap<String, Object> sparkProfile = new HashMap<>();
+    HashMap sparkProfile = getCurrentConfig();
     sparkProfile.put("name", DEFAULT_PROFILE);
-    sparkProfile.put(CONFIG, sparkConfig);
     sparkUiDefaults.saveProfile(sparkProfile);
   }
 

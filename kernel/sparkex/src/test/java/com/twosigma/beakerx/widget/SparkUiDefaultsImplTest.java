@@ -61,11 +61,9 @@ public class SparkUiDefaultsImplTest {
     //given
     HashMap<String, Object> profileConfig = new HashMap<>();
     profileConfig.put(SPARK_MASTER, "local[4]");
-    Map<String, Object> profile = new HashMap<>();
-    profile.put(NAME, PROFILE1);
-    profile.put(SPARK_OPT, profileConfig);
+    profileConfig.put(NAME, PROFILE1);
     //when
-    sut.saveProfile(profile);
+    sut.saveProfile(profileConfig);
     //then
     Map options = getOptions(PROFILE1);
     String prop = (String) options.get(SPARK_MASTER);
@@ -77,11 +75,9 @@ public class SparkUiDefaultsImplTest {
     //given
     HashMap<String, Object> profileConfig = new HashMap<>();
     profileConfig.put(SPARK_EXECUTOR_MEMORY, "8g");
-    Map<String, Object> profile = new HashMap<>();
-    profile.put(NAME, PROFILE1);
-    profile.put(SPARK_OPT, profileConfig);
+    profileConfig.put(NAME, PROFILE1);
     //when
-    sut.saveProfile(profile);
+    sut.saveProfile(profileConfig);
     //then
     Map options = getOptions(PROFILE1);
     String prop = (String) options.get(SPARK_EXECUTOR_MEMORY);
@@ -93,11 +89,9 @@ public class SparkUiDefaultsImplTest {
     //given
     HashMap<String, Object> profileConfig = new HashMap<>();
     profileConfig.put(SPARK_EXECUTOR_CORES, "10");
-    Map<String, Object> profile = new HashMap<>();
-    profile.put(NAME, PROFILE1);
-    profile.put(SPARK_OPT, profileConfig);
+    profileConfig.put(NAME, PROFILE1);
     //when
-    sut.saveProfile(profile);
+    sut.saveProfile(profileConfig);
     //then
     Map options = getOptions(PROFILE1);
     String prop = (String) options.get(SPARK_EXECUTOR_CORES);
@@ -110,11 +104,9 @@ public class SparkUiDefaultsImplTest {
     HashMap<String, Object> profileConfig = new HashMap<>();
     profileConfig.put(SPARK_ADVANCED_OPTIONS, Arrays.asList(
             new SparkConfiguration.Configuration("sparkOption2", "sp2")));
-    Map<String, Object> profile = new HashMap<>();
-    profile.put(NAME, PROFILE1);
-    profile.put(SPARK_OPT, profileConfig);
+    profileConfig.put(NAME, PROFILE1);
     //when
-    sut.saveProfile(profile);
+    sut.saveProfile(profileConfig);
     //then
     List<Object> props = getProps();
     assertThat(props).isNotEmpty();
@@ -137,7 +129,7 @@ public class SparkUiDefaultsImplTest {
   private Map getOptions(String profileName, Path path) {
     Map<String, Map> beakerxTestJson = sut.beakerxJsonAsMap(path).get(BEAKERX);
     List<Map<String, Object>> profiles = (List<Map<String, Object>>) beakerxTestJson.get("spark_options").get("profiles");
-    return profiles.stream().filter(x -> x.get(NAME).equals(profileName)).map(x -> (Map) x.get(SPARK_OPT)).findFirst().orElse(null);
+    return profiles.stream().filter(x -> x.get(NAME).equals(profileName)).findFirst().orElse(new HashMap<>());
   }
 
   @Test
@@ -147,14 +139,12 @@ public class SparkUiDefaultsImplTest {
     profileConfig.put(SPARK_ADVANCED_OPTIONS, Arrays.asList(
             new SparkConfiguration.Configuration("sparkOption2", "sp2")));
     profileConfig.put(SPARK_MASTER, "local[4]");
-    Map<String, Object> profile = new HashMap<>();
-    profile.put(NAME, DEFAULT_PROFILE);
-    profile.put(SPARK_OPT, profileConfig);
+    profileConfig.put(NAME, DEFAULT_PROFILE);
 
     List config = new ArrayList();
-    config.add(profile);
+    config.add(profileConfig);
     //when
-    sut.saveProfile(profile);
+    sut.saveProfile(profileConfig);
     //then
     SparkSession.Builder builder = SparkSession.builder();
     sut.loadDefaults(builder);
@@ -166,20 +156,15 @@ public class SparkUiDefaultsImplTest {
   @Test
   public void createTwoProfiles() {
     //given
-    Map<String, Object> profile1 = new HashMap<>();
     HashMap<String, Object> profileConfig1 = new HashMap<>();
     profileConfig1.put(SPARK_MASTER, "local[4]");
-    profile1.put(NAME, PROFILE1);
-    profile1.put(SPARK_OPT, profileConfig1);
+    profileConfig1.put(NAME, PROFILE1);
 
-
-    Map<String, Object> profile2 = new HashMap<>();
     HashMap<String, Object> profileConfig2 = new HashMap<>();
     profileConfig2.put(SPARK_MASTER, "local[8]");
-    profile2.put(NAME, PROFILE2);
-    profile2.put(SPARK_OPT, profileConfig2);
+    profileConfig2.put(NAME, PROFILE2);
     //when
-    sut.saveSparkConf(Arrays.asList(profile1, profile2));
+    sut.saveSparkConf(Arrays.asList(profileConfig1, profileConfig2));
     //then
     Map options1 = getOptions(PROFILE1);
     Map options2 = getOptions(PROFILE2);
@@ -193,20 +178,16 @@ public class SparkUiDefaultsImplTest {
   @Test
   public void removeProfile() {
     //given
-    Map<String, Object> profile1 = new HashMap<>();
     HashMap<String, Object> profileConfig1 = new HashMap<>();
     profileConfig1.put(SPARK_MASTER, "local[4]");
-    profile1.put(NAME, PROFILE1);
-    profile1.put(SPARK_OPT, profileConfig1);
+    profileConfig1.put(NAME, PROFILE1);
 
-    Map<String, Object> profile2 = new HashMap<>();
     HashMap<String, Object> profileConfig2 = new HashMap<>();
     profileConfig2.put(SPARK_MASTER, "local[8]");
-    profile2.put(NAME, PROFILE2);
-    profile2.put(SPARK_OPT, profileConfig2);
+    profileConfig2.put(NAME, PROFILE2);
     //when
-    sut.saveProfile(profile1);
-    sut.saveProfile(profile2);
+    sut.saveProfile(profileConfig1);
+    sut.saveProfile(profileConfig2);
     sut.removeSparkConf(PROFILE1);
     //then
     Map options2 = getOptions(PROFILE2);
@@ -218,20 +199,16 @@ public class SparkUiDefaultsImplTest {
   @Test
   public void overwriteProfile() {
     //given
-    Map<String, Object> profile1 = new HashMap<>();
     HashMap<String, Object> profileConfig1 = new HashMap<>();
     profileConfig1.put(SPARK_MASTER, "local[4]");
-    profile1.put(NAME, PROFILE1);
-    profile1.put(SPARK_OPT, profileConfig1);
+    profileConfig1.put(NAME, PROFILE1);
 
-    Map<String, Object> profile2 = new HashMap<>();
     HashMap<String, Object> profileConfig2 = new HashMap<>();
     profileConfig2.put(SPARK_MASTER, "local[8]");
-    profile2.put(NAME, PROFILE1);
-    profile2.put(SPARK_OPT, profileConfig2);
+    profileConfig2.put(NAME, PROFILE1);
     //when
-    sut.saveProfile(profile1);
-    sut.saveProfile(profile2);
+    sut.saveProfile(profileConfig1);
+    sut.saveProfile(profileConfig2);
     //then
     Map options = getOptions(PROFILE1);
     String prop = (String) options.get(SPARK_MASTER);

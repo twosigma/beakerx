@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.twosigma.beakerx.widget.SparkUI.BEAKERX_ID;
+import static com.twosigma.beakerx.widget.SparkUI.SPARK_ADVANCED_OPTIONS_DEFAULT;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_APP_NAME;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXECUTOR_CORES_DEFAULT;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXECUTOR_MEMORY_DEFAULT;
@@ -56,7 +57,6 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
   public static final String BEAKERX = "beakerx";
   private static final String SPARK_PROFILES = "profiles";
   private static final String CURRENT_PROFILE = "current_profile";
-  private static final String CONFIG = "config";
 
   private List<Map<String, Object>> profiles = new ArrayList<>();
   private Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -85,7 +85,7 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
   public void loadDefaults(SparkSession.Builder builder) {
     SparkConf sparkConf = SparkEngineImpl.getSparkConfBasedOn(builder);
     loadProfiles();
-    Map<String, Object> map = (Map<String, Object>) getProfileByName(currentProfile).get(CONFIG);
+    Map<String, Object> map = (Map<String, Object>) getProfileByName(currentProfile);
     if (map != null) {
       map.entrySet().stream()
               .filter(x -> !sparkConf.contains(x.getKey()))
@@ -110,15 +110,13 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
     List<Map<String, Object>> profiles = (List<Map<String, Object>>) sparkOptions.get(SPARK_PROFILES);
     currentProfile = (String) sparkOptions.getOrDefault(CURRENT_PROFILE, DEFAULT_PROFILE);
     if (profiles == null) {
-      //save default config if it doesn't exist
+      //save default config if doesn't exist
       Map<String, Object> defaultProfile = new HashMap<>();
       defaultProfile.put("name", DEFAULT_PROFILE);
-      Map config = new HashMap();
-      config.put(SPARK_MASTER, SPARK_MASTER_DEFAULT);
-      config.put(SPARK_EXECUTOR_CORES, SPARK_EXECUTOR_CORES_DEFAULT);
-      config.put(SPARK_EXECUTOR_MEMORY, SPARK_EXECUTOR_MEMORY_DEFAULT);
-      config.put(SPARK_ADVANCED_OPTIONS, new ArrayList<>());
-      defaultProfile.put(CONFIG, config);
+      defaultProfile.put(SPARK_MASTER, SPARK_MASTER_DEFAULT);
+      defaultProfile.put(SPARK_EXECUTOR_CORES, SPARK_EXECUTOR_CORES_DEFAULT);
+      defaultProfile.put(SPARK_EXECUTOR_MEMORY, SPARK_EXECUTOR_MEMORY_DEFAULT);
+      defaultProfile.put(SPARK_ADVANCED_OPTIONS, new ArrayList<>());
       saveProfile(defaultProfile);
     } else {
       this.profiles = profiles;

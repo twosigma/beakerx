@@ -92,3 +92,7 @@
   border-color: var(--jp-widgets-input-focus-border-color);
   outline: none !important;
 }
+
+.hidden {
+  display: none !important;;
+}

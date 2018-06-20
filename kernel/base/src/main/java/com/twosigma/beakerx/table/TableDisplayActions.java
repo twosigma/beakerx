@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.table;
 
-import com.twosigma.beakerx.BeakerClientManager;
+import com.twosigma.beakerx.BeakerXClientManager;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.table.action.TableActionDetails;
 import com.twosigma.beakerx.widget.CommActions;
@@ -87,11 +87,11 @@ public class TableDisplayActions {
     tableDisplay.setDetails(details);
     if (CommActions.CONTEXT_MENU_CLICK.equals(details.getActionType())) {
       if (tableDisplay.getContextMenuTags() != null && !tableDisplay.getContextMenuTags().isEmpty() && details.getContextMenuItem() != null && !details.getContextMenuItem().isEmpty()) {
-        BeakerClientManager.get().runByTag(tableDisplay.getContextMenuTags().get(details.getContextMenuItem()));
+        BeakerXClientManager.get().runByTag(tableDisplay.getContextMenuTags().get(details.getContextMenuItem()));
       }
     } else if (CommActions.DOUBLE_CLICK.equals(details.getActionType())) {
       if (tableDisplay.getDoubleClickTag() != null && !tableDisplay.getDoubleClickTag().isEmpty()) {
-        BeakerClientManager.get().runByTag(tableDisplay.getDoubleClickTag());
+        BeakerXClientManager.get().runByTag(tableDisplay.getDoubleClickTag());
       }
     }
   }

@@ -17,7 +17,7 @@ package com.twosigma.beakerx.kernel.comm;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twosigma.beakerx.BeakerClientManager;
+import com.twosigma.beakerx.BeakerXClientManager;
 import com.twosigma.beakerx.CodeCell;
 import com.twosigma.beakerx.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
@@ -54,7 +54,7 @@ public class GetCodeCellsHandler extends BaseHandler<Object> {
   private void handleMsg(Message message) {
     try {
       List<CodeCell> cells = getBeakerCodeCells(getValueFromData(message, getHandlerCommand()));
-      BeakerClientManager.get().getMessageQueue("CodeCells").put(cells);
+      BeakerXClientManager.get().getMessageQueue("CodeCells").put(cells);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }

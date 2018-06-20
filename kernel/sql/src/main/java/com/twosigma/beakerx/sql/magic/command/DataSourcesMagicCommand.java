@@ -15,8 +15,8 @@
  */
 package com.twosigma.beakerx.sql.magic.command;
 
-import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils;
@@ -61,7 +61,7 @@ public class DataSourcesMagicCommand implements MagicCommandFunctionality {
 
     HashMap<String, Object> params = new HashMap<>();
     params.put(source, parts[1]);
-    this.kernel.setShellOptions(new EvaluatorParameters(params));
+    kernel.updateEvaluatorParameters(new EvaluatorParameters(params));
     return new MagicCommandOutput(MagicCommandOutcomeItem.Status.OK);
 
   }

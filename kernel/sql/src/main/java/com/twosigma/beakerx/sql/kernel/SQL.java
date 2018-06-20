@@ -41,16 +41,19 @@ import com.twosigma.beakerx.sql.handlers.SQLCommOpenHandler;
 import com.twosigma.beakerx.sql.handlers.SQLKernelInfoHandler;
 import com.twosigma.beakerx.sql.magic.command.DataSourcesMagicCommand;
 import com.twosigma.beakerx.sql.magic.command.DefaultDataSourcesMagicCommand;
+import com.twosigma.beakerx.util.BeakerXSystem;
+import com.twosigma.beakerx.util.BeakerXSystemImpl;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 
 public class SQL extends Kernel {
   private final static Logger logger = Logger.getLogger(SQL.class.getName());
+  public static final String BEAKERX_SQL_DEFAULT_JDBC = "BEAKERX_SQL_DEFAULT_JDBC";
 
   private SQL(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
     super(sessionId, evaluator, kernelSocketsFactory, new SQLCustomMagicCommandsImpl());
@@ -71,50 +74,34 @@ public class SQL extends Kernel {
   }
 
 
-
-
-  public static void main(final String[] args) throws InterruptedException, IOException {
+  public static void main(final String[] args) {
     KernelRunner.run(() -> {
       String id = uuid();
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
               new KernelConfigurationFile(args));
-      EvaluatorParameters params = getKernelParameters();
+      EvaluatorParameters params = getKernelParameters(new BeakerXSystemImpl());
       SQLEvaluator evaluator = new SQLEvaluator(id, id, params);
-      evaluator.setShellOptions(params);
       return new SQL(id, evaluator, kernelSocketsFactory);
     });
   }
 
-  private static EvaluatorParameters getKernelParameters() {
-    HashMap<String, Object> kernelParameters = new HashMap<>();
+  static EvaluatorParameters getKernelParameters(BeakerXSystem beakerXSystem) {
+    Map<String, Object> kernelParameters = new HashMap<>();
     kernelParameters.put(IMPORTS, new DefaultJVMVariables().getImports());
-    String uri = getDefaultConnectionString();
-    if (uri != null) {
-      logger.info("Setting default connection string to " + uri);
-      kernelParameters.put("%defaultDatasource", uri);
-    }
-    // "{%defaultDatasource=jdbc:trysettingitbydefault}"
+    kernelParameters = getDefaultConnectionString(beakerXSystem, kernelParameters);
     return new EvaluatorParameters(kernelParameters);
   }
 
-  private static String getDefaultConnectionString() {
-    String uri = System.getenv("BEAKER_JDBC_DEFAULT_CONNECTION");
-
+  private static Map<String, Object> getDefaultConnectionString(BeakerXSystem beakerXSystem, Map<String, Object> kernelParameters) {
+    String uri = beakerXSystem.getenv(BEAKERX_SQL_DEFAULT_JDBC);
     if (uri != null && uri.contains("jdbc:")) {
-      return uri;
+      logger.info("Setting default connection string to " + uri);
+      kernelParameters.put(DEFAULT_DATASOURCE, uri);
+    } else if (uri != null) {
+      logger.warning("Ignoring incorrectly formatted " + BEAKERX_SQL_DEFAULT_JDBC + ": " + uri);
     }
-    else if (uri != null)
-    {
-      logger.warning("Ignoring incorrectly formatted BEAKER_JDBC_DEFAULT_CONNECTION: " + uri);
-      return null;
-    }
-    else
-    {
-      return null;
-    }
-
+    return kernelParameters;
   }
-
 
   static class SQLCustomMagicCommandsImpl implements CustomMagicCommandsFactory {
     @Override

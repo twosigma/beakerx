@@ -41,7 +41,7 @@ public interface Evaluator {
 
   Logger logger = LoggerFactory.getLogger(Evaluator.class.getName());
 
-  void setShellOptions(final EvaluatorParameters kernelParameters) throws IOException;
+  void updateEvaluatorParameters(final EvaluatorParameters kernelParameters);
 
   AutocompleteResult autocomplete(String code, int caretPosition);
 

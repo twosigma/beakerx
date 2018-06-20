@@ -34,7 +34,6 @@ import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 public class EvaluatorManagerTest {
 
   private EvaluatorTest evaluator;
-  private EvaluatorManager evaluatorManager;
   private static KernelTest kernel;
 
   @BeforeClass
@@ -45,8 +44,6 @@ public class EvaluatorManagerTest {
   @Before
   public void setUp() throws Exception {
     evaluator = new EvaluatorTest();
-    evaluatorManager = new EvaluatorManager(kernel, evaluator);
-    evaluatorManager.setShellOptions(new EvaluatorParameters(new HashMap()));
   }
 
   @After
@@ -57,7 +54,7 @@ public class EvaluatorManagerTest {
   @Test
   public void killAllThreads_callEvaluatorToKillAllThreads() throws Exception {
     //when
-    evaluatorManager.killAllThreads();
+    evaluator.killAllThreads();
     //then
     Assertions.assertThat(evaluator.isCallKillAllThreads()).isTrue();
   }
@@ -65,7 +62,7 @@ public class EvaluatorManagerTest {
   @Test
   public void cancelExecution() throws Exception {
     //when
-    evaluatorManager.cancelExecution();
+    evaluator.cancelExecution();
     //then
     Assertions.assertThat(evaluator.isCallCancelExecution()).isTrue();
   }
@@ -73,7 +70,7 @@ public class EvaluatorManagerTest {
   @Test
   public void exit_callEvaluatorToExit() throws Exception {
     //when
-    evaluatorManager.exit();
+    evaluator.exit();
     //then
     Assertions.assertThat(evaluator.isCallExit()).isTrue();
   }
@@ -83,7 +80,7 @@ public class EvaluatorManagerTest {
     String code = "test code";
     SimpleEvaluationObject seo = PlainCode.createSimpleEvaluationObject(code, kernel, commMsg(), 5);
     //when
-    evaluatorManager.executeCode(code, seo);
+    evaluator.evaluate(seo, code);
     //then
     Assertions.assertThat(evaluator.getCode()).isEqualTo(code);
   }

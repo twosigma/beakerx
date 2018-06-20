@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.evaluator;
 
-import com.twosigma.beakerx.BeakerClient;
+import com.twosigma.beakerx.BeakerXClient;
 import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.kernel.AddImportStatus;
@@ -76,5 +76,5 @@ public interface Evaluator {
 
   void registerCancelHook(Hook hook);
 
-  BeakerClient getBeakerx();
+  BeakerXClient getBeakerx();
 }

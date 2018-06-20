@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.evaluator;
 
-import com.twosigma.beakerx.BeakerClient;
+import com.twosigma.beakerx.BeakerXClient;
 import com.twosigma.beakerx.BeakerxClientManager;
 import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.inspect.Inspect;
@@ -55,7 +55,7 @@ public abstract class BaseEvaluator implements Evaluator {
   protected Imports imports;
   private final CellExecutor executor;
   private Path tempFolder;
-  private BeakerClient beakerxClient;
+  private BeakerXClient beakerxClient;
   protected EvaluatorParameters evaluatorParameters;
   private EvaluatorHooks cancelHooks = new EvaluatorHooks();
 
@@ -66,7 +66,7 @@ public abstract class BaseEvaluator implements Evaluator {
                        CellExecutor cellExecutor,
                        TempFolderFactory tempFolderFactory,
                        EvaluatorParameters evaluatorParameters,
-                       BeakerClient beakerxClient) {
+                       BeakerXClient beakerxClient) {
     shellId = id;
     sessionId = sId;
     executor = cellExecutor;
@@ -109,7 +109,7 @@ public abstract class BaseEvaluator implements Evaluator {
   }
 
   @Override
-  public BeakerClient getBeakerx() {
+  public BeakerXClient getBeakerx() {
     return beakerxClient;
   }
 

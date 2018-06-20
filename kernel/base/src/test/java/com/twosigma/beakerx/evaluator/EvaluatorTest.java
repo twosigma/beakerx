@@ -16,7 +16,7 @@
 
 package com.twosigma.beakerx.evaluator;
 
-import com.twosigma.beakerx.BeakerClient;
+import com.twosigma.beakerx.BeakerXClient;
 import com.twosigma.beakerx.CodeCell;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
@@ -195,7 +195,7 @@ public class EvaluatorTest extends BaseEvaluator {
   }
 
 
-  public static class BeakexClientTestImpl implements BeakerClient {
+  public static class BeakexClientTestImpl implements BeakerXClient {
 
     @Override
     public void showProgressUpdate(String message, int progress) {

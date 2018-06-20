@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.kotlin.evaluator;
 
-import com.twosigma.beakerx.BeakerClient;
+import com.twosigma.beakerx.BeakerXClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.autocomplete.ClasspathScanner;
@@ -52,11 +52,11 @@ public class KotlinEvaluator extends BaseEvaluator {
   private ReplClassLoader loader = null;
   private BeakerXUrlClassLoader kotlinClassLoader;
 
-  public KotlinEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerClient beakerxClient) {
+  public KotlinEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerXClient beakerxClient) {
     this(id, sId, new BeakerCellExecutor("kotlin"), new TempFolderFactoryImpl(), evaluatorParameters, beakerxClient);
   }
 
-  public KotlinEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters, BeakerClient beakerxClient) {
+  public KotlinEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters, BeakerXClient beakerxClient) {
     super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient);
     cps = new ClasspathScanner();
     createRepl();

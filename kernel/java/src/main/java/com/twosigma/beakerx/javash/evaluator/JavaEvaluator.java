@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.javash.evaluator;
 
-import com.twosigma.beakerx.BeakerClient;
+import com.twosigma.beakerx.BeakerXClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
@@ -45,7 +45,7 @@ public class JavaEvaluator extends BaseEvaluator {
   private JavaAutocomplete jac;
   private JavaBeakerXUrlClassLoader loader = null;
 
-  public JavaEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerClient beakerxClient) {
+  public JavaEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerXClient beakerxClient) {
     this(id, sId, new BeakerCellExecutor("javash"), new TempFolderFactoryImpl(), evaluatorParameters, beakerxClient);
   }
 
@@ -54,7 +54,7 @@ public class JavaEvaluator extends BaseEvaluator {
                        CellExecutor cellExecutor,
                        TempFolderFactory tempFolderFactory,
                        EvaluatorParameters evaluatorParameters,
-                       BeakerClient beakerxClient) {
+                       BeakerXClient beakerxClient) {
     super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient);
     packageId = "com.twosigma.beaker.javash.bkr" + shellId.split("-")[0];
     cps = new JavaClasspathScanner();

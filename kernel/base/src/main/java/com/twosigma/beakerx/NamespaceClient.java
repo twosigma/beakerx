@@ -38,7 +38,7 @@ import java.util.concurrent.SynchronousQueue;
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_ENUMS_USING_TO_STRING;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
 
-public class NamespaceClient implements BeakerClient {
+public class NamespaceClient implements BeakerXClient {
 
   private static Map<String, SynchronousQueue<Object>> messagePool = new HashMap<>();
   private ObjectMapper objectMapper;

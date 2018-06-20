@@ -162,9 +162,6 @@ public class SparkUIForm extends VBox {
   }
 
   private void saveProfile() {
-    if (profile.getValue().equals(DEFAULT_PROFILE)) {
-      return;
-    }
     HashMap sparkProfile = getCurrentConfig();
     sparkProfile.put("name", profile.getValue());
     sparkUiDefaults.saveProfile(sparkProfile);

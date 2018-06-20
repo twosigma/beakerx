@@ -26,7 +26,7 @@ public abstract class KernelSetUpFixtureTest {
 
   protected KernelSocketsServiceTest kernelSocketsService;
   protected KernelFunctionality kernel;
-  private  Thread kernelThread;
+  private Thread kernelThread;
 
   @Before
   public void setUp() throws Exception {

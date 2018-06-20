@@ -19,7 +19,7 @@ import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.MessageFactorTest;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
-import com.twosigma.beakerx.evaluator.EvaluatorManager;
+import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
@@ -40,15 +40,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class GroovyOutputContainerTest {
 
   public static final Message HEADER_MESSAGE = MessageFactorTest.commMsg();
-  private EvaluatorManager groovyEvaluatorManager;
+  private Evaluator evaluator;
   private KernelTest groovyKernel;
 
   @Before
   public void setUp() throws Exception {
     BaseEvaluator evaluator = TestGroovyEvaluator.groovyEvaluator();
     groovyKernel = new KernelTest("GroovyOutputContainerTest", evaluator);
-    groovyEvaluatorManager = new EvaluatorManager(groovyKernel, evaluator);
-    groovyEvaluatorManager.setShellOptions(new EvaluatorParameters(new HashMap()));
+    this.evaluator = evaluator;
+    evaluator.updateEvaluatorParameters(new EvaluatorParameters(new HashMap()));
     KernelManager.register(groovyKernel);
   }
 
@@ -71,7 +71,7 @@ public class GroovyOutputContainerTest {
 
     //when
     SimpleEvaluationObject evaluationObject = PlainCode.createSimpleEvaluationObject(code, groovyKernel, HEADER_MESSAGE, 1);
-    TryResult seo = groovyEvaluatorManager.executeCode(code, evaluationObject);
+    TryResult seo = evaluator.evaluate(evaluationObject, code);
     //then
     assertThat(seo.result()).isNotNull();
     verifyPlot(groovyKernel.getPublishedMessages());

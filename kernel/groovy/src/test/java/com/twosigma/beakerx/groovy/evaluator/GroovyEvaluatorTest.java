@@ -55,7 +55,7 @@ public class GroovyEvaluatorTest {
     EvaluatorParameters kernelParameters = new EvaluatorParameters(params);
 
     GroovyEvaluator groovyEvaluator = new GroovyEvaluator("123", "345", cellExecutor(), getTestTempFolderFactory(), kernelParameters);
-    groovyEvaluator.setShellOptions(kernelParameters);
+    groovyEvaluator.updateEvaluatorParameters(kernelParameters);
     groovyClassLoader = newEvaluator(groovyEvaluator.getImports(), groovyEvaluator.getClasspath(), groovyEvaluator.getOutDir(), icz, newParentClassLoader(groovyEvaluator.getClasspath()));
     scriptBinding = new Binding();
     scriptBinding.setVariable("beaker", NamespaceClient.getBeaker("345"));

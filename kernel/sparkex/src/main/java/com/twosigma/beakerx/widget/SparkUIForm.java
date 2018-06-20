@@ -316,11 +316,20 @@ public class SparkUIForm extends VBox {
   public void setAllToDisabled() {
     this.profileManagement.getChildren().stream().map(x -> (ValueWidget) x).forEach(x -> x.setDisabled(true));
     this.advancedOption.setDisabledToAll();
+    this.connectButton.setDisabled(true);
+    this.masterURL.setDisabled(true);
+    this.executorMemory.setDisabled(true);
+    this.executorCores.setDisabled(true);
   }
 
   public void setAllToEnabled() {
     this.profileManagement.getChildren().stream().map(x -> (ValueWidget) x).forEach(x -> x.setDisabled(false));
     this.advancedOption.setEnabledToAll();
+    this.connectButton.setDisabled(false);
+    this.connectButton.setDomClasses(new ArrayList<>());
+    this.masterURL.setDisabled(false);
+    this.executorMemory.setDisabled(false);
+    this.executorCores.setDisabled(false);
   }
 
 }

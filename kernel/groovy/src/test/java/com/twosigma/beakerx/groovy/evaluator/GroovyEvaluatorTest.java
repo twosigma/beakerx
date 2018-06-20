@@ -58,7 +58,7 @@ public class GroovyEvaluatorTest {
     groovyEvaluator.setShellOptions(kernelParameters);
     groovyClassLoader = newEvaluator(groovyEvaluator.getImports(), groovyEvaluator.getClasspath(), groovyEvaluator.getOutDir(), icz, newParentClassLoader(groovyEvaluator.getClasspath()));
     scriptBinding = new Binding();
-    scriptBinding.setVariable("beaker", groovyEvaluator.getBeaker());
+    scriptBinding.setVariable("beaker", groovyEvaluator.getBeakerX());
     groovyKernel = new GroovyKernelMock("groovyEvaluatorTest", groovyEvaluator);
     KernelManager.register(groovyKernel);
   }

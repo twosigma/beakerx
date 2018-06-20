@@ -121,6 +121,6 @@ public class EvaluatorManager {
   }
 
   public BeakerXClient getBeakerx() {
-    return evaluator.getBeaker();
+    return evaluator.getBeakerX();
   }
 }

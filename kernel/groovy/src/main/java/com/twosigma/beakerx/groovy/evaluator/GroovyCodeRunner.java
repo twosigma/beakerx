@@ -89,7 +89,7 @@ class GroovyCodeRunner implements Callable<TryResult> {
   }
 
   private Object runScript(Script script) {
-    groovyEvaluator.getScriptBinding().setVariable(Evaluator.BEAKER_VARIABLE_NAME, groovyEvaluator.getBeakerx());
+    groovyEvaluator.getScriptBinding().setVariable(Evaluator.BEAKER_VARIABLE_NAME, groovyEvaluator.getBeaker());
     script.setBinding(groovyEvaluator.getScriptBinding());
     return script.run();
   }

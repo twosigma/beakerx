@@ -109,7 +109,7 @@ public abstract class BaseEvaluator implements Evaluator {
   }
 
   @Override
-  public BeakerXClient getBeakerx() {
+  public BeakerXClient getBeaker() {
     return beakerxClient;
   }
 

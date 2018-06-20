@@ -76,5 +76,5 @@ public interface Evaluator {
 
   void registerCancelHook(Hook hook);
 
-  BeakerXClient getBeakerx();
+  BeakerXClient getBeaker();
 }

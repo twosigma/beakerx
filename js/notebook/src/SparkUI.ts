@@ -91,6 +91,13 @@ export class SparkUIView extends widgets.VBoxView {
     window.open(`${this.sparkUiWebUrl}/executors`, '_blank');
   }
 
+  private setupTooltips(): void {
+    this.el.querySelector('.bx-spark-connect').setAttribute('title', "Start a session with a cluster (or a local instance)");
+    this.el.querySelector('.bx-spark-profile select').setAttribute('title', "Set all properties from a named profile");
+    this.el.querySelector('.bx-spark-executor-cores input').setAttribute('title', "The number of cores to use on each executor");
+    this.el.querySelector('.bx-spark-executor-memory input').setAttribute('title', "Amount of memory to use per executor process, in MiB unless otherwise specified. (e.g. 2g, 8g).");
+  }
+
   private handleFormState() {
     const startButton = this.el.querySelector('.bx-spark-connect');
 
@@ -196,6 +203,7 @@ export class SparkUIView extends widgets.VBoxView {
                     this.addSparkUrls();
                     this.handleFormState();
                     this.toggleExecutorConfigInputs();
+                    this.setupTooltips();
                   }, 10);
                 });
               }, noop);

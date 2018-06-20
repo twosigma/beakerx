@@ -267,7 +267,7 @@ public class SparkUIForm extends VBox {
 
   private Text createExecutorCores() {
     Text cores = new Text();
-    cores.setDescription("Executor cores");
+    cores.setDescription("Executor Cores");
     cores.setDomClasses(new ArrayList<>(asList("bx-spark-config", "bx-spark-executor-cores")));
     if (getSparkConf().contains(SPARK_EXECUTOR_CORES)) {
       cores.setValue(getSparkConf().get(SPARK_EXECUTOR_CORES));

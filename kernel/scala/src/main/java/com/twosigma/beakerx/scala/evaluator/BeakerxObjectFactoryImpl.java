@@ -15,13 +15,16 @@
  */
 package com.twosigma.beakerx.scala.evaluator;
 
+import static com.twosigma.beakerx.BeakerXClientManager.BEAKER_X_CLIENT_MANAGER_GET;
+import static com.twosigma.beakerx.BeakerXClientManager.BEAKER_X_CLIENT_MANAGER_PATH;
+
 public class BeakerxObjectFactoryImpl implements BeakerxObjectFactory {
 
   @Override
   public String create() {
-    return "import com.twosigma.beakerx.BeakerxClientManager\n" +
+    return "import " + BEAKER_X_CLIENT_MANAGER_PATH + "\n" +
             "import language.dynamics\n" +
-            "var _beakerx = BeakerxClientManager.get()\n" +
+            "var _beakerx = " + BEAKER_X_CLIENT_MANAGER_GET + "\n" +
             "object beakerx extends Dynamic {\n" +
             "  def selectDynamic( field : String ) = _beakerx.get(field)\n" +
             "  def updateDynamic (field : String)(value : Any) : Any = {\n" +

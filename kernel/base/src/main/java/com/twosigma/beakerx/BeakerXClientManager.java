@@ -18,6 +18,9 @@ package com.twosigma.beakerx;
 
 public class BeakerXClientManager {
 
+  public static String BEAKER_X_CLIENT_MANAGER_PATH = BeakerXClientManager.class.getName();
+  public static String BEAKER_X_CLIENT_MANAGER_GET = BeakerXClientManager.class.getSimpleName() + ".get()";
+
   private static BeakerXClient beakerXClientInst;
 
   public static BeakerXClient register(BeakerXClient beakerXClient) {
@@ -28,4 +31,5 @@ public class BeakerXClientManager {
   public static BeakerXClient get() {
     return beakerXClientInst;
   }
+
 }

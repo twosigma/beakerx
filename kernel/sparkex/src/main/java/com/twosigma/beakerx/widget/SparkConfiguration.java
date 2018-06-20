@@ -35,10 +35,10 @@ public class SparkConfiguration extends VBox {
   SparkConfiguration(Map<String, String> advancedSettings, String sparkVersion) {
     super(new ArrayList<>());
     this.add = createAddButton();
-    this.header = new HBox(asList(this.add, sparkVersionWidget(sparkVersion)));
+    this.header = new HBox(asList(sparkVersionWidget(sparkVersion), this.add));
     List<PropertyItem> propertyItems = createPropertyItems(advancedSettings);
     this.properties = new PropertiesWidget(propertyItems);
-    VBox configuration = new VBox(asList(this.header, this.properties.getWidget()));
+    VBox configuration = new VBox(asList(this.properties.getWidget(), this.header));
     configuration.setDomClasses(new ArrayList<>(asList("bx-spark-configuration")));
     add(configuration);
   }
@@ -47,6 +47,7 @@ public class SparkConfiguration extends VBox {
     HTML html = new HTML();
     String ap = String.format("https://spark.apache.org/docs/%s/configuration.html#available-properties", version);
     html.setValue("<a target=\"_blank\" href=\"" + ap + "\">Available properties" + "</a>");
+    html.setDomClasses(new ArrayList<>(asList("bx-properties-add-label")));
     return html;
   }
 
@@ -59,7 +60,7 @@ public class SparkConfiguration extends VBox {
   private Button createAddButton() {
     Button add = new Button();
     add.setTooltip("Add property");
-    add.setDomClasses(new ArrayList<>(asList("bx-button", "icon-add")));
+    add.setDomClasses(new ArrayList<>(asList("bx-button", "icon-add", "bx-properties-add-button")));
     add.registerOnClick((content, message) -> addProperty());
     return add;
   }
@@ -122,7 +123,7 @@ public class SparkConfiguration extends VBox {
     List<PropertyItem> propertyItems = createPropertyItems(advancedSettings);
     this.properties = new PropertiesWidget(propertyItems);
     this.remove(this.getChildren().get(0));
-    add(new VBox(asList(this.header, this.properties.getWidget())));
+    add(new VBox(asList(this.properties.getWidget(), this.header)));
   }
 
   public void setDisabledToAll() {

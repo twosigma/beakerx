@@ -30,6 +30,7 @@ public class AutotranslationServiceImpl implements AutotranslationService {
   public static final String AUTHORIZATION = "Authorization";
   public static final String LOCALHOST = "http://localhost:";
   public static final String AUTOTRANSLTION = "/autotransltion/";
+  public static final String BEAKERX = "beakerx";
   private final String contextAsString;
   private final AutotranslationContext context;
 
@@ -40,7 +41,7 @@ public class AutotranslationServiceImpl implements AutotranslationService {
   public static AutotranslationService createAsMainKernel(String id) {
     Map<String, String> context = new HashMap<>();
     context.put("contextId", id);
-    context.put("port", flaskServerPort());
+    context.put("port", autotranslationPort());
     Gson gson = new Gson();
     String contextAsString = gson.toJson(context);
     return new AutotranslationServiceImpl(contextAsString);
@@ -106,15 +107,15 @@ public class AutotranslationServiceImpl implements AutotranslationService {
   }
 
   private static String getBasic_auth_username() {
-    return System.getenv("BEAKERX_BASIC_AUTH_USERNAME");
+    return BEAKERX;
   }
 
   private static String getBasic_auth_password() {
-    return System.getenv("BEAKERX_BASIC_AUTH_PASSWORD");
+    return System.getenv("BEAKERX_AUTOTRANSLATION_PASSWORD");
   }
 
-  private static String flaskServerPort() {
-    return System.getenv("BEAKERX_FLASK_SERVER_PORT");
+  private static String autotranslationPort() {
+    return System.getenv("BEAKERX_AUTOTRANSLATION_PORT");
   }
 
   @Override

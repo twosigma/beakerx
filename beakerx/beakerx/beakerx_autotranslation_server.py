@@ -29,8 +29,7 @@ logging.getLogger('tornado.access').disabled = True
 
 def basic_auth(f):
     def auth(username, password):
-        return username == os.environ["BEAKERX_BASIC_AUTH_USERNAME"] \
-               and password == os.environ["BEAKERX_BASIC_AUTH_PASSWORD"]
+        return username == "beakerx" and password == os.environ["BEAKERX_AUTOTRANSLATION_PASSWORD"]
 
     def _request_auth(handler):
         handler.set_status(401)
@@ -100,12 +99,11 @@ def random_string_generator(size=128):
 
 
 def init_env():
-    os.environ["BEAKERX_BASIC_AUTH_USERNAME"] = "beakerx"
-    os.environ["BEAKERX_BASIC_AUTH_PASSWORD"] = random_string_generator()
-    os.environ["BEAKERX_FLASK_SERVER_PORT"] = str(get_free_tcp_port())
+    os.environ["BEAKERX_AUTOTRANSLATION_PASSWORD"] = random_string_generator()
+    os.environ["BEAKERX_AUTOTRANSLATION_PORT"] = str(get_free_tcp_port())
 
 
 def start_autotranslation_server():
     init_env()
     app = make_app()
-    app.listen(os.environ["BEAKERX_FLASK_SERVER_PORT"])
+    app.listen(os.environ["BEAKERX_AUTOTRANSLATION_PORT"])

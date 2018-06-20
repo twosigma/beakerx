@@ -38,7 +38,7 @@ public class SparkConfiguration extends VBox {
     this.header = new HBox(asList(this.add, sparkVersionWidget(sparkVersion)));
     List<PropertyItem> propertyItems = createPropertyItems(advancedSettings);
     this.properties = new PropertiesWidget(propertyItems);
-    VBox configuration = new VBox(asList(this.header, this.properties.getWidget()));
+    VBox configuration = new VBox(asList(this.properties.getWidget(), this.header));
     configuration.setDomClasses(new ArrayList<>(asList("bx-spark-configuration")));
     add(configuration);
   }
@@ -122,7 +122,7 @@ public class SparkConfiguration extends VBox {
     List<PropertyItem> propertyItems = createPropertyItems(advancedSettings);
     this.properties = new PropertiesWidget(propertyItems);
     this.remove(this.getChildren().get(0));
-    add(new VBox(asList(this.header, this.properties.getWidget())));
+    add(new VBox(asList(this.properties.getWidget(), this.header)));
   }
 
   public void setDisabledToAll() {

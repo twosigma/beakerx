@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.sql;
 
-import com.twosigma.beakerx.BeakerxClient;
+import com.twosigma.beakerx.BeakerClient;
 import com.twosigma.beakerx.jvm.object.OutputCell;
 import com.twosigma.beakerx.jvm.object.OutputContainer;
 import com.twosigma.beakerx.table.TableDisplay;
@@ -47,7 +47,7 @@ public class QueryExecutor {
     this.jdbcClient = jdbcClient;
   }
 
-  public synchronized Object executeQuery(String script, BeakerxClient namespaceClient, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString)
+  public synchronized Object executeQuery(String script, BeakerClient namespaceClient, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString)
       throws SQLException, IOException, ReadVariableException {
 
     BeakerParser beakerParser = new BeakerParser(script, namespaceClient, defaultConnectionString, namedConnectionString, jdbcClient);
@@ -183,7 +183,7 @@ public class QueryExecutor {
     }
   }
 
-  private QueryResult executeQuery(int currentIterationIndex, BeakerParseResult queryLine, Connection conn, BeakerxClient namespaceClient) throws SQLException, ReadVariableException {
+  private QueryResult executeQuery(int currentIterationIndex, BeakerParseResult queryLine, Connection conn, BeakerClient namespaceClient) throws SQLException, ReadVariableException {
 
     QueryResult queryResult = new QueryResult();
 

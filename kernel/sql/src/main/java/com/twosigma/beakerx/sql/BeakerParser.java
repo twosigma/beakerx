@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.sql;
 
-import com.twosigma.beakerx.BeakerxClient;
+import com.twosigma.beakerx.BeakerClient;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -41,7 +41,7 @@ public class BeakerParser {
 
   protected final JDBCClient jdbcClient;
   
-  private BeakerxClient client;
+  private BeakerClient client;
   private ConnectionStringHolder dbURI;
   private Map<String, String> inputs = new HashMap<>();
   private Set<String> outputs = new HashSet<>();
@@ -50,7 +50,7 @@ public class BeakerParser {
 
   private List<BeakerParseResult> results = new ArrayList<>();
 
-  public BeakerParser(String script, BeakerxClient client, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString, JDBCClient jdbcClient) throws IOException, DBConnectionException {
+  public BeakerParser(String script, BeakerClient client, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString, JDBCClient jdbcClient) throws IOException, DBConnectionException {
     this.client = client;
     this.jdbcClient = jdbcClient;
     this.defaultConnectionString = defaultConnectionString;

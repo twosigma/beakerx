@@ -16,9 +16,7 @@
 package com.twosigma.beakerx.sql.evaluator;
 
 
-import com.twosigma.beakerx.AutotranslationServiceImpl;
-import com.twosigma.beakerx.BeakerxClient;
-import com.twosigma.beakerx.NamespaceClient;
+import com.twosigma.beakerx.BeakerClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.autocomplete.ClasspathScanner;
@@ -70,11 +68,11 @@ public class SQLEvaluator extends BaseEvaluator {
   private JDBCClient jdbcClient;
   private DynamicClassLoaderSimple loader;
 
-  public SQLEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerxClient beakerxClient) {
+  public SQLEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerClient beakerxClient) {
     this(id, sId, new BeakerCellExecutor("sql"), new TempFolderFactoryImpl(), evaluatorParameters, beakerxClient);
   }
 
-  public SQLEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters, BeakerxClient beakerxClient) {
+  public SQLEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters, BeakerClient beakerxClient) {
     super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient);
     packageId = "com.twosigma.beaker.sql.bkr" + shellId.split("-")[0];
     cps = new ClasspathScanner();
@@ -243,7 +241,7 @@ public class SQLEvaluator extends BaseEvaluator {
     return ret;
   }
 
-  public Object executeQuery(String expression, BeakerxClient namespaceClient, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString) throws SQLException, IOException, ReadVariableException {
+  public Object executeQuery(String expression, BeakerClient namespaceClient, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString) throws SQLException, IOException, ReadVariableException {
     return queryExecutor.executeQuery(expression, namespaceClient, defaultConnectionString, namedConnectionString);
   }
 

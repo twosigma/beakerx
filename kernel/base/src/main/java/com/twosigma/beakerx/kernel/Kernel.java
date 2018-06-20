@@ -15,8 +15,6 @@
  */
 package com.twosigma.beakerx.kernel;
 
-import com.google.gson.Gson;
-import com.twosigma.beakerx.BeakerxClient;
 import com.twosigma.beakerx.BeakerxDefaultDisplayers;
 import com.twosigma.beakerx.DisplayerDataMapper;
 import com.twosigma.beakerx.TryResult;

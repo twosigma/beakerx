@@ -17,9 +17,7 @@
 package com.twosigma.beakerx.scala.evaluator;
 
 import com.google.inject.Provider;
-import com.twosigma.beakerx.AutotranslationServiceImpl;
-import com.twosigma.beakerx.BeakerxClient;
-import com.twosigma.beakerx.NamespaceClient;
+import com.twosigma.beakerx.BeakerClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
@@ -58,7 +56,7 @@ public class ScalaEvaluator extends BaseEvaluator {
   private BeakerXUrlClassLoader classLoader;
   private ScalaEvaluatorGlue shell;
 
-  public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, EvaluatorParameters evaluatorParameters, BeakerxClient beakerxClient) {
+  public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, EvaluatorParameters evaluatorParameters, BeakerClient beakerxClient) {
     this(id,
             sId,
             osp,
@@ -69,7 +67,7 @@ public class ScalaEvaluator extends BaseEvaluator {
             beakerxClient);
   }
 
-  public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, CellExecutor cellExecutor, BeakerxObjectFactory beakerxObjectFactory, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters, BeakerxClient beakerxClient) {
+  public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, CellExecutor cellExecutor, BeakerxObjectFactory beakerxObjectFactory, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters, BeakerClient beakerxClient) {
     super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient);
     this.objectSerializerProvider = osp;
     this.beakerxObjectFactory = beakerxObjectFactory;

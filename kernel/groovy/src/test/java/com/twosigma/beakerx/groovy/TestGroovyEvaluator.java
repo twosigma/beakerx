@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.groovy;
 
 import com.twosigma.beakerx.AutotranslationService;
-import com.twosigma.beakerx.BeakerxClient;
+import com.twosigma.beakerx.BeakerClient;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
@@ -56,7 +56,7 @@ public class TestGroovyEvaluator {
     };
   }
 
-  public static BaseEvaluator groovyEvaluator(BeakerxClient client) {
+  public static BaseEvaluator groovyEvaluator(BeakerClient client) {
     GroovyEvaluator evaluator = new GroovyEvaluator(
             "id",
             "sid",

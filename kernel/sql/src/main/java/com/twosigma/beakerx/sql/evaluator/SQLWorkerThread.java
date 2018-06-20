@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.sql.evaluator;
 
-import com.twosigma.beakerx.BeakerxClient;
+import com.twosigma.beakerx.BeakerClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
 import org.slf4j.Logger;
@@ -36,7 +36,7 @@ class SQLWorkerThread implements Callable<TryResult> {
 
   @Override
   public TryResult call() throws Exception {
-    BeakerxClient namespaceClient = null;
+    BeakerClient namespaceClient = null;
     TryResult r;
     job.getSimpleEvaluationObject().started();
     try {

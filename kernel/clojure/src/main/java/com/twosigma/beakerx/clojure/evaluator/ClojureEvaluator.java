@@ -21,9 +21,7 @@ import clojure.lang.Namespace;
 import clojure.lang.RT;
 import clojure.lang.Symbol;
 import clojure.lang.Var;
-import com.twosigma.beakerx.AutotranslationServiceImpl;
-import com.twosigma.beakerx.BeakerxClient;
-import com.twosigma.beakerx.NamespaceClient;
+import com.twosigma.beakerx.BeakerClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.clojure.autocomplete.ClojureAutocomplete;
@@ -62,13 +60,13 @@ public class ClojureEvaluator extends BaseEvaluator {
                           CellExecutor cellExecutor,
                           TempFolderFactory tempFolderFactory,
                           EvaluatorParameters evaluatorParameters,
-                          BeakerxClient beakerxClient) {
+                          BeakerClient beakerxClient) {
     super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient);
     requirements = new ArrayList<>();
     init();
   }
 
-  public ClojureEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerxClient beakerxClient) {
+  public ClojureEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerClient beakerxClient) {
     this(id,
             sId,
             new BeakerCellExecutor("clojure"),

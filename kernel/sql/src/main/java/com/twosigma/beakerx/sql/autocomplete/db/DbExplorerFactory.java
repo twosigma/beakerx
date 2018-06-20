@@ -16,9 +16,8 @@
 
 package com.twosigma.beakerx.sql.autocomplete.db;
 
-import com.twosigma.beakerx.BeakerxClient;
+import com.twosigma.beakerx.BeakerClient;
 import com.twosigma.beakerx.BeakerxClientManager;
-import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.sql.BeakerParser;
 import com.twosigma.beakerx.sql.ConnectionStringHolder;
 import com.twosigma.beakerx.sql.DBConnectionException;
@@ -41,7 +40,7 @@ public class DbExplorerFactory {
   public static DbInfo getDbInfo(String txt, JDBCClient jdbcClient, String sessionId,
                                  ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString) {
 
-    final BeakerxClient namespaceClient = BeakerxClientManager.get();
+    final BeakerClient namespaceClient = BeakerxClientManager.get();
     final BeakerParser beakerParser;
     try {
       beakerParser = new BeakerParser(txt, namespaceClient,

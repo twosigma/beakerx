@@ -15,9 +15,7 @@
  */
 package com.twosigma.beakerx.groovy.evaluator;
 
-import com.twosigma.beakerx.AutotranslationServiceImpl;
-import com.twosigma.beakerx.BeakerxClient;
-import com.twosigma.beakerx.NamespaceClient;
+import com.twosigma.beakerx.BeakerClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
@@ -56,7 +54,7 @@ public class GroovyEvaluator extends BaseEvaluator {
   private ImportCustomizer icz;
   private BeakerXUrlClassLoader beakerxUrlClassLoader;
 
-  public GroovyEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerxClient beakerxClient) {
+  public GroovyEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerClient beakerxClient) {
     this(id,
             sId,
             new BeakerCellExecutor("groovy"),
@@ -70,7 +68,7 @@ public class GroovyEvaluator extends BaseEvaluator {
                          CellExecutor cellExecutor,
                          TempFolderFactory tempFolderFactory,
                          EvaluatorParameters evaluatorParameters,
-                         BeakerxClient beakerxClient) {
+                         BeakerClient beakerxClient) {
     super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient);
     cps = new GroovyClasspathScanner();
     gac = createGroovyAutocomplete(cps);

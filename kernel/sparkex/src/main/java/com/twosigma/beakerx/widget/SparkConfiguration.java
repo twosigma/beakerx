@@ -47,6 +47,7 @@ public class SparkConfiguration extends VBox {
     HTML html = new HTML();
     String ap = String.format("https://spark.apache.org/docs/%s/configuration.html#available-properties", version);
     html.setValue("<a target=\"_blank\" href=\"" + ap + "\">Available properties" + "</a>");
+    html.setDomClasses(new ArrayList<>(asList("bx-properties-add-label")));
     return html;
   }
 
@@ -59,7 +60,7 @@ public class SparkConfiguration extends VBox {
   private Button createAddButton() {
     Button add = new Button();
     add.setTooltip("Add property");
-    add.setDomClasses(new ArrayList<>(asList("bx-button", "icon-add")));
+    add.setDomClasses(new ArrayList<>(asList("bx-button", "icon-add", "bx-properties-add-button")));
     add.registerOnClick((content, message) -> addProperty());
     return add;
   }

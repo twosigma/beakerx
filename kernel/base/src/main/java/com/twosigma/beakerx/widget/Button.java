@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.widget;
 
-import com.twosigma.beakerx.BeakerxClientManager;
+import com.twosigma.beakerx.BeakerClientManager;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Message;
 
@@ -93,7 +93,7 @@ public class Button extends ValueWidget<Boolean> {
       actionPerformed.executeAction(content, message);
     }
     if (getTag() != null && !getTag().isEmpty()) {
-      BeakerxClientManager.get().runByTag(getTag());
+      BeakerClientManager.get().runByTag(getTag());
     }
   }
 

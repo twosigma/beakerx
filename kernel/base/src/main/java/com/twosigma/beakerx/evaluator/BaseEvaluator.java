@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.evaluator;
 
 import com.twosigma.beakerx.BeakerXClient;
-import com.twosigma.beakerx.BeakerxClientManager;
+import com.twosigma.beakerx.BeakerClientManager;
 import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.inspect.Inspect;
 import com.twosigma.beakerx.inspect.InspectResult;
@@ -71,7 +71,7 @@ public abstract class BaseEvaluator implements Evaluator {
     sessionId = sId;
     executor = cellExecutor;
     tempFolder = tempFolderFactory.createTempFolder();
-    this.beakerxClient = BeakerxClientManager.register(beakerxClient);
+    this.beakerxClient = BeakerClientManager.register(beakerxClient);
     outDir = getOrCreateFile(tempFolder.toString() + File.separator + "outDir").getPath();
     classPath = new Classpath();
     classPath.add(new PathToJar(outDir));

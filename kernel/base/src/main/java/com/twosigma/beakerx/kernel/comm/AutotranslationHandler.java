@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.kernel.comm;
 
-import com.twosigma.beakerx.BeakerxClientManager;
+import com.twosigma.beakerx.BeakerClientManager;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.message.Message;
 
@@ -38,7 +38,7 @@ public class AutotranslationHandler extends BaseHandler<Boolean> {
 
   private void handleMsg(Message message, KernelFunctionality kernel) {
     Map<String, Object> data = (Map) message.getContent().get("data");
-    BeakerxClientManager.get().update((String) data.get("name"), data.get("value"));
+    BeakerClientManager.get().update((String) data.get("name"), data.get("value"));
   }
 
   @Override

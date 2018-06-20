@@ -16,7 +16,7 @@
 package com.twosigma.beakerx;
 
 
-public class BeakerxClientManager {
+public class BeakerClientManager {
 
   private static BeakerXClient beakerxClientInst;
 

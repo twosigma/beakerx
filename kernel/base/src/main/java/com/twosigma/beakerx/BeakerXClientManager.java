@@ -18,14 +18,14 @@ package com.twosigma.beakerx;
 
 public class BeakerXClientManager {
 
-  private static BeakerXClient beakerxClientInst;
+  private static BeakerXClient beakerXClientInst;
 
-  public static BeakerXClient register(BeakerXClient beakerxClient) {
-    beakerxClientInst = beakerxClient;
-    return beakerxClientInst;
+  public static BeakerXClient register(BeakerXClient beakerXClient) {
+    beakerXClientInst = beakerXClient;
+    return beakerXClientInst = beakerXClient;
   }
 
   public static BeakerXClient get() {
-    return beakerxClientInst;
+    return beakerXClientInst;
   }
 }

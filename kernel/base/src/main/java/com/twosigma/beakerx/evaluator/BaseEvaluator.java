@@ -55,7 +55,7 @@ public abstract class BaseEvaluator implements Evaluator {
   protected Imports imports;
   private final CellExecutor executor;
   private Path tempFolder;
-  private BeakerXClient beakerxClient;
+  private BeakerXClient beakerXClient;
   protected EvaluatorParameters evaluatorParameters;
   private EvaluatorHooks cancelHooks = new EvaluatorHooks();
 
@@ -66,12 +66,12 @@ public abstract class BaseEvaluator implements Evaluator {
                        CellExecutor cellExecutor,
                        TempFolderFactory tempFolderFactory,
                        EvaluatorParameters evaluatorParameters,
-                       BeakerXClient beakerxClient) {
+                       BeakerXClient beakerXClient) {
     shellId = id;
     sessionId = sId;
     executor = cellExecutor;
     tempFolder = tempFolderFactory.createTempFolder();
-    this.beakerxClient = BeakerXClientManager.register(beakerxClient);
+    this.beakerXClient = BeakerXClientManager.register(beakerXClient);
     outDir = getOrCreateFile(tempFolder.toString() + File.separator + "outDir").getPath();
     classPath = new Classpath();
     classPath.add(new PathToJar(outDir));
@@ -110,7 +110,7 @@ public abstract class BaseEvaluator implements Evaluator {
 
   @Override
   public BeakerXClient getBeakerX() {
-    return beakerxClient;
+    return beakerXClient;
   }
 
   @Override
@@ -240,7 +240,7 @@ public abstract class BaseEvaluator implements Evaluator {
 
   @Override
   public void exit() {
-    beakerxClient.delBeaker();
+    beakerXClient.delBeaker();
     removeTempFolder();
   }
 

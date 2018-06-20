@@ -51,7 +51,7 @@ public interface KernelFunctionality {
 
   Set<String> getCommHashSet();
 
-  void setShellOptions(EvaluatorParameters kernelParameters);
+  void updateEvaluatorParameters(EvaluatorParameters kernelParameters);
 
   void cancelExecution();
 

@@ -61,10 +61,9 @@ public class SQLEvaluator extends BaseEvaluator {
 
   Map<String, ConnectionStringHolder> namedConnectionString = new HashMap<>();
   ConnectionStringHolder defaultConnectionString;
-  private final String packageId;
   private ClasspathScanner cps;
   private SQLAutocomplete sac;
-  private final QueryExecutor queryExecutor;
+  private QueryExecutor queryExecutor;
   private JDBCClient jdbcClient;
   private DynamicClassLoaderSimple loader;
 
@@ -72,14 +71,14 @@ public class SQLEvaluator extends BaseEvaluator {
     this(id, sId, new BeakerCellExecutor("sql"), new TempFolderFactoryImpl(), evaluatorParameters);
   }
 
-  public SQLEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters) {
+  public SQLEvaluator(String id,
+                      String sId,
+                      CellExecutor cellExecutor,
+                      TempFolderFactory tempFolderFactory,
+                      EvaluatorParameters evaluatorParameters) {
     super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters);
-    packageId = "com.twosigma.beaker.sql.bkr" + shellId.split("-")[0];
     cps = new ClasspathScanner();
     sac = createSqlAutocomplete(cps);
-    jdbcClient = new JDBCClient();
-    jdbcClient.loadDrivers(classPath.getPathsAsStrings());
-    queryExecutor = new QueryExecutor(jdbcClient);
     loader = reloadClassLoader();
     executorService = Executors.newSingleThreadExecutor();
   }
@@ -128,12 +127,10 @@ public class SQLEvaluator extends BaseEvaluator {
 
   @Override
   protected void addImportToClassLoader(ImportPath anImport) {
-
   }
 
   @Override
   protected void doResetEnvironment() {
-
   }
 
   private SQLAutocomplete createSqlAutocomplete(ClasspathScanner c) {
@@ -147,31 +144,14 @@ public class SQLEvaluator extends BaseEvaluator {
 
   @Override
   protected void init(EvaluatorParameters evaluatorParameters) {
-    // no configuration, we have to call setShellOptions witt evaluatorParameters
-  }
-
-  @Override
-  public void setShellOptions(final EvaluatorParameters evaluatorParameters) {
     configureSqlEvaluator(evaluatorParameters);
-    resetEnvironment();
   }
 
   protected void configureSqlEvaluator(EvaluatorParameters kernelParameters) {
     SQLKernelParameters params = new SQLKernelParameters(kernelParameters);
-    Optional<Collection<String>> cp = params.getClassPath();
-
-    if (cp.isPresent()) {
-      if (cp.get() == null || cp.get().isEmpty()) {
-        classPath = new Classpath();
-      } else {
-        for (String line : cp.get()) {
-          if (!line.trim().isEmpty()) {
-            classPath.add(new PathToJar(line));
-          }
-        }
-      }
-      jdbcClient.loadDrivers(classPath.getPathsAsStrings());
-    }
+    jdbcClient = createJdbcClient(params.getClassPath());
+    jdbcClient.loadDrivers(classPath.getPathsAsStrings());
+    queryExecutor = new QueryExecutor(jdbcClient);
 
     if (params.defaultDatasource().isPresent()) {
       this.defaultConnectionString = new ConnectionStringHolder(params.defaultDatasource().orElse(""), jdbcClient);
@@ -195,6 +175,23 @@ public class SQLEvaluator extends BaseEvaluator {
       }
     }
 
+  }
+
+  private JDBCClient createJdbcClient(Optional<Collection<String>> cp) {
+    JDBCClient jdbcClient = new JDBCClient();
+    if (cp.isPresent()) {
+      if (cp.get() == null || cp.get().isEmpty()) {
+        classPath = new Classpath();
+      } else {
+        for (String line : cp.get()) {
+          if (!line.trim().isEmpty()) {
+            classPath.add(new PathToJar(line));
+          }
+        }
+      }
+      jdbcClient.loadDrivers(classPath.getPathsAsStrings());
+    }
+    return jdbcClient;
   }
 
   public void setShellUserPassword(String namedConnection, String user, String password) {

@@ -38,9 +38,10 @@ public class BeakerParser {
 
   public static final String VAR_VALUE_START = "${";
   public static final String VAR_VALUE_END = "}";
+  public static final String NO_DATASOURCES_ERROR = "No datasource";
 
   protected final JDBCClient jdbcClient;
-  
+
   private NamespaceClient client;
   private ConnectionStringHolder dbURI;
   private Map<String, String> inputs = new HashMap<>();
@@ -177,7 +178,12 @@ public class BeakerParser {
         }
       }
     }
-    if (dbURI == null) dbURI = defaultConnectionString;
+    if (dbURI == null) {
+      if (defaultConnectionString == null) {
+        throw new RuntimeException(NO_DATASOURCES_ERROR);
+      }
+      dbURI = defaultConnectionString;
+    }
   }
 
   public ConnectionStringHolder getDbURI() {

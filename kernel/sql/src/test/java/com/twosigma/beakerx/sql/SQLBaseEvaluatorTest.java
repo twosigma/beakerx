@@ -40,7 +40,6 @@ public class SQLBaseEvaluatorTest extends EvaluatorBaseTest {
   @BeforeClass
   public static void setUpClass() throws Exception {
     evaluator = new SQLEvaluator("shellId1", "sessionId1", cellExecutor(), getTestTempFolderFactory(), kernelParameters());
-    evaluator.setShellOptions(kernelParameters());
   }
 
   @AfterClass

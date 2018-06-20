@@ -55,6 +55,7 @@ public class SparkUIForm extends VBox {
   private SparkEngine sparkEngine;
   private SparkUI.OnSparkButtonAction onStartAction;
   private Button connectButton;
+  private Button removeButton;
   private Spinner spinner;
   private HBox spinnerPanel;
   private SparkUiDefaults sparkUiDefaults;
@@ -128,10 +129,12 @@ public class SparkUIForm extends VBox {
     newButton.setDomClasses(asList("bx-button", "icon-add"));
     newButton.setTooltip(NEW_PROFILE_TOOLTIP);
 
-    Button removeButton = new Button();
+    removeButton = new Button();
     removeButton.registerOnClick((content, message) -> removeProfile());
     removeButton.setDomClasses(asList("bx-button", "icon-close"));
     removeButton.setTooltip(REMOVE_PROFILE_TOOLTIP);
+
+    refreshElementsAvailability();
 
     return new HBox(Arrays.asList(profileDropdown, saveButton,  newButton, removeButton));
   }
@@ -142,9 +145,7 @@ public class SparkUIForm extends VBox {
       return;
     }
     sparkUiDefaults.loadProfiles();
-    Map<String, Object> profileData =
-            (Map<String, Object>) sparkUiDefaults
-                    .getProfileByName(profileName);
+    Map<String, Object> profileData = sparkUiDefaults.getProfileByName(profileName);
     if (profileData.size() > 0) {
       this.masterURL.setValue(profileData.getOrDefault(SparkUI.SPARK_MASTER, SparkUI.SPARK_MASTER_DEFAULT));
       this.executorCores.setValue(profileData.getOrDefault(SparkUI.SPARK_EXECUTOR_CORES, SparkUI.SPARK_EXECUTOR_CORES_DEFAULT));
@@ -157,12 +158,10 @@ public class SparkUIForm extends VBox {
               });
       this.advancedOption.setConfiguration(advancedSettings);
     }
+    refreshElementsAvailability();
   }
 
   private void saveProfile() {
-    if (profile.getValue().equals(DEFAULT_PROFILE)) {
-      return;
-    }
     HashMap sparkProfile = getCurrentConfig();
     sparkProfile.put("name", profile.getValue());
     sparkUiDefaults.saveProfile(sparkProfile);
@@ -181,6 +180,7 @@ public class SparkUIForm extends VBox {
     profile.setValue(newProfileName.getValue());
     saveProfile();
     newProfileName.setValue("");
+    refreshElementsAvailability();
   }
 
   private void createProfileCancel(HashMap hashMap, Message message) {
@@ -330,6 +330,11 @@ public class SparkUIForm extends VBox {
     this.masterURL.setDisabled(false);
     this.executorMemory.setDisabled(false);
     this.executorCores.setDisabled(false);
+    refreshElementsAvailability();
+  }
+
+  public void refreshElementsAvailability(){
+    removeButton.setDisabled(this.profile.getValue().equals(DEFAULT_PROFILE));
   }
 
 }

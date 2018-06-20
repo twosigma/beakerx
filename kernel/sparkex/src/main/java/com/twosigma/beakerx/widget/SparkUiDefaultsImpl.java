@@ -17,22 +17,33 @@ package com.twosigma.beakerx.widget;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.internal.LinkedTreeMap;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 import scala.Tuple2;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static com.twosigma.beakerx.widget.SparkUI.BEAKERX_ID;
+import static com.twosigma.beakerx.widget.SparkUI.SPARK_ADVANCED_OPTIONS_DEFAULT;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_APP_NAME;
+import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXECUTOR_CORES_DEFAULT;
+import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXECUTOR_MEMORY_DEFAULT;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXTRA_LISTENERS;
+import static com.twosigma.beakerx.widget.SparkUI.SPARK_MASTER_DEFAULT;
+import static com.twosigma.beakerx.widget.SparkUIApi.SPARK_ADVANCED_OPTIONS;
 import static com.twosigma.beakerx.widget.SparkUIApi.SPARK_EXECUTOR_CORES;
 import static com.twosigma.beakerx.widget.SparkUIApi.SPARK_EXECUTOR_MEMORY;
 import static com.twosigma.beakerx.widget.SparkUIApi.SPARK_MASTER;
@@ -44,37 +55,117 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
   public static final String PROPERTIES = "properties";
   public static final String SPARK_OPTIONS = "spark_options";
   public static final String BEAKERX = "beakerx";
+  private static final String SPARK_PROFILES = "profiles";
+  private static final String CURRENT_PROFILE = "current_profile";
+
+  private List<Map<String, Object>> profiles = new ArrayList<>();
   private Gson gson = new GsonBuilder().setPrettyPrinting().create();
   private Path path;
+  private String currentProfile = DEFAULT_PROFILE;
 
   public SparkUiDefaultsImpl(Path path) {
     this.path = path;
   }
 
-  @Override
-  @SuppressWarnings("unchecked")
-  public void saveSparkConf(SparkConf sparkConf) {
-    Map<String, Object> newSparkConf = toMap(sparkConf);
+  public void saveSparkConf(List<Map<String, Object>> profiles) {
     try {
       Map<String, Map> map = beakerxJsonAsMap(path);
-      map.get(BEAKERX).put(SPARK_OPTIONS, newSparkConf);
+      Map<String, Object> sparkOptions = (Map<String, Object>) map.get(BEAKERX).getOrDefault(SPARK_OPTIONS, new HashMap<>());
+      sparkOptions.put(SPARK_PROFILES, profiles == null ? new ArrayList<>() : profiles);
+      map.get(BEAKERX).put(SPARK_OPTIONS, sparkOptions);
       String content = gson.toJson(map);
       Files.write(path, content.getBytes(StandardCharsets.UTF_8));
-    } catch (Exception e) {
-      throw new RuntimeException(e);
+      this.profiles = profiles;
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
 
   @Override
   public void loadDefaults(SparkSession.Builder builder) {
     SparkConf sparkConf = SparkEngineImpl.getSparkConfBasedOn(builder);
-    Map<String, Map> beakerxJson = beakerxJsonAsMap(path);
-    Map<String, Object> map = getOptions(beakerxJson);
+    loadProfiles();
+    Map<String, Object> map = (Map<String, Object>) getProfileByName(currentProfile);
     if (map != null) {
       map.entrySet().stream()
               .filter(x -> !sparkConf.contains(x.getKey()))
               .forEach(x -> addToBuilder(builder, x.getKey(), x.getValue()));
     }
+  }
+
+  @Override
+  public List<Map<String, Object>> getProfiles() {
+    return profiles;
+  }
+
+  public Map<String, Object> getProfileByName(String name) {
+    Map<String, Object> profile = new HashMap<>();
+    return profiles.stream().filter(x -> x.get("name").equals(name)).findFirst().orElse(profile);
+  }
+
+  @Override
+  public void loadProfiles() {
+    Map<String, Map> beakerxJson = beakerxJsonAsMap(path);
+    Map sparkOptions = (Map) beakerxJson.get(BEAKERX).getOrDefault(SPARK_OPTIONS, new HashMap<>());
+    List<Map<String, Object>> profiles = (List<Map<String, Object>>) sparkOptions.get(SPARK_PROFILES);
+    currentProfile = (String) sparkOptions.getOrDefault(CURRENT_PROFILE, DEFAULT_PROFILE);
+    if (profiles == null) {
+      //save default config if doesn't exist
+      Map<String, Object> defaultProfile = new HashMap<>();
+      defaultProfile.put("name", DEFAULT_PROFILE);
+      defaultProfile.put(SPARK_MASTER, SPARK_MASTER_DEFAULT);
+      defaultProfile.put(SPARK_EXECUTOR_CORES, SPARK_EXECUTOR_CORES_DEFAULT);
+      defaultProfile.put(SPARK_EXECUTOR_MEMORY, SPARK_EXECUTOR_MEMORY_DEFAULT);
+      defaultProfile.put(SPARK_ADVANCED_OPTIONS, new ArrayList<>());
+      saveProfile(defaultProfile);
+    } else {
+      this.profiles = profiles;
+    }
+  }
+
+  @Override
+  public void saveProfile(Map<String, Object> profile) {
+    int idx = IntStream.range(0, profiles.size())
+            .filter(i -> profile.get("name").equals(profiles.get(i).get("name")))
+            .findFirst().orElse(-1);
+    if (idx == -1) {
+      profiles.add(profile);
+    } else {
+      profiles.set(idx, profile);
+    }
+    saveSparkConf(profiles);
+
+  }
+
+  @Override
+  public List<String> getProfileNames() {
+    return profiles.stream().map(x -> (String) x.get("name")).collect(Collectors.toList());
+  }
+
+  @Override
+  public void saveProfileName(String profileName) {
+    try {
+      Map<String, Map> map = beakerxJsonAsMap(path);
+      Map<String, Object> sparkOptions = (Map<String, Object>) map.get(BEAKERX).getOrDefault(SPARK_OPTIONS, new HashMap<>());
+      sparkOptions.put(CURRENT_PROFILE, profileName);
+      map.get(BEAKERX).put(SPARK_OPTIONS, sparkOptions);
+      String content = gson.toJson(map);
+      Files.write(path, content.getBytes(StandardCharsets.UTF_8));
+      currentProfile = profileName;
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  public String getCurrentProfileName() {
+    return currentProfile;
+  }
+
+  @Override
+  public void removeSparkConf(String profileName) {
+    profiles.removeIf(x -> x.get("name").equals(profileName));
+    saveSparkConf(profiles);
   }
 
   @SuppressWarnings("unchecked")

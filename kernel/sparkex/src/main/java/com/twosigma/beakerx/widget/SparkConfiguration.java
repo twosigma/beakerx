@@ -118,6 +118,23 @@ public class SparkConfiguration extends VBox {
             .collect(Collectors.toList());
   }
 
+  public void setConfiguration(Map<String, String> advancedSettings) {
+    List<PropertyItem> propertyItems = createPropertyItems(advancedSettings);
+    this.properties = new PropertiesWidget(propertyItems);
+    this.remove(this.getChildren().get(0));
+    add(new VBox(asList(this.header, this.properties.getWidget())));
+  }
+
+  public void setDisabledToAll() {
+    this.add.setDisabled(true);
+    this.properties.disable();
+  }
+
+  public void setEnabledToAll() {
+    this.add.setDisabled(false);
+    this.properties.enable();
+  }
+
   public static class Configuration {
 
     private String name;

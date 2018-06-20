@@ -21,7 +21,6 @@ import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.msg.StacktraceHtmlPrinter;
 import com.twosigma.beakerx.message.Message;
-import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 
 import java.util.ArrayList;
@@ -40,6 +39,10 @@ public class SparkUI extends VBox implements SparkUIApi {
   public static final String SPARK_MASTER_DEFAULT = "local[*]";
   private static final String SPARK_APP_ID = "sparkAppId";
   public static final String ERROR_CREATING_SPARK_SESSION = "Error creating SparkSession, see the console log for more explanation";
+  public static final String SPARK_EXECUTOR_CORES_DEFAULT = "10";
+  public static final String SPARK_EXECUTOR_MEMORY_DEFAULT = "8g";
+  public static final Map<String, String> SPARK_ADVANCED_OPTIONS_DEFAULT = new HashMap<>();
+
 
   private final SparkUIForm sparkUIForm;
   private VBox sparkUIFormPanel;
@@ -60,7 +63,7 @@ public class SparkUI extends VBox implements SparkUIApi {
     this.sparkUIFormPanel = new VBox(new ArrayList<>());
     add(sparkUIFormPanel);
     SparkVariable.putSparkUI(this);
-    this.sparkUIForm = new SparkUIForm(sparkEngine, this::initSparkContext);
+    this.sparkUIForm = new SparkUIForm(sparkEngine, sparkUiDefaults, this::initSparkContext);
     this.sparkUIFormPanel.add(sparkUIForm);
   }
 
@@ -113,7 +116,8 @@ public class SparkUI extends VBox implements SparkUIApi {
         this.sparkUIForm.sendError(StacktraceHtmlPrinter.printRedBold(ERROR_CREATING_SPARK_SESSION));
       } else {
         singleSparkSession.active();
-        saveSparkConf(sparkEngine.getSparkConf());
+        sparkUIForm.saveDefaults();
+        sparkUiDefaults.saveProfileName(sparkUIForm.getProfileName());
         applicationStart();
       }
     } catch (Exception e) {
@@ -128,6 +132,7 @@ public class SparkUI extends VBox implements SparkUIApi {
   private void applicationStart() {
     this.statusPanel = new SparkUIStatus(message -> getSparkSession().sparkContext().stop());
     this.sparkUIForm.setDomClasses(new ArrayList<>(asList("bx-disabled")));
+    this.sparkUIForm.setAllToDisabled();
     add(0, this.statusPanel);
     sendUpdate(SPARK_APP_ID, sparkEngine.getSparkAppId());
     sendUpdate("sparkUiWebUrl", sparkEngine.getSparkUiWebUrl());
@@ -137,6 +142,7 @@ public class SparkUI extends VBox implements SparkUIApi {
   @Override
   public void applicationEnd() {
     this.sparkUIForm.setDomClasses(new ArrayList<>());
+    this.sparkUIForm.setAllToEnabled();
     removeStatusPanel();
     singleSparkSession.inActive();
   }
@@ -243,10 +249,6 @@ public class SparkUI extends VBox implements SparkUIApi {
 
   public Button getConnectButton() {
     return this.sparkUIForm.getConnectButton();
-  }
-
-  void saveSparkConf(SparkConf sparkConf) {
-    sparkUiDefaults.saveSparkConf(sparkConf);
   }
 
   public interface SparkUIFactory {

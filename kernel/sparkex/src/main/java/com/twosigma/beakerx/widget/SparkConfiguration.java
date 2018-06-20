@@ -35,7 +35,7 @@ public class SparkConfiguration extends VBox {
   SparkConfiguration(Map<String, String> advancedSettings, String sparkVersion) {
     super(new ArrayList<>());
     this.add = createAddButton();
-    this.header = new HBox(asList(this.add, sparkVersionWidget(sparkVersion)));
+    this.header = new HBox(asList(sparkVersionWidget(sparkVersion), this.add));
     List<PropertyItem> propertyItems = createPropertyItems(advancedSettings);
     this.properties = new PropertiesWidget(propertyItems);
     VBox configuration = new VBox(asList(this.properties.getWidget(), this.header));

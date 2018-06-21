@@ -50,8 +50,14 @@ class EnvironmentSettings:
     @staticmethod
     def save_setting_to_file(content):
         makedirs(paths.jupyter_config_dir(), exist_ok=True)
-        with fdopen(osopen(EnvironmentSettings.config_path, O_RDWR | O_CREAT | O_TRUNC, 0o600), 'w+') as file:
-            file.write(json.dumps(json.loads(content), indent=4, sort_keys=True))
+        with fdopen(osopen(EnvironmentSettings.config_path, O_RDWR | O_CREAT, 0o600), 'w+') as file:
+            saved_settings = json.loads(file.read())
+            file.seek(0)
+            file.truncate()
+            new_settings = json.loads(content)
+            for setting_name in new_settings['beakerx']:
+                saved_settings['beakerx'][setting_name] = new_settings['beakerx'][setting_name]
+            file.write(json.dumps(saved_settings, indent=4, sort_keys=True))
 
     @staticmethod
     def read_setting_from_file():

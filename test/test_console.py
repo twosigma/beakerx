@@ -41,7 +41,7 @@ def stop_console(p, pexpect, t):
         p.terminate()
     test_util.kill_processes('jupyter')
 
-def test_lsmagic():
+def test_ipython():
     result = 0
     p, pexpect, t = start_console()
     p.sendline('%lsmagic')

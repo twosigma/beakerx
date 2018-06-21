@@ -98,10 +98,11 @@ os.killpg(os.getpgid(webcontrol.pid), signal.SIGKILL)
 test_util.kill_processes('java')
 
 if not result:
-    result = test_console.test_lsmagic()
+    result = test_console.test_ipython()
 
-if result:
-    test_console.test_lsmagic()
+if result == 1:
+    sys.exit(1)
+elif result:
     sys.exit(20)
 
 #restore backup beakerx.json conf file

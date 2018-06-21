@@ -106,11 +106,11 @@ class EnvironmentSettings:
                 args.append(value)
 
             if 'heap_GB' in jvm_settings and jvm_settings['heap_GB']:
-                val = float(jvm_settings['heap_GB'])
-                if val.is_integer():
-                    value = '-Xmx' + str(jvm_settings['heap_GB']) + 'g'
+                val = str(jvm_settings['heap_GB'])
+                if val.isdigit():
+                    value = '-Xmx' + str(val) + 'g'
                 else:
-                    value = '-Xmx' + str(int(val * 1024)) + 'm'
+                    value = '-Xmx' + str(int(float(jvm_settings['heap_GB']) * 1024)) + 'm'
                 args.append(value)
 
         return args

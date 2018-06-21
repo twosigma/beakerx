@@ -92,10 +92,23 @@ export class SparkUIView extends widgets.VBoxView {
   }
 
   private setupTooltips(): void {
-    this.el.querySelector('.bx-spark-connect').setAttribute('title', "Start a session with a cluster (or a local instance)");
-    this.el.querySelector('.bx-spark-profile select').setAttribute('title', "Set all properties from a named profile");
-    this.el.querySelector('.bx-spark-executor-cores input').setAttribute('title', "The number of cores to use on each executor");
-    this.el.querySelector('.bx-spark-executor-memory input').setAttribute('title', "Amount of memory to use per executor process, in MiB unless otherwise specified. (e.g. 2g, 8g).");
+    const startButton = this.el.querySelector('.bx-spark-connect');
+    const profileSelect = this.el.querySelector('.bx-spark-profile select');
+    const executorCoresInput = this.el.querySelector('.bx-spark-executor-cores input');
+    const executorMemmoryInput = this.el.querySelector('.bx-spark-executor-memory input');
+
+    if (startButton) {
+      startButton.setAttribute('title', "Start a session with a cluster (or a local instance)");
+    }
+    if (profileSelect) {
+      profileSelect.setAttribute('title', "Set all properties from a named profile");
+    }
+    if (executorCoresInput) {
+      executorCoresInput.setAttribute('title', "The number of cores to use on each executor");
+    }
+    if (executorMemmoryInput) {
+      executorMemmoryInput.setAttribute('title', "Amount of memory to use per executor process, in MiB unless otherwise specified. (e.g. 2g, 8g).");
+    }
   }
 
   private handleFormState() {
@@ -246,6 +259,12 @@ export class SparkUIView extends widgets.VBoxView {
     this.connectionLabelDead = this.sparkStats.node.querySelector('.dead');
 
     this.connectionStatusElement.insertAdjacentElement('afterend', this.sparkStats.node);
+
+    this.updateSparkStatsStyles();
+  }
+
+  private updateSparkStatsStyles(): void {
+    this.sparkStats.node.style.marginRight = `${290 - (this.sparkStats.node.offsetWidth + this.connectionStatusElement.offsetWidth)}px`;
   }
 
   private connectToApi() {

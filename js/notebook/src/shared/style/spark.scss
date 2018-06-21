@@ -149,8 +149,8 @@
 }
 
 .bx-status-panel {
+  padding: 2px 0;
   .bx-button {
-    margin-left: 20px;
     height: 24px;
     padding: 0 6px;
   }
@@ -196,6 +196,10 @@
 
   .bx-config-name input {
     text-align: right;
+  }
+
+  .bx-spark-connect {
+    margin-left: 306px;
   }
 
   .bx-spark-connect-error {

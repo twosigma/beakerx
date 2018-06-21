@@ -27,9 +27,9 @@ export default class DefaultOptionsModel {
   }
 
   public static normaliseHeapSize(heap_GB: number): string {
-    if (heap_GB % 1 === 0) {
-      return `${heap_GB}g`;
+    if (Number.isInteger(heap_GB)) {
+      return heap_GB + 'g';
     }
-    return parseInt(`${heap_GB * 1024}`) + 'm';
+    return Math.floor(heap_GB * 1024) + 'm';
   }
 }

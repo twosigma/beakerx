@@ -18,9 +18,11 @@ package com.twosigma.beakerx.widget;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -36,7 +38,6 @@ import static com.twosigma.beakerx.widget.SparkUIApi.SPARK_MASTER;
 import static com.twosigma.beakerx.widget.SparkUiDefaults.DEFAULT_PROFILE;
 import static com.twosigma.beakerx.widget.SparkUiDefaultsImpl.BEAKERX;
 import static com.twosigma.beakerx.widget.SparkUiDefaultsImpl.PROPERTIES;
-import static com.twosigma.beakerx.widget.SparkUiDefaultsImpl.SPARK_OPTIONS;
 import static com.twosigma.beakerx.widget.SparkUiDefaultsImpl.VALUE;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -54,6 +55,20 @@ public class SparkUiDefaultsImplTest {
     String path = this.getClass().getClassLoader().getResource("beakerxTest.json").getPath();
     this.pathToBeakerxTestJson = Paths.get(path);
     this.sut = new SparkUiDefaultsImpl(pathToBeakerxTestJson);
+  }
+
+  @Test
+  public void loadAndSaveWithoutChangesShouldBeIdempotent() throws IOException {
+    //given
+    SparkSession.Builder builder = SparkSession.builder();
+    HashMap<String, Object> profileConfig = new HashMap<>();
+    profileConfig.put(NAME, DEFAULT_PROFILE);
+    //when
+    sut.loadDefaults(builder);
+    sut.saveProfile(profileConfig);
+    //then
+    Map<String, Map> result = sut.beakerxJsonAsMap(pathToBeakerxTestJson);
+    Assertions.assertThat(result.get("beakerx").get("version")).isEqualTo(2);
   }
 
   @Test
@@ -137,7 +152,7 @@ public class SparkUiDefaultsImplTest {
     //given
     HashMap<String, Object> profileConfig = new HashMap<>();
     profileConfig.put(SPARK_ADVANCED_OPTIONS, Arrays.asList(
-            new SparkConfiguration.Configuration("sparkOption2", "sp2")));
+            new SparkConfiguration.Configuration("sparkOption2", "3")));
     profileConfig.put(SPARK_MASTER, "local[4]");
     profileConfig.put(NAME, DEFAULT_PROFILE);
 
@@ -149,7 +164,7 @@ public class SparkUiDefaultsImplTest {
     SparkSession.Builder builder = SparkSession.builder();
     sut.loadDefaults(builder);
     SparkConf sparkConfBasedOn = SparkEngineImpl.getSparkConfBasedOn(builder);
-    assertThat(sparkConfBasedOn.get("sparkOption2")).isEqualTo("sp2");
+    assertThat(sparkConfBasedOn.get("sparkOption2")).isEqualTo("3");
     assertThat(sparkConfBasedOn.get(SPARK_MASTER)).isEqualTo("local[4]");
   }
 

@@ -54,7 +54,9 @@ import java.util.logging.Logger;
 
 
 public class SQL extends Kernel {
+
   private final static Logger logger = Logger.getLogger(SQL.class.getName());
+  public static final String BEAKERX_SQL_DEFAULT_JDBC = "BEAKERX_SQL_DEFAULT_JDBC";
 
   private SQL(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
     super(sessionId, evaluator, kernelSocketsFactory, new SQLCustomMagicCommandsImpl());

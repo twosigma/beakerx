@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.sql.kernel;
 
+import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.Kernel;
@@ -39,7 +40,7 @@ public class SQLKernelWIthDefaultEnvsTest extends SQLKernelTest {
       }
       return null;
     });
-    SQLEvaluator sqlEvaluator = new SQLEvaluator(sessionId, sessionId, cellExecutor(), getTestTempFolderFactory(), kernelParameters);
+    SQLEvaluator sqlEvaluator = new SQLEvaluator(sessionId, sessionId, cellExecutor(), getTestTempFolderFactory(), kernelParameters, new EvaluatorTest.BeakexClientTestImpl());
     Kernel sqlKernel = new SQL(sessionId, sqlEvaluator, kernelSocketsFactory, closeKernelAction, getCacheFolderFactory());
     return sqlKernel;
   }

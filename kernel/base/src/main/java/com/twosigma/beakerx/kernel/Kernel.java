@@ -20,7 +20,6 @@ import com.twosigma.beakerx.DisplayerDataMapper;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
-import com.twosigma.beakerx.evaluator.EvaluatorManager;
 import com.twosigma.beakerx.evaluator.Hook;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.handler.KernelHandler;
@@ -61,7 +60,7 @@ public abstract class Kernel implements KernelFunctionality {
   private KernelHandlers handlers;
   private Map<String, Comm> commMap;
   private ExecutionResultSender executionResultSender;
-  private EvaluatorManager evaluatorManager;
+  private Evaluator evaluator;
   private KernelSockets kernelSockets;
   private List<MagicCommandType> magicCommandTypes;
   private CacheFolderFactory cacheFolderFactory;
@@ -308,7 +307,7 @@ public abstract class Kernel implements KernelFunctionality {
   public PythonEntryPoint getPythonEntryPoint(String kernelName) throws NoSuchKernelException {
     MagicKernelManager manager = magicKernels.get(kernelName);
     if (manager == null) {
-      manager = new MagicKernelManager(kernelName, evaluator.getBeakerx().getContext());
+      manager = new MagicKernelManager(kernelName, evaluator.getBeakerX().getContext());
       magicKernels.put(kernelName, manager);
     }
     return manager.getPythonEntryPoint();

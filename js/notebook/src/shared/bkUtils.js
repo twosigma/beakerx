@@ -56,10 +56,10 @@ module.exports = {
     return jQuery.Deferred();
   },
   formatBytes: function(bytes) {
-    if (bytes == 0) return '0.0 B';
+    if (bytes <= 1000) return '0 KB';
 
     var k = 1000;
-    var dm = 1;
+    var dm = 0;
     var sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     var i = Math.floor(Math.log(bytes) / Math.log(k));
 

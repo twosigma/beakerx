@@ -25,9 +25,8 @@ import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
-import com.twosigma.beakerx.kernel.msg.JupyterMessages;
-import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.SingleSparkSession;
 import com.twosigma.beakerx.widget.SparkEngineImpl;
 import com.twosigma.beakerx.widget.SparkUI;
 import com.twosigma.beakerx.widget.SparkUiDefaultsImpl;
@@ -47,9 +46,10 @@ import static java.util.Arrays.copyOfRange;
 public class SparkMagicCommand implements MagicCommandFunctionality {
 
   public static final String SPARK = "%%sparkRunner";
+  public static final SingleSparkSession SINGLE_SPARK_SESSION = new SingleSparkSessionImpl();
+
   private KernelFunctionality kernel;
   private SparkUI.SparkUIFactory sparkUIFactory;
-  private SparkUI sparkUI;
   private Map<String, SparkOption> sparkOptions;
 
   public SparkMagicCommand(KernelFunctionality kernel) {
@@ -58,9 +58,10 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
             kernel,
             new SparkUI.SparkUIFactoryImpl(
                     new SparkEngineImpl.SparkEngineFactoryImpl(),
-                    new SparkUiDefaultsImpl(
-                            Paths.get(System.getProperty("user.home") + File.separator + ".jupyter" + File.separator + "beakerx.json"))));
-
+                    new SparkUiDefaultsImpl(Paths.get((System.getenv("JUPYTER_CONFIG_DIR") != null ? System.getenv("JUPYTER_CONFIG_DIR") : (System.getProperty("user.home") + File.separator + ".jupyter")) + File.separator + "beakerx.json")),
+                    SINGLE_SPARK_SESSION
+            )
+    );
   }
 
   SparkMagicCommand(KernelFunctionality kernel, SparkUI.SparkUIFactory sparkUIFactory) {
@@ -82,19 +83,58 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
 
   @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
-    if (sparkUI != null && sparkUI.isActive()) {
-      return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Active spark session exists. If you want to close it run 'spark.close()'");
-    }
     List<String> options = getOptions(param);
     MagicCommandOutcomeItem optionValidation = validateOptions(options);
     if (optionValidation.getStatus().equals(MagicCommandOutput.Status.ERROR)) {
       return optionValidation;
     }
-    MagicCommandOutcomeItem ui = createUI(param);
-    if (ui.getStatus().equals(MagicCommandOutcomeItem.Status.OK)) {
-      options.forEach(option -> sparkOptions.get(option).run(param.getCode().getMessage()));
+    return createUI(param, options);
+  }
+
+  private MagicCommandOutcomeItem createUI(MagicCommandExecutionParam param, List<String> options) {
+    SimpleEvaluationObject seo = PlainCode.createSimpleEvaluationObject(param.getCommandCodeBlock(), kernel, param.getCode().getMessage(), param.getExecutionCount());
+    if (param.getCommandCodeBlock().isEmpty()) {
+      return createSparkUiBasedOnEmptyConfiguration(param, options, seo);
+    } else {
+      return createSparkUIBasedOnUserSparkConfiguration(param, options, seo);
     }
-    return ui;
+  }
+
+  private MagicCommandOutcomeItem createSparkUiBasedOnEmptyConfiguration(MagicCommandExecutionParam param, List<String> options, SimpleEvaluationObject seo) {
+    InternalVariable.setValue(seo);
+    SparkSession.Builder config = SparkSession.builder().config(new SparkConf());
+    createSparkUI(config, param.getCode().getMessage(), options);
+    return new MagicCommandOutput(MagicCommandOutput.Status.OK);
+  }
+
+  private MagicCommandOutcomeItem createSparkUIBasedOnUserSparkConfiguration(MagicCommandExecutionParam param, List<String> options, SimpleEvaluationObject seo) {
+    TryResult either = kernel.executeCode(param.getCommandCodeBlock(), seo);
+    if (either.isResult()) {
+      Object result = either.result();
+      if (result instanceof SparkConf) {
+        SparkSession.Builder config = SparkSession.builder().config((SparkConf) result);
+        createSparkUI(config, param.getCode().getMessage(), options);
+      } else if (result instanceof SparkSession.Builder) {
+        SparkSession.Builder config = (SparkSession.Builder) result;
+        createSparkUI(config, param.getCode().getMessage(), options);
+      } else {
+        return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Body of  " + SPARK + " magic command must return SparkConf object or SparkSession.Builder object");
+      }
+      return new MagicCommandOutput(MagicCommandOutput.Status.OK);
+    } else {
+      return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "There occurs problem during execution of " + SPARK + " : " + either.error());
+    }
+  }
+
+  private SparkUI createSparkUI(SparkSession.Builder builder, Message message, List<String> options) {
+    SparkUI sparkUI = sparkUIFactory.create(builder);
+    return displaySparkUI(sparkUI, message, options);
+  }
+
+  private SparkUI displaySparkUI(SparkUI sparkUI, Message message, List<String> options) {
+    Display.display(sparkUI);
+    options.forEach(option -> sparkOptions.get(option).run(sparkUI, message));
+    return sparkUI;
   }
 
   private MagicCommandOutcomeItem validateOptions(List<String> options) {
@@ -114,52 +154,31 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
     return asList(copyOfRange(parts, 1, parts.length));
   }
 
-  private MagicCommandOutcomeItem createUI(MagicCommandExecutionParam param) {
-    SimpleEvaluationObject seo = PlainCode.createSimpleEvaluationObject(param.getCommandCodeBlock(), kernel, param.getCode().getMessage(), param.getExecutionCount());
-    if (param.getCommandCodeBlock().isEmpty()) {
-      InternalVariable.setValue(seo);
-      return createSparkUI(new SparkConf());
-    } else {
-      return createSparkUIBasedOnUserSparkConfiguration(param, seo);
-    }
-  }
-
-  private MagicCommandOutcomeItem createSparkUIBasedOnUserSparkConfiguration(MagicCommandExecutionParam param, SimpleEvaluationObject seo) {
-    TryResult either = kernel.executeCode(param.getCommandCodeBlock(), seo);
-    if (either.isResult()) {
-      Object result = either.result();
-      if (result instanceof SparkConf) {
-        return createSparkUI((SparkConf) result);
-      } else if (result instanceof SparkSession.Builder) {
-        return createSparkUI((SparkSession.Builder) result);
-      } else {
-        return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Body of  " + SPARK + " magic command must return SparkConf object or SparkSession.Builder object");
-      }
-    } else {
-      return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "There occurs problem during execution of " + SPARK + " : " + either.error());
-    }
-  }
-
-  private MagicCommandOutcomeItem createSparkUI(SparkSession.Builder builder) {
-    this.sparkUI = sparkUIFactory.create(builder);
-    return displaySparkUI(sparkUI);
-  }
-
-  private MagicCommandOutcomeItem createSparkUI(SparkConf sparkConf) {
-    SparkSession.Builder builder = SparkSession.builder().config(sparkConf);
-    return createSparkUI(builder);
-  }
-
-  private MagicCommandOutcomeItem displaySparkUI(SparkUI sparkUI) {
-    Display.display(sparkUI);
-    return new MagicCommandOutput(MagicCommandOutput.Status.OK);
-  }
-
-  private void connectToSparkSession(Message parent) {
-    sparkUI.getConnectButton().onClick(new HashMap(), new Message(new Header(JupyterMessages.COMM_MSG, parent.getHeader().getSession())));
+  private void connectToSparkSession(SparkUI sparkUI, Message parent) {
+    sparkUI.getConnectButton().onClick(new HashMap(), parent);
   }
 
   interface SparkOption {
-    void run(Message parent);
+    void run(SparkUI sparkUI, Message parent);
   }
+
+  public static class SingleSparkSessionImpl implements SingleSparkSession {
+    private boolean active = false;
+
+    @Override
+    public boolean isActive() {
+      return active;
+    }
+
+    @Override
+    public void active() {
+      active = true;
+    }
+
+    @Override
+    public void inActive() {
+      active = false;
+    }
+  }
+
 }

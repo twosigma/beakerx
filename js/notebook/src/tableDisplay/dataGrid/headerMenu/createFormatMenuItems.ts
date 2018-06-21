@@ -15,13 +15,17 @@
  */
 
 import MenuItem from "../../../shared/interfaces/menuItemInterface";
-import { TIME_UNIT_FORMATS, scopeData } from '../../consts';
+import { TIME_UNIT_FORMATS, scopeData } from '../consts';
 import { ALL_TYPES, getAllowedTypesByType } from "../dataTypes";
 import DataGridColumn from "../column/DataGridColumn";
 
 export function createFormatMenuItems(column: DataGridColumn) {
   const types = getAllowedTypesByType(column.getDataType());
   let items: MenuItem[] = [];
+
+  if (!column.dataGrid) {
+    return [];
+  }
 
   types.forEach((obj) => {
     if (obj.type === 8) { //datetime
@@ -33,7 +37,7 @@ export function createFormatMenuItems(column: DataGridColumn) {
     let item: MenuItem = {
       title: obj.name,
       id: `format_${obj.name}`,
-      isChecked: (column) => column.getDisplayType() === obj.type
+      isChecked: (column) => column && column.getDisplayType() === obj.type
     };
 
     if (obj.type === 4) { //double with precision
@@ -72,7 +76,7 @@ export function createTimeSubitems(): MenuItem[] {
       title: TIME_UNIT_FORMATS[key].title,
       id: `timeunit_${TIME_UNIT_FORMATS[key].title}`,
       isChecked: (column) => {
-        const displayType = column.getDisplayType();
+        const displayType = column && column.getDisplayType();
 
         return (
           displayType === ALL_TYPES.datetime ||

@@ -63,7 +63,7 @@ public class KotlinEvaluatorTest {
     paramMap.put(IMPORTS, imports);
     EvaluatorParameters kernelParameters = new EvaluatorParameters(paramMap);
     //when
-    evaluator.setShellOptions(kernelParameters);
+    evaluator.updateEvaluatorParameters(kernelParameters);
     String code = "val x = staticMethod()";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     TryResult evaluate = evaluator.evaluate(seo, code);
@@ -76,7 +76,7 @@ public class KotlinEvaluatorTest {
     //given
     Map<String, Object> paramMap = new HashMap<>();
     paramMap.put(IMPORTS, asList("import com.twosigma.beakerx.chart.xychart.*"));
-    evaluator.setShellOptions(new EvaluatorParameters(paramMap));
+    evaluator.updateEvaluatorParameters(new EvaluatorParameters(paramMap));
     String code = "val plot = Plot()\n" +
             "plot.setTitle(\"test title\");\n" +
             "plot.display();";

@@ -707,14 +707,19 @@ define([
           newmodel.data.push(item);
         }
       }
+
+      var isDark = document.body.classList.contains('bx-dark-theme');
+      var mtext_color =  isDark ? "white" : "black";
+      var mtext_opacity = isDark ? 0.7 : 1;
+
       if (model.texts != null) {
         for (var i = 0; i < model.texts.length; i++) {
           var mtext = model.texts[i];
           var item = {
             "type" : "text",
 
-            "color" : mtext.color != null ? "#" + mtext.color.substr(3) : "black",
-            "color_opacity" : mtext.color != null ? parseInt(mtext.color.substr(1,2), 16) / 255 : 1,
+            "color" : mtext.color != null ? "#" + mtext.color.substr(3) : mtext_color,
+            "color_opacity" : mtext.color != null ? parseInt(mtext.color.substr(1,2), 16) / 255 : mtext_opacity,
             "show_pointer" : mtext.show_pointer,
             "pointer_angle" : mtext.pointer_angle,
             "size" : mtext.size,

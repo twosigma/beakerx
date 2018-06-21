@@ -21,7 +21,7 @@ import {
   getDoublePrecisionByType
 } from './dataTypes';
 import { DataGridHelpers } from './dataGridHelpers';
-import { TIME_UNIT_FORMATS } from '../consts';
+import { TIME_UNIT_FORMATS } from './consts';
 import {CellRenderer} from "@phosphor/datagrid";
 import {IColumnState} from "./interface/IColumn";
 import {
@@ -54,6 +54,10 @@ export class DataFormatter {
     this.datetime = this.datetime.bind(this);
     this.boolean = this.boolean.bind(this);
     this.html = this.html.bind(this);
+  }
+
+  destroy(): void {
+    this.store = null;
   }
 
   get stringFormatForColumn() {

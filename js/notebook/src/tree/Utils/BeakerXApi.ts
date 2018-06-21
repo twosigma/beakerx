@@ -89,11 +89,11 @@ export default class BeakerXApi {
     }
 
     if (settings.hasOwnProperty('ui_options')) {
-      merged.ui_options = settings.ui_options;
+      merged.ui_options = {...merged.ui_options, ...settings.ui_options };
     }
 
-    if (settings.hasOwnProperty('ui_options')) {
-      merged.jvm_options = settings.jvm_options;
+    if (settings.hasOwnProperty('jvm_options')) {
+      merged.jvm_options = {...merged.jvm_options, ...settings.jvm_options };
     }
 
     return merged;

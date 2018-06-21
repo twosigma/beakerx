@@ -50,12 +50,23 @@ class BeakerxExtension implements DocumentRegistry.WidgetExtension {
 
   createNew(panel: NotebookPanel, context: DocumentRegistry.IContext<INotebookModel>) {
     registerGlobal();
+
     let app = this.app;
     let settings = this.settings;
+
     Promise.all([panel.ready, panel.session.ready, context.ready]).then(function() {
       enableInitializationCellsFeature(panel);
       registerCommentOutCmd(panel);
       registerCommTargets(panel, context);
+
+      const originalProcessFn = app.commands.processKeydownEvent;
+      app.commands.processKeydownEvent = (event) => {
+        if (window.beakerx.tableFocused) {
+          return false;
+        }
+
+        return originalProcessFn.call(app.commands, event);
+      };
 
       new UIOptionFeaturesHelper(app, settings, panel).registerFeatures();
     });

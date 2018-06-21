@@ -23,13 +23,11 @@ import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 
 describe('CellRendererFactory', () => {
   let dataGrid;
-  let cellRendererFactory;
   let dataStore;
 
   before(() => {
     dataStore = createStore(modelStateMock);
     dataGrid = new BeakerXDataGrid({}, dataStore);
-    cellRendererFactory = new CellRendererFactory(dataGrid);
   });
 
   after(() => {
@@ -37,10 +35,10 @@ describe('CellRendererFactory', () => {
   });
 
   it('should implement getRenderer method', () => {
-    expect(cellRendererFactory).to.have.property('getRenderer');
+    expect(CellRendererFactory).to.have.property('getRenderer');
   });
 
   it('should return CellRenderer', () => {
-    expect(cellRendererFactory.getRenderer()).to.be.an.instanceof(TextRenderer);
+    expect(CellRendererFactory.getRenderer(dataGrid)).to.be.an.instanceof(TextRenderer);
   });
 });

@@ -19,7 +19,7 @@ import { Cell, CodeCell } from '@jupyterlab/cells';
 import { showDialog, Dialog } from '@jupyterlab/apputils';
 import { ToolbarButton } from '@jupyterlab/apputils'
 
-interface IInitCellsOptions {
+export interface IInitCellsOptions {
   run_on_kernel_ready: boolean,
   run_untrusted?: boolean
 }

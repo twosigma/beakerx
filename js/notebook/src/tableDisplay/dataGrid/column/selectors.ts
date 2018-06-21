@@ -14,12 +14,12 @@
  *  limitations under the License.
  */
 
+/// <reference path='../../../types/index.d.ts'/>
+
 import {IBeakerXDataGridState} from "../store/BeakerXDataStore";
 import {
-  DEFAULT_INDEX_COLUMN_NAME, selectColumnNames, selectColumnOrder, selectColumnsFrozen,
-  selectColumnsFrozenNames,
+  selectColumnNames, selectColumnOrder,
   selectColumnsVisible,
-  selectHasIndex
 } from "../model/selectors";
 import {find} from "@phosphor/algorithm";
 import {IColumnPosition, IColumnsState, IColumnState} from "../interface/IColumn";

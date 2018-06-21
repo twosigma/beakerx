@@ -20,17 +20,17 @@ import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.scala.magic.command.SparkMagicCommand;
 import org.apache.spark.SparkConf;
-import org.apache.spark.SparkContext;
 import org.apache.spark.sql.SparkSession;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SparkUITest {
@@ -38,13 +38,15 @@ public class SparkUITest {
   SparkUI sparkUI;
   SparkUiDefaultsImplMock sparkUiDefaults;
   KernelTest kernel;
+  SingleSparkSession singleSparkSession;
 
   @Before
   public void setUp() throws Exception {
+    singleSparkSession = new SparkMagicCommand.SingleSparkSessionImpl();
     kernel = new KernelTest();
     KernelManager.register(kernel);
     sparkUiDefaults = new SparkUiDefaultsImplMock();
-    sparkUI = new SparkUI(SparkSession.builder(), sparkSessionBuilder -> new SparkManagerImplTest(), sparkUiDefaults);
+    sparkUI = new SparkUI(SparkSession.builder(), sparkSessionBuilder -> new SparkManagerImplTest(), sparkUiDefaults, singleSparkSession);
   }
 
   @After
@@ -57,18 +59,9 @@ public class SparkUITest {
     //given
     SparkUiDefaultsImplMock sparkUiDefaults = new SparkUiDefaultsImplMock();
     //when
-    new SparkUI(SparkSession.builder(), sparkSessionBuilder -> new SparkManagerImplTest(), sparkUiDefaults);
+    new SparkUI(SparkSession.builder(), sparkSessionBuilder -> new SparkManagerImplTest(), sparkUiDefaults, singleSparkSession);
     //then
     assertThat(sparkUiDefaults.loaded).isTrue();
-  }
-
-  @Test
-  public void saveDefaultsWhenConnectToSparkSession() {
-    //given
-    //when
-    sparkUI.getConnectButton().onClick(new HashMap(), commMsg());
-    //then
-    assertThat(sparkUiDefaults.saved).isTrue();
   }
 
   static class SparkUiDefaultsImplMock implements SparkUiDefaults {
@@ -77,13 +70,53 @@ public class SparkUITest {
     public boolean loaded = false;
 
     @Override
-    public void saveSparkConf(SparkConf sparkConf) {
+    public void saveSparkConf(List<Map<String, Object>> sparkConf) {
       saved = true;
     }
 
     @Override
     public void loadDefaults(SparkSession.Builder builder) {
       loaded = true;
+    }
+
+    @Override
+    public List<Map<String, Object>> getProfiles() {
+      return null;
+    }
+
+    @Override
+    public Map<String, Object> getProfileByName(String name) {
+      return null;
+    }
+
+    @Override
+    public void removeSparkConf(String profileName) {
+
+    }
+
+    @Override
+    public void loadProfiles() {
+
+    }
+
+    @Override
+    public void saveProfile(Map<String, Object> profile) {
+
+    }
+
+    @Override
+    public List<String> getProfileNames() {
+      return null;
+    }
+
+    @Override
+    public void saveProfileName(String profileName) {
+
+    }
+
+    @Override
+    public String getCurrentProfileName() {
+      return null;
     }
   }
 
@@ -127,6 +160,11 @@ public class SparkUITest {
     @Override
     public String getSparkMasterUrl() {
       return "";
+    }
+
+    @Override
+    public String sparkVersion() {
+      return null;
     }
   }
 

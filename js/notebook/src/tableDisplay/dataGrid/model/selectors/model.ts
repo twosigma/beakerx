@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import {TIME_UNIT_FORMATS} from "../../../consts";
+import {TIME_UNIT_FORMATS} from "../../consts";
 import {getAlignmentByType} from "../../column/columnAlignment";
 import {ALL_TYPES} from "../../dataTypes";
 import IDataModelState from "../../interface/IDataGridModelState";

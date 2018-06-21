@@ -1,0 +1,295 @@
+/*
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+@import './fonts.css';
+@import './base.css';
+
+body {
+  background-color: var(--jp-layout-color3);
+}
+
+pre {
+  background-color: var(--jp-layout-color2);
+  color: var(--jp-content-font-color2);
+}
+
+.plot-plotcontainer,
+.combplot-plotcontainer {
+  background-color: var(--jp-layout-color0);
+  fill: var(--jp-content-font-color0);
+}
+
+.plot-coverbox,
+.combplot-plotcoverbox {
+  fill: var(--jp-layout-color0);
+}
+
+.plot-title {
+  color: var(--jp-content-font-color0);
+}
+
+.plot-legend {
+  background-color: var(--jp-layout-color0);
+  color: var(--jp-content-font-color0);
+  border-color: var(--jp-border-color0);
+}
+
+.plot-gridline-base,
+.plot-gridline,
+.plot-tick {
+  stroke: var(--jp-border-color0);
+}
+
+.plot-tooltip {
+  background-color: var(--jp-layout-color1);
+  color: var(--jp-content-font-color1);
+}
+
+#beakerx-tree-widget {
+  color: var(--jp-content-font-color1);
+}
+
+#beakerx-tree-widget svg {
+  fill: var(--jp-content-font-color1);
+}
+
+#beakerx-tree-widget .p-TabBar-content {
+  border-color: var(--jp-border-color2);
+}
+
+#beakerx-tree-widget .p-TabBar-tab.p-mod-current {
+  background-color: var(--jp-layout-color1);
+  border-color: var(--jp-border-color2);
+}
+
+#beakerx-tree-widget .p-TabBar-tab {
+  background-color: var(--jp-layout-color2);
+}
+
+#beakerx-tree-widget .p-TabBar-tab:hover:not(.p-mod-current) {
+  background-color: var(--jp-layout-color0);
+}
+
+#beakerx-tree-widget #default_options .bx-wrapper input {
+  background-color: var(--jp-layout-color1);
+  color: var(--jp-content-font-color1);
+  border-color: var(--jp-border-color2);
+}
+#beakerx-tree-widget #default_options .bx-wrapper span {
+  background-color: var(--jp-layout-color0);
+  border-color: var(--jp-border-color2);
+}
+
+#beakerx-tree-widget .bx-panel .bx-panel-heading {
+  background-color: var(--jp-layout-color1);
+}
+
+#beakerx-tree-widget .bx-panel,
+#beakerx-tree-widget .bx-panel .bx-panel-heading,
+#beakerx-tree-widget .bx-panel .bx-panel-body {
+  border-color: var(--jp-border-color2);
+}
+
+#beakerx-tree-widget .bx-panel .bx-panel-heading .bx-btn,
+#beakerx-tree-widget .bx-panel .bx-panel-body .bx-form-row .bx-btn {
+  background-color: var(--jp-layout-color2);
+  color: var(--jp-content-font-color2);
+  border-color: var(--jp-border-color2);
+}
+
+#beakerx-tree-widget .bx-panel .bx-panel-heading .bx-btn:hover,
+#beakerx-tree-widget .bx-panel .bx-panel-body .bx-form-row .bx-btn:hover {
+  background-color: var(--jp-layout-color0);
+}
+
+#beakerx-tree-widget .bx-panel .bx-panel-body .bx-form-row .bx-input-text {
+  background-color: var(--jp-layout-color1);
+  color: var(--jp-content-font-color1);
+  border-color: var(--jp-border-color2);
+}
+
+.p-DataGrid {
+  border-color: transparent;
+}
+
+.p-DataGrid-viewport {
+  border-color: var(--jp-border-color2);
+}
+.p-DataGrid-viewport input[type="text"] {
+  background-color: var(--jp-layout-color1);
+  color: var(--jp-content-font-color1);
+  border-color: var(--jp-border-color2);
+}
+.input-clear span {
+  color: var(--jp-content-font-color1);
+}
+
+.p-DataGrid-scrollBar {
+  border-color: var(--jp-border-color2) !important;
+}
+.p-DataGrid-scrollBar .p-ScrollBar-button {
+  background-color: var(--jp-layout-color0);
+}
+.p-DataGrid-scrollBar .p-ScrollBar-track {
+  background-color: var(--jp-layout-color2);
+}
+.p-DataGrid-scrollBar .p-ScrollBar-thumb {
+  background-color: var(--jp-layout-color0);
+  border-color: var(--jp-border-color2) !important;
+}
+
+.p-DataGrid-tooltip {
+  background-color: var(--jp-layout-color1);
+  color: var(--jp-content-font-color1);
+  border-color: var(--jp-border-color1);
+}
+
+.p-DataGrid-scrollCorner {
+  background-color: var(--jp-layout-color0);
+  border-color: var(--jp-border-color2);
+}
+
+.foldout-widget.widget-box > .foldout-label {
+  color: var(--jp-content-font-color1);
+  background-color: var(--jp-layout-color1);
+  border-color: var(--jp-border-color2);
+}
+
+.foldout-widget.widget-box > .foldout-content {
+  border-color: var(--jp-border-color2);
+}
+
+.foldout-widget.widget-box > .foldout-label:before {
+  background-image: var(--jp-icon-caretright);
+}
+
+.foldout-widget.widget-box.active .foldout-label:before,
+.foldout-widget.widget-box.active .widget-label:before {
+  background-image: var(--jp-icon-caretdown);
+}
+
+.bx-button[class*="icon"]  {
+  border-color: var(--jp-border-color2);
+}
+
+.bko-table-menu {
+  background-color: var(--jp-layout-color0);
+}
+
+.bko-table-menu .p-Menu-content .p-Menu-item {
+  color: var(--jp-ui-font-color0);
+}
+
+.bko-table-menu .p-Menu-content .p-Menu-item:hover {
+  background-color: var(--jp-layout-color2);
+  color: var(--jp-ui-font-color0);
+}
+
+.p-Menu-item.p-mod-active {
+  background-color: var(--jp-layout-color2);
+}
+
+.bko-table-menu .p-Menu-content [data-type="submenu"] > .p-Menu-itemSubmenuIcon:after {
+  color: var(--jp-ui-font-color0);
+}
+
+.text-line-style {
+  fill: var(--jp-content-font-color2);
+  stroke: var(--jp-content-font-color2);
+}
+
+.beaker-fieldset {
+  border-color: var(--jp-border-color2);
+}
+
+.beaker-fieldset legend {
+  color: var(--jp-content-font-color0);
+}
+
+.flatpickr-calendar {
+  background-color: var(--jp-layout-color2);
+  color: var(--jp-content-font-color2);
+  border-color: var(--jp-border-color2);
+  -webkit-box-shadow: 1px 0 0 var(--jp-border-color2), -1px 0 0 var(--jp-border-color2), 0 1px 0 var(--jp-border-color2), 0 -1px 0 var(--jp-border-color2), 0 3px 13px rgba(0,0,0,0.08);
+  box-shadow: 1px 0 0 var(--jp-border-color2), -1px 0 0 var(--jp-border-color2), 0 1px 0 var(--jp-border-color2), 0 -1px 0 var(--jp-border-color2), 0 3px 13px rgba(0,0,0,0.08);
+}
+
+.flatpickr-calendar.multiMonth .flatpickr-days .dayContainer:nth-child(n+2) .flatpickr-day.inRange:nth-child(7n+1) {
+  -webkit-box-shadow: -2px 0 0 var(--jp-border-color2), 5px 0 0 var(--jp-border-color2);
+  box-shadow: -2px 0 0 var(--jp-border-color2), 5px 0 0 var(--jp-border-color2);
+}
+.flatpickr-calendar.showTimeInput.hasTime .flatpickr-time {
+  border-top: 1px solid var(--jp-border-color2);
+}
+.flatpickr-calendar.arrowTop:before {
+  border-bottom-color: var(--jp-border-color2);
+}
+.flatpickr-calendar.arrowTop:after {
+  border-bottom-color: var(--jp-border-color2);
+}
+.flatpickr-calendar.arrowBottom:before {
+  border-top-color: var(--jp-border-color2);
+}
+.flatpickr-calendar.arrowBottom:after {
+  border-top-color: var(--jp-border-color2);
+}
+.flatpickr-months .flatpickr-month {
+  color: rgba(255,255,255,0.9);
+  fill: rgba(255,255,255,0.9);
+}
+.flatpickr-months .flatpickr-prev-month,
+.flatpickr-months .flatpickr-next-month {
+  color: rgba(255,255,255,0.9);
+  fill: rgba(255,255,255,0.9);
+}
+
+.flatpickr-day {
+  color: rgba(255,255,255,0.9);
+}
+
+.flatpickr-day.inRange,
+.flatpickr-day.prevMonthDay.inRange,
+.flatpickr-day.nextMonthDay.inRange,
+.flatpickr-day.today.inRange,
+.flatpickr-day.prevMonthDay.today.inRange,
+.flatpickr-day.nextMonthDay.today.inRange,
+.flatpickr-day:hover,
+.flatpickr-day.prevMonthDay:hover,
+.flatpickr-day.nextMonthDay:hover,
+.flatpickr-day:focus,
+.flatpickr-day.prevMonthDay:focus,
+.flatpickr-day.nextMonthDay:focus {
+  background-color: var(--jp-layout-color3);
+  border-color: var(--jp-layout-color3);
+}
+
+.flatpickr-day.disabled,
+.flatpickr-day.disabled:hover,
+.flatpickr-day.prevMonthDay,
+.flatpickr-day.nextMonthDay,
+.flatpickr-day.notAllowed,
+.flatpickr-day.notAllowed.prevMonthDay,
+.flatpickr-day.notAllowed.nextMonthDay {
+  color: rgba(255,255,255,0.3);
+}
+
+span.flatpickr-weekday {
+  color: rgba(255,255,255,0.54);
+}
+
+.lds-spinner div {
+  background-color: #2196F3;
+}

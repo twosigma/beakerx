@@ -14,11 +14,10 @@
  *  limitations under the License.
  */
 
+import * as sinon from 'sinon';
 import { expect } from 'chai';
 import { createColumnMenuItems } from '@beakerx/tableDisplay/dataGrid/headerMenu/createColumnMenuItems';
 import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
-import menuOptionsMock from "../mock/menuOptionsMock";
-import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 import modelStateMock from "../mock/modelStateMock";
 import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
@@ -27,16 +26,13 @@ describe('createColumnMenuItems', () => {
   let dataGrid;
   let dataStore;
   let column;
+  let columnMenuItems;
 
   before(() => {
     dataStore = createStore(modelStateMock);
     dataGrid = new BeakerXDataGrid({}, dataStore);
-    column = new DataGridColumn({
-      index: 0,
-      type: COLUMN_TYPES.index,
-      name: 'index',
-      menuOptions: menuOptionsMock
-    }, dataGrid, dataGrid.columnManager);
+    column = dataGrid.columnManager.columns[COLUMN_TYPES.index][0];
+    columnMenuItems = createColumnMenuItems(column);
   });
 
   after(() => {
@@ -44,10 +40,121 @@ describe('createColumnMenuItems', () => {
   });
 
   it('should create column menu items', () => {
-    let formatMenuItems = createColumnMenuItems(column);
+    expect(columnMenuItems).to.be.an.instanceof(Array);
+    expect(columnMenuItems).to.have.length(17);
+  });
 
-    expect(formatMenuItems).to.be.an.instanceof(Array);
-    expect(formatMenuItems).to.have.length(17);
+  it('should not create column menu items', () => {
+    const columnMenuItems = createColumnMenuItems(null);
+
+    expect(columnMenuItems).to.be.an.instanceof(Array);
+    expect(columnMenuItems).to.have.length(0);
+  });
+
+  it('should call column.move', () => {
+    const stub = sinon.stub(column, 'move');
+
+    columnMenuItems[15].action(column);
+    columnMenuItems[14].action(column);
+
+    expect(stub.calledTwice).to.be.true;
+
+    stub.restore();
+  });
+
+  it('should call column.toggleColumnFrozen', () => {
+    const stub = sinon.stub(column, 'toggleColumnFrozen');
+
+    columnMenuItems[13].action(column);
+
+    expect(stub.calledOnce).to.be.true;
+
+    stub.restore();
+  });
+
+  it('should call column.resetState', () => {
+    const stub = sinon.stub(column, 'resetState');
+
+    columnMenuItems[16].action(column);
+
+    expect(stub.calledOnce).to.be.true;
+
+    stub.restore();
+  });
+
+  it('should call column.toggleHighlighter', () => {
+    const stub = sinon.stub(column, 'toggleHighlighter');
+
+    columnMenuItems[12].action(column);
+    columnMenuItems[10].action(column);
+
+    expect(stub.calledTwice).to.be.true;
+
+    stub.restore();
+  });
+
+  it('should call column.toggleDataBarsRenderer', () => {
+    const stub = sinon.stub(column, 'toggleDataBarsRenderer');
+
+    columnMenuItems[11].action(column);
+
+    expect(stub.calledOnce).to.be.true;
+
+    stub.restore();
+  });
+
+  it('should call column.setAlignment', () => {
+    const stub = sinon.stub(column, 'setAlignment');
+
+    columnMenuItems[9].action(column);
+    columnMenuItems[8].action(column);
+    columnMenuItems[7].action(column);
+
+    expect(stub.calledThrice).to.be.true;
+
+    stub.restore();
+  });
+
+  it('should call column.sort', () => {
+    const stub = sinon.stub(column, 'sort');
+
+    columnMenuItems[6].action(column);
+    columnMenuItems[5].action(column);
+    columnMenuItems[4].action(column);
+
+    expect(stub.calledThrice).to.be.true;
+
+    stub.restore();
+  });
+
+  it('should call column.showSearch', () => {
+    const stub = sinon.stub(column.columnManager, 'showSearch');
+
+    columnMenuItems[2].action(column);
+
+    expect(stub.calledOnce).to.be.true;
+
+    stub.restore();
+  });
+
+  it('should call column.showFilters', () => {
+    const stub = sinon.stub(column.columnManager, 'showFilters');
+
+    columnMenuItems[1].action(column);
+
+    expect(stub.calledOnce).to.be.true;
+
+    stub.restore();
+  });
+
+  it('should call column.hide', () => {
+    const stub = sinon.stub(column, 'hide');
+
+    columnMenuItems[0].action(column);
+
+    expect(stub.calledOnce).to.be.true;
+
+    stub.restore();
   });
 
 });

@@ -23,7 +23,7 @@ import {ICellData} from "../interface/ICell";
 import {DataGridHelpers} from "../dataGridHelpers";
 import isUrl = DataGridHelpers.isUrl;
 
-interface ICellDataOptions {
+export interface ICellDataOptions {
   row: number,
   column: number,
   value: any,
@@ -47,6 +47,11 @@ export default class CellManager {
     this.dataGrid = dataGrid;
 
     this.dataGrid.cellHovered.connect(this.handleCellHovered, this);
+  }
+
+  destroy(): void {
+    this.dataGrid = null;
+    this.hoveredCellData = null;
   }
 
   repaintRow(cellData) {

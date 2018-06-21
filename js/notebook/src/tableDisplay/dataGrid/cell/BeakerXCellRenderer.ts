@@ -15,29 +15,19 @@
  */
 
 import { DEFAULT_ALIGNMENT } from "../column/columnAlignment";
-import {CellRenderer, GraphicsContext, TextRenderer} from "@phosphor/datagrid";
+import { CellRenderer, GraphicsContext, TextRenderer } from "@phosphor/datagrid";
 import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import DataGridCell from "./DataGridCell";
-import {
-  darken,
-  DEFAULT_CELL_BACKGROUND,
-  DEFAULT_DATA_FONT_COLOR,
-  DEFAULT_DATA_FONT_SIZE,
-  DEFAULT_HEADER_FONT_COLOR, DEFAULT_HIGHLIGHT_COLOR, formatColor
-} from "../style/dataGridStyle";
-import {BeakerXDataStore} from "../store/BeakerXDataStore";
-import {
-  selectDataFontSize,
-  selectFontColor,
-  selectHeaderFontSize,
-  selectHeadersVertical, selectRenderer
-} from "../model/selectors";
-import IRenderer, {RENDERER_TYPE} from "../interface/IRenderer";
-import {DataGridHelpers} from "../dataGridHelpers";
+import { darken, DEFAULT_DATA_FONT_SIZE, formatColor } from "../style/dataGridStyle";
+import { BeakerXDataStore } from "../store/BeakerXDataStore";
+import { selectDataFontSize, selectFontColor, selectHeaderFontSize, selectRenderer } from "../model/selectors";
+import IRenderer, { RENDERER_TYPE } from "../interface/IRenderer";
+import { DataGridHelpers } from "../dataGridHelpers";
 import getStringSize = DataGridHelpers.getStringSize;
 import retrieveUrl = DataGridHelpers.retrieveUrl;
+import BeakerXThemeHelper from "../../../BeakerXThemeHelper";
 
-interface ICellRendererOptions {
+export interface ICellRendererOptions {
   font?: string,
   color?: string,
   text?: any,
@@ -81,7 +71,7 @@ export default abstract class BeakerXCellRenderer extends TextRenderer {
     if (renderer && renderer.type === RENDERER_TYPE.DataBars && !isHeaderCell) {
       const barWidth = config.width/2 * renderer.percent;
 
-      gc.fillStyle = DEFAULT_HIGHLIGHT_COLOR;
+      gc.fillStyle = BeakerXThemeHelper.DEFAULT_HIGHLIGHT_COLOR;
       gc.fillRect(
         config.x + config.width/2 - (renderer.direction === 'RIGHT' ? 0 : barWidth),
         config.y,
@@ -146,7 +136,7 @@ export default abstract class BeakerXCellRenderer extends TextRenderer {
       initialColor ||
       highlighterColor ||
       selectionColor ||
-      DEFAULT_CELL_BACKGROUND;
+      BeakerXThemeHelper.DEFAULT_CELL_BACKGROUND;
   }
   
   getHorizontalAlignment(config: CellRenderer.ICellConfig): string {
@@ -171,16 +161,16 @@ export default abstract class BeakerXCellRenderer extends TextRenderer {
 
   getTextColor(config): string {
     if (config.region === 'row-header') {
-      return DEFAULT_DATA_FONT_COLOR;
+      return BeakerXThemeHelper.DEFAULT_DATA_FONT_COLOR;
     }
 
     let colors = selectFontColor(this.store.state);
     let dataFontColor = colors && colors[config.row]
       ? formatColor(colors[config.row][config.column])
-      : DEFAULT_DATA_FONT_COLOR;
+      : BeakerXThemeHelper.DEFAULT_DATA_FONT_COLOR;
 
     return config.region === 'column-header' || config.region === "corner-header"
-      ? DEFAULT_HEADER_FONT_COLOR
+      ? BeakerXThemeHelper.DEFAULT_HEADER_FONT_COLOR
       : dataFontColor;
   }
 

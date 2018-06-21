@@ -21,8 +21,6 @@ import IndexMenu from '@beakerx/tableDisplay/dataGrid/headerMenu/IndexMenu';
 import { createIndexMenuItems } from '@beakerx/tableDisplay/dataGrid/headerMenu/createIndexMenuItems';
 import HeaderMenu from '@beakerx/tableDisplay/dataGrid/headerMenu/HeaderMenu';
 import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
-import menuOptionsMock from "../mock/menuOptionsMock";
-import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 import modelStateMock from "../mock/modelStateMock";
 import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
@@ -36,13 +34,8 @@ describe('IndexMenu', () => {
   before(() => {
     dataStore = createStore(modelStateMock);
     dataGrid = new BeakerXDataGrid({}, dataStore);
-    column = new DataGridColumn({
-      index: 0,
-      type: COLUMN_TYPES.index,
-      name: 'index',
-      menuOptions: menuOptionsMock
-    }, dataGrid, dataGrid.columnManager);
-    indexMenu = new IndexMenu(column, menuOptionsMock);
+    column = dataGrid.columnManager.columns[COLUMN_TYPES.index][0];
+    indexMenu = column.menu;
   });
 
   after(() => {

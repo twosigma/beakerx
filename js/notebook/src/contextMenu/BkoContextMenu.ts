@@ -19,10 +19,10 @@ declare var lab: { contextMenu: ContextMenu };
 import { ContextMenu, Menu } from '@phosphor/widgets';
 import { CommandRegistry } from '@phosphor/commands';
 import { IDisposable } from '@phosphor/disposable';
-import MenuItem from "shared/interfaces/contextMenuItemInterface";
+import MenuItem from "../shared/interfaces/contextMenuItemInterface";
 import MenuInterface from '../shared/interfaces/menuInterface'
 
-interface addItem {
+export interface addItem {
   addItem: Function
 }
 
@@ -182,5 +182,9 @@ export default abstract class BkoContextMenu implements MenuInterface {
 
   unbind(): void {
     this.scope.element[0].removeEventListener('contextmenu', this.handleContextMenu);
+
+    setTimeout(() => {
+      this.scope = null;
+    });
   }
 }

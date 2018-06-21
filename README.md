@@ -24,14 +24,14 @@
 [![NPM version](https://badge.fury.io/js/beakerx.svg)](http://badge.fury.io/js/beakerx)
 [![PyPI Version](https://badge.fury.io/py/beakerx.svg)](http://badge.fury.io/py/beakerx)
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/beakerx/badges/version.svg)](https://anaconda.org/conda-forge/beakerx)
-[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/twosigma/beakerx/0.17.1?filepath=StartHere.ipynb)
+[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/twosigma/beakerx/0.20.0?filepath=StartHere.ipynb)
 
 BeakerX is a collection of JVM kernels and interactive widgets for
 plotting, tables, autotranslation, and other extensions to Jupyter
 Notebook.  BeakerX is in beta and under active development.
 
 The [documentation](https://github.com/twosigma/beakerx/blob/master/StartHere.ipynb) consists of tutorial notebooks on GitHub.
-You can try it in the cloud for free with [Binder](https://mybinder.org/v2/gh/twosigma/beakerx/0.17.1?filepath=StartHere.ipynb).
+You can try it in the cloud for free with [Binder](https://mybinder.org/v2/gh/twosigma/beakerx/0.20.0?filepath=StartHere.ipynb).
 
 BeakerX is the successor to the [Beaker Notebook (source code
 archive)](https://github.com/twosigma/beaker-notebook-archive).  It
@@ -212,7 +212,7 @@ See [RELEASE.md](RELEASE.md).
 
 ## Attribution
 
-Beaker contains and depends on many projects including:
+BeakerX contains and depends on many projects including:
 
 The kernel is originally derived from
 [lappsgrid](https://github.com/lappsgrid-incubator/jupyter-groovy-kernel),
@@ -228,6 +228,9 @@ The Java support uses Adrian Witas' org.abstractmeta.toolbox.
 Copyright (c) 2001-2007, Fernando Perez
 Copyright (c) 2001, Janko Hauser
 Copyright (c) 2001, Nathaniel Gray
+
+The table of contents and init cells extensions come from:
+<a href="https://github.com/ipython-contrib/jupyter_contrib_nbextensions/blob/master/COPYING.rst">IPython-contrib</a> Copyright (c) 2013-2015, IPython-contrib Developers
 
 <a href="http://www.scala-lang.org/license.html">Scala</a> Copyright (c) 2002-2015 EPFL
       Copyright (c) 2011-2015 Typesafe, Inc.

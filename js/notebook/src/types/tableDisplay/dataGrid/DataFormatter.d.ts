@@ -1,0 +1,31 @@
+import { CellRenderer } from "@phosphor/datagrid";
+import { IColumnState } from "./interface/IColumn";
+import { BeakerXDataStore } from "./store/BeakerXDataStore";
+export declare const DEFAULT_TIME_FORMAT = "YYYYMMDD HH:mm:ss.SSS ZZ";
+export declare class DataFormatter {
+    store: BeakerXDataStore;
+    constructor(store: BeakerXDataStore);
+    destroy(): void;
+    readonly stringFormatForColumn: {};
+    readonly timeStrings: any;
+    readonly timeZone: string;
+    readonly stringFormatForType: {};
+    readonly formatForTimes: any;
+    readonly columnNames: string[];
+    getFormatFnByDisplayType(displayType: any, columnState?: IColumnState): CellRenderer.ConfigFunc<string>;
+    private isNull(value);
+    private handleNull(formatFn);
+    private value(config);
+    private string(config);
+    private integer(config);
+    private formattedInteger(config);
+    private double(config);
+    private doubleWithPrecision(precision);
+    private exponential_5(config);
+    private exponential_15(config);
+    private datetime(config, formatForTimes);
+    private getTimeFormatForColumn(columnState?);
+    private datetimeWithFormat(formatForTimes?);
+    private boolean(config);
+    private html(config);
+}

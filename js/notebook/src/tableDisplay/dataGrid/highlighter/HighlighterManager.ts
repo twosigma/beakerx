@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+/// <reference path='../../../types/index.d.ts'/>
+
 import IHihglighterState, {
   HIGHLIGHTER_STYLE,
   HIGHLIGHTER_TYPE
@@ -23,11 +25,11 @@ import HighlighterFactory from "./HighlighterFactory";
 import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import { each, iter, filter, toArray } from "@phosphor/algorithm";
 import { CellRenderer } from "@phosphor/datagrid";
-import {DEFAULT_CELL_BACKGROUND} from "../style/dataGridStyle";
 import DataGridColumn from "../column/DataGridColumn";
 import {selectCellHighlighters} from "../model/selectors/model";
 import {DataGridColumnAction} from "../store/DataGridAction";
 import {ADD_COLUMN_HIGHLIGHTER, REMOVE_COLUMN_HIGHLIGHTER} from "../model/reducer";
+import BeakerXThemeHelper from "../../../BeakerXThemeHelper";
 
 export default class HighlighterManager {
   highlighters: Highlighter[];
@@ -37,13 +39,20 @@ export default class HighlighterManager {
   constructor(dataGrid: BeakerXDataGrid) {
     this.dataGrid = dataGrid;
     this.highlighters = [];
-    this.cachedHighlighters = new Map();
+    this.cachedHighlighters = new Map<string, Highlighter>();
 
     this.createHighlighter = this.createHighlighter.bind(this);
     this.registerHighlighter = this.registerHighlighter.bind(this);
     this.unregisterHighlighter = this.unregisterHighlighter.bind(this);
 
     this.createHighlighters();
+  }
+
+  destroy(): void {
+    this.dataGrid = null;
+    this.highlighters = [];
+    this.cachedHighlighters.forEach(highlighter => highlighter.destroy());
+    this.cachedHighlighters.clear();
   }
 
   createHighlighters() {
@@ -159,7 +168,7 @@ export default class HighlighterManager {
   }
 
   getCellBackground(config: CellRenderer.ICellConfig): string {
-    let background = DEFAULT_CELL_BACKGROUND;
+    let background = BeakerXThemeHelper.DEFAULT_CELL_BACKGROUND;
     let column = this.dataGrid.getColumn(config);
 
     each(

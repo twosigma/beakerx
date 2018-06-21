@@ -88,6 +88,10 @@ class DataBrowserFeature {
   }
 
   private static toggle_side_panel(): boolean {
+    // turn of table of contents
+    if ($('#toc-wrapper:visible').length) {
+      $('#toc_button').click();
+    }
     let main_panel = $('#notebook_panel');
     let side_panel = $('#data_side_panel');
 

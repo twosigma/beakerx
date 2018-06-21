@@ -20,16 +20,16 @@
 
 // Configure requirejs
 if (window.require) {
-    window.require.config({
-        map: {
-            "*" : {
-                "beakerx": "nbextensions/beakerx/index",
-                "jupyter-js-widgets": "nbextensions/jupyter-js-widgets/extension",
-                "@jupyter-widgets/base": "nbextensions/jupyter-js-widgets/extension",
-                "@jupyter-widgets/controls": "nbextensions/jupyter-js-widgets/extension"
-            }
-        }
-    });
+  window.require.config({
+    map: {
+      "*": {
+        "beakerx": "nbextensions/beakerx/index",
+        "jupyter-js-widgets": "nbextensions/jupyter-js-widgets/extension",
+        "@jupyter-widgets/base": "nbextensions/jupyter-js-widgets/extension",
+        "@jupyter-widgets/controls": "nbextensions/jupyter-js-widgets/extension"
+      }
+    }
+  });
 }
 __webpack_public_path__ = document.querySelector('body').getAttribute('data-base-url') + 'nbextensions/beakerx/';
 
@@ -37,6 +37,7 @@ require('./shared/style/beakerx.scss');
 require('./plot/bko-combinedplot.css');
 require('./plot/bko-plot.css');
 require('./extension/dataBrowser/dataBrowser.css');
+require('./extension/tableOfContents/toc.css');
 
 define([
   'services/config',
@@ -51,7 +52,8 @@ define([
   './shared/bkCoreManager',
   'big.js',
   './extension/UIOptionsHelper',
-], function(
+  './extension/tableOfContents/index',
+], function (
   configmod,
   comm,
   utils,
@@ -63,14 +65,15 @@ define([
   plotApi,
   bkCoreManager,
   big,
-  UIOptionsHelper
+  UIOptionsHelper,
+  tocUtils
 ) {
   "use strict";
 
   window.Big = big;
 
   var base_url = utils.get_body_data('baseUrl');
-  var config = new configmod.ConfigSection('notebook', { base_url: base_url });
+  var config = new configmod.ConfigSection('notebook', {base_url: base_url});
   var kernel_info = undefined;
   var LINE_COMMENT_CHAR = '//';
   var commUtils = require('./extension/comm');
@@ -86,7 +89,7 @@ define([
 
     commUtils.registerCommTargets(kernel);
 
-    Jupyter.notebook.events.on('kernel_interrupting.Kernel', function() {
+    Jupyter.notebook.events.on('kernel_interrupting.Kernel', function () {
       interrupt();
     });
   }
@@ -106,21 +109,21 @@ define([
     }
   }
 
-  function getKernelInfo(callBack){
+  function getKernelInfo(callBack) {
     if (!kernel_info) {
-      Jupyter.notebook.kernel.kernel_info(function(result) {
+      Jupyter.notebook.kernel.kernel_info(function (result) {
         kernel_info = result.content;
         console.log("kernel_info received:");
         console.log(kernel_info);
         callBack(kernel_info);
-       });
+      });
     } else {
       callBack(kernel_info);
     }
   }
 
   function interrupt() {
-    getKernelInfo(function(info) {
+    getKernelInfo(function (info) {
       if (info.beakerx) {
         interruptToKernel();
       }
@@ -145,12 +148,13 @@ define([
     run_on_kernel_ready: true
   };
 
-  function callback_notebook_loaded () {
+  function callback_notebook_loaded() {
     initCellUtils.enableInitializationCellsFeature(options);
+    tocUtils.toc_init();
     installKernelHandler();
   }
 
-  var load_ipython_extension = function() {
+  var load_ipython_extension = function () {
 
     // assign Beaker methods to window
     if (window) {
@@ -170,7 +174,7 @@ define([
     if (inNotebook) {
       // setup things to run on loading config/notebook
       Jupyter.notebook.config.loaded
-        .then(function update_options_from_config () {
+        .then(function update_options_from_config() {
           $.extend(true, options, Jupyter.notebook.config.data[mod_name]);
         }, function (reason) {
           console.warn(log_prefix, 'error loading config:', reason);
@@ -180,17 +184,17 @@ define([
             callback_notebook_loaded() :
             events.on('notebook_loaded.Notebook', callback_notebook_loaded);
         }).catch(function (reason) {
-          console.error(log_prefix, 'unhandled error:', reason);
-        });
+        console.error(log_prefix, 'unhandled error:', reason);
+      });
 
-      CodeMirror.extendMode('groovy', { lineComment: LINE_COMMENT_CHAR });
-      Jupyter.notebook.get_cells().map(function(cell, i) {
+      CodeMirror.extendMode('groovy', {lineComment: LINE_COMMENT_CHAR});
+      Jupyter.notebook.get_cells().map(function (cell, i) {
         setCodeMirrorLineComment(cell);
       });
     }
   };
 
   return {
-    load_ipython_extension : load_ipython_extension
+    load_ipython_extension: load_ipython_extension
   };
 });

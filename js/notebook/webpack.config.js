@@ -20,6 +20,7 @@ var path = require('path');
 var ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 var TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 var tsConfigPath = path.resolve(__dirname, './src/tsconfig.json');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 // Custom webpack loaders are generally the same for all webpack bundles, hence
 // stored in a separate local variable.
@@ -116,7 +117,7 @@ module.exports = [
     // custom widget.
     // It must be an amd module
     //
-    entry: './src/index.js',
+    entry: './src/index.ts',
     output: {
       filename: 'index.js',
       path: path.resolve(__dirname, '../../beakerx/beakerx/static'),
@@ -146,7 +147,7 @@ module.exports = [
     // The target bundle is always `dist/index.js`, which is the path required
     // by the custom widget embedder.
     //
-    entry: './src/embed.js',
+    entry: './src/embed.ts',
     output: {
       filename: 'index.js',
       path: path.resolve(__dirname, './dist/'),
@@ -164,7 +165,7 @@ module.exports = [
     //
     // This bundle is generally almost identical to the embeddable bundle
     //
-    entry: './src/embed.js',
+    entry: './src/embed.ts',
     output: {
       filename: 'index.js',
       path: path.resolve(__dirname, '../lab/lib/'),
@@ -182,7 +183,16 @@ module.exports = [
       '@jupyter-widgets/jupyterlab-manager',
       '@jupyterlab'
     ]),
-    plugins: plugins
+    plugins: plugins.concat([
+      new CopyWebpackPlugin([{
+        from: path.resolve(__dirname, './src/types'),
+        to: path.resolve(__dirname, '../lab/lib/types')
+      },
+      {
+        from: path.resolve(__dirname, './src/index.d.ts'),
+        to: path.resolve(__dirname, '../lab/lib/index.d.ts')
+      }])
+    ])
   },
   {
     // tree - notebook

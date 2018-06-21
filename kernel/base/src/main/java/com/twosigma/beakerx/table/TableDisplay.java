@@ -109,6 +109,12 @@ public class TableDisplay extends BeakerxWidget {
   private TableActionDetails details;
   private TableDisplayActions displayActions = new TableDisplayActions(this);
 
+  public int ROWS_LIMIT = 100000;
+  public int ROW_LIMIT_TO_INDEX = 10000;
+  private String rowLimitMsg = "Note: table is too big to display.\n" +
+          "      The limit is %s rows, but this table has %s rows. \n" +
+          "      The first %s rows are displayed as a preview.";
+
   @Override
   public String getModelNameValue() {
     return MODEL_NAME_VALUE;
@@ -754,6 +760,10 @@ public class TableDisplay extends BeakerxWidget {
     return TableDisplayToJson.toJson(item);
   }
 
+  public String getRowLimitMsg() {
+    return String.format(rowLimitMsg, ROWS_LIMIT, values.size(), ROW_LIMIT_TO_INDEX);
+  }
+
   public interface Element {
     String get(int columnIndex, int rowIndex);
   }
@@ -771,5 +781,9 @@ public class TableDisplay extends BeakerxWidget {
       throw new RuntimeException("There is no given column name: " + columnName);
     }
     return index;
+  }
+
+  public void setRowLimitMsg(String rowLimitMsg) {
+    this.rowLimitMsg = rowLimitMsg;
   }
 }

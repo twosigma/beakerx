@@ -19,7 +19,7 @@ import { MapIterator, iter, toArray, filter } from '@phosphor/algorithm';
 import DataGridColumn from "../column/DataGridColumn";
 import ColumnManager from "../column/ColumnManager";
 import {COLUMN_TYPES, SORT_ORDER} from "../column/enums";
-import {DEFAULT_PAGE_LENGTH} from "../../consts";
+import {DEFAULT_PAGE_LENGTH} from "../consts";
 import ColumnFilter from "../column/ColumnFilter";
 
 export default class RowManager {
@@ -38,6 +38,13 @@ export default class RowManager {
 
     this.evaluateSearchExpression = this.evaluateSearchExpression.bind(this);
     this.evaluateFilterExpression = this.evaluateFilterExpression.bind(this);
+  }
+
+  destroy(): void {
+    this.rows = [];
+    this.sortedBy = null;
+    this.columnManager = null;
+    this.rowsIterator = null;
   }
 
   createRows(data, hasIndex) {
@@ -86,7 +93,7 @@ export default class RowManager {
     this.rows = this.rows.sort((row1, row2) => {
       let value1 = columnValueResolver(resolverFn(row1, columnIndex));
       let value2 = columnValueResolver(resolverFn(row2, columnIndex));
-      let result = this.compareSortedValues(value1, value2)
+      let result = this.compareSortedValues(value1, value2);
 
       return shouldReverse ? -result : result;
     });

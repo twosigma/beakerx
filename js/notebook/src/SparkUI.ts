@@ -16,11 +16,15 @@
 
 import {Widget} from "@phosphor/widgets";
 import BeakerXApi from "./tree/Utils/BeakerXApi";
+import widgets from './widgets';
+import Timer = NodeJS.Timer;
+import {ToolbarSparkConnectionStatus} from "./sparkUI/toolbarSparkConnectionStatus";
 
-const widgets = require('./widgets');
 const bkUtils = require("./shared/bkUtils");
 
-class SparkUIModel extends widgets.VBoxModel {
+const SPARK_LOCAL_MASTER_URL_PREFIX = 'local';
+
+export class SparkUIModel extends widgets.VBoxModel {
   defaults() {
     return {
       ...super.defaults(),
@@ -34,39 +38,90 @@ class SparkUIModel extends widgets.VBoxModel {
   }
 }
 
-class SparkUIView extends widgets.VBoxView {
-  private sparkStats: Widget;
+export class SparkUIView extends widgets.VBoxView {
+  sparkStats: Widget;
+  connectionStatusElement: HTMLElement;
+
   private sparkAppId: string;
   private sparkUiWebUrl: string;
   private sparkMasterUrl: string;
-  private apiCallIntervalId: number;
+  private apiCallIntervalId: Timer;
+  private toolbarStatusContainer: HTMLElement|null;
   private connectionLabelActive: HTMLElement;
   private connectionLabelMemory: HTMLElement;
   private connectionLabelDead: HTMLElement;
-  private connectionStatusElement: HTMLElement;
+  private masterUrlInput: HTMLInputElement;
+  private executorCoresInput: HTMLInputElement;
+  private executorMemoryInput: HTMLInputElement;
+  private toolbarSparkConnectionStatus: ToolbarSparkConnectionStatus;
 
   initialize(parameters) {
     super.initialize(parameters);
 
     this.openWebUi = this.openWebUi.bind(this);
     this.openExecutors = this.openExecutors.bind(this);
+    this.updateChildren = this.updateChildren.bind(this);
+    this.toggleExecutorConfigInputs = this.toggleExecutorConfigInputs.bind(this);
+
+    this.toolbarSparkConnectionStatus = new ToolbarSparkConnectionStatus(this);
   }
 
-  public render() {
+  public render(): void {
     super.render();
     this.el.classList.add('widget-spark-ui');
 
     this.addSparkMetricsWidget();
-    this.updateLabels();
+    this.updateChildren();
   }
 
-  public update() {
+  public update(): void {
     super.update();
 
     this.connectToApi();
-    this.addSparkUrls();
     this.addSparkMetricsWidget();
-    this.updateLabels();
+    this.handleLocalMasterUrl();
+    this.updateChildren();
+  }
+
+  public openWebUi(): void {
+    window.open(this.sparkUiWebUrl, '_blank');
+  }
+
+  public openExecutors(): void {
+    window.open(`${this.sparkUiWebUrl}/executors`, '_blank');
+  }
+
+  private setupTooltips(): void {
+    this.el.querySelector('.bx-spark-connect').setAttribute('title', "Start a session with a cluster (or a local instance)");
+    this.el.querySelector('.bx-spark-profile select').setAttribute('title', "Set all properties from a named profile");
+    this.el.querySelector('.bx-spark-executor-cores input').setAttribute('title', "The number of cores to use on each executor");
+    this.el.querySelector('.bx-spark-executor-memory input').setAttribute('title', "Amount of memory to use per executor process, in MiB unless otherwise specified. (e.g. 2g, 8g).");
+  }
+
+  private handleFormState() {
+    const startButton = this.el.querySelector('.bx-spark-connect');
+
+    if (this.el.querySelector('.bx-status-panel')) {
+      this.setFormReadonly(startButton);
+    } else {
+      this.setFormEditable(startButton);
+    }
+  }
+
+  private setFormReadonly(startButton) {
+    this.masterUrlInput && this.masterUrlInput.setAttribute('readonly', 'readonly');
+    this.executorCoresInput && this.executorCoresInput.setAttribute('readonly', 'readonly');
+    this.executorMemoryInput && this.executorMemoryInput.setAttribute('readonly', 'readonly');
+
+    startButton && startButton.setAttribute('disabled', 'disabled');
+  }
+
+  private setFormEditable(startButton) {
+    this.masterUrlInput && this.masterUrlInput.removeAttribute('readonly');
+    this.executorCoresInput && this.executorCoresInput.removeAttribute('readonly');
+    this.executorMemoryInput && this.executorMemoryInput.removeAttribute('readonly');
+
+    startButton && startButton.removeAttribute('disabled');
   }
 
   private addSparkUrls() {
@@ -78,15 +133,11 @@ class SparkUIView extends widgets.VBoxView {
       return;
     }
 
-    this.addSparUiWebUrl();
+    this.addSparkUiWebUrl();
     this.addMasterUrl();
   }
 
-  private addSparUiWebUrl() {
-    if (this.sparkUiWebUrl) {
-      return;
-    }
-
+  private addSparkUiWebUrl(): void {
     this.sparkUiWebUrl = this.model.get("sparkUiWebUrl");
 
     if (!this.sparkUiWebUrl) {
@@ -99,13 +150,10 @@ class SparkUIView extends widgets.VBoxView {
     this.sparkStats.node.addEventListener('click', this.openExecutors);
     this.connectionStatusElement.style.cursor = 'pointer';
     this.sparkStats.node.style.cursor = 'pointer';
+    this.toolbarSparkConnectionStatus.bindToolbarSparkEvents();
   }
 
   private addMasterUrl() {
-    if (this.sparkMasterUrl) {
-      return
-    }
-
     this.sparkMasterUrl = this.model.get("sparkMasterUrl");
 
     if (!this.sparkMasterUrl) {
@@ -115,43 +163,58 @@ class SparkUIView extends widgets.VBoxView {
     this.connectionStatusElement.setAttribute('title', this.sparkMasterUrl);
   }
 
-  private openWebUi() {
-    window.open(this.sparkUiWebUrl, '_blank');
+  private handleLocalMasterUrl() {
+    this.masterUrlInput = this.el.querySelector('.bx-spark-master-url input');
+    this.executorCoresInput = this.el.querySelector('.bx-spark-executor-cores input');
+    this.executorMemoryInput = this.el.querySelector('.bx-spark-executor-memory input');
+
+    if (this.masterUrlInput) {
+      this.toggleExecutorConfigInputs();
+      this.masterUrlInput.removeEventListener('keyup', this.toggleExecutorConfigInputs, true);
+      this.masterUrlInput.addEventListener('keyup', this.toggleExecutorConfigInputs, true);
+    }
   }
 
-  private openExecutors() {
-    window.open(`${this.sparkUiWebUrl}/executors`, '_blank');
+  private toggleExecutorConfigInputs() {
+    if (this.masterUrlInput.value.indexOf(SPARK_LOCAL_MASTER_URL_PREFIX) === 0) {
+      this.executorCoresInput.setAttribute('disabled', 'disabled');
+      this.executorMemoryInput.setAttribute('disabled', 'disabled');
+    } else {
+      this.executorCoresInput.removeAttribute('disabled');
+      this.executorMemoryInput.removeAttribute('disabled');
+    }
   }
 
-  private updateLabels() {
-    const lengths = [];
-    const labels = [];
+  private updateChildren() {
     const noop = () => {};
-    const promise = new Promise((resolve, reject) => {
-      this.resolveChildren(this).then((views) => {
-        views.forEach((view) => {
-          this.resolveChildren(view).then((views) => {
-            views.forEach((view) => {
-              this.resolveChildren(view)
-                .then((views) => {
-                  this.collectLabels(views, lengths, labels, resolve);
-                })
-                .catch(reject);
-            });
-          }, noop);
-        });
-      }, noop);
-    });
+    let updateTimer: Timer;
 
-    promise.then(() => {
-      const maxWidth = Math.max.apply(null, lengths);
-
-      labels.forEach((label) => { label.style.width = `${maxWidth}px`; });
-    }).catch(noop);
+    this.resolveChildren(this).then((views) => {
+      views.forEach((view) => {
+        this.resolveChildren(view).then((views) => {
+          views.forEach((view) => {
+            this.resolveChildren(view)
+              .then((views) => {
+                views.forEach((view) => {
+                  clearTimeout(updateTimer);
+                  updateTimer = setTimeout(() => {
+                    this.handleLocalMasterUrl();
+                    this.toolbarSparkConnectionStatus.append();
+                    this.addSparkUrls();
+                    this.handleFormState();
+                    this.toggleExecutorConfigInputs();
+                    this.setupTooltips();
+                  }, 10);
+                });
+              }, noop);
+          });
+        }, noop);
+      });
+    }, noop);
   }
 
   private resolveChildren(view) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       if (!view || !view.children_views) {
         reject();
       }
@@ -159,27 +222,6 @@ class SparkUIView extends widgets.VBoxView {
       view.children_views.update(view.model.get('children'))
         .then(views => resolve(views));
     });
-  }
-
-  private collectLabels(views, lengths, labels, resolve) {
-    views.forEach((view) => {
-      const label = view.el.querySelector('.widget-label');
-
-      if (!label) {
-        return true;
-      }
-
-      lengths.push(this.getLabelWidth(label));
-      labels.push(label);
-    });
-
-    resolve();
-  }
-
-  private getLabelWidth(labelEl): number {
-    labelEl.style.width = 'auto';
-
-    return labelEl.clientWidth;
   }
 
   private createSparkMetricsWidget(): void {
@@ -196,7 +238,7 @@ class SparkUIView extends widgets.VBoxView {
     this.sparkStats.node.innerHTML = `
       <div class="active label label-info" title="Active Tasks">0</div> <div
       class="dead label label-danger" title="Dead Executors">0</div> <div
-      class="memory label label-default" title="Storage Memory">0.0 B</div>
+      class="memory label label-default" title="Storage Memory">0 KB</div>
     `;
 
     this.connectionLabelActive = this.sparkStats.node.querySelector('.active');
@@ -235,12 +277,14 @@ class SparkUIView extends widgets.VBoxView {
         const response = await fetch(sparkUrl, { method: 'GET', credentials: 'include' });
 
         if (!response.ok) {
+          this.toolbarSparkConnectionStatus.destroy();
           return this.clearApiCallInterval();
         }
 
         const data = await response.json();
         this.updateMetrics(data);
       } catch(error) {
+        this.toolbarSparkConnectionStatus.destroy();
         this.clearApiCallInterval();
       }
     };
@@ -252,6 +296,10 @@ class SparkUIView extends widgets.VBoxView {
   private clearApiCallInterval() {
     clearInterval(this.apiCallIntervalId);
     this.sparkAppId = null;
+
+    if (!this.el.querySelector('.bx-status-panel')) {
+      this.toolbarSparkConnectionStatus.clear();
+    }
   }
 
   private updateMetrics(data: Array<any>) {
@@ -271,15 +319,23 @@ class SparkUIView extends widgets.VBoxView {
     this.connectionLabelActive.innerText = `${activeTasks}`;
     this.connectionLabelMemory.innerText = `${bkUtils.formatBytes(storageMemory)}`;
     this.connectionLabelDead.innerText = `${deadExecutors}`;
+    this.toolbarSparkConnectionStatus.propagateToolbarWidget();
   }
 
   private addSparkMetricsWidget() {
+    let updateTimer: Timer;
+
     this.children_views.update(this.model.get('children')).then((views) => {
-      views.forEach((view) => {
+      views.forEach((view: any) => {
         view.children_views.update(view.model.get('children')).then((views) => {
           views.forEach((view) => {
             if (view instanceof widgets.LabelView && view.el.classList.contains('bx-connection-status')) {
-              this.createSparkMetricsWidget();
+              clearTimeout(updateTimer);
+              updateTimer = setTimeout(() => {
+                this.createSparkMetricsWidget();
+                this.toolbarSparkConnectionStatus.append();
+                this.addSparkUrls();
+              }, 10);
             }
           });
         });
@@ -289,7 +345,13 @@ class SparkUIView extends widgets.VBoxView {
 
   dispose() {
     super.dispose();
-    clearInterval(this.apiCallIntervalId);
+    this.clearApiCallInterval();
+    this.sparkStats && this.sparkStats.isAttached && this.sparkStats.dispose();
+    this.toolbarSparkConnectionStatus.destroy();
+  }
+
+  remove() {
+    this.toolbarSparkConnectionStatus.destroy();
   }
 }
 

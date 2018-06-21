@@ -19,12 +19,13 @@ import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.message.Message;
 import org.apache.spark.SparkConf;
-import org.apache.spark.SparkContext;
 import org.apache.spark.sql.SparkSession;
 
 import java.util.Map;
 
 public interface SparkEngine {
+
+  String SPARK_APP_ID = "spark.app.id";
 
   TryResult configure(KernelFunctionality kernel, SparkUIApi sparkUI, Message parentMessage);
 
@@ -39,6 +40,8 @@ public interface SparkEngine {
   String getSparkUiWebUrl();
 
   String getSparkMasterUrl();
+
+  String sparkVersion();
 
   interface SparkEngineFactory {
     SparkEngine create(SparkSession.Builder sparkSessionBuilder);

@@ -25,7 +25,6 @@ import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
-import com.twosigma.beakerx.message.Message;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,11 +72,11 @@ public class SQLMagicCommandTest {
   }
 
   public Optional<String> getDefaultDatasource() {
-    return kernel.setShellOptions.getParam(DEFAULT_DATASOURCE, String.class);
+    return kernel.evaluatorParameters.getParam(DEFAULT_DATASOURCE, String.class);
   }
 
   public Optional<String> getDatasource() {
-    return kernel.setShellOptions.getParam(DATASOURCES, String.class);
+    return kernel.evaluatorParameters.getParam(DATASOURCES, String.class);
   }
 
 }

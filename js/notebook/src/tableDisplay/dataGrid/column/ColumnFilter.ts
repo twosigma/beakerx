@@ -22,6 +22,7 @@ import getEventKeyCode = DataGridHelpers.getEventKeyCode;
 import {KEYBOARD_KEYS} from "../event/enums";
 import {Widget} from "@phosphor/widgets";
 import throttle = DataGridHelpers.throttle;
+import hasUpperCaseLetter = DataGridHelpers.hasUpperCaseLetter;
 
 export const FILTER_INPUT_TOOLTIP = 'filter with an expression with a variable defined for each column and $ means the current column.  eg "$ > 5".';
 export const SEARCH_INPUT_TOOLTIP = 'search for a substring, show only matching rows.';
@@ -42,8 +43,8 @@ export default class ColumnFilter {
 
   static escapeColumnName(columnName: string): string {
     return String(columnName)
-      .replace(/\s+/, '_')
-      .replace('/\W+/', '');
+      .replace(/\s+/g, '_')
+      .replace('/\W+/g', '');
   }
 
   constructor(dataGrid: BeakerXDataGrid, column: DataGridColumn, options: { x, y, width, height }) {
@@ -88,6 +89,16 @@ export default class ColumnFilter {
 
   blur() {
     this.filterInput.blur();
+  }
+
+  destroy(): void {
+    this.dataGrid = null;
+    this.column = null;
+    this.filterWidget = null;
+    this.filterNode = null;
+    this.filterIcon = null;
+    this.clearIcon = null;
+    this.filterInput = null;
   }
 
   private updateInputPosition() {
@@ -154,9 +165,13 @@ export default class ColumnFilter {
   }
 
   private createSearchExpression(value: any) {
-    const expression = `String($).indexOf("${String(value)}") !== -1`;
+    const cellValueFormatter = hasUpperCaseLetter(value)
+      ? 'String($)'
+      : 'String($).toLowerCase()';
 
-    return this.createFilterExpression(expression);
+    return this.createFilterExpression(
+      `${cellValueFormatter}.indexOf("${String(value)}") !== -1`
+    );
   }
 
   private addInputNode(options: { x, y, width, height }): void {

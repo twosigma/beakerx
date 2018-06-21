@@ -16,12 +16,6 @@
 
 import {CellRenderer, GraphicsContext} from "@phosphor/datagrid";
 import DataGridCell from "./DataGridCell";
-import {
-  selectDataFontSize,
-  selectFontColor,
-  selectHeaderFontSize,
-  selectHeadersVertical, selectRenderer
-} from "../model/selectors";
 import {RENDERER_TYPE} from "../interface/IRenderer";
 import BeakerXCellRenderer from "./BeakerXCellRenderer";
 

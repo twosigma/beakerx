@@ -52,6 +52,10 @@ export class DataGridResize {
     this.installMessageHook();
   }
 
+  destroy(): void {
+    this.dataGrid = null;
+  }
+
   setInitialSize(): void {
     this.setBaseRowSize();
     this.resizeHeader();
@@ -354,13 +358,13 @@ export class DataGridResize {
   }
 
   private viewportResizeMessageHook(handler, msg) {
-    if (handler !== this.dataGrid.viewport) {
+    if (!this.dataGrid || handler !== this.dataGrid.viewport) {
       return true;
     }
 
     if (msg.type === 'resize') {
       setTimeout(() => {
-        this.dataGrid['_syncViewport']();
+        this.dataGrid && this.dataGrid['_syncViewport']();
       });
     }
 

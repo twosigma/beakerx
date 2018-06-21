@@ -19,11 +19,16 @@ import { createFormatMenuItems } from './createFormatMenuItems';
 import DataGridColumn from "../column/DataGridColumn";
 import { selectBodyColumnStates } from "../column/selectors";
 import {COLUMN_TYPES} from "../column/enums";
-import {DEFAULT_PAGE_LENGTH, scopeData} from "../../consts";
+import {DEFAULT_PAGE_LENGTH, scopeData} from "../consts";
 
 export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
 
   const dataGrid = column.dataGrid;
+
+  if (!dataGrid) {
+    return [];
+  }
+
   const createShowColumnSubmenu = (): MenuItem[] => {
     const items: MenuItem[] = [];
     const columnsStates = selectBodyColumnStates(dataGrid.store.state);
@@ -33,7 +38,7 @@ export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
         title: state.name,
         id: `column_${state.name}`,
         isChecked: () => {
-          let column = dataGrid.columnManager.getColumnByName(state.name);
+          let column = dataGrid.columnManager && dataGrid.columnManager.getColumnByName(state.name);
 
           return column && column.getVisible();
         },
@@ -58,7 +63,7 @@ export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
       items.push({
         title: `${scopeData.rowsToDisplayMenu[1][index]}`,
         id: `rows_${scopeData.rowsToDisplayMenu[1][index]}`,
-        isChecked: () => item === dataGrid.rowManager.rowsToShow,
+        isChecked: () => dataGrid.rowManager && item === dataGrid.rowManager.rowsToShow,
         action: () => dataGrid.rowManager.setRowsToShow(item)
       })
     });

@@ -16,22 +16,22 @@
 
 import { expect } from 'chai';
 import { DataGrid } from '@phosphor/datagrid';
-import { silverStripeStyle } from '@beakerx/tableDisplay/dataGrid/style/dataGridStyle';
+import BeakerXThemeHelper from '@beakerx/BeakerXThemeHelper';
 
 describe('dataGridStyle', () => {
   it('should be an object', () => {
-    expect(silverStripeStyle).to.be.an('object');
+    expect(BeakerXThemeHelper.getStyle()).to.be.an('object');
   });
 
   it('should have same properties as DataGrid.defaultStyle', () => {
-    expect(silverStripeStyle).to.have.any.keys(Object.keys(DataGrid.defaultStyle));
+    expect(BeakerXThemeHelper.getStyle()).to.have.any.keys(Object.keys(DataGrid.defaultStyle));
   });
 
   it('should have the voidColor set to #ffffff', () => {
-    expect(silverStripeStyle.voidColor).to.equal('#ffffff');
+    expect(BeakerXThemeHelper.getStyle().voidColor).to.equal('#ffffff');
   });
 
   it('should have the rowBackgroundColor method', () => {
-    expect(silverStripeStyle.rowBackgroundColor).to.be.a('function');
+    expect(BeakerXThemeHelper.getStyle().rowBackgroundColor).to.be.a('function');
   });
 });

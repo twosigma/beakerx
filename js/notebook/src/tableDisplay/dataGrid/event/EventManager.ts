@@ -28,6 +28,10 @@ import {KEYBOARD_KEYS} from "./enums";
 import ColumnManager from "../column/ColumnManager";
 import {ICellData} from "../interface/ICell";
 import retrieveUrl = DataGridHelpers.retrieveUrl;
+import {EventHelpers} from "./helpers";
+import isOutsideNode = EventHelpers.isOutsideNode;
+import isInsideGridNode = EventHelpers.isInsideGridNode;
+import isInsideGrid = EventHelpers.isInsideGrid;
 
 const COLUMN_RESIZE_AREA_WIDTH = 4;
 
@@ -90,11 +94,9 @@ export default class EventManager {
     return x < (this.dataGrid.bodyWidth + this.dataGrid.rowHeaderSections.totalSize) && y < this.dataGrid.headerHeight;
   }
 
-  destroy() {
-    document.removeEventListener('mouseup', this.handleScrollBarMouseUp, true);
-    document.removeEventListener('keydown', this.handleKeyDown);
-    document.removeEventListener('mousemove', this.handleMouseMoveOutsideArea);
-    window.removeEventListener('resize', this.handleWindowResize);
+  destroy(): void {
+    this.removeEventListeners();
+    this.clearReferences();
   }
 
   handleMouseMoveOutsideArea(event: MouseEvent) {
@@ -184,22 +186,11 @@ export default class EventManager {
   }
 
   private isOutsideViewport(event: MouseEvent) {
-    return this.isOutsideNode(event, this.dataGrid.viewport.node);
+    return isOutsideNode(event, this.dataGrid.viewport.node);
   }
 
   private isOutsideGrid(event) {
-    return this.isOutsideNode(event, this.dataGrid.node);
-  }
-
-  private isOutsideNode(event: MouseEvent, node: HTMLElement) {
-    const rect = node.getBoundingClientRect();
-
-    return (
-      event.clientY - rect.top <= 1
-      || rect.bottom - event.clientY <= 1
-      || event.clientX - rect.left <= 1
-      || rect.right - event.clientX <= 1
-    )
+    return !isInsideGrid(event);
   }
 
   private handleCellHover(event) {
@@ -255,14 +246,7 @@ export default class EventManager {
   }
 
   private isNodeInsideGrid(event: MouseEvent) {
-    const relatedTarget = (event.relatedTarget || event.target) as HTMLElement;
-
-    return relatedTarget && (
-      this.dataGrid.node.contains(relatedTarget)
-      || relatedTarget === this.dataGrid.node
-      || relatedTarget.classList.contains('bko-menu')
-      || relatedTarget.closest('.bko-table-menu')
-    );
+    return isInsideGridNode(event, this.dataGrid.node);
   }
 
   private handleMouseWheel(event: MouseEvent, parentHandler: Function): void {
@@ -417,5 +401,30 @@ export default class EventManager {
         }
       });
     }
+  }
+
+  private removeEventListeners() {
+    this.dataGrid.node.removeEventListener('selectstart', this.handleSelectStart);
+    this.dataGrid.node.removeEventListener('mouseout', this.handleMouseOut);
+    this.dataGrid.node.removeEventListener('dblclick', this.handleDoubleClick, true);
+    this.dataGrid.node.removeEventListener('mouseup', this.handleMouseUp);
+    this.dataGrid.node.removeEventListener('mousemove', this.handleMouseMove);
+
+    this.dataGrid['_vScrollBar'].node.removeEventListener('mousedown', this.handleMouseDown);
+    this.dataGrid['_hScrollBar'].node.removeEventListener('mousedown', this.handleMouseDown);
+    this.dataGrid['_scrollCorner'].node.removeEventListener('mousedown', this.handleMouseDown);
+
+    document.removeEventListener('mousemove', this.handleMouseMoveOutsideArea);
+    document.removeEventListener('keydown', this.handleKeyDown, true);
+
+    window.removeEventListener('resize', this.handleWindowResize);
+  }
+
+  private clearReferences() {
+    setTimeout(() => {
+      this.dataGrid = null;
+      this.store = null;
+      this.cellHoverControll = null
+    });
   }
 }

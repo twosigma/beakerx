@@ -30,14 +30,11 @@ import CellManager from "./cell/CellManager";
 import {DataGridHelpers} from "./dataGridHelpers";
 import EventManager from "./event/EventManager";
 import CellFocusManager from "./cell/CellFocusManager";
-import {DEFAULT_HIGHLIGHT_COLOR} from "./style/dataGridStyle";
 import CellTooltipManager from "./cell/CellTooltipManager";
 import * as bkUtils from '../../shared/bkUtils';
 import {BeakerXDataStore} from "./store/BeakerXDataStore";
 import {
-  selectCellHighlighters,
   selectHasIndex,
-  selectTooltips,
   selectValues
 } from "./model/selectors";
 import throttle = DataGridHelpers.throttle;
@@ -49,6 +46,7 @@ import {SectionList} from "@phosphor/datagrid/lib/sectionlist";
 import ColumnRegion = DataModel.ColumnRegion;
 import {DataGridResize} from "./DataGridResize";
 import {ALL_TYPES} from "./dataTypes";
+import BeakerXThemeHelper from "../../BeakerXThemeHelper";
 
 export class BeakerXDataGrid extends DataGrid {
   id: string;
@@ -158,11 +156,15 @@ export class BeakerXDataGrid extends DataGrid {
   }
 
   resize(args?: any): void {
-    this.dataGridResize.resize();
+    this.dataGridResize && this.dataGridResize.resize();
   }
 
   setFocus(focus: boolean) {
     this.focused = focus;
+
+    try {
+      window.beakerx.tableFocused = this.focused;
+    } catch(e) {}
 
     if (focus) {
       this.node.focus();
@@ -184,10 +186,33 @@ export class BeakerXDataGrid extends DataGrid {
   }
 
   destroy() {
+    this.model && this.model.destroy();
     this.eventManager.destroy();
     this.columnManager.destroy();
+    this.columnPosition.destroy();
+    this.cellFocusManager.destroy();
+    this.cellManager.destroy();
+    this.cellSelectionManager.destroy();
+    this.cellTooltipManager.destroy();
+    this.highlighterManager.destroy();
+    this.dataGridResize.destroy();
+    this.rowManager.destroy();
 
     Signal.disconnectAll(this);
+
+    setTimeout(() => {
+      this.cellSelectionManager = null;
+      this.cellTooltipManager = null;
+      this.highlighterManager = null;
+      this.cellFocusManager = null;
+      this.dataGridResize = null;
+      this.columnPosition = null;
+      this.columnManager = null;
+      this.eventManager = null;
+      this.cellManager = null;
+      this.rowManager = null;
+      this.store = null;
+    });
   }
 
   onAfterAttach(msg) {
@@ -205,7 +230,7 @@ export class BeakerXDataGrid extends DataGrid {
     }
 
     if (msg.type === 'paint-request' && this.columnPosition.dropCellData) {
-      this.colorizeColumnBorder(this.columnPosition.dropCellData, DEFAULT_HIGHLIGHT_COLOR);
+      this.colorizeColumnBorder(this.columnPosition.dropCellData, BeakerXThemeHelper.DEFAULT_HIGHLIGHT_COLOR);
     }
 
     return true;
@@ -241,14 +266,13 @@ export class BeakerXDataGrid extends DataGrid {
   }
 
   private addCellRenderers() {
-    let cellRendererFactory = new CellRendererFactory(this);
-    let defaultRenderer = cellRendererFactory.getRenderer();
-    let headerCellRenderer = cellRendererFactory.getHeaderRenderer();
+    let defaultRenderer = CellRendererFactory.getRenderer(this);
+    let headerCellRenderer = CellRendererFactory.getHeaderRenderer(this);
 
     this.cellRenderers.set(
       'body',
       { dataType: ALL_TYPES[ALL_TYPES.html] },
-      cellRendererFactory.getRenderer(ALL_TYPES.html)
+      CellRendererFactory.getRenderer(this, ALL_TYPES.html)
     );
     this.cellRenderers.set('body', {}, defaultRenderer);
     this.cellRenderers.set('column-header', {}, headerCellRenderer);
@@ -257,6 +281,6 @@ export class BeakerXDataGrid extends DataGrid {
   }
 
   private handleStateChanged() {
-    this.model.reset();
+    this.model && this.model.reset();
   }
 }

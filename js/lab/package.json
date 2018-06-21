@@ -1,6 +1,6 @@
 {
   "name": "beakerx-jupyterlab",
-  "version": "0.17.1",
+  "version": "0.20.0",
   "description": "BeakerX: Beaker Extensions for JupyterLab",
   "author": "Two Sigma Open Source, LLC",
   "main": "dist/index.js",
@@ -33,16 +33,20 @@
     "@jupyterlab/rendermime": "^0.15.2",
     "@jupyterlab/rendermime-interfaces": "^1.0.4",
     "@jupyterlab/services": "^1.1.2",
+    "@phosphor/datagrid": "^0.1.6",
     "@types/node": "^8.0.56",
     "rimraf": "^2.6.2",
     "typescript": "~2.6.2"
   },
   "jupyterlab": {
     "extension": "dist/index.js",
-    "mimeExtension": "dist/javascriptRendererExtension.js"
+    "mimeExtension": "dist/javascriptRendererExtension.js",
+    "themeDir": "src/theme/static"
   },
   "files": [
     "dist/**/*.js",
-    "lib/*"
+    "lib/*",
+    "src/theme/static/*.css",
+    "src/theme/static/fonts/**/*"
   ]
 }

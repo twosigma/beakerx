@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-import '../../../global.env';
 import ColumnManager from "../column/ColumnManager";
 import createModalTemplate from './columnLimitModalTemplate';
 import {BeakerXDataGrid} from "../BeakerXDataGrid";

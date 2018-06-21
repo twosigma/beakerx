@@ -1,0 +1,47 @@
+import { BeakerXDataGrid } from "./BeakerXDataGrid";
+import { DataModel } from "@phosphor/datagrid";
+import ColumnRegion = DataModel.ColumnRegion;
+export declare class DataGridResize {
+    dataGrid: BeakerXDataGrid;
+    resizeStartRect: {
+        width: number;
+        height: number;
+        x: number;
+        y: number;
+    };
+    resizeMode: 'h' | 'v' | 'both' | null;
+    resizing: boolean;
+    resizedHorizontally: boolean;
+    constructor(dataGrid: BeakerXDataGrid);
+    destroy(): void;
+    setInitialSize(): void;
+    resize(): void;
+    updateWidgetHeight(): void;
+    updateWidgetWidth(): void;
+    setInitialSectionWidths(): void;
+    setInitialSectionWidth(section: any, region: DataModel.ColumnRegion): void;
+    fillEmptyDataGridSpace(): void;
+    updateColumnWidth(region: ColumnRegion): Function;
+    startResizing(event: MouseEvent): void;
+    stopResizing(): void;
+    isResizing(): boolean;
+    shouldResizeDataGrid(event: MouseEvent): boolean;
+    setResizeMode(event: MouseEvent): void;
+    setCursorStyle(cursor: 'auto' | 'ew-resize' | 'ns-resize' | 'nwse-resize'): void;
+    private fillEmptySpaceResizeFn(region, value);
+    private getDataGridResizeConfig(event);
+    private handleMouseMove(event);
+    private getResizedWidth(event);
+    private getResizedHeight(event);
+    private handleMouseUp(event);
+    private captureEvent(event);
+    private getWidgetHeight();
+    private resizeSections();
+    private resizeSectionWidth(column);
+    private resizeHeader();
+    private setBaseRowSize();
+    private getSectionWidth(column);
+    private setSectionWidth(area, column, value);
+    private installMessageHook();
+    private viewportResizeMessageHook(handler, msg);
+}

@@ -20,6 +20,7 @@ import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.kernel.msg.StacktraceHtmlPrinter;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import org.apache.spark.SparkConf;
@@ -36,10 +37,12 @@ import org.apache.spark.sql.SparkSession;
 import scala.Tuple2;
 import scala.collection.Iterator;
 
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -52,6 +55,7 @@ import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXTRA_LISTENERS;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_MASTER;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_REPL_CLASS_OUTPUT_DIR;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_SESSION_NAME;
+import static com.twosigma.beakerx.widget.SparkUI.SPARK_CONTEXT_NAME;
 import static com.twosigma.beakerx.widget.SparkUI.STANDARD_SETTINGS;
 import static com.twosigma.beakerx.widget.StartStopSparkListener.START_STOP_SPARK_LISTENER;
 
@@ -59,7 +63,7 @@ public class SparkEngineImpl implements SparkEngine {
 
   private SparkSession.Builder sparkSessionBuilder;
 
-  private SparkEngineImpl(SparkSession.Builder sparkSessionBuilder) {
+  SparkEngineImpl(SparkSession.Builder sparkSessionBuilder) {
     this.sparkSessionBuilder = sparkSessionBuilder;
     configureSparkSessionBuilder(this.sparkSessionBuilder);
   }
@@ -69,14 +73,34 @@ public class SparkEngineImpl implements SparkEngine {
     SparkConf sparkConf = createSparkConf(sparkUI.getAdvancedOptions(), getSparkConfBasedOn(this.sparkSessionBuilder));
     sparkConf = configureSparkConf(sparkConf, sparkUI);
     this.sparkSessionBuilder = SparkSession.builder().config(sparkConf);
-    SparkSession sparkSession = getOrCreate();
+    TryResult sparkSessionTry = createSparkSession(sparkUI, parentMessage);
+    if (sparkSessionTry.isError()) {
+      return sparkSessionTry;
+    }
     addListener(getOrCreate().sparkContext(), sparkUI);
-    SparkVariable.putSparkSession(sparkSession);
+    SparkVariable.putSparkSession(getOrCreate());
     TryResult tryResultSparkContext = initSparkContextInShell(kernel, parentMessage);
     if (!tryResultSparkContext.isError()) {
       kernel.registerCancelHook(SparkVariable::cancelAllJobs);
     }
     return tryResultSparkContext;
+  }
+
+  private TryResult createSparkSession(SparkUIApi sparkUI, Message parentMessage) {
+    sparkUI.startSpinner(parentMessage);
+    try {
+      SparkSession sparkSession = getOrCreate();
+      return TryResult.createResult(sparkSession);
+    } catch (Exception e) {
+      return TryResult.createError(formatError(e));
+    } finally {
+      sparkUI.stopSpinner();
+    }
+  }
+
+  private String formatError(Exception e) {
+    String[] print = StacktraceHtmlPrinter.print(Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString).toArray(String[]::new));
+    return String.join(System.lineSeparator(), print);
   }
 
   @Override
@@ -87,7 +111,7 @@ public class SparkEngineImpl implements SparkEngine {
   @Override
   public String getSparkAppId() {
     RuntimeConfig conf = getOrCreate().conf();
-    return conf.getAll().get("spark.app.id").get();
+    return conf.getAll().get(SPARK_APP_ID).get();
   }
 
   @Override
@@ -98,17 +122,31 @@ public class SparkEngineImpl implements SparkEngine {
   @Override
   public String getSparkMasterUrl() {
     RuntimeConfig conf = getOrCreate().conf();
-    return conf.getAll().get("spark.master").get();
+    return conf.getAll().get(SPARK_MASTER).get();
+  }
+
+  @Override
+  public String sparkVersion() {
+    try {
+      InputStream sparkProps = Thread.currentThread().getContextClassLoader().
+              getResourceAsStream("spark-version-info.properties");
+      Properties props = new Properties();
+      props.load(sparkProps);
+      return props.getProperty("version");
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private TryResult initSparkContextInShell(KernelFunctionality kernel, Message parent) {
     String addSc = String.format(("import com.twosigma.beakerx.widget.SparkVariable\n" +
                     "val %s = SparkVariable.getSparkSession()\n" +
+                    "val %s = %s.sparkContext\n" +
                     "import org.apache.spark.SparkContext._\n" +
                     "import %s.implicits._\n" +
                     "import %s.sql\n" +
                     "import org.apache.spark.sql.functions._\n"),
-            SPARK_SESSION_NAME, SPARK_SESSION_NAME, SPARK_SESSION_NAME);
+            SPARK_SESSION_NAME, SPARK_CONTEXT_NAME, SPARK_SESSION_NAME, SPARK_SESSION_NAME, SPARK_SESSION_NAME);
 
     SimpleEvaluationObject seo = createSimpleEvaluationObject(addSc, kernel, new Message(new Header(JupyterMessages.COMM_MSG, parent.getHeader().getSession())), 1);
     return kernel.executeCode(addSc, seo);
@@ -118,6 +156,9 @@ public class SparkEngineImpl implements SparkEngine {
     SparkConf sparkConf = new SparkConf();
     sparkConf.set(SPARK_EXTRA_LISTENERS, old.get(SPARK_EXTRA_LISTENERS));
     sparkConf.set(BEAKERX_ID, old.get(BEAKERX_ID));
+    if (old.contains(SPARK_APP_NAME)) {
+      sparkConf.set(SPARK_APP_NAME, old.get(SPARK_APP_NAME));
+    }
     configurations.forEach(x -> {
       if (x.getName() != null) {
         sparkConf.set(x.getName(), (x.getValue() != null) ? x.getValue() : "");

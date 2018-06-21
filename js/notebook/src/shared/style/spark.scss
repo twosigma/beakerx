@@ -201,11 +201,18 @@
   .bx-spark-connect-error {
     margin-left: 20px;
   }
+
+  .bx-spark-configuration {
+    .bx-properties-add-label {
+      width: 298px;
+      text-align: right;
+    }
+  }
 }
 
 .bx-spark-save-button {
-    margin-left: 10px;
-    width: 80px;
+  margin-left: 10px;
+  width: 80px;
 }
 
 .bx-toolbar-spark-widget {

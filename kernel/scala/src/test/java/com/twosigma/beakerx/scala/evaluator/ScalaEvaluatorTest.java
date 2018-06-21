@@ -93,7 +93,7 @@ public class ScalaEvaluatorTest {
     paramMap.put(IMPORTS, imports);
     EvaluatorParameters kernelParameters = new EvaluatorParameters(paramMap);
     //when
-    scalaEvaluator.setShellOptions(kernelParameters);
+    scalaEvaluator.updateEvaluatorParameters(kernelParameters);
     String code = "val x = staticMethod()";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     TryResult evaluate = scalaEvaluator.evaluate(seo, code);

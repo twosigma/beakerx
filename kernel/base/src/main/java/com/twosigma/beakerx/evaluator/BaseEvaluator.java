@@ -197,7 +197,7 @@ public abstract class BaseEvaluator implements Evaluator {
   }
 
   @Override
-  public void setShellOptions(final EvaluatorParameters kernelParameters) {
+  public void updateEvaluatorParameters(final EvaluatorParameters kernelParameters) {
     init(kernelParameters);
     resetEnvironment();
   }

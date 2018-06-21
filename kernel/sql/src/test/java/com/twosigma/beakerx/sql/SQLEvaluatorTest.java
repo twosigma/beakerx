@@ -45,8 +45,8 @@ public class SQLEvaluatorTest {
 
   @Before
   public void setUp() throws Exception {
-    sqlEvaluator = new SQLEvaluator("shellId1", "sessionId1", cellExecutor(), getTestTempFolderFactory(), kernelParameters(), new EvaluatorTest.BeakexClientTestImpl());
-    sqlEvaluator.setShellOptions(kernelParameters());
+    sqlEvaluator = new SQLEvaluator("shellId1", "sessionId1", cellExecutor(), getTestTempFolderFactory(), kernelParameters());
+    sqlEvaluator.updateEvaluatorParameters(kernelParameters());
     kernelTest = new KernelTest("1", sqlEvaluator);
     KernelManager.register(kernelTest);
   }

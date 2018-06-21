@@ -91,7 +91,7 @@ public abstract class Kernel implements KernelFunctionality {
     this.customMagicCommands = customMagicCommands;
     this.commMap = new ConcurrentHashMap<>();
     this.executionResultSender = new ExecutionResultSender(this);
-    this.evaluatorManager = new EvaluatorManager(this, evaluator);
+    this.evaluator = evaluator;
     this.handlers = new KernelHandlers(this, getCommOpenHandler(this), getKernelInfoHandler(this));
     this.magicKernels = new HashMap<>();
     this.commKernelMapping = new HashMap<>();
@@ -123,7 +123,7 @@ public abstract class Kernel implements KernelFunctionality {
 
   private void doExit() {
     doExitOnKernelManager();
-    this.evaluatorManager.exit();
+    this.evaluator.exit();
     this.handlers.exit();
     this.executionResultSender.exit();
     this.closeKernelAction.close();
@@ -143,13 +143,13 @@ public abstract class Kernel implements KernelFunctionality {
     return OS.contains("win");
   }
 
-  public synchronized void setShellOptions(final EvaluatorParameters kernelParameters) {
-    evaluatorManager.setShellOptions(kernelParameters);
+  public synchronized void updateEvaluatorParameters(final EvaluatorParameters kernelParameters) {
+    evaluator.updateEvaluatorParameters(kernelParameters);
   }
 
   @Override
   public synchronized void cancelExecution() {
-    evaluatorManager.cancelExecution();
+    evaluator.cancelExecution();
   }
 
   public synchronized boolean isCommPresent(String hash) {
@@ -204,22 +204,22 @@ public abstract class Kernel implements KernelFunctionality {
 
   @Override
   public TryResult executeCode(String code, SimpleEvaluationObject seo) {
-    return this.evaluatorManager.executeCode(code, seo);
+    return this.evaluator.evaluate(seo, code);
   }
 
   @Override
   public AutocompleteResult autocomplete(String code, int cursorPos) {
-    return this.evaluatorManager.autocomplete(code, cursorPos);
+    return this.evaluator.autocomplete(code, cursorPos);
   }
 
   @Override
   public InspectResult inspect(String code, int cursorPos) {
-    return this.evaluatorManager.inspect(code, cursorPos);
+    return this.evaluator.inspect(code, cursorPos);
   }
 
   @Override
   public List<Path> addJarsToClasspath(List<PathToJar> paths) {
-    return this.evaluatorManager.addJarsToClasspath(paths);
+    return this.evaluator.addJarsToClasspath(paths);
   }
 
   @Override
@@ -234,27 +234,27 @@ public abstract class Kernel implements KernelFunctionality {
 
   @Override
   public Classpath getClasspath() {
-    return this.evaluatorManager.getClasspath();
+    return this.evaluator.getClasspath();
   }
 
   @Override
   public Imports getImports() {
-    return this.evaluatorManager.getImports();
+    return this.evaluator.getImports();
   }
 
   @Override
   public AddImportStatus addImport(ImportPath anImport) {
-    return this.evaluatorManager.addImport(anImport);
+    return this.evaluator.addImport(anImport);
   }
 
   @Override
   public void removeImport(ImportPath anImport) {
-    this.evaluatorManager.removeImport(anImport);
+    this.evaluator.removeImport(anImport);
   }
 
   @Override
   public Path getTempFolder() {
-    return evaluatorManager.getTempFolder();
+    return evaluator.getTempFolder();
   }
 
   @Override
@@ -264,7 +264,7 @@ public abstract class Kernel implements KernelFunctionality {
 
   @Override
   public Class<?> loadClass(String clazzName) throws ClassNotFoundException {
-    return evaluatorManager.loadClass(clazzName);
+    return evaluator.loadClass(clazzName);
   }
 
   @Override
@@ -296,19 +296,19 @@ public abstract class Kernel implements KernelFunctionality {
 
   @Override
   public String getOutDir() {
-    return evaluatorManager.getOutDir();
+    return evaluator.getOutDir();
   }
 
   @Override
   public void registerCancelHook(Hook hook) {
-    evaluatorManager.registerCancelHook(hook);
+    evaluator.registerCancelHook(hook);
   }
 
   @Override
   public PythonEntryPoint getPythonEntryPoint(String kernelName) throws NoSuchKernelException {
     MagicKernelManager manager = magicKernels.get(kernelName);
     if (manager == null) {
-      manager = new MagicKernelManager(kernelName, evaluatorManager.getBeakerx().getContext());
+      manager = new MagicKernelManager(kernelName, evaluator.getBeakerx().getContext());
       magicKernels.put(kernelName, manager);
     }
     return manager.getPythonEntryPoint();
@@ -321,7 +321,7 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   @Override
-  public void addCommIdManagerMapping(String commId, String kernel) {
+  public void addCommIdManagerMapping(String commId, String kernel){
     commKernelMapping.put(commId, kernel);
   }
 }

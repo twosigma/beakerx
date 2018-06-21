@@ -42,8 +42,7 @@ public class SQLAutocompleteTest {
 
   @Before
   public void setUp() throws Exception {
-    sqlEvaluator = new SQLEvaluator("shellId1", "sessionId1", cellExecutor(), getTestTempFolderFactory(), kernelParameters(), new EvaluatorTest.BeakexClientTestImpl());
-    sqlEvaluator.setShellOptions(kernelParameters());
+    sqlEvaluator = new SQLEvaluator("shellId1", "sessionId1", cellExecutor(), getTestTempFolderFactory(), kernelParameters());
     kernelTest = new KernelTest("id1", sqlEvaluator);
   }
 

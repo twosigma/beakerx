@@ -17,7 +17,6 @@ package com.twosigma.beakerx;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
-import com.twosigma.beakerx.evaluator.EvaluatorManager;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.evaluator.Hook;
 import com.twosigma.beakerx.evaluator.InternalVariable;
@@ -97,8 +96,8 @@ public class KernelTest implements KernelFunctionality {
   private String id;
   private Map<String, Comm> commMap = new HashMap<>();
   private ExecutionResultSender executionResultSender = new ExecutionResultSender(this);
-  public EvaluatorParameters setShellOptions;
-  private EvaluatorManager evaluatorManager;
+  public EvaluatorParameters evaluatorParameters;
+  private Evaluator evaluator;
   private String code;
   private Path tempFolder;
   private Map<String, MagicKernelManager> magicKernels;
@@ -125,7 +124,7 @@ public class KernelTest implements KernelFunctionality {
 
   public KernelTest(String id, Evaluator evaluator) {
     this.id = id;
-    this.evaluatorManager = new EvaluatorManager(this, evaluator);
+    this.evaluator = evaluator;
     initMavenResolverParam();
     initMagicCommands();
     SimpleEvaluationObject value = new SimpleEvaluationObject("ok");
@@ -241,33 +240,33 @@ public class KernelTest implements KernelFunctionality {
   }
 
   @Override
-  public void setShellOptions(EvaluatorParameters kernelParameters) {
-    this.setShellOptions = kernelParameters;
+  public void updateEvaluatorParameters(EvaluatorParameters kernelParameters) {
+    this.evaluatorParameters = kernelParameters;
   }
 
   @Override
   public List<Path> addJarsToClasspath(List<PathToJar> paths) {
-    return this.evaluatorManager.addJarsToClasspath(paths);
+    return this.evaluator.addJarsToClasspath(paths);
   }
 
   @Override
   public Classpath getClasspath() {
-    return this.evaluatorManager.getClasspath();
+    return this.evaluator.getClasspath();
   }
 
   @Override
   public Imports getImports() {
-    return this.evaluatorManager.getImports();
+    return this.evaluator.getImports();
   }
 
   @Override
   public AddImportStatus addImport(ImportPath anImport) {
-    return this.evaluatorManager.addImport(anImport);
+    return this.evaluator.addImport(anImport);
   }
 
   @Override
   public void removeImport(ImportPath anImport) {
-    this.evaluatorManager.removeImport(anImport);
+    this.evaluator.removeImport(anImport);
   }
 
   @Override
@@ -304,19 +303,15 @@ public class KernelTest implements KernelFunctionality {
   }
 
   private Path tempFolder() {
-    if (this.evaluatorManager == null) {
+    if (this.evaluator == null) {
       return EvaluatorTest.getTestTempFolderFactory().createTempFolder();
     } else {
-      return evaluatorManager.getTempFolder();
+      return evaluator.getTempFolder();
     }
   }
 
-  public Boolean isSetShellOptions() {
-    return setShellOptions != null;
-  }
-
-  public EvaluatorParameters getSetShellOptions() {
-    return setShellOptions;
+  public EvaluatorParameters getEvaluatorParameters() {
+    return evaluatorParameters;
   }
 
   public List<Message> getPublishedMessages() {
@@ -369,12 +364,12 @@ public class KernelTest implements KernelFunctionality {
 
   @Override
   public AutocompleteResult autocomplete(String code, int cursorPos) {
-    return this.evaluatorManager.autocomplete(code, cursorPos);
+    return this.evaluator.autocomplete(code, cursorPos);
   }
 
   @Override
-  public InspectResult inspect(String code, int cursorPos){
-    return this.evaluatorManager.inspect(code, cursorPos);
+  public InspectResult inspect(String code, int cursorPos) {
+    return this.evaluator.inspect(code, cursorPos);
   }
 
   @Override
@@ -390,8 +385,8 @@ public class KernelTest implements KernelFunctionality {
   }
 
   public void exit() {
-    if (evaluatorManager != null) {
-      evaluatorManager.exit();
+    if (evaluator != null) {
+      evaluator.exit();
     } else {
       removeTempFolder();
     }
@@ -431,5 +426,4 @@ public class KernelTest implements KernelFunctionality {
 
   @Override
   public void addCommIdManagerMapping(String commId, String kernel) {}
-
 }

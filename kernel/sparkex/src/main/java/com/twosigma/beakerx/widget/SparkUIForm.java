@@ -151,7 +151,7 @@ public class SparkUIForm extends VBox {
       this.executorCores.setValue(profileData.getOrDefault(SparkUI.SPARK_EXECUTOR_CORES, SparkUI.SPARK_EXECUTOR_CORES_DEFAULT));
       this.executorMemory.setValue(profileData.getOrDefault(SparkUI.SPARK_EXECUTOR_MEMORY, SparkUI.SPARK_EXECUTOR_MEMORY_DEFAULT));
       Map<String, String> advancedSettings = new HashMap<>();
-      ((ArrayList<LinkedTreeMap>)profileData.getOrDefault(SparkUI.SPARK_ADVANCED_OPTIONS, SparkUI.SPARK_ADVANCED_OPTIONS_DEFAULT))
+      ((ArrayList<Map>)profileData.getOrDefault(SparkUI.SPARK_ADVANCED_OPTIONS, SparkUI.SPARK_ADVANCED_OPTIONS_DEFAULT))
               .stream()
               .forEach(x -> {
                 advancedSettings.put(x.get("name").toString(), x.get("value").toString());
@@ -316,11 +316,20 @@ public class SparkUIForm extends VBox {
   public void setAllToDisabled() {
     this.profileManagement.getChildren().stream().map(x -> (ValueWidget) x).forEach(x -> x.setDisabled(true));
     this.advancedOption.setDisabledToAll();
+    this.connectButton.setDisabled(true);
+    this.masterURL.setDisabled(true);
+    this.executorMemory.setDisabled(true);
+    this.executorCores.setDisabled(true);
   }
 
   public void setAllToEnabled() {
     this.profileManagement.getChildren().stream().map(x -> (ValueWidget) x).forEach(x -> x.setDisabled(false));
     this.advancedOption.setEnabledToAll();
+    this.connectButton.setDisabled(false);
+    this.connectButton.setDomClasses(new ArrayList<>(asList("bx-spark-connect")));
+    this.masterURL.setDisabled(false);
+    this.executorMemory.setDisabled(false);
+    this.executorCores.setDisabled(false);
     refreshElementsAvailability();
   }
 

@@ -111,16 +111,20 @@ public class SparkUI extends VBox implements SparkUIApi {
 
   private void configureSparkContext(Message parentMessage, KernelFunctionality kernel) {
     try {
+      this.sparkUIForm.setAllToDisabled();
       TryResult configure = sparkEngine.configure(kernel, this, parentMessage);
       if (configure.isError()) {
         this.sparkUIForm.sendError(StacktraceHtmlPrinter.printRedBold(ERROR_CREATING_SPARK_SESSION));
+        this.sparkUIForm.setAllToEnabled();
       } else {
         singleSparkSession.active();
         sparkUIForm.saveDefaults();
+        sparkUIForm.getConnectButton().setDomClasses(asList("hidden"));
         sparkUiDefaults.saveProfileName(sparkUIForm.getProfileName());
         applicationStart();
       }
     } catch (Exception e) {
+      this.sparkUIForm.setAllToEnabled();
       this.sparkUIForm.sendError(StacktraceHtmlPrinter.printRedBold(e.getMessage()));
     }
   }
@@ -132,7 +136,6 @@ public class SparkUI extends VBox implements SparkUIApi {
   private void applicationStart() {
     this.statusPanel = new SparkUIStatus(message -> getSparkSession().sparkContext().stop());
     this.sparkUIForm.setDomClasses(new ArrayList<>(asList("bx-disabled")));
-    this.sparkUIForm.setAllToDisabled();
     add(0, this.statusPanel);
     sendUpdate(SPARK_APP_ID, sparkEngine.getSparkAppId());
     sendUpdate("sparkUiWebUrl", sparkEngine.getSparkUiWebUrl());

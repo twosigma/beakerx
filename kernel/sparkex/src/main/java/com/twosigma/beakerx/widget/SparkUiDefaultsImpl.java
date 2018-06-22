@@ -15,9 +15,8 @@
  */
 package com.twosigma.beakerx.widget;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.internal.LinkedTreeMap;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 import scala.Tuple2;
@@ -29,15 +28,13 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.twosigma.beakerx.widget.SparkUI.BEAKERX_ID;
-import static com.twosigma.beakerx.widget.SparkUI.SPARK_ADVANCED_OPTIONS_DEFAULT;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_APP_NAME;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXECUTOR_CORES_DEFAULT;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXECUTOR_MEMORY_DEFAULT;
@@ -59,12 +56,14 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
   private static final String CURRENT_PROFILE = "current_profile";
 
   private List<Map<String, Object>> profiles = new ArrayList<>();
-  private Gson gson = new GsonBuilder().setPrettyPrinting().create();
+  private ObjectMapper objectMapper;
   private Path path;
   private String currentProfile = DEFAULT_PROFILE;
 
   public SparkUiDefaultsImpl(Path path) {
     this.path = path;
+    this.objectMapper = new ObjectMapper();
+    this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
   }
 
   public void saveSparkConf(List<Map<String, Object>> profiles) {
@@ -73,7 +72,7 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
       Map<String, Object> sparkOptions = (Map<String, Object>) map.get(BEAKERX).getOrDefault(SPARK_OPTIONS, new HashMap<>());
       sparkOptions.put(SPARK_PROFILES, profiles == null ? new ArrayList<>() : profiles);
       map.get(BEAKERX).put(SPARK_OPTIONS, sparkOptions);
-      String content = gson.toJson(map);
+      String content = toJson(map);
       Files.write(path, content.getBytes(StandardCharsets.UTF_8));
       this.profiles = profiles;
     } catch (IOException e) {
@@ -145,11 +144,12 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
   @Override
   public void saveProfileName(String profileName) {
     try {
+
       Map<String, Map> map = beakerxJsonAsMap(path);
       Map<String, Object> sparkOptions = (Map<String, Object>) map.get(BEAKERX).getOrDefault(SPARK_OPTIONS, new HashMap<>());
       sparkOptions.put(CURRENT_PROFILE, profileName);
       map.get(BEAKERX).put(SPARK_OPTIONS, sparkOptions);
-      String content = gson.toJson(map);
+      String content = toJson(map);
       Files.write(path, content.getBytes(StandardCharsets.UTF_8));
       currentProfile = profileName;
     } catch (IOException e) {
@@ -195,7 +195,7 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-    return (Map<String, Map>) gson.fromJson(jsonAsString, Map.class);
+    return fromJson(jsonAsString, LinkedHashMap.class);
   }
 
   private Map<String, Object> toMap(SparkConf sparkConf) {
@@ -229,6 +229,25 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
       return props;
     }
     return (List<Map<String, String>>) propsAsObject;
+  }
+
+  private <T> T fromJson(String json, Class<T> theClass) {
+    T result = null;
+    try {
+      result = objectMapper.readValue(json, theClass);
+    } catch (Exception e) {
+      // Ignored.
+    }
+
+    return result;
+  }
+
+  private String toJson(Object object) {
+    try {
+      return objectMapper.writeValueAsString(object);
+    } catch (Exception e) {
+      return null;
+    }
   }
 
 }

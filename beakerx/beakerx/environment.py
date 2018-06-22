@@ -50,8 +50,18 @@ class EnvironmentSettings:
     @staticmethod
     def save_setting_to_file(content):
         makedirs(paths.jupyter_config_dir(), exist_ok=True)
-        with fdopen(osopen(EnvironmentSettings.config_path, O_RDWR | O_CREAT | O_TRUNC, 0o600), 'w+') as file:
-            file.write(json.dumps(json.loads(content), indent=4, sort_keys=True))
+        with fdopen(osopen(EnvironmentSettings.config_path, O_RDWR | O_CREAT, 0o600), 'w+') as file:
+            file_content = file.read()
+            new_settings = json.loads(content)
+            if file_content:
+                saved_settings = json.loads(file_content)
+                file.seek(0)
+                file.truncate()
+                for setting_name in new_settings['beakerx']:
+                    saved_settings['beakerx'][setting_name] = new_settings['beakerx'][setting_name]
+            else:
+                saved_settings = new_settings
+            file.write(json.dumps(saved_settings, indent=4, sort_keys=True))
 
     @staticmethod
     def read_setting_from_file():
@@ -108,7 +118,7 @@ class EnvironmentSettings:
             if 'heap_GB' in jvm_settings and jvm_settings['heap_GB']:
                 val = float(jvm_settings['heap_GB'])
                 if val.is_integer():
-                    value = '-Xmx' + str(jvm_settings['heap_GB']) + 'g'
+                    value = '-Xmx' + str(int(val)) + 'g'
                 else:
                     value = '-Xmx' + str(int(val * 1024)) + 'm'
                 args.append(value)

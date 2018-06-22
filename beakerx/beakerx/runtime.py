@@ -573,6 +573,13 @@ class BeakerX:
         result = conn.read()
         return result=="true"
 
+    def runByTag(self, tag):
+        arguments = dict(target_name='beaker.tag.run')
+        comm = Comm(**arguments)
+        msg = {'runByTag': tag}
+        state = {'state': msg}
+        comm.send(data=state, buffers=[])
+
     def __setattr__(self, name, value):
         if 'session_id' == name:
             self.__dict__['session_id'] = value

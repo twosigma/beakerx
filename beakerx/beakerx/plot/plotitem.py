@@ -20,6 +20,7 @@ from beakerx.utils import *
 from dateutil.parser import parse
 import numpy as np
 import datetime as dt
+import uuid
 
 
 class ShapeType(Enum):
@@ -89,8 +90,36 @@ class Graphics(BaseObject):
         self.type = self.__class__.__name__
         self.visible = getValue(kwargs, 'visible', True)
         self.yAxis = getValue(kwargs, 'yAxis')
-        self.hasClickAction = getValue(kwargs, 'hasClickAction', False)
+        self.clickTag = getValue(kwargs, 'tag', "")
+        self.hasClickAction = self.clickTag != ""
+        self.uid = str(uuid.uuid4())
+        self.onClickListeners = lambda *args: None
+        self.onKeyListeners = {}
+        self.keyTags = {}
+        self.keys = []
 
+    def onClick(self, on_click):
+        if isinstance(on_click, str):
+            self.clickTag = on_click
+        else:
+            self.onClickListeners = on_click
+        self.hasClickAction = True
+        return self
+
+    def onKey(self, key, on_key):
+        if isinstance(on_key, str):
+            self.keyTags[key] = on_key
+        else:
+            self.onKeyListeners[key] = on_key
+        if key not in self.keys:
+            self.keys.append(key)
+        return self
+
+    def fireClick(self, details):
+        self.onClickListeners(details)
+
+    def fireKey(self, details, key):
+        self.onKeyListeners.get(key, lambda *args: None)(details)
 
 class ConstantLine(Graphics):
     def __init__(self, **kwargs):

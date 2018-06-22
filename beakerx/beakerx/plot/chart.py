@@ -22,6 +22,7 @@ from beakerx.plot.plotitem_treemap import *
 from enum import Enum
 from traitlets import Unicode, Dict
 from beakerx.beakerx_widgets import BeakerxDOMWidget
+from ipykernel.comm import Comm
 
 
 class Chart(BaseObject):
@@ -215,6 +216,8 @@ class Plot(BeakerxDOMWidget):
         super(Plot, self).__init__(**kwargs)
         self.chart = XYChart(**kwargs)
         self.model = self.chart.transform()
+        self.on_msg(self._handle_msg)
+        self.details = GraphicsActionObject(None, {})
 
     def add(self, item):
         self.chart.add(item)
@@ -256,6 +259,57 @@ class Plot(BeakerxDOMWidget):
     def _ipython_display_(self, **kwargs):
         self.model = self.chart.transform()
         super(Plot, self)._ipython_display_(**kwargs)
+
+    def _handle_msg(self, msg):
+        params = msg['content']['data']['content']
+        graphics_object = None
+        for item in self.chart.graphics_list:
+            if item.uid == params['itemId']:
+                graphics_object = item
+        self.details = GraphicsActionObject(graphics_object, params['params'])
+        if params['event'] == 'onclick':
+            self._on_click_action(msg)
+        elif params['event'] == 'onkey':
+            self._on_key_action(msg)
+        elif params['event'] == 'actiondetails':
+            self._on_action_details(msg)
+
+    def _on_click_action(self, msg):
+        params = msg['content']['data']['content']
+        for item in self.chart.graphics_list:
+            if item.uid == params['itemId']:
+                item.fireClick(self.details)
+                self.model = self.chart.transform()
+
+    def _on_key_action(self, msg):
+        params = msg['content']['data']['content']
+        for item in self.chart.graphics_list:
+            if item.uid == params['itemId']:
+                item.fireKey(self.details, params['params']['key'])
+                self.model = self.chart.transform()
+
+    def _on_action_details(self, msg):
+        params = msg['content']['data']['content']
+        graphics_object = None
+        for item in self.chart.graphics_list:
+            if item.uid == params['itemId']:
+                graphics_object = item
+        action_type = params['params']['actionType']
+        if action_type == 'onclick' or action_type == 'onkey':
+            self.details = GraphicsActionObject(graphics_object, params['params'])
+            arguments = dict(target_name='beaker.tag.run')
+            comm = Comm(**arguments)
+            msg = {'runByTag': params['params']['tag']}
+            state = {'state': msg}
+            comm.send(data=state, buffers=[])
+
+class GraphicsActionObject:
+    def __init__(self, graphics_object, params):
+        self.graphics = graphics_object
+        self.key = params.get('key')
+        self.tag = params.get('tag')
+        self.index = params.get('index')
+        self.actionType = params.get('actionType')
 
 
 class CategoryPlot(BeakerxDOMWidget):

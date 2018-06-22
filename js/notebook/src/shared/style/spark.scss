@@ -145,11 +145,16 @@
 .bx-stats {
   margin: 4px 0;
   height: 20px;
-  line-height: 17px;
+
+  .label {
+    font-weight: normal;
+  }
 }
 
 .bx-status-panel {
   padding: 2px 0;
+  font-size: 16px;
+  line-height: 16px;
   .bx-button {
     height: 24px;
     padding: 0 6px;
@@ -227,19 +232,14 @@
   max-height: 24px;
   vertical-align: middle;
   float: right;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 16px;
 
   .bx-status-panel > .p-Widget {
     margin-top: 2px;
   }
-
-  .bx-connection-status {
-    height: 18px !important;
-  }
-
   .bx-stats {
-    line-height: 14px;
+    margin-right: 5px!important;
   }
 }
 

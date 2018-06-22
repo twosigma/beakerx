@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.groovy.evaluator;
 
-import com.twosigma.beakerx.AutotranslationServiceImpl;
+import com.twosigma.beakerx.DefaultBeakerXJsonSerializer;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
@@ -49,7 +49,7 @@ public class GroovyEvaluatorProgressReportingTest {
 
   @Before
   public void setUp() throws Exception {
-    groovyEvaluator = TestGroovyEvaluator.groovyEvaluator(new NamespaceClient(TestGroovyEvaluator.autotranslationService()));
+    groovyEvaluator = TestGroovyEvaluator.groovyEvaluator(new NamespaceClient(TestGroovyEvaluator.autotranslationService(), new DefaultBeakerXJsonSerializer()));
     groovyKernel = new KernelTest(GROOVY_EVALUATOR_PROGRESS_REPORTING_TEST, groovyEvaluator);
     KernelManager.register(groovyKernel);
   }

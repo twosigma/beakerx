@@ -31,12 +31,12 @@ import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor
 public class TestScalaEvaluator {
 
   public static ScalaEvaluator evaluator() {
-    ScalaEvaluator evaluator = new ScalaEvaluator("id", "sid", null, cellExecutor(), new NoBeakerxObjectTestFactory(), getTestTempFolderFactory(), getKernelParameters(), new EvaluatorTest.BeakexClientTestImpl());
+    ScalaEvaluator evaluator = new ScalaEvaluator("id", "sid", cellExecutor(), new NoBeakerxObjectTestFactory(), getTestTempFolderFactory(), getKernelParameters(), new EvaluatorTest.BeakexClientTestImpl());
     return evaluator;
   }
 
   public static ScalaEvaluator evaluator(TempFolderFactory tempFolderFactory) {
-    ScalaEvaluator evaluator = new ScalaEvaluator("id", "sid", null, cellExecutor(), new NoBeakerxObjectTestFactory(), tempFolderFactory, getKernelParameters(), new EvaluatorTest.BeakexClientTestImpl());
+    ScalaEvaluator evaluator = new ScalaEvaluator("id", "sid", cellExecutor(), new NoBeakerxObjectTestFactory(), tempFolderFactory, getKernelParameters(), new EvaluatorTest.BeakexClientTestImpl());
     return evaluator;
   }
 

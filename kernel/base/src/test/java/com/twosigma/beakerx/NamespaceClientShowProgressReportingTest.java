@@ -33,7 +33,7 @@ public class NamespaceClientShowProgressReportingTest {
 
   @Before
   public void setUp() {
-    namespaceClient = new NamespaceClient(new NamespaceClientTest.AutotranslationServiceTestImpl());
+    namespaceClient = new NamespaceClient(new NamespaceClientTest.AutotranslationServiceTestImpl(), new DefaultBeakerXJsonSerializer());
     kernel = new KernelTest();
     KernelManager.register(kernel);
   }

@@ -73,8 +73,10 @@ public abstract class Kernel implements KernelFunctionality {
     this(
             sessionId,
             evaluator,
-            kernelSocketsFactory, () -> System.exit(0),
-            new EnvCacheFolderFactory(), customMagicCommands);
+            kernelSocketsFactory,
+            () -> System.exit(0),
+            new EnvCacheFolderFactory(),
+            customMagicCommands);
   }
 
   protected Kernel(final String sessionId,

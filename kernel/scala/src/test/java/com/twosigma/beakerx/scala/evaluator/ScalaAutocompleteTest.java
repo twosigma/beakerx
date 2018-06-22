@@ -38,7 +38,7 @@ public class ScalaAutocompleteTest {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    scalaEvaluator = new ScalaEvaluator("id", "sid", null, cellExecutor(), new NoBeakerxObjectTestFactory(), getTestTempFolderFactory(), EvaluatorTest.KERNEL_PARAMETERS, new EvaluatorTest.BeakexClientTestImpl());
+    scalaEvaluator = new ScalaEvaluator("id", "sid", cellExecutor(), new NoBeakerxObjectTestFactory(), getTestTempFolderFactory(), EvaluatorTest.KERNEL_PARAMETERS, new EvaluatorTest.BeakexClientTestImpl());
   }
 
   @Before
@@ -98,7 +98,7 @@ public class ScalaAutocompleteTest {
   public void autocomplete_interpretedResultsVisible() {
     // This test needs a fresh ScalaEvaluator to modify without disturbing other tests
     final ScalaEvaluator localEvaluator =
-            new ScalaEvaluator("id", "sid", null, cellExecutor(), new NoBeakerxObjectTestFactory(),
+            new ScalaEvaluator("id", "sid", cellExecutor(), new NoBeakerxObjectTestFactory(),
                     getTestTempFolderFactory(), EvaluatorTest.KERNEL_PARAMETERS, new EvaluatorTest.BeakexClientTestImpl());
 
     try {

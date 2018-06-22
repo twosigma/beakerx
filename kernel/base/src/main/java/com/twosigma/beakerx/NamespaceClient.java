@@ -15,46 +15,32 @@
  */
 package com.twosigma.beakerx;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.twosigma.beakerx.evaluator.InternalVariable;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelConfigurationFile;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
-import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beakerx.jvm.serialization.BasicObjectSerializer;
-import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
-import com.twosigma.beakerx.table.TableDisplayToJson;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.io.StringWriter;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.SynchronousQueue;
 
-import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_ENUMS_USING_TO_STRING;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
 
 public class NamespaceClient implements BeakerXClient {
 
   private static Map<String, SynchronousQueue<Object>> messagePool = new HashMap<>();
-  private ObjectMapper objectMapper;
-  private BeakerObjectConverter objectSerializer;
   private Comm autotranslationComm = null;
   private Comm codeCellsComm = null;
   private Comm tagRunComm = null;
   private AutotranslationService autotranslationService;
+  private BeakerXJsonSerializer beakerXJsonSerializer;
 
-  public NamespaceClient(AutotranslationService autotranslationService) {
+  public NamespaceClient(AutotranslationService autotranslationService, BeakerXJsonSerializer beakerXJsonSerializer) {
     this.autotranslationService = autotranslationService;
-    SimpleModule module = TableDisplayToJson.tableDisplayModule();
-    objectMapper = new ObjectMapper();
-    objectMapper.enable(WRITE_ENUMS_USING_TO_STRING);
-    objectMapper.registerModule(module);
-    objectSerializer = new BasicObjectSerializer();
+    this.beakerXJsonSerializer = beakerXJsonSerializer;
   }
 
   @Override
@@ -103,13 +89,8 @@ public class NamespaceClient implements BeakerXClient {
     }
   }
 
-  private String getJson(Object value) throws IOException {
-    StringWriter sw = new StringWriter();
-    JsonGenerator jgen = objectMapper.getFactory().createGenerator(sw);
-    objectSerializer.writeObject(value, jgen, true);
-    jgen.flush();
-    sw.flush();
-    return sw.toString();
+  private String getJson(Object value) {
+    return beakerXJsonSerializer.toJson(value);
   }
 
   //TODO : Not Implemented
@@ -193,10 +174,14 @@ public class NamespaceClient implements BeakerXClient {
   }
 
   public static NamespaceClient create(String id, KernelConfigurationFile configurationFile) {
+    return create(id, configurationFile, new DefaultBeakerXJsonSerializer());
+  }
+
+  public static NamespaceClient create(String id, KernelConfigurationFile configurationFile, BeakerXJsonSerializer serializer) {
     if (configurationFile.getContext().isPresent()) {
-      return new NamespaceClient(AutotranslationServiceImpl.createAsSubkernel(configurationFile.getContext().get()));
+      return new NamespaceClient(AutotranslationServiceImpl.createAsSubkernel(configurationFile.getContext().get()), serializer);
     } else {
-      return new NamespaceClient(AutotranslationServiceImpl.createAsMainKernel(id));
+      return new NamespaceClient(AutotranslationServiceImpl.createAsMainKernel(id), serializer);
     }
   }
 }

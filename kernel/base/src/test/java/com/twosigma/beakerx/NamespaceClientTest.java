@@ -38,7 +38,7 @@ public class NamespaceClientTest {
 
   @Before
   public void setUp() {
-    namespaceClient = new NamespaceClient(new AutotranslationServiceTestImpl());
+    namespaceClient = new NamespaceClient(new AutotranslationServiceTestImpl(), new DefaultBeakerXJsonSerializer());
     kernel = new KernelTest();
     KernelManager.register(kernel);
   }

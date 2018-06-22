@@ -43,7 +43,14 @@ public class ScalaKernelTest extends KernelExecutionTest {
 
   @Override
   protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
-    ScalaEvaluator evaluator = new ScalaEvaluator(sessionId, sessionId, null, cellExecutor(), new NoBeakerxObjectTestFactory(), getTestTempFolderFactory(), EvaluatorTest.KERNEL_PARAMETERS, new EvaluatorTest.BeakexClientTestImpl());
+    ScalaEvaluator evaluator = new ScalaEvaluator(
+            sessionId,
+            sessionId,
+            cellExecutor(),
+            new NoBeakerxObjectTestFactory(),
+            getTestTempFolderFactory(),
+            EvaluatorTest.KERNEL_PARAMETERS,
+            new EvaluatorTest.BeakexClientTestImpl());
     return new Scala(sessionId, evaluator, kernelSocketsFactory, closeKernelAction, getCacheFolderFactory(), new CustomMagicCommandsEmptyImpl());
   }
 

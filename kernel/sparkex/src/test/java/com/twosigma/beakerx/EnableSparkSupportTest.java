@@ -53,7 +53,6 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
   protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
     ScalaEvaluator evaluator = new ScalaEvaluator(sessionId,
             sessionId,
-            null,
             TestBeakerCellExecutor.cellExecutor(),
             new NoBeakerxObjectTestFactory(),
             EvaluatorTest.getTestTempFolderFactory(),

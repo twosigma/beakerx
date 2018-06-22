@@ -16,7 +16,10 @@
 package com.twosigma.beakerx.mimetype;
 
 
+import java.awt.image.RenderedImage;
 import java.util.Base64;
+
+import com.twosigma.beakerx.util.Images;
 
 public class ImageContainer extends MIMEContainer {
 
@@ -28,6 +31,8 @@ public class ImageContainer extends MIMEContainer {
     byte[] image;
     if (data instanceof String) {
       image = getBytes(data);
+    } else if (data instanceof RenderedImage) {
+      image = Images.encode((RenderedImage) data);
     } else {
       image = (byte[]) data;
     }

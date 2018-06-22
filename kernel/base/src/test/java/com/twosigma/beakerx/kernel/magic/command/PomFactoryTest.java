@@ -51,12 +51,14 @@ public class PomFactoryTest {
           "    <groupId>group</groupId>" +
           "    <artifactId>artifact</artifactId>" +
           "    <version>1.1.1</version>" +
-          "  <dependency>" +
+          "    <type>jar</type>" +
+          "  </dependency>" +
           "  <dependency>" +
           "    <groupId>other-group</groupId>" +
           "    <artifactId>other-artifact</artifactId>" +
           "    <version>1.1.1</version>" +
-          "  <dependency>" +
+          "    <type>jar</type>" +
+          "  </dependency>" +
           "</dependencies>";
 
   private PomFactory pomFactory;
@@ -85,7 +87,7 @@ public class PomFactoryTest {
     Dependency dependency1 = Dependency.create(asList("group", "artifact", "1.1.1"));
     Dependency dependency2 = Dependency.create(asList("other-group", "other-artifact", "1.1.1"));
     String pomAsString = pomFactory.createPom("/", asList(dependency1, dependency2), repos);
-    assertThat(removeWhitespaces(pomAsString).contains(removeWhitespaces(EXPECTED_MULTIPLE_DEP_POM)));
+    assertThat(removeWhitespaces(pomAsString)).contains(removeWhitespaces(EXPECTED_MULTIPLE_DEP_POM));
   }
 
   @Test

@@ -15,13 +15,10 @@
  */
 package com.twosigma.beakerx.jvm.serialization;
 
-import java.io.ByteArrayInputStream;
-
-import javax.imageio.ImageIO;
-
 import com.fasterxml.jackson.databind.JsonNode;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twosigma.beakerx.util.Images;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,8 +40,7 @@ public class BufferedImageDeserializer implements ObjectDeserializer {
     try {
       if (n.has("imageData")) {
         byte [] data = n.get("imageData").binaryValue();
-        ByteArrayInputStream bais = new ByteArrayInputStream(data);
-        o = ImageIO.read(bais);
+        o = Images.decode(data);
       }      
     } catch (Exception e) {
       logger.error("exception deserializing ImageIcon ", e);

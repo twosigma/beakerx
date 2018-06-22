@@ -16,15 +16,13 @@
 package com.twosigma.beakerx.jvm.serialization;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.twosigma.beakerx.util.Images;
 
 public class BufferedImageSerializer extends JsonSerializer<BufferedImage> {
 
@@ -32,9 +30,7 @@ public class BufferedImageSerializer extends JsonSerializer<BufferedImage> {
   public void serialize(BufferedImage v, JsonGenerator jgen, SerializerProvider provider)
       throws IOException, JsonProcessingException {
     synchronized(v) {
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      ImageIO.write(v, "png", baos);
-      byte [] data = baos.toByteArray();
+      byte [] data = Images.encode(v);
       jgen.writeStartObject();
       jgen.writeStringField("type",  "ImageIcon");
       jgen.writeObjectField("imageData", data);

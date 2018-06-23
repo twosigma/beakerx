@@ -85,7 +85,7 @@ public class PomFactoryTest {
     Dependency dependency1 = Dependency.create(asList("group", "artifact", "1.1.1"));
     Dependency dependency2 = Dependency.create(asList("other-group", "other-artifact", "1.1.1"));
     String pomAsString = pomFactory.createPom("/", asList(dependency1, dependency2), repos);
-    assertThat(removeWhitespaces(pomAsString).contains(removeWhitespaces(EXPECTED_MULTIPLE_DEP_POM)));
+    assertThat(removeWhitespaces(pomAsString)).contains(removeWhitespaces(EXPECTED_MULTIPLE_DEP_POM));
   }
 
   @Test

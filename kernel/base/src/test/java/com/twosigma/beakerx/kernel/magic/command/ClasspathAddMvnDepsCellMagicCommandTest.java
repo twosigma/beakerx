@@ -108,19 +108,18 @@ public class ClasspathAddMvnDepsCellMagicCommandTest {
   @Test
   public void handleIncorrectSyntax() throws Exception {
     String singleLine = "%%classpath add mvn\n"
-            + "org.slf4j slf4j-api 1.7.5 "
-            + "com.google.code.gson:gson:2.6.2";
+            + "org.slf4j slf4j-api";
     String additionalCode = "%%classpath add mvn\n"
             + "org.slf4j slf4j-api 1.7.5\n"
             + "println(\"test\")";
     processMagicCommand(singleLine);
     List<Message> stderr = EvaluatorResultTestWatcher.getStderr(kernel.getPublishedMessages());
     String text = (String) stderr.get(0).getContent().get("text");
-    Assertions.assertThat(text).isEqualTo(ClassPathAddMvnCellMagicCommand.MVN_CELL_FORMAT_ERROR_MESSAGE);
+    Assertions.assertThat(text).contains(ClassPathAddMvnCellMagicCommand.MVN_CELL_FORMAT_ERROR_MESSAGE);
     processMagicCommand(additionalCode);
     List<Message> stderr2 = EvaluatorResultTestWatcher.getStderr(kernel.getPublishedMessages());
     String text2 = (String) stderr2.get(0).getContent().get("text");
-    Assertions.assertThat(text2).isEqualTo(ClassPathAddMvnCellMagicCommand.MVN_CELL_FORMAT_ERROR_MESSAGE);
+    Assertions.assertThat(text2).contains(ClassPathAddMvnCellMagicCommand.MVN_CELL_FORMAT_ERROR_MESSAGE);
   }
 
   private void processMagicCommand(String allCode) {
@@ -139,6 +138,8 @@ public class ClasspathAddMvnDepsCellMagicCommandTest {
     String text =  (String) TestWidgetUtils.getState(updateMessage.get()).get("value");
 
     Assertions.assertThat(kernel.getClasspath().get(0)).contains(mvnDir);
+    Assertions.assertThat(expected.stream()
+            .allMatch(depNames::contains));
     Assertions.assertThat(depNames.containsAll(expected)).isTrue();
     Assertions.assertThat(expected.stream().allMatch(text::contains)).isTrue();
 

@@ -51,12 +51,14 @@ public class PomFactoryTest {
           "    <groupId>group</groupId>" +
           "    <artifactId>artifact</artifactId>" +
           "    <version>1.1.1</version>" +
-          "  <dependency>" +
+          "    <type>jar</type>" +
+          "  </dependency>" +
           "  <dependency>" +
           "    <groupId>other-group</groupId>" +
           "    <artifactId>other-artifact</artifactId>" +
           "    <version>1.1.1</version>" +
-          "  <dependency>" +
+          "    <type>jar</type>" +
+          "  </dependency>" +
           "</dependencies>";
 
   private PomFactory pomFactory;

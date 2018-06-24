@@ -17,16 +17,15 @@ package com.twosigma.beakerx.jvm.serialization;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.twosigma.beakerx.util.Images;
 
 public class ImageIconSerializer extends JsonSerializer<ImageIcon> {
 
@@ -44,9 +43,7 @@ public class ImageIconSerializer extends JsonSerializer<ImageIcon> {
       vi.paintIcon(null, g, 0, 0);
       g.dispose();
 
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      ImageIO.write(v, "png", baos);
-      byte [] data = baos.toByteArray();
+      byte [] data = Images.encode(v);
       jgen.writeStartObject();
       jgen.writeStringField("type",  "ImageIcon");
       jgen.writeObjectField("imageData", data);

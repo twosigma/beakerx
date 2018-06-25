@@ -21,6 +21,7 @@ import clojure.lang.Namespace;
 import clojure.lang.RT;
 import clojure.lang.Symbol;
 import clojure.lang.Var;
+import com.twosigma.beakerx.BeakerXClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.clojure.autocomplete.ClojureAutocomplete;
@@ -54,14 +55,24 @@ public class ClojureEvaluator extends BaseEvaluator {
   private DynamicClassLoader loader;
   private Var clojureLoadString = null;
 
-  public ClojureEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters) {
-    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters);
+  public ClojureEvaluator(String id,
+                          String sId,
+                          CellExecutor cellExecutor,
+                          TempFolderFactory tempFolderFactory,
+                          EvaluatorParameters evaluatorParameters,
+                          BeakerXClient beakerxClient) {
+    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient);
     requirements = new ArrayList<>();
     init();
   }
 
-  public ClojureEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters) {
-    this(id, sId, new BeakerCellExecutor("clojure"), new TempFolderFactoryImpl(), evaluatorParameters);
+  public ClojureEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerXClient beakerxClient) {
+    this(id,
+            sId,
+            new BeakerCellExecutor("clojure"),
+            new TempFolderFactoryImpl(),
+            evaluatorParameters,
+            beakerxClient);
   }
 
   @Override

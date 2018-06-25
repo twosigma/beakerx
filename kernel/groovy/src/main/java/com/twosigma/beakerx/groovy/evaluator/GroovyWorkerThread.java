@@ -39,15 +39,9 @@ class GroovyWorkerThread implements Callable<TryResult> {
     NamespaceClient nc = null;
     TryResult r;
     try {
-      nc = NamespaceClient.getBeaker(groovyEvaluator.getSessionId());
-      nc.setOutputObj(j.outputObject);
       j.outputObject.started();
       String code = j.codeToBeExecuted;
       r = groovyEvaluator.executeTask(new GroovyCodeRunner(groovyEvaluator, code, j.outputObject));
-      if (nc != null) {
-        nc.setOutputObj(null);
-        nc = null;
-      }
     } catch (Throwable e) {
       if (e instanceof GroovyNotFoundException) {
         logger.warn(e.getLocalizedMessage());
@@ -55,11 +49,6 @@ class GroovyWorkerThread implements Callable<TryResult> {
       } else {
         e.printStackTrace();
         r = TryResult.createError(e.getLocalizedMessage());
-      }
-    } finally {
-      if (nc != null) {
-        nc.setOutputObj(null);
-        nc = null;
       }
     }
     return r;

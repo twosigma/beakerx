@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.javash.evaluator;
 
+import com.twosigma.beakerx.BeakerXClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
@@ -44,12 +45,17 @@ public class JavaEvaluator extends BaseEvaluator {
   private JavaAutocomplete jac;
   private JavaBeakerXUrlClassLoader loader = null;
 
-  public JavaEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters) {
-    this(id, sId, new BeakerCellExecutor("javash"), new TempFolderFactoryImpl(), evaluatorParameters);
+  public JavaEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerXClient beakerxClient) {
+    this(id, sId, new BeakerCellExecutor("javash"), new TempFolderFactoryImpl(), evaluatorParameters, beakerxClient);
   }
 
-  public JavaEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters) {
-    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters);
+  public JavaEvaluator(String id,
+                       String sId,
+                       CellExecutor cellExecutor,
+                       TempFolderFactory tempFolderFactory,
+                       EvaluatorParameters evaluatorParameters,
+                       BeakerXClient beakerxClient) {
+    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient);
     packageId = "com.twosigma.beaker.javash.bkr" + shellId.split("-")[0];
     cps = new JavaClasspathScanner();
     jac = createJavaAutocomplete(cps);
@@ -58,7 +64,7 @@ public class JavaEvaluator extends BaseEvaluator {
 
   @Override
   public ClassLoader getClassLoaderForImport() {
-    return  getJavaClassLoader().getJavaURLClassLoader();
+    return getJavaClassLoader().getJavaURLClassLoader();
   }
 
   @Override
@@ -131,7 +137,7 @@ public class JavaEvaluator extends BaseEvaluator {
   }
 
   private JavaBeakerXUrlClassLoader newClassLoader() {
-    JavaBeakerXUrlClassLoader loader = new JavaBeakerXUrlClassLoader(ClassLoader.getSystemClassLoader(),new PathToJar(outDir));
+    JavaBeakerXUrlClassLoader loader = new JavaBeakerXUrlClassLoader(ClassLoader.getSystemClassLoader(), new PathToJar(outDir));
     loader.addInitPathToJars(getClasspath().getPaths());
     return loader;
   }

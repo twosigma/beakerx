@@ -49,7 +49,8 @@ public class GroovyCompleteHandlerTest {
             "sid",
             cellExecutor(),
             EvaluatorTest.getTestTempFolderFactory(),
-            new EvaluatorParameters(new HashedMap())
+            new EvaluatorParameters(new HashedMap()),
+            new EvaluatorTest.BeakexClientTestImpl()
 
     );
     groovyKernel = new GroovyKernelMock("sid", groovyEvaluator);

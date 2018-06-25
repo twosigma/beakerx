@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.widget;
 
-import com.twosigma.beakerx.NamespaceClient;
+import com.twosigma.beakerx.BeakerXClientManager;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Message;
 
@@ -34,7 +34,7 @@ public class Button extends ValueWidget<Boolean> {
   public static final String ICON = "icon";
   public static final String BUTTON_STYLE = "button_style";
 
-  private String tooltip= EMPTY_STRING;
+  private String tooltip = EMPTY_STRING;
   private String tag;
   private String icon = EMPTY_STRING;
   private String button_style = EMPTY_STRING;
@@ -59,7 +59,7 @@ public class Button extends ValueWidget<Boolean> {
     content.put(BUTTON_STYLE, button_style);
     return content;
   }
-  
+
 
   public String getTooltip() {
     return tooltip;
@@ -88,12 +88,12 @@ public class Button extends ValueWidget<Boolean> {
     handleCommEventSync(message, CommActions.CLICK, this::onClick);
   }
 
-  public void onClick(HashMap content, Message message){
-    if(actionPerformed != null){
+  public void onClick(HashMap content, Message message) {
+    if (actionPerformed != null) {
       actionPerformed.executeAction(content, message);
     }
-    if(getTag() != null && !getTag().isEmpty()){
-      NamespaceClient.getBeaker().runByTag(getTag());
+    if (getTag() != null && !getTag().isEmpty()) {
+      BeakerXClientManager.get().runByTag(getTag());
     }
   }
 
@@ -121,5 +121,5 @@ public class Button extends ValueWidget<Boolean> {
     this.button_style = button_style;
     sendUpdate(BUTTON_STYLE, button_style);
   }
-  
+
 }

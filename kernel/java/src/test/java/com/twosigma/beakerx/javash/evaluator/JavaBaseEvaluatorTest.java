@@ -17,6 +17,7 @@ package com.twosigma.beakerx.javash.evaluator;
 
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorBaseTest;
+import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -31,7 +32,7 @@ public class JavaBaseEvaluatorTest extends EvaluatorBaseTest {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    evaluator = new JavaEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS);
+    evaluator = new JavaEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS, new EvaluatorTest.BeakexClientTestImpl());
   }
 
   @AfterClass
@@ -41,12 +42,12 @@ public class JavaBaseEvaluatorTest extends EvaluatorBaseTest {
 
   @Override
   protected BaseEvaluator createNewEvaluator() {
-    return new JavaEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS);
+    return new JavaEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS, new EvaluatorTest.BeakexClientTestImpl());
   }
 
   @Override
   protected BaseEvaluator createNewEvaluator(TempFolderFactory tempFolderFactory) {
-    return new JavaEvaluator("id", "sid", cellExecutor(), tempFolderFactory, KERNEL_PARAMETERS);
+    return new JavaEvaluator("id", "sid", cellExecutor(), tempFolderFactory, KERNEL_PARAMETERS, new EvaluatorTest.BeakexClientTestImpl());
   }
 
   @Override

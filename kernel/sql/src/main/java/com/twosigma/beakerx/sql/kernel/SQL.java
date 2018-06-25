@@ -21,6 +21,7 @@ import static com.twosigma.beakerx.sql.magic.command.DataSourcesMagicCommand.DAT
 import static com.twosigma.beakerx.sql.magic.command.DefaultDataSourcesMagicCommand.DEFAULT_DATASOURCE;
 
 import com.twosigma.beakerx.DefaultJVMVariables;
+import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.kernel.CacheFolderFactory;
@@ -44,6 +45,7 @@ import com.twosigma.beakerx.sql.magic.command.DefaultDataSourcesMagicCommand;
 import com.twosigma.beakerx.util.BeakerXSystem;
 import com.twosigma.beakerx.util.BeakerXSystemImpl;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +54,7 @@ import java.util.logging.Logger;
 
 
 public class SQL extends Kernel {
+
   private final static Logger logger = Logger.getLogger(SQL.class.getName());
   public static final String BEAKERX_SQL_DEFAULT_JDBC = "BEAKERX_SQL_DEFAULT_JDBC";
 
@@ -73,17 +76,18 @@ public class SQL extends Kernel {
     return new SQLKernelInfoHandler(kernel);
   }
 
-
   public static void main(final String[] args) {
     KernelRunner.run(() -> {
       String id = uuid();
+      KernelConfigurationFile configurationFile = new KernelConfigurationFile(args);
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
-              new KernelConfigurationFile(args));
+              configurationFile);
       EvaluatorParameters params = getKernelParameters(new BeakerXSystemImpl());
-      SQLEvaluator evaluator = new SQLEvaluator(id, id, params);
+      SQLEvaluator evaluator = new SQLEvaluator(id, id, params,NamespaceClient.create(id, configurationFile));
       return new SQL(id, evaluator, kernelSocketsFactory);
     });
   }
+
 
   static EvaluatorParameters getKernelParameters(BeakerXSystem beakerXSystem) {
     Map<String, Object> kernelParameters = new HashMap<>();
@@ -102,6 +106,7 @@ public class SQL extends Kernel {
     }
     return kernelParameters;
   }
+
 
   static class SQLCustomMagicCommandsImpl implements CustomMagicCommandsFactory {
     @Override

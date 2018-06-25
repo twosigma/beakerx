@@ -16,30 +16,19 @@
 
 package com.twosigma.beakerx.scala.evaluator;
 
-import com.google.inject.Provider;
-import com.twosigma.beakerx.NamespaceClient;
+import com.twosigma.beakerx.BeakerXClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
-import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
 import com.twosigma.beakerx.jvm.classloader.BeakerXUrlClassLoader;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
-import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.PathToJar;
-import com.twosigma.beakerx.scala.serializers.ScalaCollectionDeserializer;
-import com.twosigma.beakerx.scala.serializers.ScalaCollectionSerializer;
-import com.twosigma.beakerx.scala.serializers.ScalaListOfPrimitiveTypeMapsSerializer;
-import com.twosigma.beakerx.scala.serializers.ScalaMapDeserializer;
-import com.twosigma.beakerx.scala.serializers.ScalaMapSerializer;
-import com.twosigma.beakerx.scala.serializers.ScalaPrimitiveTypeListOfListSerializer;
-import com.twosigma.beakerx.scala.serializers.ScalaPrimitiveTypeMapSerializer;
-import com.twosigma.beakerx.scala.serializers.ScalaTableDeSerializer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,18 +40,11 @@ public class ScalaEvaluator extends BaseEvaluator {
 
   private final static Logger logger = LoggerFactory.getLogger(ScalaEvaluator.class.getName());
   private BeakerxObjectFactory beakerxObjectFactory;
-  private final Provider<BeakerObjectConverter> objectSerializerProvider;
-  private static boolean autoTranslationSetup = false;
   private BeakerXUrlClassLoader classLoader;
   private ScalaEvaluatorGlue shell;
 
-  public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, EvaluatorParameters evaluatorParameters) {
-    this(id, sId, osp, new BeakerCellExecutor("scala"), new BeakerxObjectFactoryImpl(), new TempFolderFactoryImpl(), evaluatorParameters);
-  }
-
-  public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, CellExecutor cellExecutor, BeakerxObjectFactory beakerxObjectFactory, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters) {
-    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters);
-    this.objectSerializerProvider = osp;
+  public ScalaEvaluator(String id, String sId, CellExecutor cellExecutor, BeakerxObjectFactory beakerxObjectFactory, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters, BeakerXClient beakerxClient) {
+    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient);
     this.beakerxObjectFactory = beakerxObjectFactory;
     this.classLoader = newClassLoader();
     this.shell = createNewEvaluator();
@@ -135,11 +117,11 @@ public class ScalaEvaluator extends BaseEvaluator {
 
   private ScalaEvaluatorGlue createNewEvaluator(ScalaEvaluatorGlue shell) {
     ScalaEvaluatorGlue newEvaluator = createNewEvaluator();
-    setLineId(newEvaluator,shell.interpreter().lastRequest().lineRep().lineId());
+    setLineId(newEvaluator, shell.interpreter().lastRequest().lineRep().lineId());
     return newEvaluator;
   }
 
-  private void setLineId(ScalaEvaluatorGlue newEvaluator,int lines) {
+  private void setLineId(ScalaEvaluatorGlue newEvaluator, int lines) {
     for (int i = newEvaluator.interpreter().lastRequest().lineRep().lineId(); i < lines; i++) {
       newEvaluator.evaluate2("\"\"");
     }
@@ -153,9 +135,7 @@ public class ScalaEvaluator extends BaseEvaluator {
       addImportsToShell(shell, getImports().getImportPaths());
     }
     logger.debug("creating beaker object");
-    // ensure object is created
-    NamespaceClient.getBeaker(getSessionId());
-    String r = shell.evaluate2(this.beakerxObjectFactory.create(getSessionId()));
+    String r = shell.evaluate2(this.beakerxObjectFactory.create());
     if (r != null && !r.isEmpty()) {
       logger.warn("ERROR creating beaker object: {}", r);
     }
@@ -201,22 +181,4 @@ public class ScalaEvaluator extends BaseEvaluator {
     }
     return loader_cp + File.pathSeparatorChar + System.getProperty("java.class.path");
   }
-
-  public void setupAutoTranslation() {
-    if (autoTranslationSetup)
-      return;
-
-    objectSerializerProvider.get().addfTypeSerializer(new ScalaCollectionSerializer(objectSerializerProvider.get()));
-    objectSerializerProvider.get().addfTypeSerializer(new ScalaMapSerializer(objectSerializerProvider.get()));
-    objectSerializerProvider.get().addfTypeSerializer(new ScalaPrimitiveTypeListOfListSerializer(objectSerializerProvider.get()));
-    objectSerializerProvider.get().addfTypeSerializer(new ScalaListOfPrimitiveTypeMapsSerializer(objectSerializerProvider.get()));
-    objectSerializerProvider.get().addfTypeSerializer(new ScalaPrimitiveTypeMapSerializer(objectSerializerProvider.get()));
-
-    objectSerializerProvider.get().addfTypeDeserializer(new ScalaCollectionDeserializer(objectSerializerProvider.get()));
-    objectSerializerProvider.get().addfTypeDeserializer(new ScalaMapDeserializer(objectSerializerProvider.get()));
-    objectSerializerProvider.get().addfTypeDeserializer(new ScalaTableDeSerializer(objectSerializerProvider.get()));
-
-    autoTranslationSetup = true;
-  }
-
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,19 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package com.twosigma.beakerx;
 
-package com.twosigma.beakerx.kernel;
 
-public class KernelManager {
+public class BeakerXClientManager {
 
-  private static KernelFunctionality kernelInst;
+  public static String BEAKER_X_CLIENT_MANAGER_PATH = BeakerXClientManager.class.getName();
+  public static String BEAKER_X_CLIENT_MANAGER_GET = BeakerXClientManager.class.getSimpleName() + ".get()";
 
-  public static void register(KernelFunctionality kernelFunctionality) {
-    kernelInst = kernelFunctionality;
+  private static BeakerXClient beakerXClientInst;
+
+  public static BeakerXClient register(BeakerXClient beakerXClient) {
+    beakerXClientInst = beakerXClient;
+    return beakerXClientInst = beakerXClient;
   }
 
-  public static KernelFunctionality get() {
-    return kernelInst;
+  public static BeakerXClient get() {
+    return beakerXClientInst;
   }
 
 }

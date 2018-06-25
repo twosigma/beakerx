@@ -2,6 +2,7 @@ package com.twosigma.beakerx.clojure.evaluator;
 
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorBaseTest;
+import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -16,7 +17,7 @@ public class ClojureEvaluatorTest extends EvaluatorBaseTest {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    evaluator = new ClojureEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS);
+    evaluator = new ClojureEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS, new EvaluatorTest.BeakexClientTestImpl());
   }
 
   @AfterClass
@@ -26,12 +27,12 @@ public class ClojureEvaluatorTest extends EvaluatorBaseTest {
 
   @Override
   protected BaseEvaluator createNewEvaluator() {
-    return new ClojureEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS);
+    return new ClojureEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS, new EvaluatorTest.BeakexClientTestImpl());
   }
 
   @Override
   protected BaseEvaluator createNewEvaluator(TempFolderFactory tempFolderFactory) {
-    return new ClojureEvaluator("id", "sid", cellExecutor(), tempFolderFactory, KERNEL_PARAMETERS);
+    return new ClojureEvaluator("id", "sid", cellExecutor(), tempFolderFactory, KERNEL_PARAMETERS, new EvaluatorTest.BeakexClientTestImpl());
   }
 
   @Override

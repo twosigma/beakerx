@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.scala;
 
+import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.scala.evaluator.NoBeakerxObjectTestFactory;
@@ -30,12 +31,12 @@ import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor
 public class TestScalaEvaluator {
 
   public static ScalaEvaluator evaluator() {
-    ScalaEvaluator evaluator = new ScalaEvaluator("id", "sid", null, cellExecutor(), new NoBeakerxObjectTestFactory(), getTestTempFolderFactory(),getKernelParameters());
+    ScalaEvaluator evaluator = new ScalaEvaluator("id", "sid", cellExecutor(), new NoBeakerxObjectTestFactory(), getTestTempFolderFactory(), getKernelParameters(), new EvaluatorTest.BeakexClientTestImpl());
     return evaluator;
   }
 
   public static ScalaEvaluator evaluator(TempFolderFactory tempFolderFactory) {
-    ScalaEvaluator evaluator = new ScalaEvaluator("id", "sid", null, cellExecutor(), new NoBeakerxObjectTestFactory(), tempFolderFactory, getKernelParameters());
+    ScalaEvaluator evaluator = new ScalaEvaluator("id", "sid", cellExecutor(), new NoBeakerxObjectTestFactory(), tempFolderFactory, getKernelParameters(), new EvaluatorTest.BeakexClientTestImpl());
     return evaluator;
   }
 

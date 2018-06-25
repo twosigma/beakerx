@@ -16,8 +16,11 @@
 package com.twosigma.beakerx.scala.kernel;
 
 import com.twosigma.beakerx.DisplayerDataMapper;
+import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.Evaluator;
+import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
 import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.kernel.CacheFolderFactory;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.CustomMagicCommandsFactory;
@@ -30,6 +33,7 @@ import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.scala.comm.ScalaCommOpenHandler;
+import com.twosigma.beakerx.scala.evaluator.BeakerxObjectFactoryImpl;
 import com.twosigma.beakerx.scala.evaluator.ScalaEvaluator;
 import com.twosigma.beakerx.scala.handler.ScalaKernelInfoHandler;
 import com.twosigma.beakerx.scala.magic.command.CustomMagicCommandsImpl;
@@ -73,12 +77,17 @@ public class Scala extends Kernel {
   public static void main(final String[] args) {
     KernelRunner.run(() -> {
       String id = uuid();
-      ScalaEvaluator se = new ScalaEvaluator(id, id,
-              null,
-              getKernelParameters());//TODO check what to put, need for autotranslation
-
-      //js.setupAutoTranslation(); -- uncomment
-      KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(new KernelConfigurationFile(args));
+      KernelConfigurationFile configurationFile = new KernelConfigurationFile(args);
+      KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(configurationFile);
+      NamespaceClient namespaceClient = NamespaceClient.create(id, configurationFile, new ScalaBeakerXJsonSerializer());
+      ScalaEvaluator se = new ScalaEvaluator(
+              id,
+              id,
+              new BeakerCellExecutor("scala"),
+              new BeakerxObjectFactoryImpl(),
+              new TempFolderFactoryImpl(),
+              getKernelParameters(),
+              namespaceClient);
       return new Scala(id, se, kernelSocketsFactory);
     });
   }
@@ -103,7 +112,7 @@ public class Scala extends Kernel {
     return scalaObject;
   }
 
-  public static EvaluatorParameters getKernelParameters() {
+  private static EvaluatorParameters getKernelParameters() {
     HashMap<String, Object> kernelParameters = new HashMap<>();
     kernelParameters.put(IMPORTS, new ScalaDefaultVariables().getImports());
     return new EvaluatorParameters(kernelParameters);

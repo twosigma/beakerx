@@ -73,12 +73,18 @@ public abstract class Kernel implements KernelFunctionality {
     this(
             sessionId,
             evaluator,
-            kernelSocketsFactory, () -> System.exit(0),
-            new EnvCacheFolderFactory(), customMagicCommands);
+            kernelSocketsFactory,
+            () -> System.exit(0),
+            new EnvCacheFolderFactory(),
+            customMagicCommands);
   }
 
-  protected Kernel(final String sessionId, final Evaluator evaluator, final KernelSocketsFactory kernelSocketsFactory,
-                   CloseKernelAction closeKernelAction, CacheFolderFactory cacheFolderFactory, CustomMagicCommandsFactory customMagicCommands) {
+  protected Kernel(final String sessionId,
+                   final Evaluator evaluator,
+                   final KernelSocketsFactory kernelSocketsFactory,
+                   CloseKernelAction closeKernelAction,
+                   CacheFolderFactory cacheFolderFactory,
+                   CustomMagicCommandsFactory customMagicCommands) {
     this.sessionId = sessionId;
     this.cacheFolderFactory = cacheFolderFactory;
     this.kernelSocketsFactory = kernelSocketsFactory;
@@ -303,7 +309,7 @@ public abstract class Kernel implements KernelFunctionality {
   public PythonEntryPoint getPythonEntryPoint(String kernelName) throws NoSuchKernelException {
     MagicKernelManager manager = magicKernels.get(kernelName);
     if (manager == null) {
-      manager = new MagicKernelManager(kernelName);
+      manager = new MagicKernelManager(kernelName, evaluator.getBeakerX().getContext());
       magicKernels.put(kernelName, manager);
     }
     return manager.getPythonEntryPoint();
@@ -316,7 +322,7 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   @Override
-  public void addCommIdManagerMapping(String commId, String kernel) {
+  public void addCommIdManagerMapping(String commId, String kernel){
     commKernelMapping.put(commId, kernel);
   }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,9 +13,28 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.scala.evaluator;
+package com.twosigma.beakerx;
 
-public interface BeakerxObjectFactory {
+import java.util.List;
+import java.util.concurrent.SynchronousQueue;
 
-  String create();
+public interface BeakerXClient {
+
+  void showProgressUpdate(String message, int progress);
+
+  void delBeaker();
+
+  String update(String name, Object value);
+
+  Object set(String name, Object value);
+
+  Object get(final String name);
+
+  SynchronousQueue<Object> getMessageQueue(String channel);
+
+  List<CodeCell> getCodeCells(String tagFilter);
+
+  void runByTag(String tag);
+
+  String getContext();
 }

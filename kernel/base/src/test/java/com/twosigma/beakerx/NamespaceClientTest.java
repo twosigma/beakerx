@@ -33,13 +33,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class NamespaceClientTest {
 
-  private static String SESSION_ID = "sessionId";
   private NamespaceClient namespaceClient;
   private KernelTest kernel;
 
   @Before
   public void setUp() {
-    namespaceClient = NamespaceClient.getBeaker(SESSION_ID);
+    namespaceClient = new NamespaceClient(new AutotranslationServiceTestImpl(), new DefaultBeakerXJsonSerializer());
     kernel = new KernelTest();
     KernelManager.register(kernel);
   }
@@ -51,38 +50,10 @@ public class NamespaceClientTest {
   }
 
   @Test
-  public void getNamespaceClientBySessionId_returnNamespaceClient() {
-    //when
-    NamespaceClient curNamespaceClient = NamespaceClient.getBeaker(SESSION_ID);
-    //then
-    assertThat(namespaceClient).isNotNull();
-    assertThat(curNamespaceClient).isEqualTo(namespaceClient);
-  }
-
-  @Test
-  public void getNamespaceClientByCurrentSessionId_returnNamespaceClient() {
-    //when
-    NamespaceClient curNamespaceClient = NamespaceClient.getBeaker();
-    //then
-    assertThat(curNamespaceClient).isNotNull();
-    assertThat(curNamespaceClient).isEqualTo(namespaceClient);
-  }
-
-  @Test
-  public void deleteNamespaceClientBySessionId_deleteNamespaceClient() {
-    //when
-    NamespaceClient.delBeaker(SESSION_ID);
-    NamespaceClient curNamespaceClient = NamespaceClient.getBeaker();
-    //then
-    assertThat(curNamespaceClient).isNull();
-  }
-
-  @Test
   public void setData_returnValue() throws Exception {
     //given
-    NamespaceClient curNamespaceClient = NamespaceClient.getBeaker("returnValue");
     //when
-    Object value = curNamespaceClient.set("x", new Integer(10));
+    Object value = namespaceClient.set("x", new Integer(10));
     //then
     assertThat(value).isNotNull();
     assertThat(value).isEqualTo(new Integer(10));
@@ -91,9 +62,8 @@ public class NamespaceClientTest {
   @Test
   public void setData_setAutotranslationData() throws Exception {
     //given
-    NamespaceClient curNamespaceClient = NamespaceClient.getBeaker("setAutotranslationData");
     //when
-    curNamespaceClient.set("x", new Integer(10));
+    namespaceClient.set("x", new Integer(10));
     //then
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Map data = (Map) kernel.getPublishedMessages().get(1).getContent().get("data");
@@ -127,9 +97,8 @@ public class NamespaceClientTest {
             }}
     );
 
-    NamespaceClient curNamespaceClient = NamespaceClient.getBeaker("setBigInt");
     //when
-    curNamespaceClient.set("table_with_longs", table);
+    namespaceClient.set("table_with_longs", table);
     //then
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Map data = (Map) kernel.getPublishedMessages().get(2).getContent().get("data");
@@ -141,20 +110,42 @@ public class NamespaceClientTest {
   @Test
   public void setData_sendCommMessage() throws Exception {
     //given
-    NamespaceClient curNamespaceClient = NamespaceClient.getBeaker("sendCommMessage");
     //when
-    curNamespaceClient.set("x", new Integer(10));
+    namespaceClient.set("x", new Integer(10));
     //then
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
   }
 
-  public static boolean isJSONValid(Object jsonInString ) {
+  public static boolean isJSONValid(Object jsonInString) {
     try {
       final ObjectMapper mapper = new ObjectMapper();
-      mapper.readTree((String)jsonInString);
+      mapper.readTree((String) jsonInString);
       return true;
     } catch (IOException e) {
       return false;
+    }
+  }
+
+  public static class AutotranslationServiceTestImpl implements AutotranslationService {
+
+    @Override
+    public String update(String name, String json) {
+      return null;
+    }
+
+    @Override
+    public String get(String name) {
+      return null;
+    }
+
+    @Override
+    public String close() {
+      return null;
+    }
+
+    @Override
+    public String getContextAsString() {
+      return null;
     }
   }
 }

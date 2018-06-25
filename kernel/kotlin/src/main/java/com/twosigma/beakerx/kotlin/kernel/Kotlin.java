@@ -18,6 +18,8 @@ package com.twosigma.beakerx.kotlin.kernel;
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.kernel.Utils.uuid;
 
+import com.twosigma.beakerx.AutotranslationServiceImpl;
+import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.kernel.CacheFolderFactory;
@@ -68,9 +70,13 @@ public class Kotlin extends Kernel {
   public static void main(final String[] args) throws InterruptedException, IOException {
     KernelRunner.run(() -> {
       String id = uuid();
-      KotlinEvaluator e = new KotlinEvaluator(id, id, getKernelParameters());
+      KernelConfigurationFile configurationFile = new KernelConfigurationFile(args);
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
-              new KernelConfigurationFile(args));
+              configurationFile);
+      KotlinEvaluator e = new KotlinEvaluator(id,
+              id,
+              getKernelParameters(),
+              NamespaceClient.create(id, configurationFile));
       return new Kotlin(id, e, kernelSocketsFactory);
     });
   }

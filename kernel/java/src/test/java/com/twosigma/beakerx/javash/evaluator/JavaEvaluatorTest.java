@@ -18,6 +18,7 @@ package com.twosigma.beakerx.javash.evaluator;
 
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.chart.xychart.Plot;
+import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.javash.kernel.JavaKernelMock;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -37,7 +38,7 @@ public class JavaEvaluatorTest {
 
   @BeforeClass
   public static void setUp() throws Exception {
-    javaEvaluator = new JavaEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS);
+    javaEvaluator = new JavaEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS, new EvaluatorTest.BeakexClientTestImpl());
     JavaKernelMock kernel = new JavaKernelMock("id", javaEvaluator);
     KernelManager.register(kernel);
   }

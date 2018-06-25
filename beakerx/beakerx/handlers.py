@@ -21,7 +21,7 @@ from .environment import *
 import beakerx
 import tornado
 import os
-
+from .beakerx_autotranslation_server import start_autotranslation_server
 
 class SparkMetricsExecutorsHandler(APIHandler):
     def data_received(self, chunk):
@@ -99,6 +99,8 @@ class JavaDoc(web.StaticFileHandler, IPythonHandler):
 
 
 def load_jupyter_server_extension(nbapp):
+    start_autotranslation_server()
+
     web_app = nbapp.web_app
     host_pattern = '.*$'
     settings_route_pattern = url_path_join(web_app.settings['base_url'], '/beakerx', '/settings')

@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.sql;
 
-import com.twosigma.beakerx.NamespaceClient;
+import com.twosigma.beakerx.BeakerXClient;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -41,8 +41,8 @@ public class BeakerParser {
   public static final String NO_DATASOURCES_ERROR = "No datasource";
 
   protected final JDBCClient jdbcClient;
-
-  private NamespaceClient client;
+  
+  private BeakerXClient client;
   private ConnectionStringHolder dbURI;
   private Map<String, String> inputs = new HashMap<>();
   private Set<String> outputs = new HashSet<>();
@@ -51,7 +51,7 @@ public class BeakerParser {
 
   private List<BeakerParseResult> results = new ArrayList<>();
 
-  public BeakerParser(String script, NamespaceClient client, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString, JDBCClient jdbcClient) throws IOException, DBConnectionException {
+  public BeakerParser(String script, BeakerXClient client, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString, JDBCClient jdbcClient) throws IOException, DBConnectionException {
     this.client = client;
     this.jdbcClient = jdbcClient;
     this.defaultConnectionString = defaultConnectionString;

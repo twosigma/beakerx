@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.sql.evaluator;
 
 
-import com.twosigma.beakerx.NamespaceClient;
+import com.twosigma.beakerx.BeakerXClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.autocomplete.ClasspathScanner;
@@ -67,16 +67,17 @@ public class SQLEvaluator extends BaseEvaluator {
   private JDBCClient jdbcClient;
   private DynamicClassLoaderSimple loader;
 
-  public SQLEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters) {
-    this(id, sId, new BeakerCellExecutor("sql"), new TempFolderFactoryImpl(), evaluatorParameters);
+  public SQLEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerXClient beakerxClient) {
+    this(id, sId, new BeakerCellExecutor("sql"), new TempFolderFactoryImpl(), evaluatorParameters, beakerxClient);
   }
 
   public SQLEvaluator(String id,
                       String sId,
                       CellExecutor cellExecutor,
                       TempFolderFactory tempFolderFactory,
-                      EvaluatorParameters evaluatorParameters) {
-    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters);
+                      EvaluatorParameters evaluatorParameters,
+                      BeakerXClient beakerxClient) {
+    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters,beakerxClient);
     cps = new ClasspathScanner();
     sac = createSqlAutocomplete(cps);
     loader = reloadClassLoader();
@@ -238,7 +239,7 @@ public class SQLEvaluator extends BaseEvaluator {
     return ret;
   }
 
-  public Object executeQuery(String expression, NamespaceClient namespaceClient, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString) throws SQLException, IOException, ReadVariableException {
+  public Object executeQuery(String expression, BeakerXClient namespaceClient, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString) throws SQLException, IOException, ReadVariableException {
     return queryExecutor.executeQuery(expression, namespaceClient, defaultConnectionString, namedConnectionString);
   }
 

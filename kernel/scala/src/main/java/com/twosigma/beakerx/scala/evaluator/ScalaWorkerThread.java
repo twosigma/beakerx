@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.scala.evaluator;
 
-import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
 import org.slf4j.Logger;
@@ -37,27 +36,13 @@ class ScalaWorkerThread implements Callable<TryResult> {
 
   @Override
   public TryResult call() throws Exception {
-    NamespaceClient nc = null;
     TryResult either;
-
     try {
       j.outputObject.started();
-
-      nc = NamespaceClient.getBeaker(scalaEvaluator.getSessionId());
-      nc.setOutputObj(j.outputObject);
       either = scalaEvaluator.executeTask(new ScalaCodeRunner(scalaEvaluator, j.codeToBeExecuted, j.outputObject));
-      if (nc != null) {
-        nc.setOutputObj(null);
-        nc = null;
-      }
     } catch (Throwable e) {
       e.printStackTrace();
       either = TryResult.createError(e.getMessage());
-    } finally {
-      if (nc != null) {
-        nc.setOutputObj(null);
-        nc = null;
-      }
     }
     return either;
   }

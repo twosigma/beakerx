@@ -16,10 +16,10 @@
 
 package com.twosigma.beakerx.chart;
 
+import com.twosigma.beakerx.BeakerXClientManager;
 import com.twosigma.beakerx.widget.CommActions;
 import org.apache.commons.lang3.StringUtils;
 
-import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.chart.actions.CategoryGraphicsActionObject;
 import com.twosigma.beakerx.chart.actions.CombinedPlotActionObject;
 import com.twosigma.beakerx.chart.actions.GraphicsActionObject;
@@ -90,9 +90,9 @@ public abstract class ChartDetails extends BeakerxWidget {
     info.setGraphics(g);
     updateDetails(info);
     if (CommActions.ONCLICK.equals(info.getActionType())) {
-      NamespaceClient.getBeaker().runByTag(info.getTag());
+      BeakerXClientManager.get().runByTag(info.getTag());
     } else if (CommActions.ONKEY.equals(info.getActionType())) {
-      NamespaceClient.getBeaker().runByTag(info.getTag());
+      BeakerXClientManager.get().runByTag(info.getTag());
     }
   }
 

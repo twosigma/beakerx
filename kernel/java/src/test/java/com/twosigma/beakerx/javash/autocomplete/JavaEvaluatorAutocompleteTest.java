@@ -17,6 +17,7 @@ package com.twosigma.beakerx.javash.autocomplete;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.javash.evaluator.JavaEvaluator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -36,7 +37,7 @@ public class JavaEvaluatorAutocompleteTest {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    evaluator = new JavaEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS);
+    evaluator = new JavaEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS,new EvaluatorTest.BeakexClientTestImpl());
   }
 
   @AfterClass

@@ -18,6 +18,7 @@ package com.twosigma.beakerx.clojure.kernel;
 import com.twosigma.beakerx.KernelExecutionTest;
 import com.twosigma.beakerx.KernelSocketsServiceTest;
 import com.twosigma.beakerx.clojure.evaluator.ClojureEvaluator;
+import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
@@ -48,7 +49,7 @@ public class ClojureKernelTest extends KernelExecutionTest {
 
   @Override
   protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
-    ClojureEvaluator evaluator = new ClojureEvaluator(sessionId, sessionId, cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS);
+    ClojureEvaluator evaluator = new ClojureEvaluator(sessionId, sessionId, cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS, new EvaluatorTest.BeakexClientTestImpl());
     return new Clojure(sessionId, evaluator, kernelSocketsFactory, closeKernelAction, getCacheFolderFactory());
   }
 

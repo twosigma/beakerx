@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.kotlin.kernel;
 
 import com.twosigma.beakerx.KernelExecutionTest;
+import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
@@ -30,7 +31,7 @@ public class KotlinKernelTest extends KernelExecutionTest {
 
   @Override
   protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
-    KotlinEvaluator evaluator = new KotlinEvaluator(sessionId, sessionId, cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS);
+    KotlinEvaluator evaluator = new KotlinEvaluator(sessionId, sessionId, cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS, new EvaluatorTest.BeakexClientTestImpl());
     return new Kotlin(sessionId, evaluator, kernelSocketsFactory, closeKernelAction, getCacheFolderFactory());
   }
 

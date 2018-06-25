@@ -158,17 +158,35 @@ define([
 
     // assign Beaker methods to window
     if (window) {
-      if (!window.beakerx) {
-        window.beakerx = {};
-      }
-
       var plotApiList = plotApi.list();
       var bkApp = bkCoreManager.getBkApp();
       var bkObject = bkApp.getBeakerObject();
 
-      _.extend(window.beakerx, plotApiList);
-      _.extend(window.beakerx, htmlOutput);
-      window.beakerx.prefs = bkObject.beakerObj.prefs;
+      var beakerxInstance = {}
+      _.extend(beakerxInstance, plotApiList);
+      _.extend(beakerxInstance, htmlOutput);
+      beakerxInstance.prefs = bkObject.beakerObj.prefs;
+
+      if (!window.beakerx) {
+        var handler = {
+          get: function (obj, prop) {
+            return prop in obj ? obj[prop] : undefined;
+          },
+
+          set: function (obj, prop, value) {
+            obj[prop] = value;
+            var comm = Jupyter.notebook.kernel.comm_manager.new_comm('beaker.autotranslation', null, null, null, utils.uuid());
+            var data = {
+            };
+            data.name = prop;
+            data.value = value;
+            comm.send(data);
+            comm.close();
+            return true;
+          }
+        };
+        window.beakerx = new Proxy(beakerxInstance, handler);
+      }
     }
 
     if (inNotebook) {

@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.kernel;
 
+import com.google.gson.Gson;
 import com.twosigma.beakerx.message.MessageSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,15 +24,29 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Map;
+import java.util.Optional;
 
 public class KernelConfigurationFile implements ConfigurationFile {
 
   private static final Logger logger = LoggerFactory.getLogger(KernelConfigurationFile.class);
   private File config;
   private Config configuration;
+  private Optional<String> context = Optional.empty();
 
   public KernelConfigurationFile(final String[] args) {
-    this.config = getConfig(args);
+    if (args.length > 2) {
+      logger.error("Invalid parameters passed to the Kernel. Expected one or two parameter, found " + args.length);
+      for (String string : args) {
+        logger.error(string);
+      }
+      System.exit(1);
+    }
+    this.config = getConfig(args[0]);
+    if (args.length == 2) {
+      String contextAsJson = args[1];
+      this.context = Optional.of(contextAsJson);
+    }
   }
 
   @Override
@@ -54,16 +69,8 @@ public class KernelConfigurationFile implements ConfigurationFile {
     return bytes;
   }
 
-  private File getConfig(final String[] args) {
-    if (args.length != 1) {
-      logger.error("Invalid parameters passed to the Kernel. Expected one parameter, found " + args.length);
-      for (String string : args) {
-        logger.error(string);
-      }
-      System.exit(1);
-    }
-
-    File config = new File(args[0]);
+  private File getConfig(final String path) {
+    File config = new File(path);
     if (!config.exists()) {
       logger.error("Kernel configuration not found.");
       System.exit(1);
@@ -71,4 +78,7 @@ public class KernelConfigurationFile implements ConfigurationFile {
     return config;
   }
 
+  public Optional<String> getContext() {
+    return context;
+  }
 }

@@ -264,7 +264,7 @@ export class SparkUIView extends widgets.VBoxView {
   }
 
   private updateSparkStatsStyles(): void {
-    this.sparkStats.node.style.marginRight = `${290 - (this.sparkStats.node.offsetWidth + this.connectionStatusElement.offsetWidth)}px`;
+    this.sparkStats.node.style.marginRight = `${294 - (this.sparkStats.node.offsetWidth + this.connectionStatusElement.offsetWidth)}px`;
   }
 
   private connectToApi() {

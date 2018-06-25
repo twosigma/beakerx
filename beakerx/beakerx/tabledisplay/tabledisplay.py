@@ -159,6 +159,7 @@ class TableDisplay(BeakerxDOMWidget):
         self.chart = Table(*args, **kwargs)
         self.model = self.chart.transform()
         self.on_msg(self.handle_msg)
+        self.details = None
 
     def setAlignmentProviderForColumn(self, column_name, display_alignment):
         if isinstance(display_alignment, TableDisplayAlignmentProvider):
@@ -245,21 +246,28 @@ class TableDisplay(BeakerxDOMWidget):
         pass
 
     def handle_msg(self, tabledisplay, params, list):
+        self.details = TableActionDetails(params)
         if params['event'] == 'DOUBLE_CLICK':
             self.doubleClickListener(params['row'], params['column'], tabledisplay)
             self.model = self.chart.transform()
         if params['event'] == 'CONTEXT_MENU_CLICK':
             func = self.contextMenuListeners.get(params['itemKey'])
             if func is not None:
-                func(params['row'], params['column'], tabledisplay)
-                self.model = self.chart.transform()
+                if isinstance(func, str):
+                    self._run_by_tag(func)
+                else:
+                    func(params['row'], params['column'], tabledisplay)
+                    self.model = self.chart.transform()
         if params['event'] == 'actiondetails':
             if params['params']['actionType'] == 'DOUBLE_CLICK':
-                arguments = dict(target_name='beaker.tag.run')
-                comm = Comm(**arguments)
-                msg = {'runByTag': self.chart.doubleClickTag}
-                state = {'state': msg}
-                comm.send(data=state, buffers=[])
+                self._run_by_tag(self.chart.doubleClickTag)
+
+    def _run_by_tag(self, tag):
+        arguments = dict(target_name='beaker.tag.run')
+        comm = Comm(**arguments)
+        msg = {'runByTag': tag}
+        state = {'state': msg}
+        comm.send(data=state, buffers=[])
 
     def updateCell(self, row, columnName, value):
         row = self.chart.values[row]
@@ -269,8 +277,25 @@ class TableDisplay(BeakerxDOMWidget):
     def sendModel(self):
         self.model = self.chart.transform()
 
-
-
     @property
     def values(self):
         return self.chart.values
+
+
+class TableActionDetails:
+    def __init__(self, params):
+        if 'params' in params:
+            self.row = params['params'].get('row')
+            self.col = params['params'].get('col')
+            self.contextMenuItem = params['params'].get('contextMenuItem')
+            self.actionType = params['params'].get('actionType')
+            self.tag = params['params'].get('tag')
+        else:
+            self.row = params.get('row')
+            self.col = params.get('column')
+            self.actionType = params.get('event')
+            self.contextMenuItem = params.get('itemKey')
+            self.tag = params.get('tag')
+
+    def __str__(self):
+        return '{} {} {} {}'.format(self.actionType, self.row, self.col, self.tag)

@@ -145,11 +145,15 @@
 .bx-stats {
   margin: 4px 0;
   height: 20px;
-  line-height: 17px;
+
+  .label {
+    font-weight: normal;
+  }
 }
 
 .bx-status-panel {
   padding: 2px 0;
+  font-size: 14px;
   .bx-button {
     height: 24px;
     padding: 0 6px;
@@ -159,11 +163,12 @@
 .bx-connection-status {
   background-color: transparent;
   border: 1px solid $bxBorderColor1;
-  height: 20px !important;
-  line-height: 20px !important;
-  padding: 0 1em;
-  border-radius: 3px;
-  margin: 4px 6px;
+  height: 17px !important;
+  padding: .3em .6em;
+  border-radius: .25em;
+  margin: 4px !important;
+  font-size: 75% !important;
+  line-height: 1 !important;
 
   &.connected {
     border: none;
@@ -227,19 +232,15 @@
   max-height: 24px;
   vertical-align: middle;
   float: right;
-  font-size: 14px;
-  line-height: 16px;
 
   .bx-status-panel > .p-Widget {
     margin-top: 2px;
   }
-
-  .bx-connection-status {
-    height: 18px !important;
-  }
-
   .bx-stats {
-    line-height: 14px;
+    margin-right: 5px!important;
+  }
+  .bx-connection-status {
+    margin-top: 2px !important;
   }
 }
 

@@ -47,12 +47,11 @@ define([
   'base/js/events',
   'require',
   'underscore',
-  './htmlOutput/htmlOutput',
   './plot/plotApi',
   './shared/bkCoreManager',
   'big.js',
   './extension/UIOptionsHelper',
-  './extension/tableOfContents/index',
+  './extension/tableOfContents/index'
 ], function (
   configmod,
   comm,
@@ -61,7 +60,6 @@ define([
   events,
   require,
   _,
-  htmlOutput,
   plotApi,
   bkCoreManager,
   big,
@@ -74,72 +72,11 @@ define([
 
   var base_url = utils.get_body_data('baseUrl');
   var config = new configmod.ConfigSection('notebook', {base_url: base_url});
-  var kernel_info = undefined;
-  var LINE_COMMENT_CHAR = '//';
-  var commUtils = require('./extension/comm');
   var initCellUtils = require('./extension/initializationCells');
-
-  UIOptionsHelper.registerFeature(base_url);
-
-  function installKernelHandler() {
-    var kernel = Jupyter.notebook.kernel;
-    if (!window.beakerx) {
-      window.beakerx = {};
-    }
-
-    commUtils.registerCommTargets(kernel);
-
-    Jupyter.notebook.events.on('kernel_interrupting.Kernel', function () {
-      interrupt();
-    });
-  }
-
-  function setCodeMirrorLineComment(cell) {
-    if (cell.cell_type !== 'code') {
-      return;
-    }
-
-    var cm = cell.code_mirror;
-    var doc = cm.getDoc();
-    var mode = cm.getMode();
-
-    if (!mode.lineComment) {
-      mode.lineComment = LINE_COMMENT_CHAR;
-      doc.mode = mode;
-    }
-  }
-
-  function getKernelInfo(callBack) {
-    if (!kernel_info) {
-      Jupyter.notebook.kernel.kernel_info(function (result) {
-        kernel_info = result.content;
-        console.log("kernel_info received:");
-        console.log(kernel_info);
-        callBack(kernel_info);
-      });
-    } else {
-      callBack(kernel_info);
-    }
-  }
-
-  function interrupt() {
-    getKernelInfo(function (info) {
-      if (info.beakerx) {
-        interruptToKernel();
-      }
-    });
-  }
-
-  function interruptToKernel() {
-    var kernel = Jupyter.notebook.kernel;
-    var kernel_control_target_name = "kernel.control.channel";
-    var comm = kernel.comm_manager.new_comm(kernel_control_target_name, null, null, null, utils.uuid());
-    var data = {};
-
-    data.kernel_interrupt = true;
-    comm.send(data);
-    comm.close();
-  }
+  var GroovyMode = require('./extension/groovyModeExtension').GroovyMode;
+  var htmlOutput = require('./htmlOutput/htmlOutput').default;
+  var Autotranslation = require('./extension/autotranslation').Autotranslation;
+  var BeakerXKernel = require('./extension/kernel').BeakerXKernel;
 
   var inNotebook = !Jupyter.NotebookList;
   var mod_name = 'init_cell';
@@ -148,10 +85,12 @@ define([
     run_on_kernel_ready: true
   };
 
+  UIOptionsHelper.registerFeature(base_url);
+
   function callback_notebook_loaded() {
     initCellUtils.enableInitializationCellsFeature(options);
     tocUtils.toc_init();
-    installKernelHandler();
+    BeakerXKernel.installHandler();
   }
 
   var load_ipython_extension = function () {
@@ -161,31 +100,13 @@ define([
       var plotApiList = plotApi.list();
       var bkApp = bkCoreManager.getBkApp();
       var bkObject = bkApp.getBeakerObject();
+      var beakerxInstance = { prefs: bkObject.beakerObj.prefs };
 
-      var beakerxInstance = {}
       _.extend(beakerxInstance, plotApiList);
       _.extend(beakerxInstance, htmlOutput);
-      beakerxInstance.prefs = bkObject.beakerObj.prefs;
 
       if (!window.beakerx) {
-        var handler = {
-          get: function (obj, prop) {
-            return prop in obj ? obj[prop] : undefined;
-          },
-
-          set: function (obj, prop, value) {
-            obj[prop] = value;
-            var comm = Jupyter.notebook.kernel.comm_manager.new_comm('beaker.autotranslation', null, null, null, utils.uuid());
-            var data = {
-            };
-            data.name = prop;
-            data.value = value;
-            comm.send(data);
-            comm.close();
-            return true;
-          }
-        };
-        window.beakerx = new Proxy(beakerxInstance, handler);
+        window.beakerx = Autotranslation.proxify(beakerxInstance);
       }
     }
 
@@ -205,10 +126,7 @@ define([
         console.error(log_prefix, 'unhandled error:', reason);
       });
 
-      CodeMirror.extendMode('groovy', {lineComment: LINE_COMMENT_CHAR});
-      Jupyter.notebook.get_cells().map(function (cell, i) {
-        setCodeMirrorLineComment(cell);
-      });
+      GroovyMode.extendWithLineComment(Jupyter, CodeMirror);
     }
   };
 

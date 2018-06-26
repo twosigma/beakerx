@@ -72,7 +72,7 @@ class EasyForm(BeakerxBox):
     def buttonCallback(self, *args):
         if len(args) > 0:
             args[0].actionPerformed()
-            arguments = dict(target_name='beaker.tag.run')
+            arguments = dict(target_name='beakerx.tag.run')
             comm = Comm(**arguments)
             msg = {'runByTag': args[0].tag}
             state = {'state': msg}

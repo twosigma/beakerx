@@ -14,12 +14,12 @@
  *  limitations under the License.
  */
 
- module.exports = {
-   displayHTML: displayHTML
- };
+export default {
+  displayHTML
+};
 
- function displayHTML(outputArea, html) {
-   if (html && outputArea && outputArea.element) {
-     $(outputArea.element).append(html);
-   }
- }
+export function displayHTML(outputArea, html) {
+  if (html && outputArea && outputArea.element) {
+    $(outputArea.element).append(html);
+  }
+}

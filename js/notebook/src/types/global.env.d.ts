@@ -37,8 +37,24 @@ declare interface NumberConstructor {
   isFinite: (number: number) => boolean
 }
 
+type Proxy<T> = {
+  get(): T;
+  set(value: T): void;
+}
+
+interface ProxyConstructor {
+  revocable<T extends object>(target: T, handler: ProxyHandler<T>): { proxy: T; revoke: () => void; };
+  new <T extends object>(target: T, handler: ProxyHandler<T>): T;
+}
+
+declare var Proxy: ProxyConstructor;
+
 declare interface Array<T> {
   from: (arrayLike: any[]) => any[]
+}
+
+declare interface Window {
+  beakerx: any
 }
 
 interface GlobalEnvironment {

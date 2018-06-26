@@ -20,9 +20,9 @@ declare global {
   }
 }
 
-const BEAKER_GETCODECELLS = 'beaker.getcodecells';
-const BEAKER_AUTOTRANSLATION = 'beaker.autotranslation';
-const BEAKER_TAG_RUN = 'beaker.tag.run';
+export const BEAKER_GETCODECELLS = 'beakerx.getcodecells';
+export const BEAKER_AUTOTRANSLATION = 'beakerx.autotranslation';
+export const BEAKER_TAG_RUN = 'beakerx.tag.run';
 
 const utils = require('base/js/utils');
 const dialog = require('base/js/dialog');
@@ -38,7 +38,9 @@ const msgHandlers = {
   },
 
   [BEAKER_AUTOTRANSLATION]: (msg) => {
+    window.beakerx['LOCK_PROXY'] = true;
     window.beakerx[msg.content.data.state.name] = JSON.parse(msg.content.data.state.value);
+    window.beakerx['LOCK_PROXY'] = false;
   },
 
   [BEAKER_TAG_RUN]: (msg) => {

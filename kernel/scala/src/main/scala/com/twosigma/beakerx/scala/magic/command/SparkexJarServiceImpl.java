@@ -21,7 +21,10 @@ import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddJarMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 
+import java.io.File;
 import java.net.URLDecoder;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 public class SparkexJarServiceImpl implements SparkexJarService {
@@ -36,10 +39,8 @@ public class SparkexJarServiceImpl implements SparkexJarService {
 
   private String getSparkexJar() {
     try {
-      String path = EnableSparkSupportMagicCommand.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-      String decodedPath = URLDecoder.decode(path, "UTF-8")
-              .replace("scala/lib/scala.jar", "sparkex/lib/sparkex.jar");
-      return decodedPath;
+      Path path = Paths.get(EnableSparkSupportMagicCommand.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+      return path.getParent().getParent().getParent().resolve("sparkex").resolve("lib").resolve("sparkex.jar").toString();
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

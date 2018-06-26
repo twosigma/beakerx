@@ -290,9 +290,9 @@ export class SparkUIView extends widgets.VBoxView {
   }
 
   private setApiCallInterval(api: BeakerXApi): void {
-    const sparkUrl = `${api.getApiUrl('sparkmetrics/executors')}/${this.sparkAppId}`;
     const getMetrict = async () => {
       try {
+        let sparkUrl = `${api.getApiUrl('sparkmetrics/executors')}/${this.sparkUiWebUrl}/${this.sparkAppId}`;
         const response = await fetch(sparkUrl, { method: 'GET', credentials: 'include' });
 
         if (!response.ok) {

@@ -29,12 +29,15 @@ class SparkMetricsExecutorsHandler(APIHandler):
 
     @web.authenticated
     @tornado.web.asynchronous
-    def get(self, id):
+    def get(self, params):
 
         def handle_response(response):
             self.finish(response.body)
 
-        url = "http://localhost:4040/api/v1/applications/" + id + "/allexecutors"
+        addr_port = params.split('/')[2]
+        app_id = params.split('/')[3]
+
+        url = "http://" + addr_port + "/api/v1/applications/" + app_id + "/allexecutors"
         req = tornado.httpclient.HTTPRequest(
             url=url,
             method=self.request.method,

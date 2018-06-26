@@ -93,7 +93,9 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
   }
 
   def addImports(names: Array[String]): Boolean = {
-    addImport(names.mkString(", "))
+    // There's an issue in the Scala interpeter involving long import lists (scala/bug#10956).
+    // Import the list in chunks.
+    names.grouped(32).forall(importGroup => addImport(importGroup.mkString(", ")))
   }
 
   def evaluate2(code: String): String = {

@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -51,9 +52,9 @@ public class SparkUiDefaultsImplTest {
   private final String SPARK_OPT = "config";
 
   @Before
-  public void setUp() {
-    String path = this.getClass().getClassLoader().getResource("beakerxTest.json").getPath();
-    this.pathToBeakerxTestJson = Paths.get(path);
+  public void setUp() throws URISyntaxException {
+    Path path = Paths.get(this.getClass().getClassLoader().getResource("beakerxTest.json").toURI());
+    this.pathToBeakerxTestJson = path;
     this.sut = new SparkUiDefaultsImpl(pathToBeakerxTestJson);
   }
 

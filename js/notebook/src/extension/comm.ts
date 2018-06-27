@@ -93,7 +93,7 @@ export const registerCommTargets = (kernel: any): void => {
 const sendJupyterCodeCells = (filter: string) => {
   const data: { code_cells: any } = { code_cells: [] };
   const comm = Jupyter.notebook.kernel.comm_manager.new_comm(
-    "beaker.getcodecells", null, null, null, utils.uuid()
+    BEAKER_GETCODECELLS, null, null, null, utils.uuid()
   );
 
   data.code_cells = Jupyter.notebook.get_cells().filter(function (cell) {

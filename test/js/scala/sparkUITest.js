@@ -41,11 +41,33 @@ describe('Spark UI', function () {
   });
 
   describe('Spark cell magic ', function () {
+    var output;
+
     it('Should display GUI dialog', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var output = beakerxPO.getAllOutputsWidget(codeCell)[0];
-      expect(output.$('div.p-Widget.bx-spark-connect').isEnabled()).toBeTruthy();
+      output = beakerxPO.getAllOutputsWidget(codeCell)[0];
+      expect(output.$('button.p-Widget.bx-spark-connect').isEnabled()).toBeTruthy();
+      expect(output.$('div.p-Widget.bx-spark-profile').isEnabled()).toBeTruthy();
+      expect(output.$('div.p-Widget.bx-spark-master-url').isEnabled()).toBeTruthy();
+      expect(output.$('div.p-Widget.bx-spark-executor-cores').isEnabled()).toBeTruthy();
+      expect(output.$('div.p-Widget.bx-spark-executor-memory').isEnabled()).toBeTruthy();
+    });
+
+    it('Should start spark session', function () {
+      output.click('button.p-Widget.bx-spark-connect');
+      browser.waitUntil(function(){
+        return output.$('div.p-Widget.bx-status-panel').isVisible();
+      });
+      expect(output.$('div.p-Widget.bx-status-panel').isEnabled()).toBeTruthy();
+    });
+
+    it('Should stop spark session', function () {
+      output.click('button.bx-button.icon-close');
+      browser.waitUntil(function(){
+        return !output.isExisting('div.p-Widget.bx-status-panel');
+      });
+      expect(output.isExisting('div.p-Widget.bx-status-panel')).toBeFalsy();
     });
   });
 

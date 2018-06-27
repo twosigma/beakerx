@@ -15,10 +15,10 @@
  */
 
 import bkUtils from '../../../shared/bkUtils';
+import bkHelper from '../../../shared/bkHelper';
 
 import './dataGrid.scss';
 
-const bkHelper = require('../../../shared/bkHelper');
 const GLOBALS = require('../../../shared/bkGlobals');
 
 export const DEFAULT_DATA_FONT_SIZE = 13;

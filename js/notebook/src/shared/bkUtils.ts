@@ -57,10 +57,6 @@ export function rgbaToHex(r, g, b, a): string {
   return `#${num.toString(16)}`;
 }
 
-export function timeout(fn, ms): number {
-  return setTimeout(fn, ms);
-}
-
 export function formatBytes(bytes: number): string {
   if (bytes <= 1000) return '0 KB';
 
@@ -77,6 +73,5 @@ export default {
   applyTimezone,
   formatTimestamp,
   rgbaToHex,
-  timeout,
   formatBytes
 }

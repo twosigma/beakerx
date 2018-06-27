@@ -25,7 +25,6 @@ define([
   './plotConverter',
   './plotFormatter',
   './plotFactory',
-  './../shared/bkHelper',
   './gradientlegend',
   './chartExtender',
   'moment-timezone/builds/moment-timezone-with-data.min'
@@ -40,13 +39,13 @@ define([
   plotConverter,
   plotFormatter,
   plotFactory,
-  bkHelper,
   GradientLegend,
   bkoChartExtender,
   moment
 ) {
 
   var bkUtils = require('./../shared/bkUtils').default;
+  var bkHelper = require('./../shared/bkHelper').default;
   var PointShapeHelper = require('./std/PointShapeHelper.ts').default;
   var CONTEXT_MENU_DEBOUNCE_TIME = 350;
   var QUICK_ZOOM_DEBOUNCE_TIME = 50;

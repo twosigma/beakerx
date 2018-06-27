@@ -18,13 +18,14 @@ import { Notebook } from "@jupyterlab/notebook";
 import { Kernel } from "@jupyterlab/services";
 import { JSONArray } from '@phosphor/coreutils';
 import { Cell, CodeCell, CodeCellModel } from '@jupyterlab/cells';
+import {BEAKER_GETCODECELLS} from "./comm";
 
 export function sendJupyterCodeCells(
   kernelInstance: Kernel.IKernelConnection,
   notebook: Notebook,
   filter: string
 ): void {
-  const comm = kernelInstance.connectToComm('beaker.getcodecells');
+  const comm = kernelInstance.connectToComm(BEAKER_GETCODECELLS);
   const codeCells = <JSONArray>getCodeCellsByTag(notebook, filter)
     .map((cell: CodeCell): object => ({
         cell_type: cell.model.type,

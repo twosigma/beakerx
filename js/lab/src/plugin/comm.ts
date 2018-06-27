@@ -22,9 +22,9 @@ import {messageData, messageState} from '../interface/messageData';
 import { Kernel } from "@jupyterlab/services";
 import { CodeCell } from '@jupyterlab/cells';
 
-const BEAKER_GETCODECELLS = 'beakerx.getcodecells';
-const BEAKER_AUTOTRANSLATION = 'beakerx.autotranslation';
-const BEAKER_TAG_RUN = 'beakerx.tag.run';
+export const BEAKER_GETCODECELLS = 'beakerx.getcodecells';
+export const BEAKER_AUTOTRANSLATION = 'beakerx.autotranslation';
+export const BEAKER_TAG_RUN = 'beakerx.tag.run';
 
 const getMsgHandlers = (
   session: IClientSession,

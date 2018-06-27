@@ -145,13 +145,9 @@ export class DataFormatter {
       formattedValue = config.value.type === 'Date' ?
         moment(config.value.timestamp).format(DEFAULT_TIME_FORMAT) :
         JSON.stringify(config.value);
-    } else if (_.isString(config.value)) {
-      const limitedText = DataGridHelpers.truncateString(config.value);
-
-      formattedValue = limitedText;
     }
 
-    return formattedValue;
+    return DataGridHelpers.truncateString(formattedValue);
   }
 
   private integer(config: CellRenderer.ICellConfig) {

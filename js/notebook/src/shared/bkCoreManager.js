@@ -91,45 +91,6 @@ define([
     },
     getBkApp: function() {
       return this._bkAppImpl;
-    },
-    showFileSaveDialog: function(data) {
-      var deferred = bkUtils.newDeferred();
-
-      if ((!data.extension || data.extension.trim().length === 0) && data.initUri) {
-        var filename = data.initUri.substring(data.initUri.lastIndexOf(bkUtils.serverOS.isWindows() ? '\\' : '/') + 1);
-        data.extension = filename.substring(filename.lastIndexOf('.') + 1);
-      }
-      data.type="SAVE";
-      data.title = "Save As";
-      data.okButtonTitle = "Save";
-
-      var dd = $uibModal.open({
-        templateUrl: "app/template/filedialog.jst.html",
-        controller: 'fileDialogCtrl',
-        windowClass: 'beaker-sandbox',
-        backdropClass: 'beaker-sandbox',
-        backdrop: true,
-        keyboard: true,
-        backdropClick: true,
-        size: 'lg',
-        resolve: {
-          strategy: function () {
-            return new FileChooserStrategy(data);
-          }
-        }
-      });
-      dd.result.then(
-        function (result) {
-          deferred.resolve({
-            uri: result,
-            uriType: GLOBALS.FILE_LOCATION.FILESYS
-          });
-        }, function () {
-          deferred.reject();
-        }).catch(function () {
-        deferred.reject();
-      });
-      return deferred.promise;
     }
   };
 

@@ -22,7 +22,6 @@ define([
   './plotUtils',
   './combinedPlotScopeUtils',
   './combinedPlotFormatter',
-  './../shared/bkUtils',
   './chartExtender',
   './plotScope'
 ], function(
@@ -33,10 +32,10 @@ define([
   plotUtils,
   CombinedPlotScopeUtilsModule,
   combinedPlotFormatter,
-  bkUtils,
   bkoChartExtender,
   PlotScope
 ) {
+  var bkUtils = require('./../shared/bkUtils').default;
   var CombinedPlotScopeUtils = CombinedPlotScopeUtilsModule.default;
   
   function CombinedPlotScope(wrapperId) {

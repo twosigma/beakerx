@@ -31,7 +31,7 @@ import {DataGridHelpers} from "./dataGridHelpers";
 import EventManager from "./event/EventManager";
 import CellFocusManager from "./cell/CellFocusManager";
 import CellTooltipManager from "./cell/CellTooltipManager";
-import * as bkUtils from '../../shared/bkUtils';
+import bkUtils from '../../shared/bkUtils';
 import {BeakerXDataStore} from "./store/BeakerXDataStore";
 import {
   selectHasIndex,

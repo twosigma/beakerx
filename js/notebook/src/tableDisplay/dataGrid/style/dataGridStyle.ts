@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import * as bkUtils from '../../../shared/bkUtils';
+import bkUtils from '../../../shared/bkUtils';
 
 import './dataGrid.scss';
 

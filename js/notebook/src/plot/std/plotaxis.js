@@ -18,15 +18,15 @@ define([
   'underscore',
   'big.js',
   './../plotUtils',
-  './../../shared/bkUtils',
   'moment-timezone/builds/moment-timezone-with-data.min'
 ], function(
   _,
   Big,
   plotUtils,
-  bkUtils,
   moment
 ) {
+
+  var bkUtils = require('./../../shared/bkUtils').default;
   var PlotAxis = function(type) {
     this.type = "axis";
     this.axisType = type == null ? "linear" : type; // linear, log, time, category, nanotime

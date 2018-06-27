@@ -16,14 +16,13 @@
 
 define([
   './bkGlobals',
-  './bkCoreManager',
-  './bkUtils',
+  './bkCoreManager'
 ], function(
   bkGlobals,
-  bkCoreManager,
-  bkUtils
+  bkCoreManager
 ) {
 
+  var bkUtils = require('./bkUtils').default;
   var defaultPlotColors = {},
     GLOBALS = bkGlobals;
 
@@ -135,9 +134,6 @@ define([
       if (bkNotebook) {
         return bkNotebook.getViewModel();
       }
-    },
-    showFileSaveDialog: function(data) {
-      return bkCoreManager.showFileSaveDialog(data);
     }
   };
 

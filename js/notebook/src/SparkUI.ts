@@ -173,7 +173,8 @@ export class SparkUIView extends widgets.VBoxView {
       return;
     }
 
-    this.connectionStatusElement.setAttribute('title', this.sparkMasterUrl);
+    this.connectionStatusElement.setAttribute('title', `Spark session with: ${this.sparkMasterUrl}`);
+    this.connectionStatusElement.innerHTML = '';
   }
 
   private handleLocalMasterUrl() {
@@ -218,6 +219,7 @@ export class SparkUIView extends widgets.VBoxView {
                     this.handleFormState();
                     this.toggleExecutorConfigInputs();
                     this.setupTooltips();
+                    this.updateSparkStatsStyles();
                   }, 10);
                 });
               }, noop);
@@ -265,6 +267,9 @@ export class SparkUIView extends widgets.VBoxView {
   }
 
   private updateSparkStatsStyles(): void {
+    if (!this.sparkStats) {
+      return;
+    }
     this.sparkStats.node.style.marginRight = `${294 - (this.sparkStats.node.offsetWidth + this.connectionStatusElement.offsetWidth)}px`;
   }
 

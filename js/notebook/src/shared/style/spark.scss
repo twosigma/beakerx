@@ -181,15 +181,18 @@
   .bx-spark-config {
     width: 606px;
     max-width: 99%;
+    height: auto;
 
     .widget-label {
       margin-right: 10px;
       width: 292px;
     }
 
+    select,
     input {
       width: 300px;
       margin: 2px;
+      height: 28px;
     }
 
     input,

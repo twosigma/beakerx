@@ -226,15 +226,19 @@ export class DataFormatter {
       return this.timeStrings[config.row];
     }
 
-    let format = formatForTimes && formatForTimes.format
-      ? formatForTimes.format
-      : TIME_UNIT_FORMATS.DATETIME.format;
+    let format = TIME_UNIT_FORMATS.DATETIME.format;
+    let valueModifier = 1000;
+
+    if (formatForTimes) {
+      format = formatForTimes.format;
+      valueModifier = formatForTimes.valueModifier;
+    }
 
     if (_.isObject(config.value) && config.value.type === 'Date') {
       return formatTimestamp(config.value.timestamp, this.timeZone, format);
     }
 
-    let milli = config.value * 1000;
+    let milli = config.value * valueModifier;
 
     return formatTimestamp(milli, this.timeZone, format);
   }

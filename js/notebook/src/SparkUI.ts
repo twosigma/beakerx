@@ -19,8 +19,7 @@ import BeakerXApi from "./tree/Utils/BeakerXApi";
 import widgets from './widgets';
 import Timer = NodeJS.Timer;
 import {ToolbarSparkConnectionStatus} from "./sparkUI/toolbarSparkConnectionStatus";
-
-const bkUtils = require("./shared/bkUtils");
+import bkUtils from './shared/bkUtils';
 
 const SPARK_LOCAL_MASTER_URL_PREFIX = 'local';
 

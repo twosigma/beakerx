@@ -16,16 +16,15 @@
 
  define([
    'underscore',
-   './../shared/bkUtils',
    './plotScope',
    './combinedPlotScope'
  ], function(
    _,
-   bkUtils,
    PlotScope,
    CombinedPlotScope
  ) {
 
+   var bkUtils = require('./../shared/bkUtils').default;
    var getValue = function (obj, value, defaultValue) {
      return obj.hasOwnProperty(value) ? obj[value] : defaultValue;
    };

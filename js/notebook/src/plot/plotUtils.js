@@ -17,17 +17,15 @@
 define([
   'underscore',
   'big.js',
-  './../shared/bkHelper',
-  './../shared/bkUtils',
   'd3'
 ], function(
   _,
   Big,
-  bkHelper,
-  bkUtils,
   d3
 ) {
 
+  var bkUtils = require('./../shared/bkUtils').default;
+  var bkHelper = require('./../shared/bkHelper').default;
   var keyCodeMap = {
     8	  : "BACKSPACE",
     9	  : "TAB",

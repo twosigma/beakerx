@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-module.exports = {
+export default {
   DEFAULT_EVALUATOR: 'JavaScript',
   REQUIREJS_TIMEOUT: 30,
   RECONNECT_TIMEOUT: 30 * 1000, // 30 seconds

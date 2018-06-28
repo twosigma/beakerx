@@ -21,8 +21,6 @@ import { TIME_UNIT_FORMATS } from '@beakerx/tableDisplay/dataGrid/consts';
 import * as moment from 'moment-timezone/builds/moment-timezone-with-data';
 import modelStateMock from "./mock/modelStateMock";
 import {BeakerXDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
-import columnOptionsMock from "./mock/columnOptionsMock";
-import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 import {ALL_TYPES} from "@beakerx/tableDisplay/dataGrid/dataTypes";
 import cellConfigMock from "./mock/cellConfigMock";
 import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
@@ -278,7 +276,7 @@ describe('DataFormatter', () => {
 
   describe('dataFormatter.datetime', () => {
     const datetimeFormatFn = dataFormatter.getFormatFnByDisplayType(ALL_TYPES.datetime);
-    const bkUtils = require('@beakerx/shared/bkUtils');
+    const bkUtils = require('@beakerx/shared/bkUtils').default;
 
     before (() => {
       sinon.stub(

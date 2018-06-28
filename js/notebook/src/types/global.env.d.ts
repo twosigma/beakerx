@@ -54,7 +54,8 @@ declare interface Array<T> {
 }
 
 declare interface Window {
-  beakerx: any
+  beakerx: any,
+  chrome?: any
 }
 
 interface GlobalEnvironment {

@@ -48,7 +48,6 @@ define([
   'require',
   'underscore',
   './plot/plotApi',
-  './shared/bkCoreManager',
   'big.js',
   './extension/UIOptionsHelper',
   './extension/tableOfContents/index'
@@ -61,7 +60,6 @@ define([
   require,
   _,
   plotApi,
-  bkCoreManager,
   big,
   UIOptionsHelper,
   tocUtils
@@ -77,6 +75,7 @@ define([
   var htmlOutput = require('./htmlOutput/htmlOutput').default;
   var Autotranslation = require('./extension/autotranslation').Autotranslation;
   var BeakerXKernel = require('./extension/kernel').BeakerXKernel;
+  var bkCoreManager = require('./shared/bkCoreManager').default;
 
   var inNotebook = !Jupyter.NotebookList;
   var mod_name = 'init_cell';

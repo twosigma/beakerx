@@ -263,7 +263,7 @@ class TableDisplay(BeakerxDOMWidget):
                 self._run_by_tag(self.chart.doubleClickTag)
 
     def _run_by_tag(self, tag):
-        arguments = dict(target_name='beaker.tag.run')
+        arguments = dict(target_name='beakerx.tag.run')
         comm = Comm(**arguments)
         msg = {'runByTag': tag}
         state = {'state': msg}

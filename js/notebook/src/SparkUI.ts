@@ -42,11 +42,11 @@ export class SparkUIView extends widgets.VBoxView {
   sparkStats: Widget;
   connectionStatusElement: HTMLElement;
 
+  private api: BeakerXApi;
   private sparkAppId: string;
   private sparkUiWebUrl: string;
   private sparkMasterUrl: string;
   private apiCallIntervalId: Timer;
-  private toolbarStatusContainer: HTMLElement|null;
   private connectionLabelActive: HTMLElement;
   private connectionLabelMemory: HTMLElement;
   private connectionLabelDead: HTMLElement;
@@ -62,6 +62,7 @@ export class SparkUIView extends widgets.VBoxView {
     this.openExecutors = this.openExecutors.bind(this);
     this.updateChildren = this.updateChildren.bind(this);
     this.toggleExecutorConfigInputs = this.toggleExecutorConfigInputs.bind(this);
+    this.getMetrict = this.getMetrict.bind(this);
 
     this.toolbarSparkConnectionStatus = new ToolbarSparkConnectionStatus(this);
   }
@@ -77,7 +78,6 @@ export class SparkUIView extends widgets.VBoxView {
   public update(): void {
     super.update();
 
-    this.connectToApi();
     this.addSparkMetricsWidget();
     this.handleLocalMasterUrl();
     this.updateChildren();
@@ -173,7 +173,8 @@ export class SparkUIView extends widgets.VBoxView {
       return;
     }
 
-    this.connectionStatusElement.setAttribute('title', this.sparkMasterUrl);
+    this.connectionStatusElement.setAttribute('title', `Spark session with: ${this.sparkMasterUrl}`);
+    this.connectionStatusElement.innerHTML = '';
   }
 
   private handleLocalMasterUrl() {
@@ -214,9 +215,11 @@ export class SparkUIView extends widgets.VBoxView {
                     this.handleLocalMasterUrl();
                     this.toolbarSparkConnectionStatus.append();
                     this.addSparkUrls();
+                    this.connectToApi();
                     this.handleFormState();
                     this.toggleExecutorConfigInputs();
                     this.setupTooltips();
+                    this.updateSparkStatsStyles();
                   }, 10);
                 });
               }, noop);
@@ -264,16 +267,16 @@ export class SparkUIView extends widgets.VBoxView {
   }
 
   private updateSparkStatsStyles(): void {
+    if (!this.sparkStats) {
+      return;
+    }
     this.sparkStats.node.style.marginRight = `${294 - (this.sparkStats.node.offsetWidth + this.connectionStatusElement.offsetWidth)}px`;
   }
 
-  private connectToApi() {
+  private setApi() {
     let baseUrl;
-    let api;
 
-    this.sparkAppId = this.model.get('sparkAppId');
-
-    if (!this.sparkAppId) {
+    if (this.api) {
       return;
     }
 
@@ -285,31 +288,41 @@ export class SparkUIView extends widgets.VBoxView {
       baseUrl = `${window.location.origin}/`;
     }
 
-    api = new BeakerXApi(baseUrl);
-    this.setApiCallInterval(api);
+    this.api = new BeakerXApi(baseUrl);
   }
 
-  private setApiCallInterval(api: BeakerXApi): void {
-    const sparkUrl = `${api.getApiUrl('sparkmetrics/executors')}/${this.sparkAppId}`;
-    const getMetrict = async () => {
-      try {
-        const response = await fetch(sparkUrl, { method: 'GET', credentials: 'include' });
+  private connectToApi() {
+    this.setApi();
+    this.setApiCallInterval();
+  }
 
-        if (!response.ok) {
-          this.toolbarSparkConnectionStatus.destroy();
-          return this.clearApiCallInterval();
-        }
-
-        const data = await response.json();
-        this.updateMetrics(data);
-      } catch(error) {
-        this.toolbarSparkConnectionStatus.destroy();
-        this.clearApiCallInterval();
-      }
-    };
-
+  private setApiCallInterval(): void {
     this.clearApiCallInterval();
-    this.apiCallIntervalId = setInterval(getMetrict, 1000);
+    this.sparkAppId = this.model.get('sparkAppId');
+
+    if (!this.sparkUiWebUrl || !this.sparkAppId) {
+      return;
+    }
+
+    this.apiCallIntervalId = setInterval(this.getMetrict, 1000);
+  }
+
+  private async getMetrict() {
+    try {
+      let sparkUrl = `${this.api.getApiUrl('sparkmetrics/executors')}?sparkAppId=${this.sparkAppId}&sparkUiWebUrl=${this.sparkUiWebUrl}`;
+      const response = await fetch(sparkUrl, { method: 'GET', credentials: 'include' });
+
+      if (!response.ok) {
+        this.toolbarSparkConnectionStatus.destroy();
+        return this.clearApiCallInterval();
+      }
+
+      const data = await response.json();
+      this.updateMetrics(data);
+    } catch(error) {
+      this.toolbarSparkConnectionStatus.destroy();
+      this.clearApiCallInterval();
+    }
   }
 
   private clearApiCallInterval() {

@@ -17,9 +17,9 @@ package com.twosigma.beakerx.kernel.comm;
 
 public enum TargetNamesEnum {
 
-  BEAKER_TAG_RUN("beaker.tag.run"),
-  BEAKER_GETCODECELLS("beaker.getcodecells"),
-  BEAKER_AUTOTRANSLATION("beaker.autotranslation"),
+  BEAKER_TAG_RUN("beakerx.tag.run"),
+  BEAKER_GETCODECELLS("beakerx.getcodecells"),
+  BEAKER_AUTOTRANSLATION("beakerx.autotranslation"),
   JUPYTER_WIDGET("jupyter.widget"),
   JUPYTER_WIDGET_VERSION("jupyter.widget.version"),
   KERNEL_CONTROL_CHANNEL("kernel.control.channel");

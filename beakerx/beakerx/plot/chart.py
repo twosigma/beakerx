@@ -297,7 +297,7 @@ class Plot(BeakerxDOMWidget):
         action_type = params['params']['actionType']
         if action_type == 'onclick' or action_type == 'onkey':
             self.details = GraphicsActionObject(graphics_object, params['params'])
-            arguments = dict(target_name='beaker.tag.run')
+            arguments = dict(target_name='beakerx.tag.run')
             comm = Comm(**arguments)
             msg = {'runByTag': params['params']['tag']}
             state = {'state': msg}

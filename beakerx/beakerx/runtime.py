@@ -425,7 +425,7 @@ class TableDisplayWrapper(object):
     
 class BeakerX:
     """Runtime support for Python code in BeakerX."""
-    _comm = Comm(target_name='beaker.autotranslation')
+    _comm = Comm(target_name='beakerx.autotranslation')
 
     def __init__(self):
         BeakerX.pandas_display_table()
@@ -574,7 +574,7 @@ class BeakerX:
         return result=="true"
 
     def runByTag(self, tag):
-        arguments = dict(target_name='beaker.tag.run')
+        arguments = dict(target_name='beakerx.tag.run')
         comm = Comm(**arguments)
         msg = {'runByTag': tag}
         state = {'state': msg}

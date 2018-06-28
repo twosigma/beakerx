@@ -123,8 +123,8 @@ The code is organized into subdirectories as follows:
   * a customized KernelSpec to allow BeakerX to configure the JVMs
     that run the kernels,
 
-  * a server extension for the javadoc, settings, and version
-    endpoints,
+  * a server extension for the javadoc, settings, version, and
+    autotranslation endpoints,
   
   * the beakerx command line program, which has the bkr2ipynb
     converter, the py4j server, utilities, install, and uninstall

@@ -33,6 +33,7 @@ import {
 } from "./model/selectors";
 import {BeakerXDataStore} from "./store/BeakerXDataStore";
 import formatTimestamp = DataGridHelpers.formatTimestamp;
+import * as Big from "big.js";
 
 export const DEFAULT_TIME_FORMAT = 'YYYYMMDD HH:mm:ss.SSS ZZ';
 
@@ -234,7 +235,9 @@ export class DataFormatter {
       return formatTimestamp(config.value.timestamp, this.timeZone, format);
     }
 
-    let milli = config.value * valueModifier;
+    let milli = isNaN(config.value) ?
+      config.value :
+      new Big(config.value).times(valueModifier);
 
     return formatTimestamp(milli, this.timeZone, format);
   }

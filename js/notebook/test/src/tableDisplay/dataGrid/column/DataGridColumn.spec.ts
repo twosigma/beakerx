@@ -90,7 +90,7 @@ describe('DataGridColumn', () => {
     });
 
     it('should have the initial displayType set', () => {
-      expect(bodyDataGridColumn.getDisplayType()).to.equal(ALL_TYPES['formatted integer']);
+      expect(bodyDataGridColumn.getDisplayType()).to.equal(ALL_TYPES.integer);
       expect(columnManager.bodyColumns[1].getDisplayType()).to.equal(ALL_TYPES.string);
     });
 

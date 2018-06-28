@@ -62,7 +62,7 @@ describe('dataTypes', () => {
 
     it('should return display type as number', () => {
       expect(getDisplayType(ALL_TYPES.string)).to.equal(0);
-      expect(getDisplayType(ALL_TYPES.integer)).to.equal(2);
+      expect(getDisplayType(ALL_TYPES.integer)).to.equal(1);
       expect(getDisplayType(ALL_TYPES.int64)).to.equal(0);
       expect(getDisplayType(ALL_TYPES['formatted integer'])).to.equal(0);
       expect(getDisplayType(ALL_TYPES['exponential 5'])).to.equal(0);

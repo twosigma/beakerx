@@ -19,8 +19,8 @@ import IDataModelState from "../interface/IDataGridModelState";
 import DataGridAction, {DataGridColumnAction} from "../store/DataGridAction";
 import { each } from "@phosphor/algorithm";
 import {
-  selectColumnNames, selectColumnOrder, selectColumnsFrozen, selectColumnsFrozenNames,
-  selectColumnsVisible
+  selectColumnNames, selectColumnOrder, selectColumnsFrozen,
+  selectColumnsVisible, selectHasIndex
 } from "./selectors";
 import {selectCellHighlighters} from "./selectors/model";
 import IHihglighterState from "../interface/IHighlighterState";
@@ -135,7 +135,8 @@ function reduceColumnOrder(state, action: DataGridColumnAction) {
   const columnOrder = getColumnOrderArray(state);
   const columnVisible = state.columnsVisible;
   const columnsFrozenen = selectColumnsFrozen({ model: state });
-  let destination = position.value;
+  const hasIndex = selectHasIndex({ model: state });
+  let destination = hasIndex ? position.value + 1 : position.value;
 
   Object.keys(columnVisible).forEach(name => {
     if (columnVisible[name] !== false) {

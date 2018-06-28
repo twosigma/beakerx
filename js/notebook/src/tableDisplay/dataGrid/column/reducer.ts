@@ -157,7 +157,6 @@ function reduceColumnPositions(state: IColumnsState, action: DataGridColumnsActi
     columnState => columnsVisible[columnState.name] === false
   );
 
-
   // Remove frozen columns
   if (columnsFrozenCopy.length > 0) {
     columnsFrozenCopy.sort((name1, name2) => {

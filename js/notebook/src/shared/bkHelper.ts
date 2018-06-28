@@ -16,57 +16,38 @@
 
 /// <reference path='../types/index.d.ts'/>
 
-const GLOBALS = require('./bkGlobals');
-const bkCoreManager = require('./bkCoreManager');
-const defaultPlotColors = {
-  [GLOBALS.THEMES.DEFAULT]: [
-    "#FF1F77B4", // blue
-    "#FFFF7F0E", // orange
-    "#FF2CA02C", // green
-    "#FFD62728", // red
-    "#FF9467BD", // purple
-    "#FF8C564B", // brown
-    "#FFE377C2", // pink
-    "#FF7F7F7F", // gray
-    "#FFBCBD22", // pear
-    "#FF17BECF",  // aqua
-    "#FFAEC7E8",
-    "#FFFFBB78",
-    "#FF98DF8A",
-    "#FFFF9896",
-    "#FFC5B0D5",
-    "#FFC49C94",
-    "#FFF7B6D2",
-    "#FFC7C7C7",
-    "#FFDBDB8D",
-    "#FF9EDAE5"
-  ],
+import GLOBALS from './bkGlobals';
+import bkCoreManager from './bkCoreManager';
 
-  [GLOBALS.THEMES.AMBIANCE]: [
-    "#FF1F77B4", // blue
-    "#FFFF7F0E", // orange
-    "#FF2CA02C", // green
-    "#FFD62728", // red
-    "#FF9467BD", // purple
-    "#FF8C564B", // brown
-    "#FFE377C2", // pink
-    "#FF7F7F7F", // gray
-    "#FFBCBD22", // pear
-    "#FF17BECF",  // aqua
-    "#FFAEC7E8",
-    "#FFFFBB78",
-    "#FF98DF8A",
-    "#FFFF9896",
-    "#FFC5B0D5",
-    "#FFC49C94",
-    "#FFF7B6D2",
-    "#FFC7C7C7",
-    "#FFDBDB8D",
-    "#FF9EDAE5"
-  ]
+const plotColors = [
+  "#FF1F77B4", // blue
+  "#FFFF7F0E", // orange
+  "#FF2CA02C", // green
+  "#FFD62728", // red
+  "#FF9467BD", // purple
+  "#FF8C564B", // brown
+  "#FFE377C2", // pink
+  "#FF7F7F7F", // gray
+  "#FFBCBD22", // pear
+  "#FF17BECF",  // aqua
+  "#FFAEC7E8",
+  "#FFFFBB78",
+  "#FF98DF8A",
+  "#FFFF9896",
+  "#FFC5B0D5",
+  "#FFC49C94",
+  "#FFF7B6D2",
+  "#FFC7C7C7",
+  "#FFDBDB8D",
+  "#FF9EDAE5"
+];
+
+export const defaultPlotColors = {
+  [GLOBALS.THEMES.DEFAULT]: [...plotColors],
+  [GLOBALS.THEMES.AMBIANCE]: [...plotColors]
 };
 
-function getCurrentApp() {
+export function getCurrentApp() {
   return bkCoreManager.getBkApp();
 }
 

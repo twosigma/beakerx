@@ -16,10 +16,9 @@
 
 import bkUtils from '../../../shared/bkUtils';
 import bkHelper from '../../../shared/bkHelper';
+import GLOBALS from '../../../shared/bkGlobals';
 
 import './dataGrid.scss';
-
-const GLOBALS = require('../../../shared/bkGlobals');
 
 export const DEFAULT_DATA_FONT_SIZE = 13;
 export const DEFAULT_BORDER_COLOR = '#D4D0D0';

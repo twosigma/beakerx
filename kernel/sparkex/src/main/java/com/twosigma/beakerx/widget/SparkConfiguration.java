@@ -36,11 +36,7 @@ public class SparkConfiguration extends VBox {
     super(new ArrayList<>());
     this.add = createAddButton();
     this.header = new HBox(asList(sparkVersionWidget(sparkVersion), this.add));
-    List<PropertyItem> propertyItems = createPropertyItems(advancedSettings);
-    this.properties = new PropertiesWidget(propertyItems);
-    VBox configuration = new VBox(asList(this.properties.getWidget(), this.header));
-    configuration.setDomClasses(new ArrayList<>(asList("bx-spark-configuration")));
-    add(configuration);
+    this.addConfiguration(advancedSettings);
   }
 
   private HTML sparkVersionWidget(String version) {
@@ -89,6 +85,14 @@ public class SparkConfiguration extends VBox {
     return propertyItem;
   }
 
+  private void addConfiguration(Map<String, String> advancedSettings) {
+    List<PropertyItem> propertyItems = createPropertyItems(advancedSettings);
+    this.properties = new PropertiesWidget(propertyItems);
+    VBox configuration = new VBox(asList(this.properties.getWidget(), this.header));
+    configuration.setDomClasses(new ArrayList<>(asList("bx-spark-configuration")));
+    add(configuration);
+  }
+
   @Override
   public String getModelNameValue() {
     return MODEL_NAME_VALUE;
@@ -120,10 +124,8 @@ public class SparkConfiguration extends VBox {
   }
 
   public void setConfiguration(Map<String, String> advancedSettings) {
-    List<PropertyItem> propertyItems = createPropertyItems(advancedSettings);
-    this.properties = new PropertiesWidget(propertyItems);
     this.remove(this.getChildren().get(0));
-    add(new VBox(asList(this.properties.getWidget(), this.header)));
+    this.addConfiguration(advancedSettings);
   }
 
   public void setDisabledToAll() {

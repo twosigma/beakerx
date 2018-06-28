@@ -57,7 +57,22 @@ public class ScalaDefaultVariables extends DefaultJVMVariables {
         "com.twosigma.beakerx.scala.fileloader._",
         "com.twosigma.beakerx.chart.xychart.plotitem.ShapeType",
         "com.twosigma.beakerx.chart.xychart.plotitem.StrokeType",
-        "com.twosigma.beakerx.scala.fileloader.CSV"
+        "com.twosigma.beakerx.scala.fileloader.CSV",
+        "com.twosigma.beakerx.mimetype.MIMEContainer.HTML",
+        "com.twosigma.beakerx.mimetype.MIMEContainer.Latex",
+        "com.twosigma.beakerx.mimetype.MIMEContainer.Markdown",
+        "com.twosigma.beakerx.mimetype.MIMEContainer.Math",
+        "com.twosigma.beakerx.mimetype.MIMEContainer.Javascript",
+        "com.twosigma.beakerx.mimetype.MIMEContainer.IFrame",
+        "com.twosigma.beakerx.mimetype.MIMEContainer.VimeoVideo",
+        "com.twosigma.beakerx.mimetype.MIMEContainer.ScribdDocument",
+        "com.twosigma.beakerx.mimetype.MIMEContainer.YoutubeVideo",
+        "com.twosigma.beakerx.mimetype.MIMEContainer.Video",
+        "com.twosigma.beakerx.mimetype.SVGContainer.SVG",
+        "com.twosigma.beakerx.mimetype.ImageContainer.Image",
+        "com.twosigma.beakerx.mimetype.FileLinkContainer.FileLink",
+        "com.twosigma.beakerx.mimetype.FileLinkContainer.FileLinks",
+        "com.twosigma.beakerx.mimetype.MIMEContainer"
     );
   }
 }

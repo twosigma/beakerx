@@ -51,7 +51,7 @@ export function getDisplayType(type: ALL_TYPES, stringFormatForType?: any, strin
   }
 
   if (type === ALL_TYPES.integer) {
-    return ALL_TYPES['formatted integer'];
+    return ALL_TYPES.integer;
   }
 
   if (type === ALL_TYPES.double) {

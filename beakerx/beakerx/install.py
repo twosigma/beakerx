@@ -68,12 +68,10 @@ def _install_labextensions(lab):
     if lab:
         subprocess.check_call(["jupyter", "labextension", "install", "@jupyter-widgets/jupyterlab-manager"])
         subprocess.check_call(["jupyter", "labextension", "install", "beakerx-jupyterlab"])
-        subprocess.check_call(["jupyter", "labextension", "install", "beakerx-jupyterlab-js"])
 
 
 def _uninstall_labextensions(lab):
     if lab:
-        subprocess.check_call(["jupyter", "labextension", "uninstall", "beakerx-jupyterlab-js"])
         subprocess.check_call(["jupyter", "labextension", "uninstall", "beakerx-jupyterlab"])
         subprocess.check_call(["jupyter", "labextension", "uninstall", "@jupyter-widgets/jupyterlab-manager"])
 

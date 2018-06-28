@@ -189,7 +189,7 @@ export namespace DataGridHelpers {
   }
 
   export function applyTimezone(timestamp, tz) {
-    const time = moment(timestamp);
+    const time = moment(timestamp, 'x');
 
     if (!tz) {
       return time;

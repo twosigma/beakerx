@@ -29,12 +29,15 @@ class SparkMetricsExecutorsHandler(APIHandler):
 
     @web.authenticated
     @tornado.web.asynchronous
-    def get(self, id):
+    def get(self):
 
         def handle_response(response):
             self.finish(response.body)
 
-        url = "http://localhost:4040/api/v1/applications/" + id + "/allexecutors"
+        app_id = self.get_argument('sparkAppId', None)
+        ui_web_url = self.get_argument('sparkUiWebUrl', None)
+
+        url = ui_web_url + "/api/v1/applications/" + app_id + "/allexecutors"
         req = tornado.httpclient.HTTPRequest(
             url=url,
             method=self.request.method,
@@ -104,7 +107,7 @@ def load_jupyter_server_extension(nbapp):
     web_app = nbapp.web_app
     host_pattern = '.*$'
     settings_route_pattern = url_path_join(web_app.settings['base_url'], '/beakerx', '/settings')
-    spark_metrics_executors_route_pattern = url_path_join(web_app.settings['base_url'], '/beakerx', '/sparkmetrics/executors/(.*)')
+    spark_metrics_executors_route_pattern = url_path_join(web_app.settings['base_url'], '/beakerx', '/sparkmetrics/executors')
     version_route_pattern = url_path_join(web_app.settings['base_url'], '/beakerx', '/version')
     javadoc_route_pattern = url_path_join(web_app.settings['base_url'], '/static', '/javadoc/(.*)')
     javadoc_lab_route_pattern = url_path_join(web_app.settings['base_url'], '/javadoc/(.*)')

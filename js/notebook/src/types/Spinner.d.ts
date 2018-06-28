@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,12 +14,15 @@
  *  limitations under the License.
  */
 
- module.exports = {
-   displayHTML: displayHTML
- };
-
- function displayHTML(outputArea, html) {
-   if (html && outputArea && outputArea.element) {
-     $(outputArea.element).append(html);
-   }
- }
+import widgets from './widgets';
+export declare class SpinnerModel extends widgets.DOMWidgetModel {
+    defaults(): any;
+}
+export declare class SpinnerView extends widgets.DOMWidgetView {
+    render(): void;
+}
+declare const _default: {
+    SpinnerModel: typeof SpinnerModel;
+    SpinnerView: typeof SpinnerView;
+};
+export default _default;

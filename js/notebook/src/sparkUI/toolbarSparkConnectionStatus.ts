@@ -42,7 +42,9 @@ export class ToolbarSparkConnectionStatus {
   }
 
   clear() {
-    this.toolbarSparkStats.node.innerHTML = '';
+    if (this.toolbarSparkStats) {
+      this.toolbarSparkStats.node.innerHTML = '';
+    }
   }
 
   propagateToolbarWidget() {

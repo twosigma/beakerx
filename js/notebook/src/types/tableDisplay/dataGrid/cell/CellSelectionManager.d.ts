@@ -7,7 +7,6 @@ export interface IRangeCells {
     endCell: ICellData;
 }
 export default class CellSelectionManager {
-    selectedCellColor: string;
     startCellData: ICellData | null;
     endCellData: ICellData | null;
     enabled: boolean;

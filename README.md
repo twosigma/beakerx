@@ -160,6 +160,24 @@ The code is organized into subdirectories as follows:
   the user).  It calls into the groovy magic with its Comm proxy,
   implemented in Python.
 
+  BeakerX implements autotranslation with a server extension and
+  metaprogramming glue in each language.  The glue makes the `beakerx`
+  object into a proxy for RPC calls to the server extension, using
+  JSON serialization.  For JavaScript, the proxy object uses Comm to
+  reach the kernel, which forwards to the server extension.
+
+  The autotranslation server has a separate thread of control from
+  Jupyter, and it manages its own port, which it protects by accepting
+  only local connections and requiring a secure password (which is
+  passed to the kernels via an environment variable).  The extra
+  thread is necessary to avoid deadlock in tornado.  This might be
+  better done with a
+  [queue](http://www.tornadoweb.org/en/stable/queues.html).
+
+  See [#7577](https://github.com/twosigma/beakerx/issues/7577) for the
+  plan to improve this architecture with shared memory and Apache
+  Arrow.
+
 * [doc](doc) Documentation consisting of executable tutorial
   notebooks.  [StartHere.ipynb](StartHere.ipynb) at the top level
   links to these and is the intended way to navigate them.  There is a

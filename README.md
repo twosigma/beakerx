@@ -53,7 +53,7 @@ how to install and run BeakerX.
 ### Build and Install
 
 ```
-conda create -y -n beakerx 'python>=3' nodejs pandas openjdk maven py4j
+conda create -y -n beakerx 'python>=3' nodejs pandas openjdk maven py4j requests
 source activate beakerx
 conda config --env --add pinned_packages 'openjdk>8.0.121'
 conda install -y -c conda-forge ipywidgets
@@ -64,7 +64,7 @@ beakerx install
 ### Build and Install for Jupyter Lab
 
 ```
-conda create -y -n labx 'python>=3' nodejs pandas openjdk maven py4j
+conda create -y -n labx 'python>=3' nodejs pandas openjdk maven py4j requests
 source activate labx
 conda config --env --add pinned_packages 'openjdk>8.0.121'
 conda install -y -c conda-forge jupyterlab

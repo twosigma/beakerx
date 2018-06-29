@@ -102,10 +102,10 @@ a local build should suffice:
 
 The Java and TypeScript unit tests are run with every build. See [test/README.md](test/README.md) for how to run the e2e tests.
 
-## Groovy with Interactive Plotting and Tables:
+## Groovy with Interactive Plotting:
 <img width="900" alt="screen shot" src="https://user-images.githubusercontent.com/963093/28300136-585f9f7c-6b4b-11e7-8827-b5807d3fc9a8.png">
 
-## Autotranslation from Python to JavaScript
+## Autotranslation from Python to JavaScript and D3
 
 <img width="900" alt="screen shot" src="https://cloud.githubusercontent.com/assets/963093/21077947/261def64-bf2a-11e6-8518-4845caf75690.png">
 

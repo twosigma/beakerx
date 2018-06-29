@@ -51,4 +51,13 @@ public class DefaultBeakerXJsonSerializer implements BeakerXJsonSerializer {
     }
   }
 
+  @Override
+  public Object fromJson(String json) {
+    try {
+      return objectMapper.readValue(json, Object.class);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
 }

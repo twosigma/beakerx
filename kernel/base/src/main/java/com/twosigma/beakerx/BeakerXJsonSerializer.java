@@ -19,4 +19,6 @@ public interface BeakerXJsonSerializer {
 
   String toJson(Object value);
 
+  Object fromJson(String json);
+
 }

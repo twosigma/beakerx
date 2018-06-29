@@ -142,6 +142,7 @@ def _install_magics():
     with open(os.path.join(dir_path, 'ipython_config.py'), 'w+') as ipython_config:
         ipython_config.write("c = get_config()\n")
         ipython_config.write("c.InteractiveShellApp.extensions = ["
+                             "'beakerx.autotranslation',\n"
                              "'beakerx_magics.kernel_magic',\n"
                              "'beakerx_magics.groovy_magic',\n"
                              "'beakerx_magics.clojure_magic',\n"

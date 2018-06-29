@@ -14,7 +14,7 @@
 
 import sys
 
-import os, json, pandas, numpy
+import os, json, numpy, pandas, requests, base64
 import urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse, IPython, datetime, calendar, math, traceback, time
 from traitlets import Unicode
 
@@ -23,6 +23,7 @@ from beakerx.easyform import easyform
 from beakerx.tabledisplay import *
 from ipykernel.comm import Comm
 from IPython.display import display_html
+from IPython import get_ipython
 
 
 class OutputContainer:
@@ -447,18 +448,10 @@ class BeakerX:
         self._comm.send(data=state)
 
     def get(self, var):
-        result = self._getRaw(var)
-        if not result['defined']:
+        result = autotranslation_get(var)
+        if result == 'undefined':
             raise NameError('name \'' + var + '\' is not defined in notebook namespace')
-        return transformBack(result['value'])
-
-    def _getRaw(self, var):
-        args = {'name': var}
-        state = {'state': args}
-        self._comm.send(data=state)
-        # need to block until we get a callback but the server is single threaded?
-        # result = self._comm.read()
-        return result
+        return transformBack(json.loads(result))
 
     def set_session(self, id):
         self.session_id = id
@@ -468,13 +461,14 @@ class BeakerX:
         ip.display_formatter.formatters['application/json'] = MyJSONFormatter(parent=ip.display_formatter)
 
     def set(self, var, val):
+        autotranslation_update(var, val)
         return self.set4(var, val, False, True)
 
     def unset(self, var):
         return self.set4(var, None, True, True)
 
     def isDefined(self, var):
-        return self._getRaw(var)['defined']
+        return autotranslation_get(var) != 'undefined'
 
     def createOutputContainer(self):
         return OutputContainer()
@@ -594,3 +588,36 @@ class BeakerX:
 
     def __delattr__(self, name):
         return self.unset(name)
+
+
+def autotranslation_update(var, val):
+    session_id = get_context_session()
+    port = os.environ["BEAKERX_AUTOTRANSLATION_PORT"]
+    url = 'http://localhost:{0}/autotransltion/'.format(port)
+    json_data = json.dumps(transform(val))
+    data = {}
+    data["name"] = var
+    data["json"] = json_data
+    data["sessionId"] = session_id
+    requests.post(url, data=json.dumps(data), headers={'Authorization': get_auth_token()})
+
+
+def autotranslation_get(var):
+    port = os.environ["BEAKERX_AUTOTRANSLATION_PORT"]
+    session_id = get_context_session()
+    url = 'http://localhost:{0}/autotransltion/{1}/{2}'.format(port, session_id, var)
+    result = requests.get(url, headers={'Authorization': get_auth_token()})
+    return transformBack(result.content.decode())
+
+
+def get_auth_token():
+    token_string = 'beakerx:' + os.environ['BEAKERX_AUTOTRANSLATION_PASSWORD']
+    return 'Basic ' + base64.b64encode(token_string.encode('utf-8')).decode()
+
+
+def get_context_session():
+    kernel = get_ipython().kernel
+    # if subkernel get session from extra start parameters
+    if len(kernel.parent.argv) == 3:
+        return json.loads(kernel.parent.argv[2])['contextId']
+    return kernel.session.session

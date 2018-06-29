@@ -56,7 +56,8 @@ public class NamespaceClient implements BeakerXClient {
 
   @Override
   public synchronized Object get(final String name) {
-    return autotranslationService.get(name);
+    String json = autotranslationService.get(name);
+    return beakerXJsonSerializer.fromJson(json);
   }
 
   @Override

@@ -172,7 +172,9 @@ The code is organized into subdirectories as follows:
   passed to the kernels via an environment variable).  The extra
   thread is necessary to avoid deadlock in tornado.  This might be
   better done with a
-  [queue](http://www.tornadoweb.org/en/stable/queues.html).
+  [queue](http://www.tornadoweb.org/en/stable/queues.html), as
+  explained in
+  [#5039](https://github.com/twosigma/beakerx/issues/5039).
 
   See [#7577](https://github.com/twosigma/beakerx/issues/7577) for the
   plan to improve this architecture with shared memory and Apache

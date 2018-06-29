@@ -169,6 +169,11 @@ export default class ColumnManager {
     this.indexColumns.forEach(column => column.menu && column.menu.updateTriggerPosition());
   }
 
+  closeAllMenus() {
+    this.bodyColumns.forEach(column => column.menu && column.menu.close());
+    this.indexColumns.forEach(column => column.menu && column.menu.close());
+  }
+
   takeColumnsByCells(startCell: ICellData, endCell: ICellData) {
     let result: any[] = [];
 

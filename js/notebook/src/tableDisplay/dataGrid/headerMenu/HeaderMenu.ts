@@ -115,6 +115,10 @@ export default abstract class HeaderMenu implements MenuInterface {
     }
   }
 
+  close() {
+    this.menu.close();
+  }
+
   destroy(): void {
     this.menu.isAttached && this.menu.dispose();
 

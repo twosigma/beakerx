@@ -177,6 +177,7 @@ export class BeakerXDataGrid extends DataGrid {
     this.cellHovered.emit({ data: null, event: null });
     this.cellTooltipManager.hideTooltips();
     this.columnManager.blurColumnFilterInputs();
+    this.columnManager.closeAllMenus();
     this.node.classList.remove(BeakerXDataGrid.FOCUS_CSS_CLASS);
     enableKeyboardManager();
   }

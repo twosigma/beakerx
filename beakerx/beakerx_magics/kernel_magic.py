@@ -17,7 +17,9 @@ from IPython.core.magic import (Magics, magics_class, cell_magic)
 from jupyter_client.manager import KernelManager
 from ipykernel.zmqshell import ZMQInteractiveShell
 import atexit
+import json
 import logging
+import os
 
 @magics_class
 class KernelMagics(Magics):
@@ -36,7 +38,7 @@ class KernelMagics(Magics):
     def start(self, kernel_name):
         self.km = KernelManager()
         self.km.kernel_name = kernel_name
-        self.km.start_kernel()
+        self.km.start_kernel(extra_arguments=[self._context_as_string()])
         atexit.register(self.stop_kernel)
         self.kc = self.km.client()
         self.kc.start_channels()
@@ -82,6 +84,13 @@ class KernelMagics(Magics):
             if self.log.isEnabledFor(logging.DEBUG):
                 # don't create the list of keys if debug messages aren't enabled
                 self.log.debug("Current comms: %s", list(self.comms.keys()))
+
+    def _context_as_string(self):
+        return json.dumps({
+            'port': os.environ["BEAKERX_AUTOTRANSLATION_PORT"],
+            'contextId': get_ipython().kernel.session.session,
+        })
+
 
 def comm_msg(stream, ident, msg):
     content = msg['content']

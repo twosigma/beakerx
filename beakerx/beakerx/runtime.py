@@ -448,7 +448,7 @@ class BeakerX:
         self._comm.send(data=state)
 
     def get(self, var):
-        result = self.autotranslation_get(var)
+        result = autotranslation_get(var)
         if result == 'undefined':
             raise NameError('name \'' + var + '\' is not defined in notebook namespace')
         return transformBack(result)
@@ -461,18 +461,14 @@ class BeakerX:
         ip.display_formatter.formatters['application/json'] = MyJSONFormatter(parent=ip.display_formatter)
 
     def set(self, var, val):
-        self.autotranslation_update(var, val)
+        autotranslation_update(var, val)
         return self.set4(var, val, False, True)
-
-    def get_auth_token(self):
-        token_string = 'beakerx:' + os.environ['BEAKERX_AUTOTRANSLATION_PASSWORD']
-        return 'Basic ' + base64.b64encode(token_string.encode('utf-8')).decode()
 
     def unset(self, var):
         return self.set4(var, None, True, True)
 
     def isDefined(self, var):
-        return self.autotranslation_get(var) != 'undefined'
+        return autotranslation_get(var) != 'undefined'
 
     def createOutputContainer(self):
         return OutputContainer()
@@ -578,24 +574,6 @@ class BeakerX:
         state = {'state': msg}
         comm.send(data=state, buffers=[])
 
-    def autotranslation_update(self, var, val):
-        session_id = get_ipython().kernel.session.session
-        port = os.environ["BEAKERX_AUTOTRANSLATION_PORT"]
-        url = 'http://localhost:{0}/autotransltion/'.format(port)
-        json_data = json.dumps(transform(val))
-        data = {}
-        data["name"] = var
-        data["json"] = json_data
-        data["sessionId"] = session_id
-        requests.post(url, data=json.dumps(data), headers={'Authorization': self.get_auth_token()})
-
-    def autotranslation_get(self, var):
-        port = os.environ["BEAKERX_AUTOTRANSLATION_PORT"]
-        sessionId = get_ipython().kernel.session.session
-        url = 'http://localhost:{0}/autotransltion/{1}/{2}'.format(port, sessionId, var)
-        result = requests.get(url, headers={'Authorization': self.get_auth_token()})
-        return transformBack(result.content.decode())
-
     def __setattr__(self, name, value):
         if 'session_id' == name:
             self.__dict__['session_id'] = value
@@ -610,3 +588,28 @@ class BeakerX:
 
     def __delattr__(self, name):
         return self.unset(name)
+
+
+def autotranslation_update(var, val):
+    session_id = get_ipython().kernel.session.session
+    port = os.environ["BEAKERX_AUTOTRANSLATION_PORT"]
+    url = 'http://localhost:{0}/autotransltion/'.format(port)
+    json_data = json.dumps(transform(val))
+    data = {}
+    data["name"] = var
+    data["json"] = json_data
+    data["sessionId"] = session_id
+    requests.post(url, data=json.dumps(data), headers={'Authorization': get_auth_token()})
+
+
+def autotranslation_get(var):
+    port = os.environ["BEAKERX_AUTOTRANSLATION_PORT"]
+    session_id = get_ipython().kernel.session.session
+    url = 'http://localhost:{0}/autotransltion/{1}/{2}'.format(port, session_id, var)
+    result = requests.get(url, headers={'Authorization': get_auth_token()})
+    return transformBack(result.content.decode())
+
+
+def get_auth_token():
+    token_string = 'beakerx:' + os.environ['BEAKERX_AUTOTRANSLATION_PASSWORD']
+    return 'Basic ' + base64.b64encode(token_string.encode('utf-8')).decode()

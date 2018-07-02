@@ -261,8 +261,6 @@ export class SparkUIView extends widgets.VBoxView {
     this.connectionLabelDead = this.sparkStats.node.querySelector('.dead');
 
     this.connectionStatusElement.insertAdjacentElement('afterend', this.sparkStats.node);
-
-    this.updateSparkStatsStyles();
   }
 
   private updateSparkStatsStyles(): void {
@@ -351,6 +349,29 @@ export class SparkUIView extends widgets.VBoxView {
     this.connectionLabelMemory.innerText = `${bkUtils.formatBytes(storageMemory)}`;
     this.connectionLabelDead.innerText = `${deadExecutors}`;
     this.toolbarSparkConnectionStatus.propagateToolbarWidget();
+
+    this.updateLabelWidths();
+  }
+
+  private updateLabelWidths() {
+    const container = document.createElement('span');
+
+    container.style.visibility = 'hidden';
+    container.style.position = 'absolute';
+    container.innerText = '999';
+    container.classList.add('label');
+
+    this.sparkStats.node.appendChild(container);
+    const maxWidth1 = `${container.offsetWidth}px`;
+    container.innerText = '999 GB';
+    const maxWidth2 = `${container.offsetWidth}px`;
+    this.sparkStats.node.removeChild(container);
+
+    this.connectionLabelActive.style.width = maxWidth1;
+    this.connectionLabelDead.style.width = maxWidth1;
+    this.connectionLabelMemory.style.width = maxWidth2;
+
+    this.updateSparkStatsStyles();
   }
 
   private addSparkMetricsWidget() {

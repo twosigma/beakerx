@@ -19,9 +19,11 @@ import com.google.gson.Gson;
 import com.twosigma.beakerx.message.MessageSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import py4j.Base64;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Map;
@@ -44,7 +46,12 @@ public class KernelConfigurationFile implements ConfigurationFile {
     }
     this.config = getConfig(args[0]);
     if (args.length == 2) {
-      String contextAsJson = args[1];
+      String contextAsJson = null;
+      try {
+        contextAsJson = new String(Base64.decode(args[1]), "UTF-8");
+      } catch (UnsupportedEncodingException e) {
+        e.printStackTrace();
+      }
       this.context = Optional.of(contextAsJson);
     }
   }

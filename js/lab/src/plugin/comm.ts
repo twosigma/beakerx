@@ -103,9 +103,9 @@ const assignMsgHandlersToExistingComms = (
   msgHandlers: Object
 ): void => {
   for (let commId in comms) {
-    let comm = kernelInstance.connectToComm(comms[commId].target_name, commId);
-
-    assignMsgHandlerToComm(comm, msgHandlers[comm.targetName]);
+    kernelInstance.connectToComm(comms[commId].target_name, commId)['then'](comm => {
+      assignMsgHandlerToComm(comm, msgHandlers[comm.targetName]);
+    });
   }
 };
 

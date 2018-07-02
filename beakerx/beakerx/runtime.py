@@ -619,5 +619,6 @@ def get_context_session():
     kernel = get_ipython().kernel
     # if subkernel get session from extra start parameters
     if len(kernel.parent.argv) == 3:
-        return json.loads(kernel.parent.argv[2])['contextId']
+        context_json = base64.b64decode(kernel.parent.argv[2]).decode('UTF-8')
+        return json.loads(context_json)['contextId']
     return kernel.session.session

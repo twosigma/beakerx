@@ -164,7 +164,7 @@ export default class CellManager {
       queryCommandEnabled = false;
     }
 
-    if (bkUtils.isElectron || !queryCommandEnabled) {
+    if (!queryCommandEnabled) {
       return;
     }
 

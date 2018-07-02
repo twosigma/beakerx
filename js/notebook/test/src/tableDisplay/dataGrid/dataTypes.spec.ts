@@ -44,6 +44,7 @@ describe('dataTypes', () => {
       expect(getTypeByName('html')).to.equal(10);
       expect(getTypeByName('int64')).to.equal(11);
       expect(getTypeByName('time')).to.equal(12);
+      expect(getTypeByName('image')).to.equal(13);
     });
   });
 

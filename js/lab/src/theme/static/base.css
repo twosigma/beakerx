@@ -96,3 +96,7 @@
 .hidden {
   display: none !important;;
 }
+
+.bx-stats .bx-label, .bx-spark-stageProgressLabels .bx-label {
+  line-height: 1.3;
+}

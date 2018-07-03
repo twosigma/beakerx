@@ -280,7 +280,7 @@ def transformBack(obj):
                         c.addItem(i)
                 return c
             if out['type'] == "Date":
-                return datetime.datetime.fromtimestamp(out["timestamp"]/1000)
+                return datetime.fromtimestamp(out["timestamp"]/1000)
             if out['type'] == "TableDisplay":
                 if 'subtype' in out:
                     if out['subtype'] == "Dictionary":
@@ -361,7 +361,7 @@ class DataFrameEncoder(json.JSONEncoder):
             ret = obj.tolist()
             transformNaNs(ret)
             return ret
-        if type(obj) == datetime.datetime or type(obj) == datetime.date or type(obj).__name__ == 'Timestamp':
+        if type(obj) == datetime or type(obj) == datetime.date or type(obj).__name__ == 'Timestamp':
             out = {}
             out['type'] = "Date"
             out['timestamp'] = time.mktime(obj.timetuple()) * 1000
@@ -594,7 +594,7 @@ def autotranslation_update(var, val):
     session_id = get_context_session()
     port = os.environ["BEAKERX_AUTOTRANSLATION_PORT"]
     url = 'http://localhost:{0}/autotransltion/'.format(port)
-    json_data = json.dumps(transform(val))
+    json_data = json.dumps(transform(val), cls=DataFrameEncoder)
     data = {}
     data["name"] = var
     data["json"] = json_data
@@ -619,5 +619,6 @@ def get_context_session():
     kernel = get_ipython().kernel
     # if subkernel get session from extra start parameters
     if len(kernel.parent.argv) == 3:
-        return json.loads(kernel.parent.argv[2])['contextId']
+        context_json = base64.b64decode(kernel.parent.argv[2]).decode('UTF-8')
+        return json.loads(context_json)['contextId']
     return kernel.session.session

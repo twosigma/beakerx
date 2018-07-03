@@ -25,17 +25,18 @@ export function sendJupyterCodeCells(
   notebook: Notebook,
   filter: string
 ): void {
-  const comm = kernelInstance.connectToComm(BEAKER_GETCODECELLS);
-  const codeCells = <JSONArray>getCodeCellsByTag(notebook, filter)
-    .map((cell: CodeCell): object => ({
-        cell_type: cell.model.type,
-        ...cell.model.toJSON()
-      })
-    );
+  kernelInstance.connectToComm(BEAKER_GETCODECELLS)['then'](comm => {
+    const codeCells = <JSONArray>getCodeCellsByTag(notebook, filter)
+      .map((cell: CodeCell): object => ({
+          cell_type: cell.model.type,
+          ...cell.model.toJSON()
+        })
+      );
 
-  comm.open();
-  comm.send({ code_cells: codeCells });
-  comm.dispose();
+    comm.open();
+    comm.send({ code_cells: codeCells });
+    comm.dispose();
+  });
 }
 
 export function getCodeCellsByTag(notebook: Notebook, tag: string): Cell[] {

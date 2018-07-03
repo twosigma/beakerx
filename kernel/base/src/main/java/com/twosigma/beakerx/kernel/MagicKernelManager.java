@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
+import org.apache.commons.codec.binary.Base64;
 import py4j.ClientServer;
 import py4j.GatewayServer;
 
@@ -28,6 +29,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +86,7 @@ public class MagicKernelManager {
             "--port", port == null ? DEFAULT_PORT : String.valueOf(port),
             "--pyport", pythonPort == null ? DEFAULT_PYTHON_PORT : String.valueOf(pythonPort),
             "--kernel", kernelName,
-            "--context", this.context
+            "--context", Base64.encodeBase64String(this.context.getBytes(StandardCharsets.UTF_8))
     };
   }
 

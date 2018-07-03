@@ -63,6 +63,12 @@ public class Comm {
   private List<Handler<Message>> msgCallbackList = new ArrayList<>();
   private List<Handler<Message>> closeCallbackList = new ArrayList<>();
 
+
+  public Comm(String commId, String targetName, Message parentMessage) {
+    this(commId, targetName);
+    getParentMessageStrategy = () -> parentMessage;
+  }
+
   public Comm(String commId, String targetName) {
     super();
     this.kernel = KernelManager.get();

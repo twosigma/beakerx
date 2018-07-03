@@ -20,11 +20,12 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.twosigma.beakerx.BeakerXCommRepositoryMock;
+import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.chart.Color;
 import com.twosigma.beakerx.chart.GradientColor;
 import com.twosigma.beakerx.chart.heatmap.HeatMap;
 import com.twosigma.beakerx.kernel.KernelManager;
-import com.twosigma.beakerx.KernelTest;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
@@ -52,7 +53,7 @@ public class HeatMapSerializerTest {
   public void initTestStubData() throws IOException {
     sw = new StringWriter();
     jgen = mapper.getJsonFactory().createJsonGenerator(sw);
-    KernelManager.register(new KernelTest());
+    KernelManager.register(new KernelTest(new BeakerXCommRepositoryMock()));
   }
 
   @After
@@ -66,10 +67,10 @@ public class HeatMapSerializerTest {
     //when
     HeatMap heatMap = new HeatMap();
     heatMap.setData(
-        new Integer[][] {
-          new Integer[] {new Integer(1), new Integer(2)},
-          new Integer[] {new Integer(3), new Integer(4)}
-        });
+            new Integer[][]{
+                    new Integer[]{new Integer(1), new Integer(2)},
+                    new Integer[]{new Integer(3), new Integer(4)}
+            });
     heatMapSerializer.serialize(heatMap, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
     //then

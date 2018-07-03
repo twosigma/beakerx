@@ -15,6 +15,8 @@
  */
 package com.twosigma.beakerx.sql;
 
+import com.twosigma.beakerx.BeakerXCommRepository;
+import com.twosigma.beakerx.BeakerXCommRepositoryMock;
 import com.twosigma.beakerx.KernelSetUpFixtureTest;
 import com.twosigma.beakerx.KernelSocketsServiceTest;
 import com.twosigma.beakerx.KernelSocketsTest;
@@ -50,7 +52,7 @@ public class SQLKernelTest extends KernelSetUpFixtureTest {
   @Override
   protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
     SQLEvaluator sqlEvaluator = new SQLEvaluator(sessionId, sessionId, cellExecutor(), getTestTempFolderFactory(), kernelParameters(), new EvaluatorTest.BeakexClientTestImpl());
-    Kernel sqlKernel = new SQL(sessionId, sqlEvaluator, kernelSocketsFactory, closeKernelAction, getCacheFolderFactory());
+    Kernel sqlKernel = new SQL(sessionId, sqlEvaluator, kernelSocketsFactory, closeKernelAction, getCacheFolderFactory(), new BeakerXCommRepositoryMock());
     return sqlKernel;
   }
 

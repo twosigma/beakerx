@@ -15,6 +15,8 @@
  */
 package com.twosigma.beakerx.groovy.magics;
 
+import com.twosigma.beakerx.BeakerXCommRepository;
+import com.twosigma.beakerx.BeakerXCommRepositoryMock;
 import com.twosigma.beakerx.groovy.kernel.Groovy;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
@@ -28,6 +30,6 @@ public class GroovyClasspathAddDynamicMagicCommandTest extends ClasspathAddDynam
 
   @Override
   protected KernelFunctionality createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
-    return new Groovy(sessionId, groovyEvaluator(), kernelSocketsFactory, closeKernelAction, getCacheFolderFactory());
+    return new Groovy(sessionId, groovyEvaluator(), kernelSocketsFactory, closeKernelAction, getCacheFolderFactory(), new BeakerXCommRepositoryMock());
   }
 }

@@ -35,6 +35,7 @@ import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.kernel.PythonEntryPoint;
 import com.twosigma.beakerx.kernel.MagicKernelManager;
 import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandWhichThrowsException;
 import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver;
@@ -94,7 +95,7 @@ public class KernelTest implements KernelFunctionality {
   private List<Message> publishedMessages = synchronizedList(new ArrayList<>());
   private List<Message> sentMessages = synchronizedList(new ArrayList<>());
   private String id;
-  private Map<String, Comm> commMap = new HashMap<>();
+  private CommRepository commRepository;
   private ExecutionResultSender executionResultSender = new ExecutionResultSender(this);
   public EvaluatorParameters evaluatorParameters;
   private Evaluator evaluator;
@@ -108,11 +109,16 @@ public class KernelTest implements KernelFunctionality {
 
 
   public KernelTest() {
-    this("KernelTestId1");
+    this("KernelTestId1", new BeakerXCommRepositoryMock());
   }
 
-  public KernelTest(String id) {
+  public KernelTest(CommRepository commRepository) {
+    this("KernelTestId1", commRepository);
+  }
+
+  public KernelTest(String id, CommRepository commRepository) {
     this.id = id;
+    this.commRepository = commRepository;
     initMavenResolverParam();
     initMagicCommands();
     SimpleEvaluationObject value = new SimpleEvaluationObject("ok");
@@ -125,6 +131,7 @@ public class KernelTest implements KernelFunctionality {
   public KernelTest(String id, Evaluator evaluator) {
     this.id = id;
     this.evaluator = evaluator;
+    this.commRepository = new BeakerXCommRepositoryMock();
     initMavenResolverParam();
     initMagicCommands();
     SimpleEvaluationObject value = new SimpleEvaluationObject("ok");
@@ -212,31 +219,27 @@ public class KernelTest implements KernelFunctionality {
 
   @Override
   public void addComm(String hash, Comm commObject) {
-    if (!isCommPresent(hash)) {
-      commMap.put(hash, commObject);
-    }
+    commRepository.addComm(hash, commObject);
   }
 
   @Override
   public void removeComm(String hash) {
-    if (hash != null && isCommPresent(hash)) {
-      commMap.remove(hash);
-    }
+    commRepository.removeComm(hash);
   }
 
   @Override
   public Comm getComm(String hash) {
-    return commMap.get(hash != null ? hash : "");
+    return commRepository.getComm(hash);
   }
 
   @Override
   public boolean isCommPresent(String hash) {
-    return commMap.containsKey(hash);
+    return commRepository.isCommPresent(hash);
   }
 
   @Override
   public Set<String> getCommHashSet() {
-    return commMap.keySet();
+    return commRepository.getCommHashSet();
   }
 
   @Override
@@ -413,7 +416,7 @@ public class KernelTest implements KernelFunctionality {
   public PythonEntryPoint getPythonEntryPoint(String kernelName) throws NoSuchKernelException {
     MagicKernelManager manager = magicKernels.get(kernelName);
     if (manager == null) {
-      manager = new MagicKernelManager(kernelName,"kernelTestContext");
+      manager = new MagicKernelManager(kernelName, "kernelTestContext");
       magicKernels.put(kernelName, manager);
     }
     return manager.getPythonEntryPoint();
@@ -425,5 +428,6 @@ public class KernelTest implements KernelFunctionality {
   }
 
   @Override
-  public void addCommIdManagerMapping(String commId, String kernel) {}
+  public void addCommIdManagerMapping(String commId, String kernel) {
+  }
 }

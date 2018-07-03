@@ -32,15 +32,16 @@ import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
 public class NamespaceClient implements BeakerXClient {
 
   private static Map<String, SynchronousQueue<Object>> messagePool = new HashMap<>();
-  private Comm autotranslationComm = null;
   private Comm codeCellsComm = null;
   private Comm tagRunComm = null;
   private AutotranslationService autotranslationService;
   private BeakerXJsonSerializer beakerXJsonSerializer;
+  private CommRepository commRepository;
 
-  public NamespaceClient(AutotranslationService autotranslationService, BeakerXJsonSerializer beakerXJsonSerializer) {
+  public NamespaceClient(AutotranslationService autotranslationService, BeakerXJsonSerializer beakerXJsonSerializer, CommRepository commRepository) {
     this.autotranslationService = autotranslationService;
     this.beakerXJsonSerializer = beakerXJsonSerializer;
+    this.commRepository = commRepository;
   }
 
   @Override
@@ -75,7 +76,7 @@ public class NamespaceClient implements BeakerXClient {
   public synchronized Object set(String name, Object value) {
     String json = update(name, value);
     try {
-      Comm c = getAutotranslationComm();
+      Comm c = commRepository.getOrCreateAutotranslationComm();
       HashMap<String, Serializable> data = new HashMap<>();
       HashMap<String, Serializable> state = new HashMap<>();
       state.put("name", name);
@@ -112,14 +113,6 @@ public class NamespaceClient implements BeakerXClient {
       messagePool.put(channel, result);
     }
     return result;
-  }
-
-  private Comm getAutotranslationComm() {
-    if (autotranslationComm == null) {
-      autotranslationComm = new Comm(TargetNamesEnum.BEAKER_AUTOTRANSLATION);
-      autotranslationComm.open();
-    }
-    return autotranslationComm;
   }
 
   private Comm getCodeCellsComm() {
@@ -174,15 +167,18 @@ public class NamespaceClient implements BeakerXClient {
     return this.autotranslationService.getContextAsString();
   }
 
-  public static NamespaceClient create(String id, KernelConfigurationFile configurationFile) {
-    return create(id, configurationFile, new DefaultBeakerXJsonSerializer());
+  public static NamespaceClient create(String id, KernelConfigurationFile configurationFile, CommRepository commRepository) {
+    return create(id, configurationFile, new DefaultBeakerXJsonSerializer(), commRepository);
   }
 
-  public static NamespaceClient create(String id, KernelConfigurationFile configurationFile, BeakerXJsonSerializer serializer) {
+  public static NamespaceClient create(String id,
+                                       KernelConfigurationFile configurationFile,
+                                       BeakerXJsonSerializer serializer,
+                                       CommRepository commRepository) {
     if (configurationFile.getContext().isPresent()) {
-      return new NamespaceClient(AutotranslationServiceImpl.createAsSubkernel(configurationFile.getContext().get()), serializer);
+      return new NamespaceClient(AutotranslationServiceImpl.createAsSubkernel(configurationFile.getContext().get()), serializer, commRepository);
     } else {
-      return new NamespaceClient(AutotranslationServiceImpl.createAsMainKernel(id), serializer);
+      return new NamespaceClient(AutotranslationServiceImpl.createAsMainKernel(id), serializer, commRepository);
     }
   }
 }

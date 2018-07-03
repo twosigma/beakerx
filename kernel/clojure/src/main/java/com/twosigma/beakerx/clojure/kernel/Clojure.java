@@ -21,7 +21,8 @@ import static java.util.Arrays.stream;
 
 import clojure.lang.LazySeq;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twosigma.beakerx.AutotranslationServiceImpl;
+import com.twosigma.beakerx.BeakerXCommRepository;
+import com.twosigma.beakerx.CommRepository;
 import com.twosigma.beakerx.DisplayerDataMapper;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.clojure.evaluator.ClojureEvaluator;
@@ -56,12 +57,12 @@ import java.util.stream.Collectors;
 
 public class Clojure extends Kernel {
 
-  private Clojure(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
-    super(sessionId, evaluator, kernelSocketsFactory, new CustomMagicCommandsEmptyImpl());
+  private Clojure(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CommRepository commRepository) {
+    super(sessionId, evaluator, kernelSocketsFactory, new CustomMagicCommandsEmptyImpl(), commRepository);
   }
 
-  public Clojure(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction, CacheFolderFactory cacheFolderFactory) {
-    super(sessionId, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory, new CustomMagicCommandsEmptyImpl());
+  public Clojure(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction, CacheFolderFactory cacheFolderFactory, CommRepository commRepository) {
+    super(sessionId, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory, new CustomMagicCommandsEmptyImpl(), commRepository);
   }
 
   @Override
@@ -77,6 +78,7 @@ public class Clojure extends Kernel {
   public static void main(final String[] args) throws InterruptedException, IOException {
     KernelRunner.run(() -> {
       String id = uuid();
+      CommRepository beakerXCommRepository = new BeakerXCommRepository();
       KernelConfigurationFile configurationFile = new KernelConfigurationFile(args);
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
               configurationFile);
@@ -84,8 +86,8 @@ public class Clojure extends Kernel {
               id,
               id,
               getKernelParameters(),
-              NamespaceClient.create(id, configurationFile));
-      return new Clojure(id, evaluator, kernelSocketsFactory);
+              NamespaceClient.create(id, configurationFile, beakerXCommRepository));
+      return new Clojure(id, evaluator, kernelSocketsFactory, beakerXCommRepository);
     });
   }
 

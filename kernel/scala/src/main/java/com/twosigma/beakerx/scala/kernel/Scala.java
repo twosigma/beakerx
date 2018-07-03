@@ -15,6 +15,8 @@
  */
 package com.twosigma.beakerx.scala.kernel;
 
+import com.twosigma.beakerx.BeakerXCommRepository;
+import com.twosigma.beakerx.CommRepository;
 import com.twosigma.beakerx.DisplayerDataMapper;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.Evaluator;
@@ -52,16 +54,17 @@ import static com.twosigma.beakerx.kernel.Utils.uuid;
 
 public class Scala extends Kernel {
 
-  private Scala(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
-    super(id, evaluator, kernelSocketsFactory, new CustomMagicCommandsImpl());
+  private Scala(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CommRepository commRepository) {
+    super(id, evaluator, kernelSocketsFactory, new CustomMagicCommandsImpl(), commRepository);
   }
 
   public Scala(final String id, final Evaluator evaluator,
                KernelSocketsFactory kernelSocketsFactory,
                CloseKernelAction closeKernelAction,
                CacheFolderFactory cacheFolderFactory,
-               CustomMagicCommandsFactory customMagicCommandsFactory) {
-    super(id, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory, customMagicCommandsFactory);
+               CustomMagicCommandsFactory customMagicCommandsFactory,
+               CommRepository commRepository) {
+    super(id, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory, customMagicCommandsFactory, commRepository);
   }
 
   @Override
@@ -77,9 +80,10 @@ public class Scala extends Kernel {
   public static void main(final String[] args) {
     KernelRunner.run(() -> {
       String id = uuid();
+      CommRepository commRepository = new BeakerXCommRepository();
       KernelConfigurationFile configurationFile = new KernelConfigurationFile(args);
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(configurationFile);
-      NamespaceClient namespaceClient = NamespaceClient.create(id, configurationFile, new ScalaBeakerXJsonSerializer());
+      NamespaceClient namespaceClient = NamespaceClient.create(id, configurationFile, new ScalaBeakerXJsonSerializer(), commRepository);
       ScalaEvaluator se = new ScalaEvaluator(
               id,
               id,
@@ -88,7 +92,7 @@ public class Scala extends Kernel {
               new TempFolderFactoryImpl(),
               getKernelParameters(),
               namespaceClient);
-      return new Scala(id, se, kernelSocketsFactory);
+      return new Scala(id, se, kernelSocketsFactory, commRepository);
     });
   }
 

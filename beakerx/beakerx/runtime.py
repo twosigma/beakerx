@@ -450,7 +450,7 @@ class BeakerX:
     def get(self, var):
         result = autotranslation_get(var)
         if result == 'undefined':
-            raise NameError('name \'' + var + '\' is not defined in notebook namespace')
+            raise NameError('name \'' + var + '\' is not defined on the beakerx object')
         return transformBack(json.loads(result))
 
     def set_session(self, id):

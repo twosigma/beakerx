@@ -261,6 +261,8 @@ export class SparkUIView extends widgets.VBoxView {
     this.connectionLabelDead = this.sparkStats.node.querySelector('.dead');
 
     this.connectionStatusElement.insertAdjacentElement('afterend', this.sparkStats.node);
+
+    this.updateLabelWidths();
   }
 
   private updateSparkStatsStyles(): void {

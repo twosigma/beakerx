@@ -24,6 +24,7 @@ import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.util.Arrays.asList;
 import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 
 public class MvnLoggerWidget {
@@ -44,9 +45,11 @@ public class MvnLoggerWidget {
       @Override
       public void run() {
         if (jarNumbers > 0) {
+          String info = getInfo(currentLine);
           String sizeWithUnit = byteCountToDisplaySize(new Double(sizeInKb * 1000).longValue());
-          String status = String.format("%d jar%s, %s downloaded at %s", jarNumbers, getPluralFormWhenNumberOfJarGreaterThanOne(), sizeWithUnit, speed);
+          String status = String.format("%d jar%s, %s downloaded at %s %s", jarNumbers, getPluralFormWhenNumberOfJarGreaterThanOne(), sizeWithUnit, speed, info);
           widget.setValue(status + "</br>" + formatCurrentLine());
+          widget.setDomClasses(asList("text-ellipsis"));
         }
       }
     }, 0, PERIOD);
@@ -79,16 +82,26 @@ public class MvnLoggerWidget {
   }
 
   private String[] split(String line) {
-    Pattern pattern = Pattern.compile("\\((.*?)\\)");
-    Matcher matcher = pattern.matcher(line);
-    if (matcher.find()) {
-      String infoWithBrackets = matcher.group();
+    String infoWithBrackets = this.getInfo(line);
+
+    if (infoWithBrackets != null) {
       return infoWithBrackets.replace("(", "").
               replace(")", "").
               split(" ");
 
     }
     return new String[0];
+  }
+
+  private String getInfo(String line) {
+    Pattern pattern = Pattern.compile("\\((.*?)\\)");
+    Matcher matcher = pattern.matcher(line);
+    if (matcher.find()) {
+      String infoWithBrackets = matcher.group();
+      return infoWithBrackets;
+
+    }
+    return null;
   }
 
   private double calculateJarSizeInKb(String[] info) {

@@ -72,8 +72,8 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
 
   private void configureOptions() {
     this.sparkOptions = new HashMap<>();
-    this.sparkOptions.put("--connect", this::connectToSparkSession);
-    this.sparkOptions.put("-c", this::connectToSparkSession);
+    this.sparkOptions.put("--start", this::connectToSparkSession);
+    this.sparkOptions.put("-s", this::connectToSparkSession);
   }
 
   @Override

@@ -504,7 +504,7 @@ public class TableDisplayTest {
     assertThat(tableDisplay.getStringFormatForTimes()).isEqualTo(days);
     LinkedHashMap model = getModelUpdate();
     assertThat(model.size()).isEqualTo(1);
-    assertThat(model.get(STRING_FORMAT_FOR_TIMES)).isEqualTo(days.toString());
+    assertThat(model.get(STRING_FORMAT_FOR_TIMES)).isEqualTo(days);
   }
 
   @Test

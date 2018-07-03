@@ -275,6 +275,11 @@ export class BeakerXDataGrid extends DataGrid {
       { dataType: ALL_TYPES[ALL_TYPES.html] },
       CellRendererFactory.getRenderer(this, ALL_TYPES.html)
     );
+    this.cellRenderers.set(
+      'body',
+      { dataType: ALL_TYPES[ALL_TYPES.image] },
+      CellRendererFactory.getRenderer(this, ALL_TYPES.image)
+    );
     this.cellRenderers.set('body', {}, defaultRenderer);
     this.cellRenderers.set('column-header', {}, headerCellRenderer);
     this.cellRenderers.set('corner-header', {}, headerCellRenderer);

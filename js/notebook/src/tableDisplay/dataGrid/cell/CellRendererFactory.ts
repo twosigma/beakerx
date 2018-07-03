@@ -19,12 +19,15 @@ import {ALL_TYPES} from "../dataTypes";
 import HTMLCellRenderer from "./HTMLCellRenderer";
 import HeaderCellRenderer from "./HeaderCellRenderer";
 import DefaultCellRenderer from "./DefaultCellRenderer";
+import ImageCellRenderer from "./ImageCellRenderer";
 
 export class CellRendererFactory {
   static getRenderer(dataGrid: BeakerXDataGrid, dataType?: ALL_TYPES) {
     switch (dataType) {
       case ALL_TYPES.html:
         return new HTMLCellRenderer(dataGrid);
+      case ALL_TYPES.image:
+        return new ImageCellRenderer(dataGrid);
       default:
         return new DefaultCellRenderer(dataGrid);
     }

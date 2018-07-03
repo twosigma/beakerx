@@ -27,6 +27,7 @@ import ColumnRegion = DataModel.ColumnRegion;
 import {DataGridHelpers} from "./dataGridHelpers";
 import {selectColumnWidth} from "./column/selectors";
 import getStringSize = DataGridHelpers.getStringSize;
+import {ALL_TYPES} from "./dataTypes";
 
 const DEFAULT_RESIZE_SECTION_SIZE_IN_PX = 6;
 const DEFAULT_ROW_PADDING = 4;
@@ -331,6 +332,10 @@ export class DataGridResize {
   }
 
   private getSectionWidth(column): number {
+    if(column.getDisplayType() === ALL_TYPES.image) {
+      return selectColumnWidth(this.dataGrid.store.state, column);
+    }
+
     const position = column.getPosition();
     const value = String(column.formatFn(this.dataGrid.cellManager.createCellConfig({
       region: position.region,

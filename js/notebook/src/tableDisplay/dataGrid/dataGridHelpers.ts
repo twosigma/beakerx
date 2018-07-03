@@ -15,11 +15,14 @@
  */
 
 import {SectionList} from "@phosphor/datagrid/lib/sectionlist";
-import {DEFAULT_DATA_FONT_SIZE} from "./style/dataGridStyle";
+import {darken, DEFAULT_DATA_FONT_SIZE} from "./style/dataGridStyle";
 import {KEYBOARD_KEYS} from "./event/enums";
 import DataGridColumn from "./column/DataGridColumn";
 import * as moment from 'moment-timezone/builds/moment-timezone-with-data';
 import {sanitizeHTML} from "../../plot/plotSanitize";
+import BeakerXThemeHelper from "../../BeakerXThemeHelper";
+import {CellRenderer} from "@phosphor/datagrid";
+import {BeakerXDataGrid} from "./BeakerXDataGrid";
 
 export namespace DataGridHelpers {
   const urlRegex = /((https?|ftp|file):\/\/)(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[A-Z0-9+&@#/%=~_|$])/i;
@@ -117,7 +120,7 @@ export namespace DataGridHelpers {
     func: Function,
     limit: number,
     context = this,
-    controllObject?: { timerId: number }
+    controllObject?: { timerId: any }
   ): (T) => U|undefined {
     let controll = controllObject || { timerId: undefined };
     let lastRan;
@@ -143,7 +146,7 @@ export namespace DataGridHelpers {
   }
 
   export function debounce<A>(f:(a:A) => void, delay: number, controllObject?: { timerId: number }) {
-    let controll: { timerId: number } = controllObject || { timerId: undefined };
+    let controll: { timerId: any } = controllObject || { timerId: undefined };
 
     return (a: A) => {
       clearTimeout(controll.timerId);
@@ -210,5 +213,19 @@ export namespace DataGridHelpers {
 
   export function hasUpperCaseLetter(value: string) {
     return /[A-Z]+/gm.test(value);
+  }
+
+  export function getBackgroundColor(dataGrid: BeakerXDataGrid, config: CellRenderer.ICellConfig): string {
+    let selectionColor = dataGrid.cellSelectionManager.getBackgroundColor(config);
+    let highlighterColor = dataGrid.highlighterManager.getCellBackground(config);
+    let focusedColor = dataGrid.cellFocusManager.getFocussedCellBackground(config);
+    let initialColor = selectionColor && highlighterColor && darken(highlighterColor);
+
+    return focusedColor && initialColor && darken(initialColor) ||
+      focusedColor ||
+      initialColor ||
+      highlighterColor ||
+      selectionColor ||
+      BeakerXThemeHelper.DEFAULT_CELL_BACKGROUND;
   }
 }

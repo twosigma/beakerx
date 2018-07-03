@@ -28,7 +28,8 @@ export enum ALL_TYPES {
   'boolean',
   'html',
   'int64',
-  'time'
+  'time',
+  'image',
 }
 
 const DEFAULT_DOUBLE_WITH_PRECISION_TYPE = '4.3';

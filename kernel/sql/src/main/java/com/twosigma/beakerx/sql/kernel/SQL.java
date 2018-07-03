@@ -20,6 +20,8 @@ import static com.twosigma.beakerx.kernel.Utils.uuid;
 import static com.twosigma.beakerx.sql.magic.command.DataSourcesMagicCommand.DATASOURCES;
 import static com.twosigma.beakerx.sql.magic.command.DefaultDataSourcesMagicCommand.DEFAULT_DATASOURCE;
 
+import com.twosigma.beakerx.BeakerXCommRepository;
+import com.twosigma.beakerx.CommRepository;
 import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.Evaluator;
@@ -58,12 +60,17 @@ public class SQL extends Kernel {
   private final static Logger logger = Logger.getLogger(SQL.class.getName());
   public static final String BEAKERX_SQL_DEFAULT_JDBC = "BEAKERX_SQL_DEFAULT_JDBC";
 
-  private SQL(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
-    super(sessionId, evaluator, kernelSocketsFactory, new SQLCustomMagicCommandsImpl());
+  private SQL(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CommRepository commRepository) {
+    super(sessionId, evaluator, kernelSocketsFactory, new SQLCustomMagicCommandsImpl(), commRepository);
   }
 
-  public SQL(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction, CacheFolderFactory cacheFolderFactory) {
-    super(sessionId, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory, new SQLCustomMagicCommandsImpl());
+  public SQL(String sessionId,
+             Evaluator evaluator,
+             KernelSocketsFactory kernelSocketsFactory,
+             CloseKernelAction closeKernelAction,
+             CacheFolderFactory cacheFolderFactory,
+             CommRepository commRepository) {
+    super(sessionId, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory, new SQLCustomMagicCommandsImpl(), commRepository);
   }
 
   @Override
@@ -79,12 +86,13 @@ public class SQL extends Kernel {
   public static void main(final String[] args) {
     KernelRunner.run(() -> {
       String id = uuid();
+      CommRepository commRepository = new BeakerXCommRepository();
       KernelConfigurationFile configurationFile = new KernelConfigurationFile(args);
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
               configurationFile);
       EvaluatorParameters params = getKernelParameters(new BeakerXSystemImpl());
-      SQLEvaluator evaluator = new SQLEvaluator(id, id, params,NamespaceClient.create(id, configurationFile));
-      return new SQL(id, evaluator, kernelSocketsFactory);
+      SQLEvaluator evaluator = new SQLEvaluator(id, id, params, NamespaceClient.create(id, configurationFile, commRepository));
+      return new SQL(id, evaluator, kernelSocketsFactory, commRepository);
     });
   }
 

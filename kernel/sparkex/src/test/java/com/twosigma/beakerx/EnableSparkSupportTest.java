@@ -63,7 +63,8 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
             kernelSocketsFactory,
             closeKernelAction,
             EvaluatorTest.getCacheFolderFactory(),
-            kernel -> singletonList(enableSparkSupportMagicCommand(kernel)));
+            kernel -> singletonList(enableSparkSupportMagicCommand(kernel)),
+            new BeakerXCommRepositoryMock());
   }
 
   private static EvaluatorParameters getKernelParameters() {

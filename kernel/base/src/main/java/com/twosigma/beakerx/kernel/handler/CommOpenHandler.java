@@ -32,6 +32,7 @@ import static com.twosigma.beakerx.kernel.comm.Comm.COMM_ID;
 import static com.twosigma.beakerx.kernel.comm.Comm.DATA;
 import static com.twosigma.beakerx.kernel.comm.Comm.TARGET_MODULE;
 import static com.twosigma.beakerx.kernel.comm.Comm.TARGET_NAME;
+import static com.twosigma.beakerx.kernel.comm.TargetNamesEnum.BEAKER_AUTOTRANSLATION;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_CLOSE;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_OPEN;
 import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
@@ -64,7 +65,7 @@ public abstract class CommOpenHandler extends KernelHandler<Message> {
     Map<String, Serializable> commMap = message.getContent();
     Comm newComm = null;
     if (isValidMessage(commMap)) {
-      newComm = readComm(commMap);
+      newComm = readComm(commMap, message);
       reply = new Message(new Header(COMM_OPEN, message.getHeader().getSession()));
       map.put(COMM_ID, newComm.getCommId());
       map.put(TARGET_NAME, newComm.getTargetName());
@@ -95,10 +96,21 @@ public abstract class CommOpenHandler extends KernelHandler<Message> {
     return (String) map.get(name);
   }
 
-  protected Comm readComm(Map<String, Serializable> map) {
-    Comm ret = new Comm(getString(map, COMM_ID), getString(map, TARGET_NAME));
+  protected Comm readComm(Map<String, Serializable> map, Message message) {
+    Comm ret = createComm(map, message);
     ret.setData((HashMap<String, Serializable>) map.get(DATA));
     ret.setTargetModule(getString(map, TARGET_MODULE));
+    return ret;
+  }
+
+  private Comm createComm(Map<String, Serializable> map, Message message) {
+    String targetName = getString(map, TARGET_NAME);
+    Comm ret;
+    if (BEAKER_AUTOTRANSLATION.getTargetName().equals(targetName)) {
+      ret = new Comm(getString(map, COMM_ID), targetName, message);
+    } else {
+      ret = new Comm(getString(map, COMM_ID), targetName);
+    }
     return ret;
   }
 

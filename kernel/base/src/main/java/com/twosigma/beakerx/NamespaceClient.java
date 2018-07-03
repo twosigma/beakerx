@@ -57,6 +57,9 @@ public class NamespaceClient implements BeakerXClient {
   @Override
   public synchronized Object get(final String name) {
     String json = autotranslationService.get(name);
+    if ("undefined".equals(json)) {
+      throw new RuntimeException("name '" + name + "' is not defined on the beakerx object");
+    }
     return beakerXJsonSerializer.fromJson(json);
   }
 

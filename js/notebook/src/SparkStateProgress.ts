@@ -91,8 +91,6 @@ export class SparkStateProgressView extends widgets.VBoxView {
     this.progressLabelWaiting.innerText = `${valueWaiting}`;
     this.progressLabelAll.innerText = max;
 
-    this.updateLabelWidths();
-
     return super.update();
   }
 
@@ -204,6 +202,8 @@ export class SparkStateProgressView extends widgets.VBoxView {
     this.progressLabelActive = this.progressLabels.querySelector('.active');
     this.progressLabelWaiting = this.progressLabels.querySelector('.waiting');
     this.progressLabelAll = this.progressLabels.querySelector('.all');
+
+    this.updateLabelWidths();
 
     return $(this.progressLabels);
   }

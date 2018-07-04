@@ -14,29 +14,20 @@
  *  limitations under the License.
  */
 
-export namespace GroovyMode {
-  export const LINE_COMMENT_CHAR = '//';
-
-  export function setCodeMirrorLineComment(cell: any) {
-    if (cell.cell_type !== 'code') {
-      return;
+export function extendHighlightModes(Jupyter: any, CodeMirror: any) {
+  Jupyter.CodeCell.options_default.highlight_modes = _.extend(
+    Jupyter.CodeCell.options_default.highlight_modes,
+    {
+      magic_groovy: { reg: ['^%%groovy'] },
+      magic_java: { reg: ['^%%java'] },
+      magic_scala: { reg: ['^%%scala'] },
+      magic_kotlin: { reg: ['^%%kotlin'] },
+      magic_clojure: { reg: ['^%%clojure'] },
+      magic_sql: { reg: ['^%%sql'] }
     }
-
-    const cm = cell.code_mirror;
-    const doc = cm.getDoc();
-    const mode = cm.getMode();
-
-    if (!mode.lineComment) {
-      mode.lineComment = LINE_COMMENT_CHAR;
-      doc.mode = mode;
-    }
-
-    cell.auto_highlight();
-  }
-
-  export function extendWithLineComment(Jupyter: any, CodeMirror: any) {
-    CodeMirror.extendMode('groovy', { lineComment: LINE_COMMENT_CHAR });
-
-    Jupyter.notebook.get_cells().map(setCodeMirrorLineComment);
-  }
+  );
 }
+
+export default {
+  extendHighlightModes
+};

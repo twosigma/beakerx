@@ -76,6 +76,7 @@ define([
   var Autotranslation = require('./extension/autotranslation').Autotranslation;
   var BeakerXKernel = require('./extension/kernel').BeakerXKernel;
   var bkCoreManager = require('./shared/bkCoreManager').default;
+  var bxCodeMirror = require('./extension/codeMirror').default;
 
   var inNotebook = !Jupyter.NotebookList;
   var mod_name = 'init_cell';
@@ -111,6 +112,10 @@ define([
 
     if (inNotebook) {
       // setup things to run on loading config/notebook
+
+      bxCodeMirror.extendHighlightModes(Jupyter, CodeMirror);
+      GroovyMode.extendWithLineComment(Jupyter, CodeMirror);
+
       Jupyter.notebook.config.loaded
         .then(function update_options_from_config() {
           $.extend(true, options, Jupyter.notebook.config.data[mod_name]);
@@ -124,8 +129,6 @@ define([
         }).catch(function (reason) {
         console.error(log_prefix, 'unhandled error:', reason);
       });
-
-      GroovyMode.extendWithLineComment(Jupyter, CodeMirror);
     }
   };
 

@@ -31,6 +31,7 @@ interface MapConstructor {
 }
 
 declare var Map: MapConstructor;
+declare var CodeMirror: any;
 
 declare interface NumberConstructor {
   isNaN: (number: number) => boolean,

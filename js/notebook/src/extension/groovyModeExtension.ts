@@ -14,10 +14,12 @@
  *  limitations under the License.
  */
 
+import {addLineMagicsOverlay} from "./codeMirror";
+
 export namespace GroovyMode {
   export const LINE_COMMENT_CHAR = '//';
 
-  export function setCodeMirrorLineComment(cell: any) {
+  export function setCodeMirrorLineComment(cell: any, CodeMirror) {
     if (cell.cell_type !== 'code') {
       return;
     }
@@ -32,11 +34,12 @@ export namespace GroovyMode {
     }
 
     cell.auto_highlight();
+    addLineMagicsOverlay(cm);
   }
 
   export function extendWithLineComment(Jupyter: any, CodeMirror: any) {
     CodeMirror.extendMode('groovy', { lineComment: LINE_COMMENT_CHAR });
 
-    Jupyter.notebook.get_cells().map(setCodeMirrorLineComment);
+    Jupyter.notebook.get_cells().map((cell) => setCodeMirrorLineComment(cell, CodeMirror));
   }
 }

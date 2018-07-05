@@ -113,7 +113,8 @@ define([
     if (inNotebook) {
       // setup things to run on loading config/notebook
 
-      bxCodeMirror.extendHighlightModes(Jupyter, CodeMirror);
+      CodeMirror.defineInitHook(bxCodeMirror.addLineMagicsOverlay);
+      bxCodeMirror.extendHighlightModes(Jupyter);
       GroovyMode.extendWithLineComment(Jupyter, CodeMirror);
 
       Jupyter.notebook.config.loaded

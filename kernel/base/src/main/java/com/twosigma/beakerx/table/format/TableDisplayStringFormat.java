@@ -34,19 +34,24 @@ public class TableDisplayStringFormat {
     return new TimeStringFormat();
   }
 
-  //Get a formatter that will show Date in a timestamp format with millisecond precision
+  // Get a formatter that will show Date in a timestamp format with millisecond precision
   public static TableDisplayStringFormat getTimeFormat(boolean humanFriendly) {
     return new TimeStringFormat(humanFriendly);
   }
 
-  //  Get a formatter that will show Date in a timestamp format with the specified precision
+  // Get a formatter that will show Date in a timestamp format with the specified precision
   public static TableDisplayStringFormat getTimeFormat(TimeUnit unit) {
     return new TimeStringFormat(unit);
   }
 
-  //Get a formatter that will show Date in a timestamp format with the specified precision
+  // Get a formatter that will show Date in a timestamp format with the specified precision
   public static TableDisplayStringFormat getTimeFormat(TimeUnit unit, boolean humanFriendly) {
     return new TimeStringFormat(unit, humanFriendly);
+  }
+
+  // Get a formatter that will show derived source as an image
+  public static TableDisplayStringFormat getImageFormat() {
+    return new ImageStringFormat();
   }
 
 }

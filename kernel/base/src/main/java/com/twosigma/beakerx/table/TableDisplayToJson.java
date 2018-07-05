@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import com.twosigma.beakerx.chart.serializer.ColorSerializer;
 import com.twosigma.beakerx.jvm.serialization.DateSerializer;
 import com.twosigma.beakerx.table.format.DecimalStringFormat;
 import com.twosigma.beakerx.table.format.HTMLStringFormat;
+import com.twosigma.beakerx.table.format.ImageStringFormat;
 import com.twosigma.beakerx.table.format.TableDisplayStringFormat;
 import com.twosigma.beakerx.table.format.TimeStringFormat;
 import com.twosigma.beakerx.table.format.ValueStringFormat;
@@ -38,6 +39,7 @@ import com.twosigma.beakerx.table.serializer.DataBarsRendererSerializer;
 import com.twosigma.beakerx.table.serializer.DecimalStringFormatSerializer;
 import com.twosigma.beakerx.table.serializer.HTMLStringFormatSerializer;
 import com.twosigma.beakerx.table.serializer.HeatmapHighlighterSerializer;
+import com.twosigma.beakerx.table.serializer.ImageStringFormatSerializer;
 import com.twosigma.beakerx.table.serializer.TableDisplaySerializer;
 import com.twosigma.beakerx.table.serializer.ThreeColorHeatmapHighlighterSerializer;
 import com.twosigma.beakerx.table.serializer.TimeStringFormatSerializer;
@@ -94,6 +96,7 @@ public class TableDisplayToJson {
     module.addSerializer(DecimalStringFormat.class, new DecimalStringFormatSerializer());
     module.addSerializer(HTMLStringFormat.class, new HTMLStringFormatSerializer());
     module.addSerializer(TimeStringFormat.class, new TimeStringFormatSerializer());
+    module.addSerializer(ImageStringFormat.class, new ImageStringFormatSerializer());
     module.addSerializer(DataBarsRenderer.class, new DataBarsRendererSerializer());
     module.addSerializer(HeatmapHighlighter.class, new HeatmapHighlighterSerializer());
     module.addSerializer(ThreeColorHeatmapHighlighter.class, new ThreeColorHeatmapHighlighterSerializer());

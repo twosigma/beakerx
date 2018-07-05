@@ -196,6 +196,11 @@ export class DataGridResize {
     }
   }
 
+  setSectionWidth(area, column: DataGridColumn, value: number): void {
+    this.dataGrid.resizeSection(area, column.getPosition().value, value);
+    column.setWidth(value);
+  }
+
   private fillEmptySpaceResizeFn(region: ColumnRegion, value: number) {
     return (section) => {
       let column = this.dataGrid.columnManager.getColumnByPosition({
@@ -351,11 +356,6 @@ export class DataGridResize {
     const result = nameSize[nameSizeProp] > valueSize.width - 7 ? nameSize[nameSizeProp] : valueSize.width;
 
     return result > MIN_COLUMN_WIDTH ? result : MIN_COLUMN_WIDTH;
-  }
-
-  private setSectionWidth(area, column: DataGridColumn, value: number): void {
-    this.dataGrid.resizeSection(area, column.getPosition().value, value);
-    column.setWidth(value);
   }
 
   private installMessageHook() {

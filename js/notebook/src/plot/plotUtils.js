@@ -194,7 +194,7 @@ define([
         datarange.xl = datarange.xr - 1;
       } else if (datarange.xr === -Infinity && datarange.xl !== Infinity) {
         datarange.xr = datarange.xl + 1;
-      } else if (visibleItem === 0 || visibleItem === 1 || datarange.xl === Infinity) {
+      } else if (visibleItem === 0 || datarange.xl === Infinity) {
         datarange.xl = 0;
         datarange.xr = 1;
       } else if (datarange.xl > datarange.xr) {

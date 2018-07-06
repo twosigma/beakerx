@@ -194,7 +194,7 @@ define([
         datarange.xl = datarange.xr - 1;
       } else if (datarange.xr === -Infinity && datarange.xl !== Infinity) {
         datarange.xr = datarange.xl + 1;
-      } else if (visibleItem === 0 || visibleItem === 1 || datarange.xl === Infinity) {
+      } else if (visibleItem === 0 || datarange.xl === Infinity) {
         datarange.xl = 0;
         datarange.xr = 1;
       } else if (datarange.xl > datarange.xr) {
@@ -218,10 +218,12 @@ define([
 
       var self = this;
       var increaseRange = function(value) {
-        return self.plus(value, self.div((value || 1), 10));
+        var v = self.eq(value, 0) ? 1 : value || 1;
+        return self.plus(value, self.div(v, 10));
       };
       var decreaseRange = function(value){
-        return self.minus(value, self.div((value || 1), 10));
+        var v = self.eq(value, 0) ? 1 : value || 1;
+        return self.minus(value, self.div(v, 10));
       };
 
       if (this.eq(datarange.xl, datarange.xr)) {

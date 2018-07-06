@@ -38,8 +38,18 @@ describe('General Autotranslation ', function () {
     });
   });
 
-  describe('%%javascript change beakerx.bar value', function(){
-    it("Cell doesn't have output ", function(){
+  describe('%%javascript ', function(){
+    it("Js console contains beakerx.bar value ", function(){
+      cellIndex += 1;
+      browser.log('browser'); // reset log
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      var logMsgs = browser.log('browser').value;
+      expect(logMsgs[0].message).toMatch(/a groovy value/);
+    });
+  });
+
+  describe('%%javascript changes beakerx.bar value', function(){
+    it("Cell doesn't have output ", function() {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       expect(beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText().length).toBe(0);
@@ -47,7 +57,7 @@ describe('General Autotranslation ', function () {
   });
 
   describe('Groovy kernel ', function(){
-    it("Should output beakerx.bar value ", function(){
+    it("Should display beakerx.bar value after js changes ", function(){
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
       beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /23, 48, 7, .*from JS.*/);
@@ -55,18 +65,42 @@ describe('General Autotranslation ', function () {
   });
 
   describe('%%python ', function(){
-    it("Should output beakerx.bar value ", function(){
+    it("Should display beakerx.bar value after js changes ", function(){
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
       beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /23, 48, 7, .*from JS.*/);
     });
   });
 
-  describe('%%scala ', function(){
-    it("Should output beakerx.bar value ", function(){
+  describe('%%python change beakerx.bar value', function(){
+    it("Should display beakerx.bar value after python changes ", function(){
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
-      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /23, 48, 7, .*from JS.*/);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /2, .*python.*, .*value.*/);
+    });
+  });
+
+  describe('%%scala ', function(){
+    it("Should display beakerx.bar value after python changes ", function(){
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /2, .*python.*, .*value.*/);
+    });
+  });
+
+  describe('%%scala change beakerx.bar value', function(){
+    it("Should display beakerx.bar value after scala changes ", function(){
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /3.14, .*scala.*, .*value.*/);
+    });
+  });
+
+  describe('Groovy kernel ', function(){
+    it("Should display beakerx.bar value after scala changes", function(){
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /3.14, .*scala.*, .*value.*/);
     });
   });
 

@@ -140,7 +140,7 @@ export default class DataGridColumn {
 
     const position = this.getPosition();
 
-    this.setWidth(1);
+    this.dataGrid.dataGridResize.setSectionWidth("column", this, 1);
     this.assignFormatFn();
     this.recalculateLongestStringValue(displayType);
     this.dataGrid.dataGridResize.setInitialSectionWidth({ index: position.value }, position.region);
@@ -229,7 +229,6 @@ export default class DataGridColumn {
     ));
     this.columnManager.updateColumnFilterNodes();
     this.columnManager.updateColumnMenuTriggers();
-    this.dataGrid.resize();
   }
 
   getState() {

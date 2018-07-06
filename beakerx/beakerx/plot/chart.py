@@ -442,8 +442,8 @@ class NanoPlot(TimePlot):
     
     def add(self, item):
         super(NanoPlot, self).add(item)
+        converted = []
         for l in self.chart.graphics_list:
-            converted = []
             for x in l.x:
                 converted.append(str(x))
             l.x = converted

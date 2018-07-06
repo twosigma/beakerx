@@ -32,7 +32,6 @@ class TimeUnit(Enum):
     HOURS = 7
 
 
-
 class ColumnType(Enum):
     String = "string"
     Double = "double"
@@ -65,8 +64,14 @@ class DecimalStringFormat:
         self.minDecimals = min
         self.maxDecimals = max
 
+
+class ImageFormat:
+    type = "image"
+
+
 class HTMLFormat:
     type = "html"
+
 
 class HighlightStyle(Enum):
     FULL_ROW = 1
@@ -91,11 +96,18 @@ class TableDisplayCellRenderer:
 
 
 class TableDisplayStringFormat:
+
     @staticmethod
     def getDecimalFormat(min, max):
         return DecimalStringFormat(min, max)
+
+    @staticmethod
     def getHTMLFormat():
         return HTMLFormat()
+
+    @staticmethod
+    def getImageFormat():
+        return ImageFormat()
 
 class TableDisplayCellHighlighter:
     FULL_ROW = HighlightStyle.FULL_ROW

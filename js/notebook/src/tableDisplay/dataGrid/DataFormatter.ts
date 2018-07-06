@@ -55,6 +55,7 @@ export class DataFormatter {
     this.datetime = this.datetime.bind(this);
     this.boolean = this.boolean.bind(this);
     this.html = this.html.bind(this);
+    this.rawValue = this.rawValue.bind(this);
   }
 
   destroy(): void {
@@ -107,6 +108,8 @@ export class DataFormatter {
         return this.boolean;
       case 10:
         return this.html;
+      case 11:
+        return this.rawValue;
 
       default:
         return this.string;
@@ -125,6 +128,10 @@ export class DataFormatter {
 
       return <string>formatFn(config);
     }
+  }
+
+  private rawValue(config: CellRenderer.ICellConfig) {
+    return config.value;
   }
 
   private value(config: CellRenderer.ICellConfig): string {

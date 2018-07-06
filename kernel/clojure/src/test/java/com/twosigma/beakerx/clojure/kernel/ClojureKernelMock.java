@@ -16,6 +16,7 @@
 
 package com.twosigma.beakerx.clojure.kernel;
 
+import com.twosigma.beakerx.BeakerXCommRepositoryMock;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.Evaluator;
 
@@ -25,12 +26,12 @@ public class ClojureKernelMock extends KernelTest {
     this("ScalaKernelTestId1");
   }
 
-  public ClojureKernelMock(String id)  {
-    super(id);
+  public ClojureKernelMock(String id) {
+    super(id, new BeakerXCommRepositoryMock());
   }
 
   public ClojureKernelMock(String id, Evaluator evaluator) {
-    super(id,evaluator);
+    super(id, evaluator);
   }
 
 }

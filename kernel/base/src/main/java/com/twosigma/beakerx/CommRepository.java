@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,25 +13,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package com.twosigma.beakerx;
 
-package com.twosigma.beakerx.scala.kernel;
+import com.twosigma.beakerx.kernel.comm.Comm;
 
-import com.twosigma.beakerx.BeakerXCommRepositoryMock;
-import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.evaluator.Evaluator;
+import java.util.Set;
 
-public class ScalaKernelMock extends KernelTest {
+public interface CommRepository {
 
-  public ScalaKernelMock() {
-    this("ScalaKernelTestId1");
-  }
+  Comm getCommByTargetName(String targetName);
 
-  public ScalaKernelMock(String id) {
-    super(id, new BeakerXCommRepositoryMock());
-  }
+  Comm getOrCreateAutotranslationComm();
 
-  public ScalaKernelMock(String id, Evaluator evaluator) {
-    super(id, evaluator);
-  }
+  void closeComms();
 
+  Set<String> getCommHashSet();
+
+  void addComm(String hash, Comm commObject);
+
+  Comm getComm(String hash);
+
+  void removeComm(String hash);
+
+  boolean isCommPresent(String hash);
 }

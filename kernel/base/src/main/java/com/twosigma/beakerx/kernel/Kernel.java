@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.kernel;
 
 import com.twosigma.beakerx.BeakerxDefaultDisplayers;
+import com.twosigma.beakerx.CommRepository;
 import com.twosigma.beakerx.DisplayerDataMapper;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
@@ -42,7 +43,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static com.twosigma.beakerx.kernel.KernelSignalHandler.addSigIntHandler;
 import static java.util.Collections.singletonList;
@@ -58,7 +58,6 @@ public abstract class Kernel implements KernelFunctionality {
   private String sessionId;
   private KernelSocketsFactory kernelSocketsFactory;
   private KernelHandlers handlers;
-  private Map<String, Comm> commMap;
   private ExecutionResultSender executionResultSender;
   private Evaluator evaluator;
   private KernelSockets kernelSockets;
@@ -67,16 +66,21 @@ public abstract class Kernel implements KernelFunctionality {
   private CustomMagicCommandsFactory customMagicCommands;
   private Map<String, MagicKernelManager> magicKernels;
   private Map<String, String> commKernelMapping;
+  private CommRepository commRepository;
 
-  public Kernel(final String sessionId, final Evaluator evaluator,
-                final KernelSocketsFactory kernelSocketsFactory, CustomMagicCommandsFactory customMagicCommands) {
+  public Kernel(final String sessionId,
+                final Evaluator evaluator,
+                final KernelSocketsFactory kernelSocketsFactory,
+                CustomMagicCommandsFactory customMagicCommands,
+                CommRepository commRepository) {
     this(
             sessionId,
             evaluator,
             kernelSocketsFactory,
             () -> System.exit(0),
             new EnvCacheFolderFactory(),
-            customMagicCommands);
+            customMagicCommands,
+            commRepository);
   }
 
   protected Kernel(final String sessionId,
@@ -84,13 +88,14 @@ public abstract class Kernel implements KernelFunctionality {
                    final KernelSocketsFactory kernelSocketsFactory,
                    CloseKernelAction closeKernelAction,
                    CacheFolderFactory cacheFolderFactory,
-                   CustomMagicCommandsFactory customMagicCommands) {
+                   CustomMagicCommandsFactory customMagicCommands,
+                   CommRepository commRepository) {
     this.sessionId = sessionId;
     this.cacheFolderFactory = cacheFolderFactory;
     this.kernelSocketsFactory = kernelSocketsFactory;
     this.closeKernelAction = closeKernelAction;
     this.customMagicCommands = customMagicCommands;
-    this.commMap = new ConcurrentHashMap<>();
+    this.commRepository = commRepository;
     this.executionResultSender = new ExecutionResultSender(this);
     this.evaluator = evaluator;
     this.handlers = new KernelHandlers(this, getCommOpenHandler(this), getKernelInfoHandler(this));
@@ -137,7 +142,7 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   private void closeComms() {
-    this.commMap.values().forEach(Comm::close);
+    this.commRepository.closeComms();
   }
 
   public static boolean isWindows() {
@@ -153,28 +158,24 @@ public abstract class Kernel implements KernelFunctionality {
     evaluator.cancelExecution();
   }
 
-  public synchronized boolean isCommPresent(String hash) {
-    return commMap.containsKey(hash);
+  public boolean isCommPresent(String hash) {
+    return this.commRepository.isCommPresent(hash);
   }
 
   public Set<String> getCommHashSet() {
-    return commMap.keySet();
+    return commRepository.getCommHashSet();
   }
 
   public synchronized void addComm(String hash, Comm commObject) {
-    if (!isCommPresent(hash)) {
-      commMap.put(hash, commObject);
-    }
+    commRepository.addComm(hash, commObject);
   }
 
   public synchronized Comm getComm(String hash) {
-    return commMap.get(hash != null ? hash : "");
+    return commRepository.getComm(hash);
   }
 
   public synchronized void removeComm(String hash) {
-    if (hash != null && isCommPresent(hash)) {
-      commMap.remove(hash);
-    }
+    commRepository.removeComm(hash);
   }
 
   public synchronized void publish(List<Message> message) {
@@ -322,7 +323,7 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   @Override
-  public void addCommIdManagerMapping(String commId, String kernel){
+  public void addCommIdManagerMapping(String commId, String kernel) {
     commKernelMapping.put(commId, kernel);
   }
 }

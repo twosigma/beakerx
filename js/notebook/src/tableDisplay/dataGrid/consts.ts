@@ -17,7 +17,8 @@
 export const scopeData = {
   allStringTypes: [
     {type: 0, name: 'string'},
-    {type: 10, name: 'html'}
+    {type: 10, name: 'html'},
+    {type: 13, name: 'image'}
   ],
   allTimeTypes: [
     {type: 8, name: 'datetime'},
@@ -50,7 +51,8 @@ export const scopeData = {
     {type: 7, name: 'exponential 15'},
     {type: 8, name: 'datetime'},
     {type: 9, name: 'boolean'},
-    {type: 10, name: 'html'}
+    {type: 10, name: 'html'},
+    {type: 11, name: 'image'}
   ],
   rowsToDisplayMenu: [
     [10, 25, 50, 100, -1],

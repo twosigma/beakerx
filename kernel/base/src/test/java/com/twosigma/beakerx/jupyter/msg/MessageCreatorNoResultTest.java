@@ -36,7 +36,7 @@ public class MessageCreatorNoResultTest {
 
   @Before
   public void setUp() throws Exception {
-    kernel = new KernelTest("id1");
+    kernel = new KernelTest();
   }
 
   @Test

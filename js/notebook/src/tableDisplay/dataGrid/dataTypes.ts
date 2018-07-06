@@ -28,7 +28,8 @@ export enum ALL_TYPES {
   'boolean',
   'html',
   'int64',
-  'time'
+  'time',
+  'image',
 }
 
 const DEFAULT_DOUBLE_WITH_PRECISION_TYPE = '4.3';
@@ -40,6 +41,10 @@ export const getTypeByName = (typeName: string): number => {
 export function getDisplayType(type: ALL_TYPES, stringFormatForType?: any, stringFormatForColumn?: any) {
   if (stringFormatForColumn && stringFormatForColumn.type === 'value') {
     return ALL_TYPES.string;
+  }
+
+  if (stringFormatForColumn && stringFormatForColumn.type === 'image') {
+    return ALL_TYPES.image;
   }
 
   if (type === ALL_TYPES.string && stringFormatForColumn && stringFormatForColumn.type) {

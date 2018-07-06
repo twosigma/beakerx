@@ -15,6 +15,8 @@
  */
 package com.twosigma.beakerx.scala.kernel;
 
+import com.twosigma.beakerx.BeakerXCommRepository;
+import com.twosigma.beakerx.BeakerXCommRepositoryMock;
 import com.twosigma.beakerx.KernelExecutionTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
@@ -51,7 +53,7 @@ public class ScalaKernelTest extends KernelExecutionTest {
             getTestTempFolderFactory(),
             EvaluatorTest.KERNEL_PARAMETERS,
             new EvaluatorTest.BeakexClientTestImpl());
-    return new Scala(sessionId, evaluator, kernelSocketsFactory, closeKernelAction, getCacheFolderFactory(), new CustomMagicCommandsEmptyImpl());
+    return new Scala(sessionId, evaluator, kernelSocketsFactory, closeKernelAction, getCacheFolderFactory(), new CustomMagicCommandsEmptyImpl(), new BeakerXCommRepositoryMock());
   }
 
   @Override

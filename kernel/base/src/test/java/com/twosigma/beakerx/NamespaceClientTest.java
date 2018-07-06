@@ -18,6 +18,8 @@ package com.twosigma.beakerx;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,9 +40,11 @@ public class NamespaceClientTest {
 
   @Before
   public void setUp() {
-    namespaceClient = new NamespaceClient(new AutotranslationServiceTestImpl(), new DefaultBeakerXJsonSerializer());
-    kernel = new KernelTest();
+    CommRepository commRepository = new BeakerXCommRepositoryMock();
+    namespaceClient = new NamespaceClient(new AutotranslationServiceTestImpl(), new DefaultBeakerXJsonSerializer(), commRepository);
+    kernel = new KernelTest(commRepository);
     KernelManager.register(kernel);
+    commRepository.addComm("commId", new Comm(TargetNamesEnum.BEAKER_AUTOTRANSLATION));
   }
 
   @After
@@ -66,7 +70,7 @@ public class NamespaceClientTest {
     namespaceClient.set("x", new Integer(10));
     //then
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
-    Map data = (Map) kernel.getPublishedMessages().get(1).getContent().get("data");
+    Map data = (Map) kernel.getPublishedMessages().get(0).getContent().get("data");
     Map state = (Map) data.get("state");
     assertThat(state.get("name")).isEqualTo("x");
     assertThat(state.get("value")).isEqualTo("10");
@@ -101,7 +105,7 @@ public class NamespaceClientTest {
     namespaceClient.set("table_with_longs", table);
     //then
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
-    Map data = (Map) kernel.getPublishedMessages().get(2).getContent().get("data");
+    Map data = (Map) kernel.getPublishedMessages().get(1).getContent().get("data");
     Map state = (Map) data.get("state");
     assertThat(state.get("name")).isEqualTo("table_with_longs");
     assertThat(isJSONValid(state.get("value"))).isTrue();

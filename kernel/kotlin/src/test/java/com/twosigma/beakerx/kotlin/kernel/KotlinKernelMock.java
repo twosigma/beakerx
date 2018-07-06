@@ -16,6 +16,7 @@
 
 package com.twosigma.beakerx.kotlin.kernel;
 
+import com.twosigma.beakerx.BeakerXCommRepositoryMock;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.Evaluator;
 
@@ -26,7 +27,7 @@ public class KotlinKernelMock extends KernelTest {
   }
 
   public KotlinKernelMock(String id) {
-    super(id);
+    super(id, new BeakerXCommRepositoryMock());
   }
 
   public KotlinKernelMock(String id, Evaluator evaluator) {

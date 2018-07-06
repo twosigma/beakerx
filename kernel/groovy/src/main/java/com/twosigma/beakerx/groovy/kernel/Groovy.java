@@ -19,6 +19,8 @@ import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.kernel.Utils.uuid;
 
 import com.twosigma.beakerx.AutotranslationServiceImpl;
+import com.twosigma.beakerx.BeakerXCommRepository;
+import com.twosigma.beakerx.CommRepository;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.groovy.comm.GroovyCommOpenHandler;
@@ -44,16 +46,18 @@ public class Groovy extends Kernel {
 
   private Groovy(final String id,
                  final Evaluator evaluator,
-                 KernelSocketsFactory kernelSocketsFactory) {
-    super(id, evaluator, kernelSocketsFactory, new CustomMagicCommandsEmptyImpl());
+                 KernelSocketsFactory kernelSocketsFactory,
+                 CommRepository commRepository) {
+    super(id, evaluator, kernelSocketsFactory, new CustomMagicCommandsEmptyImpl(), commRepository);
   }
 
   public Groovy(final String id,
                 final Evaluator evaluator,
                 KernelSocketsFactory kernelSocketsFactory,
                 CloseKernelAction closeKernelAction,
-                CacheFolderFactory cacheFolderFactory) {
-    super(id, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory, new CustomMagicCommandsEmptyImpl());
+                CacheFolderFactory cacheFolderFactory,
+                CommRepository commRepository) {
+    super(id, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory, new CustomMagicCommandsEmptyImpl(), commRepository);
   }
 
   @Override
@@ -66,18 +70,19 @@ public class Groovy extends Kernel {
     return new GroovyKernelInfoHandler(kernel);
   }
 
-  public static void main(final String[] args) throws InterruptedException, IOException {
+  public static void main(final String[] args) {
     KernelRunner.run(() -> {
       String id = uuid();
       KernelConfigurationFile configurationFile = new KernelConfigurationFile(args);
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
               configurationFile);
 
+      BeakerXCommRepository beakerXCommRepository = new BeakerXCommRepository();
       GroovyEvaluator evaluator = new GroovyEvaluator(id,
               id,
               getEvaluatorParameters(),
-              NamespaceClient.create(id, configurationFile));
-      return new Groovy(id, evaluator, kernelSocketsFactory);
+              NamespaceClient.create(id, configurationFile, beakerXCommRepository));
+      return new Groovy(id, evaluator, kernelSocketsFactory, beakerXCommRepository);
     });
   }
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,25 +13,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package com.twosigma.beakerx;
 
-package com.twosigma.beakerx.scala.kernel;
-
-import com.twosigma.beakerx.BeakerXCommRepositoryMock;
-import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.evaluator.Evaluator;
-
-public class ScalaKernelMock extends KernelTest {
-
-  public ScalaKernelMock() {
-    this("ScalaKernelTestId1");
-  }
-
-  public ScalaKernelMock(String id) {
-    super(id, new BeakerXCommRepositoryMock());
-  }
-
-  public ScalaKernelMock(String id, Evaluator evaluator) {
-    super(id, evaluator);
-  }
+public class BeakerXCommRepositoryMock extends BeakerXCommRepository {
 
 }

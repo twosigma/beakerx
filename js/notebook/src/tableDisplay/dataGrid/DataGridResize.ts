@@ -27,6 +27,7 @@ import ColumnRegion = DataModel.ColumnRegion;
 import {DataGridHelpers} from "./dataGridHelpers";
 import {selectColumnWidth} from "./column/selectors";
 import getStringSize = DataGridHelpers.getStringSize;
+import {ALL_TYPES} from "./dataTypes";
 
 const DEFAULT_RESIZE_SECTION_SIZE_IN_PX = 6;
 const DEFAULT_ROW_PADDING = 4;
@@ -195,6 +196,11 @@ export class DataGridResize {
     }
   }
 
+  setSectionWidth(area, column: DataGridColumn, value: number): void {
+    this.dataGrid.resizeSection(area, column.getPosition().value, value);
+    column.setWidth(value);
+  }
+
   private fillEmptySpaceResizeFn(region: ColumnRegion, value: number) {
     return (section) => {
       let column = this.dataGrid.columnManager.getColumnByPosition({
@@ -331,6 +337,10 @@ export class DataGridResize {
   }
 
   private getSectionWidth(column): number {
+    if(column.getDisplayType() === ALL_TYPES.image) {
+      return selectColumnWidth(this.dataGrid.store.state, column);
+    }
+
     const position = column.getPosition();
     const value = String(column.formatFn(this.dataGrid.cellManager.createCellConfig({
       region: position.region,
@@ -346,11 +356,6 @@ export class DataGridResize {
     const result = nameSize[nameSizeProp] > valueSize.width - 7 ? nameSize[nameSizeProp] : valueSize.width;
 
     return result > MIN_COLUMN_WIDTH ? result : MIN_COLUMN_WIDTH;
-  }
-
-  private setSectionWidth(area, column: DataGridColumn, value: number): void {
-    this.dataGrid.resizeSection(area, column.getPosition().value, value);
-    column.setWidth(value);
   }
 
   private installMessageHook() {

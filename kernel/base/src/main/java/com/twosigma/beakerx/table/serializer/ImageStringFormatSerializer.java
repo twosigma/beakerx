@@ -27,6 +27,7 @@ public class ImageStringFormatSerializer extends JsonSerializer<ImageStringForma
 
     public static final String TYPE = "type";
     public static final String VALUE_IMAGE = "image";
+    public static final String WIDTH = "width";
 
     @Override
     public void serialize(ImageStringFormat value,
@@ -37,6 +38,9 @@ public class ImageStringFormatSerializer extends JsonSerializer<ImageStringForma
         synchronized (value) {
             jgen.writeStartObject();
             jgen.writeObjectField(TYPE, VALUE_IMAGE);
+            if (value.getWidth() != null) {
+                jgen.writeObjectField(WIDTH, value.getWidth());
+            }
             jgen.writeEndObject();
         }
     }

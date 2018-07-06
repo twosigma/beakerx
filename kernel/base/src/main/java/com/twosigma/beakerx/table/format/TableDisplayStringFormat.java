@@ -29,6 +29,11 @@ public class TableDisplayStringFormat {
     return new HTMLStringFormat();
   }
 
+  // Get a formatter that shows strings as formatted HTML with specified width
+  public static TableDisplayStringFormat getHTMLFormat(int width) {
+    return new HTMLStringFormat(width);
+  }
+
   // Get a formatter that will show Date in a timestamp format with millisecond precision
   public static TableDisplayStringFormat getTimeFormat() {
     return new TimeStringFormat();
@@ -52,6 +57,11 @@ public class TableDisplayStringFormat {
   // Get a formatter that will show derived source as an image
   public static TableDisplayStringFormat getImageFormat() {
     return new ImageStringFormat();
+  }
+
+  // Get a formatter that will show derived source as an image with specified width
+  public static TableDisplayStringFormat getImageFormat(int width) {
+    return new ImageStringFormat(width);
   }
 
 }

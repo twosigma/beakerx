@@ -78,12 +78,8 @@ const lineMagicOverlay = {
   },
 
   token(stream, state) {
-    if (!state.firstMatched) {
-      state.firstMatched = true;
-
-      if (stream.match(/^%\w+/, false)) {
-        state.inMagicLine = true;
-      }
+    if (stream.match(/^%(%classpath|%spark|\w+)/, false)) {
+      state.inMagicLine = true;
     }
 
     if (state.inMagicLine) {
@@ -104,22 +100,26 @@ const lineMagicOverlay = {
 
 export function autoHighlightLineMagics(code_mirror) {
   const current_mode = code_mirror.getOption('mode');
-  const first_line = code_mirror.getLine(0);
-  const re = /^%\w+/;
 
   if (current_mode === LINE_MAGIC_MODE) {
     return;
   }
 
-  if (first_line.match(re) !== null) {
-    // Add an overlay mode to recognize the first line as "line magic" instead
-    // of the mode used for the rest of the cell.
-    CodeMirror.defineMode(LINE_MAGIC_MODE, (config) => {
-      return CodeMirror.overlayMode(CodeMirror.getMode(config, current_mode), lineMagicOverlay);
-    });
+  const re = /^%(%classpath|%spark|\w+)/;
 
-    code_mirror.setOption('mode', LINE_MAGIC_MODE);
-  }
+  code_mirror.eachLine((line) => {
+    if (line && line.text.match(re) !== null) {
+      // Add an overlay mode to recognize the first line as "line magic" instead
+      // of the mode used for the rest of the cell.
+      CodeMirror.defineMode(LINE_MAGIC_MODE, (config) => {
+        return CodeMirror.overlayMode(CodeMirror.getMode(config, current_mode), lineMagicOverlay);
+      });
+
+      code_mirror.setOption('mode', LINE_MAGIC_MODE);
+
+      return false;
+    }
+  });
 }
 
 export function addLineMagicsOverlay(editor: any) {

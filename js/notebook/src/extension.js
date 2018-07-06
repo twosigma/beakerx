@@ -71,7 +71,6 @@ define([
   var base_url = utils.get_body_data('baseUrl');
   var config = new configmod.ConfigSection('notebook', {base_url: base_url});
   var initCellUtils = require('./extension/initializationCells');
-  var GroovyMode = require('./extension/groovyModeExtension').GroovyMode;
   var htmlOutput = require('./htmlOutput/htmlOutput').default;
   var Autotranslation = require('./extension/autotranslation').Autotranslation;
   var BeakerXKernel = require('./extension/kernel').BeakerXKernel;
@@ -113,9 +112,8 @@ define([
     if (inNotebook) {
       // setup things to run on loading config/notebook
 
-      CodeMirror.defineInitHook(bxCodeMirror.addLineMagicsOverlay);
+      bxCodeMirror.extendWithLineComment(Jupyter, CodeMirror);
       bxCodeMirror.extendHighlightModes(Jupyter);
-      GroovyMode.extendWithLineComment(Jupyter, CodeMirror);
 
       Jupyter.notebook.config.loaded
         .then(function update_options_from_config() {

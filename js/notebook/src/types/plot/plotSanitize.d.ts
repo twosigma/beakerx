@@ -1,4 +1,4 @@
-declare global  {
+declare global {
     interface Window {
         cssSchemaFixed: boolean;
         cssSchema: any;

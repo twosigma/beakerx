@@ -16,6 +16,30 @@
 
 /// <reference path='../types/index.d.ts'/>
 
+export const LINE_COMMENT_CHAR = '//';
+export const LINE_MAGIC_MODE = 'line_magic';
+
+export function extendWithLineComment(Jupyter: any, CodeMirror: any) {
+  CodeMirror.extendMode('groovy', { lineComment: LINE_COMMENT_CHAR });
+
+  Jupyter.notebook.get_cells().map(setCodeMirrorLineComment);
+}
+
+function setCodeMirrorLineComment(cell: any) {
+  if (cell.cell_type !== 'code') {
+    return;
+  }
+
+  const cm = cell.code_mirror;
+  const doc = cm.getDoc();
+  const mode = cm.getMode();
+
+  if (!mode.lineComment) {
+    mode.lineComment = LINE_COMMENT_CHAR;
+    doc.mode = mode;
+  }
+}
+
 export function extendHighlightModes(Jupyter: any) {
   Jupyter.CodeCell.options_default.highlight_modes = {
     ...Jupyter.CodeCell.options_default.highlight_modes,
@@ -28,6 +52,14 @@ export function extendHighlightModes(Jupyter: any) {
     magic_sql: {reg: ['^%%sql']},
     magic_html: {reg: ['^%%html']}
   };
+
+  Jupyter.notebook.get_cells().map(setLineMagicForCell);
+  CodeMirror.defineInitHook(addLineMagicsOverlay);
+}
+
+function setLineMagicForCell(cell) {
+  cell.auto_highlight();
+  addLineMagicsOverlay(cell.code_mirror);
 }
 
 const lineMagicOverlay = {
@@ -45,15 +77,13 @@ const lineMagicOverlay = {
     }
 
     if (state.inMagicLine) {
-      stream.eat(() => {
-        return true;
-      });
+      stream.eat(() => true);
 
       if (stream.eol()) {
         state.inMagicLine = false;
       }
 
-      return "line_magic";
+      return LINE_MAGIC_MODE;
     }
 
     stream.skipToEnd();
@@ -67,25 +97,32 @@ export function autoHighlightLineMagics(code_mirror) {
   const first_line = code_mirror.getLine(0);
   const re = /^%\w+/;
 
+  if (current_mode === LINE_MAGIC_MODE) {
+    return;
+  }
+
   if (first_line.match(re) !== null) {
-    // Add an overlay mode to recognize the first line as "magic" instead
+    // Add an overlay mode to recognize the first line as "line magic" instead
     // of the mode used for the rest of the cell.
-    CodeMirror.defineMode('line_magic', (config) => {
+    CodeMirror.defineMode(LINE_MAGIC_MODE, (config) => {
       return CodeMirror.overlayMode(CodeMirror.getMode(config, current_mode), lineMagicOverlay);
     });
 
-    code_mirror.setOption('mode', 'line_magic');
+    code_mirror.setOption('mode', LINE_MAGIC_MODE);
   }
 }
 
 export function addLineMagicsOverlay(code_mirror) {
   autoHighlightLineMagics(code_mirror);
-  code_mirror.on("focus", () => autoHighlightLineMagics(code_mirror));
-  code_mirror.on("change", () => autoHighlightLineMagics(code_mirror));
-  code_mirror.on("blur", () => autoHighlightLineMagics(code_mirror));
+  code_mirror.off("focus", autoHighlightLineMagics);
+  code_mirror.on("focus", autoHighlightLineMagics);
+  code_mirror.off("change", autoHighlightLineMagics);
+  code_mirror.on("change", autoHighlightLineMagics);
+  code_mirror.off("blur", autoHighlightLineMagics);
+  code_mirror.on("blur", autoHighlightLineMagics);
 }
 
 export default {
   extendHighlightModes,
-  addLineMagicsOverlay
+  extendWithLineComment
 };

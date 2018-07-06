@@ -30,9 +30,9 @@ export declare class BeakerXDataGridModel extends DataModel {
     getColumnValuesIterator(column: IColumn): MapIterator<number, number>;
     setHeaderTextVertical(headersVertical: boolean): void;
     getColumnValueResolver(dataType: ALL_TYPES): Function;
-    private htmlTextContentResolver(value);
-    private dateValueResolver(value);
-    private defaultValueResolver(value);
-    private doubleValueResolver(value);
-    private integerValueResolver(value);
+    private htmlTextContentResolver;
+    private dateValueResolver;
+    private defaultValueResolver;
+    private doubleValueResolver;
+    private integerValueResolver;
 }

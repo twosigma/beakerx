@@ -22,10 +22,10 @@ export default class ColumnPosition {
     setPosition(column: DataGridColumn, position: IColumnPosition): void;
     updateAll(): void;
     moveDraggedHeader(event: MouseEvent): boolean;
-    private debounceDragStart(data);
-    private handleDragStart(data);
-    private moveColumn();
-    private toggleGrabbing(enable);
-    private attachDraggableHeader(data);
-    private handleCellHovered(sender, {data, event});
+    private debounceDragStart;
+    private handleDragStart;
+    private moveColumn;
+    private toggleGrabbing;
+    private attachDraggableHeader;
+    private handleCellHovered;
 }

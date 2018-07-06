@@ -15,10 +15,10 @@ export default class ColumnFilter {
     static getColumnNameVarPrefix(columnName: any): "" | "col_";
     static escapeColumnName(columnName: string): string;
     constructor(dataGrid: BeakerXDataGrid, column: DataGridColumn, options: {
-        x;
-        y;
-        width;
-        height;
+        x: any;
+        y: any;
+        width: any;
+        height: any;
     });
     showSearchInput(shouldFocus: boolean): void;
     showFilterInput(shouldFocus: boolean): void;
@@ -27,13 +27,13 @@ export default class ColumnFilter {
     attach(node: HTMLElement): void;
     blur(): void;
     destroy(): void;
-    private updateInputPosition();
-    private showInput(shouldFocus);
-    private filterHandler(event);
-    private createExpression(value);
-    private createFilterExpression(value);
-    private createSearchExpression(value);
-    private addInputNode(options);
-    private bindEvents();
-    private getInputHeight();
+    private updateInputPosition;
+    private showInput;
+    private filterHandler;
+    private createExpression;
+    private createFilterExpression;
+    private createSearchExpression;
+    private addInputNode;
+    private bindEvents;
+    private getInputHeight;
 }

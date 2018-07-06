@@ -75,7 +75,7 @@ define([
   var Autotranslation = require('./extension/autotranslation').Autotranslation;
   var BeakerXKernel = require('./extension/kernel').BeakerXKernel;
   var bkCoreManager = require('./shared/bkCoreManager').default;
-  var bxCodeMirror = require('./extension/codeMirror').default;
+  var bxCodeEditor = require('./extension/codeEditor').default;
 
   var inNotebook = !Jupyter.NotebookList;
   var mod_name = 'init_cell';
@@ -112,8 +112,8 @@ define([
     if (inNotebook) {
       // setup things to run on loading config/notebook
 
-      bxCodeMirror.extendWithLineComment(Jupyter, CodeMirror);
-      bxCodeMirror.extendHighlightModes(Jupyter);
+      bxCodeEditor.extendWithLineComment(Jupyter, CodeMirror);
+      bxCodeEditor.extendHighlightModes(Jupyter);
 
       Jupyter.notebook.config.loaded
         .then(function update_options_from_config() {

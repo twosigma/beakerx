@@ -51,7 +51,7 @@ export class DataGridResize {
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.fillEmptySpaceResizeFn = this.fillEmptySpaceResizeFn.bind(this);
-    this.fitVieport = throttle<void, void>(this.fitVieport, 150, this);
+    this.fitVieport = throttle<void, void>(this.fitVieport, 100, this);
 
     this.installMessageHook();
   }
@@ -96,7 +96,7 @@ export class DataGridResize {
       return;
     }
 
-    this.dataGrid.node.style.width = `${width + 1}px`;
+    this.dataGrid.node.style.width = `${width}px`;
     this.fitVieport();
   }
 
@@ -123,6 +123,8 @@ export class DataGridResize {
 
     this.dataGrid.columnSections['_sections'].forEach(this.fillEmptySpaceResizeFn('body', value));
     this.dataGrid.rowHeaderSections['_sections'].forEach(this.fillEmptySpaceResizeFn('row-header', value));
+
+    this.fitVieport();
   }
 
   updateColumnWidth(region: ColumnRegion): Function {
@@ -151,7 +153,6 @@ export class DataGridResize {
 
   stopResizing() {
     this.resizing = false;
-
     this.resizeMode = null;
     this.dataGrid.node.parentElement.removeEventListener('mouseup', this.handleMouseUp, true);
     document.body.removeEventListener('mousemove', this.handleMouseMove, true);

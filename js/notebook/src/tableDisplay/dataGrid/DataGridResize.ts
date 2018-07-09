@@ -337,10 +337,21 @@ export class DataGridResize {
   }
 
   private getSectionWidth(column): number {
-    if(column.getDisplayType() === ALL_TYPES.image) {
-      return selectColumnWidth(this.dataGrid.store.state, column);
+    const fixedWidth = selectColumnWidth(this.dataGrid.store.state, column);
+    const displayType = column.getDisplayType();
+
+    if (displayType === ALL_TYPES.image) {
+      return fixedWidth || 1;
     }
 
+    if (displayType === ALL_TYPES.html && fixedWidth) {
+      return fixedWidth;
+    }
+
+    return this.calculateSectionWidth(column);
+  }
+
+  private calculateSectionWidth(column: DataGridColumn) {
     const position = column.getPosition();
     const value = String(column.formatFn(this.dataGrid.cellManager.createCellConfig({
       region: position.region,

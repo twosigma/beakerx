@@ -25,7 +25,10 @@ import {
   selectHasIndex,
   selectInitialColumnPositions,
   selectStringFormatForColumn,
-  selectStringFormatForType, selectFormatForTimes, DEFAULT_INDEX_COLUMN_NAME,
+  selectStringFormatForType,
+  selectFormatForTimes,
+  DEFAULT_INDEX_COLUMN_NAME,
+  selectColumnFixedWidth,
 } from "../model/selectors";
 import {BeakerXDataGridModel} from "../model/BeakerXDataGridModel";
 import {getDisplayType, getTypeByName} from "../dataTypes";
@@ -69,7 +72,7 @@ export function createInitialColumnsState(initialState: IDataModelState): IColum
       keepTrigger: columnType === COLUMN_TYPES.index,
       position: positions[columnType][index],
       dataTypeName: types[columnType][index],
-      width: 20,
+      width: selectColumnFixedWidth(state, name, types[columnType][index]),
       displayType: getDisplayType(
         dataType,
         selectStringFormatForType(state),

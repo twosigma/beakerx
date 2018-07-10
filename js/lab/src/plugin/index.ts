@@ -24,6 +24,8 @@ import { registerCommTargets } from './comm';
 import { registerCommentOutCmd } from './codeEditor';
 import { enableInitializationCellsFeature } from './initializationCells';
 import UIOptionFeaturesHelper from "./UIOptionFeaturesHelper";
+import {Autotranslation} from "./autotranslation";
+import proxify = Autotranslation.proxify;
 
 function displayHTML(widget: Widget, html: string): void {
   if (!widget.node || !html) {
@@ -58,6 +60,8 @@ class BeakerxExtension implements DocumentRegistry.WidgetExtension {
       enableInitializationCellsFeature(panel);
       registerCommentOutCmd(panel);
       registerCommTargets(panel, context);
+
+      window.beakerx = proxify(window.beakerx, context.session.kernel);
 
       const originalProcessFn = app.commands.processKeydownEvent;
       app.commands.processKeydownEvent = (event) => {

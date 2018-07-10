@@ -16,9 +16,12 @@
 package com.twosigma.beakerx;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twosigma.beakerx.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beakerx.table.TableDisplayToJson;
+import com.twosigma.beakerx.table.serializer.AutotranslationDefaultDeserializer;
+import com.twosigma.beakerx.table.serializer.TableDisplayDeSerializer;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -35,6 +38,8 @@ public class DefaultBeakerXJsonSerializer implements BeakerXJsonSerializer {
     objectMapper.enable(WRITE_ENUMS_USING_TO_STRING);
     objectMapper.registerModule(TableDisplayToJson.tableDisplayModule());
     objectSerializer = new BasicObjectSerializer();
+    objectSerializer.addTypeDeserializer(new TableDisplayDeSerializer(objectSerializer));
+    objectSerializer.addTypeDeserializer(new AutotranslationDefaultDeserializer());
   }
 
   @Override
@@ -54,7 +59,8 @@ public class DefaultBeakerXJsonSerializer implements BeakerXJsonSerializer {
   @Override
   public Object fromJson(String json) {
     try {
-      return objectMapper.readValue(json, Object.class);
+      JsonNode node = objectMapper.readTree(json);
+      return objectSerializer.deserialize(node, objectMapper);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

@@ -95,6 +95,7 @@ class EasyForm(BeakerxBox):
 
     def addDatePicker(self, *args, **kwargs):
         data_picker = DatePicker(description=self.getDescription(args, kwargs))
+        data_picker.value = getValue(kwargs, 'value', '')
         self.children += (data_picker,)
         self.components[data_picker.description] = data_picker
         return data_picker

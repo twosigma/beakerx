@@ -31,7 +31,7 @@ import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
 
 public class NamespaceClient implements BeakerXClient {
 
-  public static final String NAMESPACE_CLIENT = NamespaceClient.class.getSimpleName() + ".getBeaker()";
+  public static final String NAMESPACE_CLIENT = NamespaceClient.class.getSimpleName() + ".getBeakerX()";
 
   private static Map<String, SynchronousQueue<Object>> messagePool = new HashMap<>();
   private Comm codeCellsComm = null;
@@ -46,7 +46,7 @@ public class NamespaceClient implements BeakerXClient {
     this.commRepository = commRepository;
   }
 
-  public static BeakerXClient getBeaker() {
+  public static BeakerXClient getBeakerX() {
     return BeakerXClientManager.get();
   }
 

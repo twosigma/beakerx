@@ -45,6 +45,7 @@ repositories {
 
 dependencies {
   provided project(':base')
+  compile group: 'org.antlr', name: 'antlr4-runtime', version: "$antlr4Version"
 
   testCompile project(':base').sourceSets.test.output
 }

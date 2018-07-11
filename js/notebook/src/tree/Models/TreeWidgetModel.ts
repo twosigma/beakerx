@@ -125,9 +125,10 @@ export default class TreeWidgetModel {
       result += `${other} `
     }
 
-    for (let property of options.properties) {
-      result += `-D${property.name}=${property.value} `;
+    for (let property in options.properties) {
+      result += `-D${options.properties[property].name}=${options.properties[property].value} `;
     }
+
     return result;
   };
 }

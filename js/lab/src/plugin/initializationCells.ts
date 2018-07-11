@@ -37,17 +37,19 @@ export function enableInitializationCellsFeature(panel: NotebookPanel): void {
 }
 
 export function runInitCells(panel: NotebookPanel, options: IInitCellsOptions): void {
-  const cells: CodeCell[] = getInitCells(panel);
-
-  handleUntrustedKernelInitCells(cells, options);
-
-  if (!canExecuteInitCells(panel, options, cells)) {
-    return;
-  }
-
-  console.log(logPrefix, 'running all initialization cells');
-  cells.forEach((cell: CodeCell) => CodeCell.execute(cell, panel.session));
-  console.log(logPrefix, `finished running ${cells.length} initialization cell${(cells.length !== 1 ? 's' : '')}`);
+  panel.ready.then(() => {
+    const cells: CodeCell[] = getInitCells(panel);
+  
+    handleUntrustedKernelInitCells(cells, options);
+  
+    if (!canExecuteInitCells(panel, options, cells)) {
+      return;
+    }
+  
+    console.log(logPrefix, 'running all initialization cells');
+    cells.forEach((cell: CodeCell) => CodeCell.execute(cell, panel.session));
+    console.log(logPrefix, `finished running ${cells.length} initialization cell${(cells.length !== 1 ? 's' : '')}`);
+  });
 }
 
 export function getInitCells(panel: NotebookPanel): CodeCell[] {

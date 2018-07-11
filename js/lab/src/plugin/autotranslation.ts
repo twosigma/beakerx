@@ -27,6 +27,7 @@ export namespace Autotranslation {
 
     kernelInstance.connectToComm(BEAKER_AUTOTRANSLATION)['then'](comm => {
       autotranslationComm = comm;
+      autotranslationComm.open();
     });
 
     const handler = {

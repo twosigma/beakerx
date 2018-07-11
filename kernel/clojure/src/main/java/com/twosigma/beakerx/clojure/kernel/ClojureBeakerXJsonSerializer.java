@@ -16,6 +16,9 @@
 package com.twosigma.beakerx.clojure.kernel;
 
 import com.twosigma.beakerx.BaseBeakerXJsonSerializer;
+import com.twosigma.beakerx.clojure.serializers.ClojureCollectionDeserializer;
+import com.twosigma.beakerx.clojure.serializers.ClojureMapDeserializer;
+import com.twosigma.beakerx.clojure.serializers.ClojureTableDeserializer;
 import com.twosigma.beakerx.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
 

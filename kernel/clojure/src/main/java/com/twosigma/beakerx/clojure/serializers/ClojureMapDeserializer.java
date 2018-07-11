@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beakerx.clojure.kernel;
+package com.twosigma.beakerx.clojure.serializers;
 
 import clojure.lang.PersistentArrayMap;
 import com.fasterxml.jackson.databind.JsonNode;

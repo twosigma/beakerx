@@ -10,7 +10,8 @@
 
   .widget-select,
   .widget-select-multiple {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     min-width: 380px;
   }
 
@@ -42,6 +43,12 @@
 
   .datepicker-container {
     align-items: stretch;
+
+    .form-control {
+      width: auto;
+      border-right: 0;
+      border-radius: 2px 0 0 2px;
+    }
   }
 
   .widget-box > .widget-label {

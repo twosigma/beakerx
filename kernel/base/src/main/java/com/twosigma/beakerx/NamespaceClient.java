@@ -17,7 +17,7 @@ package com.twosigma.beakerx;
 
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beakerx.kernel.KernelConfigurationFile;
+import com.twosigma.beakerx.kernel.ConfigurationFile;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
 
@@ -170,12 +170,12 @@ public class NamespaceClient implements BeakerXClient {
     return this.autotranslationService.getContextAsString();
   }
 
-  public static NamespaceClient create(String id, KernelConfigurationFile configurationFile, CommRepository commRepository) {
+  public static NamespaceClient create(String id, ConfigurationFile configurationFile, CommRepository commRepository) {
     return create(id, configurationFile, new DefaultBeakerXJsonSerializer(), commRepository);
   }
 
   public static NamespaceClient create(String id,
-                                       KernelConfigurationFile configurationFile,
+                                       ConfigurationFile configurationFile,
                                        BeakerXJsonSerializer serializer,
                                        CommRepository commRepository) {
     if (configurationFile.getContext().isPresent()) {

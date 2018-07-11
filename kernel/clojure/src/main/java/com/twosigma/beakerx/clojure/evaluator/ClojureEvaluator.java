@@ -25,6 +25,7 @@ import com.twosigma.beakerx.BeakerXClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.clojure.autocomplete.ClojureAutocomplete;
+import com.twosigma.beakerx.clojure.autotranslation.NSClientProxy;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
@@ -168,7 +169,11 @@ public class ClojureEvaluator extends BaseEvaluator {
     loader = ClojureClassLoaderFactory.newInstance(classPath, outDir);
     String loadFunctionPrefix = "run_str";
     try {
-      String clojureInitScript = String.format(initScriptSource(), beaker_clojure_ns, shellId, loadFunctionPrefix);
+      String clojureInitScript = String.format(initScriptSource(),
+              beaker_clojure_ns,
+              shellId,
+              loadFunctionPrefix,
+              NSClientProxy.class.getName());
       String ns = String.format("%1$s_%2$s", beaker_clojure_ns, shellId);
       clearClojureNamespace(ns);
       clojureLoadString = RT.var(ns, String.format("%1$s_%2$s", loadFunctionPrefix, shellId));

@@ -13,15 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx;
+package com.twosigma.beakerx.clojure.kernel;
 
+import com.twosigma.beakerx.BaseBeakerXJsonSerializer;
+import com.twosigma.beakerx.clojure.serializers.ClojureCollectionDeserializer;
+import com.twosigma.beakerx.clojure.serializers.ClojureMapDeserializer;
+import com.twosigma.beakerx.clojure.serializers.ClojureTableDeserializer;
 import com.twosigma.beakerx.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
 
-public class DefaultBeakerXJsonSerializer extends BaseBeakerXJsonSerializer {
+public class ClojureBeakerXJsonSerializer extends BaseBeakerXJsonSerializer {
 
   @Override
   protected BeakerObjectConverter createSerializer() {
-    return new BasicObjectSerializer();
+    BasicObjectSerializer serializer = new BasicObjectSerializer();
+    serializer.addfTypeDeserializer(new ClojureCollectionDeserializer(serializer));
+    serializer.addfTypeDeserializer(new ClojureMapDeserializer(serializer));
+    serializer.addfTypeDeserializer(new ClojureTableDeserializer(serializer));
+    return serializer;
   }
 }

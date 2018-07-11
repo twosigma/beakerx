@@ -66,7 +66,7 @@ public class UpdatableEvaluationResultTest {
     boolean payload = true;
     ObjectMapper mapper = new ObjectMapper();
     JsonNode actualObj = mapper.readTree(
-        "{\"type\":\"UpdatableEvaluationResult\",\"payload\":\"" + payload + "\"}");
+        "{\"type\":\"UpdatableEvaluationResult\",\"payload\":" + payload + "}");
     UpdatableEvaluationResult.DeSerializer deserializer =
         new UpdatableEvaluationResult.DeSerializer(new BasicObjectSerializer());
     //when

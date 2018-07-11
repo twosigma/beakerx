@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.clojure.handlers;
 
+import com.twosigma.beakerx.kernel.comm.AutotranslationHandler;
 import com.twosigma.beakerx.kernel.comm.KernelControlCommandListHandler;
 import com.twosigma.beakerx.kernel.comm.KernelControlInterrupt;
 import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
@@ -29,6 +30,9 @@ public class ClojureCommOpenHandler extends CommOpenHandler{
      new KernelControlInterrupt(kernel),
      new KernelControlCommandListHandler(kernel)};
 
+  private Handler<?>[] AUTOTRANSLATION_HANDLER = {
+          new AutotranslationHandler(kernel)};
+
   public ClojureCommOpenHandler(KernelFunctionality kernel) {
     super(kernel);
   }
@@ -36,6 +40,8 @@ public class ClojureCommOpenHandler extends CommOpenHandler{
   public Handler<Message>[] getKernelControlChanelHandlers(String targetName){
     if(TargetNamesEnum.KERNEL_CONTROL_CHANNEL.getTargetName().equalsIgnoreCase(targetName)){
       return (Handler<Message>[]) KERNEL_CONTROL_CHANNEL_HANDLERS;
+    }else if (TargetNamesEnum.BEAKER_AUTOTRANSLATION.getTargetName().equalsIgnoreCase(targetName)) {
+      return (Handler<Message>[]) AUTOTRANSLATION_HANDLER;
     }else{
       return (Handler<Message>[]) new Handler<?>[0];
     }

@@ -58,20 +58,20 @@ public class SparkMagicCommandAutoConnectTest {
   }
 
   @Test
-  public void autoConnectToSpark_by_connect_option() {
+  public void autoConnectToSpark_by_start_option() {
     //given
     //when
-    MagicCommandOutcomeItem execute = createSparkUi("--connect");
+    MagicCommandOutcomeItem execute = createSparkUi("--start");
     //then
     assertThat(execute.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.OK);
     assertThat(singleSparkSession.isActive()).isTrue();
   }
 
   @Test
-  public void autoConnectToSpark_by_c_option() {
+  public void autoConnectToSpark_by_s_option() {
     //given
     //when
-    MagicCommandOutcomeItem execute = createSparkUi("-c");
+    MagicCommandOutcomeItem execute = createSparkUi("-s");
     //then
     assertThat(execute.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.OK);
     assertThat(singleSparkSession.isActive()).isTrue();

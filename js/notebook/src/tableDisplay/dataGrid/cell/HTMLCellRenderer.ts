@@ -16,17 +16,12 @@
 
 import {CellRenderer, GraphicsContext, TextRenderer} from "@phosphor/datagrid";
 import BeakerXCellRenderer from "./BeakerXCellRenderer";
-import {BeakerXDataGrid} from "../BeakerXDataGrid";
 
 import LatoRegular from '../../../shared/fonts/lato/Lato-Regular.woff';
 import LatoBlack from '../../../shared/fonts/lato/Lato-Black.woff';
 
 export default class HTMLCellRenderer extends BeakerXCellRenderer {
   dataCache = new Map<string, string>();
-
-  constructor(dataGrid: BeakerXDataGrid, options?: TextRenderer.IOptions) {
-    super(dataGrid, options);
-  }
 
   drawText(gc: GraphicsContext, config: CellRenderer.ICellConfig): void {
     const font = CellRenderer.resolveOption(this.font, config);

@@ -60,8 +60,6 @@ export default abstract class BeakerXCellRenderer extends TextRenderer {
     this.textColor = this.getTextColor.bind(this);
   }
 
-  abstract drawText(gc: GraphicsContext, config: CellRenderer.ICellConfig): void
-
   drawBackground(gc: GraphicsContext, config: CellRenderer.ICellConfig) {
     super.drawBackground(gc, config);
 

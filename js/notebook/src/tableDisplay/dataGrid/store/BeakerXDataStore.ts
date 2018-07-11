@@ -69,6 +69,7 @@ export function createInitialColumnsState(initialState: IDataModelState): IColum
       keepTrigger: columnType === COLUMN_TYPES.index,
       position: positions[columnType][index],
       dataTypeName: types[columnType][index],
+      width: 20,
       displayType: getDisplayType(
         dataType,
         selectStringFormatForType(state),

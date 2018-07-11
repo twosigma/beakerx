@@ -19,6 +19,8 @@ import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.kernel.Utils.uuid;
 
 import com.twosigma.beakerx.AutotranslationServiceImpl;
+import com.twosigma.beakerx.BeakerXCommRepository;
+import com.twosigma.beakerx.CommRepository;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
@@ -43,12 +45,17 @@ import java.util.HashMap;
 
 public class Kotlin extends Kernel {
 
-  private Kotlin(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
-    super(id, evaluator, kernelSocketsFactory, new CustomMagicCommandsEmptyImpl());
+  private Kotlin(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CommRepository commRepository) {
+    super(id, evaluator, kernelSocketsFactory, new CustomMagicCommandsEmptyImpl(), commRepository);
   }
 
-  public Kotlin(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction, CacheFolderFactory cacheFolderFactory) {
-    super(id, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory, new CustomMagicCommandsEmptyImpl());
+  public Kotlin(final String id,
+                final Evaluator evaluator,
+                KernelSocketsFactory kernelSocketsFactory,
+                CloseKernelAction closeKernelAction,
+                CacheFolderFactory cacheFolderFactory,
+                CommRepository commRepository) {
+    super(id, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory, new CustomMagicCommandsEmptyImpl(), commRepository);
   }
 
   @Override
@@ -67,17 +74,18 @@ public class Kotlin extends Kernel {
     return new EvaluatorParameters(kernelParameters);
   }
 
-  public static void main(final String[] args) throws InterruptedException, IOException {
+  public static void main(final String[] args) {
     KernelRunner.run(() -> {
       String id = uuid();
+      CommRepository commRepository = new BeakerXCommRepository();
       KernelConfigurationFile configurationFile = new KernelConfigurationFile(args);
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
               configurationFile);
       KotlinEvaluator e = new KotlinEvaluator(id,
               id,
               getKernelParameters(),
-              NamespaceClient.create(id, configurationFile));
-      return new Kotlin(id, e, kernelSocketsFactory);
+              NamespaceClient.create(id, configurationFile, commRepository));
+      return new Kotlin(id, e, kernelSocketsFactory, commRepository);
     });
   }
 

@@ -1,4 +1,7 @@
+$beakerxFont: "Lato", Helvetica, sans-serif;
+
 .beaker-easyform-container {
+  font-family: $beakerxFont;
 
   .widget-inline-hbox {
     .widget-label {
@@ -86,6 +89,7 @@
 .beaker-fieldset {
   border: 1px solid #cfcfcf;
   padding: 10px;
+  font-family: $beakerxFont;
 
   legend {
     border-bottom: none;

@@ -423,13 +423,13 @@ class TableDisplayWrapper(object):
         def f():
             display_html(TableDisplay(model_instance))
         return f
-    
+
+
 class BeakerX:
-    """Runtime support for Python code in BeakerX."""
-    _comm = Comm(target_name='beakerx.autotranslation')
 
     def __init__(self):
         BeakerX.pandas_display_table()
+        self._comm = None
 
     @staticmethod
     def pandas_display_default():
@@ -445,12 +445,18 @@ class BeakerX:
             val = transform(val)
             args['value'] = json.dumps(val, cls=DataFrameEncoder)
             state = {'state': args}
+        if self._comm is None:
+            self.init_autotranslation_comm()
         self._comm.send(data=state)
+
+    def init_autotranslation_comm(self):
+        self._comm = Comm(target_name='beakerx.autotranslation')
+        self._comm.open()
 
     def get(self, var):
         result = autotranslation_get(var)
         if result == 'undefined':
-            raise NameError('name \'' + var + '\' is not defined in notebook namespace')
+            raise NameError('name \'' + var + '\' is not defined on the beakerx object')
         return transformBack(json.loads(result))
 
     def set_session(self, id):
@@ -578,9 +584,14 @@ class BeakerX:
         if 'session_id' == name:
             self.__dict__['session_id'] = value
             return
+        if '_comm' == name:
+            self.__dict__['_comm'] = value
+            return
         return self.set(name, value)
 
     def __getattr__(self, name):
+        if '_comm' == name:
+            return self.__dict__['_comm']
         return self.get(name)
 
     def __contains__(self, name):

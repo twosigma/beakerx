@@ -121,7 +121,7 @@ export namespace DataGridHelpers {
     limit: number,
     context = this,
     controllObject?: { timerId: any }
-  ): (T) => U|undefined {
+  ): (T?) => U|undefined {
     let controll = controllObject || { timerId: undefined };
     let lastRan;
 

@@ -31,6 +31,7 @@ interface MapConstructor {
 }
 
 declare var Map: MapConstructor;
+declare var CodeMirror: any;
 
 declare interface NumberConstructor {
   isNaN: (number: number) => boolean,
@@ -55,7 +56,8 @@ declare interface Array<T> {
 
 declare interface Window {
   beakerx: any,
-  chrome?: any
+  chrome?: any,
+  require: any
 }
 
 interface GlobalEnvironment {

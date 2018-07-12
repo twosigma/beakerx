@@ -17,7 +17,7 @@ package com.twosigma.beakerx;
 
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beakerx.kernel.KernelConfigurationFile;
+import com.twosigma.beakerx.kernel.ConfigurationFile;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
 
@@ -31,6 +31,8 @@ import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
 
 public class NamespaceClient implements BeakerXClient {
 
+  public static final String NAMESPACE_CLIENT = NamespaceClient.class.getSimpleName() + ".getBeakerX()";
+
   private static Map<String, SynchronousQueue<Object>> messagePool = new HashMap<>();
   private Comm codeCellsComm = null;
   private Comm tagRunComm = null;
@@ -42,6 +44,10 @@ public class NamespaceClient implements BeakerXClient {
     this.autotranslationService = autotranslationService;
     this.beakerXJsonSerializer = beakerXJsonSerializer;
     this.commRepository = commRepository;
+  }
+
+  public static BeakerXClient getBeakerX() {
+    return BeakerXClientManager.get();
   }
 
   @Override
@@ -170,12 +176,12 @@ public class NamespaceClient implements BeakerXClient {
     return this.autotranslationService.getContextAsString();
   }
 
-  public static NamespaceClient create(String id, KernelConfigurationFile configurationFile, CommRepository commRepository) {
+  public static NamespaceClient create(String id, ConfigurationFile configurationFile, CommRepository commRepository) {
     return create(id, configurationFile, new DefaultBeakerXJsonSerializer(), commRepository);
   }
 
   public static NamespaceClient create(String id,
-                                       KernelConfigurationFile configurationFile,
+                                       ConfigurationFile configurationFile,
                                        BeakerXJsonSerializer serializer,
                                        CommRepository commRepository) {
     if (configurationFile.getContext().isPresent()) {

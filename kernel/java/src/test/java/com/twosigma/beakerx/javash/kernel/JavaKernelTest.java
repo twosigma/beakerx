@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.javash.kernel;
 
-import com.twosigma.beakerx.BeakerXCommRepository;
 import com.twosigma.beakerx.BeakerXCommRepositoryMock;
 import com.twosigma.beakerx.KernelExecutionTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;

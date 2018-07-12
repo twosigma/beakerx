@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,16 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.kernel;
+package com.twosigma.beakerx.clojure.autotranslation;
 
-import java.util.Optional;
+import com.twosigma.beakerx.BeakerXClientManager;
 
-/**
- * Information from the connection file from Jupyter.
- */
-public interface ConfigurationFile {
+public class NSClientProxy {
 
-  Config getConfig();
+  public static Object get(String key) {
+    return BeakerXClientManager.get().get(key);
+  }
 
-  Optional<String> getContext();
+  public static void set(String key, Object value) {
+    BeakerXClientManager.get().set(key, value);
+  }
 }

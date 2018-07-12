@@ -61,9 +61,6 @@ define([
         "height" : height
       };
 
-      var plotType = model.plot_type;
-      if (plotType == null) { plotType = "Plot"; }
-
       var layout = {
         bottomLayoutMargin : 30
       };
@@ -92,7 +89,6 @@ define([
         if (plotmodel.showLegend == null) { plotmodel.showLegend = showLegend; }
         if (plotmodel.useToolTip == null) { plotmodel.useToolTip = useToolTip; }
 
-        plotmodel.type = plotType;
         var newplotmodel = plotFormatter.standardizeModel(plotmodel, prefs);
 
         if (i < plots.length - 1) {  // turn off x coordinate labels

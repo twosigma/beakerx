@@ -26,7 +26,6 @@ import {enableInitializationCellsFeature} from './initializationCells';
 import {Autotranslation} from './autotranslation';
 import {BeakerXKernel} from './kernel';
 import {displayHTML} from '../htmlOutput/htmlOutput';
-import {GroovyMode} from "./groovyModeExtension";
 import bkCoreManager from '../shared/bkCoreManager';
 
 import '../shared/style/beakerx.scss';
@@ -99,7 +98,8 @@ function setupNotebook() {
     })
     .catch((reason) => { console.error(log_prefix, 'unhandled error:', reason); });
 
-  GroovyMode.extendWithLineComment(Jupyter, CodeMirror);
+  extendWithLineComment(Jupyter, CodeMirror);
+  extendHighlightModes(Jupyter);
 }
 
 export const load_ipython_extension = () => {

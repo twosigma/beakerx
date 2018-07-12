@@ -25,6 +25,7 @@ export default abstract class HeaderMenu implements MenuInterface {
     hideTrigger(): void;
     attachTriggerToMenu(): void;
     open(submenuIndex?: number): void;
+    close(): void;
     destroy(): void;
     toggleMenu(submenuIndex?: number): void;
     createItems(items: MenuItem[], menu: Menu): void;
@@ -32,7 +33,7 @@ export default abstract class HeaderMenu implements MenuInterface {
     createSubmenu(menuItem: MenuItem, subitems: MenuItem[]): Menu;
     protected assignTriggerSortingCssClass(): void;
     protected addTrigger(): void;
-    private handleMenuTriggerClick(event);
+    private handleMenuTriggerClick;
     protected getMenuPosition(trigger: any): {
         top: any;
         left: any;

@@ -1,13 +1,13 @@
 export declare enum HIGHLIGHTER_STYLE {
     SINGLE_COLUMN = "SINGLE_COLUMN",
-    FULL_ROW = "FULL_ROW",
+    FULL_ROW = "FULL_ROW"
 }
 export declare enum HIGHLIGHTER_TYPE {
     heatmap = "HeatmapHighlighter",
     uniqueEntries = "UniqueEntriesHighlighter",
     threeColorHeatmap = "ThreeColorHeatmapHighlighter",
     value = "ValueHighlighter",
-    sort = "SortHighlighter",
+    sort = "SortHighlighter"
 }
 export default interface IHihglighterState {
     colName: string;

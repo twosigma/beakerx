@@ -1,69 +1,17 @@
 import { IColumnPosition } from "../../interface/IColumn";
 import IHihglighterState from "../../interface/IHighlighterState";
 export declare const DEFAULT_INDEX_COLUMN_NAME = "index";
-export declare const selectColumnNames: ((state: any) => string[]) & {
-    resultFunc: (res: string[]) => string[];
-    recomputations: () => number;
-    resetRecomputations: () => number;
-};
-export declare const selectBodyColumnNames: ((state: any) => string[]) & {
-    resultFunc: (res1: string[], res2: boolean) => string[];
-    recomputations: () => number;
-    resetRecomputations: () => number;
-};
-export declare const selectColumnIndexByName: ((state: any, props: any, ...args: any[]) => number) & {
-    resultFunc: (res1: string[], res2: any) => number;
-    recomputations: () => number;
-    resetRecomputations: () => number;
-};
-export declare const selectIndexColumnNames: ((state: any) => string[]) & {
-    resultFunc: (res1: string[], res2: boolean) => string[];
-    recomputations: () => number;
-    resetRecomputations: () => number;
-};
-export declare const selectColumnsFrozenNames: ((state: any) => string[]) & {
-    resultFunc: (res1: {}, res2: string[]) => string[];
-    recomputations: () => number;
-    resetRecomputations: () => number;
-};
+export declare const selectColumnNames: import("reselect").OutputSelector<any, string[], (res: string[]) => string[]>;
+export declare const selectBodyColumnNames: import("reselect").OutputSelector<any, string[], (res1: string[], res2: boolean) => string[]>;
+export declare const selectColumnIndexByName: import("reselect").OutputParametricSelector<any, any, number, (res1: string[], res2: any) => number>;
+export declare const selectIndexColumnNames: import("reselect").OutputSelector<any, string[], (res1: string[], res2: boolean) => string[]>;
+export declare const selectColumnsFrozenNames: import("reselect").OutputSelector<any, string[], (res1: {}, res2: string[]) => string[]>;
 export declare const selectColumnsFrozenCount: (state: any) => number;
-export declare const selectIsColumnFrozen: ((state: any, props: any, ...args: any[]) => boolean) & {
-    resultFunc: (res1: string[], res2: any) => boolean;
-    recomputations: () => number;
-    resetRecomputations: () => number;
-};
-export declare const selectColumnVisible: ((state: any, props: any, ...args: any[]) => boolean) & {
-    resultFunc: (res1: {}, res2: string[], res3: any) => boolean;
-    recomputations: () => number;
-    resetRecomputations: () => number;
-};
-export declare const selectInitialColumnAlignment: ((state: any, props: any, ...args: any[]) => "left" | "right" | "center") & {
-    resultFunc: (res1: any, res2: any, res3: "left" | "right" | "center") => "left" | "right" | "center";
-    recomputations: () => number;
-    resetRecomputations: () => number;
-};
-export declare const selectVisibleColumnsFrozenCount: ((state: any) => number) & {
-    resultFunc: (res1: string[], res2: {}) => number;
-    recomputations: () => number;
-    resetRecomputations: () => number;
-};
-export declare const selectColumnDataTypeByName: ((state: any, props: any, ...args: any[]) => any) & {
-    resultFunc: (res1: string[], res2: string[], res3: any) => any;
-    recomputations: () => number;
-    resetRecomputations: () => number;
-};
-export declare const selectInitialColumnPositions: ((state: any) => IColumnPosition[]) & {
-    resultFunc: (res1: string[], res2: string[], res3: {}, res4: boolean, res5: string[]) => IColumnPosition[];
-    recomputations: () => number;
-    resetRecomputations: () => number;
-};
-export declare const selectRenderer: ((state: any, props: any, ...args: any[]) => any) & {
-    resultFunc: (res1: any, res2: any) => any;
-    recomputations: () => number;
-    resetRecomputations: () => number;
-};
-export declare const selectColumnHighlighters: ((state: any, props: any, ...args: any[]) => IHihglighterState[]) & {
-    resultFunc: (res1: IHihglighterState[], res2: any, res3: any) => IHihglighterState[];
-    recomputations: () => number;
-    resetRecomputations: () => number;
-};
+export declare const selectIsColumnFrozen: import("reselect").OutputParametricSelector<any, any, boolean, (res1: string[], res2: any) => boolean>;
+export declare const selectColumnVisible: import("reselect").OutputParametricSelector<any, any, boolean, (res1: {}, res2: string[], res3: any) => boolean>;
+export declare const selectInitialColumnAlignment: import("reselect").OutputParametricSelector<any, any, import("@phosphor/widgets/lib/layout").Layout.HorizontalAlignment, (res1: any, res2: any, res3: import("@phosphor/widgets/lib/layout").Layout.HorizontalAlignment) => import("@phosphor/widgets/lib/layout").Layout.HorizontalAlignment>;
+export declare const selectVisibleColumnsFrozenCount: import("reselect").OutputSelector<any, number, (res1: string[], res2: {}) => number>;
+export declare const selectColumnDataTypeByName: import("reselect").OutputParametricSelector<any, any, any, (res1: string[], res2: string[], res3: any) => any>;
+export declare const selectInitialColumnPositions: import("reselect").OutputSelector<any, IColumnPosition[], (res1: string[], res2: string[], res3: {}, res4: boolean, res5: string[]) => IColumnPosition[]>;
+export declare const selectRenderer: import("reselect").OutputParametricSelector<any, any, any, (res1: any, res2: any) => any>;
+export declare const selectColumnHighlighters: import("reselect").OutputParametricSelector<any, any, IHihglighterState[], (res1: IHihglighterState[], res2: any, res3: any) => IHihglighterState[]>;

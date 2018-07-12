@@ -1,5 +1,7 @@
 import { SectionList } from "@phosphor/datagrid/lib/sectionlist";
 import DataGridColumn from "./column/DataGridColumn";
+import { CellRenderer } from "@phosphor/datagrid";
+import { BeakerXDataGrid } from "./BeakerXDataGrid";
 export declare namespace DataGridHelpers {
     function escapeHTML(text: any): any;
     function truncateString(text: any, limit?: number): string;
@@ -15,8 +17,8 @@ export declare namespace DataGridHelpers {
         delta: number;
     } | null;
     function throttle<T, U>(func: Function, limit: number, context?: any, controllObject?: {
-        timerId: number;
-    }): (T) => U | undefined;
+        timerId: any;
+    }): (T: any) => U | undefined;
     function debounce<A>(f: (a: A) => void, delay: number, controllObject?: {
         timerId: number;
     }): (a: A) => void;
@@ -27,4 +29,5 @@ export declare namespace DataGridHelpers {
     function applyTimezone(timestamp: any, tz: any): any;
     function formatTimestamp(timestamp: any, tz: any, format: any): any;
     function hasUpperCaseLetter(value: string): boolean;
+    function getBackgroundColor(dataGrid: BeakerXDataGrid, config: CellRenderer.ICellConfig): string;
 }

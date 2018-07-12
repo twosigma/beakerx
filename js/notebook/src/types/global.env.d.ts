@@ -24,6 +24,10 @@ interface Map<K, V> {
   readonly size: number;
 }
 
+interface Math {
+  sign: (x: number) => number
+}
+
 interface MapConstructor {
   new (): Map<any, any>;
   new <K, V>(entries?: ReadonlyArray<[K, V]>): Map<K, V>;

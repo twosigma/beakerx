@@ -43,6 +43,10 @@ export function getDisplayType(type: ALL_TYPES, stringFormatForType?: any, strin
     return ALL_TYPES.string;
   }
 
+  if (stringFormatForColumn && stringFormatForColumn.type === 'image') {
+    return ALL_TYPES.image;
+  }
+
   if (type === ALL_TYPES.string && stringFormatForColumn && stringFormatForColumn.type) {
     return ALL_TYPES[stringFormatForColumn.type] || ALL_TYPES.string;
   }

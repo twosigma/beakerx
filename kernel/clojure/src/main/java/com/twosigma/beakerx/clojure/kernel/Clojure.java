@@ -75,18 +75,15 @@ public class Clojure extends Kernel {
     return new ClojureKernelInfoHandler(kernel);
   }
 
-  public static void main(final String[] args) throws InterruptedException, IOException {
+  public static void main(final String[] args) {
     KernelRunner.run(() -> {
       String id = uuid();
       CommRepository beakerXCommRepository = new BeakerXCommRepository();
       KernelConfigurationFile configurationFile = new KernelConfigurationFile(args);
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
               configurationFile);
-      ClojureEvaluator evaluator = new ClojureEvaluator(
-              id,
-              id,
-              getKernelParameters(),
-              NamespaceClient.create(id, configurationFile, beakerXCommRepository));
+      NamespaceClient namespaceClient = NamespaceClient.create(id, configurationFile, new ClojureBeakerXJsonSerializer(), beakerXCommRepository);
+      ClojureEvaluator evaluator = new ClojureEvaluator(id, id, getKernelParameters(), namespaceClient);
       return new Clojure(id, evaluator, kernelSocketsFactory, beakerXCommRepository);
     });
   }

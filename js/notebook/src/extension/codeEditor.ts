@@ -121,8 +121,3 @@ export function addLineMagicsOverlay(code_mirror) {
   code_mirror.off("blur", autoHighlightLineMagics);
   code_mirror.on("blur", autoHighlightLineMagics);
 }
-
-export default {
-  extendHighlightModes,
-  extendWithLineComment
-};

@@ -30,7 +30,7 @@ public class ResultsDeserializerTest {
   @Before
   public void setUp() throws Exception {
     payload = true;
-    json = "{\"type\":\"Results\",\"payload\":\"" + payload + "\"}";
+    json = "{\"type\":\"Results\",\"payload\":" + payload + "}";
   }
 
   @Test

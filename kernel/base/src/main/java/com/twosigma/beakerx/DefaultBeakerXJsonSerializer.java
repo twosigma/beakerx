@@ -15,49 +15,13 @@
  */
 package com.twosigma.beakerx;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twosigma.beakerx.jvm.serialization.BasicObjectSerializer;
-import com.twosigma.beakerx.table.TableDisplayToJson;
+import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
 
-import java.io.IOException;
-import java.io.StringWriter;
-
-import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_ENUMS_USING_TO_STRING;
-
-public class DefaultBeakerXJsonSerializer implements BeakerXJsonSerializer {
-
-  private final BasicObjectSerializer objectSerializer;
-  private ObjectMapper objectMapper;
-
-  public DefaultBeakerXJsonSerializer() {
-    this.objectMapper = new ObjectMapper();
-    objectMapper.enable(WRITE_ENUMS_USING_TO_STRING);
-    objectMapper.registerModule(TableDisplayToJson.tableDisplayModule());
-    objectSerializer = new BasicObjectSerializer();
-  }
+public class DefaultBeakerXJsonSerializer extends BaseBeakerXJsonSerializer {
 
   @Override
-  public String toJson(Object value) {
-    try {
-      StringWriter sw = new StringWriter();
-      JsonGenerator jgen = objectMapper.getFactory().createGenerator(sw);
-      objectSerializer.writeObject(value, jgen, true);
-      jgen.flush();
-      sw.flush();
-      return sw.toString();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+  protected BeakerObjectConverter createSerializer() {
+    return new BasicObjectSerializer();
   }
-
-  @Override
-  public Object fromJson(String json) {
-    try {
-      return objectMapper.readValue(json, Object.class);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
 }

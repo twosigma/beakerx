@@ -1,4 +1,7 @@
+$beakerxFont: "Lato", Helvetica, sans-serif;
+
 .beaker-easyform-container {
+  font-family: $beakerxFont;
 
   .widget-inline-hbox {
     .widget-label {
@@ -10,7 +13,8 @@
 
   .widget-select,
   .widget-select-multiple {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     min-width: 380px;
   }
 
@@ -42,6 +46,12 @@
 
   .datepicker-container {
     align-items: stretch;
+
+    .form-control {
+      width: auto;
+      border-right: 0;
+      border-radius: 2px 0 0 2px;
+    }
   }
 
   .widget-box > .widget-label {
@@ -86,6 +96,7 @@
 .beaker-fieldset {
   border: 1px solid #cfcfcf;
   padding: 10px;
+  font-family: $beakerxFont;
 
   legend {
     border-bottom: none;

@@ -66,8 +66,8 @@ export default class PropertiesWidget extends Widget {
 
   public onLoad(properties: IPropertiesJVMOptions) {
     this.clear();
-    for (let property of properties) {
-      this.addPropertyElement(property.name, property.value);
+    for (let property in properties) {
+      this.addPropertyElement(properties[property].name, properties[property].value);
     }
   }
 

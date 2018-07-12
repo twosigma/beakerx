@@ -93,7 +93,9 @@ export default class ImageCellRenderer extends CellRenderer {
       }
 
       if (selectColumnWidth(this.dataGrid.store.state, column) < width) {
-        column.setWidth(width);
+        column.dataGrid.dataGridResize.setSectionWidth("column", column, width);
+        column.dataGrid.dataGridResize.updateWidgetHeight();
+        column.dataGrid.dataGridResize.updateWidgetWidth();
       }
     });
   }

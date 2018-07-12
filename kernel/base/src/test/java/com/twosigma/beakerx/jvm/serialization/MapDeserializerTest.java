@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class MapDeserializerTest {
 
-  private String json = "{\"k1\":\"1\",\"k2\":\"true\"}";
+  private String json = "{\"k1\":\"1\",\"k2\":true}";
 
   @Test
   public void deserialize_resultObjectHasValues() throws Exception {

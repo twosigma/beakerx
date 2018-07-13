@@ -15,10 +15,14 @@
 from jupyter_client.kernelspec import KernelSpec
 from .environment import EnvironmentSettings
 
+default_jvm_params = [
+    '-Djava.awt.headless=true'
+]
 
 class BeakerXKernelSpec(KernelSpec):
     def __init__(self, **kw):
         super(BeakerXKernelSpec, self).__init__(**kw)
         if self.argv[0] == 'java':
             args = EnvironmentSettings.read_beakerx_env_settings()
+            args.extend(default_jvm_params)
             self.argv[1:1] = args

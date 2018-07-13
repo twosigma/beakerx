@@ -15,6 +15,8 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.twosigma.beakerx.message.Message;
+
 import java.util.List;
 
 /**
@@ -28,6 +30,12 @@ public class VBox extends Box {
   public VBox(List<Widget> children) {
     super(children);
     openComm();
+  }
+
+
+  public VBox(List<Widget> children, Message message) {
+    super(children, message);
+    openComm(message);
   }
 
   @Override

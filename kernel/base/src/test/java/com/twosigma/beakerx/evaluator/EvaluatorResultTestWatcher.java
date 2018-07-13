@@ -132,11 +132,26 @@ public class EvaluatorResultTestWatcher {
     return idleMessage;
   }
 
+  public static Optional<Message> waitForDisplayDataMessage(KernelTest kernelTest) throws InterruptedException {
+    int count = 0;
+    Optional<Message> sentMessage = getDisplayDataMessage(kernelTest);
+    while (!sentMessage.isPresent() && count < ATTEMPT) {
+      Thread.sleep(SLEEP_IN_MILLIS);
+      sentMessage = getDisplayDataMessage(kernelTest);
+      count++;
+    }
+    return sentMessage;
+  }
+
+  public static Optional<Message> getDisplayDataMessage(KernelTest kernelTest) {
+    List<Message> listMessagesByType = SearchMessages.getListMessagesByType(kernelTest.getPublishedMessages(), JupyterMessages.DISPLAY_DATA);
+    return listMessagesByType.stream().findFirst();
+  }
+
   public static Optional<Message> getStreamMessage(KernelTest kernelTest) {
     List<Message> listMessagesByType = SearchMessages.getListMessagesByType(kernelTest.getPublishedMessages(), JupyterMessages.STREAM);
     return listMessagesByType.stream().findFirst();
   }
-
 
   private static Optional<Message> getIdleMessage(List<Message> messages) {
     return messages.stream().

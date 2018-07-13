@@ -18,10 +18,19 @@ import {createSelector} from "reselect";
 import {DataModel} from "@phosphor/datagrid";
 import {
   selectAlignmentByType,
-  selectAlignmentForColumn, selectAlignmentForType, selectCellHighlighters,
+  selectAlignmentForColumn,
+  selectAlignmentForType,
+  selectCellHighlighters,
   selectColumnOrder,
-  selectColumnsFrozen, selectColumnsVisible, selectColumnTypes, selectHasIndex,
-  selectRawColumnNames, selectRendererForColumn, selectRendererForType
+  selectColumnsFrozen,
+  selectColumnsVisible,
+  selectColumnTypes,
+  selectHasIndex,
+  selectRawColumnNames,
+  selectRendererForColumn,
+  selectRendererForType,
+  selectStringFormatForColumn,
+  selectStringFormatForType
 } from "./model";
 import {getAlignmentByChar} from "../../column/columnAlignment";
 import {IColumnPosition} from "../../interface/IColumn";
@@ -190,4 +199,23 @@ export const selectColumnHighlighters = createSelector(
   (highlighters, columnName, highlighterType): IHihglighterState[] => highlighters.filter(
     highlighter => highlighter.colName === columnName && highlighter.type === highlighterType
   )
+);
+
+export const selectColumnFixedWidth: (state, columnName, typeName) => number|null = createSelector([
+    selectStringFormatForColumn,
+    selectStringFormatForType,
+    (state, columnName) => columnName,
+    (state, columnName, typeName) => typeName,
+  ],
+  (formatForColumns, formatForTypes, columnName, typeName) => {
+    if (formatForColumns[columnName] && formatForColumns[columnName].width) {
+      return formatForColumns[columnName].width;
+    }
+
+    if (formatForTypes[typeName] && formatForTypes[typeName].width) {
+      return formatForTypes[typeName].width;
+    }
+
+    return null;
+  }
 );

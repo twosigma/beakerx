@@ -15,9 +15,7 @@
  */
 package com.twosigma.beakerx.scala.kernel;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twosigma.beakerx.BeakerXJsonSerializer;
+import com.twosigma.beakerx.BaseBeakerXJsonSerializer;
 import com.twosigma.beakerx.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beakerx.scala.serializers.ScalaCollectionDeserializer;
@@ -28,53 +26,11 @@ import com.twosigma.beakerx.scala.serializers.ScalaMapSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaPrimitiveTypeListOfListSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaPrimitiveTypeMapSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaTableDeSerializer;
-import com.twosigma.beakerx.table.TableDisplayToJson;
 
-import java.io.IOException;
-import java.io.StringWriter;
-
-import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_ENUMS_USING_TO_STRING;
-
-public class ScalaBeakerXJsonSerializer implements BeakerXJsonSerializer {
-
-  private final ObjectMapper objectMapper;
-  private final BeakerObjectConverter serializer;
-
-  public ScalaBeakerXJsonSerializer() {
-    this.objectMapper = new ObjectMapper();
-    this.objectMapper.enable(WRITE_ENUMS_USING_TO_STRING);
-    this.objectMapper.registerModule(TableDisplayToJson.tableDisplayModule());
-    this.serializer = createSerializer();
-  }
+public class ScalaBeakerXJsonSerializer extends BaseBeakerXJsonSerializer {
 
   @Override
-  public String toJson(Object value) {
-    StringWriter sw = new StringWriter();
-    try {
-      JsonGenerator jgen = objectMapper.getFactory().createGenerator(sw);
-      boolean success = serializer.writeObject(value, jgen, true);
-      jgen.flush();
-      sw.flush();
-      if (success) {
-        return sw.toString();
-      } else {
-        return value.toString();
-      }
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  @Override
-  public Object fromJson(String json) {
-    try {
-      return objectMapper.readValue(json, Object.class);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private static BeakerObjectConverter createSerializer() {
+  protected BeakerObjectConverter createSerializer() {
     BasicObjectSerializer serializer = new BasicObjectSerializer();
     serializer.addfTypeSerializer(new ScalaCollectionSerializer(serializer));
     serializer.addfTypeSerializer(new ScalaMapSerializer(serializer));
@@ -86,5 +42,4 @@ public class ScalaBeakerXJsonSerializer implements BeakerXJsonSerializer {
     serializer.addfTypeDeserializer(new ScalaTableDeSerializer(serializer));
     return serializer;
   }
-
 }

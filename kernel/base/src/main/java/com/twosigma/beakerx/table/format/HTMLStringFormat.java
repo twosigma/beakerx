@@ -17,7 +17,20 @@ package com.twosigma.beakerx.table.format;
 
 public class HTMLStringFormat extends TableDisplayStringFormat {
 
+  private Integer width;
+
   public HTMLStringFormat() {
   }
 
+  public HTMLStringFormat(Integer width) {
+    this.width = width;
+  }
+
+  public Integer getWidth() {
+    return width;
+  }
+
+  public void setWidth(Integer width) {
+    this.width = width;
+  }
 }

@@ -29,6 +29,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -132,14 +134,16 @@ public class NamespaceClientTest {
 
   public static class AutotranslationServiceTestImpl implements AutotranslationService {
 
+    private ConcurrentMap<String, String> beakerx = new ConcurrentHashMap();
+
     @Override
     public String update(String name, String json) {
-      return null;
+      return beakerx.put(name, json);
     }
 
     @Override
     public String get(String name) {
-      return null;
+      return beakerx.get(name);
     }
 
     @Override

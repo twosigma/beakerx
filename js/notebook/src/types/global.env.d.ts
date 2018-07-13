@@ -31,11 +31,24 @@ interface MapConstructor {
 }
 
 declare var Map: MapConstructor;
+declare var CodeMirror: any;
+declare var Proxy: ProxyConstructor;
 
 declare interface NumberConstructor {
   isNaN: (number: number) => boolean,
   isFinite: (number: number) => boolean
 }
+
+type Proxy<T> = {
+  get(): T;
+  set(value: T): void;
+}
+
+interface ProxyConstructor {
+  revocable<T extends object>(target: T, handler: ProxyHandler<T>): { proxy: T; revoke: () => void; };
+  new <T extends object>(target: T, handler: ProxyHandler<T>): T;
+}
+
 
 declare interface Array<T> {
   from: (arrayLike: any[]) => any[]
@@ -43,7 +56,8 @@ declare interface Array<T> {
 
 declare interface Window {
   beakerx: any,
-  chrome?: any
+  chrome?: any,
+  require: any
 }
 
 interface GlobalEnvironment {

@@ -31,105 +31,15 @@ if (window.require) {
     }
   });
 }
+
 __webpack_public_path__ = document.querySelector('body').getAttribute('data-base-url') + 'nbextensions/beakerx/';
 
-require('./shared/style/beakerx.scss');
-require('./plot/bko-combinedplot.css');
-require('./plot/bko-plot.css');
-require('./extension/dataBrowser/dataBrowser.css');
-require('./extension/tableOfContents/toc.css');
+var extension = require('./extension/index').default;
 
-define([
-  'services/config',
-  'services/kernels/comm',
-  'base/js/utils',
-  'base/js/namespace',
-  'base/js/events',
-  'require',
-  'underscore',
-  './plot/plotApi',
-  'big.js',
-  './extension/UIOptionsHelper',
-  './extension/tableOfContents/index'
-], function (
-  configmod,
-  comm,
-  utils,
-  Jupyter,
-  events,
-  require,
-  _,
-  plotApi,
-  big,
-  UIOptionsHelper,
-  tocUtils
-) {
+define([], function () {
   "use strict";
 
-  window.Big = big;
-
-  var base_url = utils.get_body_data('baseUrl');
-  var config = new configmod.ConfigSection('notebook', {base_url: base_url});
-  var initCellUtils = require('./extension/initializationCells');
-  var GroovyMode = require('./extension/groovyModeExtension').GroovyMode;
-  var htmlOutput = require('./htmlOutput/htmlOutput').default;
-  var Autotranslation = require('./extension/autotranslation').Autotranslation;
-  var BeakerXKernel = require('./extension/kernel').BeakerXKernel;
-  var bkCoreManager = require('./shared/bkCoreManager').default;
-
-  var inNotebook = !Jupyter.NotebookList;
-  var mod_name = 'init_cell';
-  var log_prefix = '[' + mod_name + ']';
-  var options = { // updated from server's config & nb metadata
-    run_on_kernel_ready: true
-  };
-
-  UIOptionsHelper.registerFeature(base_url);
-
-  function callback_notebook_loaded() {
-    initCellUtils.enableInitializationCellsFeature(options);
-    tocUtils.toc_init();
-    BeakerXKernel.installHandler();
-  }
-
-  var load_ipython_extension = function () {
-
-    // assign Beaker methods to window
-    if (window) {
-      var plotApiList = plotApi.list();
-      var bkApp = bkCoreManager.getBkApp();
-      var bkObject = bkApp.getBeakerObject();
-      var beakerxInstance = { prefs: bkObject.beakerObj.prefs };
-
-      _.extend(beakerxInstance, plotApiList);
-      _.extend(beakerxInstance, htmlOutput);
-
-      if (!window.beakerx) {
-        window.beakerx = Autotranslation.proxify(beakerxInstance);
-      }
-    }
-
-    if (inNotebook) {
-      // setup things to run on loading config/notebook
-      Jupyter.notebook.config.loaded
-        .then(function update_options_from_config() {
-          $.extend(true, options, Jupyter.notebook.config.data[mod_name]);
-        }, function (reason) {
-          console.warn(log_prefix, 'error loading config:', reason);
-        })
-        .then(function () {
-          Jupyter.notebook._fully_loaded ?
-            callback_notebook_loaded() :
-            events.on('notebook_loaded.Notebook', callback_notebook_loaded);
-        }).catch(function (reason) {
-        console.error(log_prefix, 'unhandled error:', reason);
-      });
-
-      GroovyMode.extendWithLineComment(Jupyter, CodeMirror);
-    }
-  };
-
   return {
-    load_ipython_extension: load_ipython_extension
+    load_ipython_extension: extension.load_ipython_extension
   };
 });

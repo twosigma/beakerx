@@ -104,4 +104,36 @@ describe('General Autotranslation ', function () {
     });
   });
 
+  describe('%%clojure ', function(){
+    it("Should display beakerx.bar value after scala changes ", function(){
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /3.14, .*scala.*, .*value.*/);
+    });
+  });
+
+  describe('%%clojure change beakerx.bar value', function(){
+    it("Should display beakerx.bar value after clojure changes ", function(){
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /345, .*clojure.*, .*value.*/);
+    });
+  });
+
+  describe('Groovy kernel ', function(){
+    it("Should display beakerx.bar value after clojure changes", function(){
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /345, .*clojure.*, .*value.*/);
+    });
+  });
+
+  describe('%%java ', function(){
+    it("Should display beakerx.bar value after clojure changes ", function(){
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /345, .*clojure.*, .*value.*/);
+    });
+  });
+
 });

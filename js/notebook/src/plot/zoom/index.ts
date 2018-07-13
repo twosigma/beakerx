@@ -20,7 +20,6 @@ import * as moment from 'moment-timezone/builds/moment-timezone-with-data';
 import {enableZoomWheel} from "./helpers";
 import BoxZoom from "./BoxZoom";
 import EventDispatcher from "./EventDispatcher";
-import {PlotFocus} from "./focus";
 import {PlotScale} from "./scale";
 
 const plotUtils = require('../plotUtils');
@@ -53,7 +52,7 @@ export default class PlotZoom {
       .on("zoom", this.zooming)
       .on("end", this.zoomEnd);
 
-    this.scope.svg.on("dblclick", () => PlotFocus.reset(this.scope));
+    this.scope.svg.on("dblclick", () => this.scope.plotFocus.reset());
 
     const svgElement = this.scope.svg.node();
 
@@ -202,7 +201,7 @@ export default class PlotZoom {
 
     this.scope.calcMapping(true);
     this.scope.renderCursor({ offsetX: mx, offsetY: my });
-    this.scope.fixFocus(this.scope.focus);
+    this.scope.plotFocus.fix(this.scope.focus);
     this.scope.update();
   }
 
@@ -220,9 +219,9 @@ export default class PlotZoom {
     this.setLastTransform(d3trans);
 
     // for translating, moving the graph
-    PlotFocus.transformX(focus, transformX);
-    PlotFocus.transformY(focus, transformY);
-    PlotFocus.transformYRight(focus, transformY_r, transformY);
+    this.scope.plotFocus.transformX(focus, transformX);
+    this.scope.plotFocus.transformY(focus, transformY);
+    this.scope.plotFocus.transformYRight(focus, transformY_r, transformY);
 
     this.scope.jqsvg.css("cursor", "move");
   }

@@ -43,6 +43,7 @@ define([
 ) {
 
   var PlotZoom = require('./zoom/index').default;
+  var PlotFocus = require('./zoom/PlotFocus').default;
   var bkUtils = require('./../shared/bkUtils').default;
   var bkHelper = require('./../shared/bkHelper').default;
   var zoomHelpers = require('./zoom/helpers').default;
@@ -87,7 +88,6 @@ define([
     this.legendResetPosition = null;
     this.visibleItem = null;
     this.legendableItem = null;
-    this.defaultFocus = null;
     this.focus = null;
     this.rpipeGridlines = [];
     this.onKeyListeners = {}; //map: item.id -> listener function
@@ -105,6 +105,7 @@ define([
     this.plotDisplayView = null;
     this.contexteMenuEvent = null;
     this.plotZoom = new PlotZoom(this);
+    this.plotFocus = new PlotFocus(this);
   };
   
   PlotScope.prototype.setWidgetModel = function(plotDisplayModel) {
@@ -248,22 +249,6 @@ define([
 
       self.updateModelWidth();
     });
-
-    // self.$watch("model.getWidth()", function(newWidth) {
-    //   if (self.width == newWidth) { return; }
-    //   self.width = newWidth;
-    //   self.jqcontainer.css("width", newWidth );
-    //   self.jqsvg.css("width", newWidth );
-    //   self.calcMapping(false);
-    //   self.legendDone = false;
-    //   self.legendResetPosition = true;
-    //   self.update();
-    // });
-    // self.$watch('model.isShowOutput()', function(prev, next) {
-    //   if (prev !== next) {
-    //     self.update();
-    //   }
-    // });
   };
 
   PlotScope.prototype.onModelFucusUpdate = function(newFocus) {
@@ -307,11 +292,11 @@ define([
   };
 
   PlotScope.prototype.calcRange = function() {
-    var ret = plotUtils.getDefaultFocus(this.stdmodel);
+    var ret = PlotFocus.getDefault(this.stdmodel);
     this.visibleItem = ret.visibleItem;
     this.legendableItem = ret.legendableItem;
-    this.defaultFocus = ret.defaultFocus;
-    this.fixFocus(this.defaultFocus);
+    this.plotFocus.setDefault(ret.defaultFocus);
+    this.plotFocus.fix(this.plotFocus.defaultFocus);
   };
 
   PlotScope.prototype.calcGridlines = function() {
@@ -1545,24 +1530,6 @@ define([
     }
   };
 
-  PlotScope.prototype.fixFocus = function(focus) {
-    focus.xl = focus.xl < 0 ? 0 : focus.xl;
-    focus.xr = focus.xr > 1 ? 1 : focus.xr;
-    focus.yl = focus.yl < 0 ? 0 : focus.yl;
-    focus.yr = focus.yr > 1 ? 1 : focus.yr;
-    focus.yl_r = focus.yl_r < 0 ? 0 : focus.yl_r;
-    focus.yr_r = focus.yr_r > 1 ? 1 : focus.yr_r;
-    focus.xspan = focus.xr - focus.xl;
-    focus.yspan = focus.yr - focus.yl;
-    focus.yspan_r = focus.yr_r - focus.yl_r;
-
-    if (focus.xl > focus.xr || focus.yl > focus.yr || focus.yl_r > focus.yr_r) {
-      console.error("visible range specified does not match data range, " +
-                    "enforcing visible range");
-      _.extend(focus, this.defaultFocus);
-    }
-  };
-
   PlotScope.prototype.resetSvg = function() {
     var self = this;
     self.jqcontainer.find(".plot-constlabel").remove();
@@ -1808,7 +1775,7 @@ define([
 
     // init copies focus to defaultFocus, called only once
     if(_.isEmpty(self.focus)){
-      _.extend(self.focus, self.defaultFocus);
+      _.extend(self.focus, self.plotFocus.defaultFocus);
     }
 
     // init remove pipe
@@ -1873,7 +1840,7 @@ define([
 
     // init copies focus to defaultFocus, called only once
     if(_.isEmpty(self.focus)){
-      _.extend(self.focus, self.defaultFocus);
+      _.extend(self.focus, self.plotFocus.defaultFocus);
     }
 
     // init remove pipe

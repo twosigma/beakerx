@@ -20,3 +20,15 @@ export interface ZoomLevel {
   maxScaleX: number,
   maxScaleY: number
 }
+
+export interface Focus {
+  xl: any,
+  xr: any,
+  yl: number,
+  yr: number,
+  yl_r: number,
+  yr_r: number,
+  xspan?: number,
+  yspan?: number,
+  yspan_r?: number,
+}

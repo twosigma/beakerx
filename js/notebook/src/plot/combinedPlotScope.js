@@ -36,6 +36,7 @@ define([
   PlotScope
 ) {
   var bkUtils = require('./../shared/bkUtils').default;
+  var PlotFocus = require('./zoom/PlotFocus').default;
   var CombinedPlotScopeUtils = CombinedPlotScopeUtilsModule.default;
   
   function CombinedPlotScope(wrapperId) {
@@ -237,7 +238,7 @@ define([
     var plots = self.stdmodel.plots;
     for (var i = 0; i < plots.length; i++) {
       var plotmodel = plots[i]; // models are already standardized at this point
-      var ret = plotUtils.getDefaultFocus(plotmodel);
+      var ret = PlotFocus.getDefault(plotmodel);
       xl = Math.min(xl, ret.defaultFocus.xl);
       xr = Math.max(xr, ret.defaultFocus.xr);
     }

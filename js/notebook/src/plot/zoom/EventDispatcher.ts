@@ -14,29 +14,18 @@
  *  limitations under the License.
  */
 
-/// <reference types='d3'/>
-/// <reference path='../../types/index.d.ts'/>
+export default class EventDispatcher {
+  events: string[] = [];
 
-export function disableZoomWheel(scope: any): void {
-  scope.svg.on('wheel.zoom', null);
-  scope.jqcontainer.off('wheel.zoom');
-}
-
-export function enableZoomWheel(scope: any, d3: any): void {
-  if (!scope._defaultZoomWheelFn) {
-    return;
+  add(event: string): void {
+    this.events.push(event);
   }
 
-  scope.svg.on('wheel.zoom', scope._defaultZoomWheelFn);
-  scope.jqcontainer
-    .off('wheel.zoom')
-    .on('wheel.zoom', function(event) {
-      d3.event = event.originalEvent;
-      scope.svg.dispatch('wheel.zoom', scope._defaultZoomWheelFn);
-    });
-}
+  contains(event: string): boolean {
+    return this.events.indexOf(event) !== -1;
+  }
 
-export default {
-  disableZoomWheel,
-  enableZoomWheel
+  reset(): void {
+    this.events.length = 0;
+  }
 }

@@ -140,7 +140,7 @@ define([
           y: 10
         };
 
-        scope.locateBox = null;
+        scope.plotZoom.boxZoom.resetLocateBox();
         scope.cursor = {
           x: -1,
           y: -1

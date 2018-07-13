@@ -26,8 +26,7 @@ define([
   './plotFormatter',
   './plotFactory',
   './gradientlegend',
-  './chartExtender',
-  'moment-timezone/builds/moment-timezone-with-data.min'
+  './chartExtender'
 ], function(
   _,
   $,
@@ -40,17 +39,14 @@ define([
   plotFormatter,
   plotFactory,
   GradientLegend,
-  bkoChartExtender,
-  moment
+  bkoChartExtender
 ) {
 
+  var PlotZoom = require('./zoom/index').default;
   var bkUtils = require('./../shared/bkUtils').default;
   var bkHelper = require('./../shared/bkHelper').default;
   var zoomHelpers = require('./zoom/helpers').default;
-  var ZOOM_CONSTS = require('./zoom/consts').default;
   var PointShapeHelper = require('./std/PointShapeHelper.ts').default;
-  var CONTEXT_MENU_DEBOUNCE_TIME = 350;
-  var QUICK_ZOOM_DEBOUNCE_TIME = 50;
 
   function PlotScope(wrapperId) {
     this.wrapperId = wrapperId;
@@ -83,12 +79,9 @@ define([
     this.labelg = null;
     this.renderFixed = null;
     this.layout = {};
-    this.zoomLevel = {};
-    this.zoomObj = null;
     this.labelPadding = {};
     this.intervalStepHint = {};
     this.numIntervals = {};
-    this.locateBox = null;
     this.cursor = {};
     this.gridlineTickLength = null;
     this.legendResetPosition = null;
@@ -105,14 +98,13 @@ define([
     this.legendResetPosition = false;
     this.doNotLoadState = false;
     this.saveAsMenuContainer = null;
-    this.zoomEventsDispatchOrder = [];
 
     this.data2scrX = null;
     this.data2scrY = null;
     this.plotDisplayModel = null;
     this.plotDisplayView = null;
     this.contexteMenuEvent = null;
-    this.zoomStarted = null;
+    this.plotZoom = new PlotZoom(this);
   };
   
   PlotScope.prototype.setWidgetModel = function(plotDisplayModel) {
@@ -208,7 +200,6 @@ define([
       legendMargin : 10,
       legendBoxSize : 10
     };
-    this.zoomLevel = ZOOM_CONSTS.INITIAL_ZOOM_LEVEL;
     this.labelPadding = {
       x : 10,
       y : 10
@@ -226,7 +217,7 @@ define([
       x: parseInt(plotSize.width) / this.intervalStepHint.x,
       y: parseInt(plotSize.height) / this.intervalStepHint.y
     };
-    this.locateBox = null;
+    this.plotZoom.boxZoom.resetLocateBox();
     this.cursor = {
       x : -1,
       y : -1
@@ -1531,22 +1522,6 @@ define([
       .attr("width", W - this.layout.leftLayoutMargin - this.layout.rightLayoutMargin);
   };
 
-  PlotScope.prototype.getLocateBoxCoords = function() {
-    var self = this;
-    var p1 = self.mousep1, p2 = self.mousep2;
-    var xl = Math.min(p1.x, p2.x), xr = Math.max(p1.x, p2.x),
-      yl = Math.min(p1.y, p2.y), yr = Math.max(p1.y, p2.y);
-    if (xr === xl) { xr = xl + 1; }
-    if (yr === yl) { yr = yl + 1; }
-
-    return {
-      "x" : xl,
-      "y" : yl,
-      "w" : xr - xl,
-      "h" : yr - yl
-    };
-  };
-
   PlotScope.prototype.mouseDown = function() {
     var self = this;
     if (self.interactMode === "other") {
@@ -1570,14 +1545,6 @@ define([
     }
   };
 
-  PlotScope.prototype.shouldStartBoxZooming = function() {
-    return (
-      Math.abs(this.mousep1.x - this.mousep2.x) > 10
-      && Math.abs(this.mousep1.y - this.mousep2.y) > 10
-      && moment() - this.zoomStarted > QUICK_ZOOM_DEBOUNCE_TIME
-    );
-  };
-
   PlotScope.prototype.fixFocus = function(focus) {
     focus.xl = focus.xl < 0 ? 0 : focus.xl;
     focus.xr = focus.xr > 1 ? 1 : focus.xr;
@@ -1596,78 +1563,6 @@ define([
     }
   };
 
-  PlotScope.prototype.resetFocus = function() {
-    var self = this;
-    var svgNode = self.svg.node(),
-      mx = d3.mouse(svgNode)[0],
-      my = d3.mouse(svgNode)[1];
-
-    var t = d3.zoomIdentity.translate(0, 0).scale(1);
-    self.svg.call(self.zoomObj.transform, t);
-
-    var lMargin = self.layout.leftLayoutMargin,
-      bMargin = self.layout.bottomLayoutMargin;
-    var W = plotUtils.safeWidth(self.jqsvg),
-      H = plotUtils.safeHeight(self.jqsvg);
-    if (mx < lMargin && my < H - bMargin) {
-      _.extend(self.focus, _.pick(self.defaultFocus, "yl", "yr", "yspan", "yl_r", "yr_r", "yspan_r"));
-    } else if (my > H - bMargin && mx > lMargin) {
-      _.extend(self.focus, _.pick(self.defaultFocus, "xl", "xr", "xspan"));
-    } else {
-      _.extend(self.focus, self.defaultFocus);
-    }
-
-    self.fixFocus(self.focus);
-    self.calcMapping(true);
-    self.emitZoomLevelChange();
-    self.update();
-  };
-
-  PlotScope.prototype.locateFocus = function() {
-    var self = this;
-    var box = self.locateBox;
-    if (box == null) {
-      return;
-    }
-    var p1 = {
-      "x" : self.scr2dataXp(box.x),
-      "y" : self.scr2dataYp(box.y)
-    };
-    var p2 = {
-      "x" : self.scr2dataXp(box.x + box.w),
-      "y" : self.scr2dataYp(box.y + box.h)
-    };
-    p1.x = Math.max(0, p1.x);
-    p1.y = Math.max(0, p1.y);
-    p2.x = Math.min(1, p2.x);
-    p2.y = Math.min(1, p2.y);
-
-    var focus = self.focus, ofocus = {};
-    _.extend(ofocus, self.focus);
-    focus.xl = ofocus.xl + ofocus.xspan * p1.x;
-    focus.xr = ofocus.xl + ofocus.xspan * p2.x;
-    focus.yl = ofocus.yl + ofocus.yspan * p2.y;
-    focus.yr = ofocus.yl + ofocus.yspan * p1.y;
-    focus.yl_r = ofocus.yl_r + ofocus.yspan_r * p2.y;
-    focus.yr_r = ofocus.yl_r + ofocus.yspan_r * p1.y;
-    focus.xspan = focus.xr - focus.xl;
-    focus.yspan = focus.yr - focus.yl;
-    focus.yspan_r = focus.yr_r - focus.yl_r;
-
-
-    // Calculate zoom level
-    var W = plotUtils.safeWidth(self.jqsvg);
-    var H = plotUtils.safeHeight(self.jqsvg);
-    var zoomLevel = (self.lastTransK || 1) + ((W / box.w + H / box.h) / 2); // Calculate average zoom level
-    var transform = d3.zoomTransform(self.svg.node());
-
-    self.lastTransK = zoomLevel;
-    transform.k = zoomLevel;
-
-    self.calcMapping(true);
-    self.emitZoomLevelChange();
-  };
-
   PlotScope.prototype.resetSvg = function() {
     var self = this;
     self.jqcontainer.find(".plot-constlabel").remove();
@@ -1675,57 +1570,6 @@ define([
     self.rpipeGridlines = [];
     self.rpipeTexts = [];
     self.rpipeTicks = [];
-  };
-
-  PlotScope.prototype.initZoom = function() {
-    var self = this;
-    self.zoomObj
-      .on("start", function() {
-        return zoomHelpers.zoomStart(self, d3);
-      })
-      .on("zoom", function() {
-        return zoomHelpers.zooming(self, d3);
-      })
-      .on("end", function() {
-        return zoomHelpers.zoomEnd(self, d3);
-      });
-
-    self.svg.on("dblclick", function() {
-      return self.resetFocus();
-    });
-
-    function handleContextMenuEvent(event) {
-      var locateBox = self.getLocateBoxCoords();
-      var isDispatchedAsSecond = self.zoomEventsDispatchOrder.indexOf('zoomEnd') !== -1;
-
-      self.zoomEventsDispatchOrder.length = 0;
-
-      if (!isDispatchedAsSecond) {
-        self.contexteMenuEvent = event;
-        self.zoomEventsDispatchOrder.push('contextMenu');
-      }
-
-      if (!isDispatchedAsSecond || isDispatchedAsSecond && (locateBox.w > 1 || locateBox.h > 1)) {
-        event.stopPropagation();
-        event.preventDefault();
-      }
-    }
-
-    var svgElement = self.svg.node();
-
-    svgElement.removeEventListener('contextmenu', handleContextMenuEvent);
-    svgElement.addEventListener('contextmenu', handleContextMenuEvent);
-
-    // enable zoom events for mouse right click
-    var filterFn = function() {
-      return true;
-    };
-    self.zoomObj.filter(filterFn);
-
-    self.svg.call(self.zoomObj);
-
-    // disbale zoom events on double click
-    self.svg.on("dblclick.zoom", null);
   };
 
   PlotScope.prototype.mouseleaveClear = function() {
@@ -1894,15 +1738,6 @@ define([
     self.plotSize = {};
 
     _.extend(self.plotSize, self.stdmodel.plotSize);
-    // var savedstate = self.model.getDumpState();
-    // if (self.doNotLoadState !== true && savedstate !== undefined && savedstate.plotSize !== undefined) {
-    //   self.loadState(savedstate);
-    // } else {
-    //   if (self.setDumpState !== undefined) {
-    //     self.setDumpState(self.dumpState());
-    //   }
-    // }
-    // self.doNotLoadState = false;
 
     // create layout elements
     self.initLayout();
@@ -1925,9 +1760,6 @@ define([
         self.width = ui.size.width;
         self.height = ui.size.height;
         _.extend(self.plotSize, ui.size);
-        // if (self.setDumpState !== undefined) {
-        //   self.setDumpState(self.dumpState());
-        // }
 
         self.jqsvg.css({"width": self.width, "height": self.height});
         self.jqplottitle.css({"width": self.width });
@@ -1951,9 +1783,8 @@ define([
     };
 
     self.resetSvg();
-    self.zoomObj = d3.zoom();
+    self.plotZoom.initZoomObject();
 
-    // set zoom object
     self.svg
       .on("mousedown", function() {
         self.jqcontainer.addClass('bko-focused');
@@ -1968,7 +1799,7 @@ define([
     }).mouseleave(function(e) {
       return self.mouseleaveClear(e);
     });
-    self.initZoom();
+    self.plotZoom.init();
     self._defaultZoomWheelFn = self.svg.on('wheel.zoom');
     zoomHelpers.disableZoomWheel(self);
 
@@ -2076,7 +1907,7 @@ define([
     plotUtils.plotTicks(self); // redraw
 
     plotTip.renderTips(self);
-    zoomHelpers.renderLocateBox(self); // redraw
+    self.plotZoom.boxZoom.renderLocateBox(); // redraw
     self.renderLegends(); // redraw
     self.updateMargin(); //update plot margins
 

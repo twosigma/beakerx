@@ -14,7 +14,39 @@
  *  limitations under the License.
  */
 
+import * as d3 from "d3";
+import * as _ from "underscore";
+
+const plotUtils = require('../plotUtils');
+
 export namespace PlotFocus {
+
+  export function reset(scope: any) {
+    const svgNode = scope.svg.node();
+    const mx = d3.mouse(svgNode)[0];
+    const my = d3.mouse(svgNode)[1];
+
+    const t = d3.zoomIdentity.translate(0, 0).scale(1);
+    scope.svg.call(scope.plotZoom.zoomObj.transform, t);
+
+    const lMargin = scope.layout.leftLayoutMargin;
+    const bMargin = scope.layout.bottomLayoutMargin;
+    const H = plotUtils.safeHeight(scope.jqsvg);
+
+    if (mx < lMargin && my < H - bMargin) {
+      _.extend(scope.focus, _.pick(scope.defaultFocus, "yl", "yr", "yspan", "yl_r", "yr_r", "yspan_r"));
+    } else if (my > H - bMargin && mx > lMargin) {
+      _.extend(scope.focus, _.pick(scope.defaultFocus, "xl", "xr", "xspan"));
+    } else {
+      _.extend(scope.focus, scope.defaultFocus);
+    }
+
+    scope.fixFocus(scope.focus);
+    scope.calcMapping(true);
+    scope.emitZoomLevelChange();
+    scope.update();
+  }
+
   export function transformX(focus, value) {
     transform(focus, value, 'xl', 'xr', 'xspan');
   }

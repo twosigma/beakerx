@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+import {INITIAL_ZOOM_LEVEL} from "./consts";
+
 const plotUtils = require('../plotUtils');
 
 export namespace PlotScale {
@@ -62,7 +64,7 @@ export namespace PlotScale {
 
   function scaleYAxis(scope, mouseY, zoomRate, l, r, span) {
     const focus = scope.focus;
-    const level = scope.zoomLevel;
+    const level = INITIAL_ZOOM_LEVEL;
     const yMiddle = focus[l] + scope.scr2dataYp_r(mouseY) * focus[span];
     const newYl = yMiddle - zoomRate * (yMiddle - focus[l]);
     const newYr = yMiddle + zoomRate * (focus[r] - yMiddle);
@@ -87,7 +89,7 @@ export namespace PlotScale {
 
   export function scaleX(scope, mouseX, zoomRate) {
     let focus = scope.focus;
-    let level = scope.zoomLevel;
+    let level = INITIAL_ZOOM_LEVEL;
 
     if (mouseX < scope.layout.leftLayoutMargin) {
       return;

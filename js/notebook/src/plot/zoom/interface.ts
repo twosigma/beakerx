@@ -14,15 +14,9 @@
  *  limitations under the License.
  */
 
-import {ZoomLevel} from "./interface";
-
-export const INITIAL_ZOOM_LEVEL: ZoomLevel = {
-  minSpanX : 1E-8,
-  minSpanY : 1E-8,
-  maxScaleX : 1,
-  maxScaleY : 1
-};
-
-export default {
-  INITIAL_ZOOM_LEVEL
+export interface ZoomLevel {
+  minSpanX: number,
+  minSpanY: number,
+  maxScaleX: number,
+  maxScaleY: number
 }

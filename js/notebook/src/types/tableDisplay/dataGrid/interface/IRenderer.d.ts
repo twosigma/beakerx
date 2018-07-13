@@ -1,5 +1,5 @@
 export declare enum RENDERER_TYPE {
-    DataBars = "DataBars",
+    DataBars = "DataBars"
 }
 export default interface IRenderer {
     type: RENDERER_TYPE;

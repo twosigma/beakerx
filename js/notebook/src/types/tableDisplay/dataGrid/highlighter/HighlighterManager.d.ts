@@ -19,5 +19,5 @@ export default class HighlighterManager {
     toggleColumnHighlighter(column: any, highlighterType: HIGHLIGHTER_TYPE): void;
     removeHighlighters(): void;
     getCellBackground(config: CellRenderer.ICellConfig): string;
-    private getHighlighterKey(column, highlighterType);
+    private getHighlighterKey;
 }

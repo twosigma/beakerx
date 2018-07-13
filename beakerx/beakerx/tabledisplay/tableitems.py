@@ -57,20 +57,26 @@ class DataBarsRenderer:
 
 class DecimalStringFormat:
     type = "decimal"
-    minDecimals = 4
-    maxDecimals = 4
 
-    def __init__(self, min=4, max=4):
-        self.minDecimals = min
-        self.maxDecimals = max
+    def __init__(self, **kwargs):
+        self.minDecimals = kwargs.get('min', 4)
+        self.maxDecimals = kwargs.get('max', 4)
 
 
 class ImageFormat:
     type = "image"
 
+    def __init__(self, **kwargs):
+        if 'width' in kwargs:
+            self.width = kwargs.get('width')
+
 
 class HTMLFormat:
     type = "html"
+
+    def __init__(self, **kwargs):
+        if 'width' in kwargs:
+            self.width = kwargs.get('width')
 
 
 class HighlightStyle(Enum):
@@ -80,6 +86,7 @@ class HighlightStyle(Enum):
 
 class HeatmapHighlighter:
     type = "HeatmapHighlighter"
+
     def __init__(self, colName, style, minVal, maxVal, minColor, maxColor):
         self.colName = colName
         self.style = style.name
@@ -98,16 +105,16 @@ class TableDisplayCellRenderer:
 class TableDisplayStringFormat:
 
     @staticmethod
-    def getDecimalFormat(min, max):
-        return DecimalStringFormat(min, max)
+    def getDecimalFormat(**kwargs):
+        return DecimalStringFormat(**kwargs)
 
     @staticmethod
-    def getHTMLFormat():
-        return HTMLFormat()
+    def getHTMLFormat(**kwargs):
+        return HTMLFormat(**kwargs)
 
     @staticmethod
-    def getImageFormat():
-        return ImageFormat()
+    def getImageFormat(**kwargs):
+        return ImageFormat(**kwargs)
 
 class TableDisplayCellHighlighter:
     FULL_ROW = HighlightStyle.FULL_ROW

@@ -20,13 +20,12 @@ export default abstract class BeakerXCellRenderer extends TextRenderer {
     font: CellRenderer.ConfigOption<string>;
     textColor: CellRenderer.ConfigOption<string>;
     constructor(dataGrid: BeakerXDataGrid, options?: TextRenderer.IOptions);
-    abstract drawText(gc: GraphicsContext, config: CellRenderer.ICellConfig): void;
     drawBackground(gc: GraphicsContext, config: CellRenderer.ICellConfig): void;
     drawTextUnderline(gc: GraphicsContext, textConfig: any, config: any): void;
     getBackgroundColor(config: CellRenderer.ICellConfig): string;
     getHorizontalAlignment(config: CellRenderer.ICellConfig): string;
     getFormat(config: CellRenderer.ICellConfig): any;
-    getFont({region}: {
+    getFont({ region }: {
         region: any;
     }): string;
     getTextColor(config: any): string;

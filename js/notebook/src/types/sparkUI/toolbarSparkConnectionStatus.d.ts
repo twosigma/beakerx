@@ -9,6 +9,6 @@ export declare class ToolbarSparkConnectionStatus {
     clear(): void;
     propagateToolbarWidget(): void;
     append(): void;
-    private handleToolbarSparkClick(event);
-    private appendToolbarSparkStats();
+    private handleToolbarSparkClick;
+    private appendToolbarSparkStats;
 }

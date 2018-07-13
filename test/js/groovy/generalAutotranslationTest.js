@@ -136,4 +136,20 @@ describe('General Autotranslation ', function () {
     });
   });
 
+  describe('%%java change beakerx.bar value', function(){
+    it("Should display beakerx.bar value after java changes ", function(){
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /10, .*java.*, .*value.*/);
+    });
+  });
+
+  describe('Groovy kernel ', function(){
+    it("Should display beakerx.bar value after java changes", function(){
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /10, .*java.*, .*value.*/);
+    });
+  });
+
 });

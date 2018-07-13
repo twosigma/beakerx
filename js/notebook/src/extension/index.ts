@@ -18,48 +18,30 @@
 // It contains some requirejs configuration and the `load_ipython_extension`
 // which is required for any notebook extension.
 
-/// <reference path='./types/index.d.ts'/>
+/// <reference path='../types/index.d.ts'/>
 
-"use strict";
+import {extendHighlightModes, extendWithLineComment} from "./codeEditor";
+import {registerFeature} from './UIOptionsHelper';
+import {enableInitializationCellsFeature} from './initializationCells';
+import {Autotranslation} from './autotranslation';
+import {BeakerXKernel} from './kernel';
+import {displayHTML} from '../htmlOutput/htmlOutput';
+import bkCoreManager from '../shared/bkCoreManager';
 
-// Configure requirejs
-if (window.require) {
-  window.require.config({
-    map: {
-      "*": {
-        "beakerx": "nbextensions/beakerx/index",
-        "jupyter-js-widgets": "nbextensions/jupyter-js-widgets/extension",
-        "@jupyter-widgets/base": "nbextensions/jupyter-js-widgets/extension",
-        "@jupyter-widgets/controls": "nbextensions/jupyter-js-widgets/extension"
-      }
-    }
-  });
-}
-
-__webpack_public_path__ = `${document.querySelector('body').getAttribute('data-base-url')}nbextensions/beakerx/`;
-
-import {registerFeature} from './extension/UIOptionsHelper';
-import {enableInitializationCellsFeature} from './extension/initializationCells';
-import {GroovyMode} from './extension/groovyModeExtension';
-import {Autotranslation} from './extension/autotranslation';
-import {BeakerXKernel} from './extension/kernel';
-import {displayHTML as htmlOutput} from './htmlOutput/htmlOutput';
-import bkCoreManager from './shared/bkCoreManager';
-
-import './shared/style/beakerx.scss';
-import './plot/bko-combinedplot.css';
-import './plot/bko-plot.css';
-import './extension/dataBrowser/dataBrowser.css';
-import './extension/tableOfContents/toc.css';
+import '../shared/style/beakerx.scss';
+import '../plot/bko-combinedplot.css';
+import '../plot/bko-plot.css';
+import './dataBrowser/dataBrowser.css';
+import './tableOfContents/toc.css';
 
 const configmod = require('services/config');
 const comm = require('services/kernels/comm');
 const utils = require('base/js/utils');
 const Jupyter = require('base/js/namespace');
 const events = require('base/js/events');
-const plotApi = require('./plot/plotApi');
+const plotApi = require('../plot/plotApi');
 const big = require('big.js');
-const tocUtils = require('./extension/tableOfContents/index');
+const tocUtils = require('./tableOfContents/index');
 
 window['Big'] = big;
 
@@ -90,7 +72,7 @@ function extendWindowObject() {
   const bkObject = bkApp.getBeakerObject();
   const beakerxInstance = {
     ...plotApiList,
-    ...htmlOutput,
+    displayHTML,
     prefs: bkObject.beakerObj.prefs
   };
 
@@ -116,14 +98,15 @@ function setupNotebook() {
     })
     .catch((reason) => { console.error(log_prefix, 'unhandled error:', reason); });
 
-  GroovyMode.extendWithLineComment(Jupyter, CodeMirror);
+  extendWithLineComment(Jupyter, CodeMirror);
+  extendHighlightModes(Jupyter);
 }
 
-function load_ipython_extension() {
+export const load_ipython_extension = () => {
   extendWindowObject();
   setupNotebook();
-}
+};
 
 export default {
   load_ipython_extension
-};
+}

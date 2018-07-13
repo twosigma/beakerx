@@ -9,11 +9,11 @@ export default class CellFocusManager {
     setFocusedCell(cellData: ICellData | null): void;
     setFocusedCellByNavigationKey(keyCode: number): void;
     getFocussedCellBackground(config: CellRenderer.ICellConfig): string;
-    private setRightFocusedCell();
-    private setLeftFocusedCell();
-    private setUpFocusedCell(moveBy?);
-    private setDownFocusedCell(moveBy?);
-    private setPageUpFocusedCell();
-    private setPageDownFocusedCell();
-    private scrollIfNeeded(direction);
+    private setRightFocusedCell;
+    private setLeftFocusedCell;
+    private setUpFocusedCell;
+    private setDownFocusedCell;
+    private setPageUpFocusedCell;
+    private setPageDownFocusedCell;
+    private scrollIfNeeded;
 }

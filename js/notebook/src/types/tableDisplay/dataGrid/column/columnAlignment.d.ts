@@ -15,5 +15,5 @@ export declare const ALIGNMENTS_BY_CHAR: {
     'R': "right";
     'L': "left";
 };
-export declare const getAlignmentByType: (type: number) => "left" | "right" | "center";
-export declare const getAlignmentByChar: (char: string) => "left" | "right" | "center";
+export declare const getAlignmentByType: (type: number) => import("@phosphor/widgets/lib/layout").Layout.HorizontalAlignment;
+export declare const getAlignmentByChar: (char: string) => import("@phosphor/widgets/lib/layout").Layout.HorizontalAlignment;

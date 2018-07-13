@@ -1,3 +1,4 @@
+/// <reference path="../../../index.d.ts" />
 import ColumnMenu from "../headerMenu/ColumnMenu";
 import IndexMenu from "../headerMenu/IndexMenu";
 import { BeakerXDataGrid } from "../BeakerXDataGrid";
@@ -37,23 +38,23 @@ export default class DataGridColumn {
     resetFilter(): void;
     connectToColumnsChanged(): void;
     connectToCellHovered(): void;
-    handleHeaderCellHovered(sender: BeakerXDataGrid, {data}: {
+    handleHeaderCellHovered(sender: BeakerXDataGrid, { data }: {
         data: any;
     }): void;
-    getAlignment(): any;
+    getAlignment(): import("@phosphor/widgets/lib/layout").Layout.HorizontalAlignment;
     setAlignment(horizontalAlignment: TextRenderer.HorizontalAlignment): void;
     resetAlignment(): void;
     setWidth(width: number): void;
-    getState(): any;
+    getState(): import("../interface/IColumn").IColumnState;
     getVisible(): boolean;
-    getDataType(): any;
-    getSortOrder(): any;
-    getFilter(): any;
-    getKeepTrigger(): any;
+    getDataType(): ALL_TYPES;
+    getSortOrder(): SORT_ORDER;
+    getFilter(): string;
+    getKeepTrigger(): boolean;
     getDataTypeName(): string;
-    getDisplayType(): any;
+    getDisplayType(): string | ALL_TYPES;
     getFormatForTimes(): any;
-    getPosition(): any;
+    getPosition(): import("../interface/IColumn").IColumnPosition;
     getRenderer(): any;
     getHighlighter(highlighterType: HIGHLIGHTER_TYPE): Highlighter[];
     toggleHighlighter(highlighterType: HIGHLIGHTER_TYPE): void;
@@ -70,9 +71,9 @@ export default class DataGridColumn {
     isFrozen(): boolean;
     toggleColumnFrozen(): void;
     recalculateLongestStringValue(displayType: ALL_TYPES | string): void;
-    private resizeHTMLRows(valuesIterator);
-    private updateColumnFilter(filter);
-    private toggleVisibility(value);
-    private onColumnsChanged(sender, args);
-    private setColumnSortOrder(order);
+    private resizeHTMLRows;
+    private updateColumnFilter;
+    private toggleVisibility;
+    private onColumnsChanged;
+    private setColumnSortOrder;
 }

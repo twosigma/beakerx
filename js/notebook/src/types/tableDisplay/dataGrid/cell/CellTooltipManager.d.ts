@@ -10,11 +10,11 @@ export default class CellTooltipManager {
     constructor(dataGrid: BeakerXDataGrid);
     destroy(): void;
     hideTooltips(): void;
-    handleCellHovered(sender: BeakerXDataGrid, {data}: {
+    handleCellHovered(sender: BeakerXDataGrid, { data }: {
         data: any;
     }): void;
-    private shouldShowTooltip(data);
-    private shouldShowBodyTooltip(data);
-    private showTooltip(data);
-    private getTooltipText(data);
+    private shouldShowTooltip;
+    private shouldShowBodyTooltip;
+    private showTooltip;
+    private getTooltipText;
 }

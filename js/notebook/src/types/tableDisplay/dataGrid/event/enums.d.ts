@@ -19,5 +19,5 @@ export declare enum KEYBOARD_KEYS {
     Digit8 = 56,
     Digit9 = 57,
     Escape = 27,
-    Enter = 13,
+    Enter = 13
 }

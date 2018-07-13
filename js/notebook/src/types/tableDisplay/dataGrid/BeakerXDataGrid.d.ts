@@ -63,7 +63,7 @@ export declare class BeakerXDataGrid extends DataGrid {
     onAfterAttach(msg: any): void;
     messageHook(handler: any, msg: any): boolean;
     colorizeColumnBorder(data: ICellData, color: string): void;
-    private addHighlighterManager();
-    private addCellRenderers();
-    private handleStateChanged();
+    private addHighlighterManager;
+    private addCellRenderers;
+    private handleStateChanged;
 }

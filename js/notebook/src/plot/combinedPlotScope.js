@@ -45,6 +45,7 @@ define([
     this.childScopeNo = 1;
     this.scopes = [];
     this.saveAsMenuContainer = null;
+    this.plotFocus = new PlotFocus(this);
 
     this.model = {
       model: {},
@@ -76,7 +77,7 @@ define([
 
   CombinedPlotScope.prototype.prepareSavedState = function(state) {
     var self = this;
-    state.focus = self.calcRange();
+    state.plotFocus.focus = self.calcRange();
     self.width = self.stdmodel.plotSize.width;
   };
 
@@ -118,11 +119,11 @@ define([
         resetShareMenuItems : function() {
         },
         getFocus : function() {
-          return self.focus;
+          return self.plotFocus.focus;
         },
         updateFocus : function(focus) {
-          self.focus = {};
-          _.extend(self.focus, focus);
+          self.plotFocus.focus = {};
+          _.extend(self.plotFocus.focus, focus);
           // self.$apply();
           this.setDumpState(self.dumpState());
 
@@ -251,7 +252,7 @@ define([
   CombinedPlotScope.prototype.dumpState = function() {
     var self = this;
     var ret = { };
-    ret.focus = self.focus;
+    ret.focus = self.plotFocus.focus;
     ret.width = self.width;
     ret.subplots = [];
     for (var i = 0; i < self.models.length; i++) {
@@ -295,9 +296,9 @@ define([
           self.models[i].state = savedstate.subplots[i];
         }
         self.width = savedstate.width;
-        self.focus = savedstate.focus;
+        self.plotFocus.focus = savedstate.focus;
       } else if (self.models !== undefined) {
-        self.focus = self.calcRange();
+        self.plotFocus.focus = self.calcRange();
         for (var i = 0; i < self.models.length; i++) {
           self.models[i].state = { };
         }
@@ -397,7 +398,7 @@ define([
 
     this.scopes.forEach(function(scope) {
       if (updateType === 'focus') {
-        scope.onModelFucusUpdate(self.focus);
+        scope.onModelFucusUpdate(self.plotFocus.focus);
       } else if (updateType === 'width') {
         scope.updateModelWidth(self.width);
       }

@@ -20,7 +20,7 @@ const plotUtils = require('../plotUtils');
 
 export namespace PlotScale {
   export function scaleBothAxes(scope, mouseX, mouseY): boolean {
-    const focus = scope.focus;
+    const focus = scope.plotFocus.focus;
     const data = scope.stdmodel.data;
 
     if (
@@ -63,7 +63,7 @@ export namespace PlotScale {
   }
 
   function scaleYAxis(scope, mouseY, zoomRate, l, r, span) {
-    const focus = scope.focus;
+    const focus = scope.plotFocus.focus;
     const level = INITIAL_ZOOM_LEVEL;
     const yMiddle = focus[l] + scope.scr2dataYp_r(mouseY) * focus[span];
     const newYl = yMiddle - zoomRate * (yMiddle - focus[l]);
@@ -88,7 +88,7 @@ export namespace PlotScale {
   }
 
   export function scaleX(scope, mouseX, zoomRate) {
-    let focus = scope.focus;
+    let focus = scope.plotFocus.focus;
     let level = INITIAL_ZOOM_LEVEL;
 
     if (mouseX < scope.layout.leftLayoutMargin) {

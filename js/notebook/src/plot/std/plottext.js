@@ -93,13 +93,13 @@ define([
 
   PlotText.prototype.filter = function(scope) {
     var eles = this.elements;
-    var l = plotUtils.upper_bound(eles, "x", scope.focus.xl) + 1,
-      r = plotUtils.upper_bound(eles, "x", scope.focus.xr);
+    var l = plotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xl) + 1,
+      r = plotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xr);
 
     l = Math.max(l, 0);
     r = Math.min(r, eles.length - 1);
 
-    if (l > r || l == r && eles[l].x < scope.focus.xl) {
+    if (l > r || l == r && eles[l].x < scope.plotFocus.focus.xl) {
       // nothing visible, or all elements are to the left of the svg, vlength = 0
       l = 0;
       r = -1;
@@ -137,7 +137,7 @@ define([
   };
 
   PlotText.prototype.prepare = function(scope) {
-    var focus = scope.focus;
+    var focus = scope.plotFocus.focus;
     var eles = this.elements,
       eleprops = this.elementProps;
     var mapX = scope.data2scrXi,

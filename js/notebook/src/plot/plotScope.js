@@ -88,7 +88,6 @@ define([
     this.legendResetPosition = null;
     this.visibleItem = null;
     this.legendableItem = null;
-    this.focus = null;
     this.rpipeGridlines = [];
     this.onKeyListeners = {}; //map: item.id -> listener function
     this.hasLodItem = false;
@@ -253,9 +252,9 @@ define([
 
   PlotScope.prototype.onModelFucusUpdate = function(newFocus) {
     if (newFocus === null) { return; }
-    this.focus.xl = newFocus.xl;
-    this.focus.xr = newFocus.xr;
-    this.focus.xspan = newFocus.xr - newFocus.xl;
+    this.plotFocus.focus.xl = newFocus.xl;
+    this.plotFocus.focus.xr = newFocus.xr;
+    this.plotFocus.focus.xspan = newFocus.xr - newFocus.xl;
     this.calcMapping(false);
     this.update();
   };
@@ -301,7 +300,7 @@ define([
 
   PlotScope.prototype.calcGridlines = function() {
     // prepare the gridlines
-    var focus = this.focus, model = this.stdmodel;
+    var focus = this.plotFocus.focus, model = this.stdmodel;
     model.xAxis.setGridlines(focus.xl,
       focus.xr,
       this.numIntervals.x,
@@ -322,7 +321,7 @@ define([
   };
 
   PlotScope.prototype.renderGridlines = function() {
-    var focus = this.focus, model = this.stdmodel;
+    var focus = this.plotFocus.focus, model = this.stdmodel;
     var mapX = this.data2scrX, mapY = this.data2scrY;
     var mapY_r = this.data2scrY_r;
 
@@ -598,7 +597,7 @@ define([
         labels = model.xAxis.getGridlineLabels();
       for (var i = 0; i < labels.length; i++) {
         var x = mapX(lines[i]);
-        var y = mapY(this.focus.yl) + this.labelPadding.y;
+        var y = mapY(this.plotFocus.focus.yl) + this.labelPadding.y;
         var rpipeText = {
           "id": "label_x_" + i,
           "class": "plot-label plot-label-x",
@@ -633,7 +632,7 @@ define([
       lines = model.yAxis.getGridlines();
       labels = model.yAxis.getGridlineLabels();
       for (var i = 0; i < labels.length; i++) {
-        var x = mapX(this.focus.xl) - this.labelPadding.x;
+        var x = mapX(this.plotFocus.focus.xl) - this.labelPadding.x;
         var y = mapY(lines[i]);
 
         var rpipeText = {
@@ -665,7 +664,7 @@ define([
           "id" : "label_yr_" + i,
           "class" : "plot-label",
           "text" : labels[i],
-          "x" : mapX(this.focus.xr) + this.labelPadding.x,
+          "x" : mapX(this.plotFocus.focus.xr) + this.labelPadding.x,
           "y" : mapY_r(y),
           "dominant-baseline" : "central"
         });
@@ -708,7 +707,7 @@ define([
   PlotScope.prototype.renderGridlineTicks = function() {
     var tickLength = this.gridlineTickLength;
     var mapX = this.data2scrX, mapY = this.data2scrY, mapY_r = this.data2scrY_r;
-    var focus = this.focus;
+    var focus = this.plotFocus.focus;
     var model = this.stdmodel;
     if (model.xAxis.showGridlineLabels !== false) {
       var lines = model.xAxis.getGridlines(),
@@ -1548,7 +1547,7 @@ define([
   PlotScope.prototype.calcMapping = function(emitFocusUpdate) {
     var self = this;
     // called every time after the focus is changed
-    var focus = self.focus;
+    var focus = self.plotFocus.focus;
     var lMargin = self.layout.leftLayoutMargin,
       bMargin = self.layout.bottomLayoutMargin,
       tMargin = self.layout.topLayoutMargin,
@@ -1695,7 +1694,7 @@ define([
     self.initFlags();
 
     // see if previous state can be applied
-    self.focus = {};
+    self.plotFocus.focus = {};
 
     if (!self.model.getCellModel().tips) {
       self.model.getCellModel().tips = {};
@@ -1774,8 +1773,8 @@ define([
 
 
     // init copies focus to defaultFocus, called only once
-    if(_.isEmpty(self.focus)){
-      _.extend(self.focus, self.plotFocus.defaultFocus);
+    if(_.isEmpty(self.plotFocus.focus)){
+      _.extend(self.plotFocus.focus, self.plotFocus.defaultFocus);
     }
 
     // init remove pipe
@@ -1819,7 +1818,7 @@ define([
     self.initFlags();
 
     // see if previous state can be applied
-    self.focus = {};
+    self.plotFocus.focus = {};
 
     if (!self.model.getCellModel().tips) {
       self.model.getCellModel().tips = {};
@@ -1839,8 +1838,8 @@ define([
 
 
     // init copies focus to defaultFocus, called only once
-    if(_.isEmpty(self.focus)){
-      _.extend(self.focus, self.plotFocus.defaultFocus);
+    if(_.isEmpty(self.plotFocus.focus)){
+      _.extend(self.plotFocus.focus, self.plotFocus.defaultFocus);
     }
 
     // init remove pipe

@@ -29,6 +29,7 @@ export default class PlotFocus {
   constructor(scope: any) {
     this.scope = scope;
     this.defaultFocus = null;
+    this.focus = null;
   }
 
   setDefault(focus: Focus) {
@@ -150,14 +151,14 @@ export default class PlotFocus {
     const H = plotUtils.safeHeight(this.scope.jqsvg);
 
     if (mx < lMargin && my < H - bMargin) {
-      _.extend(this.scope.focus, _.pick(this.defaultFocus, "yl", "yr", "yspan", "yl_r", "yr_r", "yspan_r"));
+      _.extend(this.focus, _.pick(this.defaultFocus, "yl", "yr", "yspan", "yl_r", "yr_r", "yspan_r"));
     } else if (my > H - bMargin && mx > lMargin) {
-      _.extend(this.scope.focus, _.pick(this.defaultFocus, "xl", "xr", "xspan"));
+      _.extend(this.focus, _.pick(this.defaultFocus, "xl", "xr", "xspan"));
     } else {
-      _.extend(this.scope.focus, this.defaultFocus);
+      _.extend(this.focus, this.defaultFocus);
     }
 
-    this.fix(this.scope.focus);
+    this.fix(this.focus);
     this.scope.calcMapping(true);
     this.scope.emitZoomLevelChange();
     this.scope.update();

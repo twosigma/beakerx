@@ -184,7 +184,7 @@ export default class PlotZoom {
     const svgNode = this.scope.svg.node();
     const mx = d3.mouse(svgNode)[0];
     const my = d3.mouse(svgNode)[1];
-    const focus = this.scope.focus;
+    const focus = this.scope.plotFocus.focus;
     const ZOOM_TICK = 0.1;
     const zoomDirection = Math.sign(this.scope.lastTransK - d3trans.k);
     const zoomRate =  Math.abs(zoomDirection + ZOOM_TICK);
@@ -201,7 +201,7 @@ export default class PlotZoom {
 
     this.scope.calcMapping(true);
     this.scope.renderCursor({ offsetX: mx, offsetY: my });
-    this.scope.plotFocus.fix(this.scope.focus);
+    this.scope.plotFocus.fix(this.scope.plotFocus.focus);
     this.scope.update();
   }
 

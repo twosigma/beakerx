@@ -51,7 +51,7 @@ export class DataGridResize {
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.fillEmptySpaceResizeFn = this.fillEmptySpaceResizeFn.bind(this);
-    this.fitVieport = throttle<void, void>(this.fitVieport, 100, this);
+    this.fitVieport = this.fitVieport.bind(this);
 
     this.installMessageHook();
   }

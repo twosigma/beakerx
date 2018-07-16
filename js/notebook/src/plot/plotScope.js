@@ -252,9 +252,16 @@ define([
 
   PlotScope.prototype.onModelFucusUpdate = function(newFocus) {
     if (newFocus === null) { return; }
-    this.plotFocus.focus.xl = newFocus.xl;
-    this.plotFocus.focus.xr = newFocus.xr;
-    this.plotFocus.focus.xspan = newFocus.xr - newFocus.xl;
+
+    this.plotFocus.setFocus(
+      {
+        xl: newFocus.xl,
+        xr: newFocus.xr,
+        xspan: newFocus.xspan,
+      },
+      this.plotFocus.focus
+    );
+
     this.calcMapping(false);
     this.update();
   };
@@ -300,7 +307,7 @@ define([
 
   PlotScope.prototype.calcGridlines = function() {
     // prepare the gridlines
-    var focus = this.plotFocus.focus, model = this.stdmodel;
+    var focus = this.plotFocus.getFocus(), model = this.stdmodel;
     model.xAxis.setGridlines(focus.xl,
       focus.xr,
       this.numIntervals.x,
@@ -321,7 +328,7 @@ define([
   };
 
   PlotScope.prototype.renderGridlines = function() {
-    var focus = this.plotFocus.focus, model = this.stdmodel;
+    var focus = this.plotFocus.getFocus(), model = this.stdmodel;
     var mapX = this.data2scrX, mapY = this.data2scrY;
     var mapY_r = this.data2scrY_r;
 
@@ -707,7 +714,7 @@ define([
   PlotScope.prototype.renderGridlineTicks = function() {
     var tickLength = this.gridlineTickLength;
     var mapX = this.data2scrX, mapY = this.data2scrY, mapY_r = this.data2scrY_r;
-    var focus = this.plotFocus.focus;
+    var focus = this.plotFocus.getFocus();
     var model = this.stdmodel;
     if (model.xAxis.showGridlineLabels !== false) {
       var lines = model.xAxis.getGridlines(),
@@ -1547,7 +1554,7 @@ define([
   PlotScope.prototype.calcMapping = function(emitFocusUpdate) {
     var self = this;
     // called every time after the focus is changed
-    var focus = self.plotFocus.focus;
+    var focus = self.plotFocus.getFocus();
     var lMargin = self.layout.leftLayoutMargin,
       bMargin = self.layout.bottomLayoutMargin,
       tMargin = self.layout.topLayoutMargin,
@@ -1773,7 +1780,7 @@ define([
 
 
     // init copies focus to defaultFocus, called only once
-    if(_.isEmpty(self.plotFocus.focus)){
+    if(_.isEmpty(self.plotFocus.getFocus())){
       self.plotFocus.setFocus(self.plotFocus.defaultFocus);
     }
 
@@ -1838,7 +1845,7 @@ define([
 
 
     // init copies focus to defaultFocus, called only once
-    if(_.isEmpty(self.plotFocus.focus)){
+    if(_.isEmpty(self.plotFocus.getFocus())){
       self.plotFocus.setFocus(self.plotFocus.defaultFocus);
     }
 

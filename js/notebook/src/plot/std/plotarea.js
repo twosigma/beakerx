@@ -139,7 +139,7 @@ define([
   };
 
   PlotArea.prototype.prepare = function(scope) {
-    var focus = scope.plotFocus.focus;
+    var focus = scope.plotFocus.getFocus();
     var eles = this.elements,
       eleprops = this.elementProps;
     var mapX = scope.data2scrXi,

@@ -135,7 +135,7 @@ define([
 
   PlotBar.prototype.prepare = function(scope) {
     var w = this.width, sw;
-    var focus = scope.plotFocus.focus;
+    var focus = scope.plotFocus.getFocus();
     var mapX = scope.data2scrXi,
       mapY = this.getYMapper(scope);
     var eleprops = this.elementProps,

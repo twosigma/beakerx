@@ -117,7 +117,7 @@ define([
 
   HeatMap.prototype.prepare = function(scope) {
     var sw;
-    var focus = scope.plotFocus.focus;
+    var focus = scope.plotFocus.getFocus();
     var mapX = scope.data2scrXi;
     var mapY = scope.data2scrYi;
     var eleprops = this.elementProps;

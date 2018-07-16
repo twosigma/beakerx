@@ -90,7 +90,7 @@ export default class BoxZoom {
     p2.x = Math.min(1, p2.x);
     p2.y = Math.min(1, p2.y);
 
-    let focus = this.scope.plotFocus.focus;
+    let focus = this.scope.plotFocus.getFocus();
     let ofocus = { ...focus };
 
     focus.xl = ofocus.xl + ofocus.xspan * p1.x;

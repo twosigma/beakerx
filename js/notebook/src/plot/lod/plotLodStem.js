@@ -68,7 +68,7 @@ define([
   };
 
   PlotLodStem.prototype.prepare = function(scope, gid) {
-    var focus = scope.plotFocus.focus;
+    var focus = scope.plotFocus.getFocus();
     var eles = this.elements,
       eleprops = this.elementProps;
     var mapX = scope.plotFocus.data2scrXi,

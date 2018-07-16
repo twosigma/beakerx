@@ -36,11 +36,15 @@ export default class PlotFocus {
     this.defaultFocus = focus;
   }
 
-  setFocus(focus: Focus) {
+  setFocus(focus: Focus, base: Focus = this.defaultFocus) {
     this.focus = {
-      ...this.defaultFocus,
+      ...base,
       ...focus
     };
+  }
+
+  getFocus() {
+    return this.focus;
   }
 
   static getDefault(model) {

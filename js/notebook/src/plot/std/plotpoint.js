@@ -278,7 +278,7 @@ define([
   };
 
   PlotPoint.prototype.prepare = function(scope) {
-    var focus = scope.plotFocus.focus;
+    var focus = scope.plotFocus.getFocus();
     var eles = this.elements;
     var mapX = scope.data2scrXi,
       mapY = this.getYMapper(scope);

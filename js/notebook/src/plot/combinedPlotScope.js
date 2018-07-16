@@ -250,7 +250,7 @@ define([
   CombinedPlotScope.prototype.dumpState = function() {
     var self = this;
     var ret = { };
-    ret.focus = self.plotFocus.focus;
+    ret.focus = self.plotFocus.getFocus();
     ret.width = self.width;
     ret.subplots = [];
     for (var i = 0; i < self.models.length; i++) {
@@ -371,7 +371,7 @@ define([
 
     this.scopes.forEach(function(scope) {
       if (updateType === 'focus') {
-        scope.onModelFucusUpdate(self.plotFocus.focus);
+        scope.onModelFucusUpdate(self.plotFocus.getFocus());
       } else if (updateType === 'width') {
         scope.updateModelWidth(self.width);
       }

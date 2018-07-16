@@ -28,7 +28,6 @@ import {DataGridHelpers} from "./dataGridHelpers";
 import {selectColumnWidth} from "./column/selectors";
 import getStringSize = DataGridHelpers.getStringSize;
 import {ALL_TYPES} from "./dataTypes";
-import throttle = DataGridHelpers.throttle;
 
 const DEFAULT_RESIZE_SECTION_SIZE_IN_PX = 6;
 const DEFAULT_ROW_PADDING = 4;

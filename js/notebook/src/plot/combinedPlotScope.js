@@ -36,8 +36,10 @@ define([
   PlotScope
 ) {
   var bkUtils = require('./../shared/bkUtils').default;
+  var GistPublisherUtils = require('./../GistPublisherUtils').default;
+  var DummyAccessTokenProvider = require('./../DummyAccessTokenProvider').default;
   var CombinedPlotScopeUtils = CombinedPlotScopeUtilsModule.default;
-  
+
   function CombinedPlotScope(wrapperId) {
     this.wrapperId = wrapperId;
     this.id = null;
@@ -389,6 +391,10 @@ define([
     var imgsrc = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html)));
     var fileName = _.isEmpty(self.stdmodel.title) ? 'combinedplot' : self.stdmodel.title;
     plotUtils.drawPng(self.canvas, imgsrc, fileName + '.png');
+  };
+
+  CombinedPlotScope.prototype.publish = function() {
+    GistPublisherUtils.publishScope(new DummyAccessTokenProvider(), this);
   };
 
   CombinedPlotScope.prototype.updateModels = function(updateType) {

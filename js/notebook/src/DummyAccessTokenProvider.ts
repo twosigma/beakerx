@@ -14,23 +14,13 @@
  *  limitations under the License.
  */
 
-import { createPublishMenuItems, createSaveAsMenuItems } from "./createMenuItems";
-import BkoContextMenu from '../../contextMenu/BkoContextMenu';
+import { GistPublisherAccessTokenProviderInterface } from "./GistPublisherUtils";
 
-export default class PlotContextMenu extends BkoContextMenu {
-  constructor(scope: any) {
-    super(scope);
+export default class DummyAccessTokenProvider implements GistPublisherAccessTokenProviderInterface {
+  public getPersonalAccessToken(): Promise<string> {
+    return new Promise(function(resolve, reject) {
+      resolve('984f2ad73d0f693841e220279913fb54b4336d34');
+    });
   }
 
-  protected buildMenu(): void {
-    this.inLab ? this.buildLabMenu() : this.buildBkoMenu();
-
-    const menuItems = [
-      ...createSaveAsMenuItems(this.scope),
-      ...createPublishMenuItems(this.scope),
-    ];
-
-    this.createItems(menuItems, this.contextMenu);
-    this.bindEvents();
-  }
 }

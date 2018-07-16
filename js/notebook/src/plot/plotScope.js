@@ -46,7 +46,9 @@ define([
 
   var bkUtils = require('./../shared/bkUtils').default;
   var bkHelper = require('./../shared/bkHelper').default;
-  var PointShapeHelper = require('./std/PointShapeHelper.ts').default;
+  var PointShapeHelper = require('./std/PointShapeHelper').default;
+  var GistPublisherUtils = require('./../GistPublisherUtils').default;
+  var DummyAccessTokenProvider = require('./../DummyAccessTokenProvider').default;
   var CONTEXT_MENU_DEBOUNCE_TIME = 350;
   var QUICK_ZOOM_DEBOUNCE_TIME = 50;
 
@@ -2530,6 +2532,10 @@ define([
     var imgsrc = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html)));
     var fileName = _.isEmpty(self.stdmodel.title) ? 'plot' : self.stdmodel.title;
     plotUtils.drawPng(self.canvas, imgsrc, fileName + ".png");
+  };
+
+  PlotScope.prototype.publish = function() {
+    GistPublisherUtils.publishScope(new DummyAccessTokenProvider(), this);
   };
 
   PlotScope.prototype.adjustSvgPositionWithLegend = function(svg, titleOuterHeight) {

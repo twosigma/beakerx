@@ -16,7 +16,7 @@
 
 import MenuItem from '../../shared/interfaces/contextMenuItemInterface';
 
-export default function createSaveAsMenuItems(scope: any): MenuItem[] {
+export function createSaveAsMenuItems(scope: any): MenuItem[] {
   const selector = `#${scope.id}`;
 
   return [
@@ -41,6 +41,19 @@ export default function createSaveAsMenuItems(scope: any): MenuItem[] {
         action: () => scope.saveAsPng(scale)
       })),
       selector
-    }
+    },
+  ];
+}
+
+export function createPublishMenuItems(scope: any): MenuItem[] {
+  const selector = `#${scope.id}`;
+
+  return [
+    {
+      id: `beakerx:publish:${scope.id}`,
+      title: 'Publish...',
+      action: () => scope.publish(),
+      selector
+    },
   ];
 }

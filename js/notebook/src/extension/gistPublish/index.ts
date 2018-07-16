@@ -16,12 +16,9 @@
 
 import * as $ from 'jquery';
 import GistPublishModal from './gistPublishModal';
+import GistPublisher from "../../GistPublisher";
 
 const dialog = require('base/js/dialog');
-const CONFIG = {
-  gistsUrl: 'https://api.github.com/gists',
-  nbviewerBaseUrl: 'https://nbviewer.jupyter.org/'
-};
 
 export function registerFeature(): void {
   if (!!Jupyter.NotebookList) {
@@ -68,7 +65,7 @@ function showErrorDialog(errorMsg) {
   });
 }
 
-function saveWidgetsState(): Promise<any> {
+export function saveWidgetsState(): Promise<any> {
   return new Promise((resolve, reject) => {
     if (Jupyter.menubar.actions.exists('widgets:save-with-widgets')) {
       Jupyter.menubar.actions.call('widgets:save-with-widgets');
@@ -81,40 +78,11 @@ function saveWidgetsState(): Promise<any> {
   });
 }
 
-function doPublish(personalAccessToken): void {
-  const nbjson = Jupyter.notebook.toJSON();
-  const filedata = {};
-
-  filedata[Jupyter.notebook.notebook_name] = {
-    content : JSON.stringify(nbjson, undefined, 1)
-  };
-
-  let gistsUrl = CONFIG.gistsUrl;
-  if (personalAccessToken) {
-    gistsUrl = `${gistsUrl}?oauth_token=${personalAccessToken}`;
-  }
-
-  const settings = {
-    type : 'POST',
-    headers : {},
-    data : JSON.stringify({
-      public : true,
-      files : filedata
-    }),
-    success : (data, status) => {
-      console.log("gist successfully published: " + data.id);
-      window.open(CONFIG.nbviewerBaseUrl + data.id);
-    }
-  };
-
-  $.ajax(gistsUrl, settings).catch((jqXHR, status, err) => {
-    let errorMsg = jqXHR.readyState === 0 && !err ? 'NETWORK ERROR!' : err;
-
-    if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-      errorMsg = jqXHR.responseJSON.message;
-    }
-
-    console.log(errorMsg);
-    showErrorDialog(errorMsg);
-  });
+export function doPublish(personalAccessToken: string): void {
+  GistPublisher.doPublish(
+    personalAccessToken,
+    Jupyter.notebook.notebook_name,
+    Jupyter.notebook.toJSON(),
+    (errorMsg) => showErrorDialog(errorMsg)
+  );
 }

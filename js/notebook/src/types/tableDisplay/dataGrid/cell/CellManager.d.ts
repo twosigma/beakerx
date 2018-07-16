@@ -21,10 +21,10 @@ export default class CellManager {
     getCells(rowsRange: IRangeCells, columnsRange: IRangeCells): any;
     copyToClipboard(): void;
     CSVDownload(selectedOnly: any): void;
-    createCellConfig({row, column, value, region}: ICellDataOptions | ICellData): CellRenderer.ICellConfig;
-    private handleCellHovered(sender, {data});
-    private updateViewportCursor(value);
-    private getCSVFromCells(selectedOnly);
-    private executeCopy(text);
-    private exportCellsTo(cells, format);
+    createCellConfig({ row, column, value, region }: ICellDataOptions | ICellData): CellRenderer.ICellConfig;
+    private handleCellHovered;
+    private updateViewportCursor;
+    private getCSVFromCells;
+    private executeCopy;
+    private exportCellsTo;
 }

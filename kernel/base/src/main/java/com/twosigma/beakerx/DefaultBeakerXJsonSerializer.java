@@ -17,11 +17,16 @@ package com.twosigma.beakerx;
 
 import com.twosigma.beakerx.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
+import com.twosigma.beakerx.table.serializer.AutotranslationDefaultDeserializer;
+import com.twosigma.beakerx.table.serializer.TableDisplayDeSerializer;
 
 public class DefaultBeakerXJsonSerializer extends BaseBeakerXJsonSerializer {
 
   @Override
   protected BeakerObjectConverter createSerializer() {
-    return new BasicObjectSerializer();
+    BasicObjectSerializer serializer = new BasicObjectSerializer();
+    serializer.addfTypeDeserializer(new TableDisplayDeSerializer(serializer));
+    serializer.addfTypeDeserializer(new AutotranslationDefaultDeserializer());
+    return serializer;
   }
 }

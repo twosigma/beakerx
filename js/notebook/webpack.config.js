@@ -85,7 +85,7 @@ module.exports = [
     // "load_ipython_extension" function which is required for any notebook
     // extension.
     //
-    entry: './src/extension.ts',
+    entry: './src/extension.js',
     output: {
       filename: 'extension.js',
       path: path.resolve(__dirname, '../../beakerx/beakerx/static'),

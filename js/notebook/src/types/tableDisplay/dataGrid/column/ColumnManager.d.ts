@@ -14,7 +14,7 @@ export interface IBkoColumnsChangedArgs {
     column: DataGridColumn;
 }
 export declare enum COLUMN_CHANGED_TYPES {
-    'columnSort' = 0,
+    'columnSort' = 0
 }
 export default class ColumnManager {
     store: BeakerXDataStore;
@@ -43,6 +43,7 @@ export default class ColumnManager {
     blurColumnFilterInputs(): void;
     updateColumnFilterNodes(): void;
     updateColumnMenuTriggers(): void;
+    closeAllMenus(): void;
     takeColumnsByCells(startCell: ICellData, endCell: ICellData): any[];
     takeColumnByCell(cellData: ICellData): DataGridColumn | null;
     showAllColumns(): void;
@@ -52,11 +53,11 @@ export default class ColumnManager {
     setColumnsDataTypePrecission(precission: number): void;
     recalculateMinMaxValues(): void;
     createColumnMenus(): void;
-    private recalculateColumnsMinMax(columns);
-    private showFilterInputs(useSearch, column?);
-    private addBodyColumns();
-    private addIndexColumns();
-    private addColumn(name, index, type);
-    private createColumnsMap();
-    private destroyAllColumns();
+    private recalculateColumnsMinMax;
+    private showFilterInputs;
+    private addBodyColumns;
+    private addIndexColumns;
+    private addColumn;
+    private createColumnsMap;
+    private destroyAllColumns;
 }

@@ -25,9 +25,9 @@ import com.twosigma.beakerx.easyform.formitem.widgets.CheckBoxWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.ComboBoxWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.DatePickerComponentWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.PasswordWidget;
+import com.twosigma.beakerx.easyform.formitem.widgets.RadioButtonComponentWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.SelectMultipleSingleWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.SelectMultipleWidget;
-import com.twosigma.beakerx.easyform.formitem.widgets.RadioButtonComponentWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.TextAreaWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.TextFieldWidget;
 import com.twosigma.beakerx.widget.DOMWidget;
@@ -375,12 +375,16 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
     this.ready = Boolean.FALSE;
   }
 
+  public EasyFormView getView(){
+    EasyFormView easyFormView = new EasyFormView(this.getCommFunctionalities());
+    easyFormView.setEasyFormName(this.getCaption());
+    return easyFormView;
+  }
+
   @Override
   public void display() {
     this.setReady();
-    EasyFormView easyFormView = new EasyFormView(this.getCommFunctionalities());
-    easyFormView.setEasyFormName(this.getCaption());
-    easyFormView.display();
+    this.getView().display();
   }
 
 }

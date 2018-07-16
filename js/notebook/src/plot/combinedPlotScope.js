@@ -77,7 +77,7 @@ define([
 
   CombinedPlotScope.prototype.prepareSavedState = function(state) {
     var self = this;
-    state.plotFocus.focus = self.calcRange();
+    state.plotFocus.setFocus(self.calcRange());
     self.width = self.stdmodel.plotSize.width;
   };
 
@@ -122,9 +122,7 @@ define([
           return self.plotFocus.focus;
         },
         updateFocus : function(focus) {
-          self.plotFocus.focus = {};
-          _.extend(self.plotFocus.focus, focus);
-          // self.$apply();
+          self.plotFocus.setFocus(focus);
           this.setDumpState(self.dumpState());
 
           self.updateModels('focus');
@@ -296,9 +294,9 @@ define([
           self.models[i].state = savedstate.subplots[i];
         }
         self.width = savedstate.width;
-        self.plotFocus.focus = savedstate.focus;
+        self.plotFocus.setFocus(savedstate.focus);
       } else if (self.models !== undefined) {
-        self.plotFocus.focus = self.calcRange();
+        self.plotFocus.setFocus(self.calcRange());
         for (var i = 0; i < self.models.length; i++) {
           self.models[i].state = { };
         }
@@ -308,31 +306,6 @@ define([
       }
     }
   };
-
-  // if (self.model.getDumpState !== undefined) {
-  //   self.getDumpState = function() {
-  //     return self.model.getDumpState();
-  //   };
-  // }
-  // self.init();
-  // if (self.model.getDumpState !== undefined) {
-  //   self.$watch('getDumpState()', function(result) {
-  //     if (result !== undefined && result.subplots === undefined && self.models !== undefined) {
-  //       for (var i = 0; i < self.models.length; i++) {
-  //         self.models[i].state = { };
-  //       }
-  //       if (self.model.setDumpState !== undefined) {
-  //         self.model.setDumpState(self.dumpState());
-  //       }
-  //     }
-  //   });
-  // }
-  // self.$watch('getCellModel()', function() {
-  //   self.init();
-  // });
-  // self.$on('$destroy', function() {
-  //   $.contextMenu('destroy', { selector: '#' + self.id});
-  // });
 
   CombinedPlotScope.prototype.getCellModel = function() {
     return this.model.getCellModel();

@@ -1694,7 +1694,7 @@ define([
     self.initFlags();
 
     // see if previous state can be applied
-    self.plotFocus.focus = {};
+    self.plotFocus.setFocus({});
 
     if (!self.model.getCellModel().tips) {
       self.model.getCellModel().tips = {};
@@ -1774,7 +1774,7 @@ define([
 
     // init copies focus to defaultFocus, called only once
     if(_.isEmpty(self.plotFocus.focus)){
-      _.extend(self.plotFocus.focus, self.plotFocus.defaultFocus);
+      self.plotFocus.setFocus(self.plotFocus.defaultFocus);
     }
 
     // init remove pipe
@@ -1818,7 +1818,7 @@ define([
     self.initFlags();
 
     // see if previous state can be applied
-    self.plotFocus.focus = {};
+    self.plotFocus.setFocus({});
 
     if (!self.model.getCellModel().tips) {
       self.model.getCellModel().tips = {};
@@ -1839,7 +1839,7 @@ define([
 
     // init copies focus to defaultFocus, called only once
     if(_.isEmpty(self.plotFocus.focus)){
-      _.extend(self.plotFocus.focus, self.plotFocus.defaultFocus);
+      self.plotFocus.setFocus(self.plotFocus.defaultFocus);
     }
 
     // init remove pipe

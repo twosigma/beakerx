@@ -36,6 +36,13 @@ export default class PlotFocus {
     this.defaultFocus = focus;
   }
 
+  setFocus(focus: Focus) {
+    this.focus = {
+      ...this.defaultFocus,
+      ...focus
+    };
+  }
+
   static getDefault(model) {
     const yAxisData = [];
     const yAxisRData = [];

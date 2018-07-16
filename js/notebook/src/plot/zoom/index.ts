@@ -28,6 +28,7 @@ export default class PlotZoom {
   scope: any;
   boxZoom: BoxZoom;
   zoomStarted: boolean;
+  lastTransform: { x: number, y: number, k: number };
   eventDispatcher: EventDispatcher;
 
   zoomObj: any = null;
@@ -77,9 +78,7 @@ export default class PlotZoom {
 
     const d3trans = d3.event.transform || d3.event;
 
-    this.scope.lastransformX = d3trans.x;
-    this.scope.lastransformY = d3trans.y;
-    this.scope.lastTransK = d3trans.k;
+    this.setLastTransform(d3trans);
 
     const svgNode = this.scope.svg.node();
     const mousep2 = this.scope.mousep2 || {};
@@ -186,7 +185,7 @@ export default class PlotZoom {
     const my = d3.mouse(svgNode)[1];
     const focus = this.scope.plotFocus.getFocus();
     const ZOOM_TICK = 0.1;
-    const zoomDirection = Math.sign(this.scope.lastTransK - d3trans.k);
+    const zoomDirection = Math.sign(this.lastTransform.k - d3trans.k);
     const zoomRate =  Math.abs(zoomDirection + ZOOM_TICK);
 
     if (Math.abs(mx - this.scope.mousep1.x)>0 || Math.abs(my - this.scope.mousep1.y)>0){
@@ -210,8 +209,8 @@ export default class PlotZoom {
     const bMargin = this.scope.layout.bottomLayoutMargin;
     const W = plotUtils.safeWidth(this.scope.jqsvg) - lMargin;
     const H = plotUtils.safeHeight(this.scope.jqsvg) - bMargin;
-    const deltaX = d3trans.x - this.scope.lastx;
-    const deltaY = d3trans.y - this.scope.lasty;
+    const deltaX = d3trans.x - this.lastTransform.x;
+    const deltaY = d3trans.y - this.lastTransform.y;
     const transformX = -deltaX / W * focus.xspan;
     const transformY = deltaY / H * focus.yspan;
     const transformY_r = deltaY / H * focus.yspan_r;
@@ -239,8 +238,6 @@ export default class PlotZoom {
   }
 
   private setLastTransform(d3trans) {
-    this.scope.lastx = d3trans.x;
-    this.scope.lasty = d3trans.y;
-    this.scope.lastTransK = d3trans.k;
+    this.lastTransform = { ...d3trans };
   }
 }

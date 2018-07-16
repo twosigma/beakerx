@@ -106,10 +106,10 @@ export default class BoxZoom {
     // Calculate zoom level
     const W = plotUtils.safeWidth(this.scope.jqsvg);
     const H = plotUtils.safeHeight(this.scope.jqsvg);
-    const zoomLevel: number = (this.scope.lastTransK || 1) + ((W / box.w + H / box.h) / 2); // Calculate average zoom level
+    const zoomLevel: number = (this.scope.plotZoom.lastTransform.k || 1) + ((W / box.w + H / box.h) / 2); // Calculate average zoom level
     const transform: any = d3.zoomTransform(this.scope.svg.node());
 
-    this.scope.lastTransK = zoomLevel;
+    this.scope.plotZoom.lastTransform.k = zoomLevel;
     transform.k = zoomLevel;
 
     this.scope.calcMapping(true);

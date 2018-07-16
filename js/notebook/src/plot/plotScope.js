@@ -1613,67 +1613,6 @@ define([
     this.stdmodel = plotFormatter.standardizeModel(model, this.prefs);
   };
 
-  PlotScope.prototype.dumpState = function() {
-    // var self = this;
-    // var state = {};
-    //
-    // state.showAllItems = self.showAllItems;
-    // state.plotSize = self.plotSize;
-    // state.zoomed = self.zoomed;
-    // state.focus = self.focus;
-    //
-    // state.lodOn = [];
-    // state.lodType = [];
-    // state.lodAuto = [];
-    // state.zoomHash = [];
-    // state.showItem = [];
-    // var data = self.stdmodel.data;
-    // for (var i = 0; i < data.length; i++) {
-    //   state.lodOn[i] = data[i].lodOn;
-    //   state.lodType[i] = data[i].lodType;
-    //   state.lodAuto[i] = data[i].lodAuto;
-    //   state.zoomHash[i] = data[i].zoomHash;
-    //   state.showItem[i] = data[i].showItem;
-    // }
-    // state.visibleItem = self.visibleItem;
-    // state.legendableItem = self.legendableItem;
-    // state.defaultFocus = self.defaultFocus;
-    //
-    //
-    // state.tips = {};
-    // $.extend(true, state.tips, self.tips);
-    //
-    // return state;
-  };
-
-  PlotScope.prototype.loadState = function(state) {
-    // var self = this;
-    // self.showAllItems = state.showAllItems;
-    // self.plotSize = state.plotSize;
-    // self.zoomed = state.zoomed;
-    // self.focus = state.focus;
-    // var data = self.stdmodel.data;
-    // for (var i = 0; i < data.length; i++) {
-    //   if(data[i].isLodItem === true){
-    //     data[i].lodOn = state.lodOn[i];
-    //     if (state.lodOn[i]) {
-    //       data[i].applyLodType(state.lodType[i]);
-    //       data[i].applyLodAuto(state.lodAuto[i]);
-    //       data[i].applyZoomHash(state.zoomHash[i]);
-    //     }
-    //   }
-    //   data[i].showItem = state.showItem[i];
-    // }
-    // self.visibleItem = state.visibleItem;
-    // self.legendableItem = state.legendableItem;
-    // self.defaultFocus = state.defaultFocus;
-    // if(self.defaultFocus) {
-    //   self.fixFocus(self.defaultFocus);
-    // }
-    //
-    // $.extend(true, self.tips, state.tips);
-  };
-
   PlotScope.prototype.initFlags = function() {
     this.showAllItems = true;
     this.showLodHint = true;

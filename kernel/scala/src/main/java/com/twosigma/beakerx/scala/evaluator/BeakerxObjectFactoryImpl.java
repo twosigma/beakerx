@@ -24,6 +24,7 @@ public class BeakerxObjectFactoryImpl implements BeakerxObjectFactory {
   public String create() {
     return "import " + BEAKER_X_CLIENT_MANAGER_PATH + "\n" +
             "import language.dynamics\n" +
+            "implicit class ObjectEnhancement(obj: Any) { def as[T] = obj.asInstanceOf[T]}\n" +
             "var _beakerx = " + BEAKER_X_CLIENT_MANAGER_GET + "\n" +
             "object beakerx extends Dynamic {\n" +
             "  def selectDynamic( field : String ) = _beakerx.get(field)\n" +

@@ -16,11 +16,11 @@
 package com.twosigma.beakerx.jvm.object;
 
 import com.twosigma.beakerx.MIMEContainerFactory;
-import com.twosigma.beakerx.easyform.EasyForm;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 import com.twosigma.beakerx.widget.HTML;
 import com.twosigma.beakerx.widget.HTMLPre;
 import com.twosigma.beakerx.widget.Widget;
+import com.twosigma.beakerx.widget.WidgetItem;
 
 import java.util.List;
 import java.util.Optional;
@@ -55,15 +55,12 @@ public abstract class OutputContainerLayoutManager {
     if (item == null) {
       return handleNull();
     }
-    if (item instanceof EasyForm) {
-      return of(((EasyForm) item).getView());
+    if (item instanceof WidgetItem) {
+      return of(((WidgetItem) item).asWidget());
     }
     Widget widget = MIMEContainerFactory.getTableDisplay(item);
     if (widget != null) {
       return of(widget);
-    }
-    if (item instanceof Widget) {
-      return of((Widget) item);
     }
     if (item instanceof MIMEContainer) {
       return of(createHTML(((MIMEContainer) item).getData().toString()));

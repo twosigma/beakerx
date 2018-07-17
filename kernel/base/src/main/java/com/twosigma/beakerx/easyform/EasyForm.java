@@ -34,6 +34,7 @@ import com.twosigma.beakerx.widget.DOMWidget;
 import com.twosigma.beakerx.widget.DisplayableWidget;
 import com.twosigma.beakerx.widget.ValueWidget;
 import com.twosigma.beakerx.widget.Widget;
+import com.twosigma.beakerx.widget.WidgetItem;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
@@ -45,7 +46,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
-public class EasyForm extends ObservableMap<String, Object> implements DisplayableWidget {
+public class EasyForm extends ObservableMap<String, Object> implements DisplayableWidget, WidgetItem {
 
   public static final Integer HORIZONTAL = 1;
   public static final Integer VERTICAL = 2;
@@ -387,4 +388,8 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
     this.getView().display();
   }
 
+  @Override
+  public Widget asWidget() {
+    return getView();
+  }
 }

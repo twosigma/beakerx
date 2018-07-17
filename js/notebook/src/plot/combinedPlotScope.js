@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+var PlotModel = require("./models/PlotModel").default;
+
 define([
   'underscore',
   'jquery',
@@ -75,17 +77,6 @@ define([
     };
   };
 
-  CombinedPlotScope.prototype.prepareSavedState = function(state) {
-    var self = this;
-    state.plotFocus.setFocus(self.calcRange());
-    self.width = self.stdmodel.plotSize.width;
-  };
-
-  CombinedPlotScope.prototype.applySavedState = function(state) {
-    this.state = state;
-    this.width = state.width;
-  };
-
   CombinedPlotScope.prototype.preparePlotModels = function() {
     var self = this;
     var models = [];
@@ -98,105 +89,11 @@ define([
 
       plotmodel.xAxis.showGridlineLabels = self.model.getCellModel().x_tickLabels_visible;
       plotmodel.yAxis.showGridlineLabels = self.model.getCellModel().y_tickLabels_visible;
-
       plotmodel.plotIndex = i;
-      var pl = {
-        model : plotmodel,
-        state : { },
-        disableContextMenu: true,
-        getCellModel : function() {
-          return this.model;
-        },
-        getDumpState: function() {
-          return this.state;
-        },
-        setDumpState: function(s) {
-          this.state = s;
-          if (self.model.setDumpState !== undefined) {
-            self.model.setDumpState(self.dumpState());
-          }
-        },
-        resetShareMenuItems : function() {
-        },
-        getFocus : function() {
-          return self.plotFocus.focus;
-        },
-        updateFocus : function(focus) {
-          self.plotFocus.setFocus(focus);
-          this.setDumpState(self.dumpState());
 
-          self.updateModels('focus');
-        },
-        getSaveAsMenuContainer: function() {
-          return self.saveAsMenuContainer;
-        },
-        updateWidth : function(width, useMinWidth) {
-          self.width = useMinWidth ? self.getMinScopesWidth() : width;
-          self.element.find("#combplotTitle").css("width", width);
-
-          self.updateModels('width');
-        },
-        updateMargin : function() {
-          // if any of plots has left-positioned legend we should update left margin (with max value)
-          // for all plots (to adjust vertical position)
-          var plots = self.element.find(".plot-plotcontainer");
-          var maxMargin = 0;
-
-          plots.each(function() {
-            var value = parseFloat($(this).css('margin-left'));
-            maxMargin = _.max([value, maxMargin]);
-          });
-          plots.css("margin-left", maxMargin);
-          for (var i = 0; i < self.stdmodel.plots.length; i++) {
-            self.stdmodel.plots[i].updateLegendPosition();
-          }
-        },
-        getWidth : function() {
-          return self.width;
-        },
-        onClick: function(plotIndex, item, e) {
-          for (var i = 0; i < self.stdmodel.plots.length; i++) {
-            var subplot = self.stdmodel.plots[i];
-            if (plotIndex === subplot.plotIndex) {
-              self.sendEvent(
-                'onclick',
-                plotIndex,
-                item.uid,
-                plotUtils.getActionObject(self.model.getCellModel().type, e, i)
-              );
-              break;
-            }
-          }
-        },
-        onKey: function(key, plotIndex, item, e) {
-          for (var i = 0; i < self.stdmodel.plots.length; i++) {
-            var subplot = self.stdmodel.plots[i];
-            if (plotIndex === subplot.plotIndex) {
-              var params = plotUtils.getActionObject(self.model.getCellModel().type, e, i);
-
-              params.key = key;
-              self.sendEvent('onkey', plotIndex, item.uid, params);
-              break;
-            }
-          }
-        },
-        setActionDetails: function(plotIndex, item, e) {
-          for (var i = 0; i < self.stdmodel.plots.length; i++) {
-            var subplot = self.stdmodel.plots[i];
-
-            if (plotIndex === subplot.plotIndex) {
-              var params = plotUtils.getActionObject(self.model.getCellModel().type, e, i);
-              params.actionType = 'onclick';
-              params.tag = item.clickTag;
-
-              self.sendEvent('actiondetails', plotIndex, item.uid, params);
-              break;
-            }
-          }
-        }
-      };
-      models.push(pl);
+      models.push(new PlotModel(plotmodel, self));
     }
+
     self.models = models;
   };
 
@@ -238,6 +135,9 @@ define([
     for (var i = 0; i < plots.length; i++) {
       var plotmodel = plots[i]; // models are already standardized at this point
       var ret = PlotFocus.getDefault(plotmodel);
+
+      self.plotFocus.setDefault(ret.defaultFocus);
+
       xl = Math.min(xl, ret.defaultFocus.xl);
       xr = Math.max(xr, ret.defaultFocus.xr);
     }

@@ -31,7 +31,6 @@ export function enableZoomWheel(scope: any, d3: any): void {
   scope.jqcontainer
     .off('wheel.zoom')
     .on('wheel.zoom', function(event) {
-      d3.event = event.originalEvent;
       scope.svg.dispatch('wheel.zoom', scope._defaultZoomWheelFn);
     });
 }

@@ -81,8 +81,8 @@ define([
     var data = scope.stdmodel.data;
     var svg = scope.maing;
 
-    var x2 = scope.data2scrX(d.targetx);
-    var y2 = scope.data2scrY(d.targety);
+    var x2 = scope.plotRange.data2scrX(d.targetx);
+    var y2 = scope.plotRange.data2scrY(d.targety);
 
     var position = tipdiv.position();
 
@@ -126,11 +126,11 @@ define([
     var tipData = scope.tips[d.id];
     tipData.sticking = false;
 
-    tipData.targetx = d.tooltip_cx ? scope.scr2dataX(d.tooltip_cx) : scope.scr2dataX(mousePos[0]);
-    tipData.targety = d.tooltip_cy ? scope.scr2dataY(d.tooltip_cy) : scope.scr2dataY(mousePos[1]);
+    tipData.targetx = d.tooltip_cx ? scope.plotRange.scr2dataX(d.tooltip_cx) : scope.plotRange.scr2dataX(mousePos[0]);
+    tipData.targety = d.tooltip_cy ? scope.plotRange.scr2dataY(d.tooltip_cy) : scope.plotRange.scr2dataY(mousePos[1]);
 
-    tipData.datax = scope.scr2dataX(mousePos[0] + 5);
-    tipData.datay = scope.scr2dataY(mousePos[1] + 5);
+    tipData.datax = scope.plotRange.scr2dataX(mousePos[0] + 5);
+    tipData.datay = scope.plotRange.scr2dataY(mousePos[1] + 5);
 
     return tipData;
   };
@@ -165,8 +165,8 @@ define([
       _.each(scope.tips, function (d, key) {
         if (scope.tips.hasOwnProperty(key)) {
 
-          var x = scope.data2scrX(d.datax),
-            y = scope.data2scrY(d.datay);
+          var x = scope.plotRange.data2scrX(d.datax),
+            y = scope.plotRange.data2scrY(d.datay);
           d.scrx = x;
           d.scry = y;
           var tipid = "tip_" + d.id;
@@ -210,8 +210,8 @@ define([
           var drag = function (e, ui) {
             d.scrx = ui.position.left - plotUtils.fonts.tooltipWidth;
             d.scry = ui.position.top;
-            d.datax = scope.scr2dataX(d.scrx);
-            d.datay = scope.scr2dataY(d.scry);
+            d.datax = scope.plotRange.scr2dataX(d.scrx);
+            d.datay = scope.plotRange.scr2dataY(d.scry);
             impl.renderTips(scope);
           };
           tipdiv

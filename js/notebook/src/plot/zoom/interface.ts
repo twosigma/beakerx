@@ -30,5 +30,5 @@ export interface Focus {
   yr_r: number,
   xspan?: number,
   yspan?: number,
-  yspan_r?: number,
+  yspan_r?: number
 }

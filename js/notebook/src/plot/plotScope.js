@@ -42,6 +42,7 @@ define([
   bkoChartExtender
 ) {
 
+  var PlotRange = require('./range/PlotRange').default;
   var PlotZoom = require('./zoom/index').default;
   var PlotFocus = require('./zoom/PlotFocus').default;
   var bkUtils = require('./../shared/bkUtils').default;
@@ -98,13 +99,12 @@ define([
     this.doNotLoadState = false;
     this.saveAsMenuContainer = null;
 
-    this.data2scrX = null;
-    this.data2scrY = null;
     this.plotDisplayModel = null;
     this.plotDisplayView = null;
     this.contexteMenuEvent = null;
     this.plotZoom = new PlotZoom(this);
     this.plotFocus = new PlotFocus(this);
+    this.plotRange = new PlotRange(this);
   };
   
   PlotScope.prototype.setWidgetModel = function(plotDisplayModel) {
@@ -262,8 +262,12 @@ define([
       this.plotFocus.focus
     );
 
-    this.calcMapping(false);
+    this.plotRange.calcMapping(false);
     this.update();
+  };
+
+  PlotScope.prototype.calcMapping = function(emitFocusUpdate) {
+    return this.plotRange.calcMapping(emitFocusUpdate);
   };
 
   PlotScope.prototype.updateModelWidth = function(newWidth) {
@@ -271,7 +275,7 @@ define([
     this.width = newWidth;
     this.jqcontainer.css("width", newWidth );
     this.jqsvg.css("width", newWidth );
-    this.calcMapping(false);
+    this.plotRange.calcMapping(false);
     this.legendDone = false;
     this.legendResetPosition = true;
     this.update();
@@ -289,20 +293,7 @@ define([
   PlotScope.prototype.emitSizeChange = function(useMinWidth) {
     if (this.model.updateWidth !== null && this.model.updateWidth !== undefined) {
       this.model.updateWidth(this.width, useMinWidth);
-    } // not stdmodel here
-
-    // self.$emit('plotSizeChanged', {
-    //   width: self.width,
-    //   height: self.height
-    // });
-  };
-
-  PlotScope.prototype.calcRange = function() {
-    var ret = PlotFocus.getDefault(this.stdmodel);
-    this.visibleItem = ret.visibleItem;
-    this.legendableItem = ret.legendableItem;
-    this.plotFocus.setDefault(ret.defaultFocus);
-    this.plotFocus.fix(this.plotFocus.defaultFocus);
+    }
   };
 
   PlotScope.prototype.calcGridlines = function() {
@@ -329,8 +320,8 @@ define([
 
   PlotScope.prototype.renderGridlines = function() {
     var focus = this.plotFocus.getFocus(), model = this.stdmodel;
-    var mapX = this.data2scrX, mapY = this.data2scrY;
-    var mapY_r = this.data2scrY_r;
+    var mapX = this.plotRange.data2scrX, mapY = this.plotRange.data2scrY;
+    var mapY_r = this.plotRange.data2scrY_r;
 
     if(model.showXGridlines){
       var xGridlines = model.xAxis.getGridlines();
@@ -596,8 +587,8 @@ define([
         height : h
       };
     };
-    var mapX = this.data2scrX, mapY = this.data2scrY;
-    var mapY_r = this.data2scrY_r;
+    var mapX = this.plotRange.data2scrX, mapY = this.plotRange.data2scrY;
+    var mapY_r = this.plotRange.data2scrY_r;
     var model = this.stdmodel;
     if (model.xAxis.showGridlineLabels !== false) {
       var lines = model.xAxis.getGridlines(),
@@ -713,7 +704,7 @@ define([
 
   PlotScope.prototype.renderGridlineTicks = function() {
     var tickLength = this.gridlineTickLength;
-    var mapX = this.data2scrX, mapY = this.data2scrY, mapY_r = this.data2scrY_r;
+    var mapX = this.plotRange.data2scrX, mapY = this.plotRange.data2scrY, mapY_r = this.plotRange.data2scrY_r;
     var focus = this.plotFocus.getFocus();
     var model = this.stdmodel;
     if (model.xAxis.showGridlineLabels !== false) {
@@ -774,7 +765,7 @@ define([
       this.jqcontainer.find(".plot-cursorlabel").remove();
       return;
     }
-    var mapX = this.scr2dataX;
+    var mapX = this.plotRange.scr2dataX;
     if (model.xCursor != null) {
       var opt = model.xCursor;
       this.svg.selectAll("#cursor_x").data([{}]).enter().append("line")
@@ -830,7 +821,7 @@ define([
     var opt = model.yCursor;
     var lMargin = this.layout.leftLayoutMargin;
     var rMargin = this.layout.rightLayoutMargin;
-    var mapY = this.scr2dataY;
+    var mapY = this.plotRange.scr2dataY;
 
     if(axis == null) { return };
     this.jqcontainer.find("#" + id).remove();
@@ -1393,7 +1384,7 @@ define([
         }
       }
 
-      self.calcRange();
+      self.plotRange.calcRange();
       self.update();
       return;
     }
@@ -1418,7 +1409,7 @@ define([
       }
     }
 
-    self.calcRange();
+    self.plotRange.calcRange();
     self.update();
   };
 
@@ -1551,63 +1542,6 @@ define([
     self.jqcontainer.find(".plot-cursorlabel").remove();
   };
 
-  PlotScope.prototype.calcMapping = function(emitFocusUpdate) {
-    var self = this;
-    // called every time after the focus is changed
-    var focus = self.plotFocus.getFocus();
-    var lMargin = self.layout.leftLayoutMargin,
-      bMargin = self.layout.bottomLayoutMargin,
-      tMargin = self.layout.topLayoutMargin,
-      rMargin = self.layout.rightLayoutMargin;
-    var model = self.stdmodel;
-    var W = plotUtils.safeWidth(self.jqsvg), H = plotUtils.safeHeight(self.jqsvg);
-    if (emitFocusUpdate == true && self.model.updateFocus != null) {
-      self.model.updateFocus({
-        "xl" : focus.xl,
-        "xr" : focus.xr
-      });
-    }
-    self.data2scrY =
-      d3.scaleLinear().domain([focus.yl, focus.yr]).range([H - bMargin, tMargin]);
-    self.data2scrYp =
-      d3.scaleLinear().domain([focus.yl, focus.yr]).range([1, 0]);
-    self.scr2dataY =
-      d3.scaleLinear().domain([tMargin, H - bMargin]).range([focus.yr, focus.yl]);
-    self.scr2dataYp =
-      d3.scaleLinear().domain([tMargin, H - bMargin]).range([1, 0]);
-    self.data2scrX =
-      d3.scaleLinear().domain([focus.xl, focus.xr]).range([lMargin, W - rMargin]);
-    self.data2scrXp =
-      d3.scaleLinear().domain([focus.xl, focus.xr]).range([0, 1]);
-    self.scr2dataX =
-      d3.scaleLinear().domain([lMargin, W-rMargin]).range([focus.xl, focus.xr]);
-    self.scr2dataXp =
-      d3.scaleLinear().domain([lMargin, W-rMargin]).range([0, 1]);
-
-    if (focus.yr_r !== undefined && focus.yl_r !== undefined) {
-      self.data2scrY_r =
-        d3.scaleLinear().domain([focus.yl_r, focus.yr_r]).range([H - bMargin, tMargin]);
-      self.data2scrYp_r =
-        d3.scaleLinear().domain([focus.yl_r, focus.yr_r]).range([1, 0]);
-      self.scr2dataY_r =
-        d3.scaleLinear().domain([tMargin, H - bMargin]).range([focus.yr_r, focus.yl_r]);
-      self.scr2dataYp_r =
-        d3.scaleLinear().domain([tMargin, H - bMargin]).range([1, 0]);
-    }
-
-    self.data2scrXi = function(val) {
-      return Number(self.data2scrX(val).toFixed(self.renderFixed));
-    };
-    self.data2scrYi = function(val) {
-      return Number(self.data2scrY(val).toFixed(self.renderFixed));
-    };
-    if (self.data2scrY_r !== undefined) {
-      self.data2scrYi_r = function(val) {
-        return Number(self.data2scrY_r(val).toFixed(self.renderFixed));
-      };
-    }
-  };
-
   PlotScope.prototype.standardizeData = function() {
     var model = this.model.getCellModel();
     this.stdmodel = plotFormatter.standardizeModel(model, this.prefs);
@@ -1679,8 +1613,8 @@ define([
           x: self.width / self.intervalStepHint.x,
           y: self.height / self.intervalStepHint.y
         };
-        self.calcRange();
-        self.calcMapping(false);
+        self.plotRange.calcRange();
+        self.plotRange.calcMapping(false);
         self.emitSizeChange();
         self.legendDone = false;
         self.legendResetPosition = true;
@@ -1715,7 +1649,7 @@ define([
     self._defaultZoomWheelFn = self.svg.on('wheel.zoom');
     zoomHelpers.disableZoomWheel(self);
 
-    self.calcRange();
+    self.plotRange.calcRange();
 
 
     // init copies focus to defaultFocus, called only once
@@ -1726,7 +1660,7 @@ define([
     // init remove pipe
     self.removePipe = [];
 
-    self.calcMapping();
+    self.plotRange.calcMapping();
 
     self.legendDone = false;
     self.update();
@@ -1780,7 +1714,7 @@ define([
 
     self.resetSvg();
 
-    self.calcRange();
+    self.plotRange.calcRange();
 
 
     // init copies focus to defaultFocus, called only once
@@ -1791,7 +1725,7 @@ define([
     // init remove pipe
     self.removePipe = [];
 
-    self.calcMapping();
+    self.plotRange.calcMapping();
 
     self.legendDone = false;
     self.update();

@@ -71,8 +71,8 @@ define([
     var focus = scope.plotFocus.getFocus();
     var eles = this.elements,
       eleprops = this.elementProps;
-    var mapX = scope.plotFocus.data2scrXi,
-      mapY = scope.data2scrYi;
+    var mapX = scope.plotFocus.plotRange.data2scrXi,
+      mapY = scope.plotRange.data2scrYi;
     var fixed = scope.renderFixed;
 
     eleprops.length = 0;

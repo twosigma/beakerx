@@ -65,7 +65,7 @@ export namespace PlotScale {
   function scaleYAxis(scope, mouseY, zoomRate, l, r, span) {
     const focus = scope.plotFocus.getFocus();
     const level = INITIAL_ZOOM_LEVEL;
-    const yMiddle = focus[l] + scope.scr2dataYp_r(mouseY) * focus[span];
+    const yMiddle = focus[l] + scope.plotRange.scr2dataYp_r(mouseY) * focus[span];
     const newYl = yMiddle - zoomRate * (yMiddle - focus[l]);
     const newYr = yMiddle + zoomRate * (focus[r] - yMiddle);
     const newYSpan = newYr - newYl;
@@ -95,7 +95,7 @@ export namespace PlotScale {
       return;
     }
 
-    let xm = focus.xl + scope.scr2dataXp(mouseX) * focus.xspan;
+    let xm = focus.xl + scope.plotRange.scr2dataXp(mouseX) * focus.xspan;
     let nxl = xm - zoomRate * (xm - focus.xl);
     let nxr = xm + zoomRate * (focus.xr - xm);
     let nxspan = nxr - nxl;

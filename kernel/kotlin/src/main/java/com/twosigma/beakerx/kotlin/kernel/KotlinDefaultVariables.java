@@ -45,7 +45,8 @@ public class KotlinDefaultVariables extends DefaultJVMVariables {
       "com.twosigma.beakerx.mimetype.FileLinkContainer.FileLink",
       "com.twosigma.beakerx.mimetype.FileLinkContainer.FileLinks",
       "java.lang.Math.*",
-      "com.twosigma.beakerx.mimetype.MIMEContainer"
+      "com.twosigma.beakerx.mimetype.MIMEContainer",
+      "com.twosigma.beakerx.kotlin.autotranslation.NSClientProxy.API as beakerx"
       //"com.twosigma.beaker.table.*",
       //"com.twosigma.beaker.table.format.*",
       //"com.twosigma.beaker.table.renderer.*",

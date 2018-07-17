@@ -25,8 +25,8 @@ public class DefaultBeakerXJsonSerializer extends BaseBeakerXJsonSerializer {
   @Override
   protected BeakerObjectConverter createSerializer() {
     BasicObjectSerializer serializer = new BasicObjectSerializer();
-    serializer.addfTypeDeserializer(new TableDisplayDeSerializer(serializer));
-    serializer.addfTypeDeserializer(new AutotranslationDefaultDeserializer());
+    serializer.addTypeDeserializer(new TableDisplayDeSerializer(serializer));
+    serializer.addTypeDeserializer(new AutotranslationDefaultDeserializer());
     return serializer;
   }
 }

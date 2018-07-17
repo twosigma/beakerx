@@ -110,7 +110,7 @@ define([
 
 
   PlotConstline.prototype.prepare = function(scope) {
-    var focus = scope.focus;
+    var focus = scope.plotFocus.getFocus();
     var eles = this.elements,
       eleprops = this.elementProps;
     var mapX = scope.data2scrXi,

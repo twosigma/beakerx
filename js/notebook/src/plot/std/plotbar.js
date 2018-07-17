@@ -108,8 +108,8 @@ define([
 
   PlotBar.prototype.filter = function(scope) {
     var eles = this.elements;
-    var l = plotUtils.upper_bound(eles, "x2", scope.focus.xl) + 1,
-      r = plotUtils.upper_bound(eles, "x", scope.focus.xr);
+    var l = plotUtils.upper_bound(eles, "x2", scope.plotFocus.focus.xl) + 1,
+      r = plotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xr);
 
     l = Math.max(l, 0);
     r = Math.min(r, eles.length - 1);
@@ -135,7 +135,7 @@ define([
 
   PlotBar.prototype.prepare = function(scope) {
     var w = this.width, sw;
-    var focus = scope.focus;
+    var focus = scope.plotFocus.getFocus();
     var mapX = scope.data2scrXi,
       mapY = this.getYMapper(scope);
     var eleprops = this.elementProps,

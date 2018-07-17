@@ -62,7 +62,7 @@ define([
   };
 
   PlotLodLine.prototype.prepare = function(scope, gid) {
-    var focus = scope.focus;
+    var focus = scope.plotFocus.getFocus();
     var eleprops = this.elementProps;
     var mapX = scope.data2scrXi,
       mapY = scope.data2scrYi;

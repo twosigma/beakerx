@@ -19,17 +19,15 @@ define([
   './plotConverter',
   './plotUtils',
   './plotFactory',
-  './std/plotaxis',
   './heatmapconverter'
 ],function(
   _,
   plotConverter,
   plotUtils,
   plotFactory,
-  PlotAxis,
   heatmapConverter
 ) {
-
+  var PlotAxis = require('./std/PlotAxis').default;
   var createNewModel = function (model) {
 
     var newmodel;

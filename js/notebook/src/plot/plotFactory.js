@@ -17,7 +17,6 @@
 define([
   './std/plotline',
   './std/plotarea',
-  './std/plotaxis',
   './std/plotconstband',
   './std/plotconstline',
   './std/plottext',
@@ -36,7 +35,6 @@ define([
 ], function(
   PlotLine,
   PlotArea,
-  PlotAxis,
   PlotConstband,
   PlotConstline,
   PlotText,
@@ -53,6 +51,7 @@ define([
   PlotAreaLodLoader,
   PlotPointLodLoader
 ) {
+  var PlotAxis = require('./std/PlotAxis').default;
   var plotFactory = {
     createPlotItem : function(item, lodthresh) {
       if (!lodthresh){

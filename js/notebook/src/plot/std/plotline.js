@@ -115,13 +115,13 @@ define([
       this.vlength = eles.length;
       return;
     }
-    var l = plotUtils.upper_bound(eles, "x", scope.focus.xl),
-      r = plotUtils.upper_bound(eles, "x", scope.focus.xr) + 1;
+    var l = plotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xl),
+      r = plotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xr) + 1;
 
     l = Math.max(l, 0);
     r = Math.min(r, eles.length - 1);
 
-    if (l > r || l == r && eles[l].x < scope.focus.xl) {
+    if (l > r || l == r && eles[l].x < scope.plotFocus.focus.xl) {
       // nothing visible, or all elements are to the left of the svg, vlength = 0
       l = 0;
       r = -1;
@@ -142,7 +142,7 @@ define([
   };
 
   PlotLine.prototype.prepare = function(scope) {
-    var focus = scope.focus;
+    var focus = scope.plotFocus.getFocus();
     var eles = this.elements,
       eleprops = this.elementProps,
       elelabels = this.elementLabels,

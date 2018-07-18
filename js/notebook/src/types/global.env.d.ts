@@ -24,6 +24,10 @@ interface Map<K, V> {
   readonly size: number;
 }
 
+interface Math {
+  sign: (x: number) => number
+}
+
 interface MapConstructor {
   new (): Map<any, any>;
   new <K, V>(entries?: ReadonlyArray<[K, V]>): Map<K, V>;
@@ -31,6 +35,8 @@ interface MapConstructor {
 }
 
 declare var Map: MapConstructor;
+declare var CodeMirror: any;
+declare var Proxy: ProxyConstructor;
 
 declare interface NumberConstructor {
   isNaN: (number: number) => boolean,
@@ -47,7 +53,6 @@ interface ProxyConstructor {
   new <T extends object>(target: T, handler: ProxyHandler<T>): T;
 }
 
-declare var Proxy: ProxyConstructor;
 
 declare interface Array<T> {
   from: (arrayLike: any[]) => any[]
@@ -55,7 +60,8 @@ declare interface Array<T> {
 
 declare interface Window {
   beakerx: any,
-  chrome?: any
+  chrome?: any,
+  require: any
 }
 
 interface GlobalEnvironment {

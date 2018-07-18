@@ -31,6 +31,7 @@ import {ALL_TYPES} from "./dataTypes";
 
 const DEFAULT_RESIZE_SECTION_SIZE_IN_PX = 6;
 const DEFAULT_ROW_PADDING = 4;
+const SCROLLBAR_WIDTH = 16;
 
 export class DataGridResize {
   dataGrid: BeakerXDataGrid;
@@ -49,6 +50,7 @@ export class DataGridResize {
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.fillEmptySpaceResizeFn = this.fillEmptySpaceResizeFn.bind(this);
+    this.fitVieport = this.fitVieport.bind(this);
 
     this.installMessageHook();
   }
@@ -76,6 +78,7 @@ export class DataGridResize {
 
   updateWidgetHeight(): void {
     this.dataGrid.node.style.minHeight = `${this.getWidgetHeight()}px`;
+    this.fitVieport();
   }
 
   updateWidgetWidth(): void {
@@ -83,17 +86,17 @@ export class DataGridResize {
     const hasVScroll = (
       this.dataGrid.rowManager.rowsToShow !== -1 && this.dataGrid.rowManager.rowsToShow <= this.dataGrid.model.rowCount('body')
     );
-    const vScrollWidth = hasVScroll ? this.dataGrid['_vScrollBarMinWidth'] + 1 : 0;
+    const vScrollWidth = hasVScroll ? SCROLLBAR_WIDTH : 0;
     const width = this.dataGrid.totalWidth + spacing + vScrollWidth;
 
     if (this.resizedHorizontally && width >= this.dataGrid.node.clientWidth) {
-      this.dataGrid.fit();
+      this.fitVieport();
 
       return;
     }
 
     this.dataGrid.node.style.width = `${width}px`;
-    this.dataGrid.fit();
+    this.fitVieport();
   }
 
   setInitialSectionWidths(): void {
@@ -119,6 +122,8 @@ export class DataGridResize {
 
     this.dataGrid.columnSections['_sections'].forEach(this.fillEmptySpaceResizeFn('body', value));
     this.dataGrid.rowHeaderSections['_sections'].forEach(this.fillEmptySpaceResizeFn('row-header', value));
+
+    this.fitVieport();
   }
 
   updateColumnWidth(region: ColumnRegion): Function {
@@ -147,7 +152,6 @@ export class DataGridResize {
 
   stopResizing() {
     this.resizing = false;
-
     this.resizeMode = null;
     this.dataGrid.node.parentElement.removeEventListener('mouseup', this.handleMouseUp, true);
     document.body.removeEventListener('mousemove', this.handleMouseMove, true);
@@ -199,6 +203,10 @@ export class DataGridResize {
   setSectionWidth(area, column: DataGridColumn, value: number): void {
     this.dataGrid.resizeSection(area, column.getPosition().value, value);
     column.setWidth(value);
+  }
+
+  fitVieport() {
+    this.dataGrid && this.dataGrid.fit();
   }
 
   private fillEmptySpaceResizeFn(region: ColumnRegion, value: number) {
@@ -337,10 +345,21 @@ export class DataGridResize {
   }
 
   private getSectionWidth(column): number {
-    if(column.getDisplayType() === ALL_TYPES.image) {
-      return selectColumnWidth(this.dataGrid.store.state, column);
+    const fixedWidth = selectColumnWidth(this.dataGrid.store.state, column);
+    const displayType = column.getDisplayType();
+
+    if (displayType === ALL_TYPES.image) {
+      return fixedWidth || 1;
     }
 
+    if (displayType === ALL_TYPES.html && fixedWidth) {
+      return fixedWidth;
+    }
+
+    return this.calculateSectionWidth(column);
+  }
+
+  private calculateSectionWidth(column: DataGridColumn) {
     const position = column.getPosition();
     const value = String(column.formatFn(this.dataGrid.cellManager.createCellConfig({
       region: position.region,

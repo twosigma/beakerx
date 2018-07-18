@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.table.TableDisplay;
 
 import java.util.Collection;
@@ -32,15 +33,18 @@ public class PreviewTableDisplay {
   private List<Widget> previewContent;
   private List<Widget> rowsContent;
 
-  public PreviewTableDisplay(Collection<Map<String, Object>> previewRows, Rows allRows, Count count) {
+  public PreviewTableDisplay(Collection<Map<String, Object>> previewRows, Rows allRows, Button button) {
     this.allRows = allRows;
     this.preview = previewRows;
-    this.previewContent = asList(createShowRowsButton(), new TableDisplay(this.preview));
+    this.previewContent = asList(configureShowRowsButton(button), new TableDisplay(this.preview));
     this.panel = new VBox(previewContent);
   }
 
-  private Button createShowRowsButton() {
-    Button button = new Button();
+  public PreviewTableDisplay(Collection<Map<String, Object>> previewRows, Rows allRows) {
+    this(previewRows, allRows, new Button());
+  }
+
+  private Button configureShowRowsButton(Button button) {
     button.setDescription("Preview " + ROWS + " Rows");
     button.registerOnClick((content, message) -> {
       if (this.rowsContent == null) {
@@ -50,15 +54,15 @@ public class PreviewTableDisplay {
         tableDisplay.setRowLimitMsg(String.format("Note: materializing a %s row preview of a Spark RDD", ROWS));
         this.rowsContent = asList(tableDisplay);
       }
-      changeContent(this.rowsContent);
+      changeContent(this.rowsContent, message);
     });
     return button;
   }
 
-  private void changeContent(List<Widget> content) {
+  private void changeContent(List<Widget> content, Message message) {
     panel.getLayout().setDisplayNone();
     panel.close();
-    panel = new VBox(content);
+    panel = new VBox(content, message);
     panel.display();
   }
 
@@ -69,9 +73,4 @@ public class PreviewTableDisplay {
   public interface Rows {
     Map<String, Object>[] get(int rows);
   }
-
-  public interface Count {
-    Long get();
-  }
-
 }

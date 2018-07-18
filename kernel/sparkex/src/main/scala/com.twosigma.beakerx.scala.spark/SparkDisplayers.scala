@@ -22,7 +22,7 @@ import jupyter.{Displayer, Displayers}
 import java.util.{HashMap, Map}
 
 import com.twosigma.beakerx.widget.PreviewTableDisplay
-import com.twosigma.beakerx.widget.PreviewTableDisplay.{Count, Rows}
+import com.twosigma.beakerx.widget.PreviewTableDisplay.{Rows}
 
 import scala.collection.immutable.ListMap
 
@@ -45,9 +45,6 @@ object SparkDisplayers {
       preview,
       new Rows {
         override def get(rows: Int): Array[util.Map[String, AnyRef]] = com.twosigma.beakerx.scala.table.TableDisplay.toJavaMap(takeRows(ds, rows))
-      },
-      new Count {
-        override def get(): lang.Long = ds.count()
       }
     )
     previewWidget.display()

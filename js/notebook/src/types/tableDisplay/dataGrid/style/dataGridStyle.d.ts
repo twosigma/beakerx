@@ -6,7 +6,7 @@ export declare const DEFAULT_GRID_BORDER_WIDTH = 1;
 export declare const MIN_COLUMN_WIDTH = 40;
 export declare const DEFAULT_ROW_HEIGHT = 24;
 export declare const DEFAULT_COLORS: {
-    [x: number]: {
+    [x: string]: {
         red: any;
         blue: any;
         green: any;

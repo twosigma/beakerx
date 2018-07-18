@@ -15,10 +15,14 @@
  */
 package com.twosigma.beakerx.kernel;
 
+import java.util.Optional;
+
 /**
  * Information from the connection file from Jupyter.
  */
 public interface ConfigurationFile {
 
   Config getConfig();
+
+  Optional<String> getContext();
 }

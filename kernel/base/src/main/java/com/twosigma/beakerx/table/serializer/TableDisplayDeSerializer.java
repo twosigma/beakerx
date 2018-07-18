@@ -62,7 +62,7 @@ public class TableDisplayDeSerializer implements ObjectDeserializer {
     List<List<?>> values = null;
     List<String> classes = null;
     if (n.has("types"))
-      classes = mapper.readValue(n.get("types").asText(), List.class);
+      classes = mapper.readValue(n.get("types").toString(), List.class);
     if (n.has("values")) {
       JsonNode nn = n.get("values");
       values = new ArrayList<List<?>>();
@@ -87,7 +87,7 @@ public class TableDisplayDeSerializer implements ObjectDeserializer {
   public static List<String> getColumns(JsonNode n, ObjectMapper mapper) throws IOException {
     List<String> columns = null;
     if (n.has("columnNames"))
-      columns = mapper.readValue(n.get("columnNames").asText(), List.class);
+      columns = mapper.readValue(n.get("columnNames").toString(), List.class);
     return columns;
   }
 
@@ -95,7 +95,7 @@ public class TableDisplayDeSerializer implements ObjectDeserializer {
   public static List<String> getClasses(JsonNode n, ObjectMapper mapper) throws IOException {
     List<String> classes = null;
     if (n.has("types"))
-      classes = mapper.readValue(n.get("types").asText(), List.class);
+      classes = mapper.readValue(n.get("types").toString(), List.class);
     return classes;
   }
 
@@ -119,7 +119,7 @@ public class TableDisplayDeSerializer implements ObjectDeserializer {
       List<String> classes = TableDisplayDeSerializer.getClasses(n, mapper);
 
       if (n.has("subtype"))
-        subtype = mapper.readValue(n.get("subtype").asText(), String.class);
+        subtype = mapper.readValue(n.get("subtype").toString(), String.class);
 
       if (subtype != null && subtype.equals(TableDisplay.DICTIONARY_SUBTYPE)) {
         o = getValuesAsDictionary(parent, n, mapper);

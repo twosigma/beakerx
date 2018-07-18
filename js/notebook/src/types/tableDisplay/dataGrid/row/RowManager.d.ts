@@ -19,7 +19,7 @@ export default class RowManager {
     getRow(index: any): DataGridRow;
     sortByColumn(column: DataGridColumn): void;
     sortRows(column: DataGridColumn, sortOrder: SORT_ORDER, valueResolver?: Function): void;
-    private compareSortedValues(value1, value2);
+    private compareSortedValues;
     resetSorting(): void;
     defaultValueResolver(row: DataGridRow, columnIndex: number): any;
     indexValueResolver(row: any, columnIndex: number): any;

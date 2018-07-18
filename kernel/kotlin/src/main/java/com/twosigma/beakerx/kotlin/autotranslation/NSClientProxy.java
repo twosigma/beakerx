@@ -13,28 +13,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package com.twosigma.beakerx.kotlin.autotranslation;
 
-export namespace GroovyMode {
-  export const LINE_COMMENT_CHAR = '//';
+import com.twosigma.beakerx.BeakerXClient;
+import com.twosigma.beakerx.BeakerXClientManager;
 
-  export function setCodeMirrorLineComment(cell: any) {
-    if (cell.cell_type !== 'code') {
-      return;
+public class NSClientProxy {
+
+    public static NSClientProxy API = new NSClientProxy();
+    private BeakerXClient client;
+
+    private NSClientProxy() {
+        client = BeakerXClientManager.get();
     }
 
-    const cm = cell.code_mirror;
-    const doc = cm.getDoc();
-    const mode = cm.getMode();
-
-    if (!mode.lineComment) {
-      mode.lineComment = LINE_COMMENT_CHAR;
-      doc.mode = mode;
+    public Object get(String key) {
+        return client.get(key);
     }
-  }
 
-  export function extendWithLineComment(Jupyter: any, CodeMirror: any) {
-    CodeMirror.extendMode('groovy', { lineComment: LINE_COMMENT_CHAR });
-
-    Jupyter.notebook.get_cells().map(setCodeMirrorLineComment);
-  }
+    public Object set(String key, Object value) {
+        return client.set(key, value);
+    }
 }

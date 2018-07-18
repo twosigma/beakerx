@@ -38,10 +38,32 @@ export declare const TIME_UNIT_FORMATS: {
     DATETIME: {
         title: string;
         format: string;
+        valueModifier: number;
+    };
+    DATETIME_MS: {
+        title: string;
+        format: string;
+        valueModifier: number;
+    };
+    DATETIME_NS: {
+        title: string;
+        format: string;
+        valueModifier: number;
     };
     DAYS: {
         title: string;
         format: string;
+        valueModifier: number;
+    };
+    DAYS_MS: {
+        title: string;
+        format: string;
+        valueModifier: number;
+    };
+    DAYS_NS: {
+        title: string;
+        format: string;
+        valueModifier: number;
     };
     HOURS: {
         title: string;
@@ -101,10 +123,32 @@ declare const _default: {
         DATETIME: {
             title: string;
             format: string;
+            valueModifier: number;
+        };
+        DATETIME_MS: {
+            title: string;
+            format: string;
+            valueModifier: number;
+        };
+        DATETIME_NS: {
+            title: string;
+            format: string;
+            valueModifier: number;
         };
         DAYS: {
             title: string;
             format: string;
+            valueModifier: number;
+        };
+        DAYS_MS: {
+            title: string;
+            format: string;
+            valueModifier: number;
+        };
+        DAYS_NS: {
+            title: string;
+            format: string;
+            valueModifier: number;
         };
         HOURS: {
             title: string;

@@ -159,7 +159,7 @@ class XYGraphics(Graphics):
             defY = getValue(kwargs, 'y')
 
             if defY is not None:
-                if isinstance(defY, pd.Series):
+                if isinstance(defY, pd.Series) or isinstance(defY, np.ndarray):
                     defY = defY.tolist()
                 defX = list(range(0, len(defY)))
             else:

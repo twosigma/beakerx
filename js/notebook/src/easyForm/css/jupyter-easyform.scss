@@ -97,14 +97,24 @@ $beakerxFont: "Lato", Helvetica, sans-serif;
   border: 1px solid #cfcfcf;
   padding: 10px;
   font-family: $beakerxFont;
+  overflow: visible;
+  position: relative;
+  margin-top: 10px;
 
   legend {
     border-bottom: none;
-    width: auto;
-    display: inline;
-    padding: 0 5px;
-    font-size: 17px;
     margin-bottom: 0;
+    font-size: 17px;
+    position: absolute;
+    top: -0.7em;
+    background: white;
+    width: auto;
+    display: inline-block;
+    padding: 0 4px;
+  }
+
+  .widget-inline-hbox {
+    align-items: center;
   }
 }
 

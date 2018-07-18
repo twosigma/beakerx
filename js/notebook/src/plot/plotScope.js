@@ -2086,6 +2086,13 @@ define([
     }
   };
 
+  // update model with partial model data
+  PlotScope.prototype.updateModelData = function(data) {
+    if (this.model && this.model.model && data) {
+      this.model.model = _.extend(this.model.model, data);
+    }
+  };
+
   PlotScope.prototype.setElement = function(el) {
     this.element = el;
   };

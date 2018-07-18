@@ -33,6 +33,7 @@ import 'flatpickr/dist/flatpickr.css';
 import 'jquery-ui/themes/base/all.css';
 import 'jquery-ui/ui/widgets/button';
 import 'jquery-ui/ui/widgets/autocomplete';
+import BeakerXThemeHelper from "./BeakerXThemeHelper";
 
 export class EasyFormModel extends widgets.DOMWidgetModel {
   defaults() {
@@ -60,18 +61,19 @@ export class EasyFormView extends widgets.BoxView {
 
     this.$el
       .addClass('beaker-easyform-container')
-      .addClass('widget-vbox');
+      .addClass('widget-vbox')
+      .addClass('beaker-fieldset');
 
     const formTitle = this.model.get('easyFormName');
 
-    this.$fieldset = $('<fieldset></fieldset>').addClass('beaker-fieldset');
     this.$legend = $('<legend>'+formTitle+'</legend>');
-
     this.displayed.then(() => {
-      this.$el.wrap(this.$fieldset);
+      if (BeakerXThemeHelper.isDark) {
+        this.$legend.css('background-color', '#636363');
+      }
 
       if (formTitle) {
-        this.$el.before(this.$legend);
+        this.$el.prepend(this.$legend);
       }
     });
   }

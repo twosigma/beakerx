@@ -133,8 +133,8 @@ describe('Testing of table Actions ', function () {
       cellIndex += 2;
       beakerxPO.runCodeCellByIndex(cellIndex);
       var subMenu = getSubMenu(cellIndex, 1).$$('li');
-      expect(subMenu.length).toEqual(9);
-      subMenu[4].click();
+      expect(subMenu.length).toEqual(13);
+      subMenu[8].click();
 
       var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
       var canvas = codeCell.$('canvas');

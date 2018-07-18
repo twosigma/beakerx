@@ -21,7 +21,7 @@ const CONFIG = {
   nbviewerBaseUrl: 'https://nbviewer.jupyter.org/'
 };
 
-export default class GistPublisher {
+export class GistPublisher {
 
   public static doPublish(
     personalAccessToken: string,
@@ -66,4 +66,8 @@ export default class GistPublisher {
     });
   }
 
+}
+
+export default {
+  GistPublisher,
 }

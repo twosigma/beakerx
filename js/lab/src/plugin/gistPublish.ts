@@ -14,14 +14,9 @@
  *  limitations under the License.
  */
 
-import * as $ from 'jquery';
 import { NotebookPanel } from "@jupyterlab/notebook";
 import { showDialog, Dialog, ToolbarButton } from '@jupyterlab/apputils';
-
-const CONFIG = {
-  gistsUrl: 'https://api.github.com/gists',
-  nbviewerBaseUrl: 'https://nbviewer.jupyter.org/'
-};
+import beakerx from '../beakerx';
 
 export function registerFeature(panel: NotebookPanel) {
   addActionButton(panel);
@@ -47,7 +42,7 @@ function openPublishDialog(panel: NotebookPanel) {
     ]
   })
     .then(() => savePanelState(panel))
-    .then(() => doPublish(panel));
+    .then(() => doPublish(panel, '984f2ad73d0f693841e220279913fb54b4336d34'));
 }
 
 function savePanelState(panel: NotebookPanel): Promise<any> {
@@ -64,34 +59,13 @@ function savePanelState(panel: NotebookPanel): Promise<any> {
   });
 }
 
-function doPublish(panel: NotebookPanel): void {
-  const nbjson = panel.notebook.model.toJSON();
-  const filedata = {};
-
-  filedata[panel.context.contentsModel.name] = {
-    content : JSON.stringify(nbjson, undefined, 1)
-  };
-
-  const settings = {
-    type : 'POST',
-    headers : {},
-    data : JSON.stringify({
-      public : true,
-      files : filedata
-    }),
-    success : (data, status) => {
-      console.log("gist successfully published: " + data.id);
-      window.open(CONFIG.nbviewerBaseUrl + data.id);
-    },
-    error : (jqXHR, status, err) => {
-      const errorMsg = jqXHR.readyState === 0 && !err ? 'NETWORK ERROR!' : err;
-
-      console.log(errorMsg);
-      showErrorDialog(errorMsg);
-    }
-  };
-
-  $.ajax(CONFIG.gistsUrl, settings);
+function doPublish(panel: NotebookPanel, personalAccessToken: string) {
+  beakerx.GistPublisher.doPublish(
+    personalAccessToken,
+    panel.context.contentsModel.name,
+    panel.notebook.model.toJSON(),
+    (errorMsg) => showErrorDialog(errorMsg)
+  );
 }
 
 function showErrorDialog(errorMsg) {

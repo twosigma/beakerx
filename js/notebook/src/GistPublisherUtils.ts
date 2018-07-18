@@ -20,23 +20,37 @@ export interface GistPublisherAccessTokenProviderInterface {
   getPersonalAccessToken(): Promise<string>;
 }
 
-export default class GistPublisherUtils {
+export class GistPublisherUtils {
+  private static accessTokenProvider: GistPublisherAccessTokenProviderInterface = null;
+  private static saveWidgetStateHandler: () => Promise<any>;
+
+  public static registerAccessTokenProvider(accessTokenProvider: GistPublisherAccessTokenProviderInterface) {
+    this.accessTokenProvider = accessTokenProvider;
+  }
+
+  public static registerSaveWidgetStateHandler(saveHandler: () => Promise<string>) {
+    this.saveWidgetStateHandler = saveHandler;
+  }
 
   public static publishScope(
-    accessTokenProvider: GistPublisherAccessTokenProviderInterface,
     scope: any
   ): void {
+    if (null === this.accessTokenProvider) {
+      console.log('access token provider was not registered');
+      return;
+    }
+
     let personalAccessToken = '';
-    accessTokenProvider
+    this.accessTokenProvider
       .getPersonalAccessToken()
       .then((accessToken) => {
         personalAccessToken = accessToken;
         return this.saveWidgetsState();
       })
-      .then(() => {
+      .then((notebook_name) => {
         GistPublisher.doPublish(
           personalAccessToken,
-          Jupyter.notebook.notebook_name,
+          notebook_name,
           this.prepareContent(scope),
           (errorMsg) => {}
         );
@@ -52,16 +66,7 @@ export default class GistPublisherUtils {
   }
 
   private static saveWidgetsState(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      if (Jupyter.menubar.actions.exists('widgets:save-with-widgets')) {
-        Jupyter.menubar.actions.call('widgets:save-with-widgets');
-        console.log("widgets state has been saved");
-
-        setTimeout(resolve);
-      } else {
-        reject('widgets:save-with-widgets actions is not registered');
-      }
-    });
+    return this.saveWidgetStateHandler();
   }
 
   private static prepareContent(scope) {
@@ -70,4 +75,7 @@ export default class GistPublisherUtils {
     return nbjson;
   }
 
+}
+export default {
+  GistPublisherUtils,
 }

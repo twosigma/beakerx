@@ -47,8 +47,7 @@ define([
   var bkUtils = require('./../shared/bkUtils').default;
   var bkHelper = require('./../shared/bkHelper').default;
   var PointShapeHelper = require('./std/PointShapeHelper').default;
-  var GistPublisherUtils = require('./../GistPublisherUtils').default;
-  var DummyAccessTokenProvider = require('./../DummyAccessTokenProvider').default;
+  var GistPublisherUtils = require('./../GistPublisherUtils').GistPublisherUtils;
   var CONTEXT_MENU_DEBOUNCE_TIME = 350;
   var QUICK_ZOOM_DEBOUNCE_TIME = 50;
 
@@ -2535,7 +2534,7 @@ define([
   };
 
   PlotScope.prototype.publish = function() {
-    GistPublisherUtils.publishScope(new DummyAccessTokenProvider(), this);
+    GistPublisherUtils.publishScope(this);
   };
 
   PlotScope.prototype.adjustSvgPositionWithLegend = function(svg, titleOuterHeight) {

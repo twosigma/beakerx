@@ -37,7 +37,6 @@ define([
 ) {
   var bkUtils = require('./../shared/bkUtils').default;
   var GistPublisherUtils = require('./../GistPublisherUtils').default;
-  var DummyAccessTokenProvider = require('./../DummyAccessTokenProvider').default;
   var CombinedPlotScopeUtils = CombinedPlotScopeUtilsModule.default;
 
   function CombinedPlotScope(wrapperId) {
@@ -394,7 +393,7 @@ define([
   };
 
   CombinedPlotScope.prototype.publish = function() {
-    GistPublisherUtils.publishScope(new DummyAccessTokenProvider(), this);
+    GistPublisherUtils.publishScope(this);
   };
 
   CombinedPlotScope.prototype.updateModels = function(updateType) {

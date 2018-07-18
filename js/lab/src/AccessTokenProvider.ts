@@ -14,13 +14,15 @@
  *  limitations under the License.
  */
 
-import { GistPublisherAccessTokenProviderInterface } from "./GistPublisherUtils";
 
-export default class DummyAccessTokenProvider implements GistPublisherAccessTokenProviderInterface {
+import GistPublishModal from "./plugin/gistPublish/gistPublishModal";
+
+export default class AccessTokenProvider {
   public getPersonalAccessToken(): Promise<string> {
     return new Promise(function(resolve, reject) {
-      resolve('984f2ad73d0f693841e220279913fb54b4336d34');
+      new GistPublishModal().show((personalAccessToken) => {
+        resolve(personalAccessToken);
+      });
     });
   }
-
 }

@@ -84,7 +84,7 @@ export default class GistPublishModal {
     return modal.launch();
   }
 
-  createBodyWidget(): Widget {
+  private createBodyWidget(): Widget {
     const modalContent = document.createElement('div');
 
     modalContent.innerHTML = gistPublishModalTemplate;
@@ -92,7 +92,7 @@ export default class GistPublishModal {
     return new Widget({ node: modalContent });
   }
 
-  createErrorIconNode() {
+  private createErrorIconNode() {
     const errorNode = document.createElement('span');
 
     errorNode.classList.add('fa');
@@ -113,7 +113,7 @@ export default class GistPublishModal {
             method: 'POST',
             body: JSON.stringify({
               ...storedSettings,
-              githubPersonalAccessToken
+              githubPersonalAccessToken //FIXME
             })
           },
           this.serverSettings

@@ -14,22 +14,36 @@
  *  limitations under the License.
  */
 
-import * as $ from 'jquery';
 import { NotebookPanel } from "@jupyterlab/notebook";
 import { showDialog, Dialog, ToolbarButton } from '@jupyterlab/apputils';
 import GistPublishModal from './gistPublishModal';
-
-const CONFIG = {
-  gistsUrl: 'https://api.github.com/gists',
-  nbviewerBaseUrl: 'https://nbviewer.jupyter.org/'
-};
+import beakerx from "../../beakerx";
+import AccessTokenProvider from "../../AccessTokenProvider";
 
 export function registerFeature(panel: NotebookPanel, showPublication: boolean) {
   if (showPublication) {
     addActionButton(panel);
+    setupPublisher(panel);
   } else {
     removeActionButton(panel);
   }
+}
+
+function setupPublisher(panel: NotebookPanel) {
+  beakerx.GistPublisherUtils.registerAccessTokenProvider(new AccessTokenProvider());
+  beakerx.GistPublisherUtils.registerSaveWidgetStateHandler(() => {
+    return new Promise((resolve, reject) => {
+      panel.context.save().then(() => {
+      console.log("widgets state has been saved");
+
+      if (!panel.isDisposed) {
+        resolve(panel.context.contentsModel.name);
+      } else {
+        reject();
+      }
+      }, reject);
+    })
+  });
 }
 
 function addActionButton(panel: NotebookPanel): void {
@@ -57,47 +71,16 @@ function removeActionButton(panel: NotebookPanel): void {
 }
 
 function openPublishDialog(panel: NotebookPanel) {
-  const gistPublishModal = new GistPublishModal();
-
-  gistPublishModal.show(personalAccessToken => doPublish(panel, personalAccessToken));
+  new GistPublishModal()
+    .show(personalAccessToken => doPublish(panel, personalAccessToken));
 }
 
 function doPublish(panel: NotebookPanel, personalAccessToken: string|null): void {
-  const nbjson = panel.notebook.model.toJSON();
-  const filedata = {};
-
-  filedata[panel.context.contentsModel.name] = {
-    content : JSON.stringify(nbjson, undefined, 1)
-  };
-
-  let gistsUrl = CONFIG.gistsUrl;
-  if (personalAccessToken) {
-    gistsUrl = `${gistsUrl}?oauth_token=${personalAccessToken}`;
-  }
-
-  const settings = {
-    type : 'POST',
-    headers : {},
-    data : JSON.stringify({
-      public : true,
-      files : filedata
-    }),
-    success : (data, status) => {
-      console.log("gist successfully published: " + data.id);
-      window.open(CONFIG.nbviewerBaseUrl + data.id);
-    }
-  };
-
-  $.ajax(gistsUrl, settings).fail((jqXHR, status, err) => {
-    let errorMsg = jqXHR.readyState === 0 && !err ? 'NETWORK ERROR!' : err;
-
-    if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-      errorMsg = jqXHR.responseJSON.message;
-    }
-
-    console.log(errorMsg);
-    showErrorDialog(errorMsg);
-  });
+  beakerx.GistPublisher.doPublish(
+    personalAccessToken, panel.context.contentsModel.name,
+    panel.notebook.model.toJSON(),
+    (errorMsg) => showErrorDialog(errorMsg)
+  );
 }
 
 function showErrorDialog(errorMsg) {

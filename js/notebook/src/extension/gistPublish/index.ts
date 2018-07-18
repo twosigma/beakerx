@@ -17,6 +17,9 @@
 import * as $ from 'jquery';
 import GistPublishModal from './gistPublishModal';
 import GistPublisher from "../../GistPublisher";
+import { GistPublisherUtils } from '../../GistPublisherUtils';
+import AccessTokenProvider from '../../AccessTokenProvider';
+
 
 const dialog = require('base/js/dialog');
 
@@ -24,6 +27,7 @@ export function registerFeature(): void {
   if (!!Jupyter.NotebookList) {
     return;
   }
+  setupPublisher();
 
   Jupyter.toolbar.add_buttons_group([{
     'label'   : ' ',
@@ -47,10 +51,27 @@ export function registerFeature(): void {
   publish_menu.click(beforePublish);
 }
 
+function setupPublisher() {
+  GistPublisherUtils.registerAccessTokenProvider(new AccessTokenProvider());
+  GistPublisherUtils.registerSaveWidgetStateHandler(() => new Promise((resolve, reject) => {
+    if (Jupyter.menubar.actions.exists('widgets:save-with-widgets')) {
+      Jupyter.menubar.actions.call('widgets:save-with-widgets');
+      console.log("widgets state has been saved");
+
+      setTimeout(function() {
+        resolve(Jupyter.notebook.notebook_name)
+      });
+    } else {
+      reject('widgets:save-with-widgets actions is not registered');
+    }
+  }))
+}
+
 function beforePublish(): void {
-  GistPublishModal.show(personalAccessToken => saveWidgetsState().then(
-    () => doPublish(personalAccessToken)
-  ));
+  new GistPublishModal()
+    .show(personalAccessToken => saveWidgetsState().then(
+      () => doPublish(personalAccessToken)
+    ));
 }
 
 function showErrorDialog(errorMsg) {

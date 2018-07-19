@@ -27,7 +27,7 @@ define([
   plotFactory,
   heatmapConverter
 ) {
-  var PlotAxis = require('./std/PlotAxis').default;
+  var PlotAxisFactory = require('./std/axis/PlotAxisFactory').default;
   var createNewModel = function (model) {
 
     var newmodel;
@@ -591,7 +591,7 @@ define([
       var vrange = model.vrange;
       var xAxisLabel = model.xAxis.label;
 
-      var xAxis = new PlotAxis(model.xAxis.type);
+      var xAxis = PlotAxisFactory.getPlotAxis(model.xAxis.type);
 
       if (xAxis.axisType === "category") {
         xAxis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
@@ -612,7 +612,7 @@ define([
 
         var label = modelAxis.label;
 
-        var axis = new PlotAxis(modelAxis.type);
+        var axis = PlotAxisFactory.getPlotAxis(modelAxis.type);
 
         if (axis.axisType === "category") {
           axis.setRange(vrange.xl, vrange.xr, model.xAxis.base);

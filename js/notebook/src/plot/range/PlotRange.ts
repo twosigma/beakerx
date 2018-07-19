@@ -124,7 +124,7 @@ export default class PlotRange {
     this.data2scrYi = (val) => Number(this.data2scrY(val).toFixed(this.scope.renderFixed));
 
     if (this.data2scrY_r !== undefined) {
-      this.data2scrYi_r = (val) => Number(this.scope.data2scrY_r(val).toFixed(this.scope.renderFixed));
+      this.data2scrYi_r = (val) => Number(this.data2scrY_r(val).toFixed(this.scope.renderFixed));
     }
   }
 }

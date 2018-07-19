@@ -51,7 +51,8 @@ define([
   PlotAreaLodLoader,
   PlotPointLodLoader
 ) {
-  var PlotAxis = require('./std/PlotAxis').default;
+  var TimeAxis = require('./std/axis/TimeAxis').default;
+
   var plotFactory = {
     createPlotItem : function(item, lodthresh) {
       if (!lodthresh){
@@ -161,7 +162,7 @@ define([
           item.__proto__ = PlotText.prototype;
           break;
         case "axis":
-          item.__proto__ = PlotAxis.prototype;
+          item.__proto__ = TimeAxis.prototype;
           break;
         case "treemapnode":
           item.__proto__ = PlotTreeMapNode.prototype;

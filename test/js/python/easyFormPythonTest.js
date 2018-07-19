@@ -34,7 +34,6 @@ describe('(Python) Testing of EasyForm', function () {
     it('Cell has EasyForm widget', function () {
       cellIndex = 0;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      expect(codeCell.$('fieldset').isEnabled()).toBeTruthy();
       expect(codeCell.$('legend').getText()).toBe('Legend name');
       expect(codeCell.$('div.beaker-easyform-container').isEnabled()).toBeTruthy();
     });

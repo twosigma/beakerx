@@ -120,7 +120,7 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
       out.setOutputHandler()
       interpreter.interpret(code) match {
         case Success => {
-          if (isUnitObject()) {
+          if (shouldHideResult()) {
             either = TryResult.createResult(MIMEContainer.HIDDEN)
           } else {
             val value = getOut.asInstanceOf[Object]
@@ -144,7 +144,7 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
     either
   }
 
-  private def isUnitObject() = {
+  private def shouldHideResult() = {
     val print = interpreter.lastRequest.lineRep.call("$print").toString.trim
     print.equals("")
   }

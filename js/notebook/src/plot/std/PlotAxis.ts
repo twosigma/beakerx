@@ -174,31 +174,32 @@ export default class PlotAxis {
     }
   }
 
-  setGridlines(pl, pr, count, ml, mr) {
-    if (pr < pl) {
+  setGridlines(pointLeft, pointRight, count, marginLeft, marginRight) {
+    if (pointRight < pointLeft) {
       console.error("cannot set right coord < left coord");
       return;
     }
-    if (count == null) {
-      console.error("missing setCoords count");
-      count = 1;
-    }
-    this.axisPctL = pl;
-    this.axisPctR = pr;
-    this.axisPctSpan = pr - pl;
+
+    this.axisPctL = pointLeft;
+    this.axisPctR = pointRight;
+    this.axisPctSpan = pointRight - pointLeft;
 
     if (this.axisType === "time" || this.axisType === "nanotime") {
-      this.axisMarginValL = plotUtils.mult(this.axisValSpan, ml);
-      this.axisMarginValR = plotUtils.mult(this.axisValSpan, mr);
+      this.axisMarginValL = plotUtils.mult(this.axisValSpan, marginLeft);
+      this.axisMarginValR = plotUtils.mult(this.axisValSpan, marginRight);
     }
 
-    var span;
+    let span;
+
     if (this.axisValSpan instanceof Big) {
       span = parseFloat(this.axisValSpan.times(this.axisPctSpan).toString());
     } else {
       span =this.axisPctSpan * this.axisValSpan;
     }
-    var intervals, fixs;
+
+    let intervals;
+    let fixs;
+
     if (this.axisType === "time" || this.axisType === "nanotime") {
       intervals = this.dateIntws;
       fixs = {};
@@ -206,256 +207,341 @@ export default class PlotAxis {
       intervals = this.numIntws;
       fixs = this.numFixs;
     }
-    var w, f, mindiff = 1E100;
 
-    var diff = mindiff;
-    var i = 0;
+    this.setAxisSteps(span, intervals, fixs, count);
+    this.setLinesAndLabels(pointLeft, pointRight, span);
+  }
+  
+  setAxisSteps(span, intervals, fixs, count) {
+    let axisStep;
+    let axisFixed;
+    let mindiff = 1E100;
+    let diff = mindiff;
+    let i = 0;
 
-    var self = this;
-    var calcW = function (i,axisType) {
-      if (i >= intervals.length) {
-        var prev = intervals[intervals.length - 1];
+    if (count == null) {
+      console.error("missing setCoords count");
+      count = 1;
+    }
 
-        if (axisType === "time" || axisType === "nanotime") {
-          if (i === 0) {
-            intervals.push(1);
-            intervals.push(5);
-          } else {
-            if (prev < self.UNIT) {
-              intervals.push(prev + 5);
-            } else if (prev === self.UNIT) {
-              intervals.push(prev + 4 * self.UNIT);
-            } else if (prev < self.SECOND) {
-              intervals.push(prev + 5 * self.UNIT);
-            } else if (prev === self.SECOND) {
-              intervals.push(prev + self.SECOND * 4);
-            } else if (prev < self.MINUTE) {
-              intervals.push(prev + self.SECOND * 5);
-            } else if (prev === self.MINUTE) {
-              intervals.push(prev + self.MINUTE * 4);
-            } else if (prev < self.HOUR) {
-              intervals.push(prev + self.MINUTE * 5);
-            }else if (prev < self.DAY) {
-              intervals.push(prev + self.HOUR);
-            } else if (prev < self.MONTH) {
-              intervals.push(prev + self.DAY);
-            } else if (prev < self.YEAR) {
-              intervals.push(prev + self.DAY * 10);
-            } else {
-              intervals.push(prev + self.YEAR);
-            }
-          }
-        } else {
-          var bs = (i === 0) ? 1E-6 : (prev / 5.0) * 10;
-          intervals = intervals.concat([
-            1.0 * bs,
-            2.5 * bs,
-            5.0 * bs
-          ]);
-        }
-      }
-      return intervals[i];
-    };
+    while (diff === mindiff && axisStep !== Infinity) {
+      axisStep = this.calcAxisStep(i, intervals);
+      axisFixed = this.calcAxisFixed(i, fixs);
 
-    var calcF = function (i, axisType) {
-      if (i >= fixs.length) {
-        return 0;
-      }
-      return fixs[i];
-    };
+      let nowcount = span / axisStep;
 
-    while (diff === mindiff && w !== Infinity) {
-      w = calcW(i, this.axisType);
-      f = calcF(i, this.axisType);
-
-      var nowcount = span / w;
       diff = Math.abs(nowcount - count);
+
       if (diff < mindiff) {
         mindiff = diff;
       }
+
       i++;
     }
 
-    this.axisStep = w;
-    this.axisFixed = f;
+    this.axisStep = axisStep;
+    this.axisFixed = axisFixed;
+  }
+  
+  setLinesAndLabels(pointLeft, pointRight, span) {
+    let lines;
+    let labels;
 
-    var lines, labels;
+    lines = this.calcLines(pointLeft, pointRight, this.axisStep);
 
-    lines = this.calcLines(pl, pr, w);
+    let margins = plotUtils.plus(this.axisMarginValL, this.axisMarginValR);
 
-    var margins = plotUtils.plus(this.axisMarginValL, this.axisMarginValR);
     span = plotUtils.mult(this.axisPctSpan, plotUtils.minus(this.axisValSpan, margins));
-
-    labels = this.calcLabels(
-      lines,
-      span,
-      this.axisType
-    );
+    labels = this.calcLabels(lines, span);
 
     this.axisGridlines = lines;
     this.axisGridlineLabels = labels.labels;
+
     if (labels.common !== ''){
       this.axisLabelWithCommon = this.label ? this.label + ' ' + labels.common : labels.common;
-    }else{
+    } else {
       this.axisLabelWithCommon = this.label;
     }
   }
 
-  calcLines(pl, pr, w) {
-    var self = this;
-
-    var selectStartOrEndInterval = function(value, interval) {
-      var nextIntervalStart = bkUtils.applyTimezone(value, self.axisTimezone).endOf(interval).add(1, "ms");
-      var intervalStart = bkUtils.applyTimezone(value, self.axisTimezone).startOf(interval);
-      return  ((nextIntervalStart - value) > (value - intervalStart)) ? intervalStart : nextIntervalStart;
-    };
-
-    var normalize = function (value) {
-      if (self.axisType === "time") {
-        if (plotUtils.gt(w, self.DAY)) {
-          if (plotUtils.lte(w, self.MONTH)) {
-            value = selectStartOrEndInterval(value, "day");
-          } else if (plotUtils.lte(w, self.YEAR)) {
-            value = selectStartOrEndInterval(value, "month");
-          } else {
-            value = selectStartOrEndInterval(value, "year");
-          }
-        }
-      }
-      return value;
-    };
-
-    var val = this.getValue(pl);
-    if(val instanceof Big){
-      if(val.gte(0)){
-        val = val.div(w).round(0, 3).times(w);
-      }else{
-        val = val.div(w).round(0, 0).times(w);
-      }
-    }else{
-      val = normalize(Math.ceil(val / w) * w);
+  calcAxisStep(i, intervals) {
+    if (i >= intervals.length) {
+      this.addIntervals(i, intervals);
     }
-    var valr = this.getValue(pr);
-    var lines = [];
 
-    if (this.axisType === "category") {
-      for (var i = 0; i < this.fixedLines.length; i++) {
-        var pct = this.fixedLines[i];
-        if (pct >= this.getPercent(this.getValue(pl)) && pct <= this.getPercent(valr)) {
-          lines.push(pct);
-        }
-      }
+    return intervals[i];
+  }
+
+  calcAxisFixed(i, fixs) {
+    if (i >= fixs.length) {
+      return 0;
+    }
+
+    return fixs[i];
+  }
+
+  addIntervals(i:number, intervals: number[]) {
+    let prev = intervals[intervals.length - 1];
+
+    if (this.axisType === "time" || this.axisType === "nanotime") {
+      this.addTimeAxisIntervals(i, intervals, prev);
     } else {
-      while (plotUtils.lte(val, valr) || plotUtils.lte(val, valr+1e-12)) {
-        var pct = this.getPercent(val);
-        lines.push(pct);
-        val = normalize(plotUtils.plus(val, w));
-      }
+      this.addDefaultIntervals(i, intervals, prev);
+    }
+  }
+
+  addTimeAxisIntervals(i: number, intervals: number[], prev: any) {
+    if (i === 0) {
+      intervals.push(1);
+      intervals.push(5);
+
+      return;
     }
 
+    if (prev < this.UNIT) {
+      intervals.push(prev + 5);
+    } else if (prev === this.UNIT) {
+      intervals.push(prev + 4 * this.UNIT);
+    } else if (prev < this.SECOND) {
+      intervals.push(prev + 5 * this.UNIT);
+    } else if (prev === this.SECOND) {
+      intervals.push(prev + this.SECOND * 4);
+    } else if (prev < this.MINUTE) {
+      intervals.push(prev + this.SECOND * 5);
+    } else if (prev === this.MINUTE) {
+      intervals.push(prev + this.MINUTE * 4);
+    } else if (prev < this.HOUR) {
+      intervals.push(prev + this.MINUTE * 5);
+    }else if (prev < this.DAY) {
+      intervals.push(prev + this.HOUR);
+    } else if (prev < this.MONTH) {
+      intervals.push(prev + this.DAY);
+    } else if (prev < this.YEAR) {
+      intervals.push(prev + this.DAY * 10);
+    } else {
+      intervals.push(prev + this.YEAR);
+    }
+  }
+
+  addDefaultIntervals(i: number, intervals: number[], prev: any) {
+    let bs = (i === 0) ? 1E-6 : (prev / 5.0) * 10;
+
+    intervals.push(1.0 * bs);
+    intervals.push(2.5 * bs);
+    intervals.push(5.0 * bs);
+  }
+
+  calcLines(pointLeft, pointRight, axisStep) {
+    if (this.axisType === "category") {
+      return this.getCategoryAxisLines(pointLeft, pointRight);
+    }
+    
+    return this.getDefaultAxisLines(pointLeft, pointRight, axisStep);
+  }
+  
+  getCategoryAxisLines(pointLeft: number, pointRight: number) {
+    let lines: number[] = [];
+    let valueRight = this.getValue(pointRight);
+    
+    for (let i = 0; i < this.fixedLines.length; i++) {
+      let pointCoords = this.fixedLines[i];
+
+      if (
+        pointCoords >= this.getPercent(this.getValue(pointLeft))
+        && pointCoords <= this.getPercent(valueRight)
+      ) {
+        lines.push(pointCoords);
+      }
+    }
+    
     return lines;
   }
 
-  calcLabels(lines, span, axisType) {
+  getDefaultAxisLines(pointLeft, pointRight, axisStep) {
+    let lines: number[] = [];
+    let valueRight = this.getValue(pointRight);
+    let value = this.getValue(pointLeft);
 
-    var labels = [];
-
-    if (axisType === "category"){
-      var min = Math.min.apply(null, lines);
-      var max = Math.max.apply(null, lines);
-      for (var key in this.axisFixedLabels) {
-        var pct = parseFloat(key);
-        if (!this.axisFixedLabels.hasOwnProperty(pct)) { continue; }
-        if(pct >= min && pct <= max){
-          labels.push(this.axisFixedLabels[pct]);
-        }
+    if (value instanceof Big) {
+      if(value.gte(0)){
+        value = value.div(axisStep).round(0, 3).times(axisStep);
+      } else {
+        value = value.div(axisStep).round(0, 0).times(axisStep);
       }
     } else {
-      for (var i = 0; i < lines.length; i++) {
-        let pct = lines[i];
-        labels.push(this.getString(pct, span));
-      }
+      value = this.normalizeValue(Math.ceil(value / axisStep) * axisStep, axisStep);
+    }
+    
+    while (plotUtils.lte(value, valueRight) || plotUtils.lte(value, valueRight+1e-12)) {
+      let pointCoords = this.getPercent(value);
+      
+      lines.push(pointCoords);
+      value = this.normalizeValue(plotUtils.plus(value, axisStep), axisStep);
+    }
+    
+    return lines;
+  }
+
+  calcLabels(lines, span) {
+    let labels = [];
+
+    if (this.axisType === "category") {
+      labels = this.getCategoryAxisLabels(lines);
+    } else {
+      labels = this.getDefaultAxisLabels(lines, span);
     }
 
-
-    if ((span > this.SECOND && axisType === "time" || axisType === "nanotime" && plotUtils.gt(span, this.UNIT)) &&
-      labels.length != _.uniq(labels).length) {
-      if (axisType === "nanotime" && plotUtils.lte(span, this.SECOND)){
-        span = this.UNIT;
-      } else if (plotUtils.lte(span, this.MINUTE)) {
-        span = this.SECOND;
-      } else if (plotUtils.lte(span, this.HOUR)) {
-        span = this.MINUTE;
-      } else if (plotUtils.lte(span, this.DAY)) {
-        span = this.HOUR;
-      } else if (plotUtils.lte(span, this.MONTH)) {
-        span = this.DAY;
-      } else if (plotUtils.lte(span, this.YEAR)) {
-        span = this.MONTH;
-      } else {
-        span = this.YEAR;
-      }
-      if (axisType === "nanotime") {
-        span = new Big(span).minus(1);
-      } else {
-        span -= 1;
-      }
-
-      return this.calcLabels(lines, span, axisType);
+    if (this.shouldCalcTimeAxisLabels(labels, span)) {
+      return this.getTimeAxisLabels(lines, span);
     }
-
-    var self = this;
-    var calcCommonPart = function () {
-      var common = '';
-
-      if ((axisType === "time" || axisType === "nanotime") && plotUtils.gte(span, self.HOUR) && labels.length > 1) {
-
-        var tokens = labels[0].split(' ');
-
-        var index = 0;
-
-        var checkCommon = function (index) {
-
-          var substring =  (common != '') ? common + ' ' + tokens[index] : tokens[index];
-          for (i = 1; i < labels.length; i++) {
-            if (substring !== labels[i].substring(0, substring.length)) {
-              return false;
-            }
-          }
-          return true;
-        };
-
-        while(checkCommon(index)){
-          common = (common != '') ? common + ' ' + tokens[index] : tokens[index];
-          index = index+1;
-        }
-
-        if (common.length > 1) {
-
-          for (i = 1; i < labels.length; i++) {
-            var label = labels[i];
-            if (common != label.substring(0, common.length)) {
-              common = '';
-              break;
-            }
-          }
-        }
-
-        if (common.length > 1) {
-          for (i = 0; i < labels.length; i++) {
-            labels[i] = labels[i].replace(common, '').trim();
-          }
-        }
-        common = common.replace(',', '').trim();
-      }
-
-      return common;
-    };
 
     return {
-      common : calcCommonPart(),
+      common : this.calcTimeAxisLabelsCommonPart(labels, span),
       labels : labels
     };
+  }
+
+  getCategoryAxisLabels(lines: any[]): string[] {
+    let labels = [];
+    let min = Math.min.apply(null, lines);
+    let max = Math.max.apply(null, lines);
+
+    for (let key in this.axisFixedLabels) {
+      let pointCoords = parseFloat(key);
+
+      if (!this.axisFixedLabels.hasOwnProperty(pointCoords)) {
+        continue;
+      }
+
+      if(pointCoords >= min && pointCoords <= max){
+        labels.push(this.axisFixedLabels[pointCoords]);
+      }
+    }
+
+    return labels;
+  }
+
+  getDefaultAxisLabels(lines: any[], span: number): string[] {
+    let labels = [];
+
+    for (var i = 0; i < lines.length; i++) {
+      let pointCoords = lines[i];
+
+      labels.push(this.getString(pointCoords, span));
+    }
+
+    return labels;
+  }
+
+  shouldCalcTimeAxisLabels(labels: string[], span: number): boolean {
+    return (
+      (
+        span > this.SECOND && this.axisType === "time"
+        || this.axisType === "nanotime" && plotUtils.gt(span, this.UNIT)
+      )
+      && labels.length != _.uniq(labels).length
+    );
+  }
+
+  getTimeAxisLabels(lines: any[], span: number) {
+    if (this.axisType === "nanotime" && plotUtils.lte(span, this.SECOND)){
+      span = this.UNIT;
+    } else if (plotUtils.lte(span, this.MINUTE)) {
+      span = this.SECOND;
+    } else if (plotUtils.lte(span, this.HOUR)) {
+      span = this.MINUTE;
+    } else if (plotUtils.lte(span, this.DAY)) {
+      span = this.HOUR;
+    } else if (plotUtils.lte(span, this.MONTH)) {
+      span = this.DAY;
+    } else if (plotUtils.lte(span, this.YEAR)) {
+      span = this.MONTH;
+    } else {
+      span = this.YEAR;
+    }
+
+    if (this.axisType === NANOTIME_TYPE) {
+      span = new Big(span).minus(1);
+    } else {
+      span -= 1;
+    }
+
+    return this.calcLabels(lines, span);
+  }
+
+  calcTimeAxisLabelsCommonPart(labels, span) {
+    let common = '';
+
+    if (
+      (this.axisType !== "time" && this.axisType !== "nanotime")
+      || !plotUtils.gte(span, this.HOUR)
+      || labels.length <= 1
+    ) {
+      return common;
+    }
+
+    let tokens = labels[0].split(' ');
+    let index = 0;
+
+    const checkCommon = (index) => {
+      let substring = common ? `${common} ${tokens[index]}` : tokens[index];
+
+      for (let i = 1; i < labels.length; i++) {
+        if (substring !== labels[i].substring(0, substring.length)) {
+          return false;
+        }
+      }
+
+      return true;
+    };
+
+    while (checkCommon(index)) {
+      common = (common != '') ? common + ' ' + tokens[index] : tokens[index];
+      index = index+1;
+    }
+
+    if (common.length > 1) {
+      for (let i = 1; i < labels.length; i++) {
+        let label = labels[i];
+
+        if (common != label.substring(0, common.length)) {
+          common = '';
+
+          break;
+        }
+      }
+    }
+
+    if (common.length > 1) {
+      for (let i = 0; i < labels.length; i++) {
+        labels[i] = labels[i].replace(common, '').trim();
+      }
+    }
+
+    return common.replace(',', '').trim();
+  }
+
+  selectStartOrEndInterval(value, interval) {
+    const nextIntervalStart = bkUtils.applyTimezone(value, this.axisTimezone).endOf(interval).add(1, "ms");
+    const intervalStart = bkUtils.applyTimezone(value, this.axisTimezone).startOf(interval);
+    
+    return  ((nextIntervalStart - value) > (value - intervalStart)) ? intervalStart : nextIntervalStart;
+  }
+  
+  normalizeValue(value, axisStep) {
+    if (this.axisType !== "time" || !plotUtils.gt(axisStep, this.DAY)) {
+      return value;
+    }
+    
+    if (plotUtils.lte(axisStep, this.MONTH)) {
+      value = this.selectStartOrEndInterval(value, "day");
+    } else if (plotUtils.lte(axisStep, this.YEAR)) {
+      value = this.selectStartOrEndInterval(value, "month");
+    } else {
+      value = this.selectStartOrEndInterval(value, "year");
+    }
+
+    return value;
   }
 
   getGridlines(): any[] {
@@ -477,62 +563,84 @@ export default class PlotAxis {
     return (val - this.axisValL) / this.axisValSpan;
   }
 
-  getValue(pct): any {
-    if (pct < 0) { pct = 0; }
-    if (pct > 1) { pct = 1; }
+  getValue(pointCoords): any {
+    if (pointCoords < 0) { pointCoords = 0; }
+    if (pointCoords > 1) { pointCoords = 1; }
 
-    return plotUtils.plus(plotUtils.mult(this.axisValSpan, pct), this.axisValL);
+    return plotUtils.plus(plotUtils.mult(this.axisValSpan, pointCoords), this.axisValL);
   }
 
-  getString(pct, span): string {
+  getString(pointCoords: number, span: number): string {
     if (this.axisType != "time" && this.axisType != "nanotime") {
-      var standardResult = 0;
-      if (this.axisType === "log") {
-        standardResult = Math.pow(this.axisBase, this.getValue(pct));
-      } else {
-        standardResult = this.getValue(pct);
-      }
-
-      return standardResult.toLocaleString(undefined, {
-        minimumFractionDigits: this.axisFixed,
-        maximumFractionDigits: this.axisFixed
-      });
+      return this.getDefaultAxisStringValue(pointCoords);
     }
-    var val = this.getValue(pct);
 
-    var d, ret = "", nanosec;
+    return this.getTimeAxisStringValue(pointCoords, span);
+  };
+
+  getDefaultAxisStringValue(pointCoords: number) {
+    let standardResult = 0;
+
+    if (this.axisType === "log") {
+      standardResult = Math.pow(this.axisBase, this.getValue(pointCoords));
+    } else {
+      standardResult = this.getValue(pointCoords);
+    }
+
+    return standardResult.toLocaleString(undefined, {
+      minimumFractionDigits: this.axisFixed,
+      maximumFractionDigits: this.axisFixed
+    });
+  }
+
+  getTimeAxisStringValue(pointCoords: number, span: number) {
+    let value = this.getValue(pointCoords);
+    let timestamp;
+    let nanosec;
+
     if (this.axisType === "time") {
-      d = Math.ceil(val * 1000) / 1000;
+      timestamp = Math.ceil(value * 1000) / 1000;
     }
-    else if (this.axisType === "nanotime"){
-      d = parseFloat(val.div(1000000).toFixed(0));
-      nanosec = val.mod(1000000000).toFixed(0);
+
+    else if (this.axisType === "nanotime") {
+      timestamp = parseFloat(value.div(1000000).toFixed(0));
+      nanosec = value.mod(1000000000).toFixed(0);
     }
 
     if (plotUtils.lte(span, this.SECOND) && this.axisType === "time") {
-      ret = bkUtils.formatTimestamp(d, this.axisTimezone, ".SSS") + ( (d - Math.floor(d)).toFixed(this.axisFixed));
-    } else if (plotUtils.lte(span, this.MINUTE) && this.axisType === "time") {
-      ret = bkUtils.formatTimestamp(d, this.axisTimezone, "mm:ss.SSS");
-    } else if (plotUtils.lte(span, this.HOUR)) {
-      if(this.axisType === "nanotime"){
-        if (moment(d) < this.SECOND) {
-          ret = "." + plotUtils.padStr(nanosec, 9);
-        } else {
-          ret = bkUtils.formatTimestamp(d, this.axisTimezone, "HH:mm:ss") + "." + plotUtils.padStr(nanosec, 9);
-        }
-      }else{
-        ret = bkUtils.formatTimestamp(d, this.axisTimezone, "HH:mm:ss");
-      }
-    } else if (plotUtils.lte(span, this.DAY)) {
-      ret = bkUtils.formatTimestamp(d, this.axisTimezone, "YYYY MMM DD, HH:mm");
-    } else if (plotUtils.lte(span, this.MONTH)) {
-      ret = bkUtils.formatTimestamp(d, this.axisTimezone, "YYYY MMM DD");
-    } else if (plotUtils.lte(span, this.YEAR)) {
-      ret = bkUtils.formatTimestamp(d, this.axisTimezone, "YYYY MMM");
-    } else {
-      ret = bkUtils.formatTimestamp(d, this.axisTimezone, "YYYY");
+      return bkUtils.formatTimestamp(
+        timestamp, this.axisTimezone, ".SSS"
+      ) + ( (timestamp - Math.floor(timestamp)).toFixed(this.axisFixed));
     }
 
-    return ret;
-  };
+    if (plotUtils.lte(span, this.MINUTE) && this.axisType === "time") {
+      return bkUtils.formatTimestamp(timestamp, this.axisTimezone, "mm:ss.SSS");
+    }
+
+    if (plotUtils.lte(span, this.HOUR)) {
+      if (this.axisType !== "nanotime") {
+        return bkUtils.formatTimestamp(timestamp, this.axisTimezone, "HH:mm:ss");
+      }
+
+      if (moment(timestamp) < this.SECOND) {
+        return "." + plotUtils.padStr(nanosec, 9);
+      }
+
+      return bkUtils.formatTimestamp(timestamp, this.axisTimezone, "HH:mm:ss") + "." + plotUtils.padStr(nanosec, 9);
+    }
+
+    if (plotUtils.lte(span, this.DAY)) {
+      return bkUtils.formatTimestamp(timestamp, this.axisTimezone, "YYYY MMM DD, HH:mm");
+    }
+
+    if (plotUtils.lte(span, this.MONTH)) {
+      return bkUtils.formatTimestamp(timestamp, this.axisTimezone, "YYYY MMM DD");
+    }
+
+    if (plotUtils.lte(span, this.YEAR)) {
+      return bkUtils.formatTimestamp(timestamp, this.axisTimezone, "YYYY MMM");
+    }
+
+    return bkUtils.formatTimestamp(timestamp, this.axisTimezone, "YYYY");
+  }
 }

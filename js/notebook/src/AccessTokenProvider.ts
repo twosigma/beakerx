@@ -17,7 +17,6 @@
 import { GistPublisherAccessTokenProviderInterface } from "./GistPublisherUtils";
 import GistPublishModal from "./extension/gistPublish/gistPublishModal";
 
-//984f2ad73d0f693841e220279913fb54b4336d34
 export default class AccessTokenProvider implements GistPublisherAccessTokenProviderInterface {
   public getPersonalAccessToken(): Promise<string> {
     return new Promise(function(resolve, reject) {

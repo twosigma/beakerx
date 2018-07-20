@@ -19,6 +19,7 @@ import { showDialog, Dialog, ToolbarButton } from '@jupyterlab/apputils';
 import GistPublishModal from './gistPublishModal';
 import beakerx from "../../beakerx";
 import AccessTokenProvider from "../../AccessTokenProvider";
+import {CodeCell, Cell} from "@jupyterlab/cells";
 
 export function registerFeature(panel: NotebookPanel, showPublication: boolean) {
   if (showPublication) {
@@ -30,10 +31,31 @@ export function registerFeature(panel: NotebookPanel, showPublication: boolean) 
 }
 
 function setupPublisher(panel: NotebookPanel) {
-  beakerx.GistPublisherUtils.registerAccessTokenProvider(new AccessTokenProvider());
-  beakerx.GistPublisherUtils.registerSaveWidgetStateHandler(() => {
-    return new Promise((resolve, reject) => {
-      panel.context.save().then(() => {
+
+  let options = {
+    accessTokenProvider: new AccessTokenProvider(),
+    saveWidgetsStateHandler: saveWidgetsState.bind(undefined, panel),
+    prepareContentToPublish: (scope) => {
+      let cell: CodeCell;
+      let cells: CodeCell[] = <CodeCell[]>(panel.notebook.widgets || []).filter((cell: Cell) => cell instanceof CodeCell);
+      for(let c of cells) {
+        if(c.node.contains(scope.element[0])){
+          cell = c;
+          break;
+        }
+      }
+
+      const nbjson = panel.notebook.model.toJSON();
+      nbjson['cells'] = [cell.model.toJSON()];
+      return nbjson;
+    },
+  };
+  beakerx.GistPublisherUtils.setup(options);
+}
+
+export function saveWidgetsState(panel): Promise<any> {
+  return new Promise((resolve, reject) => {
+    panel.context.save().then(() => {
       console.log("widgets state has been saved");
 
       if (!panel.isDisposed) {
@@ -41,9 +63,8 @@ function setupPublisher(panel: NotebookPanel) {
       } else {
         reject();
       }
-      }, reject);
-    })
-  });
+    }, reject);
+  })
 }
 
 function addActionButton(panel: NotebookPanel): void {

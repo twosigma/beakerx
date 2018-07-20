@@ -60,7 +60,7 @@ export default class GistPublishModal {
         return false;
       }
 
-      submitCallback(personalAccessToken);
+      submitCallback(personalAccessTokenInput.value);
       formGroup.contains(errorNode) && formGroup.removeChild(errorNode);
       formGroup.classList.remove('has-error');
 

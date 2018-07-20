@@ -14,29 +14,46 @@
  *  limitations under the License.
  */
 
-import GistPublisher from "./GistPublisher";
+import { GistPublisher } from "./GistPublisher";
+
+interface GistPublisherOptions {
+  accessTokenProvider: GistPublisherAccessTokenProviderInterface;
+  saveWidgetsStateHandler: () => Promise<string>;
+  prepareContentToPublish: (scope) => any;
+}
 
 export interface GistPublisherAccessTokenProviderInterface {
   getPersonalAccessToken(): Promise<string>;
 }
 
-export class GistPublisherUtils {
-  private static accessTokenProvider: GistPublisherAccessTokenProviderInterface = null;
-  private static saveWidgetStateHandler: () => Promise<any>;
+declare global{
+  interface Window {
+    bxPublisherOptions: GistPublisherOptions;
+  }
+}
 
-  public static registerAccessTokenProvider(accessTokenProvider: GistPublisherAccessTokenProviderInterface) {
-    this.accessTokenProvider = accessTokenProvider;
+export class GistPublisherUtils {
+  public static get accessTokenProvider(): GistPublisherAccessTokenProviderInterface {
+    return window.bxPublisherOptions.accessTokenProvider;
   }
 
-  public static registerSaveWidgetStateHandler(saveHandler: () => Promise<string>) {
-    this.saveWidgetStateHandler = saveHandler;
+  public static get saveWidgetStateHandler(): () => Promise<string> {
+    return window.bxPublisherOptions.saveWidgetsStateHandler;
+  }
+
+  public static get prepareContentToPublish(): (scope) => any {
+    return window.bxPublisherOptions.prepareContentToPublish;
+  }
+
+  public static setup(options: GistPublisherOptions) {
+    window.bxPublisherOptions = options;
   }
 
   public static publishScope(
     scope: any
   ): void {
-    if (null === this.accessTokenProvider) {
-      console.log('access token provider was not registered');
+    if (null === window.bxPublisherOptions) {
+      console.log('gist publisher was not configured');
       return;
     }
 
@@ -45,37 +62,19 @@ export class GistPublisherUtils {
       .getPersonalAccessToken()
       .then((accessToken) => {
         personalAccessToken = accessToken;
-        return this.saveWidgetsState();
+        return this.saveWidgetStateHandler();
       })
       .then((notebook_name) => {
         GistPublisher.doPublish(
           personalAccessToken,
           notebook_name,
-          this.prepareContent(scope),
+          this.prepareContentToPublish(scope),
           (errorMsg) => {}
         );
       });
   }
-
-  private static getScopeCell(scope) {
-    for(let cell of Jupyter.notebook.get_cells()) {
-      if(cell.element[0].contains(scope.element[0])){
-        return cell;
-      }
-    }
-  }
-
-  private static saveWidgetsState(): Promise<any> {
-    return this.saveWidgetStateHandler();
-  }
-
-  private static prepareContent(scope) {
-    const nbjson = Jupyter.notebook.toJSON();
-    nbjson.cells = [this.getScopeCell(scope).toJSON()];
-    return nbjson;
-  }
-
 }
+
 export default {
   GistPublisherUtils,
 }

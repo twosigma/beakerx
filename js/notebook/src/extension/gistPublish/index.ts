@@ -16,7 +16,7 @@
 
 import * as $ from 'jquery';
 import GistPublishModal from './gistPublishModal';
-import GistPublisher from "../../GistPublisher";
+import { GistPublisher } from "../../GistPublisher";
 import { GistPublisherUtils } from '../../GistPublisherUtils';
 import AccessTokenProvider from '../../AccessTokenProvider';
 
@@ -24,10 +24,10 @@ import AccessTokenProvider from '../../AccessTokenProvider';
 const dialog = require('base/js/dialog');
 
 export function registerFeature(): void {
+  setupPublisher();
   if (!!Jupyter.NotebookList) {
     return;
   }
-  setupPublisher();
 
   Jupyter.toolbar.add_buttons_group([{
     'label'   : ' ',
@@ -52,19 +52,24 @@ export function registerFeature(): void {
 }
 
 function setupPublisher() {
-  GistPublisherUtils.registerAccessTokenProvider(new AccessTokenProvider());
-  GistPublisherUtils.registerSaveWidgetStateHandler(() => new Promise((resolve, reject) => {
-    if (Jupyter.menubar.actions.exists('widgets:save-with-widgets')) {
-      Jupyter.menubar.actions.call('widgets:save-with-widgets');
-      console.log("widgets state has been saved");
+  let options = {
+    accessTokenProvider: new AccessTokenProvider(),
+    saveWidgetsStateHandler: saveWidgetsState,
+    prepareContentToPublish: (scope) => {
+      let cell;
+      for(let c of Jupyter.notebook.get_cells()) {
+        if(c.element[0].contains(scope.element[0])){
+          cell = c;
+          break;
+        }
+      }
 
-      setTimeout(function() {
-        resolve(Jupyter.notebook.notebook_name)
-      });
-    } else {
-      reject('widgets:save-with-widgets actions is not registered');
-    }
-  }))
+      const nbjson = Jupyter.notebook.toJSON();
+      nbjson.cells = [cell.toJSON()];
+      return nbjson;
+    },
+  };
+  GistPublisherUtils.setup(options);
 }
 
 function beforePublish(): void {
@@ -86,13 +91,15 @@ function showErrorDialog(errorMsg) {
   });
 }
 
-export function saveWidgetsState(): Promise<any> {
+export function saveWidgetsState(): Promise<string> {
   return new Promise((resolve, reject) => {
     if (Jupyter.menubar.actions.exists('widgets:save-with-widgets')) {
       Jupyter.menubar.actions.call('widgets:save-with-widgets');
       console.log("widgets state has been saved");
 
-      setTimeout(resolve);
+      setTimeout(() => {
+        resolve(Jupyter.notebook.notebook_name);
+      });
     } else {
       reject('widgets:save-with-widgets actions is not registered');
     }

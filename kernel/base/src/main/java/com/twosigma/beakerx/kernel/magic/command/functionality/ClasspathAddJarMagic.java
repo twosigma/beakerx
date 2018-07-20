@@ -13,21 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.util;
+package com.twosigma.beakerx.kernel.magic.command.functionality;
 
-public class BeakerXSystemImpl implements BeakerXSystem {
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 
-  private static BeakerXSystem INSTANCE = new BeakerXSystemImpl();
-
-  private BeakerXSystemImpl() {
-  }
-
-  @Override
-  public String getenv(String name) {
-    return System.getenv(name);
-  }
-
-  public static BeakerXSystem getINSTANCE() {
-    return INSTANCE;
-  }
+public interface ClasspathAddJarMagic {
+  MagicCommandOutcomeItem addJar(String path);
 }

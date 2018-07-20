@@ -32,10 +32,17 @@ public class CustomMagicCommandsImpl implements CustomMagicCommandsFactory {
     return Arrays.asList(enableSparkSupportMagicCommand(kernel));
   }
 
-  MagicCommandType enableSparkSupportMagicCommand(KernelFunctionality kernel) {
+  private MagicCommandType enableSparkSupportMagicCommand(KernelFunctionality kernel) {
+    SparkexJarServiceImpl sparkexJarService = new SparkexJarServiceImpl();
+    EnableSparkSupportActionOptions supportActionOptions = new EnableSparkSupportActionOptionsImpl(kernel);
+    SparkInitCommandFactoryImpl sparkInitCommandFactory = new SparkInitCommandFactoryImpl(
+            kernel,
+            sparkexJarService,
+            new EnableSparkSupportOptions(supportActionOptions),
+            supportActionOptions);
     return new MagicCommandType(
             EnableSparkSupportMagicCommand.ENABLE_SPARK_SUPPORT,
             "<>",
-            new EnableSparkSupportMagicCommand(kernel, new SparkexJarServiceImpl()));
+            new EnableSparkSupportMagicCommand(kernel, sparkInitCommandFactory));
   }
 }

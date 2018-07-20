@@ -35,12 +35,8 @@ import org.apache.spark.sql.SparkSession;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import static java.util.Arrays.asList;
 import static java.util.Arrays.copyOfRange;
 
 public class SparkMagicCommand implements MagicCommandFunctionality {
@@ -50,7 +46,8 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
 
   private KernelFunctionality kernel;
   private SparkUI.SparkUIFactory sparkUIFactory;
-  private Map<String, SparkOption> sparkOptions;
+  private SparkMagicCommandOptions sparkMagicCommandOptions;
+
 
   public SparkMagicCommand(KernelFunctionality kernel) {
     //constructor for reflection in LoadMagicMagicCommand
@@ -67,13 +64,7 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
   SparkMagicCommand(KernelFunctionality kernel, SparkUI.SparkUIFactory sparkUIFactory) {
     this.kernel = kernel;
     this.sparkUIFactory = sparkUIFactory;
-    configureOptions();
-  }
-
-  private void configureOptions() {
-    this.sparkOptions = new HashMap<>();
-    this.sparkOptions.put("--start", this::connectToSparkSession);
-    this.sparkOptions.put("-s", this::connectToSparkSession);
+    this.sparkMagicCommandOptions = new SparkMagicCommandOptions(new SparkMagicActionOptionsImpl());
   }
 
   @Override
@@ -83,15 +74,15 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
 
   @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
-    List<String> options = getOptions(param);
-    MagicCommandOutcomeItem optionValidation = validateOptions(options);
-    if (optionValidation.getStatus().equals(MagicCommandOutput.Status.ERROR)) {
-      return optionValidation;
+    String[] options = getOptions(param);
+    SparkMagicCommandOptions.OptionsResult optionsResult = sparkMagicCommandOptions.parseOptions(options);
+    if (optionsResult.hasError()) {
+      return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, optionsResult.errorMsg());
     }
-    return createUI(param, options);
+    return createUI(param, optionsResult.options());
   }
 
-  private MagicCommandOutcomeItem createUI(MagicCommandExecutionParam param, List<String> options) {
+  private MagicCommandOutcomeItem createUI(MagicCommandExecutionParam param, List<SparkOptionCommand> options) {
     SimpleEvaluationObject seo = PlainCode.createSimpleEvaluationObject(param.getCommandCodeBlock(), kernel, param.getCode().getMessage(), param.getExecutionCount());
     if (param.getCommandCodeBlock().isEmpty()) {
       return createSparkUiBasedOnEmptyConfiguration(param, options, seo);
@@ -100,14 +91,14 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
     }
   }
 
-  private MagicCommandOutcomeItem createSparkUiBasedOnEmptyConfiguration(MagicCommandExecutionParam param, List<String> options, SimpleEvaluationObject seo) {
+  private MagicCommandOutcomeItem createSparkUiBasedOnEmptyConfiguration(MagicCommandExecutionParam param, List<SparkOptionCommand> options, SimpleEvaluationObject seo) {
     InternalVariable.setValue(seo);
     SparkSession.Builder config = SparkSession.builder().config(new SparkConf());
     createSparkUI(config, param.getCode().getMessage(), options);
     return new MagicCommandOutput(MagicCommandOutput.Status.OK);
   }
 
-  private MagicCommandOutcomeItem createSparkUIBasedOnUserSparkConfiguration(MagicCommandExecutionParam param, List<String> options, SimpleEvaluationObject seo) {
+  private MagicCommandOutcomeItem createSparkUIBasedOnUserSparkConfiguration(MagicCommandExecutionParam param, List<SparkOptionCommand> options, SimpleEvaluationObject seo) {
     TryResult either = kernel.executeCode(param.getCommandCodeBlock(), seo);
     if (either.isResult()) {
       Object result = either.result();
@@ -126,39 +117,26 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
     }
   }
 
-  private SparkUI createSparkUI(SparkSession.Builder builder, Message message, List<String> options) {
+  private SparkUI createSparkUI(SparkSession.Builder builder, Message message, List<SparkOptionCommand> options) {
     SparkUI sparkUI = sparkUIFactory.create(builder);
     return displaySparkUI(sparkUI, message, options);
   }
 
-  private SparkUI displaySparkUI(SparkUI sparkUI, Message message, List<String> options) {
+  private SparkUI displaySparkUI(SparkUI sparkUI, Message message, List<SparkOptionCommand> options) {
     Display.display(sparkUI);
-    options.forEach(option -> sparkOptions.get(option).run(sparkUI, message));
+    options.forEach(option -> option.run(sparkUI, message));
     return sparkUI;
   }
 
-  private MagicCommandOutcomeItem validateOptions(List<String> options) {
-    for (String option : options) {
-      if (!sparkOptions.containsKey(option)) {
-        return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Unknown option " + option);
-      }
-    }
-    return new MagicCommandOutput(MagicCommandOutput.Status.OK);
-  }
-
-  private List<String> getOptions(MagicCommandExecutionParam param) {
+  private String[] getOptions(MagicCommandExecutionParam param) {
     String[] parts = param.getCommand().split(" ");
     if (parts.length == 1) {
-      return new ArrayList<>();
+      return new String[0];
     }
-    return asList(copyOfRange(parts, 1, parts.length));
+    return copyOfRange(parts, 1, parts.length);
   }
 
-  private void connectToSparkSession(SparkUI sparkUI, Message parent) {
-    sparkUI.getConnectButton().onClick(new HashMap(), parent);
-  }
-
-  interface SparkOption {
+  interface SparkOptionCommand {
     void run(SparkUI sparkUI, Message parent);
   }
 

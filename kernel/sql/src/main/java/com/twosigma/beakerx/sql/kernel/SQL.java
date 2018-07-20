@@ -90,7 +90,7 @@ public class SQL extends Kernel {
       KernelConfigurationFile configurationFile = new KernelConfigurationFile(args);
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
               configurationFile);
-      EvaluatorParameters params = getKernelParameters(new BeakerXSystemImpl());
+      EvaluatorParameters params = getKernelParameters(BeakerXSystemImpl.getINSTANCE());
       SQLEvaluator evaluator = new SQLEvaluator(id, id, params, NamespaceClient.create(id, configurationFile, commRepository));
       return new SQL(id, evaluator, kernelSocketsFactory, commRepository);
     });

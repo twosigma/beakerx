@@ -33,6 +33,7 @@ import com.twosigma.beakerx.scala.evaluator.NoBeakerxObjectTestFactory;
 import com.twosigma.beakerx.scala.evaluator.ScalaEvaluator;
 import com.twosigma.beakerx.scala.kernel.Scala;
 import com.twosigma.beakerx.scala.magic.command.EnableSparkSupportMagicCommand;
+import com.twosigma.beakerx.scala.magic.command.EnableSparkSupportMagicInitConfigurationTest;
 import com.twosigma.beakerx.widget.TestWidgetUtils;
 import org.junit.Test;
 
@@ -122,35 +123,7 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
     return new MagicCommandType(
             EnableSparkSupportMagicCommand.ENABLE_SPARK_SUPPORT,
             "<>",
-            new EnableSparkSupportMagicCommand(kernel, kernel1 -> new MagicCommandOutcomeItem() {
-              @Override
-              public Optional<MIMEContainer> getMIMEContainer() {
-                return Optional.empty();
-              }
-
-              @Override
-              public Status getStatus() {
-                return Status.OK;
-              }
-
-              @Override
-              public void sendMagicCommandOutcome(KernelFunctionality kernel, Message message, int executionCount) {
-              }
-
-              @Override
-              public void sendRepliesWithStatus(KernelFunctionality kernel, Message message, int executionCount) {
-              }
-
-              @Override
-              public TryResult getResult() {
-                return null;
-              }
-
-              @Override
-              public SimpleEvaluationObject getSimpleEvaluationObject() {
-                return null;
-              }
-            }));
+            new EnableSparkSupportMagicCommand(kernel, new EnableSparkSupportMagicInitConfigurationTest.SparkInitCommandFactoryMock()));
   }
 
 }

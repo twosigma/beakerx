@@ -16,6 +16,7 @@
 
 import createHeaderContextMenuItems from './createHeaderContextMenuItems';
 import createCellContextMenuItems from './createCellContextMenuItems';
+import createPublishMenuItems from "./createPublishMenuItem";
 import BkoContextMenu from '../../../contextMenu/BkoContextMenu';
 import {DataGridScope} from "../DataGridScope";
 
@@ -29,7 +30,9 @@ export default class DataGridContextMenu extends BkoContextMenu {
 
     const menuItems = createHeaderContextMenuItems(this.scope.dataGrid, this);
     const cellMenuItems = createCellContextMenuItems(this.scope.dataGrid, this);
-    this.createItems([ ...menuItems, ...cellMenuItems ], this.contextMenu);
+    const publishMenuItems = createPublishMenuItems(this.scope.dataGrid, this);
+
+    this.createItems([ ...menuItems, ...cellMenuItems, ...publishMenuItems ], this.contextMenu);
     this.bindEvents();
   }
 }

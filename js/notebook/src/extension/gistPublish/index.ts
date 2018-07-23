@@ -56,9 +56,10 @@ function setupPublisher() {
     accessTokenProvider: new AccessTokenProvider(),
     saveWidgetsStateHandler: saveWidgetsState,
     prepareContentToPublish: (scope) => {
+      let el = scope.node || scope.element[0];
       let cell;
       for(let c of Jupyter.notebook.get_cells()) {
-        if(c.element[0].contains(scope.element[0])){
+        if(c.element[0].contains(el)){
           cell = c;
           break;
         }

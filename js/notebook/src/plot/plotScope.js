@@ -45,6 +45,7 @@ define([
   var PlotRange = require('./range/PlotRange').default;
   var PlotZoom = require('./zoom/index').default;
   var PlotFocus = require('./zoom/PlotFocus').default;
+  var PlotGrid = require('./grid/PlotGrid').default;
   var bkUtils = require('./../shared/bkUtils').default;
   var bkHelper = require('./../shared/bkHelper').default;
   var zoomHelpers = require('./zoom/helpers').default;
@@ -105,6 +106,7 @@ define([
     this.plotZoom = new PlotZoom(this);
     this.plotFocus = new PlotFocus(this);
     this.plotRange = new PlotRange(this);
+    this.plotGrid = new PlotGrid(this, this.plotFocus, this.plotRange);
   };
   
   PlotScope.prototype.setWidgetModel = function(plotDisplayModel) {
@@ -293,87 +295,6 @@ define([
   PlotScope.prototype.emitSizeChange = function(useMinWidth) {
     if (this.model.updateWidth !== null && this.model.updateWidth !== undefined) {
       this.model.updateWidth(this.width, useMinWidth);
-    }
-  };
-
-  PlotScope.prototype.calcGridlines = function() {
-    // prepare the gridlines
-    var focus = this.plotFocus.getFocus(), model = this.stdmodel;
-    model.xAxis.setGridlines(focus.xl,
-      focus.xr,
-      this.numIntervals.x,
-      model.margin.left,
-      model.margin.right);
-    model.yAxis.setGridlines(focus.yl,
-      focus.yr,
-      this.numIntervals.y,
-      model.margin.bottom,
-      model.margin.top);
-    if(model.yAxisR){
-      model.yAxisR.setGridlines(focus.yl_r,
-        focus.yr_r,
-        this.numIntervals.y,
-        model.margin.bottom_r,
-        model.margin.top_r)
-    }
-  };
-
-  PlotScope.prototype.renderGridlines = function() {
-    var focus = this.plotFocus.getFocus(), model = this.stdmodel;
-    var mapX = this.plotRange.data2scrX, mapY = this.plotRange.data2scrY;
-    var mapY_r = this.plotRange.data2scrY_r;
-
-    if(model.showXGridlines){
-      var xGridlines = model.xAxis.getGridlines();
-      for (var i = 0; i < xGridlines.length; i++) {
-        var x = xGridlines[i];
-        this.rpipeGridlines.push({
-          "id" : "gridline_x_" + i,
-          "class" : "plot-gridline",
-          "x1" : mapX(x),
-          "y1" : mapY(focus.yl),
-          "x2" : mapX(x),
-          "y2" : mapY(focus.yr)
-        });
-      }
-    }
-    var yGridlines = model.yAxis.getGridlines();
-    for (var i = 0; i < yGridlines.length; i++) {
-      var y = yGridlines[i];
-      this.rpipeGridlines.push({
-        "id" : "gridline_y_" + i,
-        "class" : "plot-gridline",
-        "x1" : mapX(focus.xl),
-        "y1" : mapY(y),
-        "x2" : mapX(focus.xr),
-        "y2" : mapY(y)
-      });
-    }
-    this.rpipeGridlines.push({
-      "id" : "gridline_x_base",
-      "class" : "plot-gridline-base",
-      "x1" : mapX(focus.xl),
-      "y1" : mapY(focus.yl),
-      "x2" : mapX(focus.xr),
-      "y2" : mapY(focus.yl)
-    });
-    this.rpipeGridlines.push({
-      "id" : "gridline_y_base",
-      "class" : "plot-gridline-base",
-      "x1" : mapX(focus.xl),
-      "y1" : mapY(focus.yl),
-      "x2" : mapX(focus.xl),
-      "y2" : mapY(focus.yr)
-    });
-    if (focus.yl_r !== undefined && focus.yr_r !== undefined) {
-      this.rpipeGridlines.push({
-        "id" : "gridline_yr_base",
-        "class" : "plot-gridline-base",
-        "x1" : mapX(focus.xr),
-        "y1" : mapY_r(focus.yl_r),
-        "x2" : mapX(focus.xr),
-        "y2" : mapY_r(focus.yr_r)
-      });
     }
   };
 
@@ -566,191 +487,6 @@ define([
   PlotScope.prototype.removeLegendPointer = function() {
     if(this.gradientLegend){
       this.gradientLegend.removePointer();
-    }
-  };
-
-  PlotScope.prototype.renderGridlineLabels = function() {
-    var _size_ = function (s, clazz) {
-      var o = $('<div>' + s + '</div>')
-          .css({
-            'position': 'absolute',
-            'float': 'left',
-            'white-space': 'nowrap',
-            'visibility': 'hidden',
-            'class': clazz
-          }).appendTo($('body')),
-        w = o.width(),
-        h = o.height();
-      o.remove();
-      return {
-        width : w,
-        height : h
-      };
-    };
-    var mapX = this.plotRange.data2scrX, mapY = this.plotRange.data2scrY;
-    var mapY_r = this.plotRange.data2scrY_r;
-    var model = this.stdmodel;
-    if (model.xAxis.showGridlineLabels !== false) {
-      var lines = model.xAxis.getGridlines(),
-        labels = model.xAxis.getGridlineLabels();
-      for (var i = 0; i < labels.length; i++) {
-        var x = mapX(lines[i]);
-        var y = mapY(this.plotFocus.focus.yl) + this.labelPadding.y;
-        var rpipeText = {
-          "id": "label_x_" + i,
-          "class": "plot-label plot-label-x",
-          "text": labels[i],
-          "x": x,
-          "y": y,
-          "text-anchor": "middle",
-          "dominant-baseline": "hanging"
-        };
-        if (model.categoryNamesLabelAngle &&
-            model.categoryNamesLabelAngle !== 0 && model.orientation === 'VERTICAL') {
-          var __size__ = _size_(labels[i], "plot-label");
-          var degree = -1 * model.categoryNamesLabelAngle * (180 / Math.PI);
-          var delta = degree > 0 ? (__size__.width / 2) : -1 * (__size__.width / 2);
-          rpipeText.transform =
-            "translate(" +
-            delta +
-            " " + -this.labelPadding.y +
-            ") "
-            +
-            "rotate(" +
-            degree +
-            " " + (x - delta) +
-            " " + (y + __size__.height / 2) +
-            ") "
-          ;
-        }
-        this.rpipeTexts.push(rpipeText);
-      }
-    }
-    if (model.yAxis.showGridlineLabels !== false) {
-      lines = model.yAxis.getGridlines();
-      labels = model.yAxis.getGridlineLabels();
-      for (var i = 0; i < labels.length; i++) {
-        var x = mapX(this.plotFocus.focus.xl) - this.labelPadding.x;
-        var y = mapY(lines[i]);
-
-        var rpipeText = {
-          "id": "label_y_" + i,
-          "class": "plot-label plot-label-y",
-          "text": labels[i],
-          "x": x,
-          "y": y,
-          "text-anchor": "end",
-          "dominant-baseline": "central"
-        };
-        if (model.categoryNamesLabelAngle &&
-            model.categoryNamesLabelAngle !== 0 && model.orientation === 'HORIZONTAL') {
-          rpipeText.transform = "rotate(" +
-                                model.categoryNamesLabelAngle * (180 / Math.PI) +
-                                " " + (x) +
-                                " " + (y) +
-                                ")";
-        }
-        this.rpipeTexts.push(rpipeText);
-      }
-    }
-    if (model.yAxisR && model.yAxisR.showGridlineLabels !== false) {
-      lines = model.yAxisR.getGridlines();
-      labels = model.yAxisR.getGridlineLabels();
-      for (var i = 0; i < labels.length; i++) {
-        var y = lines[i];
-        this.rpipeTexts.push({
-          "id" : "label_yr_" + i,
-          "class" : "plot-label",
-          "text" : labels[i],
-          "x" : mapX(this.plotFocus.focus.xr) + this.labelPadding.x,
-          "y" : mapY_r(y),
-          "dominant-baseline" : "central"
-        });
-      }
-    }
-    var lMargin = this.layout.leftLayoutMargin, bMargin = this.layout.bottomLayoutMargin;
-    if (model.xAxis.label != null) {
-      this.rpipeTexts.push({
-        "id" : "xlabel",
-        "class" : "plot-xylabel",
-        "text" : model.xAxis.axisLabelWithCommon,
-        "x" : lMargin + (plotUtils.safeWidth(this.jqsvg) - lMargin) / 2,
-        "y" : plotUtils.safeHeight(this.jqsvg) - plotUtils.fonts.labelHeight
-      });
-    }
-    if (model.yAxis.label != null) {
-      var x = plotUtils.fonts.labelHeight * 2, y = (plotUtils.safeHeight(this.jqsvg) - bMargin) / 2;
-      this.rpipeTexts.push({
-        "id" : "ylabel",
-        "class" : "plot-xylabel",
-        "text" : model.yAxis.label,
-        "x" : x,
-        "y" : y,
-        "transform" : "rotate(-90 " + x + " " + y + ")"
-      });
-    }
-    if (model.yAxisR && model.yAxisR.label != null) {
-      var x = plotUtils.safeWidth(this.jqsvg) - plotUtils.fonts.labelHeight, y = (plotUtils.safeHeight(this.jqsvg) - bMargin) / 2;
-      this.rpipeTexts.push({
-        "id" : "yrlabel",
-        "class" : "plot-xylabel",
-        "text" : model.yAxisR.label,
-        "x" : x,
-        "y" : y,
-        "transform" : "rotate(-90 " + x + " " + y + ")"
-      });
-    }
-  };
-
-  PlotScope.prototype.renderGridlineTicks = function() {
-    var tickLength = this.gridlineTickLength;
-    var mapX = this.plotRange.data2scrX, mapY = this.plotRange.data2scrY, mapY_r = this.plotRange.data2scrY_r;
-    var focus = this.plotFocus.getFocus();
-    var model = this.stdmodel;
-    if (model.xAxis.showGridlineLabels !== false) {
-      var lines = model.xAxis.getGridlines(),
-        labels = model.xAxis.getGridlineLabels();
-      for (var i = 0; i < labels.length; i++) {
-        var x = lines[i];
-        this.rpipeTicks.push({
-          "id" : "tick_x_" + i,
-          "class" : "plot-tick",
-          "x1" : mapX(x),
-          "y1" : mapY(focus.yl),
-          "x2" : mapX(x),
-          "y2" : mapY(focus.yl) + tickLength
-        });
-      }
-    }
-    if (model.yAxis.showGridlineLabels !== false) {
-      lines = model.yAxis.getGridlines();
-      labels = model.yAxis.getGridlineLabels();
-      for (var i = 0; i < labels.length; i++) {
-        var y = lines[i];
-        this.rpipeTicks.push({
-          "id" : "tick_y_" + i,
-          "class" : "plot-tick",
-          "x1" : mapX(focus.xl) - tickLength,
-          "y1" : mapY(y),
-          "x2" : mapX(focus.xl),
-          "y2" : mapY(y)
-        });
-      }
-    }
-    if (model.yAxisR && model.yAxisR.showGridlineLabels !== false) {
-      lines = model.yAxisR.getGridlines();
-      labels = model.yAxisR.getGridlineLabels();
-      for (var i = 0; i < labels.length; i++) {
-        var y = lines[i];
-        this.rpipeTicks.push({
-          "id" : "tick_yr_" + i,
-          "class" : "plot-tick",
-          "x1" : mapX(focus.xr),
-          "y1" : mapY_r(y),
-          "x2" : mapX(focus.xr) + tickLength,
-          "y2" : mapY_r(y)
-        });
-      }
     }
   };
 
@@ -1740,13 +1476,9 @@ define([
     }
 
     self.resetSvg();
-    self.calcGridlines();
-    self.renderGridlines();
-    plotUtils.plotGridlines(self);
+    self.plotGrid.render();
 
     self.renderData();
-    self.renderGridlineLabels();
-    self.renderGridlineTicks();
     self.renderCoverBox(); // redraw
     self.updateClipPath(); // redraw
     plotUtils.plotLabels(self); // redraw

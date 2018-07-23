@@ -59,18 +59,18 @@ export default class TimeAxis extends DefaultAxis {
     this.addTimeAxisIntervals(i, intervals, prev);
   }
 
-  setRange(vl, vr, para): void {
+  setRange(vl, vr, axisTimezone): void {
     if (vl !== null) { this.axisValL = vl; }
     if (vr !== null) { this.axisValR = vr; }
 
-    this.setTimeAxisRange(para);
+    this.setTimeAxisRange(axisTimezone);
 
     this.axisValSpan = plotUtils.minus(this.axisValR, this.axisValL);
   }
 
-  setTimeAxisRange(para) {
-    if (para != null) {
-      this.axisTimezone = para;
+  setTimeAxisRange(axisTimezone) {
+    if (axisTimezone != null) {
+      this.axisTimezone = axisTimezone;
     }
 
     if (this.axisType === "time") {

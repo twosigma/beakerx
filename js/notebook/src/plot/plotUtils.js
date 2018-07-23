@@ -311,49 +311,6 @@ define([
       }
       return parseInt(value) || defaultValue;
     },
-    plotGridlines: function(scope) {
-      var sel = scope.gridg.selectAll("line");
-      sel.data(scope.rpipeGridlines, function(d) { return d.id; }).exit().remove();
-      sel.data(scope.rpipeGridlines, function(d) { return d.id; }).enter().append("line")
-        .attr("id", function(d) { return d.id; })
-        .attr("class", function(d) { return d.class; })
-        .attr("x1", function(d) { return d.x1; })
-        .attr("x2", function(d) { return d.x2; })
-        .attr("y1", function(d) { return d.y1; })
-        .attr("y2", function(d) { return d.y2; })
-        .style("stroke", function(d) { return d.stroke; })
-        .style("stroke-dasharray", function(d) { return d.stroke_dasharray; });
-      sel.data(scope.rpipeGridlines, function(d) { return d.id; })
-        .attr("x1", function(d) { return d.x1; })
-        .attr("x2", function(d) { return d.x2; })
-        .attr("y1", function(d) { return d.y1; })
-        .attr("y2", function(d) { return d.y2; });
-    },
-    plotTicks: function(scope){
-      scope.labelg.selectAll("line").remove();
-      scope.labelg.selectAll("line")
-        .data(scope.rpipeTicks, function(d) { return d.id; }).enter().append("line")
-        .attr("id", function(d) { return d.id; })
-        .attr("class", function(d) { return d.class; })
-        .attr("x1", function(d) { return d.x1; })
-        .attr("x2", function(d) { return d.x2; })
-        .attr("y1", function(d) { return d.y1; })
-        .attr("y2", function(d) { return d.y2; });
-    },
-    plotLabels: function(scope) {   // redraw
-      var pipe = scope.rpipeTexts;
-      scope.labelg.selectAll("text").remove();
-      scope.labelg.selectAll("text")
-        .data(pipe, function(d) { return d.id; }).enter().append("text")
-        .attr("id", function(d) { return d.id; })
-        .attr("class", function(d) { return d.class; })
-        .attr("x", function(d) { return d.x; })
-        .attr("y", function(d) { return d.y; })
-        .attr("transform", function(d) { return d.transform; })
-        .style("text-anchor", function(d) { return d["text-anchor"]; })
-        .style("dominant-baseline", function(d) { return d["dominant-baseline"]; })
-        .text(function(d) { return d.text; });
-    },
     upper_bound: function(a, attr, val) {
       var l = 0, r = a.length - 1;
       while (l <= r) {
@@ -371,18 +328,6 @@ define([
         }
       });
       return false;
-    },
-    replotSingleRect: function(svgElement, d) {
-      svgElement.selectAll("#" + d.id).remove();
-      svgElement.selectAll("#" + d.id)
-        .data([d]).enter().append("rect")
-        .attr("id", function(d) { return d.id; })
-        .attr("class", function(d) { return d.class; })
-        .attr("x", function(d) { return d.x; })
-        .attr("y", function(d) { return d.y; })
-        .attr("width", function(d) { return d.width; })
-        .attr("height", function(d) { return d.height; })
-        .style("fill", function(d) { return d.fill; });
     },
     getTipStringPercent : function(pct, axis, fixed) {
       var val = axis.getValue(pct);

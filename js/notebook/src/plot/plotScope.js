@@ -1192,43 +1192,6 @@ define([
     });
   };
 
-  PlotScope.prototype.renderCoverBox = function() {
-    var self = this;
-    var W = plotUtils.safeWidth(self.jqsvg), H = plotUtils.safeHeight(self.jqsvg);
-    plotUtils.replotSingleRect(self.labelg, {
-      "id" : "coverboxYr",
-      "class" : "plot-coverbox",
-      "x" : 0,
-      "y" : H - self.layout.bottomLayoutMargin,
-      "width" : W,
-      "height" : self.layout.bottomLayoutMargin
-    });
-    plotUtils.replotSingleRect(self.labelg, {
-      "id" : "coverboxYl",
-      "class" : "plot-coverbox",
-      "x" : 0,
-      "y" : 0,
-      "width" : W,
-      "height" : self.layout.topLayoutMargin
-    });
-    plotUtils.replotSingleRect(self.labelg, {
-      "id" : "coverboxXl",
-      "class" : "plot-coverbox",
-      "x" : 0,
-      "y" : 0,
-      "width" : self.layout.leftLayoutMargin,
-      "height" : H
-    });
-    plotUtils.replotSingleRect(self.labelg, {
-      "id" : "coverboxXr",
-      "class" : "plot-coverbox",
-      "x" : W - self.layout.rightLayoutMargin,
-      "y" : 0,
-      "width" : self.layout.rightLayoutMargin,
-      "height" : H
-    });
-  };
-
   PlotScope.prototype.updateClipPath = function() {
     var W = plotUtils.safeWidth(this.jqsvg);
     var H = plotUtils.safeHeight(this.jqsvg);
@@ -1267,9 +1230,7 @@ define([
     var self = this;
     self.jqcontainer.find(".plot-constlabel").remove();
 
-    self.rpipeGridlines = [];
-    self.rpipeTexts = [];
-    self.rpipeTicks = [];
+    self.plotGrid.reset();
   };
 
   PlotScope.prototype.mouseleaveClear = function() {
@@ -1479,10 +1440,7 @@ define([
     self.plotGrid.render();
 
     self.renderData();
-    self.renderCoverBox(); // redraw
     self.updateClipPath(); // redraw
-    plotUtils.plotLabels(self); // redraw
-    plotUtils.plotTicks(self); // redraw
 
     plotTip.renderTips(self);
     self.plotZoom.boxZoom.renderLocateBox(); // redraw

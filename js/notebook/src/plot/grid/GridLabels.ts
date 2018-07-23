@@ -17,6 +17,7 @@
 import * as $ from "jquery";
 import PlotRange from "../range/PlotRange";
 import PlotFocus from "../zoom/PlotFocus";
+import {LabelData} from "./interfaces";
 
 const plotUtils = require('../plotUtils');
 
@@ -24,6 +25,7 @@ export default class GridLabels {
   scope: any;
   plotRange: PlotRange;
   plotFocus: PlotFocus;
+  rpipeTexts: LabelData[] = [];
 
   constructor(scope: any) {
     this.scope = scope;
@@ -33,6 +35,10 @@ export default class GridLabels {
     this.renderAxisXLabel = this.renderAxisXLabel.bind(this);
     this.renderAxisYLabel = this.renderAxisYLabel.bind(this);
     this.renderAxisYRLabel = this.renderAxisYRLabel.bind(this);
+  }
+
+  reset() {
+    this.rpipeTexts = [];
   }
 
   render() {
@@ -45,6 +51,8 @@ export default class GridLabels {
     this.renderAxisLabels(model, model.yAxis, mapX, mapY, this.renderAxisYLabel);
     this.renderAxisLabels(model, model.yAxisR, mapX, mapY_r, this.renderAxisYRLabel);
     this.renderAxisCaptions(model);
+
+    this.plotLabels();
   }
 
   renderAxisLabels(model, axis, mapX, mapY, renderFn) {
@@ -58,6 +66,22 @@ export default class GridLabels {
     for (let i = 0; i < labels.length; i++) {
       renderFn(i, model, mapX, mapY, lines, labels);
     }
+  }
+
+  plotLabels() {
+    const pipe = this.rpipeTexts;
+
+    this.scope.labelg.selectAll("text").remove();
+    this.scope.labelg.selectAll("text")
+      .data(pipe, d => d.id).enter().append("text")
+      .attr("id", d => d.id)
+      .attr("class", d => d.class)
+      .attr("x", d => d.x)
+      .attr("y", d => d.y)
+      .attr("transform", d => d.transform)
+      .style("text-anchor", d => d["text-anchor"])
+      .style("dominant-baseline", d => d["dominant-baseline"])
+      .text(d => d.text);
   }
 
   renderAxisXLabel(i: number, model, mapX, mapY, lines, labels) {
@@ -85,7 +109,7 @@ export default class GridLabels {
       rpipeText['transform'] = `translate(${delta} ${this.scope.labelPadding.y}) rotate(${degree} ${(x - delta)} ${(y + labelSize.height / 2)})`;
     }
 
-    this.scope.rpipeTexts.push(rpipeText);
+    this.rpipeTexts.push(rpipeText);
   }
 
   renderAxisYLabel(i: number, model, mapX, mapY, lines, labels) {
@@ -109,13 +133,13 @@ export default class GridLabels {
       rpipeText['transform'] = `rotate(${model.categoryNamesLabelAngle * (180 / Math.PI)} ${x} ${y})`;
     }
 
-    this.scope.rpipeTexts.push(rpipeText);
+    this.rpipeTexts.push(rpipeText);
   }
 
   renderAxisYRLabel(i: number, model, mapX, mapY_r, lines, labels) {
     const y = lines[i];
 
-    this.scope.rpipeTexts.push({
+    this.rpipeTexts.push({
       "id" : `label_yr_${i}`,
       "class" : "plot-label",
       "text" : labels[i],
@@ -130,7 +154,7 @@ export default class GridLabels {
     const bMargin = this.scope.layout.bottomLayoutMargin;
 
     if (model.xAxis.label != null) {
-      this.scope.rpipeTexts.push({
+      this.rpipeTexts.push({
         "id" : "xlabel",
         "class" : "plot-xylabel",
         "text" : model.xAxis.axisLabelWithCommon,
@@ -143,7 +167,7 @@ export default class GridLabels {
       const x = plotUtils.fonts.labelHeight * 2;
       const y = (plotUtils.safeHeight(this.scope.jqsvg) - bMargin) / 2;
 
-      this.scope.rpipeTexts.push({
+      this.rpipeTexts.push({
         "id" : "ylabel",
         "class" : "plot-xylabel",
         "text" : model.yAxis.label,
@@ -157,7 +181,7 @@ export default class GridLabels {
       const x = plotUtils.safeWidth(this.scope.jqsvg) - plotUtils.fonts.labelHeight;
       const y = (plotUtils.safeHeight(this.scope.jqsvg) - bMargin) / 2;
 
-      this.scope.rpipeTexts.push({
+      this.rpipeTexts.push({
         "id" : "yrlabel",
         "class" : "plot-xylabel",
         "text" : model.yAxisR.label,

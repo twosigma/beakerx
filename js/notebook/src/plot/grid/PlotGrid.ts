@@ -14,26 +14,16 @@
  *  limitations under the License.
  */
 
-import PlotFocus from "../zoom/PlotFocus";
-import PlotRange from "../range/PlotRange";
 import GridLabels from "./GridLabels";
 import GridTics from "./GridTics";
 import GridLines from "./GridLines";
 
-const plotUtils = require('../plotUtils');
-
 export default class PlotGrid {
-  scope: any;
-  plotFocus: PlotFocus;
-  plotRange: PlotRange;
   gridLines: GridLines;
   gridLabels: GridLabels;
   gridTics: GridTics;
 
   constructor(scope: any) {
-    this.scope = scope;
-    this.plotFocus = scope.plotFocus;
-    this.plotRange = scope.plotRange;
     this.gridLines = new GridLines(scope);
     this.gridLabels = new GridLabels(scope);
     this.gridTics = new GridTics(scope);
@@ -41,10 +31,13 @@ export default class PlotGrid {
 
   render() {
     this.gridLines.render();
-
-    plotUtils.plotGridlines(this.scope);
-
     this.gridLabels.render();
     this.gridTics.render();
+  }
+
+  reset() {
+    this.gridLines.reset();
+    this.gridLabels.reset();
+    this.gridTics.reset();
   }
 }

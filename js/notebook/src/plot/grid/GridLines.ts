@@ -16,16 +16,22 @@
 
 import PlotRange from "../range/PlotRange";
 import PlotFocus from "../zoom/PlotFocus";
+import {LineData} from "./interfaces";
 
 export default class GridLines {
   scope: any;
   plotRange: PlotRange;
   plotFocus: PlotFocus;
+  rpipeGridlines: LineData[] = [];
 
   constructor(scope: any) {
     this.scope = scope;
     this.plotFocus = scope.plotFocus;
     this.plotRange = scope.plotRange;
+  }
+
+  reset() {
+    this.rpipeGridlines = [];
   }
 
   render() {
@@ -44,6 +50,32 @@ export default class GridLines {
     this.renderAxisXLine(model, focus, mapX, mapY);
     this.renderLeftAxisYLine(model, focus, mapX, mapY);
     this.renderRightAxisYLine(model, focus, mapX);
+
+    this.plotGridlines();
+  }
+
+  plotGridlines() {
+    const selection = this.scope.gridg.selectAll("line");
+    const filterWithoutId = d => d.id;
+
+    selection.data(this.rpipeGridlines, filterWithoutId).exit().remove();
+
+    selection.data(this.rpipeGridlines, filterWithoutId).enter()
+      .append("line")
+      .attr("id", filterWithoutId)
+      .attr("class", d => d.class)
+      .attr("x1", d => d.x1)
+      .attr("x2", d => d.x2)
+      .attr("y1", d => d.y1)
+      .attr("y2", d => d.y2)
+      .style("stroke", d => d.stroke)
+      .style("stroke-dasharray", d => d.stroke_dasharray);
+
+    selection.data(this.rpipeGridlines, filterWithoutId)
+      .attr("x1", d => d.x1)
+      .attr("x2", d => d.x2)
+      .attr("y1", d => d.y1)
+      .attr("y2", d => d.y2);
   }
 
   setGridlines() {
@@ -83,7 +115,7 @@ export default class GridLines {
     for (let i = 0; i < xGridlines.length; i++) {
       let x = xGridlines[i];
 
-      this.scope.rpipeGridlines.push({
+      this.rpipeGridlines.push({
         id: "gridline_x_" + i,
         class: "plot-gridline",
         x1: mapX(x),
@@ -100,7 +132,7 @@ export default class GridLines {
     for (let i = 0; i < yGridlines.length; i++) {
       let y = yGridlines[i];
 
-      this.scope.rpipeGridlines.push({
+      this.rpipeGridlines.push({
         id: "gridline_y_" + i,
         class: "plot-gridline",
         x1: mapX(focus.xl),
@@ -112,7 +144,7 @@ export default class GridLines {
   }
 
   renderAxisXLine(model, focus, mapX, mapY) {
-    this.scope.rpipeGridlines.push({
+    this.rpipeGridlines.push({
       id: "gridline_x_base",
       class: "plot-gridline-base",
       x1: mapX(focus.xl),
@@ -123,7 +155,7 @@ export default class GridLines {
   }
 
   renderLeftAxisYLine(model, focus, mapX, mapY) {
-    this.scope.rpipeGridlines.push({
+    this.rpipeGridlines.push({
       id: "gridline_y_base",
       class: "plot-gridline-base",
       x1: mapX(focus.xl),
@@ -137,7 +169,7 @@ export default class GridLines {
     if (focus.yl_r !== undefined && focus.yr_r !== undefined) {
       const mapY_r = this.plotRange.data2scrY_r;
 
-      this.scope.rpipeGridlines.push({
+      this.rpipeGridlines.push({
         id: "gridline_yr_base",
         class: "plot-gridline-base",
         x1: mapX(focus.xr),

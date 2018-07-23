@@ -16,16 +16,22 @@
 
 import PlotRange from "../range/PlotRange";
 import PlotFocus from "../zoom/PlotFocus";
+import {TickData} from "./interfaces";
 
 export default class GridTics {
   scope: any;
   plotRange: PlotRange;
   plotFocus: PlotFocus;
+  rpipeTicks: TickData[] = [];
 
   constructor(scope: any) {
     this.scope = scope;
     this.plotFocus = scope.plotFocus;
     this.plotRange = scope.plotRange;
+  }
+
+  reset() {
+    this.rpipeTicks = [];
   }
 
   render() {
@@ -37,6 +43,20 @@ export default class GridTics {
     this.renderAxisXTics(model, focus, mapX, mapY);
     this.renderLeftAxisYTics(model, focus, mapX, mapY);
     this.renderRightAxisYTics(model, focus, mapX);
+
+    this.plotTicks();
+  }
+
+  plotTicks() {
+    this.scope.labelg.selectAll("line").remove();
+    this.scope.labelg.selectAll("line")
+      .data(this.rpipeTicks, d => d.id).enter().append("line")
+      .attr("id", d => d.id)
+      .attr("class", d => d.class)
+      .attr("x1", d => d.x1)
+      .attr("x2", d => d.x2)
+      .attr("y1", d => d.y1)
+      .attr("y2", d => d.y2);
   }
 
   renderAxisXTics(model, focus, mapX, mapY) {
@@ -51,7 +71,7 @@ export default class GridTics {
     for (var i = 0; i < labels.length; i++) {
       let x = lines[i];
 
-      this.scope.rpipeTicks.push({
+      this.rpipeTicks.push({
         id: "tick_x_" + i,
         class: "plot-tick",
         x1: mapX(x),
@@ -74,7 +94,7 @@ export default class GridTics {
     for (let i = 0; i < labels.length; i++) {
       let y = lines[i];
 
-      this.scope.rpipeTicks.push({
+      this.rpipeTicks.push({
         id: "tick_y_" + i,
         class: "plot-tick",
         x1: mapX(focus.xl) - tickLength,
@@ -98,7 +118,7 @@ export default class GridTics {
     for (let i = 0; i < labels.length; i++) {
       let y = lines[i];
 
-      this.scope.rpipeTicks.push({
+      this.rpipeTicks.push({
         id: "tick_yr_" + i,
         class: "plot-tick",
         x1: mapX(focus.xr),

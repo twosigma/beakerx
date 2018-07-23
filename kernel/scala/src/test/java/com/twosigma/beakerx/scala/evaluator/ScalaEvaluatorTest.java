@@ -18,13 +18,12 @@ package com.twosigma.beakerx.scala.evaluator;
 
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.chart.xychart.Plot;
-import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.scala.TestScalaEvaluator;
 import com.twosigma.beakerx.scala.kernel.ScalaKernelMock;
-
 import com.twosigma.beakerx.widget.DisplayableWidget;
 import org.junit.After;
 import org.junit.AfterClass;

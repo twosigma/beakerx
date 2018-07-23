@@ -100,6 +100,10 @@ public abstract class EvaluatorBaseTest {
     //when
     TryResult result = evaluator().evaluate(seo, code);
     //then
+    verifyReturnPrintlnStatement(result);
+  }
+
+  protected void verifyReturnPrintlnStatement(TryResult result) {
     assertThat((String) result.result()).isNull();
   }
 

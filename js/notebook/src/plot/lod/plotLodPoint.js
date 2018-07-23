@@ -70,8 +70,8 @@ define([
     var focus = scope.plotFocus.getFocus();
     var eles = this.elementSamples,
       eleprops = this.elementProps;
-    var mapX = scope.data2scrXi,
-      mapY = scope.data2scrYi;
+    var mapX = scope.plotRange.data2scrXi,
+      mapY = scope.plotRange.data2scrYi;
     var fixed = scope.renderFixed;
 
     eleprops.length = 0;
@@ -154,7 +154,7 @@ define([
           .transition()
           .duration(plotUtils.getHighlightDuration())
           .attr("points", function(d) {
-            var mapX = scope.data2scrXi, mapY = scope.data2scrYi;
+            var mapX = scope.plotRange.data2scrXi, mapY = scope.plotRange.data2scrYi;
             var ele = d.ele, x = mapX(ele.x), y = mapY(ele.y),
               s = plotUtils.getHighlightedSize(ele.size, highlighted);
             var pstr = "";

@@ -64,7 +64,7 @@ define([
             .duration(plotUtils.getHighlightDuration())
             .attr("points", function(d) {
               var
-                mapX = scope.data2scrXi, mapY = scope.data2scrYi,
+                mapX = scope.plotRange.data2scrXi, mapY = scope.plotRange.data2scrYi,
                 x = mapX(d.ele.x), y = mapY(d.ele.y),
                 size = plotUtils.getHighlightedSize(d.ele.size, highlighted);
               return PointShapeHelper.getDiamondPoints(x, y, size);
@@ -76,7 +76,7 @@ define([
             .duration(plotUtils.getHighlightDuration())
             .attr("points", function(d) {
               var
-                mapX = scope.data2scrXi, mapY = scope.data2scrYi,
+                mapX = scope.plotRange.data2scrXi, mapY = scope.plotRange.data2scrYi,
                 x = mapX(d.ele.x), y = mapY(d.ele.y),
                 size = plotUtils.getHighlightedSize(d.ele.size, highlighted);
               return PointShapeHelper.getTrianglePoints(x, y, size);
@@ -88,7 +88,7 @@ define([
             .duration(plotUtils.getHighlightDuration())
             .attr("points", function(d) {
               var
-                mapX = scope.data2scrXi, mapY = scope.data2scrYi,
+                mapX = scope.plotRange.data2scrXi, mapY = scope.plotRange.data2scrYi,
                 x = mapX(d.ele.x), y = mapY(d.ele.y),
                 size = plotUtils.getHighlightedSize(d.ele.size, highlighted);
               return PointShapeHelper.getDownTrianglePoints(x, y, size);
@@ -100,7 +100,7 @@ define([
             .duration(plotUtils.getHighlightDuration())
             .attr("points", function(d) {
               var
-                mapX = scope.data2scrXi, mapY = scope.data2scrYi,
+                mapX = scope.plotRange.data2scrXi, mapY = scope.plotRange.data2scrYi,
                 x = mapX(d.ele.x), y = mapY(d.ele.y),
                 size = plotUtils.getHighlightedSize(d.ele.size, highlighted);
               return PointShapeHelper.getLevelPoints(x, y, size);
@@ -112,7 +112,7 @@ define([
             .duration(plotUtils.getHighlightDuration())
             .attr("points", function(d) {
               var
-                mapX = scope.data2scrXi, mapY = scope.data2scrYi,
+                mapX = scope.plotRange.data2scrXi, mapY = scope.plotRange.data2scrYi,
                 x = mapX(d.ele.x), y = mapY(d.ele.y),
                 size = plotUtils.getHighlightedSize(d.ele.size, highlighted);
               return PointShapeHelper.getVLevelPoints(x, y, size);
@@ -124,7 +124,7 @@ define([
             .duration(plotUtils.getHighlightDuration())
             .attr("points", function(d) {
               var
-                mapX = scope.data2scrXi, mapY = scope.data2scrYi,
+                mapX = scope.plotRange.data2scrXi, mapY = scope.plotRange.data2scrYi,
                 x = mapX(d.ele.x), y = mapY(d.ele.y),
                 size = plotUtils.getHighlightedSize(d.ele.size, highlighted);
               return PointShapeHelper.getLineCrossPoints(x, y, size);
@@ -136,7 +136,7 @@ define([
             .duration(plotUtils.getHighlightDuration())
             .attr("points", function(d) {
               var
-                mapX = scope.data2scrXi, mapY = scope.data2scrYi,
+                mapX = scope.plotRange.data2scrXi, mapY = scope.plotRange.data2scrYi,
                 x = mapX(d.ele.x), y = mapY(d.ele.y),
                 size = plotUtils.getHighlightedSize(d.ele.size, highlighted);
               return PointShapeHelper.getCrossPoints(x, y, size);
@@ -148,7 +148,7 @@ define([
             .duration(plotUtils.getHighlightDuration())
             .attr("points", function(d) {
               var
-                mapX = scope.data2scrXi, mapY = scope.data2scrYi,
+                mapX = scope.plotRange.data2scrXi, mapY = scope.plotRange.data2scrYi,
                 x = mapX(d.ele.x), y = mapY(d.ele.y),
                 size = plotUtils.getHighlightedSize(d.ele.size, highlighted);
               return PointShapeHelper.getDCrossPoints(x, y, size);
@@ -270,17 +270,17 @@ define([
 
   PlotPoint.prototype.useSecondYAxis = function(scope) {
     var axisLabelExist = this.yAxisLabel !== undefined && this.yAxisLabel !== null;
-    return axisLabelExist && scope.data2scrYi_r;
+    return axisLabelExist && scope.plotRange.data2scrYi_r;
   };
 
   PlotPoint.prototype.getYMapper = function(scope) {
-    return this.useSecondYAxis(scope) ? scope.data2scrYi_r : scope.data2scrYi;
+    return this.useSecondYAxis(scope) ? scope.plotRange.data2scrYi_r : scope.plotRange.data2scrYi;
   };
 
   PlotPoint.prototype.prepare = function(scope) {
     var focus = scope.plotFocus.getFocus();
     var eles = this.elements;
-    var mapX = scope.data2scrXi,
+    var mapX = scope.plotRange.data2scrXi,
       mapY = this.getYMapper(scope);
 
     _.each(this.elementProps, function(val) {

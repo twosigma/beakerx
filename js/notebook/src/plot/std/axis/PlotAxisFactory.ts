@@ -14,21 +14,18 @@
  *  limitations under the License.
  */
 
-export interface ZoomLevel {
-  minSpanX: number,
-  minSpanY: number,
-  maxScaleX: number,
-  maxScaleY: number
-}
+import TimeAxis from "./TimeAxis";
+import DefaultAxis from "./DefaultAxis";
 
-export interface Focus {
-  xl: any,
-  xr: any,
-  yl: number,
-  yr: number,
-  yl_r: number,
-  yr_r: number,
-  xspan?: number,
-  yspan?: number,
-  yspan_r?: number
+export default class PlotAxisFactory {
+  static getPlotAxis(type: string = 'axis') {
+    switch (type) {
+      case 'time':
+      case 'nanotime':
+        return new TimeAxis(type);
+
+      default:
+        return new DefaultAxis(type)
+    }
+  }
 }

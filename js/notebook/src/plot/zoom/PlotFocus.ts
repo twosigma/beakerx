@@ -47,7 +47,11 @@ export default class PlotFocus {
     return this.focus;
   }
 
-  static getDefault(model) {
+  static getDefault(model): {
+    defaultFocus: Focus,
+    visibleItem?: any,
+    legendableItem?: any,
+  } {
     const yAxisData = [];
     const yAxisRData = [];
 
@@ -170,7 +174,7 @@ export default class PlotFocus {
     }
 
     this.fix(this.focus);
-    this.scope.calcMapping(true);
+    this.scope.plotRange.calcMapping(true);
     this.scope.emitZoomLevelChange();
     this.scope.update();
   }

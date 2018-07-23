@@ -134,11 +134,11 @@ define([
 
   PlotLine.prototype.useSecondYAxis = function(scope) {
     var axisLabelExist = this.yAxisLabel !== undefined && this.yAxisLabel !== null;
-    return axisLabelExist && scope.data2scrYi_r;
+    return axisLabelExist && scope.plotRange.data2scrYi_r;
   };
 
   PlotLine.prototype.getYMapper = function(scope) {
-    return this.useSecondYAxis(scope) ? scope.data2scrYi_r : scope.data2scrYi;
+    return this.useSecondYAxis(scope) ? scope.plotRange.data2scrYi_r : scope.plotRange.data2scrYi;
   };
 
   PlotLine.prototype.prepare = function(scope) {
@@ -147,7 +147,7 @@ define([
       eleprops = this.elementProps,
       elelabels = this.elementLabels,
       tipids = this.tipIds;
-    var mapX = scope.data2scrXi,
+    var mapX = scope.plotRange.data2scrXi,
       mapY = this.getYMapper(scope);
     var pstr = "";
 

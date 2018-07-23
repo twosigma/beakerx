@@ -93,20 +93,20 @@ export default class DefaultAxis {
     this.label = label;
   }
 
-  setRange(vl, vr, para): void {
+  setRange(vl, vr, axisBase): void {
     if (vl !== null) { this.axisValL = vl; }
     if (vr !== null) { this.axisValR = vr; }
 
     if (this.axisType === "log") {
-      this.setLogAxisBase(para);
+      this.setLogAxisBase(axisBase);
     }
 
     this.axisValSpan = plotUtils.minus(this.axisValR, this.axisValL);
   }
 
-  setLogAxisBase(para) {
-    if (para != null ) {
-      this.axisBase = para;
+  setLogAxisBase(axisBase) {
+    if (axisBase != null ) {
+      this.axisBase = axisBase;
     }
 
     if (this.axisBase <= 1) {

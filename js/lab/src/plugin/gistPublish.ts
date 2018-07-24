@@ -42,7 +42,7 @@ function openPublishDialog(panel: NotebookPanel) {
     ]
   })
     .then(() => savePanelState(panel))
-    .then(() => doPublish(panel, '984f2ad73d0f693841e220279913fb54b4336d34'));
+    .then(() => doPublish(panel));
 }
 
 function savePanelState(panel: NotebookPanel): Promise<any> {
@@ -59,7 +59,8 @@ function savePanelState(panel: NotebookPanel): Promise<any> {
   });
 }
 
-function doPublish(panel: NotebookPanel, personalAccessToken: string) {
+function doPublish(panel: NotebookPanel) {
+  let personalAccessToken = ''; // FIXME
   beakerx.GistPublisher.doPublish(
     personalAccessToken,
     panel.context.contentsModel.name,

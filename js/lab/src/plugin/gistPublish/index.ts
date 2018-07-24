@@ -36,10 +36,11 @@ function setupPublisher(panel: NotebookPanel) {
     accessTokenProvider: new AccessTokenProvider(),
     saveWidgetsStateHandler: saveWidgetsState.bind(undefined, panel),
     prepareContentToPublish: (scope) => {
+      let el = scope.node || scope.element[0];
       let cell: CodeCell;
       let cells: CodeCell[] = <CodeCell[]>(panel.notebook.widgets || []).filter((cell: Cell) => cell instanceof CodeCell);
       for(let c of cells) {
-        if(c.node.contains(scope.element[0])){
+        if(c.node.contains(el)){
           cell = c;
           break;
         }

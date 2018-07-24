@@ -218,10 +218,12 @@ define([
 
       var self = this;
       var increaseRange = function(value) {
-        return self.plus(value, self.div((value || 1), 10));
+        var v = self.eq(value, 0) ? 1 : value || 1;
+        return self.plus(value, self.div(v, 10));
       };
       var decreaseRange = function(value){
-        return self.minus(value, self.div((value || 1), 10));
+        var v = self.eq(value, 0) ? 1 : value || 1;
+        return self.minus(value, self.div(v, 10));
       };
 
       if (this.eq(datarange.xl, datarange.xr)) {

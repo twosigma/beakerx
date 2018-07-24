@@ -21,6 +21,7 @@ import java.net.URL
 import com.twosigma.beakerx.TryResult
 import com.twosigma.beakerx.autocomplete.AutocompleteResult
 import com.twosigma.beakerx.jvm.`object`.SimpleEvaluationObject
+import com.twosigma.beakerx.mimetype.MIMEContainer
 
 import scala.tools.jline_embedded.console.completer.Completer
 import scala.tools.nsc.Settings
@@ -119,8 +120,12 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
       out.setOutputHandler()
       interpreter.interpret(code) match {
         case Success => {
-          val value = getOut.asInstanceOf[Object]
-          either = TryResult.createResult(value)
+          if (shouldHideResult()) {
+            either = TryResult.createResult(MIMEContainer.HIDDEN)
+          } else {
+            val value = getOut.asInstanceOf[Object]
+            either = TryResult.createResult(value)
+          }
         }
         case Incomplete => {
           either = TryResult.createError("input is incomplete")
@@ -137,6 +142,11 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
       out.clrOutputHandler()
     }
     either
+  }
+
+  private def shouldHideResult() = {
+    val print = interpreter.lastRequest.lineRep.call("$print").toString.trim
+    print.equals("")
   }
 
   def autocomplete(buf: String, len: Integer): AutocompleteResult = {

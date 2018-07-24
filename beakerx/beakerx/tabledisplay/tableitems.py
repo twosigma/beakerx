@@ -58,9 +58,9 @@ class DataBarsRenderer:
 class DecimalStringFormat:
     type = "decimal"
 
-    def __init__(self, **kwargs):
-        self.minDecimals = kwargs.get('min', 4)
-        self.maxDecimals = kwargs.get('max', 4)
+    def __init__(self, min=4, max=4):
+        self.minDecimals = min
+        self.maxDecimals = max
 
 
 class ImageFormat:
@@ -105,8 +105,8 @@ class TableDisplayCellRenderer:
 class TableDisplayStringFormat:
 
     @staticmethod
-    def getDecimalFormat(**kwargs):
-        return DecimalStringFormat(**kwargs)
+    def getDecimalFormat(min, max):
+        return DecimalStringFormat(min, max)
 
     @staticmethod
     def getHTMLFormat(**kwargs):

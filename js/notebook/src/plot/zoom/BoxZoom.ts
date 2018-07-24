@@ -76,13 +76,13 @@ export default class BoxZoom {
     }
 
     const p1 = {
-      "x" : this.scope.scr2dataXp(box.x),
-      "y" : this.scope.scr2dataYp(box.y)
+      "x" : this.scope.plotRange.scr2dataXp(box.x),
+      "y" : this.scope.plotRange.scr2dataYp(box.y)
     };
 
     const p2 = {
-      "x" : this.scope.scr2dataXp(box.x + box.w),
-      "y" : this.scope.scr2dataYp(box.y + box.h)
+      "x" : this.scope.plotRange.scr2dataXp(box.x + box.w),
+      "y" : this.scope.plotRange.scr2dataYp(box.y + box.h)
     };
 
     p1.x = Math.max(0, p1.x);
@@ -112,7 +112,7 @@ export default class BoxZoom {
     this.scope.plotZoom.lastTransform.k = zoomLevel;
     transform.k = zoomLevel;
 
-    this.scope.calcMapping(true);
+    this.scope.plotRange.calcMapping(true);
     this.scope.emitZoomLevelChange();
   }
 

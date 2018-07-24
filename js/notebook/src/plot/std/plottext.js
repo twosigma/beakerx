@@ -129,18 +129,18 @@ define([
 
   PlotText.prototype.useSecondYAxis = function(scope) {
     var axisLabelExist = this.yAxisLabel !== undefined && this.yAxisLabel !== null;
-    return axisLabelExist && scope.data2scrYi_r;
+    return axisLabelExist && scope.plotRange.data2scrYi_r;
   };
 
   PlotText.prototype.getYMapper = function(scope) {
-    return this.useSecondYAxis(scope) ? scope.data2scrYi_r : scope.data2scrYi;
+    return this.useSecondYAxis(scope) ? scope.plotRange.data2scrYi_r : scope.plotRange.data2scrYi;
   };
 
   PlotText.prototype.prepare = function(scope) {
     var focus = scope.plotFocus.getFocus();
     var eles = this.elements,
       eleprops = this.elementProps;
-    var mapX = scope.data2scrXi,
+    var mapX = scope.plotRange.data2scrXi,
       mapY = this.getYMapper(scope);
 
     eleprops.length = 0;

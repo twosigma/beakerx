@@ -198,7 +198,7 @@ export default class PlotZoom {
       this.scaleGraph(mx, my, zoomRate, d3trans);
     }
 
-    this.scope.calcMapping(true);
+    this.scope.plotRange.calcMapping(true);
     this.scope.renderCursor({ offsetX: mx, offsetY: my });
     this.scope.plotFocus.fix(this.scope.plotFocus.getFocus());
     this.scope.update();

@@ -15,12 +15,16 @@
  */
 package com.twosigma.beakerx.scala.evaluator;
 
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorBaseTest;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
+import com.twosigma.beakerx.mimetype.MIMEContainer;
 import com.twosigma.beakerx.scala.TestScalaEvaluator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ScalaBaseEvaluatorTest extends EvaluatorBaseTest {
 
@@ -65,6 +69,11 @@ public class ScalaBaseEvaluatorTest extends EvaluatorBaseTest {
 
   protected String codeForPrintln() {
     return "println(\"Hello\")";
+  }
+
+  @Override
+  protected void verifyReturnPrintlnStatement(TryResult tryResult) {
+    assertThat(((MIMEContainer) tryResult.result())).isEqualTo(MIMEContainer.HIDDEN);
   }
 
 }

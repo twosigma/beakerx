@@ -21,6 +21,8 @@ import { sendJupyterCodeCells, getCodeCellsByTag } from './codeCells';
 import {messageData, messageState} from '../interface/messageData';
 import { Kernel } from "@jupyterlab/services";
 import { CodeCell } from '@jupyterlab/cells';
+import {Autotranslation} from "./autotranslation";
+import LOCK_PROXY = Autotranslation.LOCK_PROXY;
 
 export const BEAKER_GETCODECELLS = 'beakerx.getcodecells';
 export const BEAKER_AUTOTRANSLATION = 'beakerx.autotranslation';
@@ -48,7 +50,9 @@ const getMsgHandlers = (
   [BEAKER_AUTOTRANSLATION]: (msg) => {
     const state: messageState = msg.content.data.state;
 
+    window.beakerx[LOCK_PROXY] = true;
     window.beakerx[state.name] = JSON.parse(state.value);
+    window.beakerx[LOCK_PROXY] = false;
   },
 
   [BEAKER_TAG_RUN]: (msg) => {

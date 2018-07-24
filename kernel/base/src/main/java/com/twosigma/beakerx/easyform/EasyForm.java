@@ -25,15 +25,16 @@ import com.twosigma.beakerx.easyform.formitem.widgets.CheckBoxWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.ComboBoxWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.DatePickerComponentWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.PasswordWidget;
+import com.twosigma.beakerx.easyform.formitem.widgets.RadioButtonComponentWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.SelectMultipleSingleWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.SelectMultipleWidget;
-import com.twosigma.beakerx.easyform.formitem.widgets.RadioButtonComponentWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.TextAreaWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.TextFieldWidget;
 import com.twosigma.beakerx.widget.DOMWidget;
 import com.twosigma.beakerx.widget.DisplayableWidget;
 import com.twosigma.beakerx.widget.ValueWidget;
 import com.twosigma.beakerx.widget.Widget;
+import com.twosigma.beakerx.widget.WidgetItem;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
@@ -45,7 +46,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
-public class EasyForm extends ObservableMap<String, Object> implements DisplayableWidget {
+public class EasyForm extends ObservableMap<String, Object> implements DisplayableWidget, WidgetItem {
 
   public static final Integer HORIZONTAL = 1;
   public static final Integer VERTICAL = 2;
@@ -375,12 +376,20 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
     this.ready = Boolean.FALSE;
   }
 
+  public EasyFormView getView(){
+    EasyFormView easyFormView = new EasyFormView(this.getCommFunctionalities());
+    easyFormView.setEasyFormName(this.getCaption());
+    return easyFormView;
+  }
+
   @Override
   public void display() {
     this.setReady();
-    EasyFormView easyFormView = new EasyFormView(this.getCommFunctionalities());
-    easyFormView.setEasyFormName(this.getCaption());
-    easyFormView.display();
+    this.getView().display();
   }
 
+  @Override
+  public Widget asWidget() {
+    return getView();
+  }
 }

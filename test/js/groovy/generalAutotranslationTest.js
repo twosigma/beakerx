@@ -72,7 +72,7 @@ describe('General Autotranslation ', function () {
     });
   });
 
-  describe('%%python change beakerx.bar value', function(){
+  describe('%%python changes beakerx.bar value', function(){
     it("Should display beakerx.bar value after python changes ", function(){
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
@@ -88,7 +88,7 @@ describe('General Autotranslation ', function () {
     });
   });
 
-  describe('%%scala change beakerx.bar value', function(){
+  describe('%%scala changes beakerx.bar value', function(){
     it("Should display beakerx.bar value after scala changes ", function(){
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
@@ -101,6 +101,78 @@ describe('General Autotranslation ', function () {
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
       beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /3.14, .*scala.*, .*value.*/);
+    });
+  });
+
+  describe('%%clojure ', function(){
+    it("Should display beakerx.bar value after scala changes ", function(){
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /3.14, .*scala.*, .*value.*/);
+    });
+  });
+
+  describe('%%clojure changes beakerx.bar value', function(){
+    it("Should display beakerx.bar value after clojure changes ", function(){
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /345, .*clojure.*, .*value.*/);
+    });
+  });
+
+  describe('Groovy kernel ', function(){
+    it("Should display beakerx.bar value after clojure changes", function(){
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /345, .*clojure.*, .*value.*/);
+    });
+  });
+
+  describe('%%java ', function(){
+    it("Should display beakerx.bar value after clojure changes ", function(){
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /345, .*clojure.*, .*value.*/);
+    });
+  });
+
+  describe('%%java changes beakerx.bar value', function(){
+    it("Should display beakerx.bar value after java changes ", function(){
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /10, .*java.*, .*value.*/);
+    });
+  });
+
+  describe('Groovy kernel ', function(){
+    it("Should display beakerx.bar value after java changes", function(){
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /10, .*java.*, .*value.*/);
+    });
+  });
+
+  describe('%%kotlin ', function(){
+    it("Should display beakerx.bar value after java changes ", function(){
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /10, .*java.*, .*value.*/);
+    });
+  });
+
+  describe('%%kotlin changes beakerx.bar value', function(){
+    it("Should display beakerx.bar value after kotlin changes ", function(){
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /33, .*kotlin.*, .*value.*/);
+    });
+  });
+
+  describe('Groovy kernel ', function(){
+    it("Should display beakerx.bar value after kotlin changes", function(){
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /33, .*kotlin.*, .*value.*/);
     });
   });
 

@@ -255,7 +255,7 @@ define([
   PlotStemLodLoader.prototype.sample = function(scope) {
     var xAxis = this.xAxis,
       yAxis = this.yAxis;
-    var xl = scope.focus.xl, xr = scope.focus.xr;
+    var xl = scope.plotFocus.focus.xl, xr = scope.plotFocus.focus.xr;
 
     if (this.sampleStep === -1) {
       var pixelWidth = scope.plotSize.width;

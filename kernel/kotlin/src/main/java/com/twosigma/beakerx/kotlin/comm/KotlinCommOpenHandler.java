@@ -17,6 +17,7 @@ package com.twosigma.beakerx.kotlin.comm;
 
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.handler.Handler;
+import com.twosigma.beakerx.kernel.comm.AutotranslationHandler;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.kernel.comm.KernelControlCommandListHandler;
 import com.twosigma.beakerx.kernel.comm.KernelControlInterrupt;
@@ -29,13 +30,18 @@ public class KotlinCommOpenHandler extends CommOpenHandler{
      new KernelControlInterrupt(kernel),
      new KernelControlCommandListHandler(kernel)};
 
+ private Handler<?>[] AUTOTRANSLATION_HANDLER = {
+         new AutotranslationHandler(kernel)};
+
   public KotlinCommOpenHandler(KernelFunctionality kernel) {
     super(kernel);
   }
 
   public Handler<Message>[] getKernelControlChanelHandlers(String targetName){
-    if(TargetNamesEnum.KERNEL_CONTROL_CHANNEL.getTargetName().equalsIgnoreCase(targetName)){
-      return (Handler<Message>[]) KERNEL_CONTROL_CHANNEL_HANDLERS;
+    if(TargetNamesEnum.KERNEL_CONTROL_CHANNEL.getTargetName().equalsIgnoreCase(targetName)) {
+        return (Handler<Message>[]) KERNEL_CONTROL_CHANNEL_HANDLERS;
+    } else if (TargetNamesEnum.BEAKER_AUTOTRANSLATION.getTargetName().equalsIgnoreCase(targetName)) {
+        return (Handler<Message>[]) AUTOTRANSLATION_HANDLER;
     }else{
       return (Handler<Message>[]) new Handler<?>[0];
     }

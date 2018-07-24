@@ -99,13 +99,13 @@ define([
 
   HeatMap.prototype.filter = function(scope) {
     var eles = this.elements;
-    var l = plotUtils.upper_bound(eles, "x2", scope.focus.xl) + 1,
-      r = plotUtils.upper_bound(eles, "x", scope.focus.xr);
+    var l = plotUtils.upper_bound(eles, "x2", scope.plotFocus.focus.xl) + 1,
+      r = plotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xr);
 
     l = Math.max(l, 0);
     r = Math.min(r, eles.length - 1);
 
-    if (l > r || l == r && eles[l].x2 < scope.focus.xl) { // TODO check 'focus' -> 'scope.focus'
+    if (l > r || l == r && eles[l].x2 < scope.plotFocus.focus.xl) { // TODO check 'focus' -> 'scope.focus'
       // nothing visible, or all elements are to the left of the svg, vlength = 0
       l = 0;
       r = -1;
@@ -117,9 +117,9 @@ define([
 
   HeatMap.prototype.prepare = function(scope) {
     var sw;
-    var focus = scope.focus;
-    var mapX = scope.data2scrXi;
-    var mapY = scope.data2scrYi;
+    var focus = scope.plotFocus.getFocus();
+    var mapX = scope.plotRange.data2scrXi;
+    var mapY = scope.plotRange.data2scrYi;
     var eleprops = this.elementProps;
     var eles = this.elements;
 

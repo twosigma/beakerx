@@ -237,6 +237,11 @@ class TableDisplay(BeakerxDOMWidget):
 
             self.model = self.chart.transform()
 
+    def setTimeZone(self, timezone):
+        self.chart.timeZone = timezone
+        self.model = self.chart.transform()
+        return self
+
     def addContextMenuItem(self, name, func):
         self.contextMenuListeners[name] = func
         self.chart.contextMenuItems.append(name)

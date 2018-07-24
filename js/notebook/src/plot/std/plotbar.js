@@ -108,8 +108,8 @@ define([
 
   PlotBar.prototype.filter = function(scope) {
     var eles = this.elements;
-    var l = plotUtils.upper_bound(eles, "x2", scope.focus.xl) + 1,
-      r = plotUtils.upper_bound(eles, "x", scope.focus.xr);
+    var l = plotUtils.upper_bound(eles, "x2", scope.plotFocus.focus.xl) + 1,
+      r = plotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xr);
 
     l = Math.max(l, 0);
     r = Math.min(r, eles.length - 1);
@@ -126,17 +126,17 @@ define([
 
   PlotBar.prototype.useSecondYAxis = function(scope) {
     var axisLabelExist = this.yAxisLabel !== undefined && this.yAxisLabel !== null;
-    return axisLabelExist && scope.data2scrYi_r;
+    return axisLabelExist && scope.plotRange.data2scrYi_r;
   };
 
   PlotBar.prototype.getYMapper = function(scope) {
-    return this.useSecondYAxis(scope) ? scope.data2scrYi_r : scope.data2scrYi;
+    return this.useSecondYAxis(scope) ? scope.plotRange.data2scrYi_r : scope.plotRange.data2scrYi;
   };
 
   PlotBar.prototype.prepare = function(scope) {
     var w = this.width, sw;
-    var focus = scope.focus;
-    var mapX = scope.data2scrXi,
+    var focus = scope.plotFocus.getFocus();
+    var mapX = scope.plotRange.data2scrXi,
       mapY = this.getYMapper(scope);
     var eleprops = this.elementProps,
       eles = this.elements;

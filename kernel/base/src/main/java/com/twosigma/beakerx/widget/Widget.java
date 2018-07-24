@@ -15,18 +15,18 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
+import com.twosigma.beakerx.message.Message;
+
 import java.io.Serializable;
 import java.util.HashMap;
 
 import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.DISPLAY_DATA;
 
-import com.twosigma.beakerx.kernel.KernelManager;
-import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
-import com.twosigma.beakerx.message.Message;
-
-public abstract class Widget implements CommFunctionality, DisplayableWidget {
+public abstract class Widget implements CommFunctionality, DisplayableWidget, WidgetItem {
 
   public static final String APPLICATION_VND_JUPYTER_WIDGET_VIEW_JSON = "application/vnd.jupyter.widget-view+json";
   public static final String MODEL_ID = "model_id";
@@ -177,6 +177,11 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
 
   public interface WidgetDisplayMethodStrategy {
     void display(Widget widget);
+  }
+
+  @Override
+  public Widget asWidget() {
+    return this;
   }
 
 }

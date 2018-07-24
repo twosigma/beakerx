@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-var PlotModel = require("./models/PlotModel").default;
+var CombinedPlotModel = require("./models/CombinedPlotModel").default;
 
 define([
   'underscore',
@@ -91,7 +91,7 @@ define([
       plotmodel.yAxis.showGridlineLabels = self.model.getCellModel().y_tickLabels_visible;
       plotmodel.plotIndex = i;
 
-      models.push(new PlotModel(plotmodel, self));
+      models.push(new CombinedPlotModel(plotmodel, self));
     }
 
     self.models = models;

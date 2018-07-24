@@ -23,7 +23,6 @@ define([
   './plotUtils',
   './plotTip',
   './plotConverter',
-  './plotFormatter',
   './plotFactory',
   './gradientlegend',
   './chartExtender'
@@ -36,12 +35,12 @@ define([
   plotUtils,
   plotTip,
   plotConverter,
-  plotFormatter,
   plotFactory,
   GradientLegend,
   bkoChartExtender
 ) {
 
+  var PlotModelFactory = require('./models/PlotModelFactory').default;
   var PlotRange = require('./range/PlotRange').default;
   var PlotZoom = require('./zoom/index').default;
   var PlotFocus = require('./zoom/PlotFocus').default;
@@ -1241,7 +1240,9 @@ define([
 
   PlotScope.prototype.standardizeData = function() {
     var model = this.model.getCellModel();
-    this.stdmodel = plotFormatter.standardizeModel(model, this.prefs);
+    var standardPlotModel = PlotModelFactory.getPlotModel(model, this.prefs);
+
+    this.stdmodel = standardPlotModel.getStandardizedModel();
   };
 
   PlotScope.prototype.initFlags = function() {

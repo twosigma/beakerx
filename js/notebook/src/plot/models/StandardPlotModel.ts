@@ -21,6 +21,7 @@ import {GroovyKernelMapping} from "../mapping/groovy";
 import {DefaultKernelMapping} from "../mapping/default";
 import {StandardModelData} from "../mapping/interfaces";
 import DefaultAxis from "../std/axis/DefaultAxis";
+import PlotRange from "../range/PlotRange";
 
 const plotUtils = require('../plotUtils');
 const plotFactory = require('../plotFactory');
@@ -154,9 +155,9 @@ export default class StandardPlotModel extends AbstractPlotModel {
     // map data entrie to [0, 1] of axis range
     const xAxis = PlotAxisFactory.getPlotAxis(model.xAxis.type);
 
-    model.xAxis = DefaultAxis.updateAxisXRange(xAxis, model);
-    model.yAxis = DefaultAxis.updateAxisYRange(model.yAxis, model.vrange, model);
-    model.yAxisR = DefaultAxis.updateAxisYRange(model.yAxisR, model.vrangeR, model);
+    model.xAxis = PlotRange.updateAxisXRange(xAxis, model);
+    model.yAxis = PlotRange.updateAxisYRange(model.yAxis, model.vrange, model);
+    model.yAxisR = PlotRange.updateAxisYRange(model.yAxisR, model.vrangeR, model);
 
     const data = model.data;
 

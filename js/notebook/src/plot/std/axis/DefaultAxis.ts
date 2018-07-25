@@ -15,7 +15,6 @@
  */
 
 import * as Big from 'big.js';
-import PlotAxisFactory from "./PlotAxisFactory";
 
 const NANOTIME_TYPE = 'nanotime';
 const plotUtils = require('../../plotUtils');
@@ -72,54 +71,6 @@ export default class DefaultAxis {
     this.numIntws = [];
 
     this.setNumFixs();
-  }
-
-  static updateAxisXRange(xAxis, model) {
-    const vrange = model.vrange;
-    const xAxisLabel = model.xAxis.label;
-
-    if (xAxis.axisType === "category") {
-      xAxis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
-      xAxis.setCategoryNames(model.categoryNames, model.labelsxs);
-    } else if (xAxis.axisType === "time" || xAxis.axisType === "nanotime") {
-      xAxis.setRange(vrange.xl, vrange.xr, model.timezone);
-    } else {
-      xAxis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
-    }
-
-    if (xAxisLabel != null) {
-      xAxis.setLabel(xAxisLabel);
-    }
-
-    return xAxis;
-  }
-
-  static updateAxisYRange(modelAxis, axisVRange, model) {
-    if (modelAxis == null || axisVRange == null) {
-      return null;
-    }
-
-    const vrange = model.vrange;
-    const label = modelAxis.label;
-    const axis = PlotAxisFactory.getPlotAxis(modelAxis.type);
-
-    if (axis.axisType === "category") {
-      axis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
-      axis.setCategoryNames(model.categoryNames, model.labelsxs);
-    } else if (axis.axisType !== "time") {
-      axis.setRange(axisVRange.yl, axisVRange.yr, modelAxis.base);
-    } else {
-      axis.setRange(axisVRange.yl, axisVRange.yr, modelAxis.timezone);
-    }
-
-    if (label != null) {
-      axis.setLabel(label);
-    }
-
-    axis.axisMarginValL = modelAxis.lowerMargin;
-    axis.axisMarginValR = modelAxis.upperMargin;
-
-    return axis;
   }
 
   setNumFixs() {

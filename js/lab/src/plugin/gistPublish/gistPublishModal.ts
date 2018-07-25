@@ -106,24 +106,24 @@ export default class GistPublishModal {
 
   storePersonalAccessToken(githubPersonalAccessToken = ''): Promise<any> {
     return this.getStoredSettings()
-      .then(storedSettings =>
-        ServerConnection.makeRequest(
+      .then(storedSettings => {
+        storedSettings.beakerx.githubPersonalAccessToken = githubPersonalAccessToken;
+        return ServerConnection.makeRequest(
           this.settingsUrl,
           {
             method: 'POST',
             body: JSON.stringify({
-              ...storedSettings,
-              githubPersonalAccessToken //FIXME
+              ...storedSettings
             })
           },
           this.serverSettings
         ).catch(reason => { console.log(reason); })
-      );
+      });
   }
 
-  getGithubPersonalAccessToken(): Promise<any> {
+  getGithubPersonalAccessToken(): Promise<string> {
     return this.getStoredSettings()
-      .then(settings => settings.githubPersonalAccessToken || '');
+      .then(settings => settings.beakerx.githubPersonalAccessToken || '');
   }
 
   getStoredSettings(): Promise<any> {

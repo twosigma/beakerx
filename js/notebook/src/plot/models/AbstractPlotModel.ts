@@ -34,11 +34,12 @@ export default abstract class AbstractPlotModel {
   abstract createNewModel(model: any): any;
 
   constructor(model, settings) {
-    this.model = this.standardize(model, settings);
+    this.model = model;
+    this.settings = settings;
   }
 
   getStandardizedModel() {
-    return this.model;
+    return this.standardize(this.model, this.settings);
   }
 
   standardize(originalModel, settings) {

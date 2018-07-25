@@ -15,7 +15,7 @@
  */
 
 import TreeMapPlotModel from "./TreeMapPlotModel";
-import StandardPlotModel from "./StandardPlotModel";
+import DefaultPlotModel from "./DefaultPlotModel";
 
 export default class PlotModelFactory {
   static getPlotModel(model, settings) {
@@ -24,7 +24,7 @@ export default class PlotModelFactory {
         return new TreeMapPlotModel(model, settings);
 
       default:
-        return new StandardPlotModel(model, settings);
+        return new DefaultPlotModel(model, settings);
     }
   }
 }

@@ -20,7 +20,6 @@ import PlotFocus from "../zoom/PlotFocus";
 import {GroovyKernelMapping} from "../mapping/groovy";
 import {DefaultKernelMapping} from "../mapping/default";
 import {StandardModelData} from "../mapping/interfaces";
-import DefaultAxis from "../std/axis/DefaultAxis";
 import PlotRange from "../range/PlotRange";
 
 const plotUtils = require('../plotUtils');
@@ -29,7 +28,7 @@ const plotFactory = require('../plotFactory');
 const DEFAULT_LINE_ITEM_WIDTH = 2;
 const DEFAULT_BAR_ITEM_WIDTH = 1;
 
-export default class StandardPlotModel extends AbstractPlotModel {
+export default class DefaultPlotModel extends AbstractPlotModel {
   createNewModel(model): StandardModelData {
     if (model.version === "groovy") {  // model returned from serializer
       return GroovyKernelMapping.mapStandardPlotModelData(model);

@@ -1240,9 +1240,9 @@ define([
 
   PlotScope.prototype.standardizeData = function() {
     var model = this.model.getCellModel();
-    var standardPlotModel = PlotModelFactory.getPlotModel(model, this.prefs);
+    var plotModel = PlotModelFactory.getPlotModel(model, this.prefs);
 
-    this.stdmodel = standardPlotModel.getStandardizedModel();
+    this.stdmodel = plotModel.getStandardizedModel();
   };
 
   PlotScope.prototype.initFlags = function() {

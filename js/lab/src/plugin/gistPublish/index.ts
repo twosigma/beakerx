@@ -16,10 +16,10 @@
 
 import { NotebookPanel } from "@jupyterlab/notebook";
 import { showDialog, Dialog, ToolbarButton } from '@jupyterlab/apputils';
-import GistPublishModal from './gistPublishModal';
 import beakerx from "../../beakerx";
+import GistPublishModal from './gistPublishModal';
 import AccessTokenProvider from "../../AccessTokenProvider";
-import {CodeCell, Cell} from "@jupyterlab/cells";
+import { CodeCell, Cell } from "@jupyterlab/cells";
 
 export function registerFeature(panel: NotebookPanel, showPublication: boolean) {
   if (showPublication) {
@@ -27,6 +27,30 @@ export function registerFeature(panel: NotebookPanel, showPublication: boolean) 
     setupPublisher(panel);
   } else {
     removeActionButton(panel);
+  }
+}
+
+function addActionButton(panel: NotebookPanel): void {
+  const action = {
+    className: 'fa fa-share-alt',
+    tooltip: 'Publish...',
+    onClick: () => openPublishDialog(panel)
+  };
+
+  let button = new ToolbarButton(action);
+  button.id = 'bx-publishButton';
+
+  panel.toolbar.insertItem(9,'publish', button);
+}
+
+function removeActionButton(panel: NotebookPanel): void {
+  let iter = panel.toolbar.layout.iter();
+  let widget;
+  while (widget = iter.next()) {
+    if (widget instanceof ToolbarButton && widget.id == 'bx-publishButton') {
+      panel.toolbar.layout.removeWidget(widget);
+      break;
+    }
   }
 }
 
@@ -54,7 +78,20 @@ function setupPublisher(panel: NotebookPanel) {
   beakerx.GistPublisherUtils.setup(options);
 }
 
-export function saveWidgetsState(panel): Promise<any> {
+function openPublishDialog(panel: NotebookPanel) {
+  new GistPublishModal()
+    .show(personalAccessToken => doPublish(panel, personalAccessToken));
+}
+
+function showErrorDialog(errorMsg) {
+  showDialog({
+    title : 'Gist publication error',
+    body : `Uploading gist failed: ${errorMsg}`,
+    buttons: [ Dialog.okButton({ label: 'OK' }) ]
+  });
+}
+
+export function saveWidgetsState(panel): Promise<string> {
   return new Promise((resolve, reject) => {
     panel.context.save().then(() => {
       console.log("widgets state has been saved");
@@ -68,47 +105,12 @@ export function saveWidgetsState(panel): Promise<any> {
   })
 }
 
-function addActionButton(panel: NotebookPanel): void {
-  const action = {
-    className: 'fa fa-share-alt',
-    tooltip: 'Publish...',
-    onClick: () => openPublishDialog(panel)
-  };
-
-  let button = new ToolbarButton(action);
-  button.id = 'bx-publishButton';
-
-  panel.toolbar.insertItem(9,'publish', button);
-}
-
-function removeActionButton(panel: NotebookPanel): void {
-  let iter = panel.toolbar.layout.iter();
-  let widget;
-  while (widget = iter.next()) {
-    if (widget instanceof ToolbarButton && widget.id == 'bx-publishButton') {
-      panel.toolbar.layout.removeWidget(widget);
-      break;
-    }
-  }
-}
-
-function openPublishDialog(panel: NotebookPanel) {
-  new GistPublishModal()
-    .show(personalAccessToken => doPublish(panel, personalAccessToken));
-}
-
 function doPublish(panel: NotebookPanel, personalAccessToken: string|null): void {
   beakerx.GistPublisher.doPublish(
-    personalAccessToken, panel.context.contentsModel.name,
+    personalAccessToken,
+    panel.context.contentsModel.name,
     panel.notebook.model.toJSON(),
     (errorMsg) => showErrorDialog(errorMsg)
   );
 }
 
-function showErrorDialog(errorMsg) {
-  showDialog({
-    title : 'Gist publication error',
-    body : `Uploading gist failed: ${errorMsg}`,
-    buttons: [ Dialog.okButton({ label: 'OK' }) ]
-  });
-}

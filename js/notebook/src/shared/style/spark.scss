@@ -41,13 +41,17 @@
   background-color: $bxColorDefault;
 }
 
+.bx-spark-stageGroupPanel {
+  margin: 8px 0;
+}
+
 .bx-spark-stagePanel {
   max-width: 600px;
   margin: 8px 0;
 }
 
 .foldout-preview {
-  & > .bx-spark-stagePanel {
+  & > .bx-spark-stageGroupPanel {
     padding: 0 15px;
     margin: 0;
   }

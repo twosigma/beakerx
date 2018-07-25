@@ -47,7 +47,7 @@ public class SparkUI extends VBox implements SparkUIApi {
   private final SparkUIForm sparkUIForm;
   private VBox sparkUIFormPanel;
   private HBox statusPanel;
-  private Map<Integer, SparkStateProgress> progressBarMap = new HashMap<>();
+  private Map<Integer, SparkStateGroupPanel> progressBarMap = new HashMap<>();
   private SparkFoldout jobPanel = null;
   private Message currentParentHeader = null;
   private SparkEngine sparkEngine;
@@ -163,8 +163,12 @@ public class SparkUI extends VBox implements SparkUIApi {
     }
     SparkStateProgress intProgress = new SparkStateProgress(numTasks, stageId, stageId, jobLink(stageId), stageLink(stageId));
     intProgress.init();
-    jobPanel.add(intProgress);
-    progressBarMap.put(stageId, intProgress);
+    Button xButton = new Button();
+    xButton.registerOnClick((content, message) -> getSparkSession().sparkContext().cancelStage(stageId));
+    SparkStateGroupPanel sparkProgressDecorator = new SparkStateGroupPanel(intProgress, xButton);
+
+    jobPanel.add(sparkProgressDecorator);
+    progressBarMap.put(stageId, sparkProgressDecorator);
   }
 
   private boolean isStartStageFromNewCell() {
@@ -186,18 +190,18 @@ public class SparkUI extends VBox implements SparkUIApi {
   }
 
   public void endStage(int stageId) {
-    SparkStateProgress sparkStateProgress = progressBarMap.get(stageId);
-    sparkStateProgress.hide();
+    SparkStateGroupPanel decorator = progressBarMap.get(stageId);
+    decorator.getSparkStateProgress().hide();
   }
 
   public void taskStart(int stageId, long taskId) {
-    SparkStateProgress intProgress = progressBarMap.get(stageId);
-    intProgress.addActive();
+    SparkStateGroupPanel decorator = progressBarMap.get(stageId);
+    decorator.getSparkStateProgress().addActive();
   }
 
   public void taskEnd(int stageId, long taskId) {
-    SparkStateProgress intProgress = progressBarMap.get(stageId);
-    intProgress.addDone();
+    SparkStateGroupPanel decorator = progressBarMap.get(stageId);
+    decorator.getSparkStateProgress().addDone();
   }
 
   private String stageLink(int stageId) {
@@ -234,20 +238,6 @@ public class SparkUI extends VBox implements SparkUIApi {
 
   public List<SparkConfiguration.Configuration> getAdvancedOptions() {
     return this.sparkUIForm.getAdvancedOptions();
-  }
-
-  private void clearSparkUIFormPanel() {
-    if (sparkUIFormPanel != null) {
-      remove(sparkUIFormPanel);
-      sparkUIFormPanel = null;
-    }
-  }
-
-  private void addSparkUIFormPanel() {
-    if (sparkUIFormPanel == null) {
-      this.sparkUIFormPanel = new VBox(asList(this.sparkUIForm));
-      add(sparkUIFormPanel);
-    }
   }
 
   public Button getConnectButton() {

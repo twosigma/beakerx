@@ -33,7 +33,7 @@ export function registerFeature(): void {
     'label'   : ' ',
     'id'      : 'btn_publish',
     'icon'    : 'fa-share-alt',
-    'callback': beforePublish
+    'callback': openPublishDialog
   }]);
 
   $('#btn_publish > span').remove();
@@ -48,7 +48,7 @@ export function registerFeature(): void {
       .html('Publish...'));
 
   publish_menu.insertAfter($('#print_preview'));
-  publish_menu.click(beforePublish);
+  publish_menu.click(openPublishDialog);
 }
 
 function setupPublisher() {
@@ -73,11 +73,9 @@ function setupPublisher() {
   GistPublisherUtils.setup(options);
 }
 
-function beforePublish(): void {
+function openPublishDialog(): void {
   new GistPublishModal()
-    .show(personalAccessToken => saveWidgetsState().then(
-      () => doPublish(personalAccessToken)
-    ));
+    .show(personalAccessToken => doPublish(personalAccessToken));
 }
 
 function showErrorDialog(errorMsg) {

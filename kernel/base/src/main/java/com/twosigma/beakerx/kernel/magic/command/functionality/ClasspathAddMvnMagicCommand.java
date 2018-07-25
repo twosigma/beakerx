@@ -24,6 +24,7 @@ import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver.Dependency;
 import com.twosigma.beakerx.kernel.magic.command.PomFactory;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
+import com.twosigma.beakerx.message.Message;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,13 +68,18 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
   @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     String command = param.getCommand();
+    Message message = param.getCode().getMessage();
+    return execute(command, message);
+  }
+
+  public MagicCommandOutcomeItem execute(String command, Message message) {
     String[] split = MagicCommandUtils.splitPath(command);
     if (!(isGradleFormat(split) || isMavenFormat(split))) {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, ADD_MVN_FORMAT_ERROR_MESSAGE);
     }
     commandParams.setRepos(getRepos().get());
     MavenJarResolver classpathAddMvnCommand = new MavenJarResolver(commandParams, pomFactory);
-    MvnLoggerWidget progress = new MvnLoggerWidget(param.getCode().getMessage());
+    MvnLoggerWidget progress = new MvnLoggerWidget(message);
     AddMvnCommandResult result = retrieve(getDependency(split), classpathAddMvnCommand, progress);
     if (result.isJarRetrieved()) {
       return handleAddedJars(classpathAddMvnCommand.getPathToMavenRepo() + "/*");

@@ -13,21 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.util;
+package com.twosigma.beakerx.scala.magic.command;
 
-public class BeakerXSystemImpl implements BeakerXSystem {
+import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.SparkUI;
 
-  private static BeakerXSystem INSTANCE = new BeakerXSystemImpl();
+public interface SparkMagicActionOptions {
 
-  private BeakerXSystemImpl() {
-  }
-
-  @Override
-  public String getenv(String name) {
-    return System.getenv(name);
-  }
-
-  public static BeakerXSystem getINSTANCE() {
-    return INSTANCE;
-  }
+  void connectToSparkSession(SparkUI sparkUI, Message parent);
 }

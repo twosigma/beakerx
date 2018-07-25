@@ -13,21 +13,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.util;
+package com.twosigma.beakerx.scala.magic.command;
 
-public class BeakerXSystemImpl implements BeakerXSystem {
+import org.apache.commons.cli.Options;
 
-  private static BeakerXSystem INSTANCE = new BeakerXSystemImpl();
+public class SparkOptions {
 
-  private BeakerXSystemImpl() {
+  public static final String START = "start";
+  public static final String VERSION = "version";
+  private Options options = new Options();
+
+  public SparkOptions() {
+    options.addOption("s", START, false, "Start spark");
+    options.addOption("v", VERSION, true, "Load spark version");
   }
 
-  @Override
-  public String getenv(String name) {
-    return System.getenv(name);
-  }
-
-  public static BeakerXSystem getINSTANCE() {
-    return INSTANCE;
+  public Options getOptions() {
+    return options;
   }
 }

@@ -22,6 +22,7 @@ import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver;
 import com.twosigma.beakerx.kernel.magic.command.PomFactory;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
+import com.twosigma.beakerx.message.Message;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,7 +65,12 @@ public class ClassPathAddMvnCellMagicCommand extends ClasspathMagicCommand {
   @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     String command = param.getCommand();
+    Message message = param.getCode().getMessage();
     String commandCodeBlock = param.getCommandCodeBlock();
+    return execute(command, commandCodeBlock, message);
+  }
+
+  public MagicCommandOutcomeItem execute(String command, String commandCodeBlock, Message message) {
     if (commandCodeBlock != null) {
       command += "\n" + commandCodeBlock;
     }
@@ -80,7 +86,7 @@ public class ClassPathAddMvnCellMagicCommand extends ClasspathMagicCommand {
     List<MavenJarResolver.Dependency> dependencies =
             getDepsFromCommand(Arrays.copyOfRange(commandLines, 1, commandLines.length));
     MavenJarResolver mavenJarResolver = new MavenJarResolver(commandParams, pomFactory);
-    MvnLoggerWidget mvnLoggerWidget = new MvnLoggerWidget(param.getCode().getMessage());
+    MvnLoggerWidget mvnLoggerWidget = new MvnLoggerWidget(message);
     MavenJarResolver.AddMvnCommandResult result = mavenJarResolver.retrieve(dependencies, mvnLoggerWidget);
 
     if (result.isJarRetrieved()) {

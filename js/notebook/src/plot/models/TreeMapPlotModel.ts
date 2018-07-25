@@ -15,6 +15,9 @@
  */
 
 import AbstractPlotModel from "./AbstractPlotModel";
+import {GroovyKernelMapping} from "../mapping/groovy";
+import {DefaultKernelMapping} from "../mapping/default";
+import {TreeMapModelData} from "../mapping/interfaces";
 
 const plotFactory = require('../plotFactory');
 
@@ -29,16 +32,11 @@ export default class TreeMapPlotModel extends AbstractPlotModel {
     }
   }
 
-  createNewModel(model) {
-    let newmodel = super.createNewModel(model);
+  createNewModel(model): TreeMapModelData {
+    if (model.version === "groovy") {  // model returned from serializer
+      return GroovyKernelMapping.mapTreeMapModelData(model);
+    }
 
-    return {
-      ...newmodel,
-      mode: model.mode,
-      ratio: model.ratio,
-      sticky: model.sticky,
-      round: model.round,
-      valueAccessor: model.valueAccessor
-    };
+    return DefaultKernelMapping.mapTreeMapModelData(model);
   }
 }

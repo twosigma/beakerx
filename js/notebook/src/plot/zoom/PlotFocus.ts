@@ -32,6 +32,34 @@ export default class PlotFocus {
     this.focus = null;
   }
 
+  static remapFocusRegion(model) {
+    const focus = model.userFocus;
+
+    if (focus.xl != null) {
+      focus.xl = model.xAxis.getPercent(focus.xl);
+    }
+
+    if (focus.xr != null) {
+      focus.xr = model.xAxis.getPercent(focus.xr);
+    }
+
+    if (focus.yl != null) {
+      focus.yl = model.yAxis.getPercent(focus.yl);
+    }
+
+    if (focus.yr != null) {
+      focus.yr = model.yAxis.getPercent(focus.yr);
+    }
+
+    if (focus.yl_r != null && model.yAxisR) {
+      focus.yl_r = model.yAxisR.getPercent(focus.yl_r);
+    }
+
+    if (focus.yr_r != null && model.yAxisR) {
+      focus.yr_r = model.yAxisR.getPercent(focus.yr_r);
+    }
+  }
+
   setDefault(focus: Focus) {
     this.defaultFocus = focus;
   }

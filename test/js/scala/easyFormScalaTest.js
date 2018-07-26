@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@ var easyFormBaseObject = require('../easyFormBase.js').prototype;
 var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('(Python) Testing of EasyForm', function () {
+describe('(Scala) Testing of EasyForm', function () {
 
-  easyFormBaseObject.constructor.apply(this, ['Python']);
+  easyFormBaseObject.constructor.apply(this, ['Scala']);
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/test/ipynb/python/EasyFormPythonTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/ipynb/scala/EasyFormTest.ipynb');
   }, 2);
 
   afterAll(function () {
@@ -33,10 +33,10 @@ describe('(Python) Testing of EasyForm', function () {
 
   var cellIndex;
 
-  describe("(Python) EasyForm Actions", function () {
+  describe('(Scala) EasyForm Actions ', function(){
     var inputs;
 
-    it('EasyForm has button', function () {
+    it('EasyForm has two buttons ', function () {
       cellIndex = 34;
       var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       easyForm.$('button=run tag').click();
@@ -44,7 +44,7 @@ describe('(Python) Testing of EasyForm', function () {
       easyForm.$('button=actionPerformed').click();
     });
 
-    it('tag should create EasyForm', function () {
+    it('tag should create EasyForm ', function () {
       cellIndex += 2;
       beakerxPO.kernelIdleIcon.waitForEnabled();
       var codeCell_11 = beakerxPO.getCodeCellByIndex(cellIndex);
@@ -53,14 +53,32 @@ describe('(Python) Testing of EasyForm', function () {
       inputs = easyForm.$$('input[type="text"]');
     });
 
-    it('should change text value', function () {
+    it('onChange action should change text value ', function () {
       cellIndex -= 1;
-      beakerxPO.runCodeCellByIndex(cellIndex);
-      expect(inputs[0].getValue()).toBe('test text');
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, 'test text');
+      expect(inputs[1].getValue()).toBe('test text');
+      expect(inputs[2].getValue()).toBe('test text from onChange');
     });
 
-    it('actionPerformed should change text value', function () {
-      expect(inputs[1].getValue()).toBe('from actionPerformed');
+    it('onInit action should change text value ', function () {
+      expect(inputs[0].getValue()).toBe('from onInit');
+    });
+
+    it('actionPerformed should change text value ', function () {
+      expect(inputs[3].getValue()).toBe('from actionPerformed');
+    });
+  });
+
+  describe('(Scala) IntSlider widget in EasyForm ', function(){
+    it('EasyForm has IntSlider widget', function(){
+      cellIndex += 2;
+      var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
+      expect(easyForm.$('div.slider-container')).toBeTruthy();
+    });
+
+    it('IntSlider has value 50 ', function(){
+      cellIndex +=1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, '50');
     });
   });
 

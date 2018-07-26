@@ -407,19 +407,17 @@ export default class PlotLegend {
         break;
     }
 
-    if (
-      !isHorizontal
-      || ["TOP_LEFT", "BOTTOM_LEFT"].indexOf(this.scope.stdmodel.legendPosition.position) === -1
-    ) {
-      this.scope.jqcontainer.css("margin-left", legendContainer.width() + margin);
-    }
-
-    if(["TOP_LEFT", "TOP_RIGHT"].indexOf(this.scope.stdmodel.legendPosition.position) !== -1) {
-      this.scope.jqcontainer.css("margin-top", legendContainer.height() + margin);
-    }
-
-    if(["BOTTOM_LEFT", "BOTTOM_RIGHT"].indexOf(this.scope.stdmodel.legendPosition.position) !== -1) {
-      this.scope.jqcontainer.css("margin-bottom", legendContainer.height() + margin);
+    if (isHorizontal) {
+      if(["TOP_LEFT", "TOP_RIGHT"].indexOf(this.scope.stdmodel.legendPosition.position) !== -1) {
+        this.scope.jqcontainer.css("margin-top", legendContainer.height() + margin);
+      }
+      if(["BOTTOM_LEFT", "BOTTOM_RIGHT"].indexOf(this.scope.stdmodel.legendPosition.position) !== -1) {
+        this.scope.jqcontainer.css("margin-bottom", legendContainer.height() + margin);
+      }
+    } else {
+      if(["TOP_LEFT", "BOTTOM_LEFT"].indexOf(this.scope.stdmodel.legendPosition.position) !== -1) {
+        this.scope.jqcontainer.css("margin-left", legendContainer.width() + margin);
+      }
     }
   }
 

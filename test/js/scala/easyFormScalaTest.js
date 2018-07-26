@@ -31,4 +31,55 @@ describe('(Scala) Testing of EasyForm', function () {
     beakerxPO.closeAndHaltNotebook();
   });
 
+  var cellIndex;
+
+  describe('(Groovy) EasyForm Actions ', function(){
+    var inputs;
+
+    it('EasyForm has two buttons ', function () {
+      cellIndex = 34;
+      var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
+      easyForm.$('button=run tag').click();
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      easyForm.$('button=actionPerformed').click();
+    });
+
+    it('tag should create EasyForm ', function () {
+      cellIndex += 2;
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      var codeCell_11 = beakerxPO.getCodeCellByIndex(cellIndex);
+      var easyForm = codeCell_11.$('div.beaker-easyform-container');
+      expect(easyForm.isEnabled()).toBeTruthy();
+      inputs = easyForm.$$('input[type="text"]');
+    });
+
+    it('onChange action should change text value ', function () {
+      cellIndex -= 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, 'test text');
+      expect(inputs[1].getValue()).toBe('test text');
+      expect(inputs[2].getValue()).toBe('test text from onChange');
+    });
+
+    it('onInit action should change text value ', function () {
+      expect(inputs[0].getValue()).toBe('from onInit');
+    });
+
+    it('actionPerformed should change text value ', function () {
+      expect(inputs[3].getValue()).toBe('from actionPerformed');
+    });
+  });
+
+  describe('(Groovy) IntSlider widget in EasyForm ', function(){
+    it('EasyForm has IntSlider widget', function(){
+      cellIndex += 2;
+      var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
+      expect(easyForm.$('div.slider-container')).toBeTruthy();
+    });
+
+    it('IntSlider has value 50 ', function(){
+      cellIndex +=1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, '50');
+    });
+  });
+
 });

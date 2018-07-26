@@ -33,7 +33,7 @@ describe('(Scala) Testing of EasyForm', function () {
 
   var cellIndex;
 
-  describe('(Groovy) EasyForm Actions ', function(){
+  describe('(Scala) EasyForm Actions ', function(){
     var inputs;
 
     it('EasyForm has two buttons ', function () {
@@ -69,7 +69,7 @@ describe('(Scala) Testing of EasyForm', function () {
     });
   });
 
-  describe('(Groovy) IntSlider widget in EasyForm ', function(){
+  describe('(Scala) IntSlider widget in EasyForm ', function(){
     it('EasyForm has IntSlider widget', function(){
       cellIndex += 2;
       var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);

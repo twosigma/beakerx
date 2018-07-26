@@ -295,7 +295,7 @@ export default class DefaultPlotModel extends AbstractPlotModel {
       this.applyOrientationToItemElement(newmodel, item, elements[i]);
     }
 
-    this.applyorientationToItem(newmodel, item);
+    this.applyOrientationToItem(newmodel, item);
 
     // recreate rendering objects
     item.index = i;
@@ -470,7 +470,7 @@ export default class DefaultPlotModel extends AbstractPlotModel {
     }
   }
 
-  applyorientationToItem(newmodel, item) {
+  applyOrientationToItem(newmodel, item) {
     if (newmodel.orientation !== 'HORIZONTAL') {
       return;
     }

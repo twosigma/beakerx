@@ -24,7 +24,6 @@ define([
   './plotTip',
   './plotConverter',
   './plotFactory',
-  './gradientlegend',
   './chartExtender'
 ], function(
   _,
@@ -36,7 +35,6 @@ define([
   plotTip,
   plotConverter,
   plotFactory,
-  GradientLegend,
   bkoChartExtender
 ) {
 
@@ -48,8 +46,8 @@ define([
   var bkUtils = require('./../shared/bkUtils').default;
   var bkHelper = require('./../shared/bkHelper').default;
   var zoomHelpers = require('./zoom/helpers').default;
-  var PointShapeHelper = require('./std/PointShapeHelper.ts').default;
-  var PlotLayout = require('./PlotLayout.ts').default;
+  var PlotLayout = require('./PlotLayout').default;
+  var PlotLegend = require('./PlotLegend').default;
 
   function PlotScope(wrapperId) {
     this.wrapperId = wrapperId;
@@ -105,6 +103,7 @@ define([
     this.plotFocus = new PlotFocus(this);
     this.plotRange = new PlotRange(this);
     this.plotGrid = new PlotGrid(this, this.plotFocus, this.plotRange);
+    this.plotLegend = new PlotLegend(this);
   };
   
   PlotScope.prototype.setWidgetModel = function(plotDisplayModel) {
@@ -444,29 +443,6 @@ define([
     label.css(css);
   };
 
-  PlotScope.prototype.prepareMergedLegendData = function() {
-    var data = this.stdmodel.data;
-
-    var mergedLines = {};
-    var lineUniqueAttributesSet = {};
-
-    for (var i = 0; i < data.length; i++) {
-      var dat = data[i];
-      if (dat.legend == null || dat.legend === "") {
-        continue;
-      }
-
-      var lineUniqueIndex = dat.legend + getColorInfoUid(dat);
-
-      if (lineUniqueAttributesSet[lineUniqueIndex] == null) {
-        addNewLegendLineData(dat, lineUniqueIndex, mergedLines, lineUniqueAttributesSet, i);
-      } else {
-        addDataForExistingLegendLine(dat, mergedLines[lineUniqueAttributesSet[lineUniqueIndex]])
-      }
-    }
-    return mergedLines;
-  };
-
   PlotScope.prototype.getLegendPosition = function(legendPosition, isHorizontal) {
     var margin = this.layout.legendMargin,
       containerWidth = this.jqcontainer.outerWidth(true),
@@ -582,47 +558,6 @@ define([
     return position;
   };
 
-  PlotScope.prototype.createLegendContainer = function(clazz, handle) {
-    var self = this;
-    var isHorizontal = this.stdmodel.legendLayout === "HORIZONTAL";
-    var draggable = {
-      containment: 'parent',
-      start: function(event, ui) {
-        $(this).css({//avoid resizing for bottom-stacked legend
-          "bottom": "auto"
-        });
-      },
-      stop: function(event, ui) {
-        self.legendPosition = {
-          "left": ui.position.left,
-          "top": ui.position.top
-        };
-      }
-    };
-
-    var legendContainer = $("<div></div>").appendTo(this.jqlegendcontainer)
-      .attr("id", "plotLegend")
-      .attr("class", "plot-legend")
-      .draggable(draggable)
-      .css("max-height", plotUtils.safeHeight(this.jqsvg) - this.layout.bottomLayoutMargin - this.layout.topLayoutMargin);
-
-    if (clazz != null) {
-      legendContainer.addClass(clazz);
-    }
-
-    if (handle != null) {
-      draggable.handle = handle;
-    } else {
-      legendContainer.addClass("plot-legenddraggable");
-    }
-
-    if (isHorizontal) {
-      legendContainer.css("max-width", this.jqcontainer.width());
-    }
-
-    return legendContainer;
-  };
-
   PlotScope.prototype.getLodLabel = function(lodType) {
     var label;
     switch(lodType){
@@ -639,270 +574,6 @@ define([
         label = lodType;
     }
     return label;
-  };
-
-  PlotScope.prototype.renderLegends = function() {
-    var self = this;
-    
-    // legend redraw is controlled by legendDone
-    if (this.legendableItem === 0 ||
-        this.stdmodel.showLegend === false || this.legendDone === true) { return; }
-
-    var data = this.stdmodel.data;
-    var isHorizontal = this.stdmodel.legendLayout === "HORIZONTAL";
-
-    this.jqlegendcontainer.find("#plotLegend").remove();
-    this.legendDone = true;
-
-    var legendContainer;
-    if (this.model.getCellModel().type === "HeatMap"){
-      legendContainer = this.createLegendContainer();
-    }else{
-      legendContainer = this.createLegendContainer("plot-legendscrollablecontainer", "#legendDraggableContainer");
-    }
-
-    if (this.model.getCellModel().type === "HeatMap") {
-      this.gradientLegend = new GradientLegend(data);
-      this.gradientLegend.render(legendContainer, data[0].colors);
-      this.updateLegendPosition();
-      return;
-    }
-
-    var legendDraggableContainer = $("<div></div>").appendTo(legendContainer)
-      .attr("id", "legendDraggableContainer")
-      .attr("class", "plot-legenddraggable");
-
-    var legendUnit = "<div></div>",
-      legendLineUnit = isHorizontal ? "<div class='plot-legenditeminline'></div>" : "<div class='plot-legenditeminrow'></div>";
-    var legend = $(legendUnit).appendTo(legendDraggableContainer)
-      .attr("id", "legends");
-
-    this.legendMergedLines = this.prepareMergedLegendData();
-    
-    if (!this.stdmodel.omitCheckboxes &&
-        Object.keys(this.legendMergedLines).length > 1) {  // skip "All" check when there is only one line
-      var allLegendId = plotUtils.randomString(32);
-      var unit = $(legendLineUnit).appendTo(legend)
-        .attr("id", "legend_all")
-        .addClass("plot-legendline");
-      $("<input type='checkbox' />")
-        .attr("id", "legendcheck_all_" + allLegendId)
-        .attr("class", "plot-legendcheckbox beforeCheckbox")
-        .prop("checked", this.showAllItems)
-        .click(function(e) {
-          return self.toggleVisibility(e);
-        })
-        .appendTo($(unit));
-      $("<span></span>")
-        .attr("id", "legendbox_all")
-        .attr("class", "plot-legendbox")
-        .css("background-color", "none")
-        .appendTo($(unit));
-      $("<label></label>")
-        .attr("id", "legendtext_all")
-        .attr("for", "legendcheck_all_" + allLegendId)
-        .attr("class", "plot-label")
-        .text("All")
-        .appendTo($(unit));
-    }
-
-    this.lodTypeMenuItems = {};
-
-    for (var id in this.legendMergedLines) {
-      if (!this.legendMergedLines.hasOwnProperty(id)) { continue; }
-      var line = this.legendMergedLines[id];
-      if (line.legend == null || line.legend === "") { continue; }
-      var highlightTimeoutId;
-      var unit = $(legendLineUnit).appendTo(legend)
-        .attr("id", "legend_" + id)
-        .addClass("plot-legendline")
-        .mouseenter(function(e){
-          var legendLine = $(this)[0];
-          highlightTimeoutId = setTimeout(function(){
-            self.highlightElements(legendLine.id.split("_")[1], true);
-          }, 300);
-        })
-        .mouseleave(function(e){
-          clearTimeout(highlightTimeoutId);
-          self.highlightElements($(this)[0].id.split("_")[1], false);
-        });
-      if(!this.stdmodel.omitCheckboxes){
-        // checkbox
-        $("<input type='checkbox'/>")
-          .attr("id", "legendcheck_" + id)
-          .attr("class", "plot-legendcheckbox beforeCheckbox")
-          .prop("checked", line.showItem)
-          .click(function(e) {
-            return self.toggleVisibility(e);
-          })
-          .appendTo(unit);
-      }
-
-      var clr = plotUtils.createColor(line.color, line.color_opacity),
-        st_clr = plotUtils.createColor(line.stroke, line.stroke_opacity);
-      var sty = line.color == null ? "dotted " : "solid ";
-      // color box
-      $("<span></span>")
-        .attr("id", "legendbox_" + id)
-        .attr("class", "plot-legendbox")
-        .attr("title", line.color == null ? "Element-based colored item" : "")
-        .appendTo(unit)
-        .append(PointShapeHelper.createLegendMarker(line));
-
-      // legend text
-      $("<label></label>").appendTo(unit)
-        .attr("id", "legendtext_" + id)
-        .attr("for", "legendcheck_" + id)
-        .attr("class", "plot-label")
-        .text(line.legend);
-
-      if (line.isLodItem === true) {
-
-        var applyLodType = function (lodType, legendLineId) {
-          var dataIds = self.legendMergedLines[legendLineId].dataIds;
-
-          if (lodType === 'off') {
-            if (self.getMergedLodInfo(dataIds).lodType === "off") { return; }
-            self.removePipe.push("msg_lodoff");
-            self.renderMessage("LOD is being turned off. Are you sure?",
-              [ "You are trying to turning off LOD. Loading full resolution data is " +
-                "going to take time and may potentially crash the browser.",
-                "PROCEED (left click) / CANCEL (right click)"],
-              "msg_lodoff",
-              function() {
-                _.forEach(dataIds, function (dataId) {
-                  var loadLoader = self.stdmodel.data[dataId];
-                  if (loadLoader.toggleLod) {
-                    loadLoader.toggleLod(self);
-                  }
-                });
-                self.update();
-                self.setMergedLodHint(dataIds, legendLineId);
-              }, null);
-          } else {
-            var hasChanged = false;
-            _.forEach(dataIds, function (dataId) {
-              var loadLoader = self.stdmodel.data[dataId];
-              if (!loadLoader.lodType || loadLoader.lodType === lodType) { return; }
-              loadLoader.clear(self);
-              loadLoader.applyLodType(lodType);
-              loadLoader.zoomLevelChanged(self);
-              hasChanged = true;
-            });
-            if (hasChanged) {
-              self.update();
-              self.setMergedLodHint(dataIds, legendLineId);
-            }
-          }
-        };
-
-        var createLodTypeMenuItem = function(lodType, lineId){
-          return {
-            lodType: lodType,
-            lineId: lineId,
-            name: self.getLodLabel(lodType),
-            action: function(){
-              applyLodType(this.lodType, this.lineId);
-            }
-          }
-        };
-
-        var lodTypeMenuItems = [];
-        _.forEach(line.dataIds, function(dataId){
-          var graphics = self.stdmodel.data[dataId];
-          _.forEach(graphics.lodTypes, function(lodType){
-            if(!_.some(lodTypeMenuItems, function(item) {
-                return item.lodType === lodType;
-              })){
-              lodTypeMenuItems.push(createLodTypeMenuItem(lodType, id));
-            }
-          });
-        });
-        lodTypeMenuItems.push(createLodTypeMenuItem('off', id));
-
-        var lodhint = $(
-          '<div style="width: auto;">' +
-          '<div class="dropdown dropdown-promoted lod-dropdown-menu">' +
-          '<a class="dropdown-toggle plot-legendlodtype"></a>' +
-          '<ul class="dropdown-menu"></ul>' +
-          '</div>' +
-          // '<bk-dropdown-menu menu-items="lodTypeMenuItems[\'' + id + '\']" submenu-classes="drop-right"></bk-dropdown-menu>' +
-          '</div>'
-        );
-
-        var dropdownMenuElement = lodhint.find('ul.dropdown-menu');
-
-        lodTypeMenuItems.forEach(function(item) {
-          var liElem = $('<li class="">' +
-                         '<a>'+item.name+'</a>' +
-                         '</li>');
-          liElem.children('a').on('click', function() {
-            item.action();
-            $(this).parents('.lod-dropdown-menu').removeClass('open');
-          });
-          dropdownMenuElement.append(liElem);
-        });
-
-        lodhint.find('a.dropdown-toggle').on('click', function() {
-          var parent = $(this).parent();
-          $('.lod-dropdown-menu').not(parent).removeClass('open');
-          parent.toggleClass('open');
-        });
-
-        self.lodTypeMenuItems[id] = lodTypeMenuItems;
-        // unit.append($compile(lodhint)(self));
-        unit.append(lodhint);
-        lodhint.attr("id", "hint_" + id).attr("class", "plot-legendlod");
-        self.setMergedLodHint(line.lodDataIds, id);
-      }
-    }
-
-    this.updateLegendPosition();
-  };
-
-  PlotScope.prototype.updateLegendPosition = function() {
-    var self = this;
-    var legendContainer = self.jqlegendcontainer.find("#plotLegend");
-    var isHorizontal = self.stdmodel.legendLayout === "HORIZONTAL";
-    var margin = self.layout.legendMargin;
-    if (self.legendResetPosition === true) {
-      self.legendPosition = self.getLegendPosition(self.stdmodel.legendPosition, isHorizontal);
-      self.legendResetPosition = false;
-    }
-    legendContainer.css(self.legendPosition);
-
-    //increase plot margins if legend has predefined values
-    if(self.stdmodel.legendPosition.position === "LEFT") {
-      self.jqcontainer.css("margin-left", legendContainer.width() + margin);
-    }
-    if(self.stdmodel.legendPosition.position === "TOP") {
-      self.jqcontainer.css("margin-top", legendContainer.height() + margin);
-    }
-    if(self.stdmodel.legendPosition.position === "BOTTOM") {
-      self.jqcontainer.css("margin-bottom", legendContainer.height() + margin);
-    }
-    if(isHorizontal){
-      if(["TOP_LEFT", "TOP_RIGHT"].indexOf(self.stdmodel.legendPosition.position) !== -1) {
-        self.jqcontainer.css("margin-top", legendContainer.height() + margin);
-      }
-      if(["BOTTOM_LEFT", "BOTTOM_RIGHT"].indexOf(self.stdmodel.legendPosition.position) !== -1) {
-        self.jqcontainer.css("margin-bottom", legendContainer.height() + margin);
-      }
-    }else{
-      if(["TOP_LEFT", "BOTTOM_LEFT"].indexOf(self.stdmodel.legendPosition.position) !== -1) {
-        self.jqcontainer.css("margin-left", legendContainer.width() + margin);
-      }
-    }
-
-    if (legendContainer.length) {
-      var legenddraggable = legendContainer.find(".plot-legenddraggable");
-      if (legendContainer.get(0).scrollHeight > legendContainer.get(0).clientHeight) {
-        legenddraggable.addClass("hasScroll");
-      } else {
-        legenddraggable.removeClass("hasScroll");
-      }
-    }
-
   };
 
   PlotScope.prototype.highlightElements = function(legendId, highlight){
@@ -1307,7 +978,7 @@ define([
 
     plotTip.renderTips(self);
     self.plotZoom.boxZoom.renderLocateBox(); // redraw
-    self.renderLegends(); // redraw
+    self.plotLegend.render(); // redraw
     self.updateMargin(); //update plot margins
 
     self.prepareInteraction();
@@ -1392,7 +1063,7 @@ define([
 
     //legend
     self.adjustSvgPositionWithLegend(svg, titleOuterHeight);
-    self.appendLegendToSvg(d3.select(svg));
+    self.plotLegend.appendLegendToSvg(d3.select(svg));
     ///////
 
     //tooltips
@@ -1471,50 +1142,6 @@ define([
     svg.setAttribute("height", H);
     $(svg).css("width", W);
     $(svg).css("height", H);
-  };
-
-  PlotScope.prototype.appendLegendToSvg = function(svg) {
-    var self = this;
-
-    var legend = self.jqlegendcontainer.find("#plotLegend");
-    if (self.legendableItem === 0 || self.stdmodel.showLegend === false || !legend.length) { return; }
-    var legendCopy = self.jqlegendcontainer.find("#plotLegend").clone();
-    legendCopy.find(".plot-legendcheckbox").each(function(i, item) {
-      if (item.checked) {
-        item.setAttribute("checked", true);
-      }
-      item.setAttribute("onclick", "return false");
-    });
-    legendCopy.css("position", "inherit");
-
-    legendCopy.css("top", "auto");
-    legendCopy.css("left", "auto");
-    legendCopy.css("bottom", "auto");
-    legendCopy.css("right", "auto");
-
-    //remove base from urls
-    legendCopy.find("[style*='url']").each(function(i, item){
-      var style = $(item).attr('style');
-      style = style.replace("/beaker/", "");
-      $(item).attr('style', style);
-    });
-
-    var getPositive = function(value) {
-      return value > 0 ? value : 0;
-    };
-
-    var position = plotUtils.getActualCss(legend, 'position');
-    var x = getPositive(position.left);
-    var y = position.top != null ? getPositive(position.top) : getPositive(position.bottom);
-    svg.append("foreignObject")
-      .attr("width", plotUtils.getActualCss(legend, 'outerWidth', true) + 1)//add 1 because jQuery round size
-      .attr("height", plotUtils.getActualCss(legend, 'outerHeight', true) + 1)
-      .attr("x", x)
-      .attr("y", y)
-      .append("xhtml:body")
-      .attr('style', 'position: relative;')
-      .attr("xmlns", "http://www.w3.org/1999/xhtml")
-      .html(legendCopy[0].outerHTML);
   };
 
   PlotScope.prototype.appendTooltipsToSvg = function(svg) {
@@ -1627,53 +1254,11 @@ define([
       return self.saveAsPng(scale);
     };
     model.updateLegendPosition = function () {
-      return self.updateLegendPosition();
+      return self.plotLegend.updateLegendPosition();
     };
   };
 
   // ----- utils
-
-  function getColorInfoUid(dat) {
-    var color = plotUtils.createColor(dat.color, dat.color_opacity),
-      border = plotUtils.createColor(dat.stroke, dat.stroke_opacity);
-    return color + border;
-  }
-
-  function addNewLegendLineData(dat, lineUniqueIndex, mergedLines, lineUniqueAttributesSet, i) {
-    var line = {
-      dataIds: [i],
-      legend: dat.legend,
-      showItem: dat.showItem,
-      isLodItem: dat.isLodItem === true,
-      color: dat.color,
-      color_opacity: dat.color_opacity,
-      stroke: dat.stroke,
-      stroke_opacity: dat.stroke_opacity,
-      shape: dat.type === "point" ? dat.shape : 'rect',
-    };
-    if (dat.isLodItem === true) {
-      line.lodDataIds = [i];
-    }
-    var lineId = plotUtils.randomString(32);
-    mergedLines[lineId] = line;
-    lineUniqueAttributesSet[lineUniqueIndex] = lineId;
-    return lineId;
-  }
-
-  function addDataForExistingLegendLine(dat, line) {
-    line.dataIds.push(i);
-    if (dat.isLodItem === true) {
-      line.isLodItem = true;
-      if (line.lodDataIds) {
-        line.lodDataIds.push(i);
-      } else {
-        line.lodDataIds = [i];
-      }
-    }
-    if (line.showItem !== true) {
-      line.showItem = dat.showItem
-    }
-  }
 
   require('./plotModal/pointsLimitModal.ts').default(PlotScope);
 

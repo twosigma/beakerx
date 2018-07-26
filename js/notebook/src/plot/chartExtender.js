@@ -85,7 +85,7 @@ define([
         }
         scope.resetSvg();
         scope.renderData();
-        scope.renderLegends(); // redraw
+        scope.plotLegend.render(); // redraw
         scope.updateMargin(); //update plot margins
         scope.calcLegendableItem();
       };

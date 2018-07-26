@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class SparkStateProgress extends VBox {
+public class SparkStateProgress extends HBox {
 
   public static final String VIEW_NAME_VALUE = "SparkStateProgressView";
   public static final String MODEL_NAME_VALUE = "SparkStateProgressModel";

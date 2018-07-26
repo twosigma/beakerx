@@ -249,7 +249,10 @@ public class SparkEngineImpl implements SparkEngine {
       @Override
       public void onTaskEnd(SparkListenerTaskEnd taskEnd) {
         super.onTaskEnd(taskEnd);
-        if (taskEnd.reason().toString().equals("Success")) {
+        String reason = taskEnd.reason().toString();
+        if (reason.equals("Success")) {
+          sparkUIManager.taskEnd(taskEnd.stageId(), taskEnd.taskInfo().taskId());
+        } else if(reason.contains("stage cancelled")){
           sparkUIManager.taskEnd(taskEnd.stageId(), taskEnd.taskInfo().taskId());
         }
       }

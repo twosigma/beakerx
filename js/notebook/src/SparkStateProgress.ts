@@ -29,7 +29,7 @@ interface IState {
   jobLink: string;
 }
 
-export class SparkStateProgressModel extends widgets.VBoxModel {
+export class SparkStateProgressModel extends widgets.HBoxModel {
   defaults() {
     return {
       ...super.defaults(),
@@ -67,6 +67,7 @@ export class SparkStateProgressView extends widgets.VBoxView {
 
   render() {
     super.render();
+    this.el.classList.add('bx-spark-state-progress-box');
     this.createWidget();
   }
 

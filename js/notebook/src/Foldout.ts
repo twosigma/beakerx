@@ -185,7 +185,9 @@ export class FoldoutView extends widgets.BoxView {
     this.el.classList.add('collapsed');
 
     this.children_views.update(this.model.get('children')).then((views) => {
-      this.renderPreview();
+      setTimeout(() => {
+        this.renderPreview();
+      }, 100)
     });
   }
 

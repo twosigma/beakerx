@@ -70,7 +70,20 @@ export default class DefaultAxis {
     this.dateIntws = [];
     this.numIntws = [];
 
+    this.setLabelsVisibility();
     this.setNumFixs();
+  }
+
+  setLabelsVisibility() {
+    const model = this.scope.model;
+
+    if (model.getCellModel().x_tickLabels_visible !== undefined) {
+      model.xAxis.showGridlineLabels = model.getCellModel().x_tickLabels_visible;
+    }
+
+    if (model.getCellModel().y_tickLabels_visible !== undefined) {
+      model.yAxis.showGridlineLabels = model.getCellModel().y_tickLabels_visible;
+    }
   }
 
   setNumFixs() {

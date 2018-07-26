@@ -23,6 +23,7 @@ export default class GridTics {
   plotRange: PlotRange;
   plotFocus: PlotFocus;
   rpipeTicks: TickData[] = [];
+  gridlineTickLength: number = 3;
 
   constructor(scope: any) {
     this.scope = scope;
@@ -64,7 +65,7 @@ export default class GridTics {
       return;
     }
 
-    const tickLength = this.scope.gridlineTickLength;
+    const tickLength = this.gridlineTickLength;
     const lines = model.xAxis.getGridlines();
     const labels = model.xAxis.getGridlineLabels();
 
@@ -87,7 +88,7 @@ export default class GridTics {
       return;
     }
 
-    const tickLength = this.scope.gridlineTickLength;
+    const tickLength = this.gridlineTickLength;
     const lines = model.yAxis.getGridlines();
     const labels = model.yAxis.getGridlineLabels();
 
@@ -111,7 +112,7 @@ export default class GridTics {
     }
 
     const mapY_r = this.plotRange.data2scrY_r;
-    const tickLength = this.scope.gridlineTickLength;
+    const tickLength = this.gridlineTickLength;
     const lines = model.yAxisR.getGridlines();
     const labels = model.yAxisR.getGridlineLabels();
 

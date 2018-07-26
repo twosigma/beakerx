@@ -85,7 +85,6 @@ define([
     this.intervalStepHint = {};
     this.numIntervals = {};
     this.cursor = {};
-    this.gridlineTickLength = null;
     this.legendResetPosition = null;
     this.visibleItem = null;
     this.legendableItem = null;
@@ -115,7 +114,6 @@ define([
   PlotScope.prototype.setWidgetView = function(plotDisplayView) {
     this.plotDisplayView = plotDisplayView;
   };
-
 
   PlotScope.prototype.initLayout = function() {
     var self = this;
@@ -223,8 +221,6 @@ define([
       x : -1,
       y : -1
     };
-
-    this.gridlineTickLength = 3;
 
     var factor = 2.0;
     if (model.xAxis.label == null) { factor -= 1.0; }
@@ -1770,54 +1766,6 @@ define([
   };
 
   // ----- utils
-
-  function measureText(pText, pFontSize, pStyle) {
-    var lDiv = document.createElement('lDiv');
-
-    document.body.appendChild(lDiv);
-
-    if (pStyle != null) {
-      lDiv.style = pStyle;
-    }
-    lDiv.style.fontSize = "" + pFontSize + "px";
-    lDiv.style.position = "absolute";
-    lDiv.style.left = -1000;
-    lDiv.style.top = -1000;
-
-    lDiv.innerHTML = pText;
-
-    var lResult = {
-      width: lDiv.clientWidth,
-      height: lDiv.clientHeight
-    };
-
-    document.body.removeChild(lDiv);
-    lDiv = null;
-
-    return lResult;
-  }
-
-  function calcVertLayoutMargin(axis, pStyle) {
-    var result = 0;
-    var MIN_LEFT_MARGIN = 80;
-    var MIN_WIDTH = 300;
-
-    if (axis && axis.axisType === 'linear') {
-      var l = axis.axisValL.toFixed(axis.axisFixed) + '';
-      var r = axis.axisValR.toFixed(axis.axisFixed) + '';
-
-      var m = l.length > r.length ? l : r;
-      var size = measureText(m, 13, pStyle);
-
-      result = size.width + size.height * 2;
-    }
-
-    if (this.jqcontainer && this.jqcontainer.width() > MIN_WIDTH && result < MIN_LEFT_MARGIN) {
-      return MIN_LEFT_MARGIN;
-    }
-
-    return result;
-  }
 
   function getColorInfoUid(dat) {
     var color = plotUtils.createColor(dat.color, dat.color_opacity),

@@ -57,4 +57,6 @@ public interface SparkUIApi {
   void startSpinner(Message message);
 
   void stopSpinner();
+
+  void taskCancelled(int stageId, long taskId);
 }

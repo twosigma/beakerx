@@ -253,7 +253,7 @@ public class SparkEngineImpl implements SparkEngine {
         if (reason.equals("Success")) {
           sparkUIManager.taskEnd(taskEnd.stageId(), taskEnd.taskInfo().taskId());
         } else if(reason.contains("stage cancelled")){
-          sparkUIManager.taskEnd(taskEnd.stageId(), taskEnd.taskInfo().taskId());
+          sparkUIManager.taskCancelled(taskEnd.stageId(), taskEnd.taskInfo().taskId());
         }
       }
     });

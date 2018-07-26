@@ -13,21 +13,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.util;
+package com.twosigma.beakerx.kernel;
 
-public class BeakerXSystemImpl implements BeakerXSystem {
+import java.util.List;
 
-  private static BeakerXSystem INSTANCE = new BeakerXSystemImpl();
+public interface BeakerXClasspath {
+  boolean isJarOnClasspath(String jarName);
 
-  private BeakerXSystemImpl() {
-  }
+  boolean add(final PathToJar path);
 
-  @Override
-  public String getenv(String name) {
-    return System.getenv(name);
-  }
+  List<PathToJar> getPaths();
 
-  public static BeakerXSystem getINSTANCE() {
-    return INSTANCE;
-  }
+  List<String> getPathsAsStrings();
+
+  int size();
+
+  String get(int index);
+
+  boolean isEmpty();
 }

@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 import static java.util.stream.Collectors.toList;
 
-public class Classpath {
+public class Classpath implements BeakerXClasspath{
 
   public static final String DELIMITER = System.lineSeparator();
 
@@ -61,5 +61,10 @@ public class Classpath {
     return paths.stream()
             .map(PathToJar::getPath)
             .collect(Collectors.joining(DELIMITER));
+  }
+
+  public boolean isJarOnClasspath(String jarName) {
+    return getPathsAsStrings().stream()
+            .anyMatch(x -> x.contains(jarName));
   }
 }

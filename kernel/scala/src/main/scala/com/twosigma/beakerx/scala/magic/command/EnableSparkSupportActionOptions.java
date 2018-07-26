@@ -13,21 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.util;
+package com.twosigma.beakerx.scala.magic.command;
 
-public class BeakerXSystemImpl implements BeakerXSystem {
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
+import com.twosigma.beakerx.message.Message;
 
-  private static BeakerXSystem INSTANCE = new BeakerXSystemImpl();
+public interface EnableSparkSupportActionOptions {
+  String SPARK_SQL = "spark-sql";
+  String SPARK_SQL_2_11 = " org.apache.spark " + SPARK_SQL + "_2.11 ";
+  String SPARK_MLLIB_2_11 = " org.apache.spark spark-mllib_2.11 ";
 
-  private BeakerXSystemImpl() {
-  }
-
-  @Override
-  public String getenv(String name) {
-    return System.getenv(name);
-  }
-
-  public static BeakerXSystem getINSTANCE() {
-    return INSTANCE;
-  }
+  MagicCommandOutcomeItem loadSpark(Message parent, String version);
 }

@@ -54,7 +54,6 @@ public class SparkMagicCommandAutoConnectTest {
     MagicCommandOutcomeItem execute = createSparkUi("--unknownOption");
     //then
     assertThat(execute.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.ERROR);
-    assertThat((String) execute.getMIMEContainer().get().getData()).contains("Unknown option --unknownOption");
   }
 
   @Test

@@ -20,7 +20,6 @@ const NANOTIME_TYPE = 'nanotime';
 const plotUtils = require('../../plotUtils');
 
 export default class DefaultAxis {
-  scope: any;
   type: string = 'axis';
   axisType: string;
   axisBase: number;
@@ -70,20 +69,7 @@ export default class DefaultAxis {
     this.dateIntws = [];
     this.numIntws = [];
 
-    this.setLabelsVisibility();
     this.setNumFixs();
-  }
-
-  setLabelsVisibility() {
-    const model = this.scope.model;
-
-    if (model.getCellModel().x_tickLabels_visible !== undefined) {
-      model.xAxis.showGridlineLabels = model.getCellModel().x_tickLabels_visible;
-    }
-
-    if (model.getCellModel().y_tickLabels_visible !== undefined) {
-      model.yAxis.showGridlineLabels = model.getCellModel().y_tickLabels_visible;
-    }
   }
 
   setNumFixs() {

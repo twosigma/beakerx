@@ -49,6 +49,7 @@ define([
   var bkHelper = require('./../shared/bkHelper').default;
   var zoomHelpers = require('./zoom/helpers').default;
   var PointShapeHelper = require('./std/PointShapeHelper.ts').default;
+  var PlotLayout = require('./PlotLayout.ts').default;
 
   function PlotScope(wrapperId) {
     this.wrapperId = wrapperId;
@@ -75,7 +76,6 @@ define([
     this.jqsvg = null;
     this.jqgridg = null;
     this.canvas = null;
-    this.plotSize = null;
     this.maing = null;
     this.gridg = null;
     this.labelg = null;
@@ -116,135 +116,7 @@ define([
   };
 
   PlotScope.prototype.initLayout = function() {
-    var self = this;
-    var model = this.stdmodel;
-    var wrapperId = this.wrapperId;
-    var scopeId = this.id;
-
-    if(this.model.getCellModel().x_tickLabels_visible !== undefined){
-      model.xAxis.showGridlineLabels = this.model.getCellModel().x_tickLabels_visible;
-    }
-
-    if(this.model.getCellModel().y_tickLabels_visible !== undefined){
-      model.yAxis.showGridlineLabels = this.model.getCellModel().y_tickLabels_visible;
-    }
-
-    this.element.find(".ui-icon-gripsmall-diagonal-se")
-      .removeClass("ui-icon-gripsmall-diagonal-se")
-      .addClass("ui-icon-grip-diagonal-se");
-
-    // hook container to use jquery interaction
-    this.container = d3.select(this.element[0]).select(".plot-plotcontainer");
-    this.jqcontainer = this.element.find(".plot-plotcontainer");
-    this.jqlegendcontainer = this.element.find("#plotLegendContainer");
-    this.svg = this.container.select("svg");
-    this.jqsvg = this.element.find("#svgg");
-    this.canvas = this.element.find("canvas")[0];
-
-    this.canvas.style.display="none";
-
-    var plotSize = this.plotSize;
-    this.jqcontainer.css(plotSize);
-    this.jqsvg.css(plotSize);
-
-    $(window).resize(this.resizeFunction);
-
-    var sanitize = require('./plotSanitize').default;
-
-    // Apply advanced custom styles set directly by user
-    if(model.customStyles) {
-      var customStyleString = model.customStyles.map(function(s) {
-        return '#' + wrapperId + ' #' + scopeId + ' ' + s;
-      }).join('\n');
-      // this string needs to be sanitized
-      $("<style>"+ sanitize(customStyleString) + "\n</style>").prependTo(this.element.find('.plot-plotcontainer'));
-    }
-
-    // set title
-    this.jqplottitle = this.element.find("#plotTitle");
-    this.jqplottitle.text(model.title).css("width", plotSize.width);
-
-    // Apply any specific element styles (labelStyle,elementStyle, etc)
-    if(model['elementStyles']) {
-      var styles = [];
-      for(var style in model['elementStyles']) {
-        styles.push('#' + wrapperId + ' #' + scopeId + ' ' + style + ' { ' + model['elementStyles'][style] + '}');
-      }
-      $("<style>\n" + sanitize(styles.join('\n')) + "\n</style>").prependTo(this.element.find('.plot-plotcontainer'));
-      
-      // Title style has to be handlded separately because it sits in a separate
-      // div outside the hierachy the rest of the plot is in
-      if(model['elementStyles']['.plot-title']) {
-        var styleString = '.plot-title-' + scopeId + ' { ' +
-          model['elementStyles']['.plot-title'] +
-          '}'; 
-        $("<style>\n" + sanitize(styleString) + "\n</style>").prependTo(this.element.find('.plot-title-' + scopeId));
-      }
-    }
-
-    this.maing = d3.select(this.element[0]).select("#maing");
-    this.gridg = d3.select(this.element[0]).select("#gridg");
-    this.labelg = d3.select(this.element[0]).select("#labelg");
-
-    this.jqgridg = this.element.find("#gridg");
-
-    // set some constants
-
-    this.renderFixed = 1;
-    this.layout = {    // TODO, specify space for left/right y-axis, also avoid half-shown labels
-      bottomLayoutMargin : 30,
-      topLayoutMargin : 30,
-      leftLayoutMargin : calcVertLayoutMargin.call(this, this.stdmodel.yAxis),
-      rightLayoutMargin : this.stdmodel.yAxisR ? calcVertLayoutMargin(this.stdmodel.yAxisR) : 30,
-      legendMargin : 10,
-      legendBoxSize : 10
-    };
-    this.labelPadding = {
-      x : 10,
-      y : 10
-    };
-    this.intervalStepHint = {
-      x : this.model.getCellModel().type === 'NanoPlot' ? 130 : 75,
-      y : 30
-    };
-    if(this.stdmodel.orientation === 'HORIZONTAL'){
-      var tempx = this.intervalStepHint.x;
-      this.intervalStepHint.x = this.intervalStepHint.y;
-      this.intervalStepHint.y = tempx;
-    }
-    this.numIntervals = {
-      x: parseInt(plotSize.width) / this.intervalStepHint.x,
-      y: parseInt(plotSize.height) / this.intervalStepHint.y
-    };
-    this.plotZoom.boxZoom.resetLocateBox();
-    this.cursor = {
-      x : -1,
-      y : -1
-    };
-
-    var factor = 2.0;
-    if (model.xAxis.label == null) { factor -= 1.0; }
-    if (model.xAxis.showGridlineLabels === false) { factor -= 1.0; }
-    this.layout.bottomLayoutMargin += plotUtils.fonts.labelHeight * factor;
-
-    if (model.yAxis.showGridlineLabels !== false) {
-      this.layout.topLayoutMargin += plotUtils.fonts.labelHeight / 2;
-    }
-
-    if (model.yAxis.label != null) {
-      this.layout.leftLayoutMargin += plotUtils.fonts.labelHeight;
-    }
-    if(model.yAxisR != null) {
-      this.layout.rightLayoutMargin += plotUtils.fonts.labelHeight;
-    }
-    this.legendResetPosition = true;
-
-    this.jqcontainer.on('resize', function(e, ui) {
-      e.stopPropagation();
-      e.preventDefault();
-
-      self.updateModelWidth();
-    });
+    this.layout = new PlotLayout(this);
   };
 
   PlotScope.prototype.onModelFucusUpdate = function(newFocus) {
@@ -835,7 +707,7 @@ define([
     }
 
     this.lodTypeMenuItems = {};
-    
+
     for (var id in this.legendMergedLines) {
       if (!this.legendMergedLines.hasOwnProperty(id)) { continue; }
       var line = this.legendMergedLines[id];
@@ -1275,9 +1147,6 @@ define([
     }
 
     self.tips = self.model.getCellModel().tips;
-    self.plotSize = {};
-
-    _.extend(self.plotSize, self.stdmodel.plotSize);
 
     // create layout elements
     self.initLayout();
@@ -1299,7 +1168,7 @@ define([
       resize : function(event, ui) {
         self.width = ui.size.width;
         self.height = ui.size.height;
-        _.extend(self.plotSize, ui.size);
+        _.extend(self.layout.plotSize, ui.size);
 
         self.jqsvg.css({"width": self.width, "height": self.height});
         self.jqplottitle.css({"width": self.width });
@@ -1371,7 +1240,7 @@ define([
 
   PlotScope.prototype.getPlotWithLegendWidth = function() {
     var containerWidth = this.jqcontainer.parents('.output_subarea').width();
-    var plotWidth = containerWidth && containerWidth < this.plotSize.width ? containerWidth : this.plotSize.width;
+    var plotWidth = containerWidth && containerWidth < this.layout.plotSize.width ? containerWidth : this.layout.plotSize.width;
     var legendWidth = this.jqlegendcontainer.find('.plot-legend').width() || 0;
     var legendPosition = this.stdmodel.legendPosition.position;
     // Logic based on updateLegendPosition method
@@ -1399,12 +1268,9 @@ define([
     }
 
     self.tips = self.model.getCellModel().tips;
-    self.plotSize = {};
-
-    _.extend(self.plotSize, self.stdmodel.plotSize);
 
     // create layout elements
-    self.initLayout();
+    self.layout.update();
 
     self.resetSvg();
 
@@ -1477,8 +1343,8 @@ define([
   PlotScope.prototype.watchCellSize = function () {
     var self = this;
     if (!self.model.isShowOutput || (self.model.isShowOutput && self.model.isShowOutput() === true)) {
-      self.plotSize.width = self.getCellWidth();
-      self.plotSize.height = self.getCellHeight();
+      self.layout.plotSize.width = self.getCellWidth();
+      self.layout.plotSize.height = self.getCellHeight();
       if (self.setDumpState !== undefined) {
         self.setDumpState(self.dumpState());
       }

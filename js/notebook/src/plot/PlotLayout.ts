@@ -15,26 +15,16 @@
  */
 
 import * as d3 from 'd3';
+import * as $ from 'jquery';
 import sanitize from './plotSanitize';
 
-const plotUtils = require('../../plotUtils');
+const plotUtils = require('./plotUtils');
 
 const DEFAULT_MARGIN = 30;
 
 export default class PlotLayout {
   scope: any;
-  element: HTMLElement;
-  intervalStepHint: { x: number, y: number };
-  container: any;
-  svg: SVGElement;
-  canvas: HTMLCanvasElement;
-  jqsvg: JQuery<HTMLElement>;
-  jqcontainer: JQuery<HTMLElement>;
-  jqlegendcontainer: JQuery<HTMLElement>;
-  jqplottitle: JQuery<HTMLElement>;
-  jqgridg: JQuery<HTMLElement>;
 
-  labelPadding: { x: number, y: number } = { x: 10, y: 10 };
   plotSize: { width?: string, height?: string };
   bottomLayoutMargin: number = DEFAULT_MARGIN;
   topLayoutMargin: number = DEFAULT_MARGIN;
@@ -42,23 +32,18 @@ export default class PlotLayout {
   rightLayoutMargin: number;
   legendMargin: number = 10;
   legendBoxSize: number = 10;
-  legendResetPosition: boolean = true;
-
-  maing: d3.Selection<SVGGElement, any, HTMLElement, any>;
-  gridg: d3.Selection<SVGGElement, any, HTMLElement, any>;
-  labelg: d3.Selection<SVGGElement, any, HTMLElement, any>;
 
   constructor(scope) {
     this.scope = scope;
-    this.element = scope.element[0];
     this.scope.renderFixed = 1;
     this.scope.cursor = { x : -1, y : -1 };
+    this.scope.labelPadding = { x: 10, y: 10 };
 
     this.assignElements();
-    this.init();
+    this.update();
   }
 
-  init() {
+  update() {
     const stdmodel = this.scope.stdmodel;
 
     this.setPlotSize(stdmodel);
@@ -68,21 +53,23 @@ export default class PlotLayout {
     this.applyElementStyles(stdmodel);
     this.setIntervals(stdmodel);
     this.setMargins(stdmodel);
+    this.setLabelsVisibility(stdmodel);
+    this.setLegendResetPosition();
     this.bindEvents();
   }
 
   assignElements() {
-    this.container = d3.select(this.scope.element[0]).select(".plot-plotcontainer");
-    this.jqcontainer = this.scope.element.find(".plot-plotcontainer");
-    this.jqlegendcontainer = this.scope.element.find("#plotLegendContainer");
-    this.svg = this.container.select("svg");
-    this.jqsvg = this.scope.element.find("#svgg");
-    this.canvas = this.scope.element.find("canvas")[0];
-    this.jqplottitle = this.scope.element.find("#plotTitle");
-    this.jqgridg = this.scope.element.find("#gridg");
-    this.maing = d3.select(this.scope.element[0]).select("#maing");
-    this.gridg = d3.select(this.scope.element[0]).select("#gridg");
-    this.labelg = d3.select(this.scope.element[0]).select("#labelg");
+    this.scope.container = d3.select(this.scope.element[0]).select(".plot-plotcontainer");
+    this.scope.jqcontainer = this.scope.element.find(".plot-plotcontainer");
+    this.scope.jqlegendcontainer = this.scope.element.find("#plotLegendContainer");
+    this.scope.svg = this.scope.container.select("svg");
+    this.scope.jqsvg = this.scope.element.find("#svgg");
+    this.scope.canvas = this.scope.element.find("canvas")[0];
+    this.scope.jqplottitle = this.scope.element.find("#plotTitle");
+    this.scope.jqgridg = this.scope.element.find("#gridg");
+    this.scope.maing = d3.select(this.scope.element[0]).select("#maing");
+    this.scope.gridg = d3.select(this.scope.element[0]).select("#gridg");
+    this.scope.labelg = d3.select(this.scope.element[0]).select("#labelg");
   }
 
   setPlotSize(stdmodel) {
@@ -90,17 +77,17 @@ export default class PlotLayout {
   }
 
   applyCssRules() {
-    this.jqcontainer.css(this.plotSize);
-    this.jqsvg.css(this.plotSize);
+    this.scope.jqcontainer.css(this.plotSize);
+    this.scope.jqsvg.css(this.plotSize);
 
     this.scope.element.find(".ui-icon-gripsmall-diagonal-se")
       .removeClass("ui-icon-gripsmall-diagonal-se")
       .addClass("ui-icon-grip-diagonal-se");
-    this.canvas.style.display = "none";
+    this.scope.canvas.style.display = "none";
   }
 
   setTitle(stdmodel) {
-    this.jqplottitle.text(stdmodel.title).css("width", this.plotSize.width);
+    this.scope.jqplottitle.text(stdmodel.title).css("width", this.plotSize.width);
   }
 
   applyCustomStyles(stdmodel) {
@@ -165,8 +152,8 @@ export default class PlotLayout {
     }
 
     if (
-      this.jqcontainer
-      && this.jqcontainer.width() > MIN_WIDTH && result < MIN_LEFT_MARGIN
+      this.scope.jqcontainer
+      && this.scope.jqcontainer.width() > MIN_WIDTH && result < MIN_LEFT_MARGIN
     ) {
       return MIN_LEFT_MARGIN;
     }
@@ -201,7 +188,7 @@ export default class PlotLayout {
     const isHorizontal = stdmodel.orientation === 'HORIZONTAL';
     const axisXValue = this.scope.model.getCellModel().type === 'NanoPlot' ? 130 : 75;
 
-    this.intervalStepHint = {
+    this.scope.intervalStepHint = {
       x : isHorizontal ? 30 : axisXValue,
       y : isHorizontal ? axisXValue : 30
     };
@@ -247,11 +234,28 @@ export default class PlotLayout {
   bindEvents() {
     $(window).resize(this.scope.resizeFunction);
 
-    this.jqcontainer.on('resize', (e, ui) => {
+    const scope = this.scope;
+    this.scope.jqcontainer.on('resize', (e, ui) => {
       e.stopPropagation();
       e.preventDefault();
 
-      this.scope.updateModelWidth();
+      scope.updateModelWidth();
     });
+  }
+
+  setLabelsVisibility(stdmodel) {
+    const model = this.scope.model;
+
+    if (model.getCellModel().x_tickLabels_visible !== undefined) {
+      stdmodel.xAxis.showGridlineLabels = model.getCellModel().x_tickLabels_visible;
+    }
+
+    if (model.getCellModel().y_tickLabels_visible !== undefined) {
+      stdmodel.yAxis.showGridlineLabels = model.getCellModel().y_tickLabels_visible;
+    }
+  }
+
+  setLegendResetPosition() {
+    this.scope.legendResetPosition = true;
   }
 }

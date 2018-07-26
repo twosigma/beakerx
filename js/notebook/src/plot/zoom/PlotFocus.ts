@@ -30,6 +30,8 @@ export default class PlotFocus {
     this.scope = scope;
     this.defaultFocus = null;
     this.focus = null;
+
+    this.onModelFucusUpdate = this.onModelFucusUpdate.bind(this);
   }
 
   static remapFocusRegion(model) {
@@ -278,5 +280,24 @@ export default class PlotFocus {
   transformRightBound(focus, left, right, span) {
     focus[right] = 1;
     focus[left] = focus[right] - focus[span];
+  }
+
+  onModelFucusUpdate(newFocus) {
+    if (newFocus === null) {
+      return;
+    }
+
+    this.setFocus(
+      {
+        ...this.focus,
+        xl: newFocus.xl,
+        xr: newFocus.xr,
+        xspan: newFocus.xspan,
+      },
+      this.focus
+    );
+
+    this.scope.plotRange.calcMapping(false);
+    this.scope.update();
   }
 }

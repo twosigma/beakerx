@@ -47,7 +47,7 @@ define([
   var bkHelper = require('./../shared/bkHelper').default;
   var zoomHelpers = require('./zoom/helpers').default;
   var PlotLayout = require('./PlotLayout').default;
-  var PlotLegend = require('./PlotLegend').default;
+  var PlotLegend = require('./legend/PlotLegend').default;
 
   function PlotScope(wrapperId) {
     this.wrapperId = wrapperId;
@@ -116,22 +116,6 @@ define([
 
   PlotScope.prototype.initLayout = function() {
     this.layout = new PlotLayout(this);
-  };
-
-  PlotScope.prototype.onModelFucusUpdate = function(newFocus) {
-    if (newFocus === null) { return; }
-
-    this.plotFocus.setFocus(
-      {
-        xl: newFocus.xl,
-        xr: newFocus.xr,
-        xspan: newFocus.xspan,
-      },
-      this.plotFocus.focus
-    );
-
-    this.plotRange.calcMapping(false);
-    this.update();
   };
 
   PlotScope.prototype.calcMapping = function(emitFocusUpdate) {
@@ -305,14 +289,14 @@ define([
       .on('mouseenter', function(d) {
         d3.event.stopPropagation();
 
-        self.drawLegendPointer(d);
+        self.plotLegend.drawLegendPointer(d);
         return plotTip.tooltip(self, d, d3.mouse(self.svg.node()));
       })
       .on('mousemove', function(d) {
         d3.event.stopPropagation();
 
-        self.removeLegendPointer();
-        self.drawLegendPointer(d);
+        self.plotLegend.removeLegendPointer();
+        self.plotLegend.drawLegendPointer(d);
         self.tipmoving = true;
 
         self.tipTimeout && clearTimeout(self.tipTimeout);
@@ -325,7 +309,7 @@ define([
       .on("mouseleave", function(d) {
         d3.event.stopPropagation();
 
-        self.removeLegendPointer();
+        self.plotLegend.removeLegendPointer();
         return plotTip.untooltip(self, d);
       })
       .on("click.resp", function(d) {
@@ -342,18 +326,6 @@ define([
 
         return !hasClickAction && plotTip.toggleTooltip(self, d);
       });
-  };
-
-  PlotScope.prototype.drawLegendPointer = function(d) {
-    if (this.gradientLegend) {
-      this.gradientLegend.drawPointer(d.ele.value);
-    }
-  };
-
-  PlotScope.prototype.removeLegendPointer = function() {
-    if(this.gradientLegend){
-      this.gradientLegend.removePointer();
-    }
   };
 
   PlotScope.prototype.renderCursor = function(e) {
@@ -441,152 +413,6 @@ define([
     };
     css[alignRight ? "right" : "left"] = p.x;
     label.css(css);
-  };
-
-  PlotScope.prototype.getLegendPosition = function(legendPosition, isHorizontal) {
-    var margin = this.layout.legendMargin,
-      containerWidth = this.jqcontainer.outerWidth(true),
-      containerWidthWithMargin = containerWidth + margin,
-      legend = this.jqlegendcontainer.find("#plotLegend"),
-      legendHeight = legend.height(),
-      legendHeightWithMargin = legendHeight + margin,
-      verticalCenter = this.jqcontainer.height() / 2 - legendHeight / 2,
-      horizontalCenter = containerWidth / 2 - legend.width() / 2;
-    if (!legendPosition) { return this.getLegendPosition("TOP_RIGHT", isHorizontal); }
-    var position;
-    if(legendPosition.position){
-      switch(legendPosition.position){
-        case "TOP":
-          position = {
-            "left": horizontalCenter,
-            "top": -legendHeightWithMargin
-          };
-          break;
-        case "LEFT":
-          position = {
-            "left": 0,
-            "top": verticalCenter
-          };
-          break;
-        case "BOTTOM":
-          position = {
-            "left": horizontalCenter,
-            "bottom": -legendHeightWithMargin
-          };
-          break;
-        case "RIGHT":
-          position = {
-            "left": containerWidthWithMargin,
-            "bottom": verticalCenter
-          };
-          break;
-        default:
-          position = this.getLegendPositionByLayout(legendPosition, isHorizontal);
-      }
-    }else{
-      position = {
-        "left": legendPosition.x,
-        "top": legendPosition.y
-      };
-    }
-    return position;
-  };
-
-  PlotScope.prototype.getLegendPositionByLayout = function(legendPosition, isHorizontal){
-    var legend = this.jqlegendcontainer.find("#plotLegend"),
-      margin = this.layout.legendMargin,
-      legendWidth = legend.outerWidth(true),
-      containerWidth = this.jqcontainer.outerWidth(true),
-      containerWidthWithMargin = containerWidth + margin,
-      legendHeight = legend.height(),
-      legendHeightWithMargin = legendHeight + margin, position;
-    if(isHorizontal){
-      switch(legendPosition.position){
-        case "TOP_LEFT":
-          position = {
-            "left": 0,
-            "top": -legendHeightWithMargin
-          };
-          break;
-        case "TOP_RIGHT":
-          position = {
-            "left": containerWidth - legendWidth,
-            "top": -legendHeightWithMargin
-          };
-          break;
-        case "BOTTOM_LEFT":
-          position = {
-            "left": 0,
-            "bottom": -legendHeightWithMargin
-          };
-          break;
-        case "BOTTOM_RIGHT":
-          position = {
-            "left": containerWidth - legendWidth,
-            "bottom": -legendHeightWithMargin
-          };
-          break;
-      }
-    }else{
-      switch(legendPosition.position){
-        case "TOP_LEFT":
-          position = {
-            "left": 0,
-            "top": this.layout.topLayoutMargin
-          };
-          break;
-        case "TOP_RIGHT":
-          position = {
-            "left": containerWidthWithMargin,
-            "top": this.layout.topLayoutMargin
-          };
-          break;
-        case "BOTTOM_LEFT":
-          position = {
-            "left": 0,
-            "bottom": this.layout.bottomLayoutMargin
-          };
-          break;
-        case "BOTTOM_RIGHT":
-          position = {
-            "left": containerWidthWithMargin,
-            "bottom": this.layout.bottomLayoutMargin
-          };
-          break;
-      }
-    }
-    return position;
-  };
-
-  PlotScope.prototype.getLodLabel = function(lodType) {
-    var label;
-    switch(lodType){
-      case 'box':
-        label = 'group into boxes';
-        break;
-      case 'river':
-        label = 'group into river';
-        break;
-      case 'off':
-        label = 'no grouping';
-        break;
-      default:
-        label = lodType;
-    }
-    return label;
-  };
-
-  PlotScope.prototype.highlightElements = function(legendId, highlight){
-    var self = this;
-
-    if(!legendId) { return; }
-
-    var elementsIds = self.legendMergedLines[legendId].dataIds;
-    for(var i=0; i<elementsIds.length; i++){
-      var id = elementsIds[i];
-      var data = self.stdmodel.data[id];
-      data.setHighlighted(self, highlight);
-    }
   };
 
   PlotScope.prototype.updateMargin = function(){
@@ -1254,7 +1080,7 @@ define([
       return self.saveAsPng(scale);
     };
     model.updateLegendPosition = function () {
-      return self.plotLegend.updateLegendPosition();
+      return self.plotLegend.legendPosition.updateLegendPosition();
     };
   };
 

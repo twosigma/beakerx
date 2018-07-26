@@ -39,13 +39,13 @@ export default class PlotLayout {
     this.scope.cursor = { x : -1, y : -1 };
     this.scope.labelPadding = { x: 10, y: 10 };
 
-    this.assignElements();
     this.update();
   }
 
   update() {
     const stdmodel = this.scope.stdmodel;
 
+    this.assignElements();
     this.setPlotSize(stdmodel);
     this.applyCssRules();
     this.applyCustomStyles(stdmodel);

@@ -271,7 +271,7 @@ define([
 
     this.scopes.forEach(function(scope) {
       if (updateType === 'focus') {
-        scope.onModelFucusUpdate(self.plotFocus.getFocus());
+        scope.plotFocus.onModelFucusUpdate(self.plotFocus.getFocus());
       } else if (updateType === 'width') {
         scope.updateModelWidth(self.width);
       }

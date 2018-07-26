@@ -18,16 +18,19 @@
 
 import * as d3 from 'd3';
 import * as _ from 'underscore';
-import PointShapeHelper from './std/PointShapeHelper';
+import PointShapeHelper from '../std/PointShapeHelper';
+import LegendPosition from "./LegendPosition";
 
-const plotUtils = require('./plotUtils');
-const GradientLegend = require('./gradientlegend');
+const plotUtils = require('../plotUtils');
+const GradientLegend = require('../gradientlegend');
 
 export default class PlotLegend {
   scope: any;
+  legendPosition: LegendPosition;
 
   constructor(scope) {
     this.scope = scope;
+    this.legendPosition = new LegendPosition(scope);
   }
 
   appendLegendToSvg(svg: d3.Selection<SVGElement, any, HTMLElement, any>) {
@@ -107,7 +110,7 @@ export default class PlotLegend {
     if (this.scope.model.getCellModel().type === "HeatMap") {
       this.scope.gradientLegend = new GradientLegend(data);
       this.scope.gradientLegend.render(legendContainer, data[0].colors);
-      this.updateLegendPosition();
+      this.legendPosition.updateLegendPosition();
 
       return;
     }
@@ -136,7 +139,7 @@ export default class PlotLegend {
       this.renderLegendMergedLine(id, legendLineUnit, legend);
     }
 
-    this.updateLegendPosition();
+    this.legendPosition.updateLegendPosition();
   }
 
   createLegendContainer(className?: string, handle?) {
@@ -320,7 +323,7 @@ export default class PlotLegend {
     }
 
     let highlightTimeoutId;
-    const scope = this.scope;
+    const self = this;
 
     const unit = $(legendLineUnit)
       .appendTo(legend)
@@ -330,12 +333,12 @@ export default class PlotLegend {
         const legendLine = $(this)[0];
 
         highlightTimeoutId = setTimeout(() => {
-          scope.highlightElements(legendLine.id.split("_")[1], true);
+          self.highlightElements(legendLine.id.split("_")[1], true);
         }, 300);
       })
       .mouseleave(function(e) {
         clearTimeout(highlightTimeoutId);
-        scope.highlightElements($(this)[0].id.split("_")[1], false);
+        self.highlightElements($(this)[0].id.split("_")[1], false);
       });
 
     this.renderCheckbox(line, unit, id);
@@ -375,66 +378,6 @@ export default class PlotLegend {
       .appendTo(unit);
   }
 
-  updateLegendPosition() {
-    const legendContainer = this.scope.jqlegendcontainer.find("#plotLegend");
-    const isHorizontal = this.scope.stdmodel.legendLayout === "HORIZONTAL";
-
-    if (this.scope.legendResetPosition === true) {
-      this.scope.legendPosition = this.scope.getLegendPosition(this.scope.stdmodel.legendPosition, isHorizontal);
-      this.scope.legendResetPosition = false;
-    }
-
-    legendContainer.css(this.scope.legendPosition);
-
-    this.updateLegendMargins(legendContainer);
-    this.updateLegendDraggable(legendContainer);
-  }
-
-  updateLegendMargins(legendContainer) {
-    const isHorizontal = this.scope.stdmodel.legendLayout === "HORIZONTAL";
-    const margin = this.scope.layout.legendMargin;
-
-    //increase plot margins if legend has predefined values
-    switch (this.scope.stdmodel.legendPosition.position) {
-      case "LEFT":
-        this.scope.jqcontainer.css("margin-left", legendContainer.width() + margin);
-        break;
-      case "TOP":
-        this.scope.jqcontainer.css("margin-top", legendContainer.height() + margin);
-        break;
-      case "BOTTOM":
-        this.scope.jqcontainer.css("margin-bottom", legendContainer.height() + margin);
-        break;
-    }
-
-    if (isHorizontal) {
-      if(["TOP_LEFT", "TOP_RIGHT"].indexOf(this.scope.stdmodel.legendPosition.position) !== -1) {
-        this.scope.jqcontainer.css("margin-top", legendContainer.height() + margin);
-      }
-      if(["BOTTOM_LEFT", "BOTTOM_RIGHT"].indexOf(this.scope.stdmodel.legendPosition.position) !== -1) {
-        this.scope.jqcontainer.css("margin-bottom", legendContainer.height() + margin);
-      }
-    } else {
-      if(["TOP_LEFT", "BOTTOM_LEFT"].indexOf(this.scope.stdmodel.legendPosition.position) !== -1) {
-        this.scope.jqcontainer.css("margin-left", legendContainer.width() + margin);
-      }
-    }
-  }
-
-  updateLegendDraggable(legendContainer) {
-    if (!legendContainer.length) {
-      return;
-    }
-
-    const legenddraggable = legendContainer.find(".plot-legenddraggable");
-
-    if (legendContainer.get(0).scrollHeight > legendContainer.get(0).clientHeight) {
-      legenddraggable.addClass("hasScroll");
-    } else {
-      legenddraggable.removeClass("hasScroll");
-    }
-  }
-
   renderLodItem(line, unit, id) {
     if (line.isLodItem !== true) {
       return;
@@ -461,7 +404,7 @@ export default class PlotLegend {
     return {
       lodType: lodType,
       lineId: lineId,
-      name: this.scope.getLodLabel(lodType),
+      name: this.getLodLabel(lodType),
       action: () => this.applyLodType(lodType, lineId)
     };
   };
@@ -484,9 +427,9 @@ export default class PlotLegend {
         return;
       }
 
-      loadLoader.clear(self);
+      loadLoader.clear(this.scope);
       loadLoader.applyLodType(lodType);
-      loadLoader.zoomLevelChanged(self);
+      loadLoader.zoomLevelChanged(this.scope);
       hasChanged = true;
     });
 
@@ -514,7 +457,7 @@ export default class PlotLegend {
         dataIds.forEach((dataId) => {
           const loadLoader = this.scope.stdmodel.data[dataId];
 
-          loadLoader.toggleLod && loadLoader.toggleLod(self);
+          loadLoader.toggleLod && loadLoader.toggleLod(this.scope);
         });
 
         this.scope.update();
@@ -561,4 +504,44 @@ export default class PlotLegend {
 
     this.scope.setMergedLodHint(line.lodDataIds, id);
   }
+
+  getLodLabel(lodType) {
+    switch(lodType){
+      case 'box':
+        return 'group into boxes';
+      case 'river':
+        return 'group into river';
+      case 'off':
+        return 'no grouping';
+      default:
+        return lodType;
+    }
+  }
+
+  highlightElements(legendId, highlight) {
+    if (!legendId) {
+      return;
+    }
+
+    const elementsIds = this.scope.legendMergedLines[legendId].dataIds;
+
+    for (let i = 0; i < elementsIds.length; i++) {
+      let id = elementsIds[i];
+      let data = this.scope.stdmodel.data[id];
+
+      data.setHighlighted(this.scope, highlight);
+    }
+  }
+
+  drawLegendPointer(d) {
+    if (this.scope.gradientLegend) {
+      this.scope.gradientLegend.drawPointer(d.ele.value);
+    }
+  };
+
+  removeLegendPointer() {
+    if (this.scope.gradientLegend) {
+      this.scope.gradientLegend.removePointer();
+    }
+  };
 }

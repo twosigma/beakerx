@@ -99,6 +99,7 @@
   &.active { background-color: $bxColorInfo; }
   &.waiting { background-color: $bxColorWarning; }
   &.all { background-color: $bxColorDefault; }
+  &.error { background-color: $bxColorError; }
 }
 
 .bx-spark-stageProgressBar {
@@ -116,6 +117,7 @@
   &.done { background-color: $bxColorSuccess; }
   &.active { background-color: $bxColorInfo; }
   &.waiting { background-color: $bxColorWarning; }
+  &.cancelled { background-color: $bxColorError; }
 }
 
 .bx-row {

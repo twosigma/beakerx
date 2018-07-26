@@ -204,6 +204,11 @@ public class SparkUI extends VBox implements SparkUIApi {
     decorator.getSparkStateProgress().addDone();
   }
 
+  public void taskCancelled(int stageId, long taskId) {
+    SparkStateGroupPanel decorator = progressBarMap.get(stageId);
+    decorator.getSparkStateProgress().addCancelled();
+  }
+
   private String stageLink(int stageId) {
     if (getSparkSession().sparkContext().uiWebUrl().isDefined()) {
       return getSparkSession().sparkContext().uiWebUrl().get() + "/stages/stage/?id=" + stageId + "&attempt=0";

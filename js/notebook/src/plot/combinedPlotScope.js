@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+import PlotLayout from "./PlotLayout";
+
 var CombinedPlotModel = require("./models/CombinedPlotModel").default;
 
 define([
@@ -273,7 +275,7 @@ define([
       if (updateType === 'focus') {
         scope.plotFocus.onModelFucusUpdate(self.plotFocus.getFocus());
       } else if (updateType === 'width') {
-        scope.updateModelWidth(self.width);
+        scope.plotSize.updateModelWidth(self.width);
       }
     });
   };
@@ -325,7 +327,7 @@ define([
 
     this.scopes.push(currentScope);
 
-    var tmpl = currentScope.buildTemplate();
+    var tmpl = PlotLayout.buildTemplate(currentScope);
     var tmplElement = $(tmpl);
     var container = self.element.children('.combplot-plotcontainer');
 

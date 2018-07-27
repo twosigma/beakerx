@@ -40,6 +40,27 @@ export default class PlotInteraction {
     this.onClickrespTooltip = this.onClickrespTooltip.bind(this);
   }
 
+  bindEvents() {
+    const scope = this.scope;
+
+    this.scope.svg
+      .on("mousedown", () => {
+        scope.jqcontainer.addClass('bko-focused');
+
+        return scope.plotInteraction.mouseDown();
+      });
+
+    scope.jqcontainer.on("mouseleave", () => {
+      scope.jqcontainer.removeClass('bko-focused');
+
+      return zoomHelpers.disableZoomWheel(scope);
+    });
+
+    scope.jqsvg
+      .mousemove((e) => scope.plotCursor.render(e))
+      .mouseleave((e) => scope.plotCursor.clear());
+  }
+
   mouseDown() {
     if (this.scope.interactMode === "other") {
       this.scope.interactMode = "zoom";
@@ -60,6 +81,16 @@ export default class PlotInteraction {
       zoomHelpers.enableZoomWheel(self, d3);
     } else {
       this.scope.interactMode = 'locate';
+    }
+  }
+
+  emitZoomLevelChange() {
+    const data = this.scope.stdmodel.data;
+
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].isLodItem === true) {
+        data[i].zoomLevelChanged(self);
+      }
     }
   }
 

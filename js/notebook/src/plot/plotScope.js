@@ -50,6 +50,8 @@ define([
   var PlotInteraction = require('./PlotInteraction').default;
   var plotTip = require('./plotTip').default;
   var saveAsContextMenu = require('./contextMenu/SaveAsContextMenu').default;
+  var PlotSize = require('./PlotSize').default;
+  var PointsLimitModal = require('./plotModal/pointsLimitModal').default;
 
   function PlotScope(wrapperId) {
     this.wrapperId = wrapperId;
@@ -107,6 +109,8 @@ define([
     this.plotLegend = new PlotLegend(this);
     this.plotCursor = new PlotCursor(this);
     this.plotInteraction = new PlotInteraction(this);
+    this.plotSize = new PlotSize(this);
+    this.pointsLimitModal = new PointsLimitModal(this);
   };
   
   PlotScope.prototype.setWidgetModel = function(plotDisplayModel) {
@@ -125,24 +129,8 @@ define([
     return this.plotRange.calcMapping(emitFocusUpdate);
   };
 
-  PlotScope.prototype.updateModelWidth = function(newWidth) {
-    if (this.width === newWidth) { return; }
-    this.width = newWidth;
-    this.jqcontainer.css("width", newWidth );
-    this.jqsvg.css("width", newWidth );
-    this.plotRange.calcMapping(false);
-    this.legendDone = false;
-    this.legendResetPosition = true;
-    this.update();
-  };
-
   PlotScope.prototype.emitZoomLevelChange = function() {
-    var data = this.stdmodel.data;
-    for (var i = 0; i < data.length; i++) {
-      if (data[i].isLodItem === true) {
-        data[i].zoomLevelChanged(self);
-      }
-    }
+    this.plotInteraction.emitZoomLevelChange();
   };
 
   PlotScope.prototype.emitSizeChange = function(useMinWidth) {
@@ -169,8 +157,9 @@ define([
     }
   };
 
-  PlotScope.prototype.updateMargin = function(){
+  PlotScope.prototype.updateMargin = function() {
     var self = this;
+
     if (self.model.updateMargin != null) {
       setTimeout(self.model.updateMargin, 0);
     }
@@ -356,9 +345,7 @@ define([
     self.element.find('.plot-plotcontainer').attr('id', self.id);
     self.element.find('.plot-title').attr('class', 'plot-title ' + 'plot-title-' + self.id);
 
-    // first standardize data
     self.standardizeData();
-    // init flags
     self.initFlags();
 
     // see if previous state can be applied
@@ -370,7 +357,6 @@ define([
 
     self.tips = self.model.getCellModel().tips;
 
-    // create layout elements
     self.initLayout();
 
     if (!self.model.disableContextMenu) {
@@ -382,136 +368,61 @@ define([
       self.saveAsMenuContainer = self.model.getSaveAsMenuContainer();
     }
 
-    self.jqcontainer.resizable({
-      maxWidth: self.element.parent().width(), // no wider than the width of the cell
-      minWidth: 150,
-      minHeight: 150,
-      handles: "e, s, se",
-      resize : function(event, ui) {
-        self.width = ui.size.width;
-        self.height = ui.size.height;
-        _.extend(self.layout.plotSize, ui.size);
-
-        self.jqsvg.css({"width": self.width, "height": self.height});
-        self.jqplottitle.css({"width": self.width });
-        self.numIntervals = {
-          x: self.width / self.intervalStepHint.x,
-          y: self.height / self.intervalStepHint.y
-        };
-        self.plotRange.calcRange();
-        self.plotRange.calcMapping(false);
-        self.emitSizeChange();
-        self.legendDone = false;
-        self.legendResetPosition = true;
-
-        self.update();
-      }
-    });
-
-    self.resizeFunction = function() {
-      // update resize maxWidth when the browser window resizes
-      self.jqcontainer.resizable("option", "maxWidth", self.element.parent().width());
-    };
+    this.plotSize.setResizable();
 
     self.resetSvg();
     self.plotZoom.initZoomObject();
-
-    self.svg
-      .on("mousedown", function() {
-        self.jqcontainer.addClass('bko-focused');
-        return self.plotInteraction.mouseDown();
-      });
-    self.jqcontainer.on("mouseleave", function() {
-        self.jqcontainer.removeClass('bko-focused');
-        return zoomHelpers.disableZoomWheel(self);
-      });
-    self.jqsvg.mousemove(function(e) {
-      return self.plotCursor.render(e);
-    }).mouseleave(function(e) {
-      return self.plotCursor.clear();
-    });
+    self.plotInteraction.bindEvents();
     self.plotZoom.init();
     self._defaultZoomWheelFn = self.svg.on('wheel.zoom');
     zoomHelpers.disableZoomWheel(self);
-
     self.plotRange.calcRange();
-
 
     // init copies focus to defaultFocus, called only once
     if(_.isEmpty(self.plotFocus.getFocus())){
       self.plotFocus.setFocus(self.plotFocus.defaultFocus);
     }
 
-    // init remove pipe
     self.removePipe = [];
-
     self.plotRange.calcMapping();
-
     self.legendDone = false;
     self.update();
-
     self.fillCellModelWithPlotMethods();
     self.adjustModelWidth();
     self.emitSizeChange(true);
-    self.initPointsLimitModal();
+    self.pointsLimitModal.init();
   };
 
   PlotScope.prototype.adjustModelWidth = function() {
-    this.updateModelWidth(this.getPlotWithLegendWidth());
-  };
-
-  PlotScope.prototype.getPlotWithLegendWidth = function() {
-    var containerWidth = this.jqcontainer.parents('.output_subarea').width();
-    var plotWidth = containerWidth && containerWidth < this.layout.plotSize.width ? containerWidth : this.layout.plotSize.width;
-    var legendWidth = this.jqlegendcontainer.find('.plot-legend').width() || 0;
-    var legendPosition = this.stdmodel.legendPosition.position;
-    // Logic based on updateLegendPosition method
-    var isLegendPlacedHorizontaly = (["LEFT", "RIGTH"].indexOf(legendPosition) !== -1) ||
-      (["TOP", "BOTTOM"].indexOf(legendPosition) === -1 && this.stdmodel.legendLayout === "VERTICAL");
-
-    legendWidth = legendWidth ? legendWidth + this.layout.legendMargin + 2 : 0;
-
-    return isLegendPlacedHorizontaly ? plotWidth - legendWidth : plotWidth;
+    this.plotSize.updateModelWidth(this.plotSize.getPlotWithLegendWidth());
   };
 
   PlotScope.prototype.updatePlot = function() {
     var self = this;
 
-    // first standardize data
     self.standardizeData();
-    // init flags
     self.initFlags();
 
     // see if previous state can be applied
     self.plotFocus.setFocus({});
-
     if (!self.model.getCellModel().tips) {
       self.model.getCellModel().tips = {};
     }
 
     self.tips = self.model.getCellModel().tips;
-
-    // create layout elements
     self.layout.update();
-
     self.resetSvg();
-
     self.plotRange.calcRange();
-
-
     // init copies focus to defaultFocus, called only once
-    if(_.isEmpty(self.plotFocus.getFocus())){
+    if (_.isEmpty(self.plotFocus.getFocus())) {
       self.plotFocus.setFocus(self.plotFocus.defaultFocus);
     }
 
     // init remove pipe
     self.removePipe = [];
-
     self.plotRange.calcMapping();
-
     self.legendDone = false;
     self.update();
-
     self.fillCellModelWithPlotMethods();
   };
 
@@ -562,17 +473,6 @@ define([
     return this.jqcontainer.height();
   };
 
-  PlotScope.prototype.watchCellSize = function () {
-    var self = this;
-    if (!self.model.isShowOutput || (self.model.isShowOutput && self.model.isShowOutput() === true)) {
-      self.layout.plotSize.width = self.getCellWidth();
-      self.layout.plotSize.height = self.getCellHeight();
-      if (self.setDumpState !== undefined) {
-        self.setDumpState(self.dumpState());
-      }
-    }
-  };
-
   PlotScope.prototype.getCellModel = function() {
     return this.model.getCellModel();
   };
@@ -582,7 +482,7 @@ define([
   };
 
   PlotScope.prototype.destroy = function() {
-    $(window).off('resize', this.resizeFunction);
+    $(window).off('resize', this.plotSize.resizeFunction);
     this.svg.remove();
     this.jqcontainer.resizable({ disabled: true }).resizable('destroy');
     this.jqlegendcontainer.remove();
@@ -631,29 +531,6 @@ define([
     this.element = el;
   };
 
-  PlotScope.prototype.buildTemplate = function() {
-    var tmpl = '<div id="'+this.wrapperId+'">' +
-               '<div class="dtcontainer">' +
-               '<canvas></canvas>'+
-               '<div id="plotTitle" class="plot-title"></div>'+
-               '<div id="plotLegendContainer" class="plot-plotlegendcontainer" oncontextmenu="return false;">'+
-               '<div class="plot-plotcontainer" oncontextmenu="return false;">'+
-               '<svg id="svgg">'+
-               '<defs>' +
-                  '<linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%"> <stop offset="0.0%" stop-color="#2c7bb6"></stop> <stop offset="12.5%" stop-color="#00a6ca"></stop> <stop offset="25.0%" stop-color="#00ccbc"></stop> <stop offset="37.5%" stop-color="#90eb9d"></stop> <stop offset="50.0%" stop-color="#ffff8c"></stop> <stop offset="62.5%" stop-color="#f9d057"></stop> <stop offset="75.0%" stop-color="#f29e2e"></stop> <stop offset="87.5%" stop-color="#e76818"></stop> <stop offset="100.0%" stop-color="#d7191c"></stop> </linearGradient> <marker id="Triangle" class="text-line-style" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="6" markerHeight="6" orient="auto"> <path d="M 0 0 L 10 5 L 0 10 z"></path> </marker> <filter id="svgfilter"> <feGaussianBlur result="blurOut" in="SourceGraphic" stdDeviation="1"></feGaussianBlur> <feBlend in="SourceGraphic" in2="blurOut" mode="normal"></feBlend> </filter> <filter id="svgAreaFilter"> <feMorphology operator="dilate" result="blurOut" in="SourceGraphic" radius="2"></feMorphology> <feBlend in="SourceGraphic" in2="blurOut" mode="normal"></feBlend> </filter>' +
-                  '<clipPath id="clipPath_' + this.wrapperId + '"><rect x="0" y="0" width="100%" height="100%" /></clipPath>'+
-               '</defs>' +
-               '<g id="gridg"></g>'+
-               '<g id="maing" clip-path="url(#clipPath_' + this.wrapperId + ')"></g>'+
-               '<g id="labelg"></g>'+
-               '</svg>'+
-               '</div>'+
-               '</div>'+
-               '</div>'+
-               '</div>';
-    return tmpl;
-  };
-
   PlotScope.prototype.modelHasPlotSpecificMethods = function(model) {
     return model.getSvgToSave && model.saveAsSvg && model.saveAsPng && model.updateLegendPosition;
   };
@@ -677,12 +554,6 @@ define([
       return self.plotLegend.legendPosition.updateLegendPosition();
     };
   };
-
-  // ----- utils
-
-  require('./plotModal/pointsLimitModal.ts').default(PlotScope);
-
-  // --------
 
   return PlotScope;
 

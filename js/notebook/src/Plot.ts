@@ -16,6 +16,7 @@
 
 import widgets from './widgets';
 import * as _ from 'underscore';
+import PlotLayout from "./plot/PlotLayout";
 
 const d3 = require('d3');
 
@@ -135,8 +136,9 @@ export class PlotView extends widgets.DOMWidgetView {
   }
 
   initStandardPlot(model) {
-    this._currentScope = new PlotScope('wrap_'+this.model.model_id);
-    const tmpl = this._currentScope.buildTemplate();
+    const wrappperId = `wrap_${this.model.model_id}`;
+    this._currentScope = new PlotScope(wrappperId);
+    const tmpl = PlotLayout.buildTemplate(wrappperId);
     const tmplElement = $(tmpl);
 
     tmplElement.appendTo(this.$el);

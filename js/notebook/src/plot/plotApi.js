@@ -14,7 +14,9 @@
  *  limitations under the License.
  */
 
- define([
+const PlotLayout = require("./PlotLayout");
+
+define([
    'underscore',
    './plotScope',
    './combinedPlotScope'
@@ -500,7 +502,7 @@
      var cell = getCellFromOutputArea(output_area);
 
      var currentScope = new PlotScope('wrap_'+cell.cell_id);
-     var tmpl = currentScope.buildTemplate();
+     var tmpl = PlotLayout.buildTemplate(currentScope);
      var tmplElement = $(tmpl);
 
      tmplElement.appendTo(output_area.element);

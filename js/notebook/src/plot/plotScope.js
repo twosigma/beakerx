@@ -195,110 +195,6 @@ define([
     type.text(lodInfo.lodType);
   };
 
-  PlotScope.prototype.toggleVisibility = function(e) {
-    var self = this;
-    var id = e.target.id.split("_")[1], data = self.stdmodel.data, line;
-    // id in the format "legendcheck_id"
-    if (id == "all") {
-      self.showAllItems = !self.showAllItems;
-
-      for (var lineId in self.legendMergedLines) {
-        if (self.legendMergedLines.hasOwnProperty(lineId)) {
-          line = self.legendMergedLines[lineId];
-          line.showItem = self.showAllItems;
-          for (var i = 0; i < line.dataIds.length; i++) {
-            var dat = data[line.dataIds[i]];
-            dat.showItem = self.showAllItems;
-            if (dat.showItem === false) {
-              dat.hideTips(self, true);
-              if (dat.isLodItem === true) {
-                dat.lodOn = false;
-              }
-            }else{
-              dat.hideTips(self, false);
-            }
-          }
-          if (line.showItem === false) {
-            if (line.isLodItem === true) {
-              self.setMergedLodHint(line.lodDataIds, lineId);
-            }
-          }
-          self.jqlegendcontainer.find("#legendcheck_" + lineId).prop("checked", line.showItem);
-        }
-      }
-
-      self.plotRange.calcRange();
-      self.update();
-      return;
-    }
-
-    line = self.legendMergedLines[id];
-    line.showItem = !line.showItem;
-    for (var j = 0; j < line.dataIds.length; j++) {
-      var dat = data[line.dataIds[j]];
-      dat.showItem = !dat.showItem;
-      if (dat.showItem === false) {
-        dat.hideTips(self, true);
-        if (dat.isLodItem === true) {
-          dat.lodOn = false;
-        }
-      } else {
-        dat.hideTips(self, false);
-      }
-    }
-    if (line.showItem === false) {
-      if (line.isLodItem === true) {
-        self.setMergedLodHint(line.lodDataIds, id);
-      }
-    }
-
-    self.plotRange.calcRange();
-    self.update();
-  };
-
-  PlotScope.prototype.renderMessage = function(title, msgs, msgid, callbacky, callbackn) {
-    var self = this;
-    var message = $("<div></div>").appendTo(self.jqcontainer)
-      .attr("id", msgid)
-      .attr("class", "plot-message")
-      .on('mousedown', function(e) {
-        if (e.which === 3) {
-          if (callbackn != null) {
-            callbackn();
-          }
-        } else {
-          if (callbacky != null) {
-            callbacky();
-          }
-        }
-        $(this).remove();
-      });
-
-    if (title != null && title != "") {
-      $("<div></div>").appendTo(message)
-        .attr("class", "plot-message-title")
-        .text(title);
-    }
-
-    var content = $("<div></div>").appendTo(message)
-      .attr("class", "plot-message-content");
-    if (typeof(msgs) === "string") {
-      msgs = [ msgs ];
-    }
-    for (var i = 0; i < msgs.length; i++) {
-      $("<div></div>").appendTo(content)
-        .text(msgs[i]);
-    }
-
-    var w = message.outerWidth(), h = message.outerHeight();
-    var lMargin = self.layout.leftLayoutMargin,
-      bMargin = self.layout.bottomLayoutMargin;
-    message.css({
-      "left" : (self.jqcontainer.width() - lMargin) / 2 - w / 2 + lMargin,
-      "top" : (self.jqcontainer.height() - bMargin) / 2 - h / 2
-    });
-  };
-
   PlotScope.prototype.updateClipPath = function() {
     var W = plotUtils.safeWidth(this.jqsvg);
     var H = plotUtils.safeHeight(this.jqsvg);
@@ -311,6 +207,7 @@ define([
   };
 
   PlotScope.prototype.resetSvg = function() {
+    var self = this;
     var self = this;
     self.jqcontainer.find(".plot-constlabel").remove();
 

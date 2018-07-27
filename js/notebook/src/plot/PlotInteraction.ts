@@ -38,6 +38,7 @@ export default class PlotInteraction {
     this.onMouseMoveTooltip = this.onMouseMoveTooltip.bind(this);
     this.onMouseLeaveTooltip = this.onMouseLeaveTooltip.bind(this);
     this.onClickrespTooltip = this.onClickrespTooltip.bind(this);
+    this.toggleVisibility = this.toggleVisibility.bind(this);
   }
 
   bindEvents() {
@@ -332,5 +333,65 @@ export default class PlotInteraction {
     }
 
     return !hasClickAction && plotTip.toggleTooltip(this.scope, d);
+  }
+
+  toggleVisibility(e) {
+    const id = e.target.id.split("_")[1];
+    const data = this.scope.stdmodel.data;
+    // id in the format "legendcheck_id"
+
+    if (id == "all") {
+      return this.toggleAllLines(data);
+    }
+
+    this.toggleLine(data, id);
+
+    this.scope.plotRange.calcRange();
+    this.scope.update();
+  }
+
+  toggleAllLines(data) {
+    this.scope.showAllItems = !this.scope.showAllItems;
+
+    for (let lineId in this.scope.legendMergedLines) {
+      this.toggleLine(data, lineId);
+
+      this.scope.jqlegendcontainer
+        .find("#legendcheck_" + lineId)
+        .prop("checked", this.scope.legendMergedLines[lineId].showItem);
+    }
+
+    this.scope.plotRange.calcRange();
+    this.scope.update();
+  }
+
+  toggleLine(data, lineId) {
+    if (!this.scope.legendMergedLines.hasOwnProperty(lineId)) {
+      return;
+    }
+
+    const line = this.scope.legendMergedLines[lineId];
+    line.showItem = this.scope.showAllItems;
+
+    for (let i = 0; i < line.dataIds.length; i++) {
+      let item = data[line.dataIds[i]];
+      item.showItem = this.scope.showAllItems;
+
+      if (item.showItem === false) {
+        item.hideTips(this.scope, true);
+
+        if (item.isLodItem === true) {
+          item.lodOn = false;
+        }
+      } else {
+        item.hideTips(this.scope, false);
+      }
+    }
+
+    if (line.showItem === false) {
+      if (line.isLodItem === true) {
+        this.scope.setMergedLodHint(line.lodDataIds, lineId);
+      }
+    }
   }
 }

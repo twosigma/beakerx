@@ -20,6 +20,7 @@ import * as d3 from 'd3';
 import * as _ from 'underscore';
 import PointShapeHelper from '../std/PointShapeHelper';
 import LegendPosition from "./LegendPosition";
+import PlotMessage from "../PlotMessage";
 
 const plotUtils = require('../plotUtils');
 const GradientLegend = require('../gradientlegend');
@@ -27,10 +28,12 @@ const GradientLegend = require('../gradientlegend');
 export default class PlotLegend {
   scope: any;
   legendPosition: LegendPosition;
+  plotMessage: PlotMessage;
 
   constructor(scope) {
     this.scope = scope;
     this.legendPosition = new LegendPosition(scope);
+    this.plotMessage = new PlotMessage(scope);
   }
 
   appendLegendToSvg(svg: d3.Selection<SVGElement, any, HTMLElement, any>) {
@@ -292,9 +295,7 @@ export default class PlotLegend {
       .attr("id", "legendcheck_all_" + allLegendId)
       .attr("class", "plot-legendcheckbox beforeCheckbox")
       .prop("checked", this.scope.showAllItems)
-      .click(function(e) {
-        return scope.toggleVisibility(e);
-      })
+      .click(scope.plotInteraction.toggleVisibility)
       .appendTo($(unit));
 
     $("<span></span>")
@@ -372,9 +373,7 @@ export default class PlotLegend {
       .attr("id", "legendcheck_" + id)
       .attr("class", "plot-legendcheckbox beforeCheckbox")
       .prop("checked", line.showItem)
-      .click(function(e) {
-        return scope.toggleVisibility(e);
-      })
+      .click(scope.plotInteraction.toggleVisibility)
       .appendTo(unit);
   }
 
@@ -445,7 +444,7 @@ export default class PlotLegend {
     }
 
     this.scope.removePipe.push("msg_lodoff");
-    this.scope.renderMessage(
+    this.plotMessage.render(
       "LOD is being turned off. Are you sure?",
       [
         "You are trying to turning off LOD. Loading full resolution data is " +

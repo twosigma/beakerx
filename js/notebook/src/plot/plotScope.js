@@ -49,6 +49,7 @@ define([
   var PlotLayout = require('./PlotLayout').default;
   var PlotLegend = require('./legend/PlotLegend').default;
   var PlotCursor = require('./PlotCursor').default;
+  var PlotInteraction = require('./PlotInteraction').default;
 
   function PlotScope(wrapperId) {
     this.wrapperId = wrapperId;
@@ -88,7 +89,6 @@ define([
     this.visibleItem = null;
     this.legendableItem = null;
     this.rpipeGridlines = [];
-    this.onKeyListeners = {}; //map: item.id -> listener function
     this.hasLodItem = false;
     this.hasUnorderedItem = false;
     this.showUnorderedHint = false;
@@ -106,6 +106,7 @@ define([
     this.plotGrid = new PlotGrid(this, this.plotFocus, this.plotRange);
     this.plotLegend = new PlotLegend(this);
     this.plotCursor = new PlotCursor(this);
+    this.plotInteraction = new PlotInteraction(this);
   };
   
   PlotScope.prototype.setWidgetModel = function(plotDisplayModel) {
@@ -166,168 +167,6 @@ define([
       this.showUnorderedHint = false;
       console.warn("unordered area/line detected, truncation disabled");
     }
-  };
-
-  PlotScope.prototype.onKeyAction = function(item, onKeyEvent) {
-    var key = plotUtils.getKeyCodeConstant(onKeyEvent.keyCode);
-    for (var i = 0; i < this.stdmodel.data.length; i++) {
-      var data = this.stdmodel.data[i];
-      if (data.id === item.id || item.id.indexOf(data.id + "_") === 0) {
-        var plotId = this.stdmodel.plotId;
-        var plotIndex = this.stdmodel.plotIndex;
-        if (data.keyTags != null && !_.isEmpty(data.keyTags[key])) {
-          if (this.model.setActionDetails) {
-            this.model.setActionDetails(plotIndex, data, item).then(
-              function () { plotUtils.evaluateTagCell(data.keyTags[key]); },
-              function () { console.error('set action details error'); } );
-          } else {
-            var params = plotUtils.getActionObject(this.model.getCellModel().type, item);
-          	params.actionType = 'onkey';
-          	params.key = key;
-          	params.tag = data.keyTags[key];
-          	this.plotDisplayModel.send({
-            	event: 'actiondetails', 
-            	plotId: plotId,
-            	itemId: data.uid, 
-            	params: params
-            	}, this.plotDisplayView.callbacks());
-          }
-        } else if (data.keys != null && data.keys.indexOf(key) > -1) {
-          this.legendDone = false;
-          this.legendResetPosition = true;
-          this.doNotLoadState = true;
-          if (this.model.onKey) {
-            this.model.onKey(key, plotIndex, data, item);
-          } else {
-          	var params = plotUtils.getActionObject(this.model.getCellModel().type, item);
-          	params.key = key;
-          	this.plotDisplayModel.send({event: 'onkey', plotId: plotId, itemId: data.uid, params: params},
-          	    this.plotDisplayView.callbacks());
-          }
-        }
-      }
-    }
-  };
-
-  PlotScope.prototype.removeOnKeyListeners = function() {
-    for (var f in this.onKeyListeners){
-      if(this.onKeyListeners.hasOwnProperty(f)){
-        $(document).off("keydown.plot-action", this.onKeyListeners[f]);
-      }
-    }
-    this.onKeyListeners = {};
-  };
-
-  PlotScope.prototype.prepareInteraction = function() {
-    var model = this.stdmodel;
-    var self = this;
-
-    this.svg.selectAll(".item-clickable")
-      .on('click.action', function (e) {
-        for (var i = 0; i < model.data.length; i++) {
-          var item = model.data[i];
-          if(item.hasClickAction === true && (item.id === e.id || e.id.indexOf(item.id + "_") === 0)) {
-            var plotId = self.stdmodel.plotId;
-            var plotIndex = self.stdmodel.plotIndex;
-            if(!_.isEmpty(item.clickTag)){
-              if (self.model.setActionDetails) {
-                self.model.setActionDetails(plotIndex, item, e);
-              } else {
-              	var params = plotUtils.getActionObject(self.model.getCellModel().type, e);
-              	params.actionType = 'onclick';
-              	params.tag = item.clickTag;
-                self.plotDisplayModel.send({
-                	event: 'actiondetails', 
-                	plotId: plotId,
-                	itemId: item.uid, 
-                	params: params
-                	}, self.plotDisplayView.callbacks());
-              }
-            }else{
-              self.legendDone = false;
-              self.legendResetPosition = true;
-              self.doNotLoadState = true;
-              if (self.model.onClick) {
-                self.model.onClick(plotIndex, item, e);
-                return;
-              } else {
-               	self.plotDisplayModel.send(
-               	    {event: 'onclick', 
-               	      plotId: plotId,
-               	      itemId: item.uid, 
-               	      params: plotUtils.getActionObject(self.model.getCellModel().type, e)
-               	    }, self.plotDisplayView.callbacks());
-               	    
-              }
-            }
-          }
-        }
-      });
-
-    var onKeyElements = this.svg.selectAll(".item-onkey");
-    //TODO add listeners only for elements that have keys or keyTags
-    onKeyElements
-      .on("mouseenter.plot-click", function(item){
-        if(!self.onKeyListeners[item.id]) {
-          self.onKeyListeners[item.id] = function(onKeyEvent){
-            self.onKeyAction(item, onKeyEvent);
-          };
-          $(document).on("keydown.plot-action", self.onKeyListeners[item.id]);
-        }
-      })
-      .on("mouseleave.plot-click", function(item){
-        var keyListener = self.onKeyListeners[item.id]
-        if (keyListener) {
-          delete self.onKeyListeners[item.id];
-          $(document).off("keydown.plot-action", keyListener);
-        }
-      });
-
-    if (model.useToolTip === false) {
-      return;
-    }
-
-    this.svg.selectAll(".plot-resp")
-      .on('mouseenter', function(d) {
-        d3.event.stopPropagation();
-
-        self.plotLegend.drawLegendPointer(d);
-        return plotTip.tooltip(self, d, d3.mouse(self.svg.node()));
-      })
-      .on('mousemove', function(d) {
-        d3.event.stopPropagation();
-
-        self.plotLegend.removeLegendPointer();
-        self.plotLegend.drawLegendPointer(d);
-        self.tipmoving = true;
-
-        self.tipTimeout && clearTimeout(self.tipTimeout);
-        self.tipTimeout = setTimeout(function() {
-          self.tipmoving = false;
-        }, 50);
-
-        plotTip.movetooltip(self, d, d3.mouse(self.svg.node()));
-      })
-      .on("mouseleave", function(d) {
-        d3.event.stopPropagation();
-
-        self.plotLegend.removeLegendPointer();
-        return plotTip.untooltip(self, d);
-      })
-      .on("click.resp", function(d) {
-        var model = self.stdmodel;
-        var hasClickAction;
-
-        for (var i = 0; i < model.data.length; i++) {
-          var item = model.data[i];
-          if(item.hasClickAction === true && (item.id === d.id || d.id.indexOf(item.id + "_") === 0)) {
-            hasClickAction = true;
-            break;
-          }
-        }
-
-        return !hasClickAction && plotTip.toggleTooltip(self, d);
-      });
   };
 
   PlotScope.prototype.updateMargin = function(){
@@ -716,7 +555,7 @@ define([
     self.plotLegend.render(); // redraw
     self.updateMargin(); //update plot margins
 
-    self.prepareInteraction();
+    self.plotInteraction.prepare();
 
     self.clearRemovePipe();
   };
@@ -774,7 +613,7 @@ define([
     this.element.remove();
 
     this.resetSvg();
-    this.removeOnKeyListeners();
+    this.plotInteraction.removeOnKeyListeners();
 
     setTimeout(this.initProperties.bind(this));
 

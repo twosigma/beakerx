@@ -21,6 +21,8 @@ export default class PlotSize {
 
   constructor(scope) {
     this.scope = scope;
+
+    this.resizeFunction = this.resizeFunction.bind(this);
   }
 
   updateModelWidth(newWidth) {

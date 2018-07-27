@@ -22,7 +22,7 @@ const plotUtils = require('../plotUtils');
 
 namespace SaveAsContextMenu {
   export function saveAsSvg(scope) {
-    const svgToSave = getSvgToSave(self);
+    const svgToSave = getSvgToSave(scope);
 
     plotUtils.addInlineFonts(svgToSave);
 
@@ -36,7 +36,7 @@ namespace SaveAsContextMenu {
   }
 
   export function saveAsPng(scale, scope) {
-    const svg: SVGElement = getSvgToSave(self);
+    const svg: SVGElement = getSvgToSave(scope);
 
     plotUtils.addInlineFonts(svg);
     scale = scale === undefined ? 1 : scale;

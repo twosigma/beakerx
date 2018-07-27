@@ -73,13 +73,13 @@ export default class PlotInteraction {
 
     if (d3.event.target.nodeName.toLowerCase() === "div") {
       this.scope.interactMode = "other";
-      zoomHelpers.disableZoomWheel(self);
+      zoomHelpers.disableZoomWheel(this.scope);
       return;
     }
 
     if (d3.event.button === 0) {
       this.scope.interactMode = 'zoom';
-      zoomHelpers.enableZoomWheel(self, d3);
+      zoomHelpers.enableZoomWheel(this.scope, d3);
     } else {
       this.scope.interactMode = 'locate';
     }
@@ -90,7 +90,7 @@ export default class PlotInteraction {
 
     for (let i = 0; i < data.length; i++) {
       if (data[i].isLodItem === true) {
-        data[i].zoomLevelChanged(self);
+        data[i].zoomLevelChanged(this.scope);
       }
     }
   }

@@ -14,8 +14,7 @@
  *  limitations under the License.
  */
 
-import PlotLayout from "./PlotLayout";
-
+var PlotLayout = require("./PlotLayout").default;
 var CombinedPlotModel = require("./models/CombinedPlotModel").default;
 
 define([
@@ -26,8 +25,7 @@ define([
   './plotUtils',
   './combinedPlotScopeUtils',
   './combinedPlotFormatter',
-  './chartExtender',
-  './plotScope'
+  './chartExtender'
 ], function(
   _,
   $,
@@ -36,9 +34,9 @@ define([
   plotUtils,
   CombinedPlotScopeUtilsModule,
   combinedPlotFormatter,
-  bkoChartExtender,
-  PlotScope
+  bkoChartExtender
 ) {
+  var PlotScope = require('./PlotScope').default;
   var bkUtils = require('./../shared/bkUtils').default;
   var PlotFocus = require('./zoom/PlotFocus').default;
   var CombinedPlotScopeUtils = CombinedPlotScopeUtilsModule.default;

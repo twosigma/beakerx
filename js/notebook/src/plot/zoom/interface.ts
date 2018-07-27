@@ -22,12 +22,12 @@ export interface ZoomLevel {
 }
 
 export interface Focus {
-  xl: any,
-  xr: any,
-  yl: number,
-  yr: number,
-  yl_r: number,
-  yr_r: number,
+  xl?: any,
+  xr?: any,
+  yl?: number,
+  yr?: number,
+  yl_r?: number,
+  yr_r?: number,
   xspan?: number,
   yspan?: number,
   yspan_r?: number

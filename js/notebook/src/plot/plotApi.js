@@ -18,14 +18,13 @@ const PlotLayout = require("./PlotLayout");
 
 define([
    'underscore',
-   './plotScope',
    './combinedPlotScope'
  ], function(
    _,
-   PlotScope,
    CombinedPlotScope
  ) {
 
+   var PlotScope = require('./PlotScope').default;
    var bkUtils = require('./../shared/bkUtils').default;
    var getValue = function (obj, value, defaultValue) {
      return obj.hasOwnProperty(value) ? obj[value] : defaultValue;

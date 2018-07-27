@@ -102,7 +102,7 @@ export default class PlotRange {
     this.scope.plotFocus.fix(this.scope.plotFocus.defaultFocus);
   }
   
-  calcMapping(emitFocusUpdate) {
+  calcMapping(emitFocusUpdate?) {
     // called every time after the focus is changed
     const focus = this.scope.plotFocus.getFocus();
     const leftMargin = this.scope.layout.leftLayoutMargin;

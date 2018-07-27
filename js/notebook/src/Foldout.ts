@@ -100,8 +100,11 @@ export class FoldoutView extends widgets.BoxView {
     this.previewContainer = new Widget();
     this.previewContent = document.createElement('div');
     this.previewContainer.node.classList.add('foldout-preview');
-
+    this.addCustomStyleToPreviewContainer(this.previewContainer.node)
     this.label.addWidget(this.previewContainer);
+  }
+
+  addCustomStyleToPreviewContainer(node: HTMLElement):void {
   }
 
   addHiddenContainer() {

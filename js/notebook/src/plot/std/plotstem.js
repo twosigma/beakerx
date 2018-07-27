@@ -16,14 +16,13 @@
 
 define([
   'underscore',
-  './../plotUtils',
-  './../plotTip'
+  './../plotUtils'
 ], function(
   _,
-  plotUtils,
-  plotTip
+  plotUtils
 ) {
 
+  var plotTip = require('./../plotTip').default;
   var PlotStem = function(data) {
     _.extend(this, data);
     this.format();

@@ -21,7 +21,6 @@ define([
   'jquery-ui/ui/widgets/resizable',
   'd3',
   './plotUtils',
-  './plotTip',
   './plotConverter',
   './plotFactory',
   './chartExtender'
@@ -32,7 +31,6 @@ define([
   resizable,
   d3,
   plotUtils,
-  plotTip,
   plotConverter,
   plotFactory,
   bkoChartExtender
@@ -50,6 +48,8 @@ define([
   var PlotLegend = require('./legend/PlotLegend').default;
   var PlotCursor = require('./PlotCursor').default;
   var PlotInteraction = require('./PlotInteraction').default;
+  var plotTip = require('./plotTip').default;
+  var saveAsContextMenu = require('./contextMenu/SaveAsContextMenu').default;
 
   function PlotScope(wrapperId) {
     this.wrapperId = wrapperId;
@@ -321,29 +321,6 @@ define([
       .attr("width", W - this.layout.leftLayoutMargin - this.layout.rightLayoutMargin);
   };
 
-  PlotScope.prototype.mouseDown = function() {
-    var self = this;
-    if (self.interactMode === "other") {
-      self.interactMode = "zoom";
-      return;
-    } else if (self.interactMode === "remove") {
-      self.interactMode = "other";
-      return;
-    }
-    if (d3.event.target.nodeName.toLowerCase() === "div") {
-      self.interactMode = "other";
-      zoomHelpers.disableZoomWheel(self);
-      return;
-    }
-
-    if (d3.event.button === 0) {
-      self.interactMode = 'zoom';
-      zoomHelpers.enableZoomWheel(self, d3);
-    } else {
-      self.interactMode = 'locate';
-    }
-  };
-
   PlotScope.prototype.resetSvg = function() {
     var self = this;
     self.jqcontainer.find(".plot-constlabel").remove();
@@ -442,7 +419,7 @@ define([
     self.svg
       .on("mousedown", function() {
         self.jqcontainer.addClass('bko-focused');
-        return self.mouseDown();
+        return self.plotInteraction.mouseDown();
       });
     self.jqcontainer.on("mouseleave", function() {
         self.jqcontainer.removeClass('bko-focused');
@@ -620,143 +597,12 @@ define([
     this.contextMenu && this.contextMenu.destroy();
   };
 
-  PlotScope.prototype.getSvgToSave = function() {
-    var self = this;
-    var svg = self.svg
-      .node()
-      .cloneNode(true);
-    svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    if (document.body.classList.contains('improveFonts')) {
-      svg.setAttribute('class', 'svg-export improveFonts');
-    } else {
-      svg.setAttribute('class', 'svg-export');
-    }
-
-    var plotTitle = self.jqplottitle;
-    var titleOuterHeight = plotUtils.getActualCss(plotTitle, 'outerHeight', true);
-
-    //legend
-    self.adjustSvgPositionWithLegend(svg, titleOuterHeight);
-    self.plotLegend.appendLegendToSvg(d3.select(svg));
-    ///////
-
-    //tooltips
-    self.appendTooltipsToSvg(d3.select(svg));
-
-    plotUtils.translateChildren(svg, 0, titleOuterHeight);
-    plotUtils.addTitleToSvg(svg, plotTitle, {
-      width: plotTitle.width(),
-      height: plotUtils.getActualCss(plotTitle, 'outerHeight')
-    });
-
-    // Custom styles added by user
-    var cellModel = self.getCellModel(),
-      extraStyles = [],
-      styleString = '';
-    if(cellModel.element_styles) {
-      for(var style in cellModel.element_styles) {
-        styleString = cellModel.element_styles[style];
-        if (style === '.plot-title') {
-          styleString = plotUtils.adjustStyleForSvg(styleString);
-        }
-        extraStyles.push(style + ' {' + styleString + '}');
-      }
-    }
-
-    if(cellModel.custom_styles)
-      extraStyles = extraStyles.concat(cellModel.custom_styles);
-
-    plotUtils.addInlineStyles(svg, extraStyles);
-    self.svgReplaceNbspCharacters(svg);
-
-    return svg;
-  };
-
-  PlotScope.prototype.svgReplaceNbspCharacters = function(svg) {
-    svg.innerHTML = svg.innerHTML.replace(/\&nbsp;/g, ' ');
-  };
-
   PlotScope.prototype.saveAsSvg = function() {
-    var self = this;
-    var svgToSave = self.getSvgToSave();
-    plotUtils.addInlineFonts(svgToSave);
-    var html = plotUtils.convertToXHTML(svgToSave.outerHTML);
-    var fileName = _.isEmpty(self.stdmodel.title) ? 'plot' : self.stdmodel.title;
-    plotUtils.download('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html))), fileName + ".svg");
+    saveAsContextMenu.saveAsSvg(self);
   };
 
   PlotScope.prototype.saveAsPng = function(scale) {
-    var self = this;
-    var svg = self.getSvgToSave();
-    plotUtils.addInlineFonts(svg);
-
-    scale = scale === undefined ? 1 : scale;
-
-    self.canvas.width = svg.getAttribute("width") * scale;
-    self.canvas.height = svg.getAttribute("height") * scale;
-
-    var html = plotUtils.convertToXHTML(svg.outerHTML);
-    var imgsrc = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html)));
-    var fileName = _.isEmpty(self.stdmodel.title) ? 'plot' : self.stdmodel.title;
-    plotUtils.drawPng(self.canvas, imgsrc, fileName + ".png");
-  };
-
-  PlotScope.prototype.adjustSvgPositionWithLegend = function(svg, titleOuterHeight) {
-    var self = this;
-    var isHorizontal = self.stdmodel.legendLayout === "HORIZONTAL";
-    var margin = self.layout.legendMargin;
-    var legendContainer = self.jqlegendcontainer.find("#plotLegend");
-    var containerLeftMargin = parseFloat(self.jqcontainer.css("margin-left"));
-
-    var W = plotUtils.outerWidth(self.jqlegendcontainer);
-    var H = plotUtils.outerHeight(self.jqlegendcontainer);
-    H += titleOuterHeight;
-
-    svg.setAttribute("width", W);
-    svg.setAttribute("height", H);
-    $(svg).css("width", W);
-    $(svg).css("height", H);
-  };
-
-  PlotScope.prototype.appendTooltipsToSvg = function(svg) {
-    var self = this;
-
-    var tooltipElements = self.jqcontainer.find(".plot-tooltip").toArray();
-    var scopeTipsSize = Object.keys(self.tips).length;
-
-    if (scopeTipsSize > 0 && tooltipElements.length > 0) {
-      tooltipElements.forEach(function(tooltip) {
-        tooltip = $(tooltip);
-        var tooltipCopy = tooltip.clone();
-
-        tooltipCopy.css({
-          position: 'inherit',
-          top: 'auto',
-          left: 'auto',
-          bottom: 'auto',
-          right: 'auto'
-        });
-
-        var getPositive = function(value) {
-          return value > 0 ? value : 0;
-        };
-
-        var position = plotUtils.getActualCss(tooltip, 'position');
-        var x = getPositive(position.left);
-        var y = position.top != null ? getPositive(position.top) : getPositive(position.bottom);
-
-        svg.append('foreignObject')
-          .attr("width", plotUtils.getActualCss(tooltip, 'outerWidth', true) + 1)//add 1 because jQuery round size
-          .attr("height", plotUtils.getActualCss(tooltip, 'outerHeight', true) + 1)
-          .attr("x", x)
-          .attr("y", y)
-          .append('xhtml:body')
-          .attr('style', 'position: relative;')
-          .attr('xmlns', 'http://www.w3.org/1999/xhtml')
-          .html(tooltipCopy[0].outerHTML);
-      });
-    }
-
+    saveAsContextMenu.saveAsPng(scale, scope);
   };
 
   PlotScope.prototype.setModelData = function(data) {
@@ -819,7 +665,7 @@ define([
       return;
     }
     model.getSvgToSave = function () {
-      return self.getSvgToSave();
+      return saveAsContextMenu.getSvgToSave(self);
     };
     model.saveAsSvg = function () {
       return self.saveAsSvg();

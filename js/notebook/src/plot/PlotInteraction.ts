@@ -16,9 +16,10 @@
 
 import * as _ from 'underscore';
 import * as d3 from 'd3';
+import plotTip from './plotTip';
+import zoomHelpers from './zoom/helpers';
 
 const plotUtils = require('./plotUtils');
-const plotTip = require('./plotTip');
 
 export default class PlotInteraction {
   scope: any;
@@ -28,6 +29,7 @@ export default class PlotInteraction {
   constructor(scope) {
     this.scope = scope;
 
+    this.mouseDown = this.mouseDown.bind(this);
     this.onClickAction = this.onClickAction.bind(this);
     this.onKeyAction = this.onKeyAction.bind(this);
     this.onMouseEnter = this.onMouseEnter.bind(this);
@@ -36,6 +38,29 @@ export default class PlotInteraction {
     this.onMouseMoveTooltip = this.onMouseMoveTooltip.bind(this);
     this.onMouseLeaveTooltip = this.onMouseLeaveTooltip.bind(this);
     this.onClickrespTooltip = this.onClickrespTooltip.bind(this);
+  }
+
+  mouseDown() {
+    if (this.scope.interactMode === "other") {
+      this.scope.interactMode = "zoom";
+      return;
+    } else if (this.scope.interactMode === "remove") {
+      this.scope.interactMode = "other";
+      return;
+    }
+
+    if (d3.event.target.nodeName.toLowerCase() === "div") {
+      this.scope.interactMode = "other";
+      zoomHelpers.disableZoomWheel(self);
+      return;
+    }
+
+    if (d3.event.button === 0) {
+      this.scope.interactMode = 'zoom';
+      zoomHelpers.enableZoomWheel(self, d3);
+    } else {
+      this.scope.interactMode = 'locate';
+    }
   }
 
   prepare() {

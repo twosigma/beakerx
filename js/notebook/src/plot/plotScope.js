@@ -48,6 +48,7 @@ define([
   var zoomHelpers = require('./zoom/helpers').default;
   var PlotLayout = require('./PlotLayout').default;
   var PlotLegend = require('./legend/PlotLegend').default;
+  var PlotCursor = require('./PlotCursor').default;
 
   function PlotScope(wrapperId) {
     this.wrapperId = wrapperId;
@@ -104,6 +105,7 @@ define([
     this.plotRange = new PlotRange(this);
     this.plotGrid = new PlotGrid(this, this.plotFocus, this.plotRange);
     this.plotLegend = new PlotLegend(this);
+    this.plotCursor = new PlotCursor(this);
   };
   
   PlotScope.prototype.setWidgetModel = function(plotDisplayModel) {
@@ -328,93 +330,6 @@ define([
       });
   };
 
-  PlotScope.prototype.renderCursor = function(e) {
-    var x = e.offsetX, y = e.offsetY;
-    var W = plotUtils.safeWidth(this.jqsvg), H = plotUtils.safeHeight(this.jqsvg);
-    var lMargin = this.layout.leftLayoutMargin, bMargin = this.layout.bottomLayoutMargin,
-      rMargin = this.layout.rightLayoutMargin, tMargin = this.layout.topLayoutMargin;
-    var model = this.stdmodel;
-    if (x < lMargin || model.yAxisR != null && x > W - rMargin || y > H - bMargin || y < tMargin) {
-      this.svg.selectAll(".plot-cursor").remove();
-      this.jqcontainer.find(".plot-cursorlabel").remove();
-      return;
-    }
-    var mapX = this.plotRange.scr2dataX;
-    if (model.xCursor != null) {
-      var opt = model.xCursor;
-      this.svg.selectAll("#cursor_x").data([{}]).enter().append("line")
-        .attr("id", "cursor_x")
-        .attr("class", "plot-cursor")
-        .style("stroke", opt.color)
-        .style("stroke-opacity", opt.color_opacity)
-        .style("stroke-width", opt.width)
-        .style("stroke-dasharray", opt.stroke_dasharray);
-      this.svg.select("#cursor_x")
-        .attr("x1", x).attr("y1", tMargin).attr("x2", x).attr("y2", H - bMargin);
-
-      this.jqcontainer.find("#cursor_xlabel").remove();
-      var label = $("<div id='cursor_xlabel' class='plot-cursorlabel'></div>")
-        .appendTo(this.jqcontainer)
-        .text(plotUtils.getTipStringPercent(mapX(x), model.xAxis));
-      var w = label.outerWidth(), h = label.outerHeight();
-      var p = {
-        "x" : x - w / 2,
-        "y" : H - bMargin - this.labelPadding.y - h
-      };
-      label.css({
-        "left" : p.x ,
-        "top" : p.y ,
-        "background-color" : opt.color != null ? opt.color : "black"
-      });
-    }
-    if (model.yCursor != null) {
-      var opt = model.yCursor;
-      this.svg.selectAll("#cursor_y").data([{}]).enter().append("line")
-        .attr("id", "cursor_y")
-        .attr("class", "plot-cursor")
-        .style("stroke", opt.color)
-        .style("stroke-opacity", opt.color_opacity)
-        .style("stroke-width", opt.width)
-        .style("stroke-dasharray", opt.stroke_dasharray);
-      this.svg.select("#cursor_y")
-        .attr("x1", lMargin)
-        .attr("y1", y)
-        .attr("x2", W - rMargin)
-        .attr("y2", y);
-
-      this.renderCursorLabel(model.yAxis, "cursor_ylabel", y, false);
-
-      if (model.yAxisR) {
-        this.renderCursorLabel(model.yAxisR, "cursor_yrlabel", y, true);
-      }
-    }
-  };
-
-  PlotScope.prototype.renderCursorLabel = function(axis, id, y, alignRight){
-    var model = this.stdmodel;
-    var opt = model.yCursor;
-    var lMargin = this.layout.leftLayoutMargin;
-    var rMargin = this.layout.rightLayoutMargin;
-    var mapY = this.plotRange.scr2dataY;
-
-    if(axis == null) { return };
-    this.jqcontainer.find("#" + id).remove();
-    var label = $("<div id='" + id + "' class='plot-cursorlabel'></div>")
-      .appendTo(this.jqcontainer)
-      .text(plotUtils.getTipStringPercent(mapY(y), axis));
-    var w = label.outerWidth(), h = label.outerHeight();
-    var p = {
-      "x" : (alignRight ? rMargin : lMargin) + this.labelPadding.x,
-      "y" : y - h / 2
-    };
-    var css = {
-      "top" : p.y ,
-      "background-color" : opt.color != null ? opt.color : "black"
-    };
-    css[alignRight ? "right" : "left"] = p.x;
-    label.css(css);
-  };
-
   PlotScope.prototype.updateMargin = function(){
     var self = this;
     if (self.model.updateMargin != null) {
@@ -597,12 +512,6 @@ define([
     self.plotGrid.reset();
   };
 
-  PlotScope.prototype.mouseleaveClear = function() {
-    var self = this;
-    self.svg.selectAll(".plot-cursor").remove();
-    self.jqcontainer.find(".plot-cursorlabel").remove();
-  };
-
   PlotScope.prototype.standardizeData = function() {
     var model = this.model.getCellModel();
     var plotModel = PlotModelFactory.getPlotModel(model, this.prefs);
@@ -701,9 +610,9 @@ define([
         return zoomHelpers.disableZoomWheel(self);
       });
     self.jqsvg.mousemove(function(e) {
-      return self.renderCursor(e);
+      return self.plotCursor.render(e);
     }).mouseleave(function(e) {
-      return self.mouseleaveClear(e);
+      return self.plotCursor.clear();
     });
     self.plotZoom.init();
     self._defaultZoomWheelFn = self.svg.on('wheel.zoom');

@@ -199,7 +199,7 @@ export default class PlotZoom {
     }
 
     this.scope.plotRange.calcMapping(true);
-    this.scope.renderCursor({ offsetX: mx, offsetY: my });
+    this.scope.plotCursor.render({ offsetX: mx, offsetY: my });
     this.scope.plotFocus.fix(this.scope.plotFocus.getFocus());
     this.scope.update();
   }

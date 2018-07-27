@@ -71,4 +71,6 @@ class EasyForm(var caption: String) extends com.twosigma.beakerx.easyform.EasyFo
   def addCheckBoxes(label: String, values: Seq[String], orientation: Integer): EasyFormComponent[_ <: DOMWidget] = {
     super.addCheckBoxes(label, values.asJava, orientation)
   }
+
+  def put(key: String, value: Seq[_]) = super.put(key, value.asJava)
 }

@@ -88,7 +88,7 @@ public class CheckBoxGroupWidget extends EasyFormComponent<Box> {
 
   @Override
   public void setValue(Object value) {
-    List<String> descList = (ArrayList<String>) value;
+    List<String> descList = (List<String>) value;
     checkboxes.stream()
             .map(c -> c.getWidget())
             .forEach(w -> w.setValue(descList.contains(w.getDescription())));

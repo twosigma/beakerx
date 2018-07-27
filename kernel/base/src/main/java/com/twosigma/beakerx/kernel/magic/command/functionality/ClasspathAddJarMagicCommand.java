@@ -22,7 +22,7 @@ import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 
 import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils.splitPath;
 
-public class ClasspathAddJarMagicCommand extends ClasspathMagicCommand {
+public class ClasspathAddJarMagicCommand extends ClasspathMagicCommand implements ClasspathAddJarMagic {
 
   private static final String ADD = "add";
   private static final String JAR = "jar";
@@ -54,6 +54,7 @@ public class ClasspathAddJarMagicCommand extends ClasspathMagicCommand {
     return addJar(path);
   }
 
+  @Override
   public MagicCommandOutcomeItem addJar(String path) {
     ErrorData errorData = isValidPath(path);
 

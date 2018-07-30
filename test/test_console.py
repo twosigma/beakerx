@@ -18,8 +18,8 @@ import pexpect
 import test_util
 
 # Start `jupyter console` using pexpect
-def start_console():
-    args = ['console', '--kernel=groovy']
+def start_console(kernel):
+    args = ['console', '--kernel=' + kernel]
     cmd = 'jupyter'
     env = os.environ.copy()
     env['JUPYTER_CONSOLE_TEST'] = '1'
@@ -42,29 +42,16 @@ def stop_console(p, pexpect, t):
     test_util.kill_processes('jupyter')
 
 def test_lsmagic():
-    result = 0
-    p, pexpect, t = start_console()
-    p.sendline('%lsmagic')
-    try:
-        p.expect(r'Available magic commands:', timeout=t)
-        p.expect(r'%%javascript', timeout=t)
-        p.expect(r'%%html', timeout=t)
-        p.expect(r'%%bash', timeout=t)
-        p.expect(r'%lsmagic', timeout=t)
-        p.expect(r'%classpath add jar', timeout=t)
-        p.expect(r'%classpath add mvn', timeout=t)
-        p.expect(r'%classpath remove', timeout=t)
-        p.expect(r'%classpath', timeout=t) 
-        p.expect(r'%import static <classpath>', timeout=t)
-        p.expect(r'%import <classpath>', timeout=t)
-        p.expect(r'%unimport <classpath>', timeout=t)
-        p.expect(r'%time', timeout=t) 
-        p.expect(r'%%time', timeout=t) 
-        p.expect(r'%timeit', timeout=t) 
-        p.expect(r'%%timeit', timeout=t)
-    except Exception as e:
-        print(e) 
-        result = 1
+    kernels = ['python3', 'groovy']
+
+    for kernel in kernels:        
+        result = 0
+        p, pexpect, t = start_console(kernel)
+        p.sendline('1+1')
+
+        except Exception as e:
+            print(e) 
+            result = 2
         
     stop_console(p, pexpect, t)
     print("test_lsmagic return code=", result)

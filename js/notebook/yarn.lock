@@ -383,6 +383,12 @@
   version "3.3.4"
   resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-3.3.4.tgz#f1850fb9a70041a14ace4f81a7ed782db8548317"
 
+"@types/jqueryui@^1.12.2":
+  version "1.12.2"
+  resolved "https://registry.yarnpkg.com/@types/jqueryui/-/jqueryui-1.12.2.tgz#8daa7ffa16880c78b1662ff287df058a2aceb651"
+  dependencies:
+    "@types/jquery" "*"
+
 "@types/lodash@^4.14.66":
   version "4.14.110"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.110.tgz#fb07498f84152947f30ea09d89207ca07123461e"

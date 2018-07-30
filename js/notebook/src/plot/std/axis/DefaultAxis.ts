@@ -20,7 +20,6 @@ const NANOTIME_TYPE = 'nanotime';
 const plotUtils = require('../../plotUtils');
 
 export default class DefaultAxis {
-  scope: any;
   type: string = 'axis';
   axisType: string;
   axisBase: number;

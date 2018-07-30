@@ -14,16 +14,17 @@
  *  limitations under the License.
  */
 
- define([
+const PlotLayout = require("./PlotLayout");
+
+define([
    'underscore',
-   './plotScope',
    './combinedPlotScope'
  ], function(
    _,
-   PlotScope,
    CombinedPlotScope
  ) {
 
+   var PlotScope = require('./PlotScope').default;
    var bkUtils = require('./../shared/bkUtils').default;
    var getValue = function (obj, value, defaultValue) {
      return obj.hasOwnProperty(value) ? obj[value] : defaultValue;
@@ -500,7 +501,7 @@
      var cell = getCellFromOutputArea(output_area);
 
      var currentScope = new PlotScope('wrap_'+cell.cell_id);
-     var tmpl = currentScope.buildTemplate();
+     var tmpl = PlotLayout.buildTemplate(currentScope);
      var tmplElement = $(tmpl);
 
      tmplElement.appendTo(output_area.element);

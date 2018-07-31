@@ -18,10 +18,10 @@ import widgets from './widgets';
 import * as _ from 'underscore';
 import PlotLayout from "./plot/PlotLayout";
 import PlotScope from "./plot/PlotScope";
+import CombinedPlotScope from "./plot/CombinedPlotScope";
 
 const d3 = require('d3');
 
-const CombinedPlotScope = require('./plot/combinedPlotScope');
 const OUTUPT_POINTS_LIMIT = 1000000;
 const OUTUPT_POINTS_PREVIEW_NUMBER = 10000;
 

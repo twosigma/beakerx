@@ -14,21 +14,17 @@
  *  limitations under the License.
  */
 
-export interface ZoomLevel {
-  minSpanX: number,
-  minSpanY: number,
-  maxScaleX: number,
-  maxScaleY: number
-}
+import TreeMapPlotModel from "./TreeMapPlotModel";
+import DefaultPlotModel from "./DefaultPlotModel";
 
-export interface Focus {
-  xl?: any,
-  xr?: any,
-  yl?: number,
-  yr?: number,
-  yl_r?: number,
-  yr_r?: number,
-  xspan?: number,
-  yspan?: number,
-  yspan_r?: number
+export default class PlotModelFactory {
+  static getPlotModel(model, settings) {
+    switch (model.type) {
+      case 'TreeMap':
+        return new TreeMapPlotModel(model, settings);
+
+      default:
+        return new DefaultPlotModel(model, settings);
+    }
+  }
 }

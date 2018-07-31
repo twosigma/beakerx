@@ -14,7 +14,8 @@
  *  limitations under the License.
  */
 
-var PlotModel = require("./models/PlotModel").default;
+var PlotLayout = require("./PlotLayout").default;
+var CombinedPlotModel = require("./models/CombinedPlotModel").default;
 
 define([
   'underscore',
@@ -24,8 +25,7 @@ define([
   './plotUtils',
   './combinedPlotScopeUtils',
   './combinedPlotFormatter',
-  './chartExtender',
-  './plotScope'
+  './chartExtender'
 ], function(
   _,
   $,
@@ -34,9 +34,9 @@ define([
   plotUtils,
   CombinedPlotScopeUtilsModule,
   combinedPlotFormatter,
-  bkoChartExtender,
-  PlotScope
+  bkoChartExtender
 ) {
+  var PlotScope = require('./PlotScope').default;
   var bkUtils = require('./../shared/bkUtils').default;
   var PlotFocus = require('./zoom/PlotFocus').default;
   var CombinedPlotScopeUtils = CombinedPlotScopeUtilsModule.default;
@@ -91,7 +91,7 @@ define([
       plotmodel.yAxis.showGridlineLabels = self.model.getCellModel().y_tickLabels_visible;
       plotmodel.plotIndex = i;
 
-      models.push(new PlotModel(plotmodel, self));
+      models.push(new CombinedPlotModel(plotmodel, self));
     }
 
     self.models = models;
@@ -271,9 +271,9 @@ define([
 
     this.scopes.forEach(function(scope) {
       if (updateType === 'focus') {
-        scope.onModelFucusUpdate(self.plotFocus.getFocus());
+        scope.plotFocus.onModelFucusUpdate(self.plotFocus.getFocus());
       } else if (updateType === 'width') {
-        scope.updateModelWidth(self.width);
+        scope.plotSize.updateModelWidth(self.width);
       }
     });
   };
@@ -325,7 +325,7 @@ define([
 
     this.scopes.push(currentScope);
 
-    var tmpl = currentScope.buildTemplate();
+    var tmpl = PlotLayout.buildTemplate(currentScope);
     var tmplElement = $(tmpl);
     var container = self.element.children('.combplot-plotcontainer');
 

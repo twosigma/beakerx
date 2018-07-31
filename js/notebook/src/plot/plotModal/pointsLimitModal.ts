@@ -14,20 +14,25 @@
  *  limitations under the License.
  */
 
-import _ from 'underscore';
+import * as _ from 'underscore';
 import * as $ from 'jquery';
 
-export default function plotModal(PlotScope: any) {
+export default class PointsLimitModal {
+  scope: any;
 
-  PlotScope.prototype.initPointsLimitModal = function() {
-    const plotModel = this.model.model;
+  constructor(scope: any) {
+    this.scope = scope;
+  }
+
+  init() {
+    const plotModel = this.scope.model.model;
 
     if (!plotModel.numberOfPoints) {
       return;
     }
 
     const compiled = _.template(require('./pointsLimitModal.html'))({
-      scopeId: this.id,
+      scopeId: this.scope.id,
       outputPointsLimit: plotModel.outputPointsLimit.toLocaleString('en'),
       outputPointsPreviewNumber: plotModel.outputPointsPreviewNumber.toLocaleString('en'),
       numberOfPonts: plotModel.numberOfPoints.toLocaleString('en')
@@ -36,7 +41,7 @@ export default function plotModal(PlotScope: any) {
 
     $modal.on('click', '.btn-primary', () => { $modal.hide(); });
 
-    this.element.prepend($modal);
+    this.scope.element.prepend($modal);
 
     if (plotModel.numberOfPoints > plotModel.outputPointsLimit) {
       $modal.show();

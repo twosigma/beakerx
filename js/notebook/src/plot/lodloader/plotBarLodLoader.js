@@ -245,7 +245,7 @@ define([
     var xl = scope.plotFocus.focus.xl, xr = scope.plotFocus.focus.xr;
 
     if (this.sampleStep === -1) {
-      var pixelWidth = scope.plotSize.width;
+      var pixelWidth = scope.layout.plotSize.width;
       var count = Math.ceil(pixelWidth / this.lodSteps[this.lodTypeIndex]);
       var s = (xr - xl) / count;
       this.sampleStep = s;

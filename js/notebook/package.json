@@ -39,6 +39,7 @@
     "@types/chai": "^4.1.1",
     "@types/d3": "^5.0.0",
     "@types/jquery": "^3.3.0",
+    "@types/jqueryui": "^1.12.2",
     "@types/mocha": "^2.2.46",
     "@types/node": "^10.3.1",
     "base64-inline-loader": "^1.1.1",

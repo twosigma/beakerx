@@ -14,15 +14,10 @@
  *  limitations under the License.
  */
 
-const PlotLayout = require("./PlotLayout");
+const PlotLayout = require("./PlotLayout").default;
+const CombinedPlotScope = require("./CombinedPlotScope").default;
 
-define([
-   'underscore',
-   './combinedPlotScope'
- ], function(
-   _,
-   CombinedPlotScope
- ) {
+define([ 'underscore' ], function(_) {
 
    var PlotScope = require('./PlotScope').default;
    var bkUtils = require('./../shared/bkUtils').default;

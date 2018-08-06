@@ -17,8 +17,17 @@ package com.twosigma.beakerx.util;
 
 public class BeakerXSystemImpl implements BeakerXSystem {
 
+  private static BeakerXSystem INSTANCE = new BeakerXSystemImpl();
+
+  private BeakerXSystemImpl() {
+  }
+
   @Override
   public String getenv(String name) {
     return System.getenv(name);
+  }
+
+  public static BeakerXSystem getINSTANCE() {
+    return INSTANCE;
   }
 }

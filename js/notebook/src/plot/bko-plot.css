@@ -82,7 +82,7 @@
 }
 .plot-gridline-base {
   stroke: #333333;
-  stroke-width: 3;
+  stroke-width: 1;
   opacity: .75;
 }
 .plot-tick {
@@ -202,10 +202,6 @@
 }
 
 .plot-legenditeminrow {
-}
-
-.plot-coverbox {
-  fill: #FEFEFE;
 }
 
 .plot-respdot,

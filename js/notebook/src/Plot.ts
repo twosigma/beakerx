@@ -16,11 +16,12 @@
 
 import widgets from './widgets';
 import * as _ from 'underscore';
+import PlotLayout from "./plot/PlotLayout";
+import PlotScope from "./plot/PlotScope";
+import CombinedPlotScope from "./plot/CombinedPlotScope";
 
 const d3 = require('d3');
 
-const PlotScope = require('./plot/plotScope');
-const CombinedPlotScope = require('./plot/combinedPlotScope');
 const OUTUPT_POINTS_LIMIT = 1000000;
 const OUTUPT_POINTS_PREVIEW_NUMBER = 10000;
 
@@ -135,8 +136,9 @@ export class PlotView extends widgets.DOMWidgetView {
   }
 
   initStandardPlot(model) {
-    this._currentScope = new PlotScope('wrap_'+this.model.model_id);
-    const tmpl = this._currentScope.buildTemplate();
+    const wrappperId = `wrap_${this.model.model_id}`;
+    this._currentScope = new PlotScope(wrappperId);
+    const tmpl = PlotLayout.buildTemplate(wrappperId);
     const tmplElement = $(tmpl);
 
     tmplElement.appendTo(this.$el);

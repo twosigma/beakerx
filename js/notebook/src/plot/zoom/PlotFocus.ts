@@ -30,6 +30,36 @@ export default class PlotFocus {
     this.scope = scope;
     this.defaultFocus = null;
     this.focus = null;
+
+    this.onModelFucusUpdate = this.onModelFucusUpdate.bind(this);
+  }
+
+  static remapFocusRegion(model) {
+    const focus = model.userFocus;
+
+    if (focus.xl != null) {
+      focus.xl = model.xAxis.getPercent(focus.xl);
+    }
+
+    if (focus.xr != null) {
+      focus.xr = model.xAxis.getPercent(focus.xr);
+    }
+
+    if (focus.yl != null) {
+      focus.yl = model.yAxis.getPercent(focus.yl);
+    }
+
+    if (focus.yr != null) {
+      focus.yr = model.yAxis.getPercent(focus.yr);
+    }
+
+    if (focus.yl_r != null && model.yAxisR) {
+      focus.yl_r = model.yAxisR.getPercent(focus.yl_r);
+    }
+
+    if (focus.yr_r != null && model.yAxisR) {
+      focus.yr_r = model.yAxisR.getPercent(focus.yr_r);
+    }
   }
 
   setDefault(focus: Focus) {
@@ -250,5 +280,24 @@ export default class PlotFocus {
   transformRightBound(focus, left, right, span) {
     focus[right] = 1;
     focus[left] = focus[right] - focus[span];
+  }
+
+  onModelFucusUpdate(newFocus) {
+    if (newFocus === null) {
+      return;
+    }
+
+    this.setFocus(
+      {
+        ...this.focus,
+        xl: newFocus.xl,
+        xr: newFocus.xr,
+        xspan: newFocus.xspan,
+      },
+      this.focus
+    );
+
+    this.scope.plotRange.calcMapping(false);
+    this.scope.update();
   }
 }

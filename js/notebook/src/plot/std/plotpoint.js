@@ -16,14 +16,13 @@
 
 define([
   'underscore',
-  './../plotUtils',
-  './../plotTip'
+  './../plotUtils'
 ], function(
   _,
-  plotUtils,
-  plotTip
+  plotUtils
 ) {
 
+  var plotTip = require('./../plotTip').default;
   var PointShapeHelper = require('./PointShapeHelper.ts').default;
 
   var PlotPoint = function(data){

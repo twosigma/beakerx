@@ -16,14 +16,13 @@
 
 define([
   'underscore',
-  './../plotUtils',
-  './../plotTip'
+  './../plotUtils'
 ], function(
   _,
-  plotUtils,
-  plotTip
+  plotUtils
 ) {
 
+  var plotTip = require('./../plotTip').default;
   var PlotLodStem = function(data){
     _.extend(this, data); // copy properties to itself
     this.format();

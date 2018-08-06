@@ -18,28 +18,25 @@ var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
 describe('(Scala) Interrupt infinite loop', function () {
-    beforeAll(function () {
-        beakerxPO = new BeakerXPageObject();
-        beakerxPO.runNotebookByUrl('/test/ipynb/scala/InfiniteLoopScalaTest.ipynb');
+  beforeAll(function () {
+    beakerxPO = new BeakerXPageObject();
+    beakerxPO.runNotebookByUrl('/test/ipynb/scala/InfiniteLoopScalaTest.ipynb');
+  });
+
+  afterAll(function () {
+    beakerxPO.closeAndHaltNotebook();
+  });
+
+  var cellIndex;
+
+  describe('Infinite loop interruption', function () {
+    it('Should interrupt an infinite loop and check the output', function () {
+      cellIndex = 0;
+      beakerxPO.clickRunCellWithoutWaiting();
+      browser.pause(500);
+      beakerxPO.clickInterruptKernel();
+      beakerxPO.waitAndCheckOutputTextOfStderr(cellIndex, /java.lang.ThreadDeath/);
+      expect(beakerxPO.checkKernelIdle()).toBeTruthy();
     });
-
-    afterAll(function () {
-        beakerxPO.closeAndHaltNotebook();
-    });
-
-    var cellIndex;
-
-    describe('Infinite loop interruption', function () {
-        it('Should interrupt an infinite loop and check the output', function () {
-            cellIndex = 0;
-
-            setTimeout(function () {
-                beakerxPO.interruptKernel('button[data-jupyter-action="jupyter-notebook:interrupt-kernel"]')
-            }, 1500);
-
-            beakerxPO.runCodeCellByIndex(cellIndex);
-
-            expect(beakerxPO.checkKernelIdle()).toBeTruthy();
-        });
-    });
+  });
 });

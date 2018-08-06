@@ -219,11 +219,7 @@ function BeakerXPageObject() {
 
   this.checkKernelIdle = function () {
     return this.kernelIdleIcon.waitForEnabled();
-  }
-
-  this.interruptKernel = function (kernel) {
-    return browser.$(kernel).click();
-  }
+  };
 
   this.createTableImage = function (imageDataStr, imgDir, fileName) {
     var dirPath = path.join(__dirname, '../resources/img', imgDir);

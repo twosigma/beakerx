@@ -69,6 +69,10 @@ var NotebookPageObject = function () {
     this.kernelIdleIcon.waitForEnabled();
   };
 
+  this.clickRunCellWithoutWaiting = function () {
+    browser.$('button[data-jupyter-action="jupyter-notebook:run-cell-and-select-next"]').click();
+  };
+
   this.clickRunAllCells = function () {
     browser.click('=Cell');
     browser.waitForEnabled('=Run All');

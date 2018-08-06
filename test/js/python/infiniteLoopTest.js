@@ -18,28 +18,25 @@ var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
 describe('(Python) Interrupt infinite loop', function () {
-    beforeAll(function () {
-        beakerxPO = new BeakerXPageObject();
-        beakerxPO.runNotebookByUrl('/test/ipynb/python/InfiniteLoopPythonTest.ipynb');
+  beforeAll(function () {
+    beakerxPO = new BeakerXPageObject();
+    beakerxPO.runNotebookByUrl('/test/ipynb/python/InfiniteLoopPythonTest.ipynb');
+  });
+
+  afterAll(function () {
+    beakerxPO.closeAndHaltNotebook();
+  });
+
+  var cellIndex;
+
+  describe('Infinite loop interruption', function () {
+    it('Should interrupt an infinite loop and check the output', function () {
+      cellIndex = 0;
+      beakerxPO.clickRunCellWithoutWaiting();
+      browser.pause(500);
+      beakerxPO.clickInterruptKernel();
+      beakerxPO.waitAndCheckOutputTextOfStderr(cellIndex, /KeyboardInterrupt/);
+      expect(beakerxPO.checkKernelIdle()).toBeTruthy();
     });
-
-    afterAll(function () {
-        beakerxPO.closeAndHaltNotebook();
-    });
-
-    var cellIndex;
-
-    describe('Infinite loop interruption', function () {
-        it('Should interrupt an infinite loop and check the output', function () {
-            cellIndex = 0;
-
-            setTimeout(function () {
-                beakerxPO.interruptKernel('button[data-jupyter-action="jupyter-notebook:interrupt-kernel"]')
-            }, 1500);
-
-            beakerxPO.runCodeCellByIndex(cellIndex);
-
-            expect(beakerxPO.checkKernelIdle()).toBeTruthy();
-        });
-    });
+  });
 });

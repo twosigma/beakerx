@@ -26,7 +26,7 @@ export interface GistPublisherAccessTokenProviderInterface {
   getPersonalAccessToken(): Promise<string>;
 }
 
-declare global{
+declare global {
   interface Window {
     bxPublisherOptions: GistPublisherOptions;
   }

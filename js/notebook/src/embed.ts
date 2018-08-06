@@ -17,6 +17,7 @@ export * from './BxHTML';
 export * from './Foldout';
 export * from './HTMLPre';
 export * from './SparkUI';
+export * from './RESTButton';
 export * from './SparkStateProgress';
 export * from './SparkConfiguration';
 export * from './SparkFoldout';

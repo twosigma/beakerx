@@ -18,24 +18,20 @@ package com.twosigma.beakerx;
 import com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.evaluator.TestBeakerCellExecutor;
-import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
-import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.mimetype.MIMEContainer;
 import com.twosigma.beakerx.scala.evaluator.NoBeakerxObjectTestFactory;
 import com.twosigma.beakerx.scala.evaluator.ScalaEvaluator;
 import com.twosigma.beakerx.scala.kernel.Scala;
 import com.twosigma.beakerx.scala.magic.command.EnableSparkSupportMagicCommand;
 import com.twosigma.beakerx.scala.magic.command.EnableSparkSupportMagicInitConfigurationTest;
 import com.twosigma.beakerx.widget.TestWidgetUtils;
-import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.List;
@@ -65,7 +61,8 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
             closeKernelAction,
             EvaluatorTest.getCacheFolderFactory(),
             kernel -> singletonList(enableSparkSupportMagicCommand(kernel)),
-            new BeakerXCommRepositoryMock());
+            new BeakerXCommRepositoryMock(),
+            BeakerXServerMock.create());
   }
 
   private static EvaluatorParameters getKernelParameters() {

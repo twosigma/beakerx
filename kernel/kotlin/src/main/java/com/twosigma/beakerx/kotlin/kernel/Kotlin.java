@@ -18,12 +18,12 @@ package com.twosigma.beakerx.kotlin.kernel;
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.kernel.Utils.uuid;
 
-import com.twosigma.beakerx.AutotranslationServiceImpl;
 import com.twosigma.beakerx.BeakerXCommRepository;
 import com.twosigma.beakerx.CommRepository;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.CacheFolderFactory;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.CustomMagicCommandsEmptyImpl;
@@ -39,14 +39,17 @@ import com.twosigma.beakerx.kotlin.evaluator.KotlinEvaluator;
 import com.twosigma.beakerx.kotlin.handler.KotlinKernelInfoHandler;
 import com.twosigma.beakerx.message.Message;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 
 public class Kotlin extends Kernel {
 
-  private Kotlin(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CommRepository commRepository) {
-    super(id, evaluator, kernelSocketsFactory, new CustomMagicCommandsEmptyImpl(), commRepository);
+  private Kotlin(final String id,
+                 final Evaluator evaluator,
+                 KernelSocketsFactory kernelSocketsFactory,
+                 CommRepository commRepository,
+                 BeakerXServer beakerXServer) {
+    super(id, evaluator, kernelSocketsFactory, new CustomMagicCommandsEmptyImpl(), commRepository, beakerXServer);
   }
 
   public Kotlin(final String id,
@@ -54,8 +57,16 @@ public class Kotlin extends Kernel {
                 KernelSocketsFactory kernelSocketsFactory,
                 CloseKernelAction closeKernelAction,
                 CacheFolderFactory cacheFolderFactory,
-                CommRepository commRepository) {
-    super(id, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory, new CustomMagicCommandsEmptyImpl(), commRepository);
+                CommRepository commRepository,
+                BeakerXServer beakerXServer) {
+    super(id,
+            evaluator,
+            kernelSocketsFactory,
+            closeKernelAction,
+            cacheFolderFactory,
+            new CustomMagicCommandsEmptyImpl(),
+            commRepository,
+            beakerXServer);
   }
 
   @Override
@@ -85,7 +96,7 @@ public class Kotlin extends Kernel {
               id,
               getKernelParameters(),
               NamespaceClient.create(id, configurationFile, commRepository));
-      return new Kotlin(id, e, kernelSocketsFactory, commRepository);
+      return new Kotlin(id, e, kernelSocketsFactory, commRepository, new KotlinBeakerXServer());
     });
   }
 

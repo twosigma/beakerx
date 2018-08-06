@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@ var chartingBaseObject = require('../chartingBase').prototype;
 var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('Charting Groovy tests ', function () {
+describe('Charting Python tests ', function () {
 
-  chartingBaseObject.constructor.apply(this, ['Groovy']);
+  chartingBaseObject.constructor.apply(this, ['Python']);
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/test/ipynb/groovy/ChartingTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/ipynb/python/ChartingTest.ipynb');
   }, 2);
 
   afterAll(function () {

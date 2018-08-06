@@ -163,12 +163,32 @@ public class SparkUI extends VBox implements SparkUIApi {
     }
     SparkStateProgress intProgress = new SparkStateProgress(numTasks, stageId, stageId, jobLink(stageId), stageLink(stageId));
     intProgress.init();
-    Button xButton = new Button();
-    xButton.registerOnClick((content, message) -> getSparkSession().sparkContext().cancelStage(stageId));
-    SparkStateGroupPanel sparkProgressDecorator = new SparkStateGroupPanel(intProgress, xButton);
-
+    Button xButton = createCancelledJobsButton(stageId);
+    Button bkgButton = createBkgJobsButton(stageId);
+    SparkStateGroupPanel sparkProgressDecorator = new SparkStateGroupPanel(intProgress, asList(xButton, bkgButton));
     jobPanel.add(sparkProgressDecorator);
     progressBarMap.put(stageId, sparkProgressDecorator);
+  }
+
+  private Button createBkgJobsButton(int stageId) {
+    Button bkgButton = new Button();
+    bkgButton.setTooltip("put spark job in the background, let it complete asynchronously");
+    bkgButton.setDomClasses(new ArrayList<>(asList("bx-button", "icon-add")));
+    bkgButton.registerOnClick((content, message) -> putStageInTheBackground(stageId));
+    return bkgButton;
+  }
+
+  private void putStageInTheBackground(int stageId) {
+    KernelFunctionality kernel = KernelManager.get();
+    kernel.putEvaluationInToBackground();
+  }
+
+  private Button createCancelledJobsButton(int stageId) {
+    Button xButton = new Button();
+    xButton.setTooltip("interrupt spark job");
+    xButton.setDomClasses(new ArrayList<>(asList("bx-button", "icon-close")));
+    xButton.registerOnClick((content, message) -> getSparkSession().sparkContext().cancelStage(stageId));
+    return xButton;
   }
 
   private boolean isStartStageFromNewCell() {

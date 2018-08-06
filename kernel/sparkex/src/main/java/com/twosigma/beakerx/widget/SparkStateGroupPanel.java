@@ -17,24 +17,27 @@ package com.twosigma.beakerx.widget;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.WeakHashMap;
 
 import static java.util.Arrays.asList;
 
 public class SparkStateGroupPanel extends HBox {
   private SparkStateProgress intProgress;
-  private Button xButton;
+  private List<Widget> widgets;
 
-  public SparkStateGroupPanel(SparkStateProgress intProgress, Button xButton) {
-    super(Arrays.asList(intProgress, xButton));
+  public SparkStateGroupPanel(SparkStateProgress intProgress, List<Widget> widgets) {
+    super(getChildren(intProgress, widgets));
     this.intProgress = intProgress;
-    this.xButton = configureButton(xButton);
+    this.widgets = widgets;
     setDomClasses(asList("bx-spark-stageGroupPanel"));
   }
 
-  private Button configureButton(Button xButton) {
-    xButton.setTooltip("Interrupt spark job");
-    xButton.setDomClasses(new ArrayList<>(asList("bx-button", "icon-close")));
-    return xButton;
+  private static List<Widget> getChildren(SparkStateProgress intProgress, List<Widget> widgets) {
+    List<Widget> result = new ArrayList<>();
+    result.add(intProgress);
+    result.addAll(widgets);
+    return result;
   }
 
   public SparkStateProgress getSparkStateProgress() {

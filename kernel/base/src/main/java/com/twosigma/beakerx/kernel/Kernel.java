@@ -149,12 +149,12 @@ public abstract class Kernel implements KernelFunctionality {
     return OS.contains("win");
   }
 
-  public synchronized void updateEvaluatorParameters(final EvaluatorParameters kernelParameters) {
+  public void updateEvaluatorParameters(final EvaluatorParameters kernelParameters) {
     evaluator.updateEvaluatorParameters(kernelParameters);
   }
 
   @Override
-  public synchronized void cancelExecution() {
+  public void cancelExecution() {
     evaluator.cancelExecution();
   }
 
@@ -166,23 +166,23 @@ public abstract class Kernel implements KernelFunctionality {
     return commRepository.getCommHashSet();
   }
 
-  public synchronized void addComm(String hash, Comm commObject) {
+  public void addComm(String hash, Comm commObject) {
     commRepository.addComm(hash, commObject);
   }
 
-  public synchronized Comm getComm(String hash) {
+  public Comm getComm(String hash) {
     return commRepository.getComm(hash);
   }
 
-  public synchronized void removeComm(String hash) {
+  public void removeComm(String hash) {
     commRepository.removeComm(hash);
   }
 
-  public synchronized void publish(List<Message> message) {
+  public void publish(List<Message> message) {
     this.kernelSockets.publish(message);
   }
 
-  public synchronized void send(Message message) {
+  public void send(Message message) {
     this.kernelSockets.send(message);
   }
 
@@ -326,4 +326,9 @@ public abstract class Kernel implements KernelFunctionality {
   public void addCommIdManagerMapping(String commId, String kernel) {
     commKernelMapping.put(commId, kernel);
   }
+
+  public void putEvaluationInToBackground(){
+    evaluator.putEvaluationInToBackground();
+  }
+
 }

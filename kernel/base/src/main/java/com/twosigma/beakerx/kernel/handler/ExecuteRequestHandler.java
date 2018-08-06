@@ -26,8 +26,6 @@ import com.twosigma.beakerx.message.Message;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static com.twosigma.beakerx.kernel.PlainCode.createSimpleEvaluationObject;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.EXECUTE_INPUT;
@@ -41,7 +39,6 @@ import static java.util.Collections.singletonList;
 public class ExecuteRequestHandler extends KernelHandler<Message> {
 
   private int executionCount;
-  private ExecutorService executorService = Executors.newFixedThreadPool(1);
 
   public ExecuteRequestHandler(KernelFunctionality kernel) {
     super(kernel);
@@ -50,18 +47,16 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
 
   @Override
   public void handle(Message message) {
-    executorService.submit(() -> {
-      try {
-        handleMsg(message);
-      } catch (Exception e) {
-        handleException(message, e);
-      }
-    });
+    try {
+      handleMsg(message);
+    } catch (Exception e) {
+      handleException(message, e);
+    }
   }
 
   private void handleMsg(Message message) {
-    kernel.sendBusyMessage(message);
     executionCount += 1;
+    kernel.sendBusyMessage(message);
     String codeString = takeCodeFrom(message);
     announceTheCode(message, codeString);
     Code code = CodeFactory.create(codeString, message, kernel);

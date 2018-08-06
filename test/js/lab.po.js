@@ -99,6 +99,10 @@ var LabPageObject = function () {
     this.kernelIdleIcon.waitForEnabled();
   };
 
+  this.clickRunCellWithoutWaiting = function () {
+    browser.$('button.jp-Toolbar-button.jp-RunIcon.jp-Toolbar-item').click();
+  };
+
   this.clickRunAllCells = function() {
     browser.click('div=Run');
     var runAllCellsMenuItem = browser.$('li[data-command="runmenu:run-all"]');

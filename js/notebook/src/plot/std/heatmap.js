@@ -17,15 +17,14 @@
 define([
   'underscore',
   './../plotUtils',
-  './../plotTip',
   'd3-scale'
 ], function(
   _,
   plotUtils,
-  plotTip,
   d3scale
 ) {
 
+  var plotTip = require('./../plotTip').default;
   var HeatMap = function(data) {
     _.extend(this, data); // copy properties to itself
     this.format();

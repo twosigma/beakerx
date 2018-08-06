@@ -14,21 +14,30 @@
  *  limitations under the License.
  */
 
-export interface ZoomLevel {
-  minSpanX: number,
-  minSpanY: number,
-  maxScaleX: number,
-  maxScaleY: number
-}
+import GridLabels from "./GridLabels";
+import GridTics from "./GridTics";
+import GridLines from "./GridLines";
 
-export interface Focus {
-  xl?: any,
-  xr?: any,
-  yl?: number,
-  yr?: number,
-  yl_r?: number,
-  yr_r?: number,
-  xspan?: number,
-  yspan?: number,
-  yspan_r?: number
+export default class PlotGrid {
+  gridLines: GridLines;
+  gridLabels: GridLabels;
+  gridTics: GridTics;
+
+  constructor(scope: any) {
+    this.gridLines = new GridLines(scope);
+    this.gridLabels = new GridLabels(scope);
+    this.gridTics = new GridTics(scope);
+  }
+
+  render() {
+    this.gridLines.render();
+    this.gridLabels.render();
+    this.gridTics.render();
+  }
+
+  reset() {
+    this.gridLines.reset();
+    this.gridLabels.reset();
+    this.gridTics.reset();
+  }
 }

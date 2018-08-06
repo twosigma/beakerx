@@ -18,7 +18,7 @@ import * as _ from 'underscore';
 
 const plotUtils = require('../plotUtils');
 
-export default class PlotModel {
+export default class CombinedPlotModel {
   model: any;
   parentScope: any;
   state: any = {};

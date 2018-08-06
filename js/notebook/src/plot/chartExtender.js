@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+var PlotLayout = require('./PlotLayout.ts').default;
+
 define([
     'underscore'
   ],
@@ -32,7 +34,7 @@ define([
         resize: function (event, ui) {
           scope.width = ui.size.width;
           scope.height = ui.size.height;
-          _(scope.plotSize).extend(ui.size);
+          _(scope.layout.plotSize).extend(ui.size);
 
           scope.jqsvg.css({"width": scope.width, "height": scope.height});
           scope.jqplottitle.css({"width": scope.width});
@@ -69,10 +71,6 @@ define([
         // init flags
         scope.initFlags();
 
-        scope.plotSize = {};
-
-        _.extend(scope.plotSize, scope.stdmodel.plotSize);
-
         // create layout elements
         scope.initLayout();
 
@@ -87,66 +85,13 @@ define([
         }
         scope.resetSvg();
         scope.renderData();
-        scope.renderLegends(); // redraw
+        scope.plotLegend.render(); // redraw
         scope.updateMargin(); //update plot margins
         scope.calcLegendableItem();
       };
 
       scope.initLayout = function () {
-        var model = scope.stdmodel;
-
-        element.find(".ui-icon-gripsmall-diagonal-se")
-          .removeClass("ui-icon-gripsmall-diagonal-se")
-          .addClass("ui-icon-grip-diagonal-se");
-
-        // hook container to use jquery interaction
-        scope.container = d3.select(element[0]).select(".plot-plotcontainer");
-        scope.jqcontainer = element.find(".plot-plotcontainer");
-        scope.jqlegendcontainer = element.find("#plotLegendContainer");
-        scope.svg = d3.select(element[0]).select(".plot-plotcontainer svg");
-        scope.jqsvg = element.find("svg");
-        scope.canvas = element.find("canvas")[0];
-
-        scope.canvas.style.display = "none";
-
-        var plotSize = scope.plotSize;
-        scope.jqcontainer.css(plotSize);
-        scope.jqsvg.css(plotSize);
-
-        $(window).resize(scope.resizeFunction);
-
-        // set title
-        scope.jqplottitle = element.find("#plotTitle");
-        scope.jqplottitle.text(model.title).css("width", plotSize.width);
-
-        scope.maing = d3.select(element[0]).select("#maing");
-        scope.gridg = d3.select(element[0]).select("#gridg");
-        scope.labelg = d3.select(element[0]).select("#labelg");
-
-        // set some constants
-
-        scope.renderFixed = 1;
-        scope.layout = {    // TODO, specify space for left/right y-axis, also avoid half-shown labels
-          bottomLayoutMargin: 30,
-          topLayoutMargin: 0,
-          leftLayoutMargin: 80,
-          rightLayoutMargin: scope.stdmodel.yAxisR ? 80 : 0,
-          legendMargin: 10,
-          legendBoxSize: 10
-        };
-
-        scope.labelPadding = {
-          x: 10,
-          y: 10
-        };
-
-        scope.plotZoom.boxZoom.resetLocateBox();
-        scope.cursor = {
-          x: -1,
-          y: -1
-        };
-
-        scope.legendResetPosition = true;
+        scope.layout = new PlotLayout(scope);
 
         $("<div></div>").appendTo(scope.jqlegendcontainer)
           .attr("id", "tooltip")
@@ -159,7 +104,7 @@ define([
         var state = {};
 
         state.showAllItems = scope.showAllItems;
-        state.plotSize = scope.plotSize;
+        state.plotSize = scope.layout.plotSize;
         state.showItem = [];
         var data = scope.stdmodel.data;
         for (var i = 0; i < data.length; i++) {

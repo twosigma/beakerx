@@ -16,13 +16,13 @@
 
 define([
   './plotConverter',
-  './plotUtils',
-  './plotFormatter'
+  './plotUtils'
 ],function(
   plotConverter,
-  plotUtils,
-  plotFormatter
+  plotUtils
 ) {
+
+  var PlotModelFactory = require("./models/PlotModelFactory").default;
 
   return {
     standardizeModel : function(model, prefs) {
@@ -89,7 +89,8 @@ define([
         if (plotmodel.showLegend == null) { plotmodel.showLegend = showLegend; }
         if (plotmodel.useToolTip == null) { plotmodel.useToolTip = useToolTip; }
 
-        var newplotmodel = plotFormatter.standardizeModel(plotmodel, prefs);
+        var standardPlotModel = PlotModelFactory.getPlotModel(plotmodel, prefs);
+        var newplotmodel = standardPlotModel.getStandardizedModel();
 
         if (i < plots.length - 1) {  // turn off x coordinate labels
           newplotmodel.xAxis.label = null;

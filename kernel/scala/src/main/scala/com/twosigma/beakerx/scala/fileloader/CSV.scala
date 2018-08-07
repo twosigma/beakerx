@@ -27,4 +27,10 @@ class CSV extends com.twosigma.beakerx.fileloader.CSV {
 
     javaOutput.asScala.map(_.asScala.toMap).toList
   }
+
+  def readFileStream(fileName: String): Stream[Map[String, AnyRef]] = {
+    val javaIterator = new CSVIterator(fileName)
+
+    javaIterator.asScala.map(_.asScala.toMap).toStream
+  }
 }

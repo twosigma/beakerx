@@ -17,6 +17,7 @@
 package com.twosigma.beakerx.fileloader;
 
 import com.opencsv.CSVReader;
+import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.io.FileReader;
@@ -30,25 +31,58 @@ public class CSV {
 
   public static String TIME_COLUMN = "time";
 
-  public List<Map<String, Object>> read(String fileName) throws IOException {
-    CSVReader reader = new CSVReader(new FileReader(fileName));
+  public class CSVIterator implements Iterator<Map<String, Object>>, AutoCloseable {
+    private CSVReader reader;
+    private String[] header;
+    private Iterator<String[]> rows;
 
-    List<Map<String, Object>> result = new ArrayList<>();
-    String[] header = getHeader(reader);
-    String[] row;
-    while ((row = reader.readNext()) != null) {
-      Map<String, Object> entry = new HashMap<>();
-      int index = 0;
-      for (String hc : header) {
-        if (hc.equals(TIME_COLUMN)) {
-          entry.put(hc, convertDate(row[index++]));
-        } else {
-          entry.put(hc, convertToNumber(row[index++]));
+    public CSVIterator(String fileName) throws IOException {
+      this(new CSVReader(new FileReader(fileName)));
+    }
+
+    CSVIterator(CSVReader csvReader) {
+      reader = csvReader;
+      rows = reader.iterator();
+      header = rows.next();
+    }
+
+      @Override
+      public boolean hasNext() {
+        return rows.hasNext();
+      }
+
+      @Override
+      public Map<String, Object> next() {
+        if (!hasNext()) return null;
+        else {
+          String[] row = rows.next();
+          Map<String, Object> entry = new HashMap<>();
+          int index = 0;
+          for (String hc : header) {
+            if (hc.equals(TIME_COLUMN)) {
+              entry.put(hc, convertDate(row[index++]));
+            } else {
+              entry.put(hc, convertToNumber(row[index++]));
+            }
+          }
+          return entry;
         }
       }
-      result.add(entry);
+
+    @Override
+    public void close() throws Exception {
+      reader.close();
     }
+  }
+
+  public List<Map<String, Object>> read(String fileName) throws IOException {
+    List<Map<String, Object>> result = IteratorUtils.toList(new CSVIterator(fileName));
     return result;
+  }
+
+  public Iterable<Map<String, Object>> readIterable(String fileName) throws IOException {
+    CSVReader reader = new CSVReader(new FileReader(fileName));
+    return () -> new CSVIterator(reader);
   }
 
   private Object convertToNumber(Object value) {
@@ -83,10 +117,6 @@ public class CSV {
     } else {
       throw new IllegalArgumentException("time column accepts numbers or java.util.Date objects or String date in a following format yyyy-MM-dd");
     }
-  }
-
-  private String[] getHeader(CSVReader reader) throws IOException {
-    return reader.readNext();
   }
 
 }

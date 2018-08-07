@@ -23,6 +23,7 @@ import CombinedPlotScopeUtils from './combinedPlotScopeUtils';
 import bkUtils from './../shared/bkUtils';
 import PlotFocus from './zoom/PlotFocus';
 import ContextMenu from './contextMenu/plotContextMenu';
+import { GistPublisherUtils } from "../GistPublisherUtils";
 
 import "jquery-ui/ui/widgets/resizable";
 
@@ -298,6 +299,10 @@ export default class CombinedPlotScope {
     const fileName = _.isEmpty(this.stdmodel.title) ? 'combinedplot' : this.stdmodel.title;
 
     plotUtils.drawPng(this.canvas, imgsrc, `${fileName}.png`);
+  }
+
+  publish() {
+    GistPublisherUtils.publishScope(this);
   }
 
   updateModels(updateType) {

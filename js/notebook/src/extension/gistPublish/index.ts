@@ -16,14 +16,15 @@
 
 import * as $ from 'jquery';
 import GistPublishModal from './gistPublishModal';
+import { GistPublisher } from "../../GistPublisher";
+import { GistPublisherUtils } from '../../GistPublisherUtils';
+import AccessTokenProvider from '../../AccessTokenProvider';
+
 
 const dialog = require('base/js/dialog');
-const CONFIG = {
-  gistsUrl: 'https://api.github.com/gists',
-  nbviewerBaseUrl: 'https://nbviewer.jupyter.org/'
-};
 
 export function registerFeature(): void {
+  setupPublisher();
   if (!!Jupyter.NotebookList) {
     return;
   }
@@ -32,7 +33,7 @@ export function registerFeature(): void {
     'label'   : ' ',
     'id'      : 'btn_publish',
     'icon'    : 'fa-share-alt',
-    'callback': beforePublish
+    'callback': openPublishDialog
   }]);
 
   $('#btn_publish > span').remove();
@@ -47,13 +48,34 @@ export function registerFeature(): void {
       .html('Publish...'));
 
   publish_menu.insertAfter($('#print_preview'));
-  publish_menu.click(beforePublish);
+  publish_menu.click(openPublishDialog);
 }
 
-function beforePublish(): void {
-  GistPublishModal.show(personalAccessToken => saveWidgetsState().then(
-    () => doPublish(personalAccessToken)
-  ));
+function setupPublisher() {
+  let options = {
+    accessTokenProvider: new AccessTokenProvider(),
+    saveWidgetsStateHandler: saveWidgetsState,
+    prepareContentToPublish: (scope) => {
+      let el = scope.node || scope.element[0];
+      let cell;
+      for(let c of Jupyter.notebook.get_cells()) {
+        if(c.element[0].contains(el)){
+          cell = c;
+          break;
+        }
+      }
+
+      const nbjson = Jupyter.notebook.toJSON();
+      nbjson.cells = [cell.toJSON()];
+      return nbjson;
+    },
+  };
+  GistPublisherUtils.setup(options);
+}
+
+function openPublishDialog(): void {
+  new GistPublishModal()
+    .show(personalAccessToken => doPublish(personalAccessToken));
 }
 
 function showErrorDialog(errorMsg) {
@@ -68,53 +90,26 @@ function showErrorDialog(errorMsg) {
   });
 }
 
-function saveWidgetsState(): Promise<any> {
+export function saveWidgetsState(): Promise<string> {
   return new Promise((resolve, reject) => {
     if (Jupyter.menubar.actions.exists('widgets:save-with-widgets')) {
       Jupyter.menubar.actions.call('widgets:save-with-widgets');
       console.log("widgets state has been saved");
 
-      setTimeout(resolve);
+      setTimeout(() => {
+        resolve(Jupyter.notebook.notebook_name);
+      });
     } else {
       reject('widgets:save-with-widgets actions is not registered');
     }
   });
 }
 
-function doPublish(personalAccessToken): void {
-  const nbjson = Jupyter.notebook.toJSON();
-  const filedata = {};
-
-  filedata[Jupyter.notebook.notebook_name] = {
-    content : JSON.stringify(nbjson, undefined, 1)
-  };
-
-  let gistsUrl = CONFIG.gistsUrl;
-  if (personalAccessToken) {
-    gistsUrl = `${gistsUrl}?oauth_token=${personalAccessToken}`;
-  }
-
-  const settings = {
-    type : 'POST',
-    headers : {},
-    data : JSON.stringify({
-      public : true,
-      files : filedata
-    }),
-    success : (data, status) => {
-      console.log("gist successfully published: " + data.id);
-      window.open(CONFIG.nbviewerBaseUrl + data.id);
-    }
-  };
-
-  $.ajax(gistsUrl, settings).catch((jqXHR, status, err) => {
-    let errorMsg = jqXHR.readyState === 0 && !err ? 'NETWORK ERROR!' : err;
-
-    if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-      errorMsg = jqXHR.responseJSON.message;
-    }
-
-    console.log(errorMsg);
-    showErrorDialog(errorMsg);
-  });
+export function doPublish(personalAccessToken: string): void {
+  GistPublisher.doPublish(
+    personalAccessToken,
+    Jupyter.notebook.notebook_name,
+    Jupyter.notebook.toJSON(),
+    (errorMsg) => showErrorDialog(errorMsg)
+  );
 }

@@ -14,19 +14,17 @@
  *  limitations under the License.
  */
 
-import * as $ from 'jquery';
 import { NotebookPanel } from "@jupyterlab/notebook";
 import { showDialog, Dialog, ToolbarButton } from '@jupyterlab/apputils';
+import beakerx from "../../beakerx";
 import GistPublishModal from './gistPublishModal';
-
-const CONFIG = {
-  gistsUrl: 'https://api.github.com/gists',
-  nbviewerBaseUrl: 'https://nbviewer.jupyter.org/'
-};
+import AccessTokenProvider from "../../AccessTokenProvider";
+import { CodeCell, Cell } from "@jupyterlab/cells";
 
 export function registerFeature(panel: NotebookPanel, showPublication: boolean) {
   if (showPublication) {
     addActionButton(panel);
+    setupPublisher(panel);
   } else {
     removeActionButton(panel);
   }
@@ -56,48 +54,33 @@ function removeActionButton(panel: NotebookPanel): void {
   }
 }
 
-function openPublishDialog(panel: NotebookPanel) {
-  const gistPublishModal = new GistPublishModal();
+function setupPublisher(panel: NotebookPanel) {
 
-  gistPublishModal.show(personalAccessToken => doPublish(panel, personalAccessToken));
+  let options = {
+    accessTokenProvider: new AccessTokenProvider(),
+    saveWidgetsStateHandler: saveWidgetsState.bind(undefined, panel),
+    prepareContentToPublish: (scope) => {
+      let el = scope.node || scope.element[0];
+      let cell: CodeCell;
+      let cells: CodeCell[] = <CodeCell[]>(panel.notebook.widgets || []).filter((cell: Cell) => cell instanceof CodeCell);
+      for(let c of cells) {
+        if(c.node.contains(el)){
+          cell = c;
+          break;
+        }
+      }
+
+      const nbjson = panel.notebook.model.toJSON();
+      nbjson['cells'] = [cell.model.toJSON()];
+      return nbjson;
+    },
+  };
+  beakerx.GistPublisherUtils.setup(options);
 }
 
-function doPublish(panel: NotebookPanel, personalAccessToken: string|null): void {
-  const nbjson = panel.notebook.model.toJSON();
-  const filedata = {};
-
-  filedata[panel.context.contentsModel.name] = {
-    content : JSON.stringify(nbjson, undefined, 1)
-  };
-
-  let gistsUrl = CONFIG.gistsUrl;
-  if (personalAccessToken) {
-    gistsUrl = `${gistsUrl}?oauth_token=${personalAccessToken}`;
-  }
-
-  const settings = {
-    type : 'POST',
-    headers : {},
-    data : JSON.stringify({
-      public : true,
-      files : filedata
-    }),
-    success : (data, status) => {
-      console.log("gist successfully published: " + data.id);
-      window.open(CONFIG.nbviewerBaseUrl + data.id);
-    }
-  };
-
-  $.ajax(gistsUrl, settings).fail((jqXHR, status, err) => {
-    let errorMsg = jqXHR.readyState === 0 && !err ? 'NETWORK ERROR!' : err;
-
-    if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-      errorMsg = jqXHR.responseJSON.message;
-    }
-
-    console.log(errorMsg);
-    showErrorDialog(errorMsg);
-  });
+function openPublishDialog(panel: NotebookPanel) {
+  new GistPublishModal()
+    .show(personalAccessToken => doPublish(panel, personalAccessToken));
 }
 
 function showErrorDialog(errorMsg) {
@@ -107,3 +90,27 @@ function showErrorDialog(errorMsg) {
     buttons: [ Dialog.okButton({ label: 'OK' }) ]
   });
 }
+
+export function saveWidgetsState(panel): Promise<string> {
+  return new Promise((resolve, reject) => {
+    panel.context.save().then(() => {
+      console.log("widgets state has been saved");
+
+      if (!panel.isDisposed) {
+        resolve(panel.context.contentsModel.name);
+      } else {
+        reject();
+      }
+    }, reject);
+  })
+}
+
+function doPublish(panel: NotebookPanel, personalAccessToken: string|null): void {
+  beakerx.GistPublisher.doPublish(
+    personalAccessToken,
+    panel.context.contentsModel.name,
+    panel.notebook.model.toJSON(),
+    (errorMsg) => showErrorDialog(errorMsg)
+  );
+}
+

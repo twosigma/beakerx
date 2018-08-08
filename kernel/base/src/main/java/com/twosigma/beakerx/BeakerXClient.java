@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.concurrent.SynchronousQueue;
 
 public interface BeakerXClient {
+  String CODE_CELL_PATH = "codecell";
 
   void showProgressUpdate(String message, int progress);
 

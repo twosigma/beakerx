@@ -23,10 +23,13 @@ import io.javalin.Handler;
 import io.javalin.Javalin;
 import org.jetbrains.annotations.NotNull;
 
+import static com.twosigma.beakerx.BeakerXClient.CODE_CELL_PATH;
+import static com.twosigma.beakerx.kernel.comm.GetCodeCellsHandler.INSTANCE;
+
 public abstract class BeakerXServerJavalin implements BeakerXServer {
 
-  Javalin app = null;
-  Integer freePort;
+  private Javalin app = null;
+  private Integer freePort;
 
   @Override
   public synchronized BeakerXServer get(KernelFunctionality kernel) {
@@ -39,13 +42,25 @@ public abstract class BeakerXServerJavalin implements BeakerXServer {
   private Javalin createServer(KernelFunctionality kernel) {
     this.freePort = MagicKernelManager.findFreePort();
     Javalin server = Javalin.start(freePort);
-    createMapping(server, kernel);
+    doCreateMapping(server, kernel);
     return server;
   }
 
   @Override
   public String getURL() {
     return String.format("http://localhost:%s/", freePort);
+  }
+
+  private void doCreateMapping(Javalin server, KernelFunctionality kernel) {
+    mappingsForAllKernels(server, kernel);
+    createMapping(server, kernel);
+  }
+
+  private void mappingsForAllKernels(Javalin server, KernelFunctionality kernel) {
+    server.post(CODE_CELL_PATH, ctx -> {
+      String body = ctx.body();
+      INSTANCE.handle(body);
+    });
   }
 
   public abstract void createMapping(Javalin app, KernelFunctionality kernel);

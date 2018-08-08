@@ -18,6 +18,7 @@ package com.twosigma.beakerx;
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.ConfigurationFile;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
 
@@ -149,6 +150,7 @@ public class NamespaceClient implements BeakerXClient {
       HashMap<String, Serializable> state = new HashMap<>();
       state.put("name", "CodeCells");
       state.put("value", getJson(tagFilter));
+      data.put("url", KernelManager.get().getBeakerXServer().getURL() + CODE_CELL_PATH);
       data.put("state", state);
       data.put("buffer_paths", new HashMap<>());
       c.send(COMM_MSG, Comm.Buffer.EMPTY, new Comm.Data(data));

@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+import BeakerXApi from "../tree/Utils/BeakerXApi";
+
 declare global {
   interface Window {
     beakerx: any
@@ -26,12 +28,12 @@ export const BEAKER_TAG_RUN = 'beakerx.tag.run';
 
 const utils = require('base/js/utils');
 const dialog = require('base/js/dialog');
-const { Comm } = require('services/kernels/comm');
+const {Comm} = require('services/kernels/comm');
 
 const msgHandlers = {
   [BEAKER_GETCODECELLS]: (msg) => {
-    if(msg.content.data.state.name == "CodeCells"){
-      sendJupyterCodeCells(JSON.parse(msg.content.data.state.value));
+    if (msg.content.data.state.name == "CodeCells") {
+      sendJupyterCodeCells(JSON.parse(msg.content.data.state.value), msg.content.data.url);
     }
 
     msgHandlers[BEAKER_AUTOTRANSLATION](msg);
@@ -73,40 +75,80 @@ const msgHandlers = {
 };
 
 export const registerCommTargets = (kernel: any): void => {
-  kernel.comm_manager.register_target(BEAKER_GETCODECELLS, function(comm) {
+  kernel.comm_manager.register_target(BEAKER_GETCODECELLS, function (comm) {
     comm.on_msg(msgHandlers[BEAKER_GETCODECELLS]);
   });
 
-  kernel.comm_manager.register_target(BEAKER_AUTOTRANSLATION, function(comm) {
+  kernel.comm_manager.register_target(BEAKER_AUTOTRANSLATION, function (comm) {
     comm.on_msg(msgHandlers[BEAKER_AUTOTRANSLATION]);
   });
 
-  kernel.comm_manager.register_target(BEAKER_TAG_RUN, function(comm) {
+  kernel.comm_manager.register_target(BEAKER_TAG_RUN, function (comm) {
     comm.on_msg(msgHandlers[BEAKER_TAG_RUN]);
   });
 
   kernel.comm_info(
-    null, (msg) => { assignMsgHandlersToExistingComms(msg.content.comms, kernel); }
+    null, (msg) => {
+      assignMsgHandlersToExistingComms(msg.content.comms, kernel);
+    }
   );
 };
 
-const sendJupyterCodeCells = (filter: string) => {
-  const data: { code_cells: any } = { code_cells: [] };
-  const comm = Jupyter.notebook.kernel.comm_manager.new_comm(
-    BEAKER_GETCODECELLS, null, null, null, utils.uuid()
-  );
+const sendJupyterCodeCells = (filter: string, url: string) => {
 
+  const data: { code_cells: any , url: string } =
+    {
+      code_cells: [],
+      url : url
+    };
   data.code_cells = Jupyter.notebook.get_cells().filter(function (cell) {
     if (cell._metadata.tags) {
       return cell.cell_type == 'code' && cell._metadata.tags.includes(filter);
     }
-
     return false;
   });
-
-  comm.send(data);
-  comm.close();
+  let service = new BeakerxRestHandler();
+  service.post(data)
 };
+
+class BeakerxRestHandler {
+
+  private api: BeakerXApi;
+
+  constructor() {
+    this.setApi()
+  }
+
+  private setApi() {
+    let baseUrl;
+
+    if (this.api) {
+      return;
+    }
+
+    try {
+      const coreutils = require('@jupyterlab/coreutils');
+      coreutils.PageConfig.getOption('pageUrl');
+      baseUrl = coreutils.PageConfig.getBaseUrl();
+    } catch (e) {
+      baseUrl = `${window.location.origin}/`;
+    }
+
+    this.api = new BeakerXApi(baseUrl);
+  }
+
+  public post(data) {
+
+    this.api.restService(data)
+      .then(() => {
+        setTimeout(() => {
+          this.syncEnd()
+        }, 1000);
+      });
+  }
+
+}
+
 
 const assignMsgHandlersToExistingComms = (comms, kernel) => {
   for (let commId in comms) {

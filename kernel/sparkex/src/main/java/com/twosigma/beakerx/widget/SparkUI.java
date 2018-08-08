@@ -49,7 +49,6 @@ public class SparkUI extends VBox implements SparkUIApi {
 
 
   private final SparkUIForm sparkUIForm;
-  private VBox sparkUIFormPanel;
   private HBox statusPanel;
   private Map<Integer, SparkStateGroupPanel> progressBarMap = new HashMap<>();
   private SparkFoldout jobPanel = null;
@@ -64,11 +63,11 @@ public class SparkUI extends VBox implements SparkUIApi {
     this.singleSparkSession = singleSparkSession;
     this.sparkUiDefaults.loadDefaults(builder);
     this.sparkEngine = sparkEngineFactory.create(builder);
-    this.sparkUIFormPanel = new VBox(new ArrayList<>());
+    VBox sparkUIFormPanel = new VBox(new ArrayList<>());
     add(sparkUIFormPanel);
     SparkVariable.putSparkUI(this);
     this.sparkUIForm = new SparkUIForm(sparkEngine, sparkUiDefaults, this::initSparkContext);
-    this.sparkUIFormPanel.add(sparkUIForm);
+    sparkUIFormPanel.add(sparkUIForm);
     this.configureRESTMapping();
   }
 
@@ -139,7 +138,7 @@ public class SparkUI extends VBox implements SparkUIApi {
   }
 
   private void applicationStart() {
-    this.statusPanel = new SparkUIStatus(message -> getSparkSession().sparkContext().stop());
+    this.statusPanel = new SparkUIStatus(() -> getSparkSession().sparkContext().stop());
     this.sparkUIForm.setDomClasses(new ArrayList<>(asList("bx-disabled")));
     add(0, this.statusPanel);
     sendUpdate(SPARK_APP_ID, sparkEngine.getSparkAppId());
@@ -293,6 +292,11 @@ public class SparkUI extends VBox implements SparkUIApi {
   @FunctionalInterface
   public interface OnSparkButtonAction {
     void run(Message message);
+  }
+
+  @FunctionalInterface
+  public interface OnSparkRestButtonAction {
+    void run();
   }
 
   private void configureRESTMapping() {

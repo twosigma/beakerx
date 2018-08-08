@@ -15,6 +15,11 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
+import com.twosigma.beakerx.kernel.restserver.Context;
+
 import java.util.ArrayList;
 
 import static java.util.Arrays.asList;
@@ -22,18 +27,20 @@ import static java.util.Collections.singletonList;
 
 public class SparkUIStatus extends HBox {
 
-  private SparkUI.OnSparkButtonAction onSparkButtonAction;
+  public static final String STOP_SPARK_SESSION = "stopsparksession";
 
-  public SparkUIStatus(SparkUI.OnSparkButtonAction onSparkButtonAction) {
+  public SparkUIStatus(SparkUI.OnSparkRestButtonAction onSparkButtonAction) {
     super(new ArrayList<>());
-    this.onSparkButtonAction = onSparkButtonAction;
+    KernelFunctionality kernel = KernelManager.get();
+    BeakerXServer beakerXServer = kernel.getBeakerXServer();
+    beakerXServer.addPostMapping(STOP_SPARK_SESSION, (Context ctx) -> onSparkButtonAction.run());
     createStatusPanel();
   }
 
   private void createStatusPanel() {
     Label appStatus = createAppStatus();
     add(appStatus);
-    Button disconnect = createDisconnectButton();
+    Widget disconnect = createDisconnectButton();
     add(disconnect);
     setDomClasses(new ArrayList<>(singletonList("bx-status-panel")));
   }
@@ -45,13 +52,11 @@ public class SparkUIStatus extends HBox {
     return appStatus;
   }
 
-  private Button createDisconnectButton() {
-    Button disconnect = new Button();
-    disconnect.registerOnClick((content, message) -> onSparkButtonAction.run(message));
-    disconnect.setTooltip("Stop Spark Session");
-    disconnect.setDomClasses(new ArrayList<>(asList("bx-button", "icon-close")));
-    return disconnect;
+  private Widget createDisconnectButton() {
+    BeakerXServer beakerXServer = KernelManager.get().getBeakerXServer();
+    RESTButton disconnect2 = new RESTButton(beakerXServer.getURL() + STOP_SPARK_SESSION);
+    disconnect2.setTooltip("Stop Spark Session");
+    disconnect2.setDomClasses(new ArrayList<>(asList("bx-button", "icon-close")));
+    return disconnect2;
   }
-
-
 }

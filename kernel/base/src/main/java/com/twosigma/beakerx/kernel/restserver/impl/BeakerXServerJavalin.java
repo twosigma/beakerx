@@ -41,7 +41,10 @@ public abstract class BeakerXServerJavalin implements BeakerXServer {
 
   private Javalin createServer(KernelFunctionality kernel) {
     this.freePort = MagicKernelManager.findFreePort();
-    Javalin server = Javalin.start(freePort);
+    Javalin server = Javalin.create()
+            .disableStartupBanner()
+            .port(this.freePort)
+            .start();
     doCreateMapping(server, kernel);
     return server;
   }

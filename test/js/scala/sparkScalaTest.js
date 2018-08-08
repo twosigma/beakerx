@@ -52,7 +52,7 @@ describe('Scala notebook', function () {
     it('Spark should calculate PI', function () {
       cellIndex +=1;
       beakerxPO.runCodeCellByIndex(cellIndex);
-      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /Pi is roughly \d.\d*/)
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /Pi is roughly \d.\d*/);
     });
   });
 
@@ -60,7 +60,9 @@ describe('Scala notebook', function () {
     it('Spark should be stopped', function () {
       cellIndex +=1;
       beakerxPO.runCodeCellByIndex(cellIndex);
-      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /null/);
+      cellIndex -=1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckOutputTextOfStderr(cellIndex, /IllegalStateException.*stopped SparkContext/)
     });
   });
 

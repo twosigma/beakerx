@@ -14,28 +14,31 @@
  *  limitations under the License.
  */
 
-import * as _ from 'underscore';
+import gistPublishModalTemplate from './modalTemplate';
 
 const dialog = require('base/js/dialog');
 const utils = require('base/js/utils');
 
 export default class GistPublishModal {
-  static template = _.template(require('./modalTemplate.html'))();
-  static settingsUrl = `${(Jupyter.notebook_list || Jupyter.notebook).base_url}beakerx/settings`;
+  private settingsUrl: string;
 
-  static show(submitCallback: Function): void {
-    GistPublishModal.getGithubPersonalAccessToken()
+  constructor() {
+    this.settingsUrl = `${(Jupyter.notebook_list || Jupyter.notebook).base_url}beakerx/settings`;
+  }
+
+  show(submitCallback: Function): void {
+    this.getGithubPersonalAccessToken()
       .then(personalAccessToken => {
-        GistPublishModal.create(submitCallback, personalAccessToken);
+        this.create(submitCallback, personalAccessToken);
       });
   }
 
-  static create(submitCallback, personalAccessToken = '') {
-    const modalContent = GistPublishModal.createModalContent();
+  create(submitCallback, personalAccessToken = ''): Promise<any> {
+    const modalContent = this.createModalContent();
     const personalAccessTokenInput = modalContent.querySelector('input');
     const form = modalContent.querySelector('form');
     const formGroup = modalContent.querySelector('.form-group');
-    const errorNode = GistPublishModal.createErrorIconNode();
+    const errorNode = this.createErrorIconNode();
 
     const submitHandler = (event) => {
       const personalAccessToken = personalAccessTokenInput ? personalAccessTokenInput.value : '';
@@ -53,7 +56,7 @@ export default class GistPublishModal {
       submitCallback(personalAccessToken);
       formGroup.contains(errorNode) && formGroup.removeChild(errorNode);
       formGroup.classList.remove('has-error');
-      GistPublishModal.storePersonalAccessToken(personalAccessToken);
+      this.storePersonalAccessToken(personalAccessToken);
       modal.modal('hide');
     };
 
@@ -80,7 +83,15 @@ export default class GistPublishModal {
     }
   }
 
-  static createErrorIconNode() {
+  private createModalContent(): HTMLElement {
+    const modalContent = document.createElement('div');
+
+    modalContent.innerHTML = gistPublishModalTemplate;
+
+    return modalContent;
+  }
+
+  private createErrorIconNode() {
     const errorNode = document.createElement('span');
 
     errorNode.classList.add('fa');
@@ -92,34 +103,26 @@ export default class GistPublishModal {
     return errorNode;
   }
 
-  static createModalContent(): HTMLElement {
-    const modalContent = document.createElement('div');
-
-    modalContent.innerHTML = GistPublishModal.template;
-
-    return modalContent;
-  }
-
-  static storePersonalAccessToken(githubPersonalAccessToken = ''): Promise<any> {
-    return GistPublishModal.getStoredSettings()
-      .then(storedSettings =>
-        utils.ajax(GistPublishModal.settingsUrl, {
+  storePersonalAccessToken(githubPersonalAccessToken = ''): Promise<any> {
+    return this.getStoredSettings()
+      .then(storedSettings => {
+        storedSettings.beakerx.githubPersonalAccessToken = githubPersonalAccessToken;
+        utils.ajax(this.settingsUrl, {
           type: 'POST',
           data: JSON.stringify({
-            ...storedSettings,
-            githubPersonalAccessToken
+            ...storedSettings
           })
         }).fail(reason => { console.log(reason); })
-      );
+      });
   }
 
-  static getGithubPersonalAccessToken(): Promise<any> {
-    return GistPublishModal.getStoredSettings()
-      .then(settings => settings.githubPersonalAccessToken || '');
+  private getGithubPersonalAccessToken(): Promise<string> {
+    return this.getStoredSettings()
+      .then(settings => settings.beakerx.githubPersonalAccessToken || '');
   }
 
-  static getStoredSettings(): Promise<any> {
-    return utils.ajax(GistPublishModal.settingsUrl, {
+  private getStoredSettings(): Promise<any> {
+    return utils.ajax(this.settingsUrl, {
       method: 'GET'
     }).fail(reason => { console.log(reason); });
   }

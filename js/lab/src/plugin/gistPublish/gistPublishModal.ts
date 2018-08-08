@@ -60,7 +60,7 @@ export default class GistPublishModal {
         return false;
       }
 
-      submitCallback(personalAccessToken);
+      submitCallback(personalAccessTokenInput.value);
       formGroup.contains(errorNode) && formGroup.removeChild(errorNode);
       formGroup.classList.remove('has-error');
 
@@ -84,7 +84,7 @@ export default class GistPublishModal {
     return modal.launch();
   }
 
-  createBodyWidget(): Widget {
+  private createBodyWidget(): Widget {
     const modalContent = document.createElement('div');
 
     modalContent.innerHTML = gistPublishModalTemplate;
@@ -92,7 +92,7 @@ export default class GistPublishModal {
     return new Widget({ node: modalContent });
   }
 
-  createErrorIconNode() {
+  private createErrorIconNode() {
     const errorNode = document.createElement('span');
 
     errorNode.classList.add('fa');
@@ -106,24 +106,24 @@ export default class GistPublishModal {
 
   storePersonalAccessToken(githubPersonalAccessToken = ''): Promise<any> {
     return this.getStoredSettings()
-      .then(storedSettings =>
-        ServerConnection.makeRequest(
+      .then(storedSettings => {
+        storedSettings.beakerx.githubPersonalAccessToken = githubPersonalAccessToken;
+        return ServerConnection.makeRequest(
           this.settingsUrl,
           {
             method: 'POST',
             body: JSON.stringify({
-              ...storedSettings,
-              githubPersonalAccessToken
+              ...storedSettings
             })
           },
           this.serverSettings
         ).catch(reason => { console.log(reason); })
-      );
+      });
   }
 
-  getGithubPersonalAccessToken(): Promise<any> {
+  getGithubPersonalAccessToken(): Promise<string> {
     return this.getStoredSettings()
-      .then(settings => settings.githubPersonalAccessToken || '');
+      .then(settings => settings.beakerx.githubPersonalAccessToken || '');
   }
 
   getStoredSettings(): Promise<any> {

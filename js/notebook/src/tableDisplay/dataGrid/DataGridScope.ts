@@ -30,7 +30,7 @@ export class DataGridScope {
 
   private element: HTMLElement;
   private store: BeakerXDataStore;
-  private dataGrid: BeakerXDataGrid;
+  public readonly dataGrid: BeakerXDataGrid;
   private tableDisplayModel: any;
   private tableDisplayView: any;
 

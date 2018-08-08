@@ -26,8 +26,7 @@ function BeakerXPageObject() {
   if ('lab' == env.config.cur_app) {
     LabPageObject.constructor.apply(this, arguments);
     BeakerXPageObject.prototype = Object.create(LabPageObject);
-  }
-  else if ('notebook' == env.config.cur_app) {
+  } else if ('notebook' == env.config.cur_app) {
     NotebookPageObject.constructor.apply(this, arguments);
     BeakerXPageObject.prototype = Object.create(NotebookPageObject);
   }
@@ -105,7 +104,7 @@ function BeakerXPageObject() {
   this.runCellToGetCanvas = function (index) {
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
-    browser.waitUntil(function(){
+    browser.waitUntil(function () {
       return codeCell.$$('canvas').length > 0;
     });
     return codeCell.$('canvas');
@@ -127,11 +126,11 @@ function BeakerXPageObject() {
     this.runCellAndCheckTextHandleError(cellIndex, expectedText, this.getAllOutputsWidget);
   };
 
-  this.runCellAndCheckTextHandleError = function(cellIndex, expectedText, getTextElements){
+  this.runCellAndCheckTextHandleError = function (cellIndex, expectedText, getTextElements) {
     var resultTest;
     var codeCell;
     var attempt = 3;
-    while(attempt > 0){
+    while (attempt > 0) {
       try {
         codeCell = this.runCodeCellByIndex(cellIndex);
         this.kernelIdleIcon.waitForEnabled();
@@ -161,7 +160,7 @@ function BeakerXPageObject() {
   };
 
   this.waitAndCheckOutputText = function (index, expectedText, getTextElements, outputIndex) {
-    if(!outputIndex){
+    if (!outputIndex) {
       outputIndex = 0;
     }
     var codeCell = this.getCodeCellByIndex(index);
@@ -189,38 +188,42 @@ function BeakerXPageObject() {
     return codeCell.$('div.beaker-easyform-container');
   };
 
-  this.getTableIndexMenu = function(dtContainer){
+  this.getTableIndexMenu = function (dtContainer) {
     dtContainer.click('span.bko-column-header-menu');
-    browser.waitUntil(function(){
+    browser.waitUntil(function () {
       var menu = browser.$('div.bko-header-menu.bko-table-menu');
       return menu != null && menu.isVisible();
     }, 10000, 'index menu is not visible');
     return browser.$('div.bko-header-menu.bko-table-menu');
   };
 
-  this.getTableIndexSubMenu = function(tblMenu, index){
+  this.getTableIndexSubMenu = function (tblMenu, index) {
     tblMenu.$$('[data-type="submenu"]')[index].click();
-    browser.waitUntil(function(){
+    browser.waitUntil(function () {
       var menu = browser.$('div.dropdown-submenu.bko-table-menu');
       return menu != null && menu.isVisible();
     }, 10000, 'index sub menu is not visible');
     return browser.$$('div.dropdown-submenu.bko-table-menu');
   };
 
-  this.checkBrowserLogError = function(log_level){
+  this.checkBrowserLogError = function (log_level) {
     var i = 0;
     var logMsgs = browser.log('browser').value;
-    while(i < logMsgs.length){
-      if(logMsgs[i].level == log_level){
-          expect(logMsgs[i].message).not.toMatch(/./);
+    while (i < logMsgs.length) {
+      if (logMsgs[i].level == log_level) {
+        expect(logMsgs[i].message).not.toMatch(/./);
       }
       i += 1;
     }
   };
 
-  this.createTableImage = function (imageDataStr, imgDir, fileName){
+  this.checkKernelIdle = function () {
+    return this.kernelIdleIcon.waitForEnabled();
+  };
+
+  this.createTableImage = function (imageDataStr, imgDir, fileName) {
     var dirPath = path.join(__dirname, '../resources/img', imgDir);
-    if(!fs.existsSync(dirPath)){
+    if (!fs.existsSync(dirPath)) {
       fs.mkdirSync(dirPath);
     };
     var absFileName = path.join(dirPath, fileName);
@@ -229,18 +232,20 @@ function BeakerXPageObject() {
     stream.end();
   };
 
-  this.getCanvasImageData = function(canvas, width, height, x, y){
-    if(canvas == null || canvas.value == null) {
-      return { value: 'null' };
+  this.getCanvasImageData = function (canvas, width, height, x, y) {
+    if (canvas == null || canvas.value == null) {
+      return {
+        value: 'null'
+      };
     }
-    var sx = (x !== undefined)? x : 0;
-    var sy = (y !== undefined)? y : 0;
+    var sx = (x !== undefined) ? x : 0;
+    var sy = (y !== undefined) ? y : 0;
     browser.pause(1000);
-    var result = browser.execute(function(cnv, sx, sy, width, height){
+    var result = browser.execute(function (cnv, sx, sy, width, height) {
       var ctx = cnv.getContext("2d");
       var imgData = ctx.getImageData(sx, sy, width, height);
       var bufferCanvas = document.createElement('canvas');
-      bufferCanvas.width  = width;
+      bufferCanvas.width = width;
       bufferCanvas.height = height;
       bufferCanvas.getContext('2d').putImageData(imgData, 0, 0);
       return bufferCanvas.toDataURL('image/png').replace(/data:image\/png;base64,/, "");
@@ -248,19 +253,19 @@ function BeakerXPageObject() {
     return result;
   };
 
-  this.checkImageData = function(imageData, imgDir, fileName){
+  this.checkImageData = function (imageData, imgDir, fileName) {
     var mismatchPercentage = 1;
     var absFileName = path.join(__dirname, '../resources/img', imgDir, fileName);
     var file1 = fs.readFileSync(absFileName);
-    var file2 =  new Buffer(imageData, 'base64');
-    resemble(file1).compareTo(file2).onComplete(function(data){
+    var file2 = new Buffer(imageData, 'base64');
+    resemble(file1).compareTo(file2).onComplete(function (data) {
       console.log(fileName + ': misMatch=' + data.misMatchPercentage);
       expect(data.misMatchPercentage).toBeLessThan(mismatchPercentage);
     });
   };
 
-  this.checkPlotWithLine = function(codeCell, cellIndex){
-    browser.waitUntil(function(){
+  this.checkPlotWithLine = function (codeCell, cellIndex) {
+    browser.waitUntil(function () {
       return codeCell.$$('div.dtcontainer').length > 0;
     }, 30000);
     var dtContainer = this.getDtContainerByIndex(cellIndex);
@@ -270,7 +275,7 @@ function BeakerXPageObject() {
   this.setHeapSize = function (value) {
     var heapSizeInput = browser.$('input#heap_GB');
     heapSizeInput.setValue(value);
-    browser.waitUntil(function(){
+    browser.waitUntil(function () {
       var indicator = browser.$('span.saved');
       return indicator.isVisible();
     });
@@ -284,7 +289,7 @@ function BeakerXPageObject() {
   this.setProperty = function (key, value) {
     browser.$('div#properties_property input[placeholder="name"]').setValue(key);
     browser.$('div#properties_property input[placeholder="value"]').setValue(value);
-    browser.waitUntil(function(){
+    browser.waitUntil(function () {
       var indicator = browser.$('span.saved');
       return indicator.isVisible();
     });

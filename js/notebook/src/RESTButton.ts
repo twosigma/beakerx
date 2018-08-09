@@ -58,12 +58,11 @@ export class RESTButtonView extends widgets.ButtonView {
    */
   _handle_REST_click(event) {
     event.preventDefault();
-
+    let data = { url: this.url };
     this.api
-      .restService({ url: this.url })
-      .catch((e) => { console.log(e); });
+      .restService(data)
+      .catch((err) => { console.log(err) });
   }
-
 
 }
 

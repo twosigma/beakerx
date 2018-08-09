@@ -138,12 +138,9 @@ class BeakerxRestHandler {
   }
 
   public post(data) {
-
-    this.api.restService(data)
-      .then(() => {
-        setTimeout(() => {
-        }, 1000);
-      });
+    this.api
+      .restService(data)
+      .catch((err) => { console.log(err) });
   }
 
 }

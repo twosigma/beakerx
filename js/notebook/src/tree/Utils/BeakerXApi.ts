@@ -130,7 +130,7 @@ export default class BeakerXApi {
         method: "POST",
         cache: false,
         contentType: "aplication/json; charset=utf-8",
-        dataType: "json",
+        dataType: "text",
         processData: false,
         data: JSON.stringify(data),
         headers: {
@@ -140,7 +140,7 @@ export default class BeakerXApi {
           resolve();
         },
         error: (jqXHR, status, err) => {
-          reject();
+          reject(err);
         }
       });
 

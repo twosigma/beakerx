@@ -25,7 +25,7 @@ const LINE_MAGIC_MODE = 'line_magic';
 const CodeMirror = require("codemirror");
 
 export const registerCommentOutCmd = (panel: NotebookPanel) => {
-  const cells = panel.notebook.widgets || [];
+  const cells = panel.content.widgets || [];
 
   cells
     .filter((cell) => (cell.editor instanceof CodeMirrorEditor))
@@ -55,7 +55,7 @@ const setCodeMirrorLineComment = (cell: Cell) => {
 };
 
 export function extendHighlightModes(panel: NotebookPanel) {
-  const cells = panel.notebook.widgets || [];
+  const cells = panel.content.widgets || [];
 
   cells
     .filter((cell) => (cell.editor instanceof CodeMirrorEditor))

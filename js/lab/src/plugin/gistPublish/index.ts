@@ -62,7 +62,7 @@ function setupPublisher(panel: NotebookPanel) {
     prepareContentToPublish: (scope) => {
       let el = scope.node || scope.element[0];
       let cell: CodeCell;
-      let cells: CodeCell[] = <CodeCell[]>(panel.notebook.widgets || []).filter((cell: Cell) => cell instanceof CodeCell);
+      let cells: CodeCell[] = <CodeCell[]>(panel.content.widgets || []).filter((cell: Cell) => cell instanceof CodeCell);
       for(let c of cells) {
         if(c.node.contains(el)){
           cell = c;
@@ -70,7 +70,7 @@ function setupPublisher(panel: NotebookPanel) {
         }
       }
 
-      const nbjson = panel.notebook.model.toJSON();
+      const nbjson = panel.content.model.toJSON();
       nbjson['cells'] = [cell.model.toJSON()];
       return nbjson;
     },
@@ -109,7 +109,7 @@ function doPublish(panel: NotebookPanel, personalAccessToken: string|null): void
   beakerx.GistPublisher.doPublish(
     personalAccessToken,
     panel.context.contentsModel.name,
-    panel.notebook.model.toJSON(),
+    panel.content.model.toJSON(),
     (errorMsg) => showErrorDialog(errorMsg)
   );
 }

@@ -81,7 +81,7 @@ const getMsgHandlers = (
 export const registerCommTargets = (panel: NotebookPanel, context: DocumentRegistry.IContext<INotebookModel>): void => {
   const session = context.session;
   const kernelInstance = session.kernel;
-  const notebook = panel.notebook;
+  const notebook = panel.content;
   const msgHandlers = getMsgHandlers(session, kernelInstance, notebook);
 
   kernelInstance.registerCommTarget(BEAKER_GETCODECELLS, (comm) => {
@@ -106,10 +106,10 @@ const assignMsgHandlersToExistingComms = (
   kernelInstance: Kernel.IKernelConnection,
   msgHandlers: Object
 ): void => {
+  let comm;
   for (let commId in comms) {
-    kernelInstance.connectToComm(comms[commId].target_name, commId)['then'](comm => {
-      assignMsgHandlerToComm(comm, msgHandlers[comm.targetName]);
-    });
+    comm = kernelInstance.connectToComm(comms[commId].target_name, commId);
+    assignMsgHandlerToComm(comm, msgHandlers[comm.targetName]);
   }
 };
 

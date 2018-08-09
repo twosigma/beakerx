@@ -178,7 +178,7 @@ public class SparkUI extends VBox implements SparkUIApi {
     BeakerXServer beakerXServer = KernelManager.get().getBeakerXServer();
     RESTButton bkgButton = new RESTButton(beakerXServer.getURL() + PUT_SPARK_JOBS_IN_THE_BACKGROUND);
     bkgButton.setTooltip("put spark job in the background, let it complete asynchronously");
-    bkgButton.setDomClasses(new ArrayList<>(asList("bx-button", "icon-add")));
+    bkgButton.setDomClasses(new ArrayList<>(asList("bx-button", "icon-bg")));
     return bkgButton;
   }
 

@@ -59,12 +59,9 @@ export class RESTButtonView extends widgets.ButtonView {
   _handle_REST_click(event) {
     event.preventDefault();
 
-    this.api.restService({url: this.url})
-      .then(() => {
-        setTimeout(() => {
-          this.syncEnd()
-        }, 1000);
-      });
+    this.api
+      .restService({ url: this.url })
+      .catch((e) => { console.log(e); });
   }
 
 

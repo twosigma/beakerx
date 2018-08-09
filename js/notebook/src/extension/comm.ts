@@ -142,7 +142,6 @@ class BeakerxRestHandler {
     this.api.restService(data)
       .then(() => {
         setTimeout(() => {
-          this.syncEnd()
         }, 1000);
       });
   }

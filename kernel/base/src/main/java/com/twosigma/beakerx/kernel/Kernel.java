@@ -206,7 +206,7 @@ public abstract class Kernel implements KernelFunctionality {
 
   private void configureSignalHandler() {
     if (!isWindows()) {
-      addSigIntHandler(this::cancelExecution);
+      addSigIntHandler();
     }
   }
 

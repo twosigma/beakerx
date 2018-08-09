@@ -24,6 +24,7 @@ import io.javalin.Javalin;
 import org.jetbrains.annotations.NotNull;
 
 import static com.twosigma.beakerx.BeakerXClient.CODE_CELL_PATH;
+import static com.twosigma.beakerx.KernelInfoHandler.INTERRUPT;
 import static com.twosigma.beakerx.kernel.comm.GetCodeCellsHandler.INSTANCE;
 
 public abstract class BeakerXServerJavalin implements BeakerXServer {
@@ -63,6 +64,9 @@ public abstract class BeakerXServerJavalin implements BeakerXServer {
     server.post(CODE_CELL_PATH, ctx -> {
       String body = ctx.body();
       INSTANCE.handle(body);
+    });
+    server.post(INTERRUPT, ctx -> {
+      kernel.cancelExecution();
     });
   }
 

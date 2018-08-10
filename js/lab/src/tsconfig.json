@@ -9,7 +9,7 @@
     "types": ["node"],
     "module": "commonjs",
     "moduleResolution": "node",
-    "target": "ES5",
+    "target": "ES6",
     "outDir": "../dist"
   }
 }

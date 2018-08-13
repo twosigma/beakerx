@@ -30,6 +30,7 @@ import com.twosigma.beakerx.clojure.handlers.ClojureCommOpenHandler;
 import com.twosigma.beakerx.clojure.handlers.ClojureKernelInfoHandler;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.CacheFolderFactory;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.CustomMagicCommandsEmptyImpl;
@@ -47,7 +48,6 @@ import com.twosigma.beakerx.mimetype.MIMEContainer;
 import jupyter.Displayer;
 import jupyter.Displayers;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -57,12 +57,22 @@ import java.util.stream.Collectors;
 
 public class Clojure extends Kernel {
 
-  private Clojure(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CommRepository commRepository) {
-    super(sessionId, evaluator, kernelSocketsFactory, new CustomMagicCommandsEmptyImpl(), commRepository);
+  private Clojure(String sessionId,
+                  Evaluator evaluator,
+                  KernelSocketsFactory kernelSocketsFactory,
+                  CommRepository commRepository,
+                  BeakerXServer beakerXServer) {
+    super(sessionId, evaluator, kernelSocketsFactory, new CustomMagicCommandsEmptyImpl(), commRepository, beakerXServer);
   }
 
-  public Clojure(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction, CacheFolderFactory cacheFolderFactory, CommRepository commRepository) {
-    super(sessionId, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory, new CustomMagicCommandsEmptyImpl(), commRepository);
+  public Clojure(String sessionId,
+                 Evaluator evaluator,
+                 KernelSocketsFactory kernelSocketsFactory,
+                 CloseKernelAction closeKernelAction,
+                 CacheFolderFactory cacheFolderFactory,
+                 CommRepository commRepository,
+                 BeakerXServer beakerXServer) {
+    super(sessionId, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory, new CustomMagicCommandsEmptyImpl(), commRepository, beakerXServer);
   }
 
   @Override
@@ -84,7 +94,8 @@ public class Clojure extends Kernel {
               configurationFile);
       NamespaceClient namespaceClient = NamespaceClient.create(id, configurationFile, new ClojureBeakerXJsonSerializer(), beakerXCommRepository);
       ClojureEvaluator evaluator = new ClojureEvaluator(id, id, getKernelParameters(), namespaceClient);
-      return new Clojure(id, evaluator, kernelSocketsFactory, beakerXCommRepository);
+
+      return new Clojure(id, evaluator, kernelSocketsFactory, beakerXCommRepository, new ClojureBeakerXServer());
     });
   }
 

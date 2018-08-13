@@ -108,5 +108,10 @@ public class StartStopSparkListenerTest {
     public void stopSpinner() {
 
     }
+
+    @Override
+    public void taskCancelled(int stageId, long taskId) {
+
+    }
   }
 }

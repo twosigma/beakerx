@@ -17,10 +17,10 @@
 /// <reference path='../types/index.d.ts'/>
 
 import {registerCommTargets} from './comm';
+import BeakerXApi from "../tree/Utils/BeakerXApi";
 
 export namespace BeakerXKernel {
   const utils = require('base/js/utils');
-  let kernel_info;
 
   export function installHandler() {
     const kernel = Jupyter.notebook.kernel;
@@ -32,35 +32,49 @@ export namespace BeakerXKernel {
     });
   }
 
-  function getInfo(callBack) {
-    if (!kernel_info) {
-      Jupyter.notebook.kernel.kernel_info((result) => {
-        kernel_info = result.content;
-        console.log("kernel_info received:");
-        console.log(kernel_info);
-        callBack(kernel_info);
-      });
-    } else {
-      callBack(kernel_info);
+  function interrupt() {
+    if (Jupyter.notebook.kernel.info_reply.url_to_interrupt) {
+      interruptToKernel(Jupyter.notebook.kernel.info_reply.url_to_interrupt);
     }
   }
 
-  function interrupt() {
-    getInfo(function (info) {
-      if (info.beakerx) {
-        interruptToKernel();
-      }
-    });
+  function interruptToKernel(url_to_interrupt: string) {
+    let service = new BeakerxInterruptRestHandler();
+    service.post({"url": url_to_interrupt})
   }
 
-  function interruptToKernel() {
-    const kernel = Jupyter.notebook.kernel;
-    const kernel_control_target_name = "kernel.control.channel";
-    const comm = kernel.comm_manager.new_comm(kernel_control_target_name, null, null, null, utils.uuid());
-    const data = { kernel_interrupt: true };
+  class BeakerxInterruptRestHandler {
 
-    comm.send(data);
-    comm.close();
+    private api: BeakerXApi;
+
+    constructor() {
+      this.setApi()
+    }
+
+    private setApi() {
+      let baseUrl;
+
+      if (this.api) {
+        return;
+      }
+
+      try {
+        const coreutils = require('@jupyterlab/coreutils');
+        coreutils.PageConfig.getOption('pageUrl');
+        baseUrl = coreutils.PageConfig.getBaseUrl();
+      } catch (e) {
+        baseUrl = `${window.location.origin}/`;
+      }
+
+      this.api = new BeakerXApi(baseUrl);
+    }
+
+    public post(data) {
+      this.api
+        .restService(data)
+        .catch((err) => { console.log(err) });
+    }
+
   }
 
 }

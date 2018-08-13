@@ -34,7 +34,7 @@ public enum TargetNamesEnum {
     return targetName;
   }
   
-  public static synchronized TargetNamesEnum getType(final String input){
+  public static TargetNamesEnum getType(final String input){
     TargetNamesEnum ret = null;
     if(input != null){
       for (TargetNamesEnum item : TargetNamesEnum.values()) {

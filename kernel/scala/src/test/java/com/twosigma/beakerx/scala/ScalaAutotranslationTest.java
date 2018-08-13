@@ -18,6 +18,7 @@ package com.twosigma.beakerx.scala;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twosigma.beakerx.BeakerXCommRepositoryMock;
+import com.twosigma.beakerx.BeakerXServerMock;
 import com.twosigma.beakerx.KernelSetUpFixtureTest;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.NamespaceClientTest;
@@ -64,7 +65,14 @@ public class ScalaAutotranslationTest extends KernelSetUpFixtureTest {
             getTestTempFolderFactory(),
             EvaluatorTest.KERNEL_PARAMETERS,
             nc);
-    return new Scala(sessionId, evaluator, kernelSocketsFactory, closeKernelAction, getCacheFolderFactory(), new CustomMagicCommandsEmptyImpl(), new BeakerXCommRepositoryMock());
+    return new Scala(sessionId,
+            evaluator,
+            kernelSocketsFactory,
+            closeKernelAction,
+            getCacheFolderFactory(),
+            new CustomMagicCommandsEmptyImpl(),
+            new BeakerXCommRepositoryMock(),
+            BeakerXServerMock.create());
   }
 
 

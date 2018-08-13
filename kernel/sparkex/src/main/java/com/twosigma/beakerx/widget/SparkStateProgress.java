@@ -19,13 +19,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class SparkStateProgress extends VBox {
+public class SparkStateProgress extends HBox {
 
   public static final String VIEW_NAME_VALUE = "SparkStateProgressView";
   public static final String MODEL_NAME_VALUE = "SparkStateProgressModel";
   private int active = 0;
   private int done = 0;
   private int numberOfTasks = 0;
+  private int cancelled = 0;
   private int jobId;
   private int stageId;
   private String jobLink;
@@ -91,6 +92,11 @@ public class SparkStateProgress extends VBox {
     this.active -= 1;
     sendState();
   }
+  public synchronized void addCancelled() {
+    this.cancelled += 1;
+    this.active -= 1;
+    sendState();
+  }
 
   public synchronized void init() {
     this.done = 0;
@@ -107,6 +113,7 @@ public class SparkStateProgress extends VBox {
     state.put("done", this.done);
     state.put("active", this.active);
     state.put("numberOfTasks", this.numberOfTasks);
+    state.put("cancelled", this.cancelled);
     sendUpdate("state", state);
   }
 

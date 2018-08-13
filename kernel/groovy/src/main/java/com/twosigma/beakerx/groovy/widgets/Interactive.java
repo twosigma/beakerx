@@ -34,7 +34,7 @@ public class Interactive extends InteractiveBase {
   private static final Logger logger = LoggerFactory.getLogger(Interactive.class);
 
   @SuppressWarnings("unchecked")
-  public static synchronized void interact(MethodClosure function, Object... parameters) {
+  public static void interact(MethodClosure function, Object... parameters) {
 
     final List<ValueWidget<?>> widgets = widgetsFromAbbreviations(parameters);
 

@@ -40,6 +40,12 @@
   &.icon-add:before {
     content: "\f067" !important;
   }
+
+  &.icon-bg:before {
+    content: "&" !important;
+    font-family: "Lato", Helvetica, sans-serif;
+    font-weight: bold;
+  }
 }
 
 .bko-focused {

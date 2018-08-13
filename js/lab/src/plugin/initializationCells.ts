@@ -37,7 +37,6 @@ export function enableInitializationCellsFeature(panel: NotebookPanel): void {
 }
 
 export function runInitCells(panel: NotebookPanel, options: IInitCellsOptions): void {
-  panel.ready.then(() => {
     const cells: CodeCell[] = getInitCells(panel);
   
     handleUntrustedKernelInitCells(cells, options);
@@ -49,11 +48,10 @@ export function runInitCells(panel: NotebookPanel, options: IInitCellsOptions): 
     console.log(logPrefix, 'running all initialization cells');
     cells.forEach((cell: CodeCell) => CodeCell.execute(cell, panel.session));
     console.log(logPrefix, `finished running ${cells.length} initialization cell${(cells.length !== 1 ? 's' : '')}`);
-  });
 }
 
 export function getInitCells(panel: NotebookPanel): CodeCell[] {
-  let cells = panel.notebook.widgets || [];
+  const cells = panel.content.widgets || [];
 
   return <CodeCell[]>cells.filter(
     (cell: Cell) => ((cell instanceof CodeCell) && cell.model.metadata.get('init_cell'))

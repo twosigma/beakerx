@@ -129,7 +129,7 @@ class AutoCloseBracketsFeature implements IUIOptionsFeature {
   }
 
   private setOptionForNewAndExistingCells(autoClosingBrackets: boolean) {
-    this.panel.notebook.editorConfig.code.autoClosingBrackets = autoClosingBrackets;
+    this.panel.content.editorConfig.code.autoClosingBrackets = autoClosingBrackets;
 
     for (let cell of this.getCodeCells()) {
       cell.editor.setOption('autoClosingBrackets', autoClosingBrackets);
@@ -137,7 +137,8 @@ class AutoCloseBracketsFeature implements IUIOptionsFeature {
   }
 
   private getCodeCells(): CodeCell[] {
-    return <CodeCell[]>this.panel.notebook.widgets.filter((cell) => {
+    const cells = this.panel.content.widgets || [];
+    return <CodeCell[]>cells.filter((cell) => {
       return (cell instanceof CodeCell);
     });
   }

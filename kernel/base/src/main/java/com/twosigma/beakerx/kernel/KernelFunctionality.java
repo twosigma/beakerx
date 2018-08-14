@@ -24,6 +24,7 @@ import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.message.Message;
 
 import java.nio.file.Path;
@@ -98,4 +99,8 @@ public interface KernelFunctionality {
   MagicKernelManager getManagerByCommId(String commId);
 
   void addCommIdManagerMapping(String commId, String kernel);
+
+  void putEvaluationInToBackground();
+
+  BeakerXServer getBeakerXServer();
 }

@@ -15,70 +15,48 @@
  */
 package com.twosigma.beakerx.kernel.comm;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twosigma.beakerx.BeakerXClientManager;
 import com.twosigma.beakerx.CodeCell;
-import com.twosigma.beakerx.jvm.serialization.BasicObjectSerializer;
-import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
-import com.twosigma.beakerx.kernel.KernelFunctionality;
-import com.twosigma.beakerx.message.Message;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
+public class GetCodeCellsHandler {
 
+  public final static GetCodeCellsHandler INSTANCE = new GetCodeCellsHandler();
 
-public class GetCodeCellsHandler extends BaseHandler<Object> {
-
-  private static final String GET_CODE_CELLS = "code_cells";
   private ObjectMapper objectMapper;
-  private BeakerObjectConverter objectSerializer;
 
-  public GetCodeCellsHandler(KernelFunctionality kernel) {
-    super(kernel);
+  private GetCodeCellsHandler() {
     objectMapper = new ObjectMapper();
-    objectSerializer = new BasicObjectSerializer();
   }
 
-  @Override
-  public void handle(Message message) {
-    wrapBusyIdle(kernel, message, () -> {
-      handleMsg(message);
-    });
-  }
-
-  private void handleMsg(Message message) {
+  public void handle(String data) {
     try {
-      List<CodeCell> cells = getBeakerCodeCells(getValueFromData(message, getHandlerCommand()));
+      List<CodeCell> cells = getBeakerCodeCells(data);
       BeakerXClientManager.get().getMessageQueue("CodeCells").put(cells);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
   }
 
-  private List<CodeCell> getBeakerCodeCells(Object value) {
-    List<CodeCell> codeCellList = null;
-    StringWriter sw = new StringWriter();
-    JsonGenerator jgen = null;
+  private List<CodeCell> getBeakerCodeCells(String json) {
     try {
-      jgen = objectMapper.getFactory().createGenerator(sw);
-      objectSerializer.writeObject(value, jgen, true);
-      jgen.flush();
-      sw.flush();
-      codeCellList = Arrays.asList(objectMapper.readValue(sw.toString(), CodeCell[].class));
+      CodeCellWithBody codeCellWithBody = objectMapper.readValue(json, CodeCellWithBody.class);
+      return Arrays.asList(codeCellWithBody.code_cells);
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new RuntimeException(e);
     }
-
-    return codeCellList;
   }
 
-  @Override
-  public String getHandlerCommand() {
-    return GET_CODE_CELLS;
+  public static class CodeCellWithBody {
+    public CodeCell[] code_cells;
+    public String url;
+
+    public CodeCellWithBody() {
+    }
   }
+
 }

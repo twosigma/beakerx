@@ -57,7 +57,7 @@ public class BeakerCellExecutor implements CellExecutor {
   private void reset() {
     theLock.lock();
     thrFactory = new BeakerSingleThreadFactory(thrGroup, prefix);
-    worker = Executors.newSingleThreadExecutor(thrFactory);
+    worker = Executors.newCachedThreadPool(thrFactory);
     theLock.unlock();
   }
 

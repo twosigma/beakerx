@@ -62,13 +62,13 @@ public class SimpleEvaluationObject extends Observable {
     return showResult;
   }
 
-  public synchronized void started() {
+  public void started() {
     this.status = EvaluationStatus.RUNNING;
     setChanged();
     notifyObservers();
   }
 
-  public synchronized void finished(Object r) {
+  public void finished(Object r) {
     clrOutputHandler();
     this.status = EvaluationStatus.FINISHED;
     payload = r;
@@ -76,7 +76,7 @@ public class SimpleEvaluationObject extends Observable {
     notifyObservers();
   }
 
-  public synchronized void error(Object r) {
+  public void error(Object r) {
     clrOutputHandler();
     this.status = EvaluationStatus.ERROR;
     payload = r;
@@ -84,7 +84,7 @@ public class SimpleEvaluationObject extends Observable {
     notifyObservers();
   }
 
-  public synchronized void update(Object r) {
+  public void update(Object r) {
     this.status = EvaluationStatus.RUNNING;
     payload = r;
     setChanged();
@@ -95,11 +95,11 @@ public class SimpleEvaluationObject extends Observable {
     return expression;
   }
 
-  public synchronized EvaluationStatus getStatus() {
+  public EvaluationStatus getStatus() {
     return status;
   }
 
-  public synchronized Object getPayload() {
+  public Object getPayload() {
     return payload;
   }
 
@@ -133,11 +133,11 @@ public class SimpleEvaluationObject extends Observable {
     }
   }
 
-  public synchronized BeakerOutputHandler getStdOutputHandler() {
+  public BeakerOutputHandler getStdOutputHandler() {
     return stdout;
   }
 
-  public synchronized BeakerOutputHandler getStdErrorHandler() {
+  public BeakerOutputHandler getStdErrorHandler() {
     return stderr;
   }
 
@@ -209,11 +209,11 @@ public class SimpleEvaluationObject extends Observable {
     doAppendOutput(s);
   }
 
-  private synchronized int getSize() {
+  private  int getSize() {
     return outputdataCount;
   }
 
-  private synchronized void doAppendOutput(String s) {
+  private  void doAppendOutput(String s) {
     buildingout += s;
     String add = null;
     if (s.contains("\n")) {
@@ -272,7 +272,7 @@ public class SimpleEvaluationObject extends Observable {
     doAppendError(s);
   }
 
-  private synchronized void doAppendError(String s) {
+  private  void doAppendError(String s) {
     buildingerr += s;
     String add = null;
     if (s.contains("\n")) {

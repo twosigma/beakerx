@@ -24,6 +24,7 @@ import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.AddImportStatus;
+import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.ImportPath;
@@ -35,7 +36,6 @@ import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.kernel.PythonEntryPoint;
 import com.twosigma.beakerx.kernel.MagicKernelManager;
 import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandWhichThrowsException;
 import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver;
@@ -429,5 +429,15 @@ public class KernelTest implements KernelFunctionality {
 
   @Override
   public void addCommIdManagerMapping(String commId, String kernel) {
+  }
+
+  @Override
+  public void putEvaluationInToBackground() {
+
+  }
+
+  @Override
+  public BeakerXServer getBeakerXServer() {
+    return BeakerXServerMock.create();
   }
 }

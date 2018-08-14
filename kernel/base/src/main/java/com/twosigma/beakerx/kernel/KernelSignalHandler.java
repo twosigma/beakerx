@@ -23,14 +23,9 @@ class KernelSignalHandler {
 
   private static final Logger logger = LoggerFactory.getLogger(KernelSignalHandler.class);
 
-  static void addSigIntHandler(Action action) {
+  static void addSigIntHandler() {
     sun.misc.Signal.handle(new sun.misc.Signal("INT"), sig -> {
-      logger.info("Got " + sig.getName() + " signal, canceling cell execution");
-      action.execute();
+      logger.info("Got " + sig.getName() + " signal");
     });
-  }
-
-  interface Action {
-    void execute();
   }
 }

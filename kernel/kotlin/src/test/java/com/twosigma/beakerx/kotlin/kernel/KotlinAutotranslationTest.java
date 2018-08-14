@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.kotlin.kernel;
 
 import com.twosigma.beakerx.BeakerXCommRepositoryMock;
+import com.twosigma.beakerx.BeakerXServerMock;
 import com.twosigma.beakerx.DefaultBeakerXJsonSerializer;
 import com.twosigma.beakerx.KernelSetUpFixtureTest;
 import com.twosigma.beakerx.NamespaceClient;
@@ -43,75 +44,81 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class KotlinAutotranslationTest extends KernelSetUpFixtureTest {
 
-    private NamespaceClientTest.AutotranslationServiceTestImpl autotranslationService;
+  private NamespaceClientTest.AutotranslationServiceTestImpl autotranslationService;
 
-    @Override
-    protected KernelFunctionality createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
-        autotranslationService = new NamespaceClientTest.AutotranslationServiceTestImpl();
-        NamespaceClient nc = new NamespaceClient(autotranslationService, new DefaultBeakerXJsonSerializer(), new BeakerXCommRepositoryMock());
-        KotlinEvaluator evaluator = new KotlinEvaluator(sessionId, sessionId, cellExecutor(), getTestTempFolderFactory(), getEvaluatorParameters(), nc);
-        return new Kotlin(sessionId, evaluator, kernelSocketsFactory, closeKernelAction, getCacheFolderFactory(), new BeakerXCommRepositoryMock());
-    }
+  @Override
+  protected KernelFunctionality createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
+    autotranslationService = new NamespaceClientTest.AutotranslationServiceTestImpl();
+    NamespaceClient nc = new NamespaceClient(autotranslationService, new DefaultBeakerXJsonSerializer(), new BeakerXCommRepositoryMock());
+    KotlinEvaluator evaluator = new KotlinEvaluator(sessionId, sessionId, cellExecutor(), getTestTempFolderFactory(), getEvaluatorParameters(), nc);
+    return new Kotlin(sessionId,
+            evaluator,
+            kernelSocketsFactory,
+            closeKernelAction,
+            getCacheFolderFactory(),
+            new BeakerXCommRepositoryMock(),
+            BeakerXServerMock.create());
+  }
 
-    private EvaluatorParameters getEvaluatorParameters() {
-        KotlinDefaultVariables defaultVariables = new KotlinDefaultVariables();
-        HashMap kernelParameters = new HashMap();
-        kernelParameters.put(defaultVariables.IMPORTS, defaultVariables.getImports());
-        return new EvaluatorParameters(kernelParameters);
-    }
+  private EvaluatorParameters getEvaluatorParameters() {
+    KotlinDefaultVariables defaultVariables = new KotlinDefaultVariables();
+    HashMap kernelParameters = new HashMap();
+    kernelParameters.put(defaultVariables.IMPORTS, defaultVariables.getImports());
+    return new EvaluatorParameters(kernelParameters);
+  }
 
-    @Test
-    public void getAndSetAutotranslation() throws InterruptedException {
-        //given
-        String code = "beakerx[\"bar\"]  = mapOf(\"name\" to \"John\", \"lastName\" to \"Smith\", \"age\" to \"32\")\n" +
-                "(beakerx[\"bar\"] as Map<String, String>)[\"name\"]";
-        String value = "John";
-        //when
-        Message message = getExecuteRequestMessage(code);
-        kernelSocketsService.handleMsg(message);
-        //then
-        Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
-        assertThat(idleMessage).isPresent();
-        Message result = waitForResult(kernelSocketsService.getKernelSockets()).get();
-        verifyResultValue(result, value);
-    }
+  @Test
+  public void getAndSetAutotranslation() throws InterruptedException {
+    //given
+    String code = "beakerx[\"bar\"]  = mapOf(\"name\" to \"John\", \"lastName\" to \"Smith\", \"age\" to \"32\")\n" +
+            "(beakerx[\"bar\"] as Map<String, String>)[\"name\"]";
+    String value = "John";
+    //when
+    Message message = getExecuteRequestMessage(code);
+    kernelSocketsService.handleMsg(message);
+    //then
+    Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
+    assertThat(idleMessage).isPresent();
+    Message result = waitForResult(kernelSocketsService.getKernelSockets()).get();
+    verifyResultValue(result, value);
+  }
 
-    @Test
-    public void kotlinAutotranslationSetValue() throws InterruptedException {
-        //given
-        String code = "beakerx[\"bar\"]  = mapOf(\"key\" to \"value\")";
-        String serializedMap = "{\"type\":\"TableDisplay\",\"columnNames\":[\"Key\",\"Value\"],\"values\":[[\"key\",\"value\"]],\"subtype\":\"Dictionary\"}";
-        //when
-        Message message = getExecuteRequestMessage(code);
-        kernelSocketsService.handleMsg(message);
-        //then
-        Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
-        assertThat(idleMessage).isPresent();
-        String result = autotranslationService.get("bar");
-        assertThat(result).isEqualTo(serializedMap);
-    }
+  @Test
+  public void kotlinAutotranslationSetValue() throws InterruptedException {
+    //given
+    String code = "beakerx[\"bar\"]  = mapOf(\"key\" to \"value\")";
+    String serializedMap = "{\"type\":\"TableDisplay\",\"columnNames\":[\"Key\",\"Value\"],\"values\":[[\"key\",\"value\"]],\"subtype\":\"Dictionary\"}";
+    //when
+    Message message = getExecuteRequestMessage(code);
+    kernelSocketsService.handleMsg(message);
+    //then
+    Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
+    assertThat(idleMessage).isPresent();
+    String result = autotranslationService.get("bar");
+    assertThat(result).isEqualTo(serializedMap);
+  }
 
-    @Test
-    public void kotlinAutotranslationGetValue() throws InterruptedException {
-        //given
-        String code = "(beakerx[\"bar\"] as Map<String, String>)[\"key\"]";
-        String serializedMap = "{\"type\":\"TableDisplay\",\"columnNames\":[\"Key\",\"Value\"],\"values\":[[\"key\",\"value\"]],\"subtype\":\"Dictionary\"}";
-        String value = "value";
-        //when
-        autotranslationService.update("bar", serializedMap);
-        Message message = getExecuteRequestMessage(code);
-        kernelSocketsService.handleMsg(message);
-        //then
-        Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
-        assertThat(idleMessage).isPresent();
-        Message result = waitForResult(kernelSocketsService.getKernelSockets()).get();
-        verifyResultValue(result, value);
+  @Test
+  public void kotlinAutotranslationGetValue() throws InterruptedException {
+    //given
+    String code = "(beakerx[\"bar\"] as Map<String, String>)[\"key\"]";
+    String serializedMap = "{\"type\":\"TableDisplay\",\"columnNames\":[\"Key\",\"Value\"],\"values\":[[\"key\",\"value\"]],\"subtype\":\"Dictionary\"}";
+    String value = "value";
+    //when
+    autotranslationService.update("bar", serializedMap);
+    Message message = getExecuteRequestMessage(code);
+    kernelSocketsService.handleMsg(message);
+    //then
+    Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
+    assertThat(idleMessage).isPresent();
+    Message result = waitForResult(kernelSocketsService.getKernelSockets()).get();
+    verifyResultValue(result, value);
 
-    }
+  }
 
-    private void verifyResultValue(Message message, String value) {
-        Map actual = ((Map) message.getContent().get(Comm.DATA));
-        String result = (String) actual.get("text/plain");
-        assertThat(result).isEqualTo(value);
-    }
+  private void verifyResultValue(Message message, String value) {
+    Map actual = ((Map) message.getContent().get(Comm.DATA));
+    String result = (String) actual.get("text/plain");
+    assertThat(result).isEqualTo(value);
+  }
 }

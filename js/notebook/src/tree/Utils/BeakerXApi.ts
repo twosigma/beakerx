@@ -123,4 +123,29 @@ export default class BeakerXApi {
     }) ;
   }
 
+  public restService(data): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+
+      $.ajax(this.getApiUrl('rest'), {
+        method: "POST",
+        cache: false,
+        contentType: "aplication/json; charset=utf-8",
+        dataType: "text",
+        processData: false,
+        data: JSON.stringify(data),
+        headers: {
+          'X-XSRFToken': getCookie('_xsrf')
+        },
+        success: (data, status) => {
+          resolve();
+        },
+        error: (jqXHR, status, err) => {
+          reject(err);
+        }
+      });
+
+    }) ;
+  }
+
+
 }

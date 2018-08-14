@@ -32,6 +32,7 @@ import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandTypesFactory;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
+import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
 import com.twosigma.beakerx.message.Message;
 import org.slf4j.Logger;
@@ -67,12 +68,14 @@ public abstract class Kernel implements KernelFunctionality {
   private Map<String, MagicKernelManager> magicKernels;
   private Map<String, String> commKernelMapping;
   private CommRepository commRepository;
+  private BeakerXServer beakerXServer;
 
   public Kernel(final String sessionId,
                 final Evaluator evaluator,
                 final KernelSocketsFactory kernelSocketsFactory,
                 CustomMagicCommandsFactory customMagicCommands,
-                CommRepository commRepository) {
+                CommRepository commRepository,
+                BeakerXServer beakerXServer) {
     this(
             sessionId,
             evaluator,
@@ -80,7 +83,8 @@ public abstract class Kernel implements KernelFunctionality {
             () -> System.exit(0),
             new EnvCacheFolderFactory(),
             customMagicCommands,
-            commRepository);
+            commRepository,
+            beakerXServer);
   }
 
   protected Kernel(final String sessionId,
@@ -89,13 +93,15 @@ public abstract class Kernel implements KernelFunctionality {
                    CloseKernelAction closeKernelAction,
                    CacheFolderFactory cacheFolderFactory,
                    CustomMagicCommandsFactory customMagicCommands,
-                   CommRepository commRepository) {
+                   CommRepository commRepository,
+                   BeakerXServer beakerXServer) {
     this.sessionId = sessionId;
     this.cacheFolderFactory = cacheFolderFactory;
     this.kernelSocketsFactory = kernelSocketsFactory;
     this.closeKernelAction = closeKernelAction;
     this.customMagicCommands = customMagicCommands;
     this.commRepository = commRepository;
+    this.beakerXServer = beakerXServer;
     this.executionResultSender = new ExecutionResultSender(this);
     this.evaluator = evaluator;
     this.handlers = new KernelHandlers(this, getCommOpenHandler(this), getKernelInfoHandler(this));
@@ -149,12 +155,12 @@ public abstract class Kernel implements KernelFunctionality {
     return OS.contains("win");
   }
 
-  public synchronized void updateEvaluatorParameters(final EvaluatorParameters kernelParameters) {
+  public void updateEvaluatorParameters(final EvaluatorParameters kernelParameters) {
     evaluator.updateEvaluatorParameters(kernelParameters);
   }
 
   @Override
-  public synchronized void cancelExecution() {
+  public void cancelExecution() {
     evaluator.cancelExecution();
   }
 
@@ -166,23 +172,23 @@ public abstract class Kernel implements KernelFunctionality {
     return commRepository.getCommHashSet();
   }
 
-  public synchronized void addComm(String hash, Comm commObject) {
+  public void addComm(String hash, Comm commObject) {
     commRepository.addComm(hash, commObject);
   }
 
-  public synchronized Comm getComm(String hash) {
+  public Comm getComm(String hash) {
     return commRepository.getComm(hash);
   }
 
-  public synchronized void removeComm(String hash) {
+  public void removeComm(String hash) {
     commRepository.removeComm(hash);
   }
 
-  public synchronized void publish(List<Message> message) {
+  public void publish(List<Message> message) {
     this.kernelSockets.publish(message);
   }
 
-  public synchronized void send(Message message) {
+  public void send(Message message) {
     this.kernelSockets.send(message);
   }
 
@@ -200,7 +206,7 @@ public abstract class Kernel implements KernelFunctionality {
 
   private void configureSignalHandler() {
     if (!isWindows()) {
-      addSigIntHandler(this::cancelExecution);
+      addSigIntHandler();
     }
   }
 
@@ -325,5 +331,14 @@ public abstract class Kernel implements KernelFunctionality {
   @Override
   public void addCommIdManagerMapping(String commId, String kernel) {
     commKernelMapping.put(commId, kernel);
+  }
+
+  public void putEvaluationInToBackground() {
+    evaluator.putEvaluationInToBackground();
+  }
+
+  @Override
+  public BeakerXServer getBeakerXServer() {
+    return beakerXServer.get(this);
   }
 }

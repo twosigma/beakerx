@@ -18,7 +18,6 @@ package com.twosigma.beakerx.javash.kernel;
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.kernel.Utils.uuid;
 
-import com.twosigma.beakerx.AutotranslationServiceImpl;
 import com.twosigma.beakerx.BeakerXCommRepository;
 import com.twosigma.beakerx.CommRepository;
 import com.twosigma.beakerx.NamespaceClient;
@@ -27,6 +26,7 @@ import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.javash.comm.JavaCommOpenHandler;
 import com.twosigma.beakerx.javash.evaluator.JavaEvaluator;
 import com.twosigma.beakerx.javash.handler.JavaKernelInfoHandler;
+import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.CacheFolderFactory;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.CustomMagicCommandsEmptyImpl;
@@ -39,18 +39,34 @@ import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.message.Message;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 
 public class Java extends Kernel {
 
-  private Java(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CommRepository commRepository) {
-    super(id, evaluator, kernelSocketsFactory, new CustomMagicCommandsEmptyImpl(), commRepository);
+  private Java(final String id,
+               final Evaluator evaluator,
+               KernelSocketsFactory kernelSocketsFactory,
+               CommRepository commRepository,
+               BeakerXServer beakerXServer) {
+    super(id, evaluator, kernelSocketsFactory, new CustomMagicCommandsEmptyImpl(), commRepository, beakerXServer);
   }
 
-  public Java(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction, CacheFolderFactory cacheFolderFactory, CommRepository commRepository) {
-    super(id, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory, new CustomMagicCommandsEmptyImpl(), commRepository);
+  public Java(final String id,
+              final Evaluator evaluator,
+              KernelSocketsFactory kernelSocketsFactory,
+              CloseKernelAction closeKernelAction,
+              CacheFolderFactory cacheFolderFactory,
+              CommRepository commRepository,
+              BeakerXServer beakerXServer) {
+    super(id,
+            evaluator,
+            kernelSocketsFactory,
+            closeKernelAction,
+            cacheFolderFactory,
+            new CustomMagicCommandsEmptyImpl(),
+            commRepository,
+            beakerXServer);
   }
 
   @Override
@@ -63,7 +79,7 @@ public class Java extends Kernel {
     return new JavaKernelInfoHandler(kernel);
   }
 
-  public static void main(final String[] args) throws InterruptedException, IOException {
+  public static void main(final String[] args) {
     KernelRunner.run(() -> {
       String id = uuid();
       CommRepository commRepository = new BeakerXCommRepository();
@@ -74,7 +90,7 @@ public class Java extends Kernel {
               id,
               getKernelParameters(),
               NamespaceClient.create(id, configurationFile, commRepository));
-      return new Java(id, e, kernelSocketsFactory, commRepository);
+      return new Java(id, e, kernelSocketsFactory, commRepository, new JavaBeakerXServer());
     });
   }
 

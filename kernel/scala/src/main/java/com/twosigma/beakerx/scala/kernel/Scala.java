@@ -23,6 +23,7 @@ import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
+import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.CacheFolderFactory;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.CustomMagicCommandsFactory;
@@ -54,8 +55,8 @@ import static com.twosigma.beakerx.kernel.Utils.uuid;
 
 public class Scala extends Kernel {
 
-  private Scala(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CommRepository commRepository) {
-    super(id, evaluator, kernelSocketsFactory, new CustomMagicCommandsImpl(), commRepository);
+  private Scala(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CommRepository commRepository, BeakerXServer beakerXServer) {
+    super(id, evaluator, kernelSocketsFactory, new CustomMagicCommandsImpl(), commRepository, beakerXServer);
   }
 
   public Scala(final String id, final Evaluator evaluator,
@@ -63,8 +64,9 @@ public class Scala extends Kernel {
                CloseKernelAction closeKernelAction,
                CacheFolderFactory cacheFolderFactory,
                CustomMagicCommandsFactory customMagicCommandsFactory,
-               CommRepository commRepository) {
-    super(id, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory, customMagicCommandsFactory, commRepository);
+               CommRepository commRepository,
+               BeakerXServer beakerXServer) {
+    super(id, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory, customMagicCommandsFactory, commRepository, beakerXServer);
   }
 
   @Override
@@ -92,7 +94,7 @@ public class Scala extends Kernel {
               new TempFolderFactoryImpl(),
               getKernelParameters(),
               namespaceClient);
-      return new Scala(id, se, kernelSocketsFactory, commRepository);
+      return new Scala(id, se, kernelSocketsFactory, commRepository, new ScalaBeakerXServer());
     });
   }
 

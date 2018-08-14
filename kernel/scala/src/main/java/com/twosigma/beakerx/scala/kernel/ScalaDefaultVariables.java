@@ -32,6 +32,7 @@ public class ScalaDefaultVariables extends DefaultJVMVariables {
         "com.twosigma.beakerx.chart.heatmap.HeatMap",
         "com.twosigma.beakerx.chart.histogram.*",
         "com.twosigma.beakerx.chart.treemap.*",
+        "com.twosigma.beakerx.chart.GradientColor",
         "com.twosigma.beakerx.table.*"
     );
 
@@ -43,6 +44,7 @@ public class ScalaDefaultVariables extends DefaultJVMVariables {
         "com.twosigma.beakerx.scala.chart.heatmap.HeatMap",
         "com.twosigma.beakerx.scala.chart.histogram.Histogram",
         "com.twosigma.beakerx.scala.chart.treemap.TreeMap",
+        "com.twosigma.beakerx.scala.chart.GradientColor",
         "com.twosigma.beakerx.scala.easyform.EasyForm",
         "com.twosigma.beakerx.easyform.formitem._",
         "com.twosigma.beakerx.scala.table._",

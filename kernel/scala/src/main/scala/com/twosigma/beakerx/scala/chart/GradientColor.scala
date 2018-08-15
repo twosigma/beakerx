@@ -24,4 +24,8 @@ class GradientColor[T <: AnyRef : BeakerColor](colors: Seq[T]) extends
 
 object GradientColor {
   def apply[T <: AnyRef : BeakerColor](colors: T*) = new GradientColor(colors)
+
+val GREEN_YELLOW_WHITE = com.twosigma.beakerx.chart.GradientColor.GREEN_YELLOW_WHITE
+val BROWN_RED_YELLOW = com.twosigma.beakerx.chart.GradientColor.BROWN_RED_YELLOW
+val WHITE_BLUE = com.twosigma.beakerx.chart.GradientColor.WHITE_BLUE
 }

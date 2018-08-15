@@ -18,6 +18,7 @@ package com.twosigma.beakerx;
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.ConfigurationFile;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
 
@@ -51,18 +52,18 @@ public class NamespaceClient implements BeakerXClient {
   }
 
   @Override
-  public synchronized void showProgressUpdate(String message, int progress) {
+  public void showProgressUpdate(String message, int progress) {
     SimpleEvaluationObject seo = InternalVariable.getSimpleEvaluationObject();
     seo.structuredUpdate(message, progress);
   }
 
   @Override
-  public synchronized void delBeaker() {
+  public void delBeaker() {
     autotranslationService.close();
   }
 
   @Override
-  public synchronized Object get(final String name) {
+  public Object get(final String name) {
     String json = autotranslationService.get(name);
     if ("undefined".equals(json)) {
       throw new RuntimeException("name '" + name + "' is not defined on the beakerx object");
@@ -71,7 +72,7 @@ public class NamespaceClient implements BeakerXClient {
   }
 
   @Override
-  public synchronized String update(String name, Object value) {
+  public String update(String name, Object value) {
     try {
       String json = getJson(value);
       autotranslationService.update(name, json);
@@ -82,7 +83,7 @@ public class NamespaceClient implements BeakerXClient {
   }
 
   @Override
-  public synchronized Object set(String name, Object value) {
+  public Object set(String name, Object value) {
     String json = update(name, value);
     try {
       Comm c = commRepository.getOrCreateAutotranslationComm();
@@ -149,6 +150,7 @@ public class NamespaceClient implements BeakerXClient {
       HashMap<String, Serializable> state = new HashMap<>();
       state.put("name", "CodeCells");
       state.put("value", getJson(tagFilter));
+      data.put("url", KernelManager.get().getBeakerXServer().getURL() + CODE_CELL_PATH);
       data.put("state", state);
       data.put("buffer_paths", new HashMap<>());
       c.send(COMM_MSG, Comm.Buffer.EMPTY, new Comm.Data(data));
@@ -161,7 +163,7 @@ public class NamespaceClient implements BeakerXClient {
   }
 
   @Override
-  public synchronized void runByTag(String tag) {
+  public void runByTag(String tag) {
     Comm c = getTagRunComm();
     HashMap<String, Serializable> data = new HashMap<>();
     HashMap<String, Serializable> state = new HashMap<>();

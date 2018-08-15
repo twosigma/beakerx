@@ -17,9 +17,11 @@ package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.InternalVariable;
+import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.msg.StacktraceHtmlPrinter;
+import com.twosigma.beakerx.kernel.restserver.Context;
 import com.twosigma.beakerx.message.Message;
 import org.apache.spark.sql.SparkSession;
 
@@ -42,12 +44,13 @@ public class SparkUI extends VBox implements SparkUIApi {
   public static final String SPARK_EXECUTOR_CORES_DEFAULT = "10";
   public static final String SPARK_EXECUTOR_MEMORY_DEFAULT = "8g";
   public static final Map<String, String> SPARK_ADVANCED_OPTIONS_DEFAULT = new HashMap<>();
+  public static final String PUT_SPARK_JOBS_IN_THE_BACKGROUND = "putSparkJobsInTheBackground";
+  public static final String CANCELLED_SPARK_JOBS = "cancelledSparkJobs";
 
 
   private final SparkUIForm sparkUIForm;
-  private VBox sparkUIFormPanel;
   private HBox statusPanel;
-  private Map<Integer, SparkStateProgress> progressBarMap = new HashMap<>();
+  private Map<Integer, SparkStateGroupPanel> progressBarMap = new HashMap<>();
   private SparkFoldout jobPanel = null;
   private Message currentParentHeader = null;
   private SparkEngine sparkEngine;
@@ -60,11 +63,12 @@ public class SparkUI extends VBox implements SparkUIApi {
     this.singleSparkSession = singleSparkSession;
     this.sparkUiDefaults.loadDefaults(builder);
     this.sparkEngine = sparkEngineFactory.create(builder);
-    this.sparkUIFormPanel = new VBox(new ArrayList<>());
+    VBox sparkUIFormPanel = new VBox(new ArrayList<>());
     add(sparkUIFormPanel);
     SparkVariable.putSparkUI(this);
     this.sparkUIForm = new SparkUIForm(sparkEngine, sparkUiDefaults, this::initSparkContext);
-    this.sparkUIFormPanel.add(sparkUIForm);
+    sparkUIFormPanel.add(sparkUIForm);
+    this.configureRESTMapping();
   }
 
   @Override
@@ -134,7 +138,7 @@ public class SparkUI extends VBox implements SparkUIApi {
   }
 
   private void applicationStart() {
-    this.statusPanel = new SparkUIStatus(message -> getSparkSession().sparkContext().stop());
+    this.statusPanel = new SparkUIStatus(() -> getSparkSession().sparkContext().stop());
     this.sparkUIForm.setDomClasses(new ArrayList<>(asList("bx-disabled")));
     add(0, this.statusPanel);
     sendUpdate(SPARK_APP_ID, sparkEngine.getSparkAppId());
@@ -163,8 +167,27 @@ public class SparkUI extends VBox implements SparkUIApi {
     }
     SparkStateProgress intProgress = new SparkStateProgress(numTasks, stageId, stageId, jobLink(stageId), stageLink(stageId));
     intProgress.init();
-    jobPanel.add(intProgress);
-    progressBarMap.put(stageId, intProgress);
+    Widget xButton = createCancelledJobsButton(stageId);
+    Widget bkgButton = createBkgJobsButton(stageId);
+    SparkStateGroupPanel sparkProgressDecorator = new SparkStateGroupPanel(intProgress, asList(xButton, bkgButton));
+    jobPanel.add(sparkProgressDecorator);
+    progressBarMap.put(stageId, sparkProgressDecorator);
+  }
+
+  private Widget createBkgJobsButton(int stageId) {
+    BeakerXServer beakerXServer = KernelManager.get().getBeakerXServer();
+    RESTButton bkgButton = new RESTButton(beakerXServer.getURL() + PUT_SPARK_JOBS_IN_THE_BACKGROUND);
+    bkgButton.setTooltip("put spark job in the background, let it complete asynchronously");
+    bkgButton.setDomClasses(new ArrayList<>(asList("bx-button", "icon-bg")));
+    return bkgButton;
+  }
+
+  private Widget createCancelledJobsButton(int stageId) {
+    BeakerXServer beakerXServer = KernelManager.get().getBeakerXServer();
+    RESTButton xButton = new RESTButton(beakerXServer.getURL() + CANCELLED_SPARK_JOBS + "/" + stageId);
+    xButton.setTooltip("interrupt spark job");
+    xButton.setDomClasses(new ArrayList<>(asList("bx-button", "icon-close")));
+    return xButton;
   }
 
   private boolean isStartStageFromNewCell() {
@@ -186,18 +209,23 @@ public class SparkUI extends VBox implements SparkUIApi {
   }
 
   public void endStage(int stageId) {
-    SparkStateProgress sparkStateProgress = progressBarMap.get(stageId);
-    sparkStateProgress.hide();
+    SparkStateGroupPanel decorator = progressBarMap.get(stageId);
+    decorator.getSparkStateProgress().hide();
   }
 
   public void taskStart(int stageId, long taskId) {
-    SparkStateProgress intProgress = progressBarMap.get(stageId);
-    intProgress.addActive();
+    SparkStateGroupPanel decorator = progressBarMap.get(stageId);
+    decorator.getSparkStateProgress().addActive();
   }
 
   public void taskEnd(int stageId, long taskId) {
-    SparkStateProgress intProgress = progressBarMap.get(stageId);
-    intProgress.addDone();
+    SparkStateGroupPanel decorator = progressBarMap.get(stageId);
+    decorator.getSparkStateProgress().addDone();
+  }
+
+  public void taskCancelled(int stageId, long taskId) {
+    SparkStateGroupPanel decorator = progressBarMap.get(stageId);
+    decorator.getSparkStateProgress().addCancelled();
   }
 
   private String stageLink(int stageId) {
@@ -236,20 +264,6 @@ public class SparkUI extends VBox implements SparkUIApi {
     return this.sparkUIForm.getAdvancedOptions();
   }
 
-  private void clearSparkUIFormPanel() {
-    if (sparkUIFormPanel != null) {
-      remove(sparkUIFormPanel);
-      sparkUIFormPanel = null;
-    }
-  }
-
-  private void addSparkUIFormPanel() {
-    if (sparkUIFormPanel == null) {
-      this.sparkUIFormPanel = new VBox(asList(this.sparkUIForm));
-      add(sparkUIFormPanel);
-    }
-  }
-
   public Button getConnectButton() {
     return this.sparkUIForm.getConnectButton();
   }
@@ -279,4 +293,19 @@ public class SparkUI extends VBox implements SparkUIApi {
   public interface OnSparkButtonAction {
     void run(Message message);
   }
+
+  @FunctionalInterface
+  public interface OnSparkRestButtonAction {
+    void run();
+  }
+
+  private void configureRESTMapping() {
+    KernelFunctionality kernel = KernelManager.get();
+    BeakerXServer beakerXServer = kernel.getBeakerXServer();
+    beakerXServer.addPostMapping(PUT_SPARK_JOBS_IN_THE_BACKGROUND,
+            (Context ctx) -> kernel.putEvaluationInToBackground());
+    beakerXServer.addPostMapping(CANCELLED_SPARK_JOBS + "/:stageId",
+            (Context ctx) -> getSparkSession().sparkContext().cancelStage(Integer.parseInt(ctx.param("stageId"))));
+  }
+
 }

@@ -15,8 +15,8 @@
  */
 package com.twosigma.beakerx.groovy.kernel;
 
-import com.twosigma.beakerx.BeakerXCommRepository;
 import com.twosigma.beakerx.BeakerXCommRepositoryMock;
+import com.twosigma.beakerx.BeakerXServerMock;
 import com.twosigma.beakerx.KernelExecutionTest;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.Code;
@@ -26,7 +26,6 @@ import com.twosigma.beakerx.kernel.Utils;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.magic.command.CodeFactory;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
-import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widget.OutputManager;
 import org.junit.Test;
@@ -55,7 +54,13 @@ public class GroovyKernelTest extends KernelExecutionTest {
 
   @Override
   protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
-    return new Groovy(sessionId, groovyEvaluator(), kernelSocketsFactory, closeKernelAction, getCacheFolderFactory(), new BeakerXCommRepositoryMock());
+    return new Groovy(sessionId,
+            groovyEvaluator(),
+            kernelSocketsFactory,
+            closeKernelAction,
+            getCacheFolderFactory(),
+            new BeakerXCommRepositoryMock(),
+            BeakerXServerMock.create());
   }
 
   @Test

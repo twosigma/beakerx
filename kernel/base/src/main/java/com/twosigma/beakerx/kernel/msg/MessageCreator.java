@@ -160,7 +160,7 @@ public class MessageCreator {
     return reply;
   }
 
-  public static synchronized List<MessageHolder> createMessage(SimpleEvaluationObject seo) {
+  public static List<MessageHolder> createMessage(SimpleEvaluationObject seo) {
     logger.debug("Creating message response message from: " + seo);
     Message message = seo.getJupyterMessage();
     List<MessageHolder> ret = new ArrayList<>();

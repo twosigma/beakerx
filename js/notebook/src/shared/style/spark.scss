@@ -41,16 +41,32 @@
   background-color: $bxColorDefault;
 }
 
-.bx-spark-stagePanel {
-  max-width: 600px;
+.bx-spark-stageGroupPanel {
   margin: 8px 0;
 }
 
+.bx-spark-stagePanel {
+  margin: 8px 0;
+}
+
+.bx-spark-stageGroupPanel .jupyter-button {
+  overflow: visible;
+}
+
+.bx-spark-state-progress-box {
+  max-width: 500px;
+  width: 100%;
+}
+
 .foldout-preview {
-  & > .bx-spark-stagePanel {
+  & > .bx-spark-stageGroupPanel {
     padding: 0 15px;
     margin: 0;
   }
+}
+
+.spark-foldout-preview {
+  max-width: 530px;
 }
 
 .bx-panel {
@@ -87,6 +103,7 @@
   &.active { background-color: $bxColorInfo; }
   &.waiting { background-color: $bxColorWarning; }
   &.all { background-color: $bxColorDefault; }
+  &.error { background-color: $bxColorError; }
 }
 
 .bx-spark-stageProgressBar {
@@ -104,24 +121,23 @@
   &.done { background-color: $bxColorSuccess; }
   &.active { background-color: $bxColorInfo; }
   &.waiting { background-color: $bxColorWarning; }
+  &.cancelled { background-color: $bxColorError; }
 }
 
 .bx-row {
   display: flex;
+  width: 100%;
   .bx-text-right {
     text-align: right;
-  }
-  .bx-col-xs-2 {
-    display: inline-block;
-    width: 16.66%;
+    white-space: nowrap;
   }
   .bx-col-xs-4 {
     display: inline-block;
-    width: 33.33%;
+    white-space: nowrap;
   }
   .bx-col-xs-6 {
     display: inline-block;
-    width: 50%;
+    width: 100%;
   }
 }
 

@@ -18,6 +18,7 @@ package com.twosigma.beakerx.clojure.kernel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twosigma.beakerx.BeakerXCommRepositoryMock;
+import com.twosigma.beakerx.BeakerXServerMock;
 import com.twosigma.beakerx.KernelSetUpFixtureTest;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.NamespaceClientTest;
@@ -52,7 +53,13 @@ public class ClojureAutotranslationTest extends KernelSetUpFixtureTest {
     autotranslationService = new NamespaceClientTest.AutotranslationServiceTestImpl();
     NamespaceClient nc = new NamespaceClient(autotranslationService, new ClojureBeakerXJsonSerializer(), new BeakerXCommRepositoryMock());
     ClojureEvaluator evaluator = new ClojureEvaluator(sessionId, sessionId, cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS, nc);
-    return new Clojure(sessionId, evaluator, kernelSocketsFactory, closeKernelAction, getCacheFolderFactory(), new BeakerXCommRepositoryMock());
+    return new Clojure(sessionId,
+            evaluator,
+            kernelSocketsFactory,
+            closeKernelAction,
+            getCacheFolderFactory(),
+            new BeakerXCommRepositoryMock(),
+            BeakerXServerMock.create());
   }
 
   @Test

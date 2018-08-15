@@ -56,7 +56,7 @@ public enum JupyterMessages {
     return this.name().toLowerCase();
   }
   
-  public static synchronized JupyterMessages getType(final String input){
+  public static JupyterMessages getType(final String input){
     JupyterMessages ret = null;
     if(input != null){
       for (JupyterMessages item : JupyterMessages.values()) {

@@ -21,12 +21,12 @@ import static java.util.Arrays.asList;
 
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import org.slf4j.Logger;
@@ -37,6 +37,7 @@ public abstract class KernelInfoHandler extends KernelHandler<Message> {
   private final static Logger logger = LoggerFactory.getLogger(KernelInfoHandler.class);
   public static final String PROTOCOL_VERSION = "protocol_version";
   public static final String PROTOCOL_VERSION_NUMBER = "5.1";
+  public static final String INTERRUPT = "interrupt";
 
   public KernelInfoHandler(KernelFunctionality kernel) {
     super(kernel);
@@ -69,6 +70,7 @@ public abstract class KernelInfoHandler extends KernelHandler<Message> {
     map.put("help_links", getHelpLinks());
     map.put("beakerx", true);
     map.put("status", "ok");
+    map.put("url_to_interrupt", KernelManager.get().getBeakerXServer().getURL()+ INTERRUPT);
     return doContent(map);
   }
 

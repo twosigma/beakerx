@@ -37,6 +37,11 @@ export class SparkFoldoutView extends Foldout.FoldoutView {
 
     return panels.item(panels.length - 1) as HTMLElement;
   }
+
+  addCustomStyleToPreviewContainer(node: HTMLElement):void {
+    node.classList.add('spark-foldout-preview');
+  }
+
 }
 
 export default {

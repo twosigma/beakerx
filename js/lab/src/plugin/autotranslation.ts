@@ -23,12 +23,8 @@ export namespace Autotranslation {
   export const TABLE_FOCUSED = 'tableFocused';
 
   export function proxify(beakerxInstance: any, kernelInstance): Proxy<any> {
-    let autotranslationComm;
-
-    kernelInstance.connectToComm(BEAKER_AUTOTRANSLATION)['then'](comm => {
-      autotranslationComm = comm;
-      autotranslationComm.open();
-    });
+    let autotranslationComm = kernelInstance.connectToComm(BEAKER_AUTOTRANSLATION);
+    autotranslationComm.open();
 
     const handler = {
       get(obj, prop) {

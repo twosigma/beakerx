@@ -40,6 +40,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -60,6 +61,7 @@ public abstract class BaseEvaluator implements Evaluator {
   private EvaluatorHooks cancelHooks = new EvaluatorHooks();
 
   protected ExecutorService executorService;
+  protected ExecutorService executorBgkService;
 
   public BaseEvaluator(String id,
                        String sId,
@@ -76,21 +78,35 @@ public abstract class BaseEvaluator implements Evaluator {
     classPath = new Classpath();
     classPath.add(new PathToJar(outDir));
     inspect = new Inspect();
-    executorService = Executors.newSingleThreadExecutor();
+    executorService = Executors.newCachedThreadPool();
+    executorBgkService = Executors.newCachedThreadPool();
     this.evaluatorParameters = evaluatorParameters;
     init(evaluatorParameters);
   }
 
+  CompletableFuture<TryResult> background;
+
   protected TryResult evaluate(SimpleEvaluationObject seo, Callable<TryResult> callable) {
-    InternalVariable.setValue(seo);
-    Future<TryResult> submit = executorService.submit(callable);
-    TryResult either = null;
     try {
-      either = submit.get();
+      background = CompletableFuture.supplyAsync(() -> {
+        try {
+          InternalVariable.setValue(seo);
+          Future<TryResult> submit = executorService.submit(callable);
+          return submit.get();
+        } catch (Exception e) {
+          throw new RuntimeException(e);
+        }
+      }, executorBgkService);
+
+      return background.get();
     } catch (Exception e) {
-      either = TryResult.createError(e.getLocalizedMessage());
+      return TryResult.createError(e.getLocalizedMessage());
     }
-    return either;
+  }
+
+  @Override
+  public void putEvaluationInToBackground() {
+    background.complete(TryResult.createResult("Evaluation in the background"));
   }
 
   protected abstract void addJarToClassLoader(PathToJar pathToJar);

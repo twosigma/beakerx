@@ -20,14 +20,12 @@ import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.kernel.comm.AutotranslationHandler;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.kernel.comm.KernelControlCommandListHandler;
-import com.twosigma.beakerx.kernel.comm.KernelControlInterrupt;
 import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 
 public class KotlinCommOpenHandler extends CommOpenHandler{
 
  private Handler<?>[] KERNEL_CONTROL_CHANNEL_HANDLERS = {
-     new KernelControlInterrupt(kernel),
      new KernelControlCommandListHandler(kernel)};
 
  private Handler<?>[] AUTOTRANSLATION_HANDLER = {

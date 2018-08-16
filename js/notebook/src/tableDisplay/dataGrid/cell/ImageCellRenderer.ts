@@ -69,7 +69,7 @@ export default class ImageCellRenderer extends CellRenderer {
     gc.rect(x, y, width, height - 1);
     gc.clip();
 
-    img.src = `${config.value}`;
+    img.src = this.prepareImageSrc(config);
 
     if (!img.complete) {
       img.onload = () => {
@@ -99,5 +99,26 @@ export default class ImageCellRenderer extends CellRenderer {
 
       column.dataGrid.dataGridResize.updateWidgetHeight();
     });
+  }
+
+  private prepareImageSrc(config): string {
+    let baseUrl;
+
+    if (config.value[0] !== '.') {
+      return `${ config.value }`;
+    }
+
+    try {
+      const coreutils = require('@jupyterlab/coreutils');
+      coreutils.PageConfig.getOption('pageUrl');
+      baseUrl = coreutils.PageConfig.getBaseUrl();
+
+    } catch (e) {
+      baseUrl = `${window.location.origin}/`;
+    }
+
+    let notebookPath = `${ baseUrl }${ document.body.dataset.notebookPath}`;
+
+    return  '/files' + new URL(config.value, notebookPath).pathname;
   }
 }

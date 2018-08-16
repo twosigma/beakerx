@@ -46,6 +46,7 @@ export default class UIOptionFeaturesHelper {
       if (args.newValue !== this.panel) {
         return;
       }
+      document.body.dataset.notebookPath = this.panel.context.path;
       this.onActiveChanged();
     });
 

@@ -69,7 +69,7 @@ ENV SHELL /bin/bash
 ENV NB_UID 1000
 ENV HOME /home/$NB_USER
 
-COPY . /home/beakerx
+COPY beakerx environment.yml jitpack.yml js kernel test /home/beakerx/
 COPY docker/setup.sh / $HOME/
 COPY docker/start.sh docker/start-notebook.sh docker/start-singleuser.sh /usr/local/bin/
 COPY docker/jupyter_notebook_config.py /etc/jupyter/
@@ -82,6 +82,9 @@ WORKDIR $HOME
 #      Build      #
 ###################
 RUN /home/beakerx/setup.sh
+
+# Add documentation
+COPY NOTICE README.md StartHere.ipynb doc /home/beakerx/
 
 USER $NB_USER
 

@@ -40,21 +40,27 @@ ENV PATH /opt/conda/bin:$PATH
 ENV NB_USER beakerx
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update && \
-	apt-get install -y --no-install-recommends apt-utils sudo curl unzip software-properties-common apt-transport-https git bzip2 wget locales && \
-	apt-get dist-upgrade -y && \
-	locale-gen en_US.UTF-8 && \
-    echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends apt-utils sudo curl unzip software-properties-common apt-transport-https git bzip2 wget locales
+RUN apt-get dist-upgrade -y
+RUN locale-gen en_US.UTF-8
+
+# Install Yarn
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+	echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+	apt-get update && apt-get install yarn -y
+
+# Install Conda
+RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
     wget --quiet https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
     /bin/bash ~/miniconda.sh -b -p /opt/conda && \
-    rm ~/miniconda.sh && \
-	curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-	echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
-	apt-get update && apt-get install yarn -y && \
-	apt-get clean && \
-	conda create -y -n beakerx 'python>=3' nodejs pandas openjdk maven py4j && \
-    conda config --env --add pinned_packages 'openjdk >8.0.121' && \
-	conda install -y -n beakerx -c conda-forge ipywidgets jupyterhub jupyterlab pyzmq pytest requests
+    rm ~/miniconda.sh
+
+RUN apt-get clean
+
+RUN conda create -y -n beakerx 'python>=3' nodejs pandas openjdk maven py4j
+RUN conda config --env --add pinned_packages 'openjdk >8.0.121'
+RUN conda install -y -n beakerx -c conda-forge ipywidgets jupyterhub jupyterlab pyzmq pytest requests
 
 ENV LANG=en_US.UTF-8
 ENV LC_CTYPE=en_US.UTF-8

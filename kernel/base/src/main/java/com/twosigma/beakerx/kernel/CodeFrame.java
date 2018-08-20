@@ -42,7 +42,7 @@ public abstract class CodeFrame {
           seo.error(either.error());
         }
       } catch (Exception e) {
-        seo.error(e.getLocalizedMessage());
+        seo.error(e.toString());
       }
     }
   }

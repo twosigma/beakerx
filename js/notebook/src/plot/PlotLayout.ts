@@ -200,6 +200,10 @@ export default class PlotLayout {
   }
 
   setMargins(stdmodel) {
+    if (this.isTreeMap()) {
+      return;
+    }
+
     let factor = 2.0;
 
     if (stdmodel.xAxis.label == null) {
@@ -257,6 +261,10 @@ export default class PlotLayout {
 
   setLegendResetPosition() {
     this.scope.legendResetPosition = true;
+  }
+
+  private isTreeMap(): boolean {
+    return this.scope.model.model.type === "TreeMap";
   }
 
   static buildTemplate(wrapperId) {

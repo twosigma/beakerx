@@ -308,7 +308,7 @@ export default class CombinedPlotScope {
   updateModels(updateType) {
     this.scopes.forEach((scope) => {
       if (updateType === 'focus') {
-        scope.plotFocus.onModelFucusUpdate(this.plotFocus.getFocus());
+        scope.plotFocus.onModelFocusUpdate(this.plotFocus.getFocus());
       } else if (updateType === 'width') {
         scope.plotSize.updateModelWidth(this.width);
       }

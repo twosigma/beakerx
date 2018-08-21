@@ -16,15 +16,17 @@
 package com.twosigma.beakerx.jvm.threads;
 
 import com.twosigma.beakerx.TryResult;
+import com.twosigma.beakerx.kernel.ExecutionOptions;
+import com.twosigma.beakerx.kernel.GroupName;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.Thread.State;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -32,20 +34,16 @@ import java.util.concurrent.locks.ReentrantLock;
 public class BeakerCellExecutor implements CellExecutor {
 
   private static final int KILL_THREAD_SLEEP_IN_MILLIS = 2000;
+  private static AtomicInteger count = new AtomicInteger();
 
   private final String prefix;
   private final ReentrantLock theLock;
-  private BeakerSingleThreadFactory thrFactory;
-  private ThreadGroup thrGroup;
-  private ExecutorService worker;
-  private static AtomicInteger count = new AtomicInteger();
-
+  private ConcurrentLinkedQueue<ThreadGroup> threadGroups = new ConcurrentLinkedQueue<>();
   private int killThreadSleepInMillis;
 
   public BeakerCellExecutor(String prf, int killThreadSleepInMillis) {
     prefix = prf;
     theLock = new ReentrantLock();
-    thrGroup = new ThreadGroup(prefix + "TG" + count.getAndIncrement());
     this.killThreadSleepInMillis = killThreadSleepInMillis;
     reset();
   }
@@ -56,25 +54,27 @@ public class BeakerCellExecutor implements CellExecutor {
 
   private void reset() {
     theLock.lock();
-    thrFactory = new BeakerSingleThreadFactory(thrGroup, prefix);
-    worker = Executors.newCachedThreadPool(thrFactory);
+    threadGroups = new ConcurrentLinkedQueue<>();
     theLock.unlock();
   }
 
   @Override
-  public TryResult executeTask(Callable<TryResult> tsk) {
-    Future<TryResult> ret;
-
+  public TryResult executeTask(Callable<TryResult> tsk, ExecutionOptions executionOptions) {
+    FutureTask<TryResult> ret;
     try {
       theLock.lock();
-      ret = worker.submit(tsk);
+      ret = executeTaskInNewThread(tsk, executionOptions.getGroupName());
     } catch (Throwable t) {
       t.printStackTrace();
       return TryResult.createError(t.getMessage());
     } finally {
       theLock.unlock();
     }
-    TryResult o = null;
+    return getResult(ret);
+  }
+
+  private TryResult getResult(FutureTask<TryResult> ret) {
+    TryResult o;
     try {
       o = ret.get();
     } catch (Exception e) {
@@ -87,23 +87,35 @@ public class BeakerCellExecutor implements CellExecutor {
     return o;
   }
 
+  @NotNull
+  private FutureTask<TryResult> executeTaskInNewThread(Callable<TryResult> tsk, GroupName groupName) {
+    ThreadGroup threadGroup = new ThreadGroup(groupName + "_" + prefix + "TG" + count.getAndIncrement());
+    threadGroups.add(threadGroup);
+    FutureTask<TryResult> ret = new FutureTask<>(tsk);
+    Thread t = new Thread(threadGroup, ret);
+    t.start();
+    return ret;
+  }
+
   @Override
-  @SuppressWarnings("deprecation")
-  public void cancelExecution() {
-    //logger.info("cancelExecution begin");
+  public void cancelExecution(GroupName groupName) {
     try {
       theLock.lock();
-      worker.shutdownNow();
-      Thread thr = thrFactory.getTheThread();
-      killThread(thr);
+      threadGroups.stream()
+              .filter(thg -> thg.getName().contains(groupName.asString()))
+              .forEach(thg -> {
+                List<Thread> tlist = getThreadList(thg);
+                for (Thread t : tlist) {
+                  killThread(t);
+                }
+                threadGroups.remove(thg);
+              });
     } finally {
       theLock.unlock();
-      reset();
-      //logger.info("cancelExecution done");
     }
   }
 
-  public List<Thread> getThreadList() {
+  public List<Thread> getThreadList(ThreadGroup thrGroup) {
     int nAlloc = thrGroup.activeCount();
     if (nAlloc == 0)
       return new ArrayList<Thread>();
@@ -119,39 +131,29 @@ public class BeakerCellExecutor implements CellExecutor {
 
   private void killThread(Thread thr) {
     if (null == thr) return;
-    //logger.info("interrupting");
     thr.interrupt();
     try {
       Thread.sleep(killThreadSleepInMillis);
     } catch (InterruptedException ex) {
     }
     if (!thr.getState().equals(State.TERMINATED)) {
-      //logger.info("stopping");
       thr.stop();
     }
   }
 
   @Override
-  @SuppressWarnings("deprecation")
   public void killAllThreads() {
-    //logger.info("killAllThreads begin");
     try {
       theLock.lock();
-      worker.shutdownNow();
-      Thread thr = thrFactory.getTheThread();
-      killThread(thr);
-
-      // then kill all remaining threads in the threadpool
-      List<Thread> tlist = getThreadList();
-
-      for (Thread t : tlist) {
-        killThread(t);
-      }
-
+      threadGroups.forEach(y -> {
+        List<Thread> tlist = getThreadList(y);
+        for (Thread t : tlist) {
+          killThread(t);
+        }
+      });
     } finally {
       theLock.unlock();
       reset();
-      //logger.info("killAllThreads done");
     }
   }
 }

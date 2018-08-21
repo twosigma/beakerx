@@ -15,6 +15,8 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.twosigma.beakerx.message.Message;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +35,11 @@ public class HBox extends Box {
   public HBox(List<Widget> children) {
     super(children);
     openComm();
+  }
+
+  public HBox(List<Widget> children, Message parent) {
+    super(children, parent);
+    openComm(parent);
   }
 
   @Override

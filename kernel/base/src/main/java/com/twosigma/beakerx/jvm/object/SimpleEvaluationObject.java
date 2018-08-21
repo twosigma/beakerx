@@ -18,12 +18,10 @@ package com.twosigma.beakerx.jvm.object;
 import com.twosigma.beakerx.jvm.threads.BeakerOutputHandler;
 import com.twosigma.beakerx.jvm.threads.BeakerStdOutErrHandler;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Queue;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.twosigma.beakerx.message.Message;
@@ -209,11 +207,11 @@ public class SimpleEvaluationObject extends Observable {
     doAppendOutput(s);
   }
 
-  private  int getSize() {
+  private int getSize() {
     return outputdataCount;
   }
 
-  private  void doAppendOutput(String s) {
+  private void doAppendOutput(String s) {
     buildingout += s;
     String add = null;
     if (s.contains("\n")) {
@@ -272,7 +270,7 @@ public class SimpleEvaluationObject extends Observable {
     doAppendError(s);
   }
 
-  private  void doAppendError(String s) {
+  private void doAppendError(String s) {
     buildingerr += s;
     String add = null;
     if (s.contains("\n")) {

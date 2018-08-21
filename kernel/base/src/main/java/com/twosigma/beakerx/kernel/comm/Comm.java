@@ -152,6 +152,7 @@ public class Comm {
   }
 
   private void doOpen(Message parentMessage, Buffer buffer) {
+    Preconditions.checkNotNull(parentMessage, "parent message can not be null");
     Message message = new Message(new Header(COMM_OPEN, parentMessage.getHeader().getSession()));
     message.setParentHeader(parentMessage.getHeader());
     HashMap<String, Serializable> map = new HashMap<>();

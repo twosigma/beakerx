@@ -32,6 +32,17 @@ public class EvaluatorResultTestWatcher {
   public static final int ATTEMPT = 2000;
   public static final int SLEEP_IN_MILLIS = 20;
 
+  public static Optional<Message> waitForResult(KernelTest kernelTest) throws InterruptedException {
+    int count = 0;
+    Optional<Message> result = getResult(kernelTest);
+    while (!result.isPresent() && count < ATTEMPT) {
+      Thread.sleep(SLEEP_IN_MILLIS);
+      result = getResult(kernelTest);
+      count++;
+    }
+    return result;
+  }
+
   public static Optional<Message> waitForResult(KernelSocketsTest socketsTest) throws InterruptedException {
     int count = 0;
     Optional<Message> result = getResult(socketsTest);
@@ -162,6 +173,11 @@ public class EvaluatorResultTestWatcher {
     return socketsTest.getSentMessages().stream().findFirst();
   }
 
+  private static Optional<Message> getResult(KernelTest kernelTest) {
+    return kernelTest.getPublishedMessages().stream().
+            filter(x -> x.type().equals(JupyterMessages.EXECUTE_RESULT)).findFirst();
+  }
+
   private static Optional<Message> getResult(KernelSocketsTest socketsTest) {
     return socketsTest.getPublishedMessages().stream().
             filter(x -> x.type().equals(JupyterMessages.EXECUTE_RESULT)).findFirst();
@@ -212,5 +228,20 @@ public class EvaluatorResultTestWatcher {
       count++;
     }
     return result;
+  }
+
+  public static <T> Optional<T> waitForProperty(PropertyWatcher<T> propertyWatcher) throws InterruptedException {
+    int count = 0;
+    Optional<T> property = propertyWatcher.get();
+    while (!property.isPresent() && count < ATTEMPT) {
+      Thread.sleep(SLEEP_IN_MILLIS);
+      property = propertyWatcher.get();
+      count++;
+    }
+    return property;
+  }
+
+  public interface PropertyWatcher<T> {
+    Optional<T> get();
   }
 }

@@ -41,7 +41,7 @@ class GroovyWorkerThread implements Callable<TryResult> {
     try {
       j.outputObject.started();
       String code = j.codeToBeExecuted;
-      r = groovyEvaluator.executeTask(new GroovyCodeRunner(groovyEvaluator, code, j.outputObject));
+      r = groovyEvaluator.executeTask(new GroovyCodeRunner(groovyEvaluator, code, j.outputObject), j.getExecutionOptions());
     } catch (Throwable e) {
       if (e instanceof GroovyNotFoundException) {
         logger.warn(e.getLocalizedMessage());

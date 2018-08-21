@@ -34,7 +34,7 @@ class JavaWorkerThread implements Callable<TryResult> {
   public TryResult call() throws Exception {
     TryResult r;
     try {
-      r = javaEvaluator.executeTask(new JavaCodeRunner(javaEvaluator, j.outputObject, j));
+      r = javaEvaluator.executeTask(new JavaCodeRunner(javaEvaluator, j.outputObject, j), j.getExecutionOptions());
     } catch (Throwable e) {
       e.printStackTrace();
       r = TryResult.createError(e.getLocalizedMessage());

@@ -25,6 +25,8 @@ import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.AddImportStatus;
 import com.twosigma.beakerx.kernel.Classpath;
+import com.twosigma.beakerx.kernel.ExecutionOptions;
+import com.twosigma.beakerx.kernel.GroupName;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
@@ -99,9 +101,15 @@ public abstract class BaseEvaluator implements Evaluator {
       }, executorBgkService);
 
       return background.get();
+
     } catch (Exception e) {
       return TryResult.createError(e.getLocalizedMessage());
     }
+  }
+
+  @Override
+  public TryResult evaluate(SimpleEvaluationObject seo, String code) {
+    return evaluate(seo, code, new ExecutionOptions(GroupName.generate()));
   }
 
   @Override
@@ -218,8 +226,8 @@ public abstract class BaseEvaluator implements Evaluator {
     resetEnvironment();
   }
 
-  public TryResult executeTask(Callable<TryResult> codeRunner) {
-    return executor.executeTask(codeRunner);
+  public TryResult executeTask(Callable<TryResult> codeRunner, ExecutionOptions executionOptions) {
+    return executor.executeTask(codeRunner, executionOptions);
   }
 
   @Override
@@ -228,8 +236,8 @@ public abstract class BaseEvaluator implements Evaluator {
   }
 
   @Override
-  public void cancelExecution() {
-    executor.cancelExecution();
+  public void cancelExecution(GroupName groupName) {
+    executor.cancelExecution(groupName);
     cancelHooks.runHooks();
   }
 

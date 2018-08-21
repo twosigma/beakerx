@@ -18,6 +18,7 @@ package com.twosigma.beakerx.kernel.magic.command;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.functionality.AddImportMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.AddStaticImportMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.AsyncMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.BashMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddDynamicMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClassPathAddMvnCellMagicCommand;
@@ -88,8 +89,13 @@ public class MagicCommandTypesFactory {
                     java(kernel),
                     kotlin(kernel),
                     scala(kernel),
-                    sql(kernel)));
+                    sql(kernel),
+                    async(kernel)));
     return magicCommandTypes;
+  }
+
+  public static MagicCommandType async(KernelFunctionality kernel) {
+    return new MagicCommandType(AsyncMagicCommand.ASYNC, "", new AsyncMagicCommand(kernel));
   }
 
   public static ClasspathAddMvnMagicCommand getClasspathAddMvnMagicCommand(KernelFunctionality kernel) {

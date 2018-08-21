@@ -30,6 +30,7 @@ import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
+import com.twosigma.beakerx.kernel.ExecutionOptions;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.PathToJar;
@@ -90,7 +91,7 @@ public class JavaEvaluator extends BaseEvaluator {
   @Override
   public void exit() {
     super.exit();
-    cancelExecution();
+    killAllThreads();
     executorService.shutdown();
     executorService = Executors.newSingleThreadExecutor();
   }
@@ -101,8 +102,8 @@ public class JavaEvaluator extends BaseEvaluator {
   }
 
   @Override
-  public TryResult evaluate(SimpleEvaluationObject seo, String code) {
-    return evaluate(seo, new JavaWorkerThread(this, new JobDescriptor(code, seo)));
+  public TryResult evaluate(SimpleEvaluationObject seo, String code, ExecutionOptions executionOptions) {
+    return evaluate(seo, new JavaWorkerThread(this, new JobDescriptor(code, seo, executionOptions)));
   }
 
   @Override

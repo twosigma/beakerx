@@ -304,8 +304,8 @@ public class SparkUI extends VBox implements SparkUIApi {
     BeakerXServer beakerXServer = kernel.getBeakerXServer();
     beakerXServer.addPostMapping(PUT_SPARK_JOBS_IN_THE_BACKGROUND,
             (Context ctx) -> kernel.putEvaluationInToBackground());
-    beakerXServer.addPostMapping(CANCELLED_SPARK_JOBS + "/:stageId",
-            (Context ctx) -> getSparkSession().sparkContext().cancelStage(Integer.parseInt(ctx.param("stageId"))));
+    beakerXServer.addPostMapping(CANCELLED_SPARK_JOBS + "/:stageid",
+            (Context ctx) -> getSparkSession().sparkContext().cancelStage(Integer.parseInt(ctx.param("stageid"))));
   }
 
 }

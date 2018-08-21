@@ -29,6 +29,7 @@ import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
+import com.twosigma.beakerx.kernel.ExecutionOptions;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.PathToJar;
 import org.jetbrains.kotlin.cli.common.repl.ReplClassLoader;
@@ -97,13 +98,13 @@ public class KotlinEvaluator extends BaseEvaluator {
   @Override
   public void exit() {
     super.exit();
-    cancelExecution();
+    killAllThreads();
     executorService.shutdown();
   }
 
   @Override
-  public TryResult evaluate(SimpleEvaluationObject seo, String code) {
-    return evaluate(seo, new KotlinWorkerThread(this, new JobDescriptor(code, seo)));
+  public TryResult evaluate(SimpleEvaluationObject seo, String code, ExecutionOptions executionOptions) {
+    return evaluate(seo, new KotlinWorkerThread(this, new JobDescriptor(code, seo, executionOptions)));
   }
 
   @Override

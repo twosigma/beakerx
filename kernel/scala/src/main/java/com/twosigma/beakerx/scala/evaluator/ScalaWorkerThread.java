@@ -39,7 +39,7 @@ class ScalaWorkerThread implements Callable<TryResult> {
     TryResult either;
     try {
       j.outputObject.started();
-      either = scalaEvaluator.executeTask(new ScalaCodeRunner(scalaEvaluator, j.codeToBeExecuted, j.outputObject));
+      either = scalaEvaluator.executeTask(new ScalaCodeRunner(scalaEvaluator, j.codeToBeExecuted, j.outputObject), j.getExecutionOptions());
     } catch (Throwable e) {
       e.printStackTrace();
       either = TryResult.createError(e.getMessage());

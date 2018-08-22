@@ -230,6 +230,10 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 See [RELEASE.md](RELEASE.md).
 
+## FAQs
+
+See [FAQ.md](FAQ.md).
+
 ## Attribution
 
 BeakerX contains and depends on many projects including:

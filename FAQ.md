@@ -21,6 +21,6 @@
 
 You may try setting JVM properties. Java allows you to configure the maximum heap size and various other settings with command line parameters when the JVM is started. BeakerX allows you to add parameters to the JVM with a control panel added to Jupyter's tree view. 
 
-[JVMoptions](doc/resources/img/JVMoptions.png)
+![JVMoptions](doc/resources/img/JVMoptions.png)
 
 Related issues: [#7666](https://github.com/twosigma/beakerx/issues/7666).

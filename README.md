@@ -32,6 +32,7 @@ Notebook.  BeakerX is in beta and under active development.
 
 The [documentation](https://github.com/twosigma/beakerx/blob/master/StartHere.ipynb) consists of tutorial notebooks on GitHub.
 You can try it in the cloud for free with [Binder](https://mybinder.org/v2/gh/twosigma/beakerx/1.0.0?filepath=StartHere.ipynb).
+And here is the [cheatsheet](https://github.com/twosigma/beakerx/blob/master/doc/Cheatsheet.pdf).
 
 BeakerX is the successor to the [Beaker Notebook (source code
 archive)](https://github.com/twosigma/beaker-notebook-archive).  It

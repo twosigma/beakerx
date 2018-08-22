@@ -24,6 +24,9 @@ import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.AddImportStatus;
+import com.twosigma.beakerx.kernel.ExecutionOptions;
+import com.twosigma.beakerx.kernel.GroupName;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandTypesFactory;
 import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
@@ -182,7 +185,8 @@ public class KernelTest implements KernelFunctionality {
             new MagicCommandType(KotlinMagicCommand.KOTLIN, "", new KotlinMagicCommand(this)),
             new MagicCommandType(JavaMagicCommand.JAVA, "", new JavaMagicCommand(this)),
             new MagicCommandType(GroovyMagicCommand.GROOVY, "", new GroovyMagicCommand(this)),
-            new MagicCommandType(ClojureMagicCommand.CLOJURE, "", new ClojureMagicCommand(this))
+            new MagicCommandType(ClojureMagicCommand.CLOJURE, "", new ClojureMagicCommand(this)),
+            MagicCommandTypesFactory.async(this)
     ));
   }
 
@@ -342,7 +346,13 @@ public class KernelTest implements KernelFunctionality {
     clearPublishedMessages();
   }
 
-  public void cancelExecution() {
+  @Override
+  public void cancelExecution(GroupName groupName) {
+  }
+
+  @Override
+  public void killAllThreads() {
+
   }
 
   @Override
@@ -358,7 +368,12 @@ public class KernelTest implements KernelFunctionality {
   @Override
   public TryResult executeCode(String code, SimpleEvaluationObject seo) {
     this.code = code;
-    return TryResult.createResult(seo.getPayload());
+    return TryResult.createResult(this.code);
+  }
+
+  @Override
+  public TryResult executeCode(String code, SimpleEvaluationObject seo, ExecutionOptions executionOptions) {
+    return executeCode(code, seo);
   }
 
   public String getCode() {

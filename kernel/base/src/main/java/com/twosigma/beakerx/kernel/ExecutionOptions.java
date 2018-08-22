@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,19 +13,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.jvm.threads;
+package com.twosigma.beakerx.kernel;
 
-import com.twosigma.beakerx.TryResult;
-import com.twosigma.beakerx.kernel.ExecutionOptions;
-import com.twosigma.beakerx.kernel.GroupName;
+import com.twosigma.beakerx.util.Preconditions;
 
-import java.util.concurrent.Callable;
+public class ExecutionOptions {
 
-public interface CellExecutor {
+  private GroupName groupName;
 
-  TryResult executeTask(Callable<TryResult> tsk, ExecutionOptions executionOptions);
+  public ExecutionOptions(GroupName groupName) {
+    this.groupName = Preconditions.checkNotNull(groupName);
+  }
 
-  void cancelExecution(GroupName groupName);
-
-  void killAllThreads();
+  public GroupName getGroupName() {
+    return groupName;
+  }
 }

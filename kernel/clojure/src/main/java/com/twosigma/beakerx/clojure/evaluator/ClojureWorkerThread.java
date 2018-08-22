@@ -34,11 +34,11 @@ class ClojureWorkerThread implements Callable<TryResult> {
   }
 
   @Override
-  public TryResult call() throws Exception {
-    TryResult r = null;
+  public TryResult call() {
+    TryResult r;
     try {
       j.outputObject.started();
-      r = clojureEvaluator.executeTask(new ClojureCodeRunner(clojureEvaluator, j.codeToBeExecuted, j.outputObject));
+      r = clojureEvaluator.executeTask(new ClojureCodeRunner(clojureEvaluator, j.codeToBeExecuted, j.outputObject), j.getExecutionOptions());
     } catch (Throwable e) {
       logger.error(e.getMessage());
       r = TryResult.createError(e.getLocalizedMessage());

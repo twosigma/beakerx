@@ -54,13 +54,17 @@ public interface KernelFunctionality {
 
   void updateEvaluatorParameters(EvaluatorParameters kernelParameters);
 
-  void cancelExecution();
+  void cancelExecution(GroupName groupName);
+
+  void killAllThreads();
 
   Handler<Message> getHandler(JupyterMessages type);
 
   void run();
 
   TryResult executeCode(String code, SimpleEvaluationObject seo);
+
+  TryResult executeCode(String code, SimpleEvaluationObject seo, ExecutionOptions executionOptions);
 
   AutocompleteResult autocomplete(String code, int cursorPos);
 

@@ -18,16 +18,13 @@ package com.twosigma.beakerx.evaluator;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beakerx.kernel.EvaluatorParameters;
+import com.twosigma.beakerx.kernel.GroupName;
 import com.twosigma.beakerx.kernel.PlainCode;
-import com.twosigma.beakerx.message.Message;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.HashMap;
 
 import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 
@@ -62,7 +59,7 @@ public class EvaluatorManagerTest {
   @Test
   public void cancelExecution() throws Exception {
     //when
-    evaluator.cancelExecution();
+    evaluator.cancelExecution(GroupName.generate());
     //then
     Assertions.assertThat(evaluator.isCallCancelExecution()).isTrue();
   }

@@ -19,10 +19,13 @@ import com.twosigma.beakerx.BeakerXClient;
 import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.kernel.AddImportStatus;
+
 import java.io.IOException;
 import java.nio.file.Path;
 
 import com.twosigma.beakerx.kernel.Classpath;
+import com.twosigma.beakerx.kernel.ExecutionOptions;
+import com.twosigma.beakerx.kernel.GroupName;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.PathToJar;
@@ -50,9 +53,11 @@ public interface Evaluator {
 
   void killAllThreads();
 
-  void cancelExecution();
+  void cancelExecution(GroupName groupName);
 
   TryResult evaluate(SimpleEvaluationObject seo, String code);
+
+  TryResult evaluate(SimpleEvaluationObject seo, String code, ExecutionOptions executionOptions);
 
   void exit();
 

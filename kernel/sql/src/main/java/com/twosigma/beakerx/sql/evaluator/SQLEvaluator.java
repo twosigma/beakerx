@@ -30,6 +30,8 @@ import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
+import com.twosigma.beakerx.kernel.ExecutionOptions;
+import com.twosigma.beakerx.kernel.GroupName;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.sql.ConnectionStringBean;
@@ -77,7 +79,7 @@ public class SQLEvaluator extends BaseEvaluator {
                       TempFolderFactory tempFolderFactory,
                       EvaluatorParameters evaluatorParameters,
                       BeakerXClient beakerxClient) {
-    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters,beakerxClient);
+    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient);
     cps = new ClasspathScanner();
     sac = createSqlAutocomplete(cps);
     loader = reloadClassLoader();
@@ -90,20 +92,20 @@ public class SQLEvaluator extends BaseEvaluator {
   }
 
   @Override
-  public TryResult evaluate(SimpleEvaluationObject seo, String code) {
-    return evaluate(seo, new SQLWorkerThread(this, new JobDescriptor(code, seo)));
+  public TryResult evaluate(SimpleEvaluationObject seo, String code, ExecutionOptions executionOptions) {
+    return evaluate(seo, new SQLWorkerThread(this, new JobDescriptor(code, seo, executionOptions)));
   }
 
   @Override
   public void exit() {
     super.exit();
     executorService.shutdown();
-    cancelExecution();
+    killAllThreads();
   }
 
   @Override
-  public void cancelExecution() {
-    super.cancelExecution();
+  public void cancelExecution(GroupName groupName) {
+    super.cancelExecution(groupName);
     queryExecutor.cancel();
   }
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,19 +13,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.jvm.threads;
+package com.twosigma.beakerx.kernel.magic.command;
 
-import com.twosigma.beakerx.TryResult;
-import com.twosigma.beakerx.kernel.ExecutionOptions;
-import com.twosigma.beakerx.kernel.GroupName;
+import org.apache.commons.cli.Options;
 
-import java.util.concurrent.Callable;
+public class AsyncOptions {
 
-public interface CellExecutor {
+  public static final String THEN = "then";
+  private Options options = new Options();
 
-  TryResult executeTask(Callable<TryResult> tsk, ExecutionOptions executionOptions);
+  public AsyncOptions() {
+    options.addOption("t", THEN, true, "Run tag");
+  }
 
-  void cancelExecution(GroupName groupName);
-
-  void killAllThreads();
+  public Options getOptions() {
+    return options;
+  }
 }

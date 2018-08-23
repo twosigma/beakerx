@@ -116,10 +116,18 @@ class Table(BaseObject):
         if not isinstance(args[0].index, RangeIndex) and column is not None:
             self.hasIndex = "true"
             if isinstance(args[0].index, MultiIndex):
-                self.columnNames[:0] = [', '.join(args[0].index.names)]
+                columns = list(map(lambda x: self.convert_none_to_index_name(x), args[0].index.names))
+                self.columnNames[:0] = [', '.join(columns)]
             else:
                 self.columnNames[:0] = [args[0].index.name]
             self.types[:0] = [self.convert_type(args[0].index.dtype)]
+
+    @staticmethod
+    def convert_none_to_index_name(x):
+        if x is None:
+            return "index"
+        else:
+            return x
 
     @staticmethod
     def convert_value(value, value_type):

@@ -17,6 +17,7 @@ package com.twosigma.beakerx.evaluator;
 
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.kernel.GroupName;
 import org.junit.Test;
 
 import java.nio.file.Files;
@@ -127,7 +128,7 @@ public abstract class EvaluatorBaseTest {
     BaseEvaluator evaluator = evaluator();
     evaluator.registerCancelHook(() -> cancelDone.append("Done"));
     //when
-    evaluator.cancelExecution();
+    evaluator.cancelExecution(GroupName.generate());
     //then
     assertThat(cancelDone.toString()).isEqualTo("Done");
   }

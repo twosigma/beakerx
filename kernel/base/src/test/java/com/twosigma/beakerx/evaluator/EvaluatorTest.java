@@ -26,6 +26,8 @@ import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.CacheFolderFactory;
 import com.twosigma.beakerx.kernel.Classpath;
+import com.twosigma.beakerx.kernel.ExecutionOptions;
+import com.twosigma.beakerx.kernel.GroupName;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
@@ -55,11 +57,15 @@ public class EvaluatorTest extends BaseEvaluator {
   private BeakerXUrlClassLoader loader = new BeakerXUrlClassLoader(Thread.currentThread().getContextClassLoader());
 
   public EvaluatorTest() {
-    this("idEvaluatorTest", "sIdEvaluatorTest", TestBeakerCellExecutor.cellExecutor(), KERNEL_PARAMETERS);
+    this(new BeakexClientTestImpl());
   }
 
-  public EvaluatorTest(String id, String sId, CellExecutor cellExecutor, EvaluatorParameters kernelParameters) {
-    super(id, sId, cellExecutor, getTestTempFolderFactory(), kernelParameters, new BeakexClientTestImpl());
+  public EvaluatorTest(BeakerXClient beakerXClient) {
+    this("idEvaluatorTest", "sIdEvaluatorTest", TestBeakerCellExecutor.cellExecutor(), KERNEL_PARAMETERS, beakerXClient);
+  }
+
+  public EvaluatorTest(String id, String sId, CellExecutor cellExecutor, EvaluatorParameters kernelParameters, BeakerXClient beakerXClient) {
+    super(id, sId, cellExecutor, getTestTempFolderFactory(), kernelParameters, beakerXClient);
   }
 
   @Override
@@ -110,7 +116,7 @@ public class EvaluatorTest extends BaseEvaluator {
   }
 
   @Override
-  public void cancelExecution() {
+  public void cancelExecution(GroupName groupName) {
     cancelExecution = true;
   }
 
@@ -119,6 +125,11 @@ public class EvaluatorTest extends BaseEvaluator {
     this.seo = seo;
     this.code = code;
     return TryResult.createResult(seo.getPayload());
+  }
+
+  @Override
+  public TryResult evaluate(SimpleEvaluationObject seo, String code, ExecutionOptions executionOptions) {
+    return evaluate(seo, code);
   }
 
   @Override
@@ -194,8 +205,9 @@ public class EvaluatorTest extends BaseEvaluator {
     return resetEnvironmentCounter;
   }
 
-
   public static class BeakexClientTestImpl implements BeakerXClient {
+
+    private String lastRunByTag;
 
     @Override
     public void showProgressUpdate(String message, int progress) {
@@ -234,12 +246,16 @@ public class EvaluatorTest extends BaseEvaluator {
 
     @Override
     public void runByTag(String tag) {
-
+      lastRunByTag = tag;
     }
 
     @Override
     public String getContext() {
       return null;
+    }
+
+    public String getLastRunByTag() {
+      return lastRunByTag;
     }
   }
 

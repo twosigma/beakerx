@@ -31,7 +31,7 @@ export default class PlotFocus {
     this.defaultFocus = null;
     this.focus = null;
 
-    this.onModelFucusUpdate = this.onModelFucusUpdate.bind(this);
+    this.onModelFocusUpdate = this.onModelFocusUpdate.bind(this);
   }
 
   static remapFocusRegion(model) {
@@ -282,7 +282,7 @@ export default class PlotFocus {
     focus[left] = focus[right] - focus[span];
   }
 
-  onModelFucusUpdate(newFocus) {
+  onModelFocusUpdate(newFocus) {
     if (newFocus === null) {
       return;
     }

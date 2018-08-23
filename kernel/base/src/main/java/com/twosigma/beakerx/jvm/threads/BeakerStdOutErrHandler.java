@@ -22,15 +22,14 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BeakerStdOutErrHandler {
 
   private static BeakerStdOutErrHandler instance;
-
+  private ConcurrentHashMap<ThreadGroup, BeakerOutputHandlers> handlers = new ConcurrentHashMap<>();
   private PrintStream orig_out;
   private PrintStream orig_err;
-  private BeakerOutputHandler out_handler;
-  private BeakerOutputHandler err_handler;
 
   static synchronized public void init() {
     if (instance == null) {
@@ -48,7 +47,7 @@ public class BeakerStdOutErrHandler {
 
   static synchronized public void setOutputHandler(BeakerOutputHandler out, BeakerOutputHandler err) {
     if (instance != null) {
-      instance.theSetOutputHandler(out, err);
+      instance.theSetOutputHandler(out, err, Thread.currentThread().getThreadGroup());
     }
   }
 
@@ -73,21 +72,33 @@ public class BeakerStdOutErrHandler {
     System.setErr(orig_err);
   }
 
-  private synchronized void theSetOutputHandler(BeakerOutputHandler out, BeakerOutputHandler err) {
-    out_handler = out;
-    err_handler = err;
+
+  private synchronized void theSetOutputHandler(BeakerOutputHandler out, BeakerOutputHandler err, ThreadGroup threadGroup) {
+    removeGroupsWithAllNoAliveThreads();
+    handlers.put(threadGroup, new BeakerOutputHandlers(out, err));
+  }
+
+  private synchronized void removeGroupsWithAllNoAliveThreads() {
+    handlers.entrySet().stream()
+            .filter(x -> x.getKey().activeCount() == 0)
+            .forEach(y -> {
+              BeakerOutputHandlers hrs = handlers.get(y.getKey());
+              hrs.out_handler = null;
+              hrs.err_handler = null;
+              handlers.remove(y.getKey());
+            });
   }
 
   private synchronized void theClrOutputHandler() {
-    out_handler = null;
-    err_handler = null;
+    removeGroupsWithAllNoAliveThreads();
   }
 
   private synchronized void writeStdout(String text) throws IOException {
     boolean sendStdout = OutputManager.sendStdout(text);
     if (!sendStdout) {
-      if (out_handler != null) {
-        out_handler.write(text);
+      BeakerOutputHandlers hrs = handlers.get(Thread.currentThread().getThreadGroup());
+      if (hrs != null && hrs.out_handler != null) {
+        hrs.out_handler.write(text);
       } else {
         orig_out.write(text.getBytes(StandardCharsets.UTF_8));
       }
@@ -97,8 +108,9 @@ public class BeakerStdOutErrHandler {
   private synchronized void writeStderr(String text) throws IOException {
     boolean sendStderr = OutputManager.sendStderr(text);
     if (!sendStderr) {
-      if (err_handler != null) {
-        err_handler.write(text);
+      BeakerOutputHandlers hrs = handlers.get(Thread.currentThread().getThreadGroup());
+      if (hrs != null && hrs.err_handler != null) {
+        hrs.err_handler.write(text);
       } else {
         orig_err.write(text.getBytes(StandardCharsets.UTF_8));
       }
@@ -140,6 +152,16 @@ public class BeakerStdOutErrHandler {
       } else {
         instance.writeStderr(s);
       }
+    }
+  }
+
+  static class BeakerOutputHandlers {
+    BeakerOutputHandler out_handler;
+    BeakerOutputHandler err_handler;
+
+    BeakerOutputHandlers(BeakerOutputHandler out, BeakerOutputHandler err) {
+      out_handler = out;
+      err_handler = err;
     }
   }
 

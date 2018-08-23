@@ -15,6 +15,8 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.twosigma.beakerx.message.Message;
+
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -39,6 +41,12 @@ public class RESTButton extends ValueWidget<Boolean> {
     super();
     this.url = url;
     openComm();
+  }
+
+  public RESTButton(String url, Message parentMessage) {
+    super(parentMessage);
+    this.url = url;
+    openComm(parentMessage);
   }
 
   @Override

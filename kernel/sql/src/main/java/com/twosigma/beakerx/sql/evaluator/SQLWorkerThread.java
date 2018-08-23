@@ -43,7 +43,7 @@ class SQLWorkerThread implements Callable<TryResult> {
       job.getSimpleEvaluationObject().setOutputHandler();
       namespaceClient = sqlEvaluator.getBeakerX();
 
-      r = sqlEvaluator.executeTask(new SQLCodeRunner(sqlEvaluator, job.getSimpleEvaluationObject(), namespaceClient));
+      r = sqlEvaluator.executeTask(new SQLCodeRunner(sqlEvaluator, job.getSimpleEvaluationObject(), namespaceClient), job.getExecutionOptions());
     } finally {
       job.getSimpleEvaluationObject().clrOutputHandler();
     }

@@ -132,7 +132,7 @@ public class TableDisplay extends BeakerxWidget {
     classes = cl;
     subtype = TABLE_DISPLAY_SUBTYPE;
     openComm();
-    addToValues(v);
+    addToValues(buildValuesFromList(v, new BasicObjectSerializer()));
   }
 
   public TableDisplay(Collection<Map<String, Object>> v) {
@@ -224,6 +224,18 @@ public class TableDisplay extends BeakerxWidget {
 
   private void addToValues(List<List<?>> items) {
     values.addAll(items);
+  }
+
+  private List<List<?>> buildValuesFromList(List<List<?>> v, BasicObjectSerializer basicObjectSerializer) {
+    List<List<?>> values = new ArrayList<>();
+    for (List<?> m : v) {
+      List<Object> vals = new ArrayList<>();
+      for (Object item : m) {
+        vals.add(getValueForSerializer(item, basicObjectSerializer));
+      }
+      values.add(vals);
+    }
+    return values;
   }
 
   private List<List<?>> buildValues(Collection<Map<String, Object>> v, BeakerObjectConverter serializer) {
@@ -641,8 +653,7 @@ public class TableDisplay extends BeakerxWidget {
   private Object getValueForSerializer(Object value, BeakerObjectConverter serializer) {
     if (value != null) {
       String clazz = serializer.convertType(value.getClass().getName());
-      if (BasicObjectSerializer.TYPE_LONG.equals(clazz) ||
-              BasicObjectSerializer.TYPE_BIGINT.equals(clazz)) {
+      if (BasicObjectSerializer.TYPE_LONG.equals(clazz) || BasicObjectSerializer.TYPE_BIGINT.equals(clazz)) {
         return value.toString();
       }
       return value;

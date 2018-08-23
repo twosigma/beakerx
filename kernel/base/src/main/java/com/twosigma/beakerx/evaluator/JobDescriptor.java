@@ -16,23 +16,31 @@
 package com.twosigma.beakerx.evaluator;
 
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.kernel.ExecutionOptions;
+import com.twosigma.beakerx.kernel.GroupName;
 
 public class JobDescriptor {
   public String codeToBeExecuted;
   public SimpleEvaluationObject outputObject;
+  private ExecutionOptions executionOptions;
   public String cellId;
 
   public JobDescriptor(String c, SimpleEvaluationObject o, String cid) {
-    this(c, o);
+    this(c, o, new ExecutionOptions(GroupName.generate()));
     cellId = cid;
   }
 
-  public JobDescriptor(String c, SimpleEvaluationObject o) {
+  public JobDescriptor(String c, SimpleEvaluationObject o, ExecutionOptions executionOptions) {
     codeToBeExecuted = c;
     outputObject = o;
+    this.executionOptions = executionOptions;
   }
 
   public SimpleEvaluationObject getSimpleEvaluationObject() {
     return outputObject;
+  }
+
+  public ExecutionOptions getExecutionOptions() {
+    return executionOptions;
   }
 }

@@ -16,14 +16,16 @@
 package com.twosigma.beakerx.jvm.threads;
 
 import com.twosigma.beakerx.TryResult;
+import com.twosigma.beakerx.kernel.ExecutionOptions;
+import com.twosigma.beakerx.kernel.GroupName;
 
 import java.util.concurrent.Callable;
 
 public interface CellExecutor {
 
-  TryResult executeTask(Callable<TryResult> tsk);
+  TryResult executeTask(Callable<TryResult> tsk, ExecutionOptions executionOptions);
 
-  void cancelExecution();
+  void cancelExecution(GroupName groupName);
 
   void killAllThreads();
 }

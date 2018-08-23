@@ -26,6 +26,7 @@ import com.twosigma.beakerx.jvm.classloader.BeakerXUrlClassLoader;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
+import com.twosigma.beakerx.kernel.ExecutionOptions;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.PathToJar;
 
@@ -51,8 +52,8 @@ public class ScalaEvaluator extends BaseEvaluator {
   }
 
   @Override
-  public TryResult evaluate(SimpleEvaluationObject seo, String code) {
-    return evaluate(seo, new ScalaWorkerThread(this, new JobDescriptor(code, seo)));
+  public TryResult evaluate(SimpleEvaluationObject seo, String code, ExecutionOptions executionOptions) {
+    return evaluate(seo, new ScalaWorkerThread(this, new JobDescriptor(code, seo, executionOptions)));
   }
 
   @Override
@@ -81,7 +82,7 @@ public class ScalaEvaluator extends BaseEvaluator {
   @Override
   public void exit() {
     super.exit();
-    cancelExecution();
+    killAllThreads();
     executorService.shutdown();
   }
 

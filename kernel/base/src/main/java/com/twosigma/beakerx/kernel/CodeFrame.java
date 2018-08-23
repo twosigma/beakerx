@@ -33,7 +33,7 @@ public abstract class CodeFrame {
 
   public abstract Optional<MagicCommandOutcomeItem> getError();
 
-  protected void handleResult(SimpleEvaluationObject seo, TryResult either) {
+  public static void handleResult(SimpleEvaluationObject seo, TryResult either) {
     if (either != null) {
       try {
         if (either.isResult()) {
@@ -42,7 +42,7 @@ public abstract class CodeFrame {
           seo.error(either.error());
         }
       } catch (Exception e) {
-        seo.error(e.getLocalizedMessage());
+        seo.error(e.toString());
       }
     }
   }

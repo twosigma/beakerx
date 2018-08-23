@@ -160,8 +160,13 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   @Override
-  public void cancelExecution() {
-    evaluator.cancelExecution();
+  public void killAllThreads() {
+    evaluator.killAllThreads();
+  }
+
+  @Override
+  public void cancelExecution(GroupName groupName) {
+    evaluator.cancelExecution(groupName);
   }
 
   public boolean isCommPresent(String hash) {
@@ -213,6 +218,11 @@ public abstract class Kernel implements KernelFunctionality {
   @Override
   public TryResult executeCode(String code, SimpleEvaluationObject seo) {
     return this.evaluator.evaluate(seo, code);
+  }
+
+  @Override
+  public TryResult executeCode(String code, SimpleEvaluationObject seo, ExecutionOptions executionOptions) {
+    return this.evaluator.evaluate(seo, code, executionOptions);
   }
 
   @Override

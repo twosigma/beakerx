@@ -98,6 +98,15 @@ function chartingBase() {
     });
   });
 
+  describe('(' + this.kernelName + ') Levels Of Detail', function () {
+    it('Plot has two polygon elements', function () {
+      cellIndex += 1;
+      var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
+      expect(svgElement.$('#i0 polygon').isVisible()).toBeTruthy();
+      expect(svgElement.$('#i1 polygon').isVisible()).toBeTruthy();
+    });
+  });
+
   describe('(' + this.kernelName + ') Heatmap', function () {
     it('Widget area has dtcontainer', function () {
       cellIndex += 1;
@@ -143,25 +152,15 @@ function chartingBase() {
     });
   });
 
-  describe('(' + this.kernelName + ') Levels Of Detail', function () {
-    it('Plot has two polygon elements', function () {
-      cellIndex += 1;
-      beakerxPO.runCodeCellByIndex(cellIndex);
-      var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
-      expect(svgElement.$('#i0 polygon').isVisible()).toBeTruthy();
-      expect(svgElement.$('#i1 polygon').isVisible()).toBeTruthy();
-    });
-  });
-
   function calculateSquare(rectElement){
     return Math.round(rectElement.getAttribute('height')) * Math.round(rectElement.getAttribute('width'));
   }
 
   describe('(' + this.kernelName + ') TreeMap', function () {
     it('Plot has TreeMap', function () {
-      cellIndex =16;
+      cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
-      cellIndex +=1;
+      cellIndex += 1;
       var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
       expect(svgElement.$$('g.cell').length).toBe(13);
     });

@@ -98,6 +98,15 @@ function chartingBase() {
     });
   });
 
+  describe('(' + this.kernelName + ') Levels Of Detail', function () {
+    it('Plot has two polygon elements', function () {
+      cellIndex += 1;
+      var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
+      expect(svgElement.$('#i0 polygon').isVisible()).toBeTruthy();
+      expect(svgElement.$('#i1 polygon').isVisible()).toBeTruthy();
+    });
+  });
+
   describe('(' + this.kernelName + ') Heatmap', function () {
     it('Widget area has dtcontainer', function () {
       cellIndex += 1;
@@ -140,15 +149,6 @@ function chartingBase() {
       var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
       expect(dtContainer.$('#maing > g.heatmap').isEnabled()).toBeTruthy();
       expect(dtContainer.$$('svg').length).toBe(1);
-    });
-  });
-
-  describe('(' + this.kernelName + ') Levels Of Detail', function () {
-    it('Plot has two polygon elements', function () {
-      cellIndex += 1;
-      var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
-      expect(svgElement.$('#i0 polygon').isVisible()).toBeTruthy();
-      expect(svgElement.$('#i1 polygon').isVisible()).toBeTruthy();
     });
   });
 

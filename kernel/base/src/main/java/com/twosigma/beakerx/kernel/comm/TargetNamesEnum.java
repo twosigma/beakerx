@@ -19,6 +19,7 @@ public enum TargetNamesEnum {
 
   BEAKER_TAG_RUN("beakerx.tag.run"),
   BEAKER_GETCODECELLS("beakerx.getcodecells"),
+  BEAKER_GET_URL_ARG("beakerx.geturlarg"),
   BEAKER_AUTOTRANSLATION("beakerx.autotranslation"),
   JUPYTER_WIDGET("jupyter.widget"),
   JUPYTER_WIDGET_VERSION("jupyter.widget.version"),

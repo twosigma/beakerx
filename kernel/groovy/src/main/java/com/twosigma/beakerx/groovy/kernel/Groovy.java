@@ -15,9 +15,6 @@
  */
 package com.twosigma.beakerx.groovy.kernel;
 
-import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
-import static com.twosigma.beakerx.kernel.Utils.uuid;
-
 import com.twosigma.beakerx.BeakerXCommRepository;
 import com.twosigma.beakerx.CommRepository;
 import com.twosigma.beakerx.NamespaceClient;
@@ -26,20 +23,16 @@ import com.twosigma.beakerx.groovy.comm.GroovyCommOpenHandler;
 import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beakerx.groovy.handler.GroovyKernelInfoHandler;
 import com.twosigma.beakerx.handler.KernelHandler;
-import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
-import com.twosigma.beakerx.kernel.CacheFolderFactory;
-import com.twosigma.beakerx.kernel.CloseKernelAction;
-import com.twosigma.beakerx.kernel.CustomMagicCommandsEmptyImpl;
-import com.twosigma.beakerx.kernel.Kernel;
-import com.twosigma.beakerx.kernel.KernelConfigurationFile;
-import com.twosigma.beakerx.kernel.EvaluatorParameters;
-import com.twosigma.beakerx.kernel.KernelRunner;
-import com.twosigma.beakerx.kernel.KernelSocketsFactory;
-import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
+import com.twosigma.beakerx.kernel.*;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
+import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
+import com.twosigma.beakerx.kernel.restserver.impl.GetUrlArgHandler;
 import com.twosigma.beakerx.message.Message;
 
 import java.util.HashMap;
+
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
+import static com.twosigma.beakerx.kernel.Utils.uuid;
 
 public class Groovy extends Kernel {
 
@@ -86,11 +79,12 @@ public class Groovy extends Kernel {
               configurationFile);
 
       BeakerXCommRepository beakerXCommRepository = new BeakerXCommRepository();
+      NamespaceClient namespaceClient = NamespaceClient.create(id, configurationFile, beakerXCommRepository);
       GroovyEvaluator evaluator = new GroovyEvaluator(id,
               id,
               getEvaluatorParameters(),
-              NamespaceClient.create(id, configurationFile, beakerXCommRepository));
-      return new Groovy(id, evaluator, kernelSocketsFactory, beakerXCommRepository, new GroovyBeakerXServer());
+              namespaceClient);
+      return new Groovy(id, evaluator, kernelSocketsFactory, beakerXCommRepository, new GroovyBeakerXServer(new GetUrlArgHandler(namespaceClient)));
     });
   }
 

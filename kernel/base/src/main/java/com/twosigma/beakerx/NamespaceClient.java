@@ -40,6 +40,7 @@ public class NamespaceClient implements BeakerXClient {
   private AutotranslationService autotranslationService;
   private BeakerXJsonSerializer beakerXJsonSerializer;
   private CommRepository commRepository;
+  private Comm urlArgComm;
 
   public NamespaceClient(AutotranslationService autotranslationService, BeakerXJsonSerializer beakerXJsonSerializer, CommRepository commRepository) {
     this.autotranslationService = autotranslationService;
@@ -191,5 +192,33 @@ public class NamespaceClient implements BeakerXClient {
     } else {
       return new NamespaceClient(AutotranslationServiceImpl.createAsMainKernel(id), serializer, commRepository);
     }
+  }
+
+  @Override
+  public String urlArg(String argName) {
+    try {
+      Comm c = getUrlArgComm();
+      HashMap<String, Serializable> data = new HashMap<>();
+      HashMap<String, Serializable> state = new HashMap<>();
+      state.put("name", "URL_ARG");
+      state.put("arg_name", argName);
+      data.put("url", KernelManager.get().getBeakerXServer().getURL() + URL_ARG);
+      data.put("state", state);
+      data.put("buffer_paths", new HashMap<>());
+      c.send(COMM_MSG, Comm.Buffer.EMPTY, new Comm.Data(data));
+      // block
+      Object argNameValue = getMessageQueue(URL_ARG).take();
+      return (String) argNameValue;
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private Comm getUrlArgComm() {
+    if (urlArgComm == null) {
+      urlArgComm = new Comm(TargetNamesEnum.BEAKER_GET_URL_ARG);
+      urlArgComm.open();
+    }
+    return urlArgComm;
   }
 }

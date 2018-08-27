@@ -15,9 +15,6 @@
  */
 package com.twosigma.beakerx.javash.kernel;
 
-import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
-import static com.twosigma.beakerx.kernel.Utils.uuid;
-
 import com.twosigma.beakerx.BeakerXCommRepository;
 import com.twosigma.beakerx.CommRepository;
 import com.twosigma.beakerx.NamespaceClient;
@@ -26,20 +23,16 @@ import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.javash.comm.JavaCommOpenHandler;
 import com.twosigma.beakerx.javash.evaluator.JavaEvaluator;
 import com.twosigma.beakerx.javash.handler.JavaKernelInfoHandler;
-import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
-import com.twosigma.beakerx.kernel.CacheFolderFactory;
-import com.twosigma.beakerx.kernel.CloseKernelAction;
-import com.twosigma.beakerx.kernel.CustomMagicCommandsEmptyImpl;
-import com.twosigma.beakerx.kernel.Kernel;
-import com.twosigma.beakerx.kernel.KernelConfigurationFile;
-import com.twosigma.beakerx.kernel.EvaluatorParameters;
-import com.twosigma.beakerx.kernel.KernelRunner;
-import com.twosigma.beakerx.kernel.KernelSocketsFactory;
-import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
+import com.twosigma.beakerx.kernel.*;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
+import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
+import com.twosigma.beakerx.kernel.restserver.impl.GetUrlArgHandler;
 import com.twosigma.beakerx.message.Message;
 
 import java.util.HashMap;
+
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
+import static com.twosigma.beakerx.kernel.Utils.uuid;
 
 
 public class Java extends Kernel {
@@ -86,11 +79,12 @@ public class Java extends Kernel {
       KernelConfigurationFile configurationFile = new KernelConfigurationFile(args);
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
               configurationFile);
+      NamespaceClient beakerxClient = NamespaceClient.create(id, configurationFile, commRepository);
       JavaEvaluator e = new JavaEvaluator(id,
               id,
               getKernelParameters(),
-              NamespaceClient.create(id, configurationFile, commRepository));
-      return new Java(id, e, kernelSocketsFactory, commRepository, new JavaBeakerXServer());
+              beakerxClient);
+      return new Java(id, e, kernelSocketsFactory, commRepository, new JavaBeakerXServer(new GetUrlArgHandler(beakerxClient)));
     });
   }
 

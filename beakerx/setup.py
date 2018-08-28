@@ -29,10 +29,12 @@ import os
 
 cmdclass = create_cmdclass(develop_wrappers=[
     'js',
+    'js-lab',
     'java',
     'javadoc',
 ], distribute_wrappers=[
     'js',
+    'js-lab',
     'java',
     'javadoc',
 ])
@@ -40,6 +42,11 @@ cmdclass['js'] = install_node_modules(
     path='../js/notebook',
     build_dir=os.path.join(here, '../js/notebook', 'dist'),
     source_dir=os.path.join(here, '../js/notebook', 'src')
+)
+cmdclass['js-lab'] = install_node_modules(
+    path='../js/lab',
+    build_dir=os.path.join(here, '../js/lab', 'dist'),
+    source_dir=os.path.join(here, '../js/lab', 'src')
 )
 cmdclass['java'] = run_gradle(cmd='build')
 cmdclass['javadoc'] = run_gradle(cmd='base:javadoc')

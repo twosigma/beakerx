@@ -76,7 +76,7 @@ public class PomFactoryTest {
     repos.put("repository.spring.snapshot", "http://repo.spring.io/snapshot");
     Dependency dependency = Dependency.create(asList("", "", ""));
     //when
-    String pomAsString = pomFactory.createPom("/", asList(dependency), repos);
+    String pomAsString = pomFactory.createPom(new PomFactory.Params("/", asList(dependency), repos, MavenJarResolver.GOAL, MavenJarResolver.MAVEN_BUILT_CLASSPATH_FILE_NAME));
     //then
     assertThat(removeWhitespaces(pomAsString)).contains(removeWhitespaces(EXPECTED_RESULT_BLOCK));
   }
@@ -86,7 +86,7 @@ public class PomFactoryTest {
     Map<String, String> repos = Maps.newHashMap();
     Dependency dependency1 = Dependency.create(asList("group", "artifact", "1.1.1"));
     Dependency dependency2 = Dependency.create(asList("other-group", "other-artifact", "1.1.1"));
-    String pomAsString = pomFactory.createPom("/", asList(dependency1, dependency2), repos);
+    String pomAsString = pomFactory.createPom(new PomFactory.Params("/", asList(dependency1, dependency2), repos, MavenJarResolver.GOAL, MavenJarResolver.MAVEN_BUILT_CLASSPATH_FILE_NAME));
     assertThat(removeWhitespaces(pomAsString)).contains(removeWhitespaces(EXPECTED_MULTIPLE_DEP_POM));
   }
 
@@ -95,7 +95,7 @@ public class PomFactoryTest {
     //given
     Dependency dependency = Dependency.create(asList("group", "art", "ver", "pom"));
     //when
-    String pomAsString = pomFactory.createPom("/", asList(dependency), Maps.newHashMap());
+    String pomAsString = pomFactory.createPom(new PomFactory.Params("/", asList(dependency), Maps.newHashMap(), MavenJarResolver.GOAL, MavenJarResolver.MAVEN_BUILT_CLASSPATH_FILE_NAME));
     //then
     assertThat(removeWhitespaces(pomAsString)).contains("<type>pom</type>");
     assertThat(removeWhitespaces(pomAsString)).doesNotContain("<classifier");
@@ -106,7 +106,7 @@ public class PomFactoryTest {
     //given
     Dependency dependency = Dependency.create(asList("group", "art", "ver", "pom", "Classifier"));
     //when
-    String pomAsString = pomFactory.createPom("/", asList(dependency), Maps.newHashMap());
+    String pomAsString = pomFactory.createPom(new PomFactory.Params("/", asList(dependency), Maps.newHashMap(), MavenJarResolver.GOAL, MavenJarResolver.MAVEN_BUILT_CLASSPATH_FILE_NAME));
     //then
     assertThat(removeWhitespaces(pomAsString)).contains("<classifier>Classifier</classifier>");
   }

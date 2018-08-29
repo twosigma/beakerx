@@ -90,7 +90,7 @@ public class ClassPathAddMvnCellMagicCommand extends ClasspathMagicCommand {
     MavenJarResolver.AddMvnCommandResult result = mavenJarResolver.retrieve(dependencies, mvnLoggerWidget);
 
     if (result.isJarRetrieved()) {
-      return handleAddedJars(mavenJarResolver.getPathToMavenRepo() + "/*");
+      return handleAddedJars(result.getAddedJarPaths());
     }
     return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, result.getErrorMessage());
   }

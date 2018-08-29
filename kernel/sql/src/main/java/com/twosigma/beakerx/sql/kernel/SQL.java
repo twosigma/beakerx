@@ -15,30 +15,17 @@
  */
 package com.twosigma.beakerx.sql.kernel;
 
-import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
-import static com.twosigma.beakerx.kernel.Utils.uuid;
-import static com.twosigma.beakerx.sql.magic.command.DataSourcesMagicCommand.DATASOURCES;
-import static com.twosigma.beakerx.sql.magic.command.DefaultDataSourcesMagicCommand.DEFAULT_DATASOURCE;
-
 import com.twosigma.beakerx.BeakerXCommRepository;
 import com.twosigma.beakerx.CommRepository;
 import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
-import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
-import com.twosigma.beakerx.kernel.CacheFolderFactory;
-import com.twosigma.beakerx.kernel.CloseKernelAction;
-import com.twosigma.beakerx.kernel.CustomMagicCommandsFactory;
-import com.twosigma.beakerx.kernel.Kernel;
-import com.twosigma.beakerx.kernel.KernelConfigurationFile;
-import com.twosigma.beakerx.kernel.EvaluatorParameters;
-import com.twosigma.beakerx.kernel.KernelFunctionality;
-import com.twosigma.beakerx.kernel.KernelRunner;
-import com.twosigma.beakerx.kernel.KernelSocketsFactory;
-import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
-import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
+import com.twosigma.beakerx.kernel.*;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
+import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
+import com.twosigma.beakerx.kernel.restserver.impl.GetUrlArgHandler;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.sql.evaluator.SQLEvaluator;
 import com.twosigma.beakerx.sql.handlers.SQLCommOpenHandler;
@@ -53,6 +40,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
+import static com.twosigma.beakerx.kernel.Utils.uuid;
+import static com.twosigma.beakerx.sql.magic.command.DataSourcesMagicCommand.DATASOURCES;
+import static com.twosigma.beakerx.sql.magic.command.DefaultDataSourcesMagicCommand.DEFAULT_DATASOURCE;
 
 
 public class SQL extends Kernel {
@@ -103,8 +95,9 @@ public class SQL extends Kernel {
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
               configurationFile);
       EvaluatorParameters params = getKernelParameters(BeakerXSystemImpl.getINSTANCE());
-      SQLEvaluator evaluator = new SQLEvaluator(id, id, params, NamespaceClient.create(id, configurationFile, commRepository));
-      return new SQL(id, evaluator, kernelSocketsFactory, commRepository, new SQLBeakerXServer());
+      NamespaceClient beakerxClient = NamespaceClient.create(id, configurationFile, commRepository);
+      SQLEvaluator evaluator = new SQLEvaluator(id, id, params, beakerxClient);
+      return new SQL(id, evaluator, kernelSocketsFactory, commRepository, new SQLBeakerXServer(new GetUrlArgHandler(beakerxClient)));
     });
   }
 

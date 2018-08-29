@@ -34,6 +34,7 @@ import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
+import com.twosigma.beakerx.kernel.restserver.impl.GetUrlArgHandler;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.scala.comm.ScalaCommOpenHandler;
 import com.twosigma.beakerx.scala.evaluator.BeakerxObjectFactoryImpl;
@@ -94,7 +95,7 @@ public class Scala extends Kernel {
               new TempFolderFactoryImpl(),
               getKernelParameters(),
               namespaceClient);
-      return new Scala(id, se, kernelSocketsFactory, commRepository, new ScalaBeakerXServer());
+      return new Scala(id, se, kernelSocketsFactory, commRepository, new ScalaBeakerXServer(new GetUrlArgHandler(namespaceClient)));
     });
   }
 

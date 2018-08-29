@@ -23,6 +23,7 @@ declare global {
 }
 
 export const BEAKER_GETCODECELLS = 'beakerx.getcodecells';
+export const BEAKER_GET_URL_ARG = 'beakerx.geturlarg';
 export const BEAKER_AUTOTRANSLATION = 'beakerx.autotranslation';
 export const BEAKER_TAG_RUN = 'beakerx.tag.run';
 
@@ -37,6 +38,12 @@ const msgHandlers = {
     }
 
     msgHandlers[BEAKER_AUTOTRANSLATION](msg);
+  },
+
+  [BEAKER_GET_URL_ARG]: (msg) => {
+    if (msg.content.data.state.name == "URL_ARG") {
+        sendArgUrl(msg.content.data.url,msg.content.data.state.arg_name);
+    }
   },
 
   [BEAKER_AUTOTRANSLATION]: (msg) => {
@@ -87,6 +94,10 @@ export const registerCommTargets = (kernel: any): void => {
     comm.on_msg(msgHandlers[BEAKER_TAG_RUN]);
   });
 
+  kernel.comm_manager.register_target(BEAKER_GET_URL_ARG, function (comm) {
+    comm.on_msg(msgHandlers[BEAKER_GET_URL_ARG]);
+  });
+
   kernel.comm_info(
     null, (msg) => {
       assignMsgHandlersToExistingComms(msg.content.comms, kernel);
@@ -109,6 +120,21 @@ const sendJupyterCodeCells = (filter: string, url: string) => {
   });
   let service = new BeakerxRestHandler();
   service.post(data)
+};
+
+const sendArgUrl = (url: string, argName:string) => {
+
+    const data: { url: string,argName:string, argValue:string } =
+        {
+            argName: argName,
+            argValue: "",
+            url : url
+        };
+
+    let parsedUrl = new URL(window.location.href);
+    data.argValue =  parsedUrl.searchParams.get(argName);
+    let service = new BeakerxRestHandler();
+    service.post(data)
 };
 
 class BeakerxRestHandler {

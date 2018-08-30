@@ -15,32 +15,33 @@
  */
 package com.twosigma.beakerx.kernel.magic.command;
 
-import com.twosigma.beakerx.util.Preconditions;
 import com.twosigma.beakerx.kernel.commands.MavenInvocationSilentOutputHandler;
 import com.twosigma.beakerx.kernel.commands.MavenJarResolverSilentLogger;
 import com.twosigma.beakerx.kernel.magic.command.functionality.MvnLoggerWidget;
+import com.twosigma.beakerx.util.Preconditions;
 import org.apache.commons.io.FileUtils;
-import org.apache.maven.shared.invoker.DefaultInvocationRequest;
-import org.apache.maven.shared.invoker.DefaultInvoker;
-import org.apache.maven.shared.invoker.InvocationRequest;
-import org.apache.maven.shared.invoker.InvocationResult;
-import org.apache.maven.shared.invoker.Invoker;
+import org.apache.commons.io.IOUtils;
+import org.apache.maven.shared.invoker.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.Collections.singletonList;
 
 public class MavenJarResolver {
 
   public static final String MVN_DIR = File.separator + "mvnJars";
   public static final String POM_XML = "PomTemplateMagicCommand.xml";
-  public static final List<String> GOALS = Collections.singletonList("validate");
+  public static final String GOAL = "validate";
+  public static final String MAVEN_BUILT_CLASSPATH_FILE_NAME = "mavenclasspathfilename.txt";
 
   private final String pathToMavenRepo;
   private ResolverParams commandParams;
@@ -55,14 +56,14 @@ public class MavenJarResolver {
   }
 
   public AddMvnCommandResult retrieve(Dependency dependency, MvnLoggerWidget progress) {
-    List<Dependency> dependencies = Arrays.asList(dependency);
+    List<Dependency> dependencies = singletonList(dependency);
     return retrieve(dependencies, progress);
   }
 
   public AddMvnCommandResult retrieve(List<Dependency> dependencies, MvnLoggerWidget progress) {
     File finalPom = null;
     try {
-      String pomAsString = pomFactory.createPom(pathToMavenRepo, dependencies, commandParams.getRepos());
+      String pomAsString = pomFactory.createPom(new PomFactory.Params(pathToMavenRepo, dependencies, commandParams.getRepos(), GOAL, MAVEN_BUILT_CLASSPATH_FILE_NAME));
       finalPom = saveToFile(commandParams.getPathToNotebookJars(), pomAsString);
       InvocationRequest request = createInvocationRequest();
       request.setOffline(commandParams.getOffline());
@@ -134,12 +135,42 @@ public class MavenJarResolver {
       return AddMvnCommandResult.error(errorMsgBuilder.toString());
     }
 
-    return AddMvnCommandResult.SUCCESS;
+    return AddMvnCommandResult.success(transformFromMavenRepoToKernelRepo(mavenBuildClasspath(), jarsFromRepo()));
+  }
+
+  private List<String> transformFromMavenRepoToKernelRepo(List<String> jarNamesFromBuildClasspath, Map<String, Path> jarNames) {
+    List<String> result = new ArrayList<>();
+    jarNamesFromBuildClasspath.forEach(jarName -> {
+      result.add(jarNames.get(jarName).toAbsolutePath().toString());
+    });
+    return result;
+  }
+
+  private Map<String, Path> jarsFromRepo() {
+    try {
+      List<Path> collect = Files.list(Paths.get(pathToMavenRepo)).collect(Collectors.toList());
+      return collect.stream().collect(Collectors.toMap(x -> x.getFileName().toString(), x -> x));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private List<String> mavenBuildClasspath() {
+    String jarPathsAsString = null;
+    try {
+      String absolutePath = new File(pathToMavenRepo).getAbsolutePath() + File.separator + MAVEN_BUILT_CLASSPATH_FILE_NAME;
+      InputStream isPaths = Files.newInputStream(Paths.get(absolutePath));
+      jarPathsAsString = IOUtils.toString(isPaths, StandardCharsets.UTF_8);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    Stream<String> stream = Arrays.stream(jarPathsAsString.split(File.pathSeparator));
+    return stream.map(x -> Paths.get(x).getFileName().toString()).collect(Collectors.toList());
   }
 
   private InvocationRequest createInvocationRequest() {
     InvocationRequest request = new DefaultInvocationRequest();
-    request.setGoals(GOALS);
+    request.setGoals(singletonList(GOAL));
     return request;
   }
 
@@ -207,14 +238,14 @@ public class MavenJarResolver {
 
   public static class AddMvnCommandResult {
 
-    public static final AddMvnCommandResult SUCCESS = new AddMvnCommandResult(true, "");
-
     private boolean jarRetrieved;
     private String errorMessage;
+    private List<String> addedJarsPaths;
 
-    private AddMvnCommandResult(boolean retrieved, String errorMessage) {
+    private AddMvnCommandResult(boolean retrieved, String errorMessage, List<String> addedJarsPaths) {
       this.jarRetrieved = retrieved;
       this.errorMessage = errorMessage;
+      this.addedJarsPaths = addedJarsPaths;
     }
 
     public boolean isJarRetrieved() {
@@ -225,12 +256,16 @@ public class MavenJarResolver {
       return errorMessage;
     }
 
-    public static AddMvnCommandResult success() {
-      return SUCCESS;
+    public static AddMvnCommandResult success(List<String> addedJarsPaths) {
+      return new AddMvnCommandResult(true, "", addedJarsPaths);
     }
 
     public static AddMvnCommandResult error(String msg) {
-      return new AddMvnCommandResult(false, msg);
+      return new AddMvnCommandResult(false, msg, new ArrayList<>());
+    }
+
+    public List<String> getAddedJarPaths() {
+      return addedJarsPaths;
     }
   }
 
@@ -245,12 +280,6 @@ public class MavenJarResolver {
       this.pathToCache = Preconditions.checkNotNull(pathToCache);
       this.pathToNotebookJars = Preconditions.checkNotNull(pathToNotebookJars);
       this.offline = offline;
-    }
-
-    public ResolverParams(String pathToCache, String pathToNotebookJars, boolean offline,
-                          Map<String, String> repos) {
-      this(pathToCache, pathToNotebookJars, offline);
-      this.repos = repos;
     }
 
     public ResolverParams(String pathToCache, String pathToNotebookJars) {

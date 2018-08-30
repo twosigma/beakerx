@@ -21,7 +21,7 @@
                 <executions>
                     <execution>
                         <id>copy-dependencies</id>
-                        <phase>validate</phase>
+                        <phase>goal</phase>
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>
@@ -30,6 +30,16 @@
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>false</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>build-classpath</id>
+                        <phase>goal</phase>
+                        <goals>
+                            <goal>build-classpath</goal>
+                        </goals>
+                        <configuration>
+                            <outputFile>mavenBuiltClasspathFile</outputFile>
                         </configuration>
                     </execution>
                 </executions>

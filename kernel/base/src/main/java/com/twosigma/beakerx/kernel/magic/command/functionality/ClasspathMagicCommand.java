@@ -21,6 +21,7 @@ import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutputFoldout;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -46,7 +47,8 @@ public abstract class ClasspathMagicCommand implements MagicCommandFunctionality
   }
 
   public Collection<String> addJars(Collection<String> path) {
-    return path.stream().map(this::addJars).flatMap(Collection::stream).collect(Collectors.toList());
+    List<PathToJar> collect = path.stream().map(PathToJar::new).collect(Collectors.toList());
+    return addJarsToClasspath(collect);
   }
 
   public Collection<String> addJars(String path) {
@@ -87,12 +89,18 @@ public abstract class ClasspathMagicCommand implements MagicCommandFunctionality
   }
 
   private List<String> handleWildCards(String path) {
-    List<String> addedJarsName = new LinkedList<>();
     Map<Path, String> paths = getPaths(path);
     List<PathToJar> pathsToJars = paths.keySet().stream()
             .map(currentPath -> new PathToJar(currentPath.toString()))
             .collect(Collectors.toList());
 
+    List<String> addedJarsName = addJarsToClasspath(pathsToJars);
+    return addedJarsName;
+  }
+
+  @NotNull
+  private List<String> addJarsToClasspath(List<PathToJar> pathsToJars) {
+    List<String> addedJarsName = new LinkedList<>();
     List<Path> addedPaths = kernel.addJarsToClasspath(pathsToJars);
     addedJarsName.addAll(addedPaths.stream().map(x -> x.getFileName().toString()).collect(Collectors.toList()));
     return addedJarsName;

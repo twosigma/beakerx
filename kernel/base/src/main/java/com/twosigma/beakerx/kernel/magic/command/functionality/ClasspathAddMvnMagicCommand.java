@@ -82,7 +82,7 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
     MvnLoggerWidget progress = new MvnLoggerWidget(message);
     AddMvnCommandResult result = retrieve(getDependency(split), classpathAddMvnCommand, progress);
     if (result.isJarRetrieved()) {
-      return handleAddedJars(classpathAddMvnCommand.getPathToMavenRepo() + "/*");
+      return handleAddedJars(result.getAddedJarPaths());
     }
     return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, result.getErrorMessage());
   }

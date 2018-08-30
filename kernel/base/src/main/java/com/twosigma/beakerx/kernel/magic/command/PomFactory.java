@@ -29,13 +29,26 @@ import java.util.Optional;
 
 public class PomFactory {
 
-  public String createPom(String pathToMavenRepo, List<Dependency> dependencies, Map<String, String> repos) throws IOException {
+  public String createPom(Params params) throws IOException {
     InputStream pom = getClass().getClassLoader().getResourceAsStream(MavenJarResolver.POM_XML);
     String pomAsString = IOUtils.toString(pom, StandardCharsets.UTF_8);
-    pomAsString = configureOutputDir(pathToMavenRepo, pomAsString);
-    pomAsString = configureDependencies(dependencies, pomAsString);
-    pomAsString = configureRepos(repos, pomAsString);
+    pomAsString = configureOutputDir(params.pathToMavenRepo, pomAsString);
+    pomAsString = configureDependencies(params.dependencies, pomAsString);
+    pomAsString = configureRepos(params.repos, pomAsString);
+    pomAsString = configureGoal(params.goal, pomAsString);
+    pomAsString = configureBuildClasspathPlugin(params.pathToMavenRepo, params.mavenBuiltClasspathFileName, pomAsString);
     return pomAsString;
+  }
+
+  private String configureBuildClasspathPlugin(String pathToMavenRepo, String mavenBuiltClasspathFileName, String pomAsString) {
+    String absolutePath = new File(pathToMavenRepo).getAbsolutePath();
+    return pomAsString.replaceAll(
+            "<outputFile>mavenBuiltClasspathFile</outputFile>",
+            "<outputFile>" + absolutePath + File.separator +mavenBuiltClasspathFileName + "</outputFile>");
+  }
+
+  private String configureGoal(String goal, String pomAsString) {
+    return pomAsString.replaceAll("<phase>goal</phase>", "<phase>" + goal + "</phase>");
   }
 
   private String configureDependencies(List<Dependency> dependencies, String pomAsString) {
@@ -86,5 +99,21 @@ public class PomFactory {
             "</repository>\n";
 
     return pomAsString.replace("</repositories>", String.format(repoPattern, name, url) + "</repositories>");
+  }
+
+  static class Params {
+    String pathToMavenRepo;
+    List<Dependency> dependencies;
+    Map<String, String> repos;
+    String goal;
+    private String mavenBuiltClasspathFileName;
+
+    public Params(String pathToMavenRepo, List<Dependency> dependencies, Map<String, String> repos, String goal, String mavenBuiltClasspathFileName) {
+      this.pathToMavenRepo = pathToMavenRepo;
+      this.dependencies = dependencies;
+      this.repos = repos;
+      this.goal = goal;
+      this.mavenBuiltClasspathFileName = mavenBuiltClasspathFileName;
+    }
   }
 }

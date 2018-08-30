@@ -15,31 +15,24 @@
  */
 package com.twosigma.beakerx.kotlin.kernel;
 
-import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
-import static com.twosigma.beakerx.kernel.Utils.uuid;
-
 import com.twosigma.beakerx.BeakerXCommRepository;
 import com.twosigma.beakerx.CommRepository;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
-import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
-import com.twosigma.beakerx.kernel.CacheFolderFactory;
-import com.twosigma.beakerx.kernel.CloseKernelAction;
-import com.twosigma.beakerx.kernel.CustomMagicCommandsEmptyImpl;
-import com.twosigma.beakerx.kernel.Kernel;
-import com.twosigma.beakerx.kernel.KernelConfigurationFile;
-import com.twosigma.beakerx.kernel.EvaluatorParameters;
-import com.twosigma.beakerx.kernel.KernelRunner;
-import com.twosigma.beakerx.kernel.KernelSocketsFactory;
-import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
+import com.twosigma.beakerx.kernel.*;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
+import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
+import com.twosigma.beakerx.kernel.restserver.impl.GetUrlArgHandler;
 import com.twosigma.beakerx.kotlin.comm.KotlinCommOpenHandler;
 import com.twosigma.beakerx.kotlin.evaluator.KotlinEvaluator;
 import com.twosigma.beakerx.kotlin.handler.KotlinKernelInfoHandler;
 import com.twosigma.beakerx.message.Message;
 
 import java.util.HashMap;
+
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
+import static com.twosigma.beakerx.kernel.Utils.uuid;
 
 
 public class Kotlin extends Kernel {
@@ -92,11 +85,12 @@ public class Kotlin extends Kernel {
       KernelConfigurationFile configurationFile = new KernelConfigurationFile(args);
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
               configurationFile);
+      NamespaceClient beakerxClient = NamespaceClient.create(id, configurationFile, commRepository);
       KotlinEvaluator e = new KotlinEvaluator(id,
               id,
               getKernelParameters(),
-              NamespaceClient.create(id, configurationFile, commRepository));
-      return new Kotlin(id, e, kernelSocketsFactory, commRepository, new KotlinBeakerXServer());
+              beakerxClient);
+      return new Kotlin(id, e, kernelSocketsFactory, commRepository, new KotlinBeakerXServer(new GetUrlArgHandler(beakerxClient)));
     });
   }
 

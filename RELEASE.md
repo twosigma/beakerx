@@ -106,7 +106,6 @@ Release to Docker Hub
 Make sure docker is configured to run with at least 4GB of RAM.
 
 ```
-docker build -t beakerx-base -f docker/base/Dockerfile .
 docker build -t beakerx -f docker/Dockerfile .
 docker run -p 8888:8888 beakerx
 ```

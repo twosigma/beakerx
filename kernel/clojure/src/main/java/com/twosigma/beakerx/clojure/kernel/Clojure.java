@@ -15,10 +15,6 @@
  */
 package com.twosigma.beakerx.clojure.kernel;
 
-import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
-import static com.twosigma.beakerx.kernel.Utils.uuid;
-import static java.util.Arrays.stream;
-
 import clojure.lang.LazySeq;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twosigma.beakerx.BeakerXCommRepository;
@@ -30,30 +26,23 @@ import com.twosigma.beakerx.clojure.handlers.ClojureCommOpenHandler;
 import com.twosigma.beakerx.clojure.handlers.ClojureKernelInfoHandler;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
-import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
-import com.twosigma.beakerx.kernel.CacheFolderFactory;
-import com.twosigma.beakerx.kernel.CloseKernelAction;
-import com.twosigma.beakerx.kernel.CustomMagicCommandsEmptyImpl;
-import com.twosigma.beakerx.kernel.Kernel;
-import com.twosigma.beakerx.kernel.KernelConfigurationFile;
-import com.twosigma.beakerx.kernel.EvaluatorParameters;
-import com.twosigma.beakerx.kernel.KernelRunner;
-import com.twosigma.beakerx.kernel.KernelSocketsFactory;
-import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
+import com.twosigma.beakerx.kernel.*;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandTypesFactory;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
+import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
+import com.twosigma.beakerx.kernel.restserver.impl.GetUrlArgHandler;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 import jupyter.Displayer;
 import jupyter.Displayers;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
+import static com.twosigma.beakerx.kernel.Utils.uuid;
+import static java.util.Arrays.stream;
 
 public class Clojure extends Kernel {
 
@@ -72,7 +61,14 @@ public class Clojure extends Kernel {
                  CacheFolderFactory cacheFolderFactory,
                  CommRepository commRepository,
                  BeakerXServer beakerXServer) {
-    super(sessionId, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory, new CustomMagicCommandsEmptyImpl(), commRepository, beakerXServer);
+    super(sessionId,
+            evaluator,
+            kernelSocketsFactory,
+            closeKernelAction,
+            cacheFolderFactory,
+            new CustomMagicCommandsEmptyImpl(),
+            commRepository,
+            beakerXServer);
   }
 
   @Override
@@ -95,7 +91,7 @@ public class Clojure extends Kernel {
       NamespaceClient namespaceClient = NamespaceClient.create(id, configurationFile, new ClojureBeakerXJsonSerializer(), beakerXCommRepository);
       ClojureEvaluator evaluator = new ClojureEvaluator(id, id, getKernelParameters(), namespaceClient);
 
-      return new Clojure(id, evaluator, kernelSocketsFactory, beakerXCommRepository, new ClojureBeakerXServer());
+      return new Clojure(id, evaluator, kernelSocketsFactory, beakerXCommRepository, new ClojureBeakerXServer(new GetUrlArgHandler(namespaceClient)));
     });
   }
 

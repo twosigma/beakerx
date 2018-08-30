@@ -19,7 +19,10 @@ import java.util.List;
 import java.util.concurrent.SynchronousQueue;
 
 public interface BeakerXClient {
+
   String CODE_CELL_PATH = "codecell";
+
+  String URL_ARG = "urlarg";
 
   void showProgressUpdate(String message, int progress);
 
@@ -38,4 +41,6 @@ public interface BeakerXClient {
   void runByTag(String tag);
 
   String getContext();
+
+  String urlArg(String argName);
 }

@@ -254,6 +254,11 @@ public class EvaluatorTest extends BaseEvaluator {
       return null;
     }
 
+    @Override
+    public String urlArg(String argName) {
+      return null;
+    }
+
     public String getLastRunByTag() {
       return lastRunByTag;
     }

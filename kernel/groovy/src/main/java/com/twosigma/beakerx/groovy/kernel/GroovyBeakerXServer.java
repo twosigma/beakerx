@@ -17,9 +17,14 @@ package com.twosigma.beakerx.groovy.kernel;
 
 import com.twosigma.beakerx.kernel.restserver.impl.BeakerXServerJavalin;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.restserver.impl.GetUrlArgHandler;
 import io.javalin.Javalin;
 
 public class GroovyBeakerXServer extends BeakerXServerJavalin {
+
+  public GroovyBeakerXServer(GetUrlArgHandler urlArgHandler) {
+    super(urlArgHandler);
+  }
 
   @Override
   public void createMapping(Javalin app, KernelFunctionality kernel) {

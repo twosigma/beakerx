@@ -46,8 +46,39 @@ define([
         }
       });
 
-      scope.calcRange = function(){
+      scope.plotRange.calcRange = function() {
+        console.log('calcRange');
 
+        scope.plotFocus.setDefault({
+          xl: 0,
+          xr: 1,
+          yl: 0,
+          yr: 1,
+          xspan: 1,
+          yspan: 1
+        });
+
+        scope.plotFocus.fix(this.scope.plotFocus.defaultFocus)
+      };
+
+      scope.plotRange.calcMapping = function() {
+        console.log('calcMapping');
+      };
+
+      scope.plotSize.updateModelWidth = function(newWidth) {
+        console.log('updateModelWidth');
+        if (scope.width === newWidth) {
+          return;
+        }
+
+        scope.width = newWidth;
+        scope.jqcontainer.css("width", newWidth );
+        scope.jqsvg.css("width", newWidth );
+        scope.emitSizeChange();
+        scope.legendDone = false;
+        scope.legendResetPosition = true;
+
+        scope.update();
       };
 
 

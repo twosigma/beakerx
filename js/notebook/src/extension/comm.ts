@@ -42,7 +42,7 @@ const msgHandlers = {
 
   [BEAKER_GET_URL_ARG]: (msg) => {
     if (msg.content.data.state.name == "URL_ARG") {
-        sendArgUrl(msg.content.data.url,msg.content.data.state.arg_name);
+        sendArgUrl(msg.content.data.url, msg.content.data.type, msg.content.data.state.arg_name);
     }
   },
 
@@ -122,13 +122,14 @@ const sendJupyterCodeCells = (filter: string, url: string) => {
   service.post(data)
 };
 
-const sendArgUrl = (url: string, argName:string) => {
+const sendArgUrl = (url: string, type:string, argName:string) => {
 
-    const data: { url: string,argName:string, argValue:string } =
+    const data: { url: string, type:string, argName:string, argValue:string } =
         {
             argName: argName,
             argValue: "",
-            url : url
+            url : url,
+            type:type
         };
 
     let parsedUrl = new URL(window.location.href);

@@ -55,7 +55,26 @@ export default class PlotSize {
 
     legendWidth = legendWidth ? legendWidth + this.scope.layout.legendMargin + 2 : 0;
 
-    return isLegendPlacedHorizontaly ? plotWidth - legendWidth : plotWidth;
+    return isLegendPlacedHorizontaly ? plotWidth + legendWidth : plotWidth;
+  }
+
+  getPlotWithLegendHeight() {
+    const containerHeight = this.scope.jqcontainer.parents('.output_subarea').height();
+    const plotHeight = containerHeight && containerHeight < this.scope.layout.plotSize.height
+      ? containerHeight
+      : this.scope.layout.plotSize.height;
+    const legendPosition = this.scope.stdmodel.legendPosition.position;
+    // Logic based on updateLegendPosition method
+    const isLegendPlacedHorizontaly = (
+      (["LEFT", "RIGTH"].indexOf(legendPosition) !== -1)
+      || (["TOP", "BOTTOM"].indexOf(legendPosition) === -1 && this.scope.stdmodel.legendLayout === "VERTICAL")
+    );
+
+    let legendHeight = this.scope.jqlegendcontainer.find('.plot-legend').height() || 0;
+
+    legendHeight = legendHeight ? legendHeight + this.scope.layout.legendMargin + 2 : 0;
+
+    return isLegendPlacedHorizontaly ? plotHeight : plotHeight + legendHeight;
   }
 
   setResizable() {

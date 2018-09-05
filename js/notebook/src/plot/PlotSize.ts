@@ -47,7 +47,7 @@ export default class PlotSize {
     const legendPosition = this.scope.stdmodel.legendPosition.position;
     // Logic based on updateLegendPosition method
     const isLegendPlacedHorizontaly = (
-      (["LEFT", "RIGTH"].indexOf(legendPosition) !== -1)
+      (["LEFT", "RIGHT"].indexOf(legendPosition) !== -1)
       || (["TOP", "BOTTOM"].indexOf(legendPosition) === -1 && this.scope.stdmodel.legendLayout === "VERTICAL")
     );
 
@@ -66,7 +66,7 @@ export default class PlotSize {
     const legendPosition = this.scope.stdmodel.legendPosition.position;
     // Logic based on updateLegendPosition method
     const isLegendPlacedHorizontaly = (
-      (["LEFT", "RIGTH"].indexOf(legendPosition) !== -1)
+      (["LEFT", "RIGHT"].indexOf(legendPosition) !== -1)
       || (["TOP", "BOTTOM"].indexOf(legendPosition) === -1 && this.scope.stdmodel.legendLayout === "VERTICAL")
     );
 

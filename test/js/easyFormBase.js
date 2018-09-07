@@ -30,8 +30,10 @@ function easyFormBase() {
   describe('(' + this.kernelName + ') EasyForm widget ', function () {
     it('Cell has EasyForm widget ', function () {
       cellIndex = 0;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      expect(codeCell.$('legend').getText()).toBe('Legend name');
+      expect(codeCell.$('legend').getText()).toBe('form0');
       expect(codeCell.$('div.beaker-easyform-container').isEnabled()).toBeTruthy();
     });
   });
@@ -43,7 +45,7 @@ function easyFormBase() {
       cellIndex += 1;
       easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-text').isEnabled()).toBeTruthy();
-      expect(easyForm.$('label').getText()).toBe('field name2');
+      expect(easyForm.$('label').getText()).toBe('field name');
       expect(easyForm.$('input[type="text"]').isEnabled()).toBeTruthy();
     });
 
@@ -59,14 +61,14 @@ function easyFormBase() {
     it('Should setup text value by code ', function () {
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
-      expect(easyForm.$('input[type="text"]').getValue()).toBe('2text from code2');
+      expect(easyForm.$('input[type="text"]').getValue()).toBe('1text from code1');
     });
 
     it('Text field size equal 10 ', function () {
       cellIndex += 1;
       var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-text').isEnabled()).toBeTruthy();
-      expect(easyForm.$('label').getText()).toBe('field name2');
+      expect(easyForm.$('label').getText()).toBe('field name');
       expect(Math.round(easyForm.$('input[type="text"]').getAttribute('size'))).toBe(10);
     });
   });
@@ -78,7 +80,7 @@ function easyFormBase() {
       cellIndex += 1;
       easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-textarea').isEnabled()).toBeTruthy();
-      expect(easyForm.$('label').getText()).toBe('field name3');
+      expect(easyForm.$('label').getText()).toBe('field name');
       expect(easyForm.$('textarea').isEnabled()).toBeTruthy();
     });
 
@@ -101,7 +103,7 @@ function easyFormBase() {
       cellIndex += 1;
       var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-textarea').isEnabled()).toBeTruthy();
-      expect(easyForm.$('label').getText()).toBe('field name3');
+      expect(easyForm.$('label').getText()).toBe('field name');
       expect(Math.round(easyForm.$('textarea').getAttribute('rows'))).toBe(5);
       expect(Math.round(easyForm.$('textarea').getAttribute('cols'))).toBe(20);
     });
@@ -110,8 +112,8 @@ function easyFormBase() {
       cellIndex += 1;
       var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-textarea').isEnabled()).toBeTruthy();
-      expect(easyForm.$('label').getText()).toBe('field name3');
-      expect(easyForm.$('textarea').getValue()).toBe('3c initial value 3c');
+      expect(easyForm.$('label').getText()).toBe('field name');
+      expect(easyForm.$('textarea').getValue()).toBe('5initial value5');
     });
   });
 
@@ -122,7 +124,7 @@ function easyFormBase() {
       cellIndex += 1;
       easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-checkbox').isEnabled()).toBeTruthy();
-      expect(easyForm.$('span').getText()).toBe('field name4');
+      expect(easyForm.$('span').getText()).toBe('field name');
       expect(easyForm.$('input[type="checkbox"]').isEnabled()).toBeTruthy();
     });
 
@@ -143,7 +145,7 @@ function easyFormBase() {
       cellIndex += 1;
       var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-checkbox').isEnabled()).toBeTruthy();
-      expect(easyForm.$('label').getText()).toBe('field name4');
+      expect(easyForm.$('label').getText()).toBe('field name');
       expect(easyForm.$('input[type="checkbox"]').isSelected()).toBeTruthy();
     });
   });
@@ -155,13 +157,13 @@ function easyFormBase() {
       cellIndex += 1;
       easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-combobox').isEnabled()).toBeTruthy();
-      expect(easyForm.$('label').getText()).toBe('field name5');
-      expect(easyForm.$('input.easyform-combobox-input').getValue()).toBe('onef5');
+      expect(easyForm.$('label').getText()).toBe('field name');
+      expect(easyForm.$('input.easyform-combobox-input').getValue()).toBe('one');
       expect(easyForm.$('span.easyform-combobox').isEnabled()).toBeTruthy();
     });
 
     it('Should select Combobox value ', function () {
-      var testValue = 'twof5';
+      var testValue = 'two';
       cellIndex += 1;
       easyForm.$('span.easyform-combobox > a').click();
       browser.$('div.ui-menu-item-wrapper=' + testValue).click();
@@ -172,7 +174,7 @@ function easyFormBase() {
     it('Should select Combobox value by code ', function () {
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
-      expect(easyForm.$('input.easyform-combobox-input').getValue()).toBe('threef5');
+      expect(easyForm.$('input.easyform-combobox-input').getValue()).toBe('three');
     });
   });
 
@@ -191,38 +193,38 @@ function easyFormBase() {
       cellIndex += 1;
       easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-select').isEnabled()).toBeTruthy();
-      expect(easyForm.$('label').getText()).toBe('field name6');
-      expect(easyForm.$('select').getText()).toMatch('onef6');
-      expect(easyForm.$('select').getText()).toMatch('twof6');
+      expect(easyForm.$('label').getText()).toBe('field name');
+      expect(easyForm.$('select').getText()).toMatch('one');
+      expect(easyForm.$('select').getText()).toMatch('two');
     });
 
     it('List has size equal 3 ', function () {
       expect(Math.round(easyForm.$('select').getAttribute('size'))).toBe(3);
     });
 
-    it('Should select "twof6" value ', function () {
-      var testValue = 'twof6';
+    it('Should select "two" value ', function () {
+      var testValue = 'two';
       cellIndex += 1;
       easyForm.$('select').selectByVisibleText(testValue);
       expect(easyForm.$('select').getValue()).toBe(testValue);
       expect(easyForm.$('option=' + testValue).isSelected()).toBeTruthy();
-      expect(easyForm.$('option=threef6').isSelected()).toBeFalsy();
+      expect(easyForm.$('option=three').isSelected()).toBeFalsy();
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, testValue);
     });
 
-    it('Should select "twof6" and "threef6" values ', function () {
-      selectTwoValuesOnList(easyForm.$('select'), 'twof6', 'threef6');
-      expect(easyForm.$('option=twof6').isSelected()).toBeTruthy();
-      expect(easyForm.$('option=threef6').isSelected()).toBeTruthy();
+    it('Should select "two" and "three" values ', function () {
+      selectTwoValuesOnList(easyForm.$('select'), 'two', 'three');
+      expect(easyForm.$('option=two').isSelected()).toBeTruthy();
+      expect(easyForm.$('option=three').isSelected()).toBeTruthy();
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText();
-      expect(result).toMatch('twof6');
-      expect(result).toMatch('threef6');
+      expect(result).toMatch('two');
+      expect(result).toMatch('three');
     });
 
     it('Should select List value by code ', function () {
       cellIndex += 1;
-      var testValue = "onef6";
+      var testValue = "one";
       beakerxPO.runCodeCellByIndex(cellIndex);
       expect(easyForm.$('option=' + testValue).isSelected()).toBeTruthy();
       expect(easyForm.$('select').getValue()).toBe(testValue);
@@ -231,14 +233,14 @@ function easyFormBase() {
     it('SingleSelected List should select single value ', function () {
       cellIndex += 1;
       var easyForm6b = beakerxPO.runCellToGetEasyForm(cellIndex);
-      selectTwoValuesOnList(easyForm6b.$('select'), 'twof6b', 'threef6b');
-      expect(easyForm6b.$('option=twof6b').isSelected()).toBeFalsy();
-      expect(easyForm6b.$('option=threef6b').isSelected()).toBeTruthy();
+      selectTwoValuesOnList(easyForm6b.$('select'), 'two', 'three');
+      expect(easyForm6b.$('option=two').isSelected()).toBeFalsy();
+      expect(easyForm6b.$('option=three').isSelected()).toBeTruthy();
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText();
-      expect(result).not.toMatch('twof6b');
-      expect(result).toMatch('threef6b');
+      expect(result).not.toMatch('two');
+      expect(result).toMatch('three');
     });
 
     it('List has size equal 2 ', function () {
@@ -257,7 +259,7 @@ function easyFormBase() {
       easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$$('div.widget-checkbox').length).toBe(4);
       expect(easyForm.$$('input[type="checkbox"]').length).toBe(4);
-      expect(easyForm.$('div.widget-label').getText()).toBe('field name7');
+      expect(easyForm.$('div.widget-label').getText()).toBe('field name');
     });
 
     it('CheckBoxes has vertical orientation ', function () {
@@ -266,23 +268,23 @@ function easyFormBase() {
         .getCssProperty('flex-direction').value).toBe('column');
     });
 
-    it('Should select "twof7" value ', function () {
+    it('Should select "two" value ', function () {
       cellIndex += 1;
       easyForm.$$('input[type="checkbox"]')[1].click();
       expect(easyForm.$$('input[type="checkbox"]')[1].isSelected()).toBeTruthy();
       expect(easyForm.$$('input[type="checkbox"]')[2].isSelected()).toBeFalsy();
-      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, 'twof7');
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, 'two');
     });
 
-    it('Should select "fourf7" and "threef7" values ', function () {
+    it('Should select "four" and "three" values ', function () {
       easyForm.$$('input[type="checkbox"]')[2].click();
       easyForm.$$('input[type="checkbox"]')[3].click();
       expect(easyForm.$$('input[type="checkbox"]')[2].isSelected()).toBeTruthy();
       expect(easyForm.$$('input[type="checkbox"]')[3].isSelected()).toBeTruthy();
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText();
-      expect(result).toMatch('fourf7');
-      expect(result).toMatch('threef7');
+      expect(result).toMatch('four');
+      expect(result).toMatch('three');
     });
 
     it('Should select CheckBoxes value by code ', function () {
@@ -296,7 +298,7 @@ function easyFormBase() {
       var easyForm7b = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm7b.$$('div.widget-checkbox').length).toBe(3);
       expect(easyForm7b.$$('input[type="checkbox"]').length).toBe(3);
-      expect(easyForm7b.$('div.widget-label').getText()).toBe('field name7');
+      expect(easyForm7b.$('div.widget-label').getText()).toBe('field name');
       expect(easyForm7b.$('div.widget-hbox > div.widget-hbox').isEnabled()).toBeTruthy();
       expect(easyForm7b.$('div.widget-hbox > div.widget-hbox')
         .getCssProperty('flex-direction').value).toBe('row');
@@ -311,7 +313,7 @@ function easyFormBase() {
       easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-radio-box').isEnabled()).toBeTruthy();
       expect(easyForm.$$('input[type="radio"]').length).toBe(3);
-      expect(easyForm.$('label.widget-label').getText()).toBe('field name8');
+      expect(easyForm.$('label.widget-label').getText()).toBe('field name');
     });
 
     it('RadioButtons has vertical orientation ', function () {
@@ -327,12 +329,12 @@ function easyFormBase() {
       expect(buttonsf8[2].isSelected()).toBeFalsy();
     });
 
-    it('Should select "twof8" value ', function () {
+    it('Should select "two" value ', function () {
       cellIndex += 1;
       easyForm.$$('input[type="radio"]')[1].click();
       expect(easyForm.$$('input[type="radio"]')[1].isSelected()).toBeTruthy();
       expect(easyForm.$$('input[type="radio"]')[0].isSelected()).toBeFalsy();
-      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, 'twof8');
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, 'two');
     });
 
     it('Should select RadioButtons value by code ', function () {
@@ -346,7 +348,7 @@ function easyFormBase() {
       var easyForm8b = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm8b.$('div.widget-radio-box').isEnabled()).toBeTruthy();
       expect(easyForm8b.$$('input[type="radio"]').length).toBe(3);
-      expect(easyForm8b.$('label.widget-label').getText()).toBe('field name8');
+      expect(easyForm8b.$('label.widget-label').getText()).toBe('field name');
       expect(easyForm8b.$('div.widget-radio-box').isEnabled()).toBeTruthy();
       expect(easyForm8b.$('div.widget-radio-box')
         .getCssProperty('flex-direction').value).toBe('row');
@@ -360,7 +362,7 @@ function easyFormBase() {
       cellIndex += 1;
       easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.datepicker-container').isEnabled()).toBeTruthy();
-      expect(easyForm.$('label.widget-label').getText()).toBe('field name9');
+      expect(easyForm.$('label.widget-label').getText()).toBe('field name');
     });
 
     it('Should select 25th day ', function () {

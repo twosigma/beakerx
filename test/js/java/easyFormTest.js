@@ -14,10 +14,13 @@
  *  limitations under the License.
  */
 
+var easyFormBaseObject = require('../easyFormBase.js').prototype;
 var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('(Java) EasyForm tests ', function () {
+describe('(Java) Testing of EasyForm', function () {
+
+  easyFormBaseObject.constructor.apply(this, ['Java']);
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
@@ -26,89 +29,6 @@ describe('(Java) EasyForm tests ', function () {
 
   afterAll(function () {
     beakerxPO.closeAndHaltNotebook();
-  });
-
-  var cellIndex;
-
-  describe('(Java) EasyForm Text field ', function () {
-    var easyForm;
-
-    it('EasyForm has Text field ', function () {
-      cellIndex = 0;
-      beakerxPO.runCodeCellByIndex(cellIndex);
-      cellIndex += 1;
-      easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
-      expect(easyForm.$('div.widget-text').isEnabled()).toBeTruthy();
-      expect(easyForm.$('label').getText()).toBe('field name0');
-      expect(easyForm.$('input[type="text"]').isEnabled()).toBeTruthy();
-    });
-
-    it('Should input text ', function () {
-      var tstText = 'test';
-      cellIndex += 1;
-      easyForm.$('input[type="text"]').click();
-      browser.keys('t').keys('e').keys('s').keys('t');
-      expect(easyForm.$('input[type="text"]').getValue()).toBe(tstText);
-      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, tstText);
-    });
-
-    it('Should setup text value by code ', function () {
-      cellIndex += 1;
-      beakerxPO.runCodeCellByIndex(cellIndex);
-      expect(easyForm.$('input[type="text"]').getValue()).toBe('0text from code0');
-    });
-
-    it('Text field size equal 10 ', function () {
-      cellIndex += 1;
-      var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
-      expect(easyForm.$('div.widget-text').isEnabled()).toBeTruthy();
-      expect(easyForm.$('label').getText()).toBe('field name1');
-      expect(Math.round(easyForm.$('input[type="text"]').getAttribute('size'))).toBe(10);
-    });
-  });
-
-  describe('(Java) EasyForm Textarea field ', function () {
-    var easyForm;
-
-    it('EasyForm has Textarea field ', function () {
-      cellIndex += 1;
-      easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
-      expect(easyForm.$('div.widget-textarea').isEnabled()).toBeTruthy();
-      expect(easyForm.$('label').getText()).toBe('field name2');
-      expect(easyForm.$('textarea').isEnabled()).toBeTruthy();
-    });
-
-    it('Should input text ', function () {
-      var tstText = 'test';
-      cellIndex += 1;
-      easyForm.$('textarea').click();
-      browser.keys('t').keys('e').keys('s').keys('t');
-      expect(easyForm.$('textarea').getValue()).toBe(tstText);
-      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, tstText);
-    });
-
-    it('Should setup text value by code ', function () {
-      cellIndex += 1;
-      beakerxPO.runCodeCellByIndex(cellIndex);
-      expect(easyForm.$('textarea').getValue()).toBe('2text from code2');
-    });
-
-    it('Textarea has 5 rows and 20 cols ', function () {
-      cellIndex += 1;
-      var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
-      expect(easyForm.$('div.widget-textarea').isEnabled()).toBeTruthy();
-      expect(easyForm.$('label').getText()).toBe('field name3');
-      expect(Math.round(easyForm.$('textarea').getAttribute('rows'))).toBe(5);
-      expect(Math.round(easyForm.$('textarea').getAttribute('cols'))).toBe(20);
-    });
-
-    it('Textarea has initial value ', function () {
-      cellIndex += 1;
-      var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
-      expect(easyForm.$('div.widget-textarea').isEnabled()).toBeTruthy();
-      expect(easyForm.$('label').getText()).toBe('field name4');
-      expect(easyForm.$('textarea').getValue()).toBe('4 initial value 4');
-    });
   });
 
 });

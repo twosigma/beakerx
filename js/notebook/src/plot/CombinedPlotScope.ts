@@ -188,6 +188,7 @@ export default class CombinedPlotScope {
 
     this.id = `bko-plot-${bkUtils.generateId(6)}`;
     this.element.find('.combplot-plotcontainer').attr('id', this.id);
+    this.element.find('.plot-title').attr('class', `plot-title plot-title-${this.id}`);
     this.saveAsMenuContainer = $(`#${this.id}`);
     this.contextMenu = new ContextMenu(this);
 

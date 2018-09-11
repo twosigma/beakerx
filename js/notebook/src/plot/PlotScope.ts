@@ -171,7 +171,6 @@ export default class PlotScope {
     this.legendDone = false;
     this.update();
     this.fillCellModelWithPlotMethods();
-    this.adjustModelWidth();
     this.emitSizeChange(true);
     this.pointsLimitModal.init();
   }
@@ -293,9 +292,10 @@ export default class PlotScope {
 
   standardizeData() {
     const model = this.model.getCellModel();
-    const plotModel = PlotModelFactory.getPlotModel(model, this.prefs);
 
-    this.stdmodel = plotModel.getStandardizedModel();
+    this.stdmodel = PlotModelFactory
+      .getPlotModel(model, this.prefs)
+      .getStandardizedModel();
   }
 
   initFlags() {
@@ -313,10 +313,6 @@ export default class PlotScope {
     }
 
     this.removePipe.length = 0;
-  }
-
-  adjustModelWidth() {
-    this.plotSize.updateModelWidth(this.plotSize.getPlotWithLegendWidth());
   }
 
   updatePlot() {

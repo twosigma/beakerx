@@ -28,7 +28,7 @@
 
 BeakerX is a collection of JVM kernels and interactive widgets for
 plotting, tables, autotranslation, and other extensions to Jupyter
-Notebook.  BeakerX is in beta and under active development.
+Notebook.
 
 The [documentation](https://github.com/twosigma/beakerx/blob/master/StartHere.ipynb) consists of tutorial notebooks on GitHub.
 You can try it in the cloud for free with [Binder](https://mybinder.org/v2/gh/twosigma/beakerx/1.1.0?filepath=StartHere.ipynb).

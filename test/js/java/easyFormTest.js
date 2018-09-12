@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@ var easyFormBaseObject = require('../easyFormBase.js').prototype;
 var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('(Groovy) Testing of EasyForm', function () {
+describe('(Java) Testing of EasyForm', function () {
 
-  easyFormBaseObject.constructor.apply(this, ['Groovy']);
+  easyFormBaseObject.constructor.apply(this, ['Java']);
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/test/ipynb/groovy/EasyFormTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/ipynb/java/EasyFormTest.ipynb');
   }, 2);
 
   afterAll(function () {
@@ -33,7 +33,7 @@ describe('(Groovy) Testing of EasyForm', function () {
 
   var cellIndex;
 
-  describe('(Groovy) EasyForm Actions ', function(){
+  describe('(Java) EasyForm Actions ', function(){
     var inputs;
 
     it('EasyForm has two buttons ', function () {
@@ -69,7 +69,7 @@ describe('(Groovy) Testing of EasyForm', function () {
     });
   });
 
-  describe('(Groovy) IntSlider widget in EasyForm ', function(){
+  describe('(Java) IntSlider widget in EasyForm ', function(){
     it('EasyForm has IntSlider widget', function(){
       cellIndex += 2;
       var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);

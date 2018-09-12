@@ -37,7 +37,7 @@ describe('(Python) Testing of EasyForm', function () {
     var inputs;
 
     it('EasyForm has button', function () {
-      cellIndex = 34;
+      cellIndex = 35;
       var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       easyForm.$('button=run tag').click();
       beakerxPO.kernelIdleIcon.waitForEnabled();

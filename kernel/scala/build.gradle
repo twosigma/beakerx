@@ -59,6 +59,8 @@ dependencies {
 
 compileJava {
   println "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+  options.fork = true
+  options.forkOptions.executable = "C:\\ProgramData\\Anaconda3\\envs\\beakerx\\Library\\bin\\javac.exe"
   System.setProperty("java.home","C:\\ProgramData\\Anaconda3\\envs\\beakerx\\Library")
   println "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 }

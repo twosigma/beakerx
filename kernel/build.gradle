@@ -16,7 +16,7 @@
 import groovy.time.TimeCategory
 
 task wrapper(type: Wrapper) {
-  gradleVersion = '3.5'
+  gradleVersion = '4.9'
 }
 
 allprojects {

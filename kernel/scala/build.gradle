@@ -59,10 +59,7 @@ dependencies {
 
 compileJava {
   println "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-  options.fork = true
-  options.forkOptions.executable = "${System.properties['java.home']}/../bin/javac1"
-  System.setProperty("java.home","${System.properties['java.home']}/../")
-  println options.forkOptions.executable
+  System.setProperty("java.home","C:\\ProgramData\\Anaconda3\\envs\\beakerx\\Library")
   println "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 }
 

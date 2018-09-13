@@ -30,6 +30,16 @@ subprojects {
   apply plugin: 'java'
   apply plugin: 'maven'
 
+
+  compileJava {
+    println "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+    options.fork = true
+    options.forkOptions.executable = "C:\\ProgramData\\Anaconda3\\envs\\beakerx\\Library\\bin\\javac.exe"
+    System.setProperty("java.home","C:\\ProgramData\\Anaconda3\\envs\\beakerx\\Library")
+    println options.forkOptions.executable
+    println "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+  }
+
   ext {
     antlr4Version = "4.5"
   }

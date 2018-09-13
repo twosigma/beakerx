@@ -26,6 +26,18 @@ configurations {
   antlr
 }
 
+tasks.withType(ScalaCompile) {
+  options.fork = true
+  options.forkOptions.jvmArgs << '-XaddExports:jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED'
+  println "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+  println System.getProperty("java.home")
+  options.forkOptions.executable = "C:\\ProgramData\\Anaconda3\\envs\\beakerx\\Library\\bin\\javac.exe"
+  println options.forkOptions.getJavaHome().toString()
+  options.forkOptions.setJavaHome(new File("C:\\ProgramData\\Anaconda3\\envs\\beakerx\\Library"))
+  println options.forkOptions.getJavaHome().toString()
+  println "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+}
+
 //need for compiling scala before java
 sourceSets {
   main {

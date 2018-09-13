@@ -46,6 +46,7 @@ allprojects {
   }
   tasks.withType(ScalaCompile) {
     options.fork = true
+    scalaCompileOptions.additionalParameters = ['-target:jvm-1.8']
     println "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
     println System.getProperty("java.home")
     options.forkOptions.executable = "C:\\ProgramData\\Anaconda3\\envs\\beakerx\\Library\\bin\\javac.exe"

@@ -57,6 +57,10 @@ dependencies {
   testCompile project(':base').sourceSets.test.output
 }
 
+compileScala {
+  scalaCompileOptions.additionalParameters = ['-target:jvm-1.8']
+}
+
 jar {
   manifest {
     attributes "Main-Class": "$mainClassName"

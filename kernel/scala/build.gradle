@@ -59,6 +59,7 @@ dependencies {
 
 compileScala {
   scalaCompileOptions.additionalParameters = ['-target:jvm-1.8']
+  println System.getProperty("java.home")
 }
 
 jar {

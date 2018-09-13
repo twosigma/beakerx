@@ -28,10 +28,20 @@ allprojects {
 subprojects {
   apply plugin: 'jacoco'
   apply plugin: 'java'
+  apply plugin: 'scala'
   apply plugin: 'maven'
 
 
   compileJava {
+    println "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+    options.fork = true
+    options.forkOptions.executable = "C:\\ProgramData\\Anaconda3\\envs\\beakerx\\Library\\bin\\javac.exe"
+    System.setProperty("java.home","C:\\ProgramData\\Anaconda3\\envs\\beakerx\\Library")
+    println options.forkOptions.executable
+    println "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+  }
+
+  compileScala {
     println "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
     options.fork = true
     options.forkOptions.executable = "C:\\ProgramData\\Anaconda3\\envs\\beakerx\\Library\\bin\\javac.exe"

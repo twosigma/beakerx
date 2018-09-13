@@ -33,7 +33,7 @@ subprojects {
   compileJava {
     println "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
     println System.getProperty("java.home")
-    options.fork = true
+    options.fork = false
     options.forkOptions.executable = "C:\\ProgramData\\Anaconda3\\envs\\beakerx\\Library\\bin\\javac.exe"
     println options.forkOptions.getJavaHome().toString()
     options.forkOptions.setJavaHome(new File("C:\\ProgramData\\Anaconda3\\envs\\beakerx\\Library"))

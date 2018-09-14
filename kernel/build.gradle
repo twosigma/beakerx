@@ -49,7 +49,7 @@ allprojects {
     options.fork = true
     println "++++++++++++++++++++ cala ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
     println System.getProperty("java.home")
-    options.forkOptions.executable = "C:\\ProgramData\\Anaconda3\\envs\\beakerx\\Library\\bin\\java.exe"
+    options.forkOptions.executable = "C:\\ProgramData\\Anaconda3\\envs\\beakerx\\Library\\bin\\javac.exe"
     println options.forkOptions.getJavaHome().toString()
     options.forkOptions.setJavaHome(new File("C:\\ProgramData\\Anaconda3\\envs\\beakerx\\Library"))
     println options.forkOptions.getJavaHome().toString()

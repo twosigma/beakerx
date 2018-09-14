@@ -43,15 +43,9 @@ sourceSets {
   }
 }
 
-def javaHome = "C:\\ProgramData\\Anaconda3\\envs\\beakerx\\Library"
+def javaHome = "C:\\ProgramData\\Anaconda3\\envs\\beakerxTest5\\Library"
 
 def javaExecutablesPath = new File(javaHome, 'bin')
-
-def javaExecutables = [:].withDefault { execName ->
-  def executable = new File(javaExecutablesPath, execName)
-  assert executable.exists() : "There is no ${execName} executable in ${javaExecutablesPath}"
-  executable
-}
 
 
 tasks.withType(AbstractCompile) {

@@ -34,7 +34,7 @@ goto fail
 :findJavaFromJavaHome
 echo ==========================+++++++++++++++++++==================================================
 echo %JAVA_HOME%
-set JAVA_HOME=%JAVA_HOME:"=%
+set JAVA_HOME=C:\ProgramData\Anaconda3\envs\beakerxTest5\Library
 echo %JAVA_HOME%
 set JAVA_EXE=%JAVA_HOME%/bin/java.exe
 echo %JAVA_EXE%

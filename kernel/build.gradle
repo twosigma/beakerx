@@ -24,6 +24,26 @@ allprojects {
     maven { url 'https://jitpack.io' }
   }
 
+
+  def javaHome = "C:\\ProgramData\\Anaconda3\\envs\\beakerxTest5\\Library"
+
+  def javaExecutablesPath = new File(javaHome, 'bin')
+
+
+  tasks.withType(AbstractCompile) {
+    options.with {
+      fork = true
+      forkOptions.javaHome = file(javaHome)
+    }
+  }
+
+  tasks.withType(Test) {
+    executable = new File(javaExecutablesPath, "java.exe")
+  }
+  tasks.withType(JavaExec) {
+    executable = new File(javaExecutablesPath, "java.exe")
+  }
+
 //  tasks.withType(JavaCompile) {
 //    options.fork = true
 //    println "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"

@@ -34,7 +34,7 @@ repositories {
 }
 dependencies {
     provided project(':base')
-    provided project(':scala')
+    implementation project(':scala')
 
     provided group: 'org.apache.spark', name: 'spark-core_2.11', version: '2.2.1'
     provided group: 'org.apache.spark', name: 'spark-sql_2.11', version: '2.2.1'

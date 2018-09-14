@@ -29,7 +29,7 @@ allprojects {
   tasks.withType(JavaCompile) {
     options.fork = true
 //  options.forkOptions.javaHome = file(javaHome)
-    options.forkOptions.executable  =  javaHome+"\\bin\\javac1.exe"
+    options.forkOptions.executable  =  javaHome+"\\bin\\javac.exe"
   }
 
 //  tasks.withType(JavaCompile) {

@@ -67,9 +67,6 @@ tasks.withType(Test) {
 tasks.withType(JavaExec) {
   executable = new File(javaExecutablesPath, "java.exe")
 }
-tasks.withType(Javadoc) {
-  executable = javaExecutables.javadoc
-}
 
 repositories {
   mavenCentral()

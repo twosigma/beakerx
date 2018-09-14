@@ -62,10 +62,10 @@ tasks.withType(AbstractCompile) {
 }
 
 tasks.withType(Test) {
-  executable = javaExecutables.java
+  executable = javaExecutables.javaexe
 }
 tasks.withType(JavaExec) {
-  executable = javaExecutables.java
+  executable = javaExecutables.javaexe
 }
 tasks.withType(Javadoc) {
   executable = javaExecutables.javadoc

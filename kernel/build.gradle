@@ -30,18 +30,12 @@ allprojects {
   def javaExecutablesPath = new File(javaHome, 'bin')
 
 
-  tasks.withType(AbstractCompile) {
+  tasks.withType(ScalaCompile) {
     options.with {
       fork = true
       forkOptions.javaHome = file(javaHome)
+      forkOptions.executable  =  javaHome+"\\bin\\javac.exe"
     }
-  }
-
-  tasks.withType(Test) {
-    executable = new File(javaExecutablesPath, "java.exe")
-  }
-  tasks.withType(JavaExec) {
-    executable = new File(javaExecutablesPath, "java.exe")
   }
 
 //  tasks.withType(JavaCompile) {

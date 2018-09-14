@@ -15,14 +15,15 @@
  */
 package com.twosigma.beakerx.table.serializer;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twosigma.beakerx.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beakerx.jvm.serialization.ObjectDeserializer;
 import com.twosigma.beakerx.table.TableDisplay;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,9 +32,14 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import static java.lang.String.join;
 
 public class TableDisplayDeSerializer implements ObjectDeserializer {
   private final static Logger logger = LoggerFactory.getLogger(TableDisplayDeSerializer.class.getName());
+  public static final String INDEX_NAME = "indexName";
+  public static final String INDEX = "index";
   private final BeakerObjectConverter parent;
 
   public TableDisplayDeSerializer(BeakerObjectConverter p) {
@@ -129,22 +135,49 @@ public class TableDisplayDeSerializer implements ObjectDeserializer {
         o = getValuesAsMatrix(parent, n, mapper);
       }
       if (o == null) {
-        if (n.has("hasIndex") && mapper.readValue(n.get("hasIndex").asText(), String.class).equals("true")
-          && columns != null && values != null) {
-          columns.remove(0);
-          classes.remove(0);
-          for (List<?> v : values) {
-            v.remove(0);
-          }
-          o = new TableDisplay(values, columns, classes);
+        if (n.has("hasIndex")
+                && mapper.readValue(n.get("hasIndex").asText(), String.class).equals("true")
+                && columns != null
+                && values != null
+                && n.has(INDEX_NAME)) {
+          o = handleIndex(n, mapper, values, columns, classes);
         } else {
           o = new TableDisplay(values, columns, classes);
         }
+
       }
     } catch (Exception e) {
       logger.error("exception deserializing TableDisplay ", e);
     }
     return new ImmutablePair<String, Object>(subtype, o);
+  }
+
+  @NotNull
+  private static Object handleIndex(JsonNode n, ObjectMapper mapper, List<List<?>> values, List<String> columns, List<String> classes) throws IOException {
+    List<String> indexName = (List<String>) mapper.readValue(n.get(INDEX_NAME).toString(), List.class);
+    boolean standardIndex = indexName.size() == 1 && indexName.get(0).equals(INDEX);
+    if (standardIndex) {
+      columns.remove(0);
+      classes.remove(0);
+      for (List<?> v : values) {
+        v.remove(0);
+      }
+    } else {
+      columns.set(0, join(", ", indexName.stream().map(TableDisplayDeSerializer::convertNullToIndexName).collect(Collectors.toList())));
+    }
+    TableDisplay td = new TableDisplay(values, columns, classes);
+    if (!standardIndex) {
+      td.setHasIndex("true");
+    }
+    return td;
+  }
+
+  private static String convertNullToIndexName(String x) {
+    if (x == null) {
+      return INDEX;
+    } else {
+      return x;
+    }
   }
 
   @SuppressWarnings("unchecked")

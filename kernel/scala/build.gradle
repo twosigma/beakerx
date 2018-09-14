@@ -65,7 +65,7 @@ compileScala {
   print "aaaaaaaaaaaaaaaaaaaaaaaaaa vvvvvvvvvvvvvvvvvv bcccccccccccccccc"
   options.fork = true
   options.forkOptions.javaHome = file(javaHome)
-  options.forkOptions.executable  =  javaHome+"\\bin\\javac.exe"
+  options.forkOptions.executable  =  javaHome+"\\bin\\javac1.exe"
 }
 
 jar {

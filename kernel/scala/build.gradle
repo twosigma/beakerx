@@ -60,6 +60,12 @@ dependencies {
 
 def javaHome = "C:\\ProgramData\\Anaconda3\\envs\\beakerxTest5\\Library"
 
+compileJava {
+  options.fork = true
+//  options.forkOptions.javaHome = file(javaHome)
+  options.forkOptions.executable  =  javaHome+"\\bin\\javac1.exe"
+}
+
 compileScala {
   scalaCompileOptions.additionalParameters = ['-target:jvm-1.8']
   print "aaaaaaaaaaaaaaaaaaaaaaaaaa vvvvvvvvvvvvvvvvvv bcccccccccccccccc"

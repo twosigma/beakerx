@@ -58,7 +58,7 @@ dependencies {
 }
 
 
-def javaHome = "C:\\ProgramData\\Anaconda3\\envs\\beakerxTest5\\Library"
+def javaHome = "C:\\ProgramData\\Anaconda3\\envs\\beakerxTest5\\Library\\..\\"
 
 compileScala {
   scalaCompileOptions.additionalParameters = ['-target:jvm-1.8']

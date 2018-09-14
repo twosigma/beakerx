@@ -32,6 +32,7 @@ allprojects {
 
   tasks.withType(ScalaCompile) {
     options.with {
+      print "aaaaaaaaaaaaaaaaaaaaaaaaaa vvvvvvvvvvvvvvvvvv bcccccccccccccccc"
       fork = true
       forkOptions.javaHome = file(javaHome)
       forkOptions.executable  =  javaHome+"\\bin\\javac.exe"

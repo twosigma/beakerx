@@ -43,6 +43,34 @@ sourceSets {
   }
 }
 
+def javaHome = "C:\\ProgramData\\Anaconda3\\envs\\beakerx\\Library"
+
+def javaExecutablesPath = new File(javaHome, 'bin')
+
+def javaExecutables = [:].withDefault { execName ->
+  def executable = new File(javaExecutablesPath, execName)
+  assert executable.exists() : "There is no ${execName} executable in ${javaExecutablesPath}"
+  executable
+}
+
+
+tasks.withType(AbstractCompile) {
+  options.with {
+    fork = true
+    forkOptions.javaHome = file(javaHome)
+  }
+}
+
+tasks.withType(Test) {
+  executable = javaExecutables.java
+}
+tasks.withType(JavaExec) {
+  executable = javaExecutables.java
+}
+tasks.withType(Javadoc) {
+  executable = javaExecutables.javadoc
+}
+
 repositories {
   mavenCentral()
 }

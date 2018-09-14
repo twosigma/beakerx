@@ -44,23 +44,6 @@ allprojects {
     println options.forkOptions.getJavaHome().toString()
     println "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
   }
-  tasks.withType(ScalaCompile) {
-
-    configure(scalaCompileOptions.forkOptions) {
-      fork = true
-      executable = "C:\\ProgramData\\Anaconda3\\envs\\beakerx\\Library\\bin\\javac.exe"
-    }
-//    options.fork = true
-//    scalaCompileOptions.additionalParameters = ['-target:jvm-1.8']
-//    println "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-//    println System.getProperty("java.home")
-//    options.forkOptions.executable = "C:\\ProgramData\\Anaconda3\\envs\\beakerx\\Library\\bin\\javac.exe"
-//    println options.forkOptions.getJavaHome().toString()
-//    options.forkOptions.setJavaHome(new File("C:\\ProgramData\\Anaconda3\\envs\\beakerx\\Library"))
-//    println options.forkOptions.getJavaHome().toString()
-//    println "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-  }
-
 }
 
 subprojects {

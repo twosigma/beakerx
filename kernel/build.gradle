@@ -24,21 +24,6 @@ allprojects {
     maven { url 'https://jitpack.io' }
   }
 
-
-  def javaHome = "C:\\ProgramData\\Anaconda3\\envs\\beakerxTest5\\Library"
-
-  def javaExecutablesPath = new File(javaHome, 'bin')
-
-
-  tasks.withType(ScalaCompile) {
-    options.with {
-      print "aaaaaaaaaaaaaaaaaaaaaaaaaa vvvvvvvvvvvvvvvvvv bcccccccccccccccc"
-      fork = true
-      forkOptions.javaHome = file(javaHome)
-      forkOptions.executable  =  javaHome+"\\bin\\javac.exe"
-    }
-  }
-
 //  tasks.withType(JavaCompile) {
 //    options.fork = true
 //    println "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"

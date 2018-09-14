@@ -26,7 +26,7 @@ allprojects {
 
   def javaHome = "C:\\ProgramData\\Anaconda3\\envs\\beakerxTest5\\Library"
 
-  compileJava {
+  tasks.withType(JavaCompile) {
     options.fork = true
 //  options.forkOptions.javaHome = file(javaHome)
     options.forkOptions.executable  =  javaHome+"\\bin\\javac1.exe"

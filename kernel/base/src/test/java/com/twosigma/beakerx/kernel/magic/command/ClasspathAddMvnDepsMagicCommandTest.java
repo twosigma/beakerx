@@ -64,33 +64,33 @@ public class ClasspathAddMvnDepsMagicCommandTest {
   private static KernelTest kernel;
   private static EvaluatorTest evaluator;
 
-  @Before
+  //@Before
   public void setUp() throws Exception {
     evaluator = new EvaluatorTest();
     kernel = new KernelTest("id2", evaluator);
     prepareLocalMavenRepository();
   }
 
-  @After
+  //@After
   public void tearDown() {
     evaluator.exit();
   }
 
-  @Test
+  //@Test
   public void handleClasspathAddMvnDep() throws Exception {
     //given
     String allCode = CLASSPATH_ADD_MVN + " org.slf4j slf4j-api 1.7.5";
     handleClasspathAddMvnDep(allCode, "slf4j-api-1.7.5.jar");
   }
 
-  @Test
+  //@Test
   public void handleClasspathAddMvnDepUsingGradleSyntax() throws Exception {
     //given
     String allCode = CLASSPATH_ADD_MVN + " com.google.code.gson:gson:2.6.2";
     handleClasspathAddMvnDep(allCode, "gson-2.6.2.jar");
   }
 
-  @Test
+  //@Test
   public void unresolvedDependency() {
     //given
     String allCode = CLASSPATH_ADD_MVN + " com.google.code.XXXX gson 2.6.2";
@@ -105,7 +105,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     assertThat(text).contains("com.google.code.XXXX : gson : 2.6.2");
   }
 
-  @Test
+  //@Test
   public void handleClasspathReset() throws Exception {
     //given
     String allCode = CLASSPATH_ADD_MVN + " com.google.code.gson:gson:2.6.2";
@@ -131,7 +131,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     assertTrue(mvnMagicCommand.getRepos().get().size() == DEFAULT_MAVEN_REPOS.size());
   }
 
-  @Test
+  //@Test
   public void wrongCommandFormat() {
     //given
     String allCode = CLASSPATH_ADD_MVN + " com.google.code.XXXX gson";

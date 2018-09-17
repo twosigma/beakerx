@@ -58,19 +58,19 @@ public class ClasspathAddMvnDepsCellMagicCommandTest {
   private static KernelTest kernel;
   private static EvaluatorTest evaluator;
 
-  @Before
+  //@Before
   public void setUp() throws Exception {
     evaluator = new EvaluatorTest();
     kernel = new KernelTest("id2", evaluator);
     prepareLocalMavenRepository();
   }
 
-  @After
+  //@After
   public void tearDown() throws Exception {
     evaluator.exit();
   }
 
-  @Test
+  ////@Test
   public void handleAddDeps() throws Exception {
     //given
     String allCode = CLASSPATH_ADD_MVN_CELL + "\n"
@@ -80,7 +80,7 @@ public class ClasspathAddMvnDepsCellMagicCommandTest {
     handleCellClasspathAddMvnDep(allCode, expected);
   }
 
-  @Test
+  //@Test
   public void handleAddDepsMixedSyntax() throws Exception {
     String allCode = CLASSPATH_ADD_MVN_CELL + "\n"
             + "org.slf4j slf4j-api 1.7.5\n"
@@ -89,7 +89,7 @@ public class ClasspathAddMvnDepsCellMagicCommandTest {
     handleCellClasspathAddMvnDep(allCode, expected);
   }
 
-  @Test
+  //@Test
   public void handleUnresolvedDep() throws Exception {
     String allCode = "%%classpath add mvn\n"
             + "com.google.code.XXXX:gson:2.6.2";
@@ -105,7 +105,7 @@ public class ClasspathAddMvnDepsCellMagicCommandTest {
     Assertions.assertThat(text).contains("com.google.code.XXXX : gson : 2.6.2");
   }
 
-  @Test
+  //@Test
   public void handleIncorrectSyntax() throws Exception {
     String singleLine = "%%classpath add mvn\n"
             + "org.slf4j slf4j-api";

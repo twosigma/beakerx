@@ -29,8 +29,8 @@
     "build:dev": "yarn run test && webpack --config webpack.dev.js && yarn run build-lab-extension",
     "build-lab-extension": "cd ../lab && npm install",
     "prepublish": "yarn run build:prod",
-    "test": "TZ=America/New_York TS_NODE_PROJECT=test mocha --reporter=min",
-    "coverage": "TZ=America/New_York TS_NODE_PROJECT=test nyc mocha",
+    "test": "SET TZ=America/New_York TS_NODE_PROJECT=test mocha --reporter=min",
+    "coverage": "SET TZ=America/New_York TS_NODE_PROJECT=test nyc mocha",
     "stats": "webpack --env production --profile --json > stats.json"
   },
   "devDependencies": {

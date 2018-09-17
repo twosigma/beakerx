@@ -13,18 +13,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-include 'base'
-include 'groovy'
-include 'kotlin'
-include 'scala'
-include 'java'
-include 'clojure'
-include 'sql'
-include 'sparkex'
-include 'doclet'
+
+include 'test'
+
+include 'kernel'
+include 'kernel:base'
+include 'kernel:groovy'
+include 'kernel:kotlin'
+include 'kernel:scala'
+include 'kernel:java'
+include 'kernel:clojure'
+include 'kernel:sql'
+include 'kernel:sparkex'
+include 'kernel:doclet'
 
 if (System.getProperty('includeCpp', 'false') == 'true') {
-  include 'cpp'
+  include 'kernel:cpp'
 }
 
 // uncomment when demo projects have to be rebuild

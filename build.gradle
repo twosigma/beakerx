@@ -17,3 +17,7 @@
 allprojects {
   apply plugin: 'idea'
 }
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.5'
+}

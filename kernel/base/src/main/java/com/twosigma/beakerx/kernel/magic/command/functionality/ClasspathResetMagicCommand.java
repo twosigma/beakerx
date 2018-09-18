@@ -33,11 +33,13 @@ public class ClasspathResetMagicCommand implements MagicCommandFunctionality {
   public static final String CLASSPATH_PREFIX = "%classpath";
   public static final String RESET = "reset";
   public static final String CLASSPATH_RESET = CLASSPATH_PREFIX + " " + RESET;
+  private final FileService fileService;
 
   private KernelFunctionality kernel;
 
-  public ClasspathResetMagicCommand(KernelFunctionality kernel) {
+  public ClasspathResetMagicCommand(KernelFunctionality kernel, FileService fileService) {
     this.kernel = kernel;
+    this.fileService = fileService;
   }
 
   @Override
@@ -50,8 +52,8 @@ public class ClasspathResetMagicCommand implements MagicCommandFunctionality {
     ClasspathAddMvnMagicCommand mvnMagicCommand = MagicCommandTypesFactory.getClasspathAddMvnMagicCommand(kernel);
     mvnMagicCommand.resetRepo();
     try {
-      FileUtils.deleteQuietly(new File(mvnMagicCommand.getCommandParams().getPathToCache()));
-      FileUtils.deleteQuietly(new File(mvnMagicCommand.getCommandParams().getPathToNotebookJars()));
+      fileService.delete(new File(mvnMagicCommand.getCommandParams().getPathToCache()));
+      fileService.delete(new File(mvnMagicCommand.getCommandParams().getPathToNotebookJars()));
     } catch (Exception e) {
       return new MagicCommandOutput(Status.ERROR, e.getMessage());
     }

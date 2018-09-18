@@ -41,10 +41,10 @@ public class PomFactory {
   }
 
   private String configureBuildClasspathPlugin(String pathToMavenRepo, String mavenBuiltClasspathFileName, String pomAsString) {
-    String absolutePath = new File(pathToMavenRepo).getAbsolutePath();
+    String absolutePath = new File(pathToMavenRepo, mavenBuiltClasspathFileName).getAbsolutePath();
     return pomAsString.replace(
             "<outputFile>mavenBuiltClasspathFile</outputFile>",
-            "<outputFile>" + absolutePath + File.separator +mavenBuiltClasspathFileName + "</outputFile>");
+            "<outputFile>" + absolutePath + "</outputFile>");
   }
 
   private String configureGoal(String goal, String pomAsString) {

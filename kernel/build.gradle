@@ -94,7 +94,7 @@ subprojects {
   }
 
   afterEvaluate {
-    javadoc.classpath += files(project(':base').sourceSets.main.output)
+    javadoc.classpath += files(project(':kernel:base').sourceSets.main.output)
   }
 
   clean.dependsOn cleanStaticContent

@@ -40,7 +40,7 @@ repositories {
   mavenCentral()
 }
 dependencies {
-  provided project(':base')
+  provided project(':kernel:base')
 
   testCompile group: 'junit', name: 'junit', version: '4.12'
 }

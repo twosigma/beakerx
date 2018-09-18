@@ -45,7 +45,7 @@ repositories {
 }
 
 dependencies {
-  provided project(':base')
+  provided project(':kernel:base')
   compile group: 'org.apache.commons', name: 'commons-dbcp2', version: '2.1.1'
   compile group: 'org.codehaus.jackson', name: 'jackson-core-asl', version: '1.9.13'
   compile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.5.1'
@@ -59,7 +59,7 @@ dependencies {
   compile group: 'com.amazon.redshift', name: 'redshift-jdbc42', version: '1.2.10.1009'
   compile group: 'org.hsqldb', name: 'hsqldb', version: '2.4.0'
 
-  testCompile project(':base').sourceSets.test.output
+  testCompile project(':kernel:base').sourceSets.test.output
 }
 
 jar {

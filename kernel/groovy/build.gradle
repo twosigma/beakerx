@@ -40,12 +40,12 @@ repositories {
 }
 
 dependencies {
-  provided project(':base')
+  provided project(':kernel:base')
   compile group: "org.codehaus.groovy", name: "groovy-all", version: "2.4.3"
   compile group: 'org.antlr', name: 'antlr4-runtime', version: "$antlr4Version"
   antlr group: 'org.antlr', name: 'antlr4', version: "$antlr4Version"
 
-  testCompile project(':base').sourceSets.test.output
+  testCompile project(':kernel:base').sourceSets.test.output
 }
 
 task antlr4_groovy_lexer(type: JavaExec) {

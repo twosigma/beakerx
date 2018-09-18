@@ -39,13 +39,13 @@ repositories {
 }
 
 dependencies {
-  provided project(':base')
+  provided project(':kernel:base')
   compile group: 'org.jetbrains.kotlin', name: 'kotlin-compiler-embeddable', version: '1.2.21'
   compile group: 'org.jetbrains.kotlin', name: 'kotlin-script-runtime', version: '1.2.21'
   compile group: 'org.jetbrains.kotlin', name: 'kotlin-runtime', version: '1.2.21'
   compile group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: '1.2.21'
 
-  testCompile project(':base').sourceSets.test.output
+  testCompile project(':kernel:base').sourceSets.test.output
 }
 
 jar {

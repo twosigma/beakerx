@@ -16,7 +16,6 @@
 
 include ':test'
 
-
 include ':kernel'
 include ':kernel:base'
 include ':kernel:clojure'
@@ -33,7 +32,7 @@ if (System.getProperty('includeCpp', 'false') == 'true') {
 }
 
 // uncomment when demo projects have to be rebuild
-//include ':kernel:demoProjects'
-//include ':kernel:demoProjects:BeakerXClasspathTest'
-//include ':kernel:demoProjects:demo'
-//include ':kernel:demoProjects:loadMagicJarDemo'
+include ':kernel:demoProjects'
+include ':kernel:demoProjects:BeakerXClasspathTest'
+include ':kernel:demoProjects:demo'
+include ':kernel:demoProjects:loadMagicJarDemo'

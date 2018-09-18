@@ -15,10 +15,6 @@
  */
 import groovy.time.TimeCategory
 
-task wrapper(type: Wrapper) {
-  gradleVersion = '3.5'
-}
-
 allprojects {
   repositories {
     maven { url 'https://jitpack.io' }
@@ -98,7 +94,7 @@ subprojects {
   }
 
   afterEvaluate {
-    javadoc.classpath += files(project(':base').sourceSets.main.output)
+    javadoc.classpath += files(project(':kernel:base').sourceSets.main.output)
   }
 
   clean.dependsOn cleanStaticContent

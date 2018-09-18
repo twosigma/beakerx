@@ -44,10 +44,10 @@ repositories {
 }
 
 dependencies {
-  provided project(':base')
+  provided project(':kernel:base')
   compile group: 'org.antlr', name: 'antlr4-runtime', version: "$antlr4Version"
 
-  testCompile project(':base').sourceSets.test.output
+  testCompile project(':kernel:base').sourceSets.test.output
 }
 
 jar {

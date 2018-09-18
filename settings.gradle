@@ -13,38 +13,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-version 'unspecified'
 
-apply plugin: 'java'
+include ':test'
 
-sourceCompatibility = 1.8
+include ':kernel'
+include ':kernel:base'
+include ':kernel:clojure'
+include ':kernel:doclet'
+include ':kernel:groovy'
+include ':kernel:java'
+include ':kernel:kotlin'
+include ':kernel:scala'
+include ':kernel:sparkex'
+include ':kernel:sql'
 
-ext.kernelIdName = 'BeakerXClasspathTest'
-
-configurations {
-    provided
-    antlr
+if (System.getProperty('includeCpp', 'false') == 'true') {
+  include ':kernel:cpp'
 }
 
-sourceSets {
-    main {
-        compileClasspath += configurations.provided
-    }
-    test {
-        compileClasspath += configurations.provided
-        runtimeClasspath += configurations.provided
-    }
-}
-
-repositories {
-    mavenCentral()
-}
-dependencies {
-    provided project(':kernel:base')
-
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-}
-
-staticContent {
-    ext.executeStaticContent = false
-}
+// uncomment when demo projects have to be rebuild
+include ':kernel:demoProjects'
+include ':kernel:demoProjects:BeakerXClasspathTest'
+include ':kernel:demoProjects:demo'
+include ':kernel:demoProjects:loadMagicJarDemo'

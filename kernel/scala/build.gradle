@@ -48,13 +48,13 @@ repositories {
 }
 
 dependencies {
-  provided project(':base')
+  provided project(':kernel:base')
   compile group: 'org.scala-lang', name: 'scala-compiler', version: '2.11.12'
   compile group: 'org.scala-lang', name: 'scala-library', version: '2.11.12'
   compile group: 'jline', name: 'jline', version: '2.12'
 
   testCompile group: 'org.scalatest', name: 'scalatest_2.11', version: '3.0.4'
-  testCompile project(':base').sourceSets.test.output
+  testCompile project(':kernel:base').sourceSets.test.output
 }
 
 compileScala {

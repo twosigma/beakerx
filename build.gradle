@@ -13,24 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-include 'base'
-include 'groovy'
-include 'kotlin'
-include 'scala'
-include 'java'
-include 'clojure'
-include 'sql'
-include 'sparkex'
-include 'doclet'
 
-if (System.getProperty('includeCpp', 'false') == 'true') {
-  include 'cpp'
+allprojects {
+  apply plugin: 'idea'
 }
 
-// uncomment when demo projects have to be rebuild
-//include 'demoProjects'
-//include 'demoProjects:loadMagicJarDemo'
-//include 'demoProjects:demo'
-//include 'demoProjects:BeakerXClasspathTest'
-
-
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.5'
+}

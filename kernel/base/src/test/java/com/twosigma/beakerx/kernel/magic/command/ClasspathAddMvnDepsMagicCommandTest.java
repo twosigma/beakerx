@@ -124,10 +124,9 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     List<Message> stderr = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());
     String text = (String) stderr.get(0).getContent().get("text");
     assertThat(text).contains("Reset done");
-    boolean cache = Files.exists(Paths.get(mvnMagicCommand.getCommandParams().getPathToCache()));
-    Assert.assertFalse(cache);
-    boolean jars = Files.exists(Paths.get(mvnMagicCommand.getCommandParams().getPathToNotebookJars()));
-    Assert.assertFalse(jars);
+    List<String> deletedFiles = kernel.getFileService().getDeletedFiles();
+    Assert.assertTrue(deletedFiles.contains(mvnMagicCommand.getCommandParams().getPathToCache()));
+    Assert.assertTrue(deletedFiles.contains(mvnMagicCommand.getCommandParams().getPathToNotebookJars()));
     assertTrue(mvnMagicCommand.getRepos().get().size() == DEFAULT_MAVEN_REPOS.size());
   }
 

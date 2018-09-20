@@ -24,6 +24,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.maven.shared.invoker.*;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -158,9 +159,9 @@ public class MavenJarResolver {
   private List<String> mavenBuildClasspath() {
     String jarPathsAsString = null;
     try {
-      String absolutePath = new File(pathToMavenRepo).getAbsolutePath() + File.separator + MAVEN_BUILT_CLASSPATH_FILE_NAME;
-      InputStream isPaths = Files.newInputStream(Paths.get(absolutePath));
-      jarPathsAsString = IOUtils.toString(isPaths, StandardCharsets.UTF_8);
+      File fileToClasspath = new File(pathToMavenRepo, MAVEN_BUILT_CLASSPATH_FILE_NAME);
+      InputStream fileInputStream = new FileInputStream(fileToClasspath);
+      jarPathsAsString = IOUtils.toString(fileInputStream, StandardCharsets.UTF_8);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

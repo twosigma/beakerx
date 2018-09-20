@@ -113,7 +113,7 @@ public class MagicCommandTypesFactory {
   }
 
   private static MagicCommandType addClasspathReset(KernelFunctionality kernel) {
-    return new MagicCommandType(ClasspathResetMagicCommand.CLASSPATH_RESET, "", new ClasspathResetMagicCommand(kernel));
+    return new MagicCommandType(ClasspathResetMagicCommand.CLASSPATH_RESET, "", new ClasspathResetMagicCommand(kernel, new FileServiceImpl()));
   }
 
   private static MagicCommandType addDynamic(KernelFunctionality kernel) {

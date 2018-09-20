@@ -18,13 +18,13 @@ var easyFormBaseObject = require('../easyFormBase.js').prototype;
 var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('(Groovy) Testing of EasyForm', function () {
+describe('(Kotlin) Testing of EasyForm', function () {
 
   easyFormBaseObject.constructor.apply(this, ['Groovy']);
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/test/ipynb/groovy/EasyFormTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/ipynb/kotlin/EasyFormTest.ipynb');
   }, 2);
 
   afterAll(function () {
@@ -33,15 +33,14 @@ describe('(Groovy) Testing of EasyForm', function () {
 
   var cellIndex;
 
-  describe('(Groovy) EasyForm Actions ', function(){
+  describe('(Kotlin) EasyForm Actions ', function(){
     var inputs;
 
-    it('EasyForm has two buttons ', function () {
+    it('EasyForm has button ', function () {
       cellIndex = 35;
       var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       easyForm.$('button=run tag').click();
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      easyForm.$('button=actionPerformed').click();
     });
 
     it('tag should create EasyForm ', function () {
@@ -53,23 +52,18 @@ describe('(Groovy) Testing of EasyForm', function () {
       inputs = easyForm.$$('input[type="text"]');
     });
 
-    it('onChange action should change text value ', function () {
+    it('set text value for second field', function () {
       cellIndex -= 1;
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, 'test text');
       expect(inputs[1].getValue()).toBe('test text');
-      expect(inputs[2].getValue()).toBe('test text from onChange');
     });
 
     it('onInit action should change text value ', function () {
       expect(inputs[0].getValue()).toBe('from onInit');
     });
-
-    it('actionPerformed should change text value ', function () {
-      expect(inputs[3].getValue()).toBe('from actionPerformed');
-    });
   });
 
-  describe('(Groovy) IntSlider widget in EasyForm ', function(){
+  describe('(Kotlin) IntSlider widget in EasyForm ', function(){
     it('EasyForm has IntSlider widget', function(){
       cellIndex += 2;
       var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);

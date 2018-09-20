@@ -342,6 +342,7 @@ def transformBack(obj):
                 if ('hasIndex' in out) and (out['hasIndex'] == "true"):
                     # first column becomes the index
                     vals = out['values']
+                    is_standard_index = ('indexName' in out) and (len(out['indexName']) == 1) and (out['indexName'][0] == 'index')
                     cnames = out['columnNames'][1:]
                     index = []
                     for x in range(0, len(vals)):
@@ -349,7 +350,12 @@ def transformBack(obj):
                         v = vals[x][1:]
                         fixNaNsBack(v)
                         vals[x] = v
-                    return pandas.DataFrame(data=vals, columns=cnames, index=index)
+                    if len(out['indexName']) > 1:
+                        index = pandas.MultiIndex.from_tuples(index, names=out['indexName'])
+                    else:
+                        index = pandas.Index(index, name=out['indexName'])
+                    frame = pandas.DataFrame(data=vals, columns=cnames, index=index)
+                    return frame
                 else:
                     vals = out['values']
                     cnames = out['columnNames']
@@ -406,7 +412,8 @@ class DataFrameEncoder(json.JSONEncoder):
             out['type'] = "TableDisplay"
             out['subtype'] = "TableDisplay"
             out['hasIndex'] = "true"
-            out['columnNames'] = ['Index'] + obj.columns.tolist()
+            out['columnNames'] = (['Index'] if obj.index.name is None else obj.index.names) + obj.columns.tolist()
+            out['indexName'] = ['index'] if (len(obj.index.names) == 1) and (obj.index.names[0] is None) else obj.index.names
             vals = obj.values.tolist()
             idx = obj.index.tolist()
             for x in range(0, len(vals)):

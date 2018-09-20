@@ -345,16 +345,16 @@ export default class PlotInteraction {
     }
 
     this.toggleLine(data, id);
-
+    this.updateShowAllLines();
     this.scope.plotRange.calcRange();
     this.scope.update();
   }
 
   toggleAllLines(data) {
-    this.scope.showAllItems = !this.scope.showAllItems;
+    this.scope.showAllItems = this.findLegendCheckAllElement().prop("checked");
 
     for (let lineId in this.scope.legendMergedLines) {
-      this.toggleLine(data, lineId);
+      this.toggleLine(data, lineId, this.scope.showAllItems);
 
       this.scope.jqlegendcontainer
         .find("#legendcheck_" + lineId)
@@ -365,17 +365,17 @@ export default class PlotInteraction {
     this.scope.update();
   }
 
-  toggleLine(data, lineId) {
+  toggleLine(data, lineId, showItem: boolean = null) {
     if (!this.scope.legendMergedLines.hasOwnProperty(lineId)) {
       return;
     }
 
     const line = this.scope.legendMergedLines[lineId];
-    line.showItem = this.scope.showAllItems;
+    line.showItem = null === showItem ? !line.showItem : showItem;
 
     for (let i = 0; i < line.dataIds.length; i++) {
       let item = data[line.dataIds[i]];
-      item.showItem = this.scope.showAllItems;
+      item.showItem = line.showItem;
 
       if (item.showItem === false) {
         item.hideTips(this.scope, true);
@@ -393,5 +393,23 @@ export default class PlotInteraction {
         this.scope.setMergedLodHint(line.lodDataIds, lineId);
       }
     }
+  }
+
+  updateShowAllLines(): void {
+    this.scope.showAllLines = this.calculateShowAllLines();
+    this.findLegendCheckAllElement()
+      .prop("checked", this.scope.showAllLines);
+  }
+
+  calculateShowAllLines(): boolean {
+    return Object.entries(this.scope.legendMergedLines)
+      .reduce((total, pair) => {
+        const [key, value] = pair;
+        return total && value.showItem;
+      }, true);
+  }
+
+  findLegendCheckAllElement(): JQuery<HTMLElement> {
+    return this.scope.jqlegendcontainer.find("[id^=legendcheck_all]");
   }
 }

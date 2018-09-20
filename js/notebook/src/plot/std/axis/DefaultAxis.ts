@@ -45,6 +45,7 @@ export default class DefaultAxis {
   numIntws: any[];
 
   axisLabelWithCommon: any;
+  showGridlineLabels: boolean;
 
   constructor(type: any) {
     this.axisType = type == null ? "linear" : type; // linear, log, time, category, nanotime
@@ -68,6 +69,7 @@ export default class DefaultAxis {
     this.axisFixedLabels = {};
     this.dateIntws = [];
     this.numIntws = [];
+    this.showGridlineLabels = true;
 
     this.setNumFixs();
   }

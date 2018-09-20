@@ -14,7 +14,7 @@
 
 import socket
 import zmq
-from threading import Thread
+import threading
 
 
 class BeakerxZMQServer:
@@ -22,7 +22,7 @@ class BeakerxZMQServer:
     def __init__(self, beakerXQueue):
         self.queue = beakerXQueue
         self.url = "tcp://127.0.0.1:" + BeakerxZMQServer.get_free_tcp_port()
-        thread = Thread(target=self.threaded_function)
+        thread = threading.Thread(target=self.threaded_function, daemon=True)
         thread.start()
 
     def threaded_function(self):

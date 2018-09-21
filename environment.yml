@@ -2,5 +2,11 @@ name: beakerx
 channels:
   - conda-forge
 dependencies:
+  - nodejs
+  - pandas
+  - openjdk=8.0.121
+  - maven
+  - py4j
+  - requests
   - ipywidgets
   - beakerx

@@ -21,7 +21,7 @@ describe('Spark UI', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/test/ipynb/scala/SparkUI_example.ipynb');
+    beakerxPO.runNotebookByUrl('/test/ipynb/scala/SparkUITest.ipynb');
   });
 
   afterAll(function () {
@@ -49,15 +49,16 @@ describe('Spark UI', function () {
     browser.waitUntil(function(){
       return codeCell.$$('div.bx-spark-stagePanel').length > 0;
     });
-    expect(codeCell.$('div.bx-spark-stagePanel').isVisible()).toBeTruthy();
+    expect(codeCell.$('div.bx-spark-stagePanel').isEnabled()).toBeTruthy();
     return codeCell;
   }
 
   var imageDir = 'scala/sparkgui';
+  var cellIndex;
 
   describe('Add Spark jars ', function () {
     it('Should add Spark jars ', function () {
-      var cellIndex = 0;
+      cellIndex = 0;
       beakerxPO.runCodeCellByIndex(cellIndex);
       beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.waitAndCheckOutputTextOfWidget(cellIndex, /spark-sql/, 1);
@@ -70,7 +71,7 @@ describe('Spark UI', function () {
     var codeCell;
 
     it('Should display GUI dialog', function () {
-      var cellIndex = 1;
+      cellIndex += 1;
       codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       output = beakerxPO.getAllOutputsWidget(codeCell)[0];
       expect(output.$('button.p-Widget.bx-spark-connect').isEnabled()).toBeTruthy();
@@ -96,13 +97,13 @@ describe('Spark UI', function () {
       var codeCellSpark1 = beakerxPO.getCodeCellByIndex(1);
       startSparkSession(codeCellSpark1);
 
-      var cellIndex = 2;
+      cellIndex += 1;
       runSparkCell(cellIndex);
       beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex, /Pi is roughly \d.\d*/);
     });
 
     it('Should display header of table', function () {
-      var cellIndex = 3;
+      cellIndex += 1;
       var codeCell = runSparkCell(cellIndex);
       browser.waitUntil(function(){
         return codeCell.$$('canvas').length > 0;
@@ -113,7 +114,7 @@ describe('Spark UI', function () {
     });
 
     it('Should display table', function () {
-      var cellIndex = 4;
+      cellIndex += 2;
       var codeCell = runSparkCell(cellIndex);
       browser.waitUntil(function(){
         return codeCell.$$('canvas').length > 0;
@@ -129,7 +130,7 @@ describe('Spark UI', function () {
       var codeCellSpark1 = beakerxPO.getCodeCellByIndex(1);
       stopSparkSession(codeCellSpark1);
 
-      var cellIndex = 5;
+      cellIndex += 2;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var output = beakerxPO.getAllOutputsWidget(codeCell)[0];
       browser.waitUntil(function(){

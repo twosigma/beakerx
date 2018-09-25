@@ -351,4 +351,9 @@ public abstract class Kernel implements KernelFunctionality {
   public BeakerXServer getBeakerXServer() {
     return beakerXServer.get(this);
   }
+
+  @Override
+  public boolean checkIfClassExistsInClassloader(String clazzName) {
+    return this.evaluator.checkIfClassExistsInClassloader(clazzName);
+  }
 }

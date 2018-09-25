@@ -18,18 +18,18 @@ package com.twosigma.beakerx.evaluator;
 import com.twosigma.beakerx.BeakerXClient;
 import com.twosigma.beakerx.BeakerXClientManager;
 import com.twosigma.beakerx.DefaultJVMVariables;
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.inspect.Inspect;
 import com.twosigma.beakerx.inspect.InspectResult;
-import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.AddImportStatus;
 import com.twosigma.beakerx.kernel.Classpath;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.ExecutionOptions;
 import com.twosigma.beakerx.kernel.GroupName;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
-import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
 import org.apache.commons.io.FileUtils;
 
@@ -61,6 +61,7 @@ public abstract class BaseEvaluator implements Evaluator {
   private BeakerXClient beakerXClient;
   protected EvaluatorParameters evaluatorParameters;
   private EvaluatorHooks cancelHooks = new EvaluatorHooks();
+  private ClassLoaderService classLoaderService = new ClassLoaderService();
 
   protected ExecutorService executorService;
   protected ExecutorService executorBgkService;
@@ -278,7 +279,7 @@ public abstract class BaseEvaluator implements Evaluator {
 
   @Override
   public Class<?> loadClass(String clazzName) throws ClassNotFoundException {
-    return getClassLoader().loadClass(clazzName);
+    return classLoaderService.loadClass(clazzName, getClassLoader());
   }
 
   private File getOrCreateFile(String pathToMavenRepo) {
@@ -305,5 +306,10 @@ public abstract class BaseEvaluator implements Evaluator {
   @Override
   public void registerCancelHook(Hook hook) {
     this.cancelHooks.registerHook(hook);
+  }
+
+  @Override
+  public boolean checkIfClassExistsInClassloader(String clazzName) {
+    return classLoaderService.checkIfClassExistsInClassloader(clazzName, getClassLoader());
   }
 }

@@ -30,6 +30,7 @@ import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.scala.spark.SparkDisplayers;
 import com.twosigma.beakerx.scala.spark.SparkImplicit;
+import com.twosigma.beakerx.scala.spark.TimeSeriesRDDDisplayer;
 
 import java.util.Optional;
 
@@ -51,7 +52,7 @@ public class LoadSparkSupportMagicCommand implements MagicCommandFunctionality {
 
   @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
-    TryResult implicits = addImplicits(param.getCode().getMessage());
+    TryResult implicits = addImplicits(param.getCode().getMessage(), new SparkImplicit().codeAsString());
     if (implicits.isError()) {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, implicits.error());
     }
@@ -59,9 +60,17 @@ public class LoadSparkSupportMagicCommand implements MagicCommandFunctionality {
     if (!loadSpark.getStatus().equals(MagicCommandOutcomeItem.Status.OK)) {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Can not run spark support");
     }
+    loadTwosigmaFlintSupport(param.getCode().getMessage());
     SparkDisplayers.register();
     addDefaultImports();
     return new MagicCommandOutput(MagicCommandOutput.Status.OK, "Spark support enabled");
+  }
+
+  private void loadTwosigmaFlintSupport(Message parent) {
+    if (kernel.checkIfClassExistsInClassloader("com.twosigma.flint.timeseries.TimeSeriesRDD")) {
+      TimeSeriesRDDDisplayer.register();
+      addImplicits(parent, TimeSeriesRDDDisplayer.implicitCodeAsString());
+    }
   }
 
   private MagicCommandOutcomeItem loadSparkMagic() {
@@ -71,8 +80,7 @@ public class LoadSparkSupportMagicCommand implements MagicCommandFunctionality {
     return magicCommandOutcomeItem;
   }
 
-  private TryResult addImplicits(Message parent) {
-    String codeToExecute = new SparkImplicit().codeAsString();
+  private TryResult addImplicits(Message parent, String codeToExecute) {
     SimpleEvaluationObject seo = createSimpleEvaluationObject(
             codeToExecute,
             kernel,

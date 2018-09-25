@@ -92,6 +92,8 @@ public interface KernelFunctionality {
 
   Class<?> loadClass(String clazzName) throws ClassNotFoundException;
 
+  boolean checkIfClassExistsInClassloader(String clazzName);
+
   void registerMagicCommandType(MagicCommandType magicCommandType);
 
   String getOutDir();

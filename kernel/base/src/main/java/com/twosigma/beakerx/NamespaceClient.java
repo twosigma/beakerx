@@ -203,6 +203,7 @@ public class NamespaceClient implements BeakerXClient {
       state.put("name", "URL_ARG");
       state.put("arg_name", argName);
       data.put("url", KernelManager.get().getBeakerXServer().getURL() + URL_ARG);
+      data.put("type", "rest");
       data.put("state", state);
       data.put("buffer_paths", new HashMap<>());
       c.send(COMM_MSG, Comm.Buffer.EMPTY, new Comm.Data(data));

@@ -55,6 +55,7 @@ public class GetUrlArgHandler {
     public String argName;
     public String argValue;
     public String url;
+    public String type;
 
     public UrlArgBody() {
     }

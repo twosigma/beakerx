@@ -12,19 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from notebook.utils import url_path_join
-from notebook.base.handlers import APIHandler, IPythonHandler
-
-import json
-from tornado import web
-from .environment import *
 import beakerx
-import tornado
+import json
 import os
+import tornado
+import zmq
+from notebook.base.handlers import APIHandler, IPythonHandler
+from notebook.utils import url_path_join
+from tornado import web
+
 from .beakerx_autotranslation_server import start_autotranslation_server
+from .environment import *
 
 
 class BeakerxRestHandler(APIHandler):
+
     def data_received(self, chunk):
         pass
 
@@ -32,14 +34,18 @@ class BeakerxRestHandler(APIHandler):
     @tornado.web.asynchronous
     def post(self):
 
-        def handle_response(response):
-            self.finish(response.body)
-
         data = tornado.escape.json_decode(self.request.body)
         content = json.dumps(data)
         params = json.loads(content)
-        url = params['url']
 
+        type = params['type']
+        url = params['url']
+        if type == "python":
+            self.handle_python(content, url)
+        else:
+            self.handle_rest(self.handle_response, url)
+
+    def handle_rest(self, handle_response, url):
         req = tornado.httpclient.HTTPRequest(
             url=url,
             method=self.request.method,
@@ -48,7 +54,6 @@ class BeakerxRestHandler(APIHandler):
             follow_redirects=False,
             allow_nonstandard_methods=True
         )
-
         client = tornado.httpclient.AsyncHTTPClient()
         try:
             client.fetch(req, handle_response)
@@ -59,6 +64,19 @@ class BeakerxRestHandler(APIHandler):
                 self.set_status(500)
                 self.write('Internal server error:\n' + str(e))
                 self.finish()
+
+    def handle_python(self, content, url):
+        context = zmq.Context()
+        socket = context.socket(zmq.REQ)
+        socket.connect(url)
+        socket.send_string(content)
+        response = socket.recv()
+        self.finish(response)
+        socket.close()
+        context.destroy()
+
+    def handle_response(self, response):
+        self.finish(response.body)
 
 
 class SparkMetricsExecutorsHandler(APIHandler):
@@ -145,7 +163,8 @@ def load_jupyter_server_extension(nbapp):
     web_app = nbapp.web_app
     host_pattern = '.*$'
     settings_route_pattern = url_path_join(web_app.settings['base_url'], '/beakerx', '/settings')
-    spark_metrics_executors_route_pattern = url_path_join(web_app.settings['base_url'], '/beakerx', '/sparkmetrics/executors')
+    spark_metrics_executors_route_pattern = url_path_join(web_app.settings['base_url'], '/beakerx',
+                                                          '/sparkmetrics/executors')
     version_route_pattern = url_path_join(web_app.settings['base_url'], '/beakerx', '/version')
     javadoc_route_pattern = url_path_join(web_app.settings['base_url'], '/static', '/javadoc/(.*)')
     javadoc_lab_route_pattern = url_path_join(web_app.settings['base_url'], '/javadoc/(.*)')

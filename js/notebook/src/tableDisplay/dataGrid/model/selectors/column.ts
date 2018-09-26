@@ -62,7 +62,7 @@ const processColumnName = (name) => {
       moment(curr.timestamp).format('YYYY-MM-DD') :
       String(curr);
 
-    return `${prev}, ${processed}`;
+    return index === 0 ? processed: `${prev}, ${processed}`;
   }, '');
 };
 

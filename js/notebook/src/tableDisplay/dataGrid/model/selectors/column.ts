@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 
+import * as moment from 'moment-timezone/builds/moment-timezone-with-data';
 import {createSelector} from "reselect";
 import {DataModel} from "@phosphor/datagrid";
 import {
@@ -39,7 +40,36 @@ import IHihglighterState from "../../interface/IHighlighterState";
 
 export const DEFAULT_INDEX_COLUMN_NAME = 'index';
 
-export const selectColumnNames = createSelector(selectRawColumnNames, names => names.map(name => name !== null ? String(name) : null));
+
+const processColumnName = (name) => {
+  if (name === null) {
+    return name;
+  }
+
+  if (!Array.isArray(name)) {
+    return String(name);
+  }
+
+  const isDate = (value) => {
+    return value instanceof Object &&
+      value.hasOwnProperty('type') &&
+      value.hasOwnProperty('timestamp') &&
+      value.type === "Date";
+  };
+
+  return name.reduce((prev, curr, index, arr) => {
+    let processed = isDate(curr) ?
+      moment(curr.timestamp).format('YYYY-MM-DD') :
+      String(curr);
+
+    return `${prev} ${processed}`;
+  }, '');
+};
+
+export const selectColumnNames = createSelector(
+  selectRawColumnNames,
+  names => names.map(processColumnName)
+);
 
 export const selectBodyColumnNames = createSelector(
   [selectColumnNames, selectHasIndex],

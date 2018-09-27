@@ -260,6 +260,11 @@ public class KernelTest implements KernelFunctionality {
   }
 
   @Override
+  public boolean checkIfClassExistsInClassloader(String clazzName) {
+    return false;
+  }
+
+  @Override
   public void registerMagicCommandType(MagicCommandType magicCommandType) {
     magicCommandTypes.add(magicCommandType);
   }

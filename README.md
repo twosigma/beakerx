@@ -51,7 +51,7 @@ how to install and run BeakerX.
 * [conda](https://www.anaconda.com/download/)
 * [yarn](https://yarnpkg.com/lang/en/docs/install/)
 
-### Build and Install
+### Build and Install (linux and mac)
 
 ```
 conda create -y -n beakerx 'python>=3' nodejs pandas 'openjdk=8.0.121' maven py4j requests
@@ -59,6 +59,18 @@ source activate beakerx
 conda config --env --add pinned_packages 'openjdk=8.0.121'
 conda install -y -c conda-forge ipywidgets
 (cd beakerx; pip install -e . --verbose)
+beakerx install
+```
+
+### Build and Install (win)
+```
+conda create -y -n beakerx python>=3 nodejs pandas openjdk=8.0.121 maven py4j requests
+activate beakerx
+conda config --env --add pinned_packages openjdk=8.0.121
+conda install -y -c conda-forge ipywidgets
+cd beakerx
+pip install -e . --verbose
+cd ..
 beakerx install
 ```
 

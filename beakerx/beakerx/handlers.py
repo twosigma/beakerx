@@ -38,7 +38,7 @@ class BeakerxRestHandler(APIHandler):
         content = json.dumps(data)
         params = json.loads(content)
 
-        type = params['type']
+        type = params.get('type')
         url = params['url']
         if type == "python":
             self.handle_python(content, url)

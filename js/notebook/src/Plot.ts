@@ -58,7 +58,7 @@ export class PlotView extends widgets.DOMWidgetView {
       }
 
       this.listenTo(this.model, 'change:updateData', this.handleUpdateData);
-      this.listenTo(this.model, 'change:model', this.handleModellUpdate);
+      this.listenTo(this.model, 'change:model', this.handleModelUpdate);
       this.listenTo(this.model, 'beakerx-tabSelected', () => {
         this._currentScope.adjustModelWidth();
       });
@@ -121,7 +121,7 @@ export class PlotView extends widgets.DOMWidgetView {
     plotModel.outputPointsPreviewNumber = OUTUPT_POINTS_PREVIEW_NUMBER;
   }
 
-  handleModellUpdate() {
+  handleModelUpdate() {
     const newModel = this.model.get('model');
     this._currentScope.updateModelData && this._currentScope.updateModelData(newModel);
     this._currentScope.updatePlot();
@@ -136,9 +136,9 @@ export class PlotView extends widgets.DOMWidgetView {
   }
 
   initStandardPlot(model) {
-    const wrappperId = `wrap_${this.model.model_id}`;
-    this._currentScope = new PlotScope(wrappperId);
-    const tmpl = PlotLayout.buildTemplate(wrappperId);
+    const wrapperId = `wrap_${this.model.model_id}`;
+    this._currentScope = new PlotScope(wrapperId);
+    const tmpl = PlotLayout.buildTemplate(wrapperId);
     const tmplElement = $(tmpl);
 
     tmplElement.appendTo(this.$el);

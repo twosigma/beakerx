@@ -445,4 +445,8 @@ export default class PlotScope {
     model.saveAsPng = (scale) => self.saveAsPng(scale);
     model.updateLegendPosition = () => self.plotLegend.legendPosition.updateLegendPosition();
   }
+
+  adjustModelWidth() {
+    this.plotSize.updateModelWidth(this.width);
+  }
 }

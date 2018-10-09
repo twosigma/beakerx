@@ -36,6 +36,7 @@ describe('Java widgets notebook test ', function () {
       cellIndex = 0;
       widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
       expect(widget.$('div.slider-container').isEnabled()).toBeTruthy();
+      expect(widget.$$('span').length).toEqual(1);
     });
 
     it('Get value by code ', function () {
@@ -142,6 +143,76 @@ describe('Java widgets notebook test ', function () {
       expect(widget.$('div.progress-bar').getAttribute('class')).not.toMatch(/progress-bar-success/);
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /SUCCESS/);
       expect(widget.$('div.progress-bar').getAttribute('class')).toMatch(/progress-bar-success/);
+    });
+  });
+
+  describe('IntRangeSlider widget ', function () {
+    var widget;
+    it('Cell has IntRangeSlider widget ', function () {
+      cellIndex += 1;
+      widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.$('div.slider-container').isEnabled()).toBeTruthy();
+      expect(widget.$$('span').length).toEqual(2);
+    });
+
+    it('Get value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /10, 40/);
+      expect(widget.$('div.widget-readout').getText()).toMatch(/10.*40/);
+      expect(widget.$$('span')[0].getAttribute('style')).toMatch(/left: 10%/);
+      expect(widget.$$('span')[1].getAttribute('style')).toMatch(/left: 40%/);
+    });
+
+    it('Set new value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /20, 30/);
+      expect(widget.$('div.widget-readout').getText()).toMatch(/20.*30/);
+      expect(widget.$$('span')[0].getAttribute('style')).toMatch(/left: 20%/);
+      expect(widget.$$('span')[1].getAttribute('style')).toMatch(/left: 30%/);
+    });
+
+    it('Set description to "desc3" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /desc3/);
+      expect(widget.$('label.widget-label').getText()).toBe('desc3');
+    });
+
+    it('Disable widget ', function () {
+      cellIndex += 1;
+      expect(widget.$('div.ui-slider').getAttribute('class')).not.toMatch(/ui-slider-disabled/);
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /true/);
+      expect(widget.$('div.ui-slider').getAttribute('class')).toMatch(/ui-slider-disabled/);
+    });
+
+    it('Set max to "250" and min to "50" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /150, 200/);
+      expect(widget.$('div.widget-readout').getText()).toMatch(/150.*200/);
+      expect(widget.$$('span')[0].getAttribute('style')).toMatch(/left: 50%/);
+      expect(widget.$$('span')[1].getAttribute('style')).toMatch(/left: 75%/);
+    });
+
+    it('Set to vertical orientation ', function () {
+      cellIndex += 1;
+      expect(widget.$('div.ui-slider').getAttribute('class')).toMatch(/ui-slider-horizontal/);
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /vertical/);
+      expect(widget.$('div.ui-slider').getAttribute('class')).toMatch(/ui-slider-vertical/);
+      expect(widget.$$('span')[0].getAttribute('style')).toMatch(/bottom: 50%/)
+      expect(widget.$$('span')[1].getAttribute('style')).toMatch(/bottom: 75%/)
+    });
+
+    it('Set step to "20" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /76, 96/);
+      expect(widget.$$('span')[0].getAttribute('style')).toMatch(/bottom: 10%/)
+      expect(widget.$$('span')[1].getAttribute('style')).toMatch(/bottom: 20%/)
+    });
+
+    it('Change widget color ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /#F04080/);
+      expect(widget.$$('span')[0].getCssProperty('background-color').value).toEqual('rgba(240,64,128,1)');
+      expect(widget.$$('span')[1].getCssProperty('background-color').value).toEqual('rgba(240,64,128,1)');
     });
   });
 

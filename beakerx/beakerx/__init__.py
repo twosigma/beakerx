@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .runtime import BeakerX
 from .plot import *
 from .easyform import *
 from .tabledisplay import *
@@ -40,7 +39,6 @@ def _jupyter_nbextension_paths():
 def _jupyter_server_extension_paths():
     return [dict(module="beakerx")]
 
-beakerx = BeakerX()
 def run():
     try:
         parse()

@@ -53,7 +53,7 @@ public class AutocompleteNodeFileSystem extends AutocompleteNode {
         } else {
           return listParentDirectory(path);
         }
-      } catch (IOException e) {
+      } catch (Exception e) {
         return new ArrayList<>();
       }
     }

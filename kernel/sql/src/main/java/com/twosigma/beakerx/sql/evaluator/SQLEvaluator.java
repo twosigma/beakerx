@@ -142,7 +142,7 @@ public class SQLEvaluator extends BaseEvaluator {
 
   @Override
   public AutocompleteResult autocomplete(String code, int caretPosition) {
-    return sac.doAutocomplete(code, caretPosition);
+    return sac.find(code, caretPosition);
   }
 
   @Override

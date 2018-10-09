@@ -36,8 +36,6 @@ import org.jetbrains.kotlin.cli.common.repl.ReplClassLoader;
 import org.jetbrains.kotlin.cli.jvm.repl.ReplInterpreter;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Executors;
 
 import static com.twosigma.beakerx.kotlin.evaluator.ReplWithClassLoaderFactory.createParentClassLoader;
@@ -52,6 +50,7 @@ public class KotlinEvaluator extends BaseEvaluator {
   private ReplInterpreter repl;
   private ReplClassLoader loader = null;
   private BeakerXUrlClassLoader kotlinClassLoader;
+  private KotlinAutocomplete kotlinAutocomplete;
 
   public KotlinEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerXClient beakerxClient) {
     this(id, sId, new BeakerCellExecutor("kotlin"), new TempFolderFactoryImpl(), evaluatorParameters, beakerxClient);
@@ -61,6 +60,7 @@ public class KotlinEvaluator extends BaseEvaluator {
     super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient);
     cps = new ClasspathScanner();
     createRepl();
+    this.kotlinAutocomplete = new KotlinAutocomplete();
   }
 
   @Override
@@ -70,6 +70,7 @@ public class KotlinEvaluator extends BaseEvaluator {
     createRepl();
     executorService.shutdown();
     executorService = Executors.newSingleThreadExecutor();
+    this.kotlinAutocomplete = new KotlinAutocomplete();
   }
 
   private void createRepl() {
@@ -109,9 +110,7 @@ public class KotlinEvaluator extends BaseEvaluator {
 
   @Override
   public AutocompleteResult autocomplete(String code, int caretPosition) {
-    List<String> ret = new ArrayList<>();
-    //TODO
-    return new AutocompleteResult(ret, -1);
+    return kotlinAutocomplete.find(code, caretPosition);
   }
 
   private String createClasspath(Classpath classPath, String outDir) {

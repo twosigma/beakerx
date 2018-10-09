@@ -35,7 +35,6 @@ import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.ExecutionOptions;
-import com.twosigma.beakerx.kernel.GroupName;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.PathToJar;
 import org.slf4j.Logger;
@@ -57,6 +56,7 @@ public class ClojureEvaluator extends BaseEvaluator {
   private List<String> requirements;
   private DynamicClassLoader loader;
   private Var clojureLoadString = null;
+  private ClojureAutocomplete clojureAutocomplete;
 
   public ClojureEvaluator(String id,
                           String sId,
@@ -161,7 +161,7 @@ public class ClojureEvaluator extends BaseEvaluator {
 
   @Override
   public AutocompleteResult autocomplete(String code, int caretPosition) {
-    return ClojureAutocomplete.autocomplete(code, caretPosition, clojureLoadString, shellId);
+    return clojureAutocomplete.find(code, caretPosition);
   }
 
   Object runCode(String theCode) {
@@ -184,6 +184,7 @@ public class ClojureEvaluator extends BaseEvaluator {
     } catch (Exception e) {
       logger.error(e.getMessage());
     }
+    clojureAutocomplete = new ClojureAutocomplete(clojureLoadString, shellId);
   }
 
   private void clearClojureNamespace(String ns) {

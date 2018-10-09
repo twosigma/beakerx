@@ -42,7 +42,6 @@ public class JavaEvaluator extends BaseEvaluator {
 
   public static final String WRAPPER_CLASS_NAME = "BeakerWrapperClass1261714175";
   private final String packageId;
-  private JavaClasspathScanner cps;
   private JavaAutocomplete jac;
   private JavaBeakerXUrlClassLoader loader = null;
 
@@ -58,9 +57,8 @@ public class JavaEvaluator extends BaseEvaluator {
                        BeakerXClient beakerxClient) {
     super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient);
     packageId = "com.twosigma.beaker.javash.bkr" + shellId.split("-")[0];
-    cps = new JavaClasspathScanner();
-    jac = createJavaAutocomplete(cps);
     loader = newClassLoader();
+    jac = createJavaAutocomplete(new JavaClasspathScanner(), imports, loader);
   }
 
   @Override
@@ -71,9 +69,8 @@ public class JavaEvaluator extends BaseEvaluator {
   @Override
   protected void doResetEnvironment() {
     String cpp = createClasspath(classPath, outDir);
-    cps = new JavaClasspathScanner(cpp);
-    jac = createAutocomplete(imports, cps);
     loader = newClassLoader();
+    jac = createAutocomplete(new JavaClasspathScanner(cpp), imports, loader);
     executorService.shutdown();
     executorService = Executors.newSingleThreadExecutor();
   }
@@ -108,17 +105,15 @@ public class JavaEvaluator extends BaseEvaluator {
 
   @Override
   public AutocompleteResult autocomplete(String code, int caretPosition) {
-    return jac.doAutocomplete(code, caretPosition, loader, imports);
+    return jac.find(code, caretPosition);
   }
 
-  private JavaAutocomplete createJavaAutocomplete(JavaClasspathScanner c) {
-    return new JavaAutocomplete(c);
+  private JavaAutocomplete createJavaAutocomplete(JavaClasspathScanner c, Imports imports, ClassLoader loader) {
+    return new JavaAutocomplete(c, loader, imports);
   }
 
-  private JavaAutocomplete createAutocomplete(Imports imports, JavaClasspathScanner cps) {
-    JavaAutocomplete jac = createJavaAutocomplete(cps);
-    for (ImportPath st : imports.getImportPaths())
-      jac.addImport(st.asString());
+  private JavaAutocomplete createAutocomplete(JavaClasspathScanner cps, Imports imports, ClassLoader loader) {
+    JavaAutocomplete jac = createJavaAutocomplete(cps, imports, loader);
     return jac;
   }
 

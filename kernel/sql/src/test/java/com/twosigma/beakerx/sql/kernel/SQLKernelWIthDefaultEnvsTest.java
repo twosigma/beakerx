@@ -42,7 +42,13 @@ public class SQLKernelWIthDefaultEnvsTest extends SQLKernelTest {
       }
       return null;
     });
-    SQLEvaluator sqlEvaluator = new SQLEvaluator(sessionId, sessionId, cellExecutor(), getTestTempFolderFactory(), kernelParameters, new EvaluatorTest.BeakexClientTestImpl());
+    SQLEvaluator sqlEvaluator = new SQLEvaluator(
+            sessionId,
+            sessionId,
+            cellExecutor(),
+            getTestTempFolderFactory(),
+            kernelParameters,
+            new EvaluatorTest.BeakexClientTestImpl());
     Kernel sqlKernel = new SQL(sessionId,
             sqlEvaluator,
             kernelSocketsFactory,

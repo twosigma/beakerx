@@ -20,7 +20,9 @@ import com.twosigma.beakerx.autocomplete.AutocompleteCandidate;
 import com.twosigma.beakerx.autocomplete.AutocompleteRegistry;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.autocomplete.ClassUtils;
+import com.twosigma.beakerx.evaluator.AutocompleteServiceBeakerx;
 import com.twosigma.beakerx.kernel.Imports;
+import groovy.lang.GroovyClassLoader;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
@@ -29,21 +31,27 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.twosigma.beakerx.groovy.autocomplete.AutocompleteRegistryFactory.setup;
 
-public class GroovyAutocomplete {
+public class GroovyAutocomplete extends AutocompleteServiceBeakerx {
   AutocompleteRegistry registry;
   private GroovyClasspathScanner cps;
+  private GroovyClassLoader groovyClassLoader;
+  private Imports imports;
 
-  public GroovyAutocomplete(GroovyClasspathScanner _cps) {
+  public GroovyAutocomplete(GroovyClasspathScanner _cps, GroovyClassLoader groovyClassLoader, Imports imports) {
     cps = _cps;
+    this.groovyClassLoader = groovyClassLoader;
+    this.imports = imports;
     registry = AutocompleteRegistryFactory.createRegistry(cps);
   }
 
-  public AutocompleteResult doAutocomplete(String txt, int cur, ClassLoader l, Imports imports) {
+  @Override
+  public AutocompleteResult doAutocomplete(String txt, int cur) {
     try {
-      return tryFindAutocomplete(txt, cur, l, imports);
+      return tryFindAutocomplete(txt, cur, groovyClassLoader, imports);
     } catch (Exception e) {
       return new AutocompleteResult(new ArrayList<>(), 0);
     }
@@ -102,7 +110,7 @@ public class GroovyAutocomplete {
             q.add(new AutocompleteCandidate(GroovyCompletionTypes.NAME, tx));
           }
           ret = registry.searchCandidates(q);
-          startIndex = txt.substring(0,cur).lastIndexOf(tx) + tx.length();
+          startIndex = txt.substring(0, cur).lastIndexOf(tx) + tx.length();
         }
         break;
       }

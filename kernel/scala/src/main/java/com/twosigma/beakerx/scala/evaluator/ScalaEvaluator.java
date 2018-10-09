@@ -29,7 +29,6 @@ import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.ExecutionOptions;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.PathToJar;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,12 +42,20 @@ public class ScalaEvaluator extends BaseEvaluator {
   private BeakerxObjectFactory beakerxObjectFactory;
   private BeakerXUrlClassLoader classLoader;
   private ScalaEvaluatorGlue shell;
+  private ScalaAutocomplete scalaAutocomplete;
 
-  public ScalaEvaluator(String id, String sId, CellExecutor cellExecutor, BeakerxObjectFactory beakerxObjectFactory, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters, BeakerXClient beakerxClient) {
+  public ScalaEvaluator(String id,
+                        String sId,
+                        CellExecutor cellExecutor,
+                        BeakerxObjectFactory beakerxObjectFactory,
+                        TempFolderFactory tempFolderFactory,
+                        EvaluatorParameters evaluatorParameters,
+                        BeakerXClient beakerxClient) {
     super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient);
     this.beakerxObjectFactory = beakerxObjectFactory;
     this.classLoader = newClassLoader();
     this.shell = createNewEvaluator();
+    this.scalaAutocomplete = new ScalaAutocomplete(shell);
   }
 
   @Override
@@ -69,12 +76,14 @@ public class ScalaEvaluator extends BaseEvaluator {
   @Override
   protected void doReloadEvaluator() {
     this.shell = createNewEvaluator(shell);
+    this.scalaAutocomplete = new ScalaAutocomplete(shell);
   }
 
   @Override
   protected void doResetEnvironment() {
     this.classLoader = newClassLoader();
     this.shell = createNewEvaluator();
+    this.scalaAutocomplete = new ScalaAutocomplete(shell);
     executorService.shutdown();
     executorService = Executors.newSingleThreadExecutor();
   }
@@ -97,8 +106,7 @@ public class ScalaEvaluator extends BaseEvaluator {
 
   @Override
   public AutocompleteResult autocomplete(String code, int caretPosition) {
-    AutocompleteResult lineCompletion = shell.autocomplete(code, caretPosition);
-    return new AutocompleteResult(lineCompletion.getMatches(), lineCompletion.getStartIndex());
+    return this.scalaAutocomplete.find(code, caretPosition);
   }
 
   private String adjustImport(String imp) {

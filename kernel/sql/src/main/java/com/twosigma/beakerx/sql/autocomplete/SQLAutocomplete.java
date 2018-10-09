@@ -18,6 +18,7 @@ package com.twosigma.beakerx.sql.autocomplete;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.autocomplete.ClasspathScanner;
+import com.twosigma.beakerx.evaluator.AutocompleteServiceBeakerx;
 import com.twosigma.beakerx.sql.autocomplete.db.DbCache;
 import com.twosigma.beakerx.sql.autocomplete.db.DbExplorerFactory;
 import com.twosigma.beakerx.sql.autocomplete.db.DbInfo;
@@ -31,7 +32,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class SQLAutocomplete {
+public class SQLAutocomplete extends AutocompleteServiceBeakerx {
 
   private static final String[] SQL_KEYS = {
           "ABORT", "ACTION", "ADD", "AFTER", "ALL", "ALTER", "ANALYZE", "AND",
@@ -66,6 +67,13 @@ public class SQLAutocomplete {
     this.namedConnectionString = namedConnectionString;
 
     this.cache = DbExplorerFactory.getDbCache();
+  }
+
+  @Override
+  protected AutocompleteResult doAutocomplete(final String txt, final int cur) {
+    List<String> matches = findMatches(txt, cur);
+    KeyWithIndex key = findKey(txt, cur);
+    return new AutocompleteResult(matches, key.getIndex());
   }
 
   private List<String> findKeys(final String key, final String[] keys) {
@@ -122,13 +130,7 @@ public class SQLAutocomplete {
     }
   }
 
-  public AutocompleteResult doAutocomplete(final String txt, final int cur) {
-    List<String> matches = find(txt, cur);
-    KeyWithIndex key = findKey(txt, cur);
-    return new AutocompleteResult(matches, key.getIndex());
-  }
-
-  private List<String> find(String txt, int cur) {
+  private List<String> findMatches(String txt, int cur) {
     List<String> ret = new LinkedList<>();
 
     if (cur == 0) {

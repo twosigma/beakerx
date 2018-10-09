@@ -51,7 +51,13 @@ public class SQLKernelTest extends KernelSetUpFixtureTest {
 
   @Override
   protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
-    SQLEvaluator sqlEvaluator = new SQLEvaluator(sessionId, sessionId, cellExecutor(), getTestTempFolderFactory(), kernelParameters(), new EvaluatorTest.BeakexClientTestImpl());
+    SQLEvaluator sqlEvaluator = new SQLEvaluator(
+            sessionId,
+            sessionId,
+            cellExecutor(),
+            getTestTempFolderFactory(),
+            kernelParameters(),
+            new EvaluatorTest.BeakexClientTestImpl());
     Kernel sqlKernel = new SQL(sessionId,
             sqlEvaluator,
             kernelSocketsFactory,

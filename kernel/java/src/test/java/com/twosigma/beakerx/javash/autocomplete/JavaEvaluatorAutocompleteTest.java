@@ -37,7 +37,13 @@ public class JavaEvaluatorAutocompleteTest {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    evaluator = new JavaEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS,new EvaluatorTest.BeakexClientTestImpl());
+    evaluator = new JavaEvaluator(
+            "id",
+            "sid",
+            cellExecutor(),
+            getTestTempFolderFactory(),
+            KERNEL_PARAMETERS,
+            new EvaluatorTest.BeakexClientTestImpl());
   }
 
   @AfterClass

@@ -23,6 +23,7 @@ jupyter_contrib_nbextensions/
 /gradle*
 kernel/build/
 kernel/*/build/
+kernel/*/out/
 /build/
 /.nb-gradle/
 .nb-gradle-properties

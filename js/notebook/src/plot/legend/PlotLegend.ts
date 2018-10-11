@@ -88,11 +88,14 @@ export default class PlotLegend {
 
   render() {
     // legend redraw is controlled by legendDone
-    if (
-      this.scope.legendableItem === 0
-      || this.scope.stdmodel.showLegend === false
-      || this.scope.legendDone === true
-    ) {
+    if (this.scope.legendableItem === 0) {
+      return;
+    }
+    if (this.scope.stdmodel.showLegend === false) {
+      this.scope.jqlegendcontainer.find("#plotLegend").remove();
+      return;
+    }
+    if (this.scope.legendDone === true) {
       return;
     }
 

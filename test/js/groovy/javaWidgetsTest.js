@@ -94,6 +94,70 @@ describe('Java widgets notebook test ', function () {
     });
   });
 
+  describe('FloatSlider widget ', function () {
+    var widget;
+    it('Cell has FloatSlider widget ', function () {
+      cellIndex += 1;
+      widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.$('div.slider-container').isEnabled()).toBeTruthy();
+      expect(widget.$$('span').length).toEqual(1);
+    });
+
+    it('Get value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /10.3/);
+      expect(widget.$('div.widget-readout').getText()).toMatch(/10.3/);
+      expect(widget.$('div.ui-slider.ui-widget-content > span').getAttribute('style')).toMatch(/left: 10.3%/);
+    });
+
+    it('Set new value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /7.6/);
+      expect(widget.$('div.widget-readout').getText()).toMatch(/7.6/);
+      expect(widget.$('div.ui-slider.ui-widget-content > span').getAttribute('style')).toMatch(/left: 7.6%/);
+    });
+
+    it('Set description to "float" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /float/);
+      expect(widget.$('label.widget-label').getText()).toBe('float');
+    });
+
+    it('Disable widget ', function () {
+      cellIndex += 1;
+      expect(widget.$('div.ui-slider').getAttribute('class')).not.toMatch(/ui-slider-disabled/);
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /true/);
+      expect(widget.$('div.ui-slider').getAttribute('class')).toMatch(/ui-slider-disabled/);
+    });
+
+    it('Set max to "2.5" and min to "0.5" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /1.5/);
+      expect(widget.$('div.widget-readout').getText()).toMatch(/1.5/);
+      expect(widget.$('span').getAttribute('style')).toMatch(/left: 50%/);
+    });
+
+    it('Set to vertical orientation ', function () {
+      cellIndex += 1;
+      expect(widget.$('div.ui-slider').getAttribute('class')).toMatch(/ui-slider-horizontal/);
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /vertical/);
+      expect(widget.$('div.ui-slider').getAttribute('class')).toMatch(/ui-slider-vertical/);
+      expect(widget.$('span').getAttribute('style')).toMatch(/bottom: 50%/)
+    });
+
+    it('Set step to "0.2" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /76/);
+      expect(widget.$('span').getAttribute('style')).toMatch(/bottom: 10%/)
+    });
+
+    it('Change widget color ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /#F04080/);
+      expect(widget.$('span').getCssProperty('background-color').value).toEqual('rgba(240,64,128,1)');
+    });
+  });
+
   describe('IntProgress widget ', function () {
     var widget;
     it('Cell has IntProgress widget ', function () {
@@ -132,17 +196,50 @@ describe('Java widgets notebook test ', function () {
       expect(widget.getAttribute('class')).toMatch(/widget-inline-vbox/);
     });
 
-    it('Set step to "20" ', function () {
-      cellIndex += 1;
-      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /76/);
-      expect(widget.$('div.progress-bar').getAttribute('style')).toMatch(/height: 13%/);
-    });
-
     it('Set style to "SUCCESS" ', function () {
       cellIndex += 1;
       expect(widget.$('div.progress-bar').getAttribute('class')).not.toMatch(/progress-bar-success/);
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /SUCCESS/);
       expect(widget.$('div.progress-bar').getAttribute('class')).toMatch(/progress-bar-success/);
+    });
+  });
+
+  describe('FloatProgress widget ', function () {
+    var widget;
+    it('Cell has FloatProgress widget ', function () {
+      cellIndex += 1;
+      widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.$('div.progress').isEnabled()).toBeTruthy();
+    });
+
+    it('Get value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /10.3/);
+    });
+
+    it('Set value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /17.6/);
+      expect(widget.$('div.progress-bar').getAttribute('style')).toMatch(/width: 17.6%/);
+    });
+
+    it('Set description to "fbar" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /fbar/);
+      expect(widget.$('label.widget-label').getText()).toBe('fbar');
+    });
+
+    it('Set max to "2.5" and min to "0.5" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /1.5/);
+      expect(widget.$('div.progress-bar').getAttribute('style')).toMatch(/width: 50%/);
+    });
+
+    it('Set to vertical orientation ', function () {
+      cellIndex += 1;
+      expect(widget.getAttribute('class')).toMatch(/widget-inline-hbox/);
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /vertical/);
+      expect(widget.getAttribute('class')).toMatch(/widget-inline-vbox/);
     });
   });
 

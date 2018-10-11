@@ -218,6 +218,9 @@ define([
     return true;
   };
   var processItem = function(item, index, newmodel, yAxisRSettings, yAxisSettings) {
+    if(item.legend !== undefined) {
+      return; //already processed;
+    }
     item.legend = item.display_name;
     delete item.display_name;
 

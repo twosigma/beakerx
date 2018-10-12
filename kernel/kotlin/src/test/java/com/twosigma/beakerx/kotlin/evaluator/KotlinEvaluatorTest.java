@@ -43,7 +43,13 @@ public class KotlinEvaluatorTest {
 
   @BeforeClass
   public static void setUp() throws Exception {
-    evaluator = new KotlinEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS, new EvaluatorTest.BeakexClientTestImpl());
+    evaluator = new KotlinEvaluator(
+            "id",
+            "sid",
+            cellExecutor(),
+            getTestTempFolderFactory(),
+            KERNEL_PARAMETERS,
+            new EvaluatorTest.BeakexClientTestImpl());
     KotlinKernelMock kernel = new KotlinKernelMock("id", evaluator);
     KernelManager.register(kernel);
   }

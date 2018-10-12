@@ -53,8 +53,8 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
             TestBeakerCellExecutor.cellExecutor(),
             new NoBeakerxObjectTestFactory(),
             EvaluatorTest.getTestTempFolderFactory(),
-            getKernelParameters()
-            , new EvaluatorTest.BeakexClientTestImpl());
+            getKernelParameters(),
+            new EvaluatorTest.BeakexClientTestImpl());
     return new Scala(sessionId,
             evaluator,
             kernelSocketsFactory,

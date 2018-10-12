@@ -19,8 +19,8 @@ package com.twosigma.beakerx.groovy.evaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.groovy.kernel.GroovyDefaultVariables;
 import com.twosigma.beakerx.groovy.kernel.GroovyKernelMock;
-import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
+import com.twosigma.beakerx.kernel.KernelManager;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.Script;
@@ -53,7 +53,12 @@ public class GroovyEvaluatorTest {
     params.put(CLASSPATH, var.getClassPath());
     EvaluatorParameters kernelParameters = new EvaluatorParameters(params);
 
-    GroovyEvaluator groovyEvaluator = new GroovyEvaluator("123", "345", cellExecutor(), getTestTempFolderFactory(), kernelParameters, new EvaluatorTest.BeakexClientTestImpl());
+    GroovyEvaluator groovyEvaluator = new GroovyEvaluator("123",
+            "345",
+            cellExecutor(),
+            getTestTempFolderFactory(),
+            kernelParameters,
+            new EvaluatorTest.BeakexClientTestImpl());
     groovyEvaluator.updateEvaluatorParameters(kernelParameters);
     groovyClassLoader = newEvaluator(groovyEvaluator.getImports(), groovyEvaluator.getClasspath(), groovyEvaluator.getOutDir(), icz, newParentClassLoader(groovyEvaluator.getClasspath()));
     scriptBinding = new Binding();

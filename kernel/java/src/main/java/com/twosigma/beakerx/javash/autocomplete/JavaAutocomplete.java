@@ -20,7 +20,7 @@ import com.twosigma.beakerx.autocomplete.AutocompleteCandidate;
 import com.twosigma.beakerx.autocomplete.AutocompleteRegistry;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.autocomplete.ClassUtils;
-import com.twosigma.beakerx.autocomplete.ClasspathScanner;
+import com.twosigma.beakerx.evaluator.AutocompleteServiceBeakerx;
 import com.twosigma.beakerx.kernel.Imports;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -33,21 +33,24 @@ import java.util.List;
 
 import static com.twosigma.beakerx.javash.autocomplete.AutocompleteRegistryFactory.setup;
 
-public class JavaAutocomplete {
+public class JavaAutocomplete extends AutocompleteServiceBeakerx {
 
+  private final Imports imports;
   AutocompleteRegistry registry;
   private JavaClasspathScanner cps;
-  private List<String> imports;
+  private ClassLoader classLoader;
 
-  public JavaAutocomplete(JavaClasspathScanner _cps) {
+  public JavaAutocomplete(JavaClasspathScanner _cps, ClassLoader classLoader, Imports imports) {
     cps = _cps;
+    this.classLoader = classLoader;
+    this.imports = imports;
     registry = AutocompleteRegistryFactory.createRegistry(cps);
-    imports = new ArrayList<>();
   }
 
-  public AutocompleteResult doAutocomplete(String txt, int cur, ClassLoader l, Imports imports) {
+  @Override
+  protected AutocompleteResult doAutocomplete(String txt, int cur) {
     try {
-      return find(txt, cur, l, imports);
+      return find(txt, cur, classLoader, imports);
     } catch (Exception e) {
       return new AutocompleteResult(new ArrayList<>(), 0);
     }
@@ -125,13 +128,8 @@ public class JavaAutocomplete {
     return 0;
   }
 
-  public void addImport(String imp) {
-    imports.add(imp);
-  }
-
   protected ClassUtils createClassUtils(ClassLoader l) {
     return new JavaClassUtils(cps, l);
   }
-
 
 }

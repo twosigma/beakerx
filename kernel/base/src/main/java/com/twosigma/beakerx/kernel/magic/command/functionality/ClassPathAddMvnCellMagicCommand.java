@@ -32,7 +32,8 @@ public class ClassPathAddMvnCellMagicCommand extends ClasspathMagicCommand {
 
   public static final String ADD = "add";
   public static final String MVN = "mvn";
-  public static final String CLASSPATH_ADD_MVN_CELL = "%" + CLASSPATH + " " + ADD + " " + MVN;
+  public static final String CLASSPATH_CELL = "%" + CLASSPATH + "";
+  public static final String CLASSPATH_ADD_MVN_CELL = CLASSPATH_CELL + " " + ADD + " " + MVN;
   public static final String MVN_CELL_FORMAT_ERROR_MESSAGE =
           "Wrong command format, should be " + CLASSPATH_ADD_MVN_CELL + "\n"
                   + " group name version [type classifier] or group:name:version[:type:classifier]" + "\n"

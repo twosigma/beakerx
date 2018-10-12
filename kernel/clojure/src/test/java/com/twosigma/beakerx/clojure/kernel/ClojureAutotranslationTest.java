@@ -52,7 +52,13 @@ public class ClojureAutotranslationTest extends KernelSetUpFixtureTest {
   protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
     autotranslationService = new NamespaceClientTest.AutotranslationServiceTestImpl();
     NamespaceClient nc = new NamespaceClient(autotranslationService, new ClojureBeakerXJsonSerializer(), new BeakerXCommRepositoryMock());
-    ClojureEvaluator evaluator = new ClojureEvaluator(sessionId, sessionId, cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS, nc);
+    ClojureEvaluator evaluator = new ClojureEvaluator(
+            sessionId,
+            sessionId,
+            cellExecutor(),
+            getTestTempFolderFactory(),
+            KERNEL_PARAMETERS,
+            nc);
     return new Clojure(sessionId,
             evaluator,
             kernelSocketsFactory,

@@ -432,7 +432,7 @@ export default class PlotScope {
     return model.getSvgToSave && model.saveAsSvg && model.saveAsPng && model.updateLegendPosition;
   }
 
-  fillCellModelWithPlotMethods = function() {
+  fillCellModelWithPlotMethods() {
     const self = this;
     const model = self.model.getCellModel();
 
@@ -444,5 +444,9 @@ export default class PlotScope {
     model.saveAsSvg = () => self.saveAsSvg();
     model.saveAsPng = (scale) => self.saveAsPng(scale);
     model.updateLegendPosition = () => self.plotLegend.legendPosition.updateLegendPosition();
+  }
+
+  adjustModelWidth() {
+    this.plotSize.updateModelWidth(this.width);
   }
 }

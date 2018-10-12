@@ -218,6 +218,9 @@ define([
     return true;
   };
   var processItem = function(item, index, newmodel, yAxisRSettings, yAxisSettings) {
+    if(item.legend !== undefined) {
+      return; //already processed;
+    }
     item.legend = item.display_name;
     delete item.display_name;
 
@@ -231,7 +234,7 @@ define([
       item.color = plotUtils.getDefaultColor(index);
     }
 
-    if (item.color != null) {
+    if (item.color != null && item.color.length === 9) {
       item.color_opacity = parseInt(item.color.substr(1,2), 16) / 255;
       item.color = "#" + item.color.substr(3);
     }
@@ -252,14 +255,14 @@ define([
     if (item.stroke_dasharray == null) { item.stroke_dasharray = ""; }
     if (item.interpolation == null) { item.interpolation = ""; }
 
-    item.type = dataTypeMap[item.type];
+    item.type = dataTypeMap[item.type] || item.type;
 
     if(item.type === "bar" || item.type === "area") {
       //newmodel.yPreventNegative = true; // auto range to y = 0
     }
 
     if(item.type === "line" || item.type === "stem") {
-      item.style = lineStyleMap[item.style];
+      item.style = lineStyleMap[item.style] || item.style;
     }
 
     if(item.type === "line" || item.type === "area") {
@@ -276,7 +279,7 @@ define([
       if (item.shape == null) {
         item.shape = "DEFAULT";
       }
-      item.shape = pointShapeMap[item.shape];
+      item.shape = pointShapeMap[item.shape] || item.shape;
     }
 
     var yAxisSettings = plotUtils.useYAxisR(newmodel, item) ? yAxisRSettings : yAxisSettings;

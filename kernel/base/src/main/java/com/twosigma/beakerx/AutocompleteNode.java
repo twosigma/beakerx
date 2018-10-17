@@ -15,10 +15,13 @@
  */
 package com.twosigma.beakerx;
 
+import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class AutocompleteNode {
 
@@ -39,7 +42,7 @@ public abstract class AutocompleteNode {
     return children;
   }
 
-  public abstract List<String> matchToTheWord(LinkedList<String> parts, String last);
+  public abstract Optional<AutocompleteResult> matchToTheWord(String text, LinkedList<String> parts, String last);
 
-  public abstract List<String> findNextWord(LinkedList<String> parts);
+  public abstract Optional<AutocompleteResult> findNextWord(String text, LinkedList<String> parts);
 }

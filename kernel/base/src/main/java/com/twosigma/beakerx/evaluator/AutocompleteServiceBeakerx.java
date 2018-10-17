@@ -17,14 +17,13 @@ package com.twosigma.beakerx.evaluator;
 
 import com.twosigma.beakerx.AutocompleteNode;
 import com.twosigma.beakerx.AutocompleteNodeFileSystem;
+import com.twosigma.beakerx.AutocompleteNodeHttpGet;
 import com.twosigma.beakerx.AutocompleteNodeStatic;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -35,6 +34,7 @@ import java.util.stream.Collectors;
 
 import static com.twosigma.beakerx.AutocompleteNode.NO_CHILDREN;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.ClassPathAddMvnCellMagicCommand.CLASSPATH_CELL;
+import static java.util.Arrays.asList;
 
 public abstract class AutocompleteServiceBeakerx implements AutocompleteService {
 
@@ -44,46 +44,42 @@ public abstract class AutocompleteServiceBeakerx implements AutocompleteService 
   public AutocompleteServiceBeakerx() {
     patterns.put(ClasspathMagicCommand.CLASSPATH,
             new AutocompleteNodeStatic(ClasspathMagicCommand.CLASSPATH,
-                    Arrays.asList(new AutocompleteNodeStatic("add",
-                            Arrays.asList(
+                    asList(new AutocompleteNodeStatic("add",
+                            asList(
                                     new AutocompleteNodeFileSystem("jar", NO_CHILDREN),
-                                    new AutocompleteNodeStatic("mvn", NO_CHILDREN),
+                                    new AutocompleteNodeHttpGet("mvn", NO_CHILDREN),
                                     new AutocompleteNodeStatic("dynamic", NO_CHILDREN))))));
 
     patterns.put(CLASSPATH_CELL,
             new AutocompleteNodeStatic(CLASSPATH_CELL,
-                    Arrays.asList(new AutocompleteNodeStatic("add",
-                            Arrays.asList(
+                    asList(new AutocompleteNodeStatic("add",
+                            asList(
                                     new AutocompleteNodeStatic("mvn", NO_CHILDREN))))));
   }
 
   @Override
   public AutocompleteResult find(String txt, int cur) {
     String expression = txt.substring(0, cur);
-    LinkedList<String> parts = new LinkedList<>(Arrays.asList(MagicCommandUtils.splitPath(expression)));
+    LinkedList<String> parts = new LinkedList<>(asList(MagicCommandUtils.splitPath(expression)));
     Optional<AutocompleteResult> result;
     if (expression.endsWith(LAST_SPACE)) {
-      result = findNextWord(parts, cur);
+      result = findNextWord(txt, parts, cur);
     } else {
-      result = matchToTheWord(parts, expression);
+      result = matchToTheWord(txt, parts, expression);
     }
     return result.orElseGet(() -> doAutocomplete(txt, cur));
   }
 
-  private Optional<AutocompleteResult> findNextWord(LinkedList<String> parts, int cur) {
+  private Optional<AutocompleteResult> findNextWord(String text, LinkedList<String> parts, int cur) {
     String first = parts.removeFirst();
     AutocompleteNode node = patterns.get(first);
     if (node == null) {
       return Optional.empty();
     }
-    List<String> result = node.findNextWord(parts);
-    if (!result.isEmpty()) {
-      return Optional.of(new AutocompleteResult(new ArrayList<>(result), cur));
-    }
-    return Optional.empty();
+    return node.findNextWord(text, parts);
   }
 
-  private Optional<AutocompleteResult> matchToTheWord(LinkedList<String> parts, String txt) {
+  private Optional<AutocompleteResult> matchToTheWord(String text, LinkedList<String> parts, String txt) {
     if (parts.size() == 1) {
       List<AutocompleteNode> collect = findMatches(patterns.values(), txt);
       if (collect.isEmpty()) {
@@ -95,10 +91,7 @@ public abstract class AutocompleteServiceBeakerx implements AutocompleteService 
       String first = parts.removeFirst();
       AutocompleteNode node = patterns.get(first);
       if (node != null) {
-        List<String> result = node.matchToTheWord(parts, last);
-        if (!result.isEmpty()) {
-          return Optional.of(new AutocompleteResult(result, txt.length() - last.length()));
-        }
+        return node.matchToTheWord(text, parts, last);
       }
       return Optional.empty();
     }

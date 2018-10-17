@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx;
 
+import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 public class AutocompleteNodeFileSystem extends AutocompleteNode {
 
@@ -33,14 +35,22 @@ public class AutocompleteNodeFileSystem extends AutocompleteNode {
   }
 
   @Override
-  public List<String> matchToTheWord(LinkedList<String> parts, String last) {
-    return list(parts, last);
+  public Optional<AutocompleteResult> matchToTheWord(String text, LinkedList<String> parts, String last) {
+    List<String> result = list(parts, last);
+    if (!result.isEmpty()) {
+      return Optional.of(new AutocompleteResult(result, text.length() - last.length()));
+    }
+    return Optional.empty();
   }
 
   @Override
-  public List<String> findNextWord(LinkedList<String> parts) {
+  public Optional<AutocompleteResult> findNextWord(String text, LinkedList<String> parts) {
     String dir = ".";
-    return list(parts, dir);
+    List<String> result = list(parts, dir);
+    if (!result.isEmpty()) {
+      return Optional.of(new AutocompleteResult(result, text.length()));
+    }
+    return Optional.empty();
   }
 
   @NotNull

@@ -15,7 +15,8 @@
  */
 package com.twosigma.beakerx;
 
-import java.util.ArrayList;
+import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,27 +29,35 @@ public class AutocompleteNodeStatic extends AutocompleteNode {
     super(name, children);
   }
 
-  public List<String> matchToTheWord(LinkedList<String> parts, String last) {
+  public Optional<AutocompleteResult> matchToTheWord(String text, LinkedList<String> parts, String last) {
     if (parts.isEmpty()) {
-      return findMatches(getChildren(), last);
+      List<String> matches = findMatches(getChildren(), last);
+      if (!matches.isEmpty()) {
+        return Optional.of(new AutocompleteResult(matches, text.length() - last.length()));
+      }
+      return Optional.empty();
     } else {
       Optional<AutocompleteNode> node = findNode(parts);
       if (node.isPresent()) {
-        return node.get().matchToTheWord(parts, last);
+        return node.get().matchToTheWord(text, parts, last);
       }
-      return new ArrayList<>();
+      return Optional.empty();
     }
   }
 
-  public List<String> findNextWord(LinkedList<String> parts) {
+  public Optional<AutocompleteResult> findNextWord(String text, LinkedList<String> parts) {
     if (parts.isEmpty()) {
-      return getChildren().stream().map(x->x.getName()).collect(Collectors.toList());
+      List<String> matches = getChildren().stream().map(x -> x.getName()).collect(Collectors.toList());
+      if (!matches.isEmpty()) {
+        return Optional.of(new AutocompleteResult(matches, text.length()));
+      }
+      return Optional.empty();
     } else {
       Optional<AutocompleteNode> node = findNode(parts);
       if (node.isPresent()) {
-        return node.get().findNextWord(parts);
+        return node.get().findNextWord(text, parts);
       }
-      return new ArrayList<>();
+      return Optional.empty();
     }
   }
 
@@ -59,7 +68,6 @@ public class AutocompleteNodeStatic extends AutocompleteNode {
             .map(x -> x.getName())
             .collect(Collectors.toList());
   }
-
 
 
   private Optional<AutocompleteNode> findNode(LinkedList<String> parts) {

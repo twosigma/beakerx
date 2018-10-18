@@ -100,4 +100,112 @@ describe('Java widgets test ', function () {
     });
   });
 
+  describe('BoundedIntText widget ', function () {
+    var widget;
+    it('Cell has BoundedIntText widget ', function () {
+      cellIndex += 1;
+      widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.$('input').getAttribute('type')).toEqual('number');
+      expect(widget.$('input').getAttribute('min')).toEqual('30');
+      expect(widget.$('input').getAttribute('max')).toEqual('100');
+    });
+
+    it('Get value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /37/);
+      expect(widget.$('input').getValue()).toBe('37');
+    });
+
+    it('Set max value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /150/);
+      widget.click('input');
+      browser.keys('ArrowDown');
+      expect(widget.$('input').getValue()).toBe('100');
+    });
+
+    it('Set min value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /10/);
+      widget.click('input');
+      browser.keys('ArrowUp');
+      expect(widget.$('input').getValue()).toBe('30');
+    });
+
+    it('Set description to "bit" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /bit/);
+      expect(widget.$('label.widget-label').getText()).toBe('bit');
+    });
+
+    it('Set step value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /37/);
+      widget.click('input');
+      browser.keys('ArrowUp');
+      expect(widget.$('input').getValue()).toBe('40');
+    });
+
+    it('Disable widget ', function () {
+      cellIndex += 1;
+      expect(widget.$('input').isEnabled()).toBeTruthy();
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /true/);
+      expect(widget.$('input').isEnabled()).toBeFalsy();
+    });
+  });
+
+  describe('BoundedFloatText widget ', function () {
+    var widget;
+    it('Cell has BoundedFloatText widget ', function () {
+      cellIndex += 1;
+      widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.$('input').getAttribute('type')).toEqual('number');
+      expect(widget.$('input').getAttribute('min')).toEqual('3.5');
+      expect(widget.$('input').getAttribute('max')).toEqual('10.5');
+    });
+
+    it('Get value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /3.7/);
+      expect(widget.$('input').getValue()).toBe('3.7');
+    });
+
+    it('Set max value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /15/);
+      widget.click('input');
+      browser.keys('ArrowDown');
+      expect(widget.$('input').getValue()).toBe('10.5');
+    });
+
+    it('Set min value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /1/);
+      widget.click('input');
+      browser.keys('ArrowUp');
+      expect(widget.$('input').getValue()).toBe('3.5');
+    });
+
+    it('Set description to "bft" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /bft/);
+      expect(widget.$('label.widget-label').getText()).toBe('bft');
+    });
+
+    it('Set step value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /4.123/);
+      widget.click('input');
+      browser.keys('ArrowUp');
+      expect(widget.$('input').getValue()).toBe('4.5');
+    });
+
+    it('Disable widget ', function () {
+      cellIndex += 1;
+      expect(widget.$('input').isEnabled()).toBeTruthy();
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /true/);
+      expect(widget.$('input').isEnabled()).toBeFalsy();
+    });
+  });
+
 });

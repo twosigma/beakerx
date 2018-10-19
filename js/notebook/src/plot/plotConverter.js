@@ -32,7 +32,7 @@ define([
     "Text" : "text",
     "Points" : "point",
     "Rasters" : "image",
-    "CategoryLine" : "line",
+    "CategoryLines" : "line",
     "CategoryStems" : "stem",
     "CategoryBars" : "bar",
     "CategoryArea" : "area",

@@ -49,8 +49,16 @@ public abstract class ValueWidget<T extends Serializable> extends DOMWidget {
   }
 
   public void setValue(Object value) {
-    this.value = getValueFromObject(value);
-    sendUpdate(VALUE, value);
+    this.value = decorateValue(getValueFromObject(value));
+    sendUpdate(VALUE, printValue());
+  }
+
+  protected Object printValue() {
+    return this.value;
+  }
+
+  protected T decorateValue(T value) {
+    return value;
   }
 
   @Override

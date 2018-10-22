@@ -56,9 +56,9 @@ public class FloatTextTest {
     //given
     FloatText floatText = floatText();
     //when
-    floatText.setValue(5f);
+    floatText.setValue(5.1);
     //then
-    verifyMsgForProperty(groovyKernel, FloatText.VALUE, 5f);
+    verifyMsgForProperty(groovyKernel, FloatText.VALUE, 5.1);
   }
 
   private FloatText floatText() throws NoSuchAlgorithmException {

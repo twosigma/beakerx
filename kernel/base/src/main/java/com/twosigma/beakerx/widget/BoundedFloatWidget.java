@@ -42,6 +42,17 @@ public abstract class BoundedFloatWidget extends FloatWidget<Double> {
     return content;
   }
 
+  @Override
+  protected Double decorateValue(Double value) {
+    if (value > getMax()) {
+      return getMax();
+    } else if (value < getMin()) {
+      return getMin();
+    } else {
+      return value;
+    }
+  }
+
   public Double getStep() {
     return step;
   }

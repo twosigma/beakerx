@@ -26,6 +26,7 @@ public class DatePicker extends ValueWidget<Date> {
   public static final String MODEL_NAME_VALUE = "DatePickerModel";
   public static final String SHOW_TIME = "showTime";
   public static final String YYYY_MM_DD = "yyyyMMdd";
+  public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat(YYYY_MM_DD);
 
   private Boolean showTime;
 
@@ -53,12 +54,19 @@ public class DatePicker extends ValueWidget<Date> {
   @Override
   public Date getValueFromObject(Object input) {
     try {
-      return new SimpleDateFormat(YYYY_MM_DD).parse((String) input);
+      return SIMPLE_DATE_FORMAT.parse((String) input);
     } catch (ParseException e) {
       throw new RuntimeException(e);
     }
   }
 
+  @Override
+  protected String printValue() {
+    if (this.value == null) {
+      return null;
+    }
+    return SIMPLE_DATE_FORMAT.format(this.value);
+  }
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {

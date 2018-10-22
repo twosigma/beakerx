@@ -53,6 +53,17 @@ public abstract class BoundedIntWidget extends IntWidget<Integer> {
     return content;
   }
 
+  @Override
+  protected Integer decorateValue(Integer value) {
+    if (value > getMax()) {
+      return getMax();
+    } else if (value < getMin()) {
+      return getMin();
+    } else {
+      return value;
+    }
+  }
+
   public Integer getStep() {
     return step;
   }

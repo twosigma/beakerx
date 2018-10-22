@@ -18,10 +18,12 @@ package com.twosigma.beakerx.widget.floats;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.widget.BoundedFloatText;
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.twosigma.beakerx.widget.TestWidgetUtils.findValueForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyMsgForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsg;
 
@@ -93,5 +95,32 @@ public class BoundedFloatTextTest {
     boundedFloatText.setValue(-1.1);
     //then
     verifyMsgForProperty(groovyKernel, boundedFloatText.VALUE, 0.0);
+  }
+
+  @Test
+  public void shouldReturnMinWhenValueLessThenMin() {
+    //given
+    double min = 5.0;
+    BoundedFloatText boundedFloatText = new BoundedFloatText();
+    groovyKernel.clearPublishedMessages();
+    //when
+    boundedFloatText.setMin(min);
+    //then
+    Double valueForProperty = findValueForProperty(groovyKernel, boundedFloatText.VALUE, Double.class);
+    Assertions.assertThat(valueForProperty).isEqualTo(min);
+  }
+
+  @Test
+  public void shouldReturnMaxWhenValueGreaterThenMax() {
+    //given
+    double max = 5.0;
+    BoundedFloatText boundedFloatText = new BoundedFloatText();
+    boundedFloatText.setValue(100);
+    groovyKernel.clearPublishedMessages();
+    //when
+    boundedFloatText.setMax(max);
+    //then
+    Double valueForProperty = findValueForProperty(groovyKernel, boundedFloatText.VALUE, Double.class);
+    Assertions.assertThat(valueForProperty).isEqualTo(max);
   }
 }

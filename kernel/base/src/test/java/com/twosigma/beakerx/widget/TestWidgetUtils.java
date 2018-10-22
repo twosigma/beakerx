@@ -132,6 +132,7 @@ public class TestWidgetUtils {
   public static <T> T findValueForProperty(KernelTest kernel, String propertyName, Class<T> clazz) {
     List<Message> messages = SearchMessages
             .getListByDataAttr(kernel.getPublishedMessages(), Comm.METHOD, Comm.UPDATE);
+    messages = messages.stream().filter( x -> getState(x).containsKey(propertyName)).collect(Collectors.toList());
     assertTrue("No update comm message.", messages.size() > 0);
     return getValueForProperty(messages.get(0), propertyName, clazz);
   }

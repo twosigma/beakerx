@@ -80,6 +80,9 @@ public abstract class BoundedIntWidget extends IntWidget<Integer> {
   public void setMax(Object max) {
     this.max = getInteger(max);
     sendUpdate(MAX, max);
+    if (value > getMax()) {
+      setValue(getMax());
+    }
   }
 
   public Integer getMin() {
@@ -89,6 +92,9 @@ public abstract class BoundedIntWidget extends IntWidget<Integer> {
   public void setMin(Object min) {
     this.min = getInteger(min);
     sendUpdate(MIN, min);
+    if (value < getMin()) {
+      setValue(getMin());
+    }
   }
 
 }

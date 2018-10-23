@@ -208,4 +208,102 @@ describe('Java widgets test ', function () {
     });
   });
 
+  describe('ToggleButton widget ', function () {
+    var widget;
+    it('Cell has ToggleButton widget ', function () {
+      cellIndex += 1;
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      widget = codeCell.$('.jupyter-widgets.widget-toggle-button');
+      expect(widget.getTagName()).toEqual('button');
+      expect(widget.getAttribute('title')).toEqual('tooltip1');
+      expect(widget.getText()).toEqual('tggl');
+    });
+
+    it('Get value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /false/);
+    });
+
+    it('Set value by code ', function () {
+      cellIndex += 1;
+      expect(widget.getAttribute('class')).not.toMatch(/mod-active/);
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /true/);
+      expect(widget.getAttribute('class')).toMatch(/mod-active/);
+    });
+
+    it('Set icon by code ', function () {
+      cellIndex += 1;
+      expect(widget.isExisting('i.fa-check')).toBeFalsy();
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /check/);
+      expect(widget.isExisting('i.fa-check')).toBeTruthy();
+    });
+
+    it('Set style to "success" ', function () {
+      cellIndex += 1;
+      expect(widget.getAttribute('class')).not.toMatch(/mod-success/);
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /success/);
+      expect(widget.getAttribute('class')).toMatch(/mod-success/);
+    });
+
+    it('Disable widget ', function () {
+      cellIndex += 1;
+      expect(widget.isEnabled()).toBeTruthy();
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /true/);
+      expect(widget.isEnabled()).toBeFalsy();
+    });
+  });
+
+  describe('CheckBox widget ', function () {
+    var widget;
+    it('Cell has CheckBox widget ', function () {
+      cellIndex += 1;
+      widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.getAttribute('class')).toMatch(/widget-checkbox/);
+      expect(widget.$('input').getAttribute('type')).toEqual('checkbox');
+      expect(widget.getText()).toEqual('chb1')
+    });
+
+    it('Get value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /false/);
+    });
+
+    it('Set value by code ', function () {
+      cellIndex += 1;
+      expect(widget.$('input').getAttribute('checked')).toBeFalsy();
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /true/);
+      expect(widget.$('input').getAttribute('checked')).toBeTruthy();
+    });
+
+    it('Disable widget ', function () {
+      cellIndex += 1;
+      expect(widget.$('input').isEnabled()).toBeTruthy();
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /true/);
+      expect(widget.$('input').isEnabled()).toBeFalsy();
+    });
+  });
+
+  describe('Valid widget ', function () {
+    var widget;
+    it('Cell has Valid widget ', function () {
+      cellIndex += 1;
+      widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.getAttribute('class')).toMatch(/widget-valid/);
+      expect(widget.$('label').getText()).toEqual('year');
+    });
+
+    it('Get value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /false/);
+    });
+
+    it('Set value by code ', function () {
+      cellIndex += 1;
+      expect(widget.getAttribute('class')).toMatch(/mod-invalid/);
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /true/);
+      expect(widget.getAttribute('class')).toMatch(/mod-valid/);
+    });
+  });
+
 });

@@ -43,9 +43,9 @@ class ColumnType(Enum):
 class DateType:
     type = "Date"
 
-    def __init__(self, value):
+    def __init__(self, value, tz=None):
         self.timestamp = parse(str(value)).timestamp() * 1000
-
+        self.tz = tz
 
 class DataBarsRenderer:
     type = "DataBars"

@@ -110,7 +110,8 @@ class Table(BaseObject):
             if not isinstance(args[0].index, RangeIndex):
                 index_type = self.convert_type(args[0].index.dtype)
                 index_values = args[0].index.get_values()[index]
-                row[:0] = [self.convert_value(index_values, index_type)]
+                tz = args[0].index.tz.zone
+                row[:0] = [self.convert_value(index_values, index_type, tz)]
             self.values.append(row)
 
         if not isinstance(args[0].index, RangeIndex) and column is not None:
@@ -130,9 +131,9 @@ class Table(BaseObject):
             return x
 
     @staticmethod
-    def convert_value(value, value_type):
+    def convert_value(value, value_type, tz=None):
         if value_type == "time":
-            return DateType(value)
+            return DateType(value, tz)
         else:
             return str(value)
 

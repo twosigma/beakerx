@@ -42,6 +42,17 @@ public abstract class BoundedFloatWidget extends FloatWidget<Double> {
     return content;
   }
 
+  @Override
+  protected Double decorateValue(Double value) {
+    if (value > getMax()) {
+      return getMax();
+    } else if (value < getMin()) {
+      return getMin();
+    } else {
+      return value;
+    }
+  }
+
   public Double getStep() {
     return step;
   }
@@ -58,6 +69,9 @@ public abstract class BoundedFloatWidget extends FloatWidget<Double> {
   public void setMax(Object max) {
     this.max = getDouble(max);
     sendUpdate(MAX, max);
+    if (value > getMax()) {
+      setValue(getMax());
+    }
   }
 
   public Double getMin() {
@@ -67,6 +81,9 @@ public abstract class BoundedFloatWidget extends FloatWidget<Double> {
   public void setMin(Object min) {
     this.min = getDouble(min);
     sendUpdate(MIN, min);
+    if (value < getMin()) {
+      setValue(getMin());
+    }
   }
 
 }

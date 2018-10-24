@@ -18,12 +18,12 @@ package com.twosigma.beakerx.widget.integers;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.widget.BoundedIntText;
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.security.NoSuchAlgorithmException;
-
+import static com.twosigma.beakerx.widget.TestWidgetUtils.findValueForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyMsgForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsg;
 
@@ -49,15 +49,15 @@ public class BoundedIntTextTest {
     new BoundedIntText();
     //then
     verifyOpenCommMsg(
-        groovyKernel.getPublishedMessages(),
-        BoundedIntText.MODEL_NAME_VALUE,
-        BoundedIntText.VIEW_NAME_VALUE
+            groovyKernel.getPublishedMessages(),
+            BoundedIntText.MODEL_NAME_VALUE,
+            BoundedIntText.VIEW_NAME_VALUE
     );
   }
 
   @Test
-  public void setValue_sendCommMessage() throws Exception {
-    String expected = "test";
+  public void setValue_sendCommMessage() {
+    int expected = 2;
     //given
     BoundedIntText boundedIntText = BoundedIntText();
     //when
@@ -66,9 +66,63 @@ public class BoundedIntTextTest {
     verifyMsgForProperty(groovyKernel, boundedIntText.VALUE, expected);
   }
 
-  private BoundedIntText BoundedIntText() throws NoSuchAlgorithmException {
+  private BoundedIntText BoundedIntText() {
     BoundedIntText boundedIntText = new BoundedIntText();
     groovyKernel.clearPublishedMessages();
     return boundedIntText;
+  }
+
+
+  @Test
+  public void respectMax() {
+    //given
+    BoundedIntText boundedIntText = BoundedIntText();
+    boundedIntText.setMax(10);
+    groovyKernel.clearPublishedMessages();
+    //when
+    boundedIntText.setValue(15);
+    //then
+    verifyMsgForProperty(groovyKernel, boundedIntText.VALUE, 10);
+  }
+
+  @Test
+  public void respectMin() {
+    //given
+    int min = 0;
+    BoundedIntText boundedIntText = BoundedIntText();
+    boundedIntText.setMin(min);
+    groovyKernel.clearPublishedMessages();
+    //when
+    boundedIntText.setValue(-1);
+    //then
+    verifyMsgForProperty(groovyKernel, boundedIntText.VALUE, 0);
+  }
+
+
+  @Test
+  public void shouldReturnMinWhenValueLessThenMin() {
+    //given
+    int min = 5;
+    BoundedIntText boundedIntText = BoundedIntText();
+    groovyKernel.clearPublishedMessages();
+    //when
+    boundedIntText.setMin(min);
+    //then
+    Integer valueForProperty = findValueForProperty(groovyKernel, boundedIntText.VALUE, Integer.class);
+    Assertions.assertThat(valueForProperty).isEqualTo(min);
+  }
+
+  @Test
+  public void shouldReturnMaxWhenValueGreaterThenMax() {
+    //given
+    int max = 5;
+    BoundedIntText boundedIntText = BoundedIntText();
+    boundedIntText.setValue(100);
+    groovyKernel.clearPublishedMessages();
+    //when
+    boundedIntText.setMax(max);
+    //then
+    Integer valueForProperty = findValueForProperty(groovyKernel, boundedIntText.VALUE, Integer.class);
+    Assertions.assertThat(valueForProperty).isEqualTo(max);
   }
 }

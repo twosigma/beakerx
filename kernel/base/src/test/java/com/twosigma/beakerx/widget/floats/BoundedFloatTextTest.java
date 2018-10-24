@@ -18,12 +18,12 @@ package com.twosigma.beakerx.widget.floats;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.widget.BoundedFloatText;
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.security.NoSuchAlgorithmException;
-
+import static com.twosigma.beakerx.widget.TestWidgetUtils.findValueForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyMsgForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsg;
 
@@ -49,15 +49,15 @@ public class BoundedFloatTextTest {
     new BoundedFloatText();
     //then
     verifyOpenCommMsg(
-        groovyKernel.getPublishedMessages(),
-        BoundedFloatText.MODEL_NAME_VALUE,
-        BoundedFloatText.VIEW_NAME_VALUE
+            groovyKernel.getPublishedMessages(),
+            BoundedFloatText.MODEL_NAME_VALUE,
+            BoundedFloatText.VIEW_NAME_VALUE
     );
   }
 
   @Test
   public void setValue_sendCommMessage() throws Exception {
-    String expected = "test";
+    double expected = 5.5;
     //given
     BoundedFloatText boundedFloatText = boundedFloatText();
     //when
@@ -66,9 +66,61 @@ public class BoundedFloatTextTest {
     verifyMsgForProperty(groovyKernel, boundedFloatText.VALUE, expected);
   }
 
-  private BoundedFloatText boundedFloatText() throws NoSuchAlgorithmException {
+  private BoundedFloatText boundedFloatText() {
     BoundedFloatText boundedFloatText = new BoundedFloatText();
     groovyKernel.clearPublishedMessages();
     return boundedFloatText;
+  }
+
+  @Test
+  public void respectMax() {
+    //given
+    BoundedFloatText boundedFloatText = new BoundedFloatText();
+    boundedFloatText.setMax(10.5);
+    groovyKernel.clearPublishedMessages();
+    //when
+    boundedFloatText.setValue(15.123);
+    //then
+    verifyMsgForProperty(groovyKernel, boundedFloatText.VALUE, 10.5);
+  }
+
+  @Test
+  public void respectMin() {
+    //given
+    double min = 0.0;
+    BoundedFloatText boundedFloatText = new BoundedFloatText();
+    boundedFloatText.setMin(min);
+    groovyKernel.clearPublishedMessages();
+    //when
+    boundedFloatText.setValue(-1.1);
+    //then
+    verifyMsgForProperty(groovyKernel, boundedFloatText.VALUE, 0.0);
+  }
+
+  @Test
+  public void shouldReturnMinWhenValueLessThenMin() {
+    //given
+    double min = 5.0;
+    BoundedFloatText boundedFloatText = new BoundedFloatText();
+    groovyKernel.clearPublishedMessages();
+    //when
+    boundedFloatText.setMin(min);
+    //then
+    Double valueForProperty = findValueForProperty(groovyKernel, boundedFloatText.VALUE, Double.class);
+    Assertions.assertThat(valueForProperty).isEqualTo(min);
+  }
+
+  @Test
+  public void shouldReturnMaxWhenValueGreaterThenMax() {
+    //given
+    double max = 5.0;
+    BoundedFloatText boundedFloatText = new BoundedFloatText();
+    boundedFloatText.setValue(100);
+    groovyKernel.clearPublishedMessages();
+    //when
+    boundedFloatText.setMax(max);
+    //then
+    Double valueForProperty = findValueForProperty(groovyKernel, boundedFloatText.VALUE, Double.class);
+    Assertions.assertThat(valueForProperty).isEqualTo(max);
   }
 }

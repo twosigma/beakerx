@@ -43,6 +43,12 @@ public class AutocompleteNodeHttpGet extends AutocompleteNode {
     this.objectMapper.enable(WRITE_ENUMS_USING_TO_STRING);
   }
 
+
+  @Override
+  public Optional<AutocompleteResult> findNextWord(String text, LinkedList<String> parts) {
+    return Optional.empty();
+  }
+
   @Override
   public Optional<AutocompleteResult> matchToTheWord(String text, LinkedList<String> parts, String last) {
     try {
@@ -118,7 +124,7 @@ public class AutocompleteNodeHttpGet extends AutocompleteNode {
     return fromJson(valueString);
   }
 
-  public Map fromJson(String json) {
+  private Map fromJson(String json) {
     try {
       return objectMapper.readValue(json, Map.class);
     } catch (IOException e) {
@@ -139,10 +145,5 @@ public class AutocompleteNodeHttpGet extends AutocompleteNode {
       return String.format(HTTPS_SEARCH_MAVEN_ORG_SOLRSEARCH_SELECT_Q_S_START_0_ROWS_20, encode);
     }
     return "";
-  }
-
-  @Override
-  public Optional<AutocompleteResult> findNextWord(String text, LinkedList<String> parts) {
-    return Optional.empty();
   }
 }

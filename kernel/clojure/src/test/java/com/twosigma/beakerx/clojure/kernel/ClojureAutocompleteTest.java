@@ -19,6 +19,7 @@ package com.twosigma.beakerx.clojure.kernel;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.clojure.evaluator.ClojureEvaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
+import com.twosigma.beakerx.evaluator.MagicCommandAutocompletePatternsMock;
 import com.twosigma.beakerx.kernel.KernelManager;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -27,7 +28,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.KERNEL_PARAMETERS;
-import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.*;
+import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 
 public class ClojureAutocompleteTest {
   private static ClojureEvaluator clojureEvaluator;
@@ -40,7 +41,8 @@ public class ClojureAutocompleteTest {
             cellExecutor(),
             EvaluatorTest.getTestTempFolderFactory(),
             KERNEL_PARAMETERS,
-            new EvaluatorTest.BeakexClientTestImpl()
+            new EvaluatorTest.BeakexClientTestImpl(),
+            new MagicCommandAutocompletePatternsMock()
     );
   }
 

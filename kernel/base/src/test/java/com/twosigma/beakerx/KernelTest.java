@@ -23,35 +23,48 @@ import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beakerx.kernel.*;
+import com.twosigma.beakerx.kernel.AddImportStatus;
+import com.twosigma.beakerx.kernel.Classpath;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
+import com.twosigma.beakerx.kernel.ExecutionOptions;
+import com.twosigma.beakerx.kernel.GroupName;
+import com.twosigma.beakerx.kernel.ImportPath;
+import com.twosigma.beakerx.kernel.Imports;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.kernel.MagicKernelManager;
+import com.twosigma.beakerx.kernel.NoSuchKernelException;
+import com.twosigma.beakerx.kernel.PathToJar;
+import com.twosigma.beakerx.kernel.PythonEntryPoint;
 import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfiguration;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfigurationImpl;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
-import com.twosigma.beakerx.kernel.magic.command.MagicCommandTypesFactory;
-import com.twosigma.beakerx.kernel.magic.command.MagicCommandWhichThrowsException;
 import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver;
-import com.twosigma.beakerx.kernel.magic.command.functionality.*;
-import com.twosigma.beakerx.kernel.magic.command.functionality.kernelMagic.*;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
 import com.twosigma.beakerx.message.Message;
 import org.apache.commons.io.FileUtils;
-import org.assertj.core.util.Lists;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Observer;
+import java.util.Set;
 
 import static com.twosigma.beakerx.MessageFactorTest.commMsg;
-import static com.twosigma.beakerx.kernel.magic.command.ClasspathAddMvnDepsMagicCommandTest.TEST_MVN_CACHE;
 import static java.util.Arrays.asList;
 import static java.util.Collections.synchronizedList;
 
 public class KernelTest implements KernelFunctionality {
 
-  private FileServiceMock fileService;
   private List<Message> publishedMessages = synchronizedList(new ArrayList<>());
   private List<Message> sentMessages = synchronizedList(new ArrayList<>());
   private String id;
@@ -62,8 +75,9 @@ public class KernelTest implements KernelFunctionality {
   private String code;
   private Path tempFolder;
   private Map<String, MagicKernelManager> magicKernels;
+  private MagicCommandConfigurationMock magicCommandConfiguration = new MagicCommandConfigurationMock();
 
-  public MavenJarResolver.ResolverParams mavenResolverParam = null;
+//  public MavenJarResolver.ResolverParams mavenResolverParam = null;
 
   private List<MagicCommandType> magicCommandTypes = null;
 
@@ -79,8 +93,6 @@ public class KernelTest implements KernelFunctionality {
   public KernelTest(String id, CommRepository commRepository) {
     this.id = id;
     this.commRepository = commRepository;
-    this.fileService = new FileServiceMock();
-    initMavenResolverParam();
     initMagicCommands();
     SimpleEvaluationObject value = new SimpleEvaluationObject("ok");
     Message jupyterMessage = commMsg();
@@ -94,8 +106,6 @@ public class KernelTest implements KernelFunctionality {
     this.id = id;
     this.evaluator = evaluator;
     this.commRepository = new BeakerXCommRepositoryMock();
-    this.fileService = new FileServiceMock();
-    initMavenResolverParam();
     initMagicCommands();
     SimpleEvaluationObject value = new SimpleEvaluationObject("ok");
     Message jupyterMessage = commMsg();
@@ -105,61 +115,8 @@ public class KernelTest implements KernelFunctionality {
     this.magicKernels = new HashMap<>();
   }
 
-  private void initMavenResolverParam() {
-    this.mavenResolverParam = new MavenJarResolver.ResolverParams(
-            new File(TEST_MVN_CACHE).getAbsolutePath(),
-            getTempFolder().toString() + MavenJarResolver.MVN_DIR,
-            true);
-  }
-
   private void initMagicCommands() {
-    this.magicCommandTypes = new ArrayList<>();
-    this.magicCommandTypes.addAll(Lists.newArrayList(
-            new MagicCommandType(JavaScriptMagicCommand.JAVASCRIPT, "", new JavaScriptMagicCommand()),
-            new MagicCommandType(JSMagicCommand.JAVASCRIPT, "", new JSMagicCommand()),
-            new MagicCommandType(HtmlMagicCommand.HTML, "", new HtmlMagicCommand()),
-            new MagicCommandType(HtmlAliasMagicCommand.HTML, "", new HtmlAliasMagicCommand()),
-            new MagicCommandType(BashMagicCommand.BASH, "", new BashMagicCommand()),
-            new MagicCommandType(LsMagicCommand.LSMAGIC, "", new LsMagicCommand(this.magicCommandTypes)),
-            new MagicCommandType(ClasspathAddRepoMagicCommand.CLASSPATH_CONFIG_RESOLVER, "repoName repoURL", new ClasspathAddRepoMagicCommand(this)),
-            new MagicCommandType(ClasspathAddJarMagicCommand.CLASSPATH_ADD_JAR, "<jar path>", new ClasspathAddJarMagicCommand(this)),
-            new MagicCommandType(ClasspathAddMvnMagicCommand.CLASSPATH_ADD_MVN, "<group name version>",
-                    new ClasspathAddMvnMagicCommand(mavenResolverParam, this)),
-            new MagicCommandType(ClassPathAddMvnCellMagicCommand.CLASSPATH_ADD_MVN_CELL, "<group name version>",
-                    new ClassPathAddMvnCellMagicCommand(mavenResolverParam, this)),
-            addClasspathReset(this, this.fileService),
-            addDynamic(this),
-            addMagicCommandWhichThrowsException(),
-            new MagicCommandType(ClasspathShowMagicCommand.CLASSPATH_SHOW, "", new ClasspathShowMagicCommand(this)),
-            new MagicCommandType(AddStaticImportMagicCommand.ADD_STATIC_IMPORT, "<classpath>", new AddStaticImportMagicCommand(this)),
-            new MagicCommandType(AddImportMagicCommand.IMPORT, "<classpath>", new AddImportMagicCommand(this)),
-            new MagicCommandType(UnImportMagicCommand.UNIMPORT, "<classpath>", new UnImportMagicCommand(this)),
-            new MagicCommandType(TimeLineModeMagicCommand.TIME_LINE, "", new TimeLineModeMagicCommand(this)),
-            new MagicCommandType(TimeCellModeMagicCommand.TIME_CELL, "", new TimeCellModeMagicCommand(this)),
-            new MagicCommandType(TimeItLineModeMagicCommand.TIMEIT_LINE, "", new TimeItLineModeMagicCommand(this)),
-            new MagicCommandType(TimeItCellModeMagicCommand.TIMEIT_CELL, "", new TimeItCellModeMagicCommand(this)),
-            new MagicCommandType(LoadMagicMagicCommand.LOAD_MAGIC, "", new LoadMagicMagicCommand(this)),
-            new MagicCommandType(KernelMagicCommand.KERNEL, "", new KernelMagicCommand(this)),
-            new MagicCommandType(PythonMagicCommand.PYTHON, "", new PythonMagicCommand(this)),
-            new MagicCommandType(ScalaMagicCommand.SCALA, "", new ScalaMagicCommand(this)),
-            new MagicCommandType(KotlinMagicCommand.KOTLIN, "", new KotlinMagicCommand(this)),
-            new MagicCommandType(JavaMagicCommand.JAVA, "", new JavaMagicCommand(this)),
-            new MagicCommandType(GroovyMagicCommand.GROOVY, "", new GroovyMagicCommand(this)),
-            new MagicCommandType(ClojureMagicCommand.CLOJURE, "", new ClojureMagicCommand(this)),
-            MagicCommandTypesFactory.async(this)
-    ));
-  }
-
-  private static MagicCommandType addClasspathReset(KernelFunctionality kernel, FileService fileService) {
-    return new MagicCommandType(ClasspathResetMagicCommand.CLASSPATH_RESET, "", new ClasspathResetMagicCommand(kernel, fileService));
-  }
-
-  private static MagicCommandType addDynamic(KernelFunctionality kernel) {
-    return new MagicCommandType(ClasspathAddDynamicMagicCommand.CLASSPATH_ADD_DYNAMIC, "", new ClasspathAddDynamicMagicCommand(kernel));
-  }
-
-  private static MagicCommandType addMagicCommandWhichThrowsException() {
-    return new MagicCommandType(MagicCommandWhichThrowsException.MAGIC_COMMAND_WHICH_THROWS_EXCEPTION, "", new MagicCommandWhichThrowsException());
+    this.magicCommandTypes = magicCommandConfiguration.createDefaults(this);
   }
 
   @Override
@@ -421,7 +378,12 @@ public class KernelTest implements KernelFunctionality {
     return BeakerXServerMock.create();
   }
 
+  @Override
+  public MagicCommandConfiguration magicCommandConfiguration() {
+    return magicCommandConfiguration;
+  }
+
   public FileServiceMock getFileService() {
-    return fileService;
+    return magicCommandConfiguration.getFileService();
   }
 }

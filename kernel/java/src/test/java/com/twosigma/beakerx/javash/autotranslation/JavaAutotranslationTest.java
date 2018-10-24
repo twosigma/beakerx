@@ -19,6 +19,7 @@ import com.twosigma.beakerx.BeakerXCommRepositoryMock;
 import com.twosigma.beakerx.BeakerXServerMock;
 import com.twosigma.beakerx.DefaultBeakerXJsonSerializer;
 import com.twosigma.beakerx.KernelSetUpFixtureTest;
+import com.twosigma.beakerx.MagicCommandConfigurationMock;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.NamespaceClientTest;
 import com.twosigma.beakerx.javash.evaluator.JavaEvaluator;
@@ -53,14 +54,23 @@ public class JavaAutotranslationTest extends KernelSetUpFixtureTest {
   protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
     autotranslationService = new NamespaceClientTest.AutotranslationServiceTestImpl();
     NamespaceClient nc = new NamespaceClient(autotranslationService, new DefaultBeakerXJsonSerializer(), new BeakerXCommRepositoryMock());
-    JavaEvaluator evaluator = new JavaEvaluator(sessionId, sessionId, cellExecutor(), getTestTempFolderFactory(), getKernelParameters(), nc);
+    MagicCommandConfigurationMock magicCommandConfiguration = new MagicCommandConfigurationMock();
+    JavaEvaluator evaluator = new JavaEvaluator(
+            sessionId,
+            sessionId,
+            cellExecutor(),
+            getTestTempFolderFactory(),
+            getKernelParameters(),
+            nc,
+            magicCommandConfiguration.patterns());
     return new Java(sessionId,
             evaluator,
             kernelSocketsFactory,
             closeKernelAction,
             getCacheFolderFactory(),
             new BeakerXCommRepositoryMock(),
-            BeakerXServerMock.create());
+            BeakerXServerMock.create(),
+            magicCommandConfiguration);
   }
 
   private EvaluatorParameters getKernelParameters() {

@@ -13,24 +13,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.scala.evaluator;
+package com.twosigma.beakerx.kernel.magic.command;
 
-import com.twosigma.beakerx.autocomplete.AutocompleteResult;
-import com.twosigma.beakerx.autocomplete.AutocompleteServiceBeakerx;
 import com.twosigma.beakerx.autocomplete.MagicCommandAutocompletePatterns;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
 
-public class ScalaAutocomplete extends AutocompleteServiceBeakerx {
+import java.util.List;
 
-  private ScalaEvaluatorGlue shell;
+public interface MagicCommandConfiguration {
 
-  public ScalaAutocomplete(ScalaEvaluatorGlue shell, MagicCommandAutocompletePatterns autocompletePatterns) {
-    super(autocompletePatterns);
-    this.shell = shell;
-  }
+  List<MagicCommandType> createDefaults(KernelFunctionality kernel);
 
-  @Override
-  protected AutocompleteResult doAutocomplete(String txt, int cur) {
-    AutocompleteResult lineCompletion = shell.autocomplete(txt, cur);
-    return new AutocompleteResult(lineCompletion.getMatches(), lineCompletion.getStartIndex());
-  }
+  MagicCommandAutocompletePatterns patterns();
+
+  ClasspathAddMvnMagicCommand getClasspathAddMvnMagicCommand(KernelFunctionality kernel);
 }

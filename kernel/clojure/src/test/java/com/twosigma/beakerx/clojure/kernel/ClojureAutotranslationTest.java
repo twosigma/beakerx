@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twosigma.beakerx.BeakerXCommRepositoryMock;
 import com.twosigma.beakerx.BeakerXServerMock;
 import com.twosigma.beakerx.KernelSetUpFixtureTest;
+import com.twosigma.beakerx.MagicCommandConfigurationMock;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.NamespaceClientTest;
 import com.twosigma.beakerx.clojure.evaluator.ClojureEvaluator;
@@ -52,20 +53,23 @@ public class ClojureAutotranslationTest extends KernelSetUpFixtureTest {
   protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
     autotranslationService = new NamespaceClientTest.AutotranslationServiceTestImpl();
     NamespaceClient nc = new NamespaceClient(autotranslationService, new ClojureBeakerXJsonSerializer(), new BeakerXCommRepositoryMock());
+    MagicCommandConfigurationMock commandConfiguration = new MagicCommandConfigurationMock();
     ClojureEvaluator evaluator = new ClojureEvaluator(
             sessionId,
             sessionId,
             cellExecutor(),
             getTestTempFolderFactory(),
             KERNEL_PARAMETERS,
-            nc);
+            nc,
+            commandConfiguration.patterns());
     return new Clojure(sessionId,
             evaluator,
             kernelSocketsFactory,
             closeKernelAction,
             getCacheFolderFactory(),
             new BeakerXCommRepositoryMock(),
-            BeakerXServerMock.create());
+            BeakerXServerMock.create(),
+            commandConfiguration);
   }
 
   @Test

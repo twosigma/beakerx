@@ -20,6 +20,7 @@ import com.twosigma.beakerx.BeakerXClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.autocomplete.ClasspathScanner;
+import com.twosigma.beakerx.autocomplete.MagicCommandAutocompletePatterns;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
@@ -69,8 +70,18 @@ public class SQLEvaluator extends BaseEvaluator {
   private JDBCClient jdbcClient;
   private DynamicClassLoaderSimple loader;
 
-  public SQLEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerXClient beakerxClient) {
-    this(id, sId, new BeakerCellExecutor("sql"), new TempFolderFactoryImpl(), evaluatorParameters, beakerxClient);
+  public SQLEvaluator(String id,
+                      String sId,
+                      EvaluatorParameters evaluatorParameters,
+                      BeakerXClient beakerxClient,
+                      MagicCommandAutocompletePatterns autocompletePatterns) {
+    this(id,
+            sId,
+            new BeakerCellExecutor("sql"),
+            new TempFolderFactoryImpl(),
+            evaluatorParameters,
+            beakerxClient,
+            autocompletePatterns);
   }
 
   public SQLEvaluator(String id,
@@ -78,8 +89,9 @@ public class SQLEvaluator extends BaseEvaluator {
                       CellExecutor cellExecutor,
                       TempFolderFactory tempFolderFactory,
                       EvaluatorParameters evaluatorParameters,
-                      BeakerXClient beakerxClient) {
-    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient);
+                      BeakerXClient beakerxClient,
+                      MagicCommandAutocompletePatterns autocompletePatterns) {
+    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient, autocompletePatterns);
     cps = new ClasspathScanner();
     sac = createSqlAutocomplete(cps);
     loader = reloadClassLoader();
@@ -137,7 +149,7 @@ public class SQLEvaluator extends BaseEvaluator {
   }
 
   private SQLAutocomplete createSqlAutocomplete(ClasspathScanner c) {
-    return new SQLAutocomplete(c, jdbcClient, sessionId, defaultConnectionString, namedConnectionString);
+    return new SQLAutocomplete(c, jdbcClient, sessionId, defaultConnectionString, namedConnectionString, autocompletePatterns);
   }
 
   @Override

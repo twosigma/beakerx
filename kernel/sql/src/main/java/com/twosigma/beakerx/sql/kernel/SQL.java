@@ -21,8 +21,19 @@ import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
-import com.twosigma.beakerx.kernel.*;
+import com.twosigma.beakerx.kernel.CacheFolderFactory;
+import com.twosigma.beakerx.kernel.CloseKernelAction;
+import com.twosigma.beakerx.kernel.CustomMagicCommandsFactory;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
+import com.twosigma.beakerx.kernel.Kernel;
+import com.twosigma.beakerx.kernel.KernelConfigurationFile;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.KernelRunner;
+import com.twosigma.beakerx.kernel.KernelSocketsFactory;
+import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfiguration;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfigurationImpl;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.restserver.impl.GetUrlArgHandler;
@@ -56,8 +67,16 @@ public class SQL extends Kernel {
               Evaluator evaluator,
               KernelSocketsFactory kernelSocketsFactory,
               CommRepository commRepository,
-              BeakerXServer beakerXServer) {
-    super(sessionId, evaluator, kernelSocketsFactory, new SQLCustomMagicCommandsImpl(), commRepository, beakerXServer);
+              BeakerXServer beakerXServer,
+              MagicCommandConfiguration magicCommandConfiguration) {
+    super(sessionId,
+            evaluator,
+            kernelSocketsFactory,
+            new SQLCustomMagicCommandsImpl(),
+            commRepository,
+            beakerXServer,
+            magicCommandConfiguration
+    );
   }
 
   public SQL(String sessionId,
@@ -66,7 +85,8 @@ public class SQL extends Kernel {
              CloseKernelAction closeKernelAction,
              CacheFolderFactory cacheFolderFactory,
              CommRepository commRepository,
-             BeakerXServer beakerXServer) {
+             BeakerXServer beakerXServer,
+             MagicCommandConfiguration magicCommandConfiguration) {
     super(sessionId,
             evaluator,
             kernelSocketsFactory,
@@ -74,7 +94,8 @@ public class SQL extends Kernel {
             cacheFolderFactory,
             new SQLCustomMagicCommandsImpl(),
             commRepository,
-            beakerXServer);
+            beakerXServer,
+            magicCommandConfiguration);
   }
 
   @Override
@@ -96,8 +117,14 @@ public class SQL extends Kernel {
               configurationFile);
       EvaluatorParameters params = getKernelParameters(BeakerXSystemImpl.getINSTANCE());
       NamespaceClient beakerxClient = NamespaceClient.create(id, configurationFile, commRepository);
-      SQLEvaluator evaluator = new SQLEvaluator(id, id, params, beakerxClient);
-      return new SQL(id, evaluator, kernelSocketsFactory, commRepository, new SQLBeakerXServer(new GetUrlArgHandler(beakerxClient)));
+      MagicCommandConfiguration magicConfiguration = new MagicCommandConfigurationImpl();
+      SQLEvaluator evaluator = new SQLEvaluator(id, id, params, beakerxClient, magicConfiguration.patterns());
+      return new SQL(id,
+              evaluator,
+              kernelSocketsFactory,
+              commRepository,
+              new SQLBeakerXServer(new GetUrlArgHandler(beakerxClient)),
+              magicConfiguration);
     });
   }
 

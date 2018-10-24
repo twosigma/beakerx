@@ -18,6 +18,7 @@ package com.twosigma.beakerx.javash.evaluator;
 import com.twosigma.beakerx.BeakerXClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.autocomplete.MagicCommandAutocompletePatterns;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
@@ -45,8 +46,12 @@ public class JavaEvaluator extends BaseEvaluator {
   private JavaAutocomplete jac;
   private JavaBeakerXUrlClassLoader loader = null;
 
-  public JavaEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerXClient beakerxClient) {
-    this(id, sId, new BeakerCellExecutor("javash"), new TempFolderFactoryImpl(), evaluatorParameters, beakerxClient);
+  public JavaEvaluator(String id,
+                       String sId,
+                       EvaluatorParameters evaluatorParameters,
+                       BeakerXClient beakerxClient,
+                       MagicCommandAutocompletePatterns autocompletePatterns) {
+    this(id, sId, new BeakerCellExecutor("javash"), new TempFolderFactoryImpl(), evaluatorParameters, beakerxClient, autocompletePatterns);
   }
 
   public JavaEvaluator(String id,
@@ -54,8 +59,9 @@ public class JavaEvaluator extends BaseEvaluator {
                        CellExecutor cellExecutor,
                        TempFolderFactory tempFolderFactory,
                        EvaluatorParameters evaluatorParameters,
-                       BeakerXClient beakerxClient) {
-    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient);
+                       BeakerXClient beakerxClient,
+                       MagicCommandAutocompletePatterns autocompletePatterns) {
+    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient, autocompletePatterns);
     packageId = "com.twosigma.beaker.javash.bkr" + shellId.split("-")[0];
     loader = newClassLoader();
     jac = createJavaAutocomplete(new JavaClasspathScanner(), imports, loader);
@@ -109,7 +115,7 @@ public class JavaEvaluator extends BaseEvaluator {
   }
 
   private JavaAutocomplete createJavaAutocomplete(JavaClasspathScanner c, Imports imports, ClassLoader loader) {
-    return new JavaAutocomplete(c, loader, imports);
+    return new JavaAutocomplete(c, loader, imports, autocompletePatterns);
   }
 
   private JavaAutocomplete createAutocomplete(JavaClasspathScanner cps, Imports imports, ClassLoader loader) {

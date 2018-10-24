@@ -19,6 +19,7 @@ import com.twosigma.beakerx.BeakerXClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.autocomplete.ClasspathScanner;
+import com.twosigma.beakerx.autocomplete.MagicCommandAutocompletePatterns;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
@@ -52,15 +53,31 @@ public class KotlinEvaluator extends BaseEvaluator {
   private BeakerXUrlClassLoader kotlinClassLoader;
   private KotlinAutocomplete kotlinAutocomplete;
 
-  public KotlinEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerXClient beakerxClient) {
-    this(id, sId, new BeakerCellExecutor("kotlin"), new TempFolderFactoryImpl(), evaluatorParameters, beakerxClient);
+  public KotlinEvaluator(String id,
+                         String sId,
+                         EvaluatorParameters evaluatorParameters,
+                         BeakerXClient beakerxClient,
+                         MagicCommandAutocompletePatterns autocompletePatterns) {
+    this(id,
+            sId,
+            new BeakerCellExecutor("kotlin"),
+            new TempFolderFactoryImpl(),
+            evaluatorParameters,
+            beakerxClient,
+            autocompletePatterns);
   }
 
-  public KotlinEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters, BeakerXClient beakerxClient) {
-    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient);
+  public KotlinEvaluator(String id,
+                         String sId,
+                         CellExecutor cellExecutor,
+                         TempFolderFactory tempFolderFactory,
+                         EvaluatorParameters evaluatorParameters,
+                         BeakerXClient beakerxClient,
+                         MagicCommandAutocompletePatterns autocompletePatterns) {
+    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient, autocompletePatterns);
     cps = new ClasspathScanner();
     createRepl();
-    this.kotlinAutocomplete = new KotlinAutocomplete();
+    this.kotlinAutocomplete = new KotlinAutocomplete(autocompletePatterns);
   }
 
   @Override
@@ -70,7 +87,7 @@ public class KotlinEvaluator extends BaseEvaluator {
     createRepl();
     executorService.shutdown();
     executorService = Executors.newSingleThreadExecutor();
-    this.kotlinAutocomplete = new KotlinAutocomplete();
+    this.kotlinAutocomplete = new KotlinAutocomplete(autocompletePatterns);
   }
 
   private void createRepl() {

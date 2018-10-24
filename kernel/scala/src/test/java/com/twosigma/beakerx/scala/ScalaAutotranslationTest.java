@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twosigma.beakerx.BeakerXCommRepositoryMock;
 import com.twosigma.beakerx.BeakerXServerMock;
 import com.twosigma.beakerx.KernelSetUpFixtureTest;
+import com.twosigma.beakerx.MagicCommandConfigurationMock;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.NamespaceClientTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
@@ -57,6 +58,7 @@ public class ScalaAutotranslationTest extends KernelSetUpFixtureTest {
     autotranslationService = new NamespaceClientTest.AutotranslationServiceTestImpl();
     NamespaceClient nc = new NamespaceClient(autotranslationService, new ScalaBeakerXJsonSerializer(), new BeakerXCommRepositoryMock());
 
+    MagicCommandConfigurationMock magicCommandConfiguration = new MagicCommandConfigurationMock();
     ScalaEvaluator evaluator = new ScalaEvaluator(
             sessionId,
             sessionId,
@@ -64,7 +66,8 @@ public class ScalaAutotranslationTest extends KernelSetUpFixtureTest {
             new BeakerxObjectFactoryImpl(),
             getTestTempFolderFactory(),
             EvaluatorTest.KERNEL_PARAMETERS,
-            nc);
+            nc,
+            magicCommandConfiguration.patterns());
     return new Scala(sessionId,
             evaluator,
             kernelSocketsFactory,
@@ -72,7 +75,8 @@ public class ScalaAutotranslationTest extends KernelSetUpFixtureTest {
             getCacheFolderFactory(),
             new CustomMagicCommandsEmptyImpl(),
             new BeakerXCommRepositoryMock(),
-            BeakerXServerMock.create());
+            BeakerXServerMock.create(),
+            magicCommandConfiguration);
   }
 
 

@@ -48,13 +48,15 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
 
   @Override
   protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
+    MagicCommandConfigurationMock magicCommandConfiguration = new MagicCommandConfigurationMock();
     ScalaEvaluator evaluator = new ScalaEvaluator(sessionId,
             sessionId,
             TestBeakerCellExecutor.cellExecutor(),
             new NoBeakerxObjectTestFactory(),
             EvaluatorTest.getTestTempFolderFactory(),
             getKernelParameters(),
-            new EvaluatorTest.BeakexClientTestImpl());
+            new EvaluatorTest.BeakexClientTestImpl(),
+            magicCommandConfiguration.patterns());
     return new Scala(sessionId,
             evaluator,
             kernelSocketsFactory,
@@ -62,7 +64,8 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
             EvaluatorTest.getCacheFolderFactory(),
             kernel -> singletonList(enableSparkSupportMagicCommand(kernel)),
             new BeakerXCommRepositoryMock(),
-            BeakerXServerMock.create());
+            BeakerXServerMock.create(),
+            magicCommandConfiguration);
   }
 
   private static EvaluatorParameters getKernelParameters() {

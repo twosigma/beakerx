@@ -17,13 +17,14 @@
 package com.twosigma.beakerx.sql.autocomplete;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
-import com.twosigma.beakerx.autocomplete.ClasspathScanner;
 import com.twosigma.beakerx.autocomplete.AutocompleteServiceBeakerx;
+import com.twosigma.beakerx.autocomplete.ClasspathScanner;
+import com.twosigma.beakerx.autocomplete.MagicCommandAutocompletePatterns;
+import com.twosigma.beakerx.sql.ConnectionStringHolder;
+import com.twosigma.beakerx.sql.JDBCClient;
 import com.twosigma.beakerx.sql.autocomplete.db.DbCache;
 import com.twosigma.beakerx.sql.autocomplete.db.DbExplorerFactory;
 import com.twosigma.beakerx.sql.autocomplete.db.DbInfo;
-import com.twosigma.beakerx.sql.ConnectionStringHolder;
-import com.twosigma.beakerx.sql.JDBCClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,8 +60,13 @@ public class SQLAutocomplete extends AutocompleteServiceBeakerx {
   private final DbCache cache;
 
 
-  public SQLAutocomplete(ClasspathScanner _cps, JDBCClient jdbcClient, String sessionId, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString) {
-    super();
+  public SQLAutocomplete(ClasspathScanner _cps,
+                         JDBCClient jdbcClient,
+                         String sessionId,
+                         ConnectionStringHolder defaultConnectionString,
+                         Map<String, ConnectionStringHolder> namedConnectionString,
+                         MagicCommandAutocompletePatterns autocompletePatterns) {
+    super(autocompletePatterns);
     this.jdbcClient = jdbcClient;
     this.sessionId = sessionId;
     this.defaultConnectionString = defaultConnectionString;
@@ -104,7 +110,7 @@ public class SQLAutocomplete extends AutocompleteServiceBeakerx {
 
   private KeyWithIndex findKey(final String txt, final int cur) {
     if (cur <= 0 || Character.isWhitespace(txt.charAt(cur - 1))) {
-      return new KeyWithIndex("",txt.length());
+      return new KeyWithIndex("", txt.length());
     } else {
       String res = "";
 
@@ -126,7 +132,7 @@ public class SQLAutocomplete extends AutocompleteServiceBeakerx {
         }
       }
 
-      return new KeyWithIndex(res,eos);
+      return new KeyWithIndex(res, eos);
     }
   }
 

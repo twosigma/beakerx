@@ -15,44 +15,25 @@
  */
 package com.twosigma.beakerx.autocomplete;
 
-import com.twosigma.beakerx.kernel.magic.autocomplete.AutocompleteNodeFileSystem;
-import com.twosigma.beakerx.kernel.magic.autocomplete.AutocompleteNodeHttpGet;
-import com.twosigma.beakerx.kernel.magic.autocomplete.AutocompleteNodeStatic;
-import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.twosigma.beakerx.autocomplete.AutocompleteNode.NO_CHILDREN;
-import static com.twosigma.beakerx.kernel.magic.command.functionality.ClassPathAddMvnCellMagicCommand.CLASSPATH_CELL;
+import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 import static java.util.Arrays.asList;
 
 public abstract class AutocompleteServiceBeakerx implements AutocompleteService {
 
-  public static final String LAST_SPACE = " ";
-  private Map<String, AutocompleteNode> patterns = new HashMap<>();
+  private static final String LAST_SPACE = " ";
+  private MagicCommandAutocompletePatterns magicPatterns;
 
-  public AutocompleteServiceBeakerx() {
-    patterns.put(ClasspathMagicCommand.CLASSPATH,
-            new AutocompleteNodeStatic(ClasspathMagicCommand.CLASSPATH,
-                    asList(new AutocompleteNodeStatic("add",
-                            asList(
-                                    new AutocompleteNodeFileSystem("jar", NO_CHILDREN),
-                                    new AutocompleteNodeHttpGet("mvn", NO_CHILDREN),
-                                    new AutocompleteNodeStatic("dynamic", NO_CHILDREN))))));
-
-    patterns.put(CLASSPATH_CELL,
-            new AutocompleteNodeStatic(CLASSPATH_CELL,
-                    asList(new AutocompleteNodeStatic("add",
-                            asList(
-                                    new AutocompleteNodeStatic("mvn", NO_CHILDREN))))));
+  public AutocompleteServiceBeakerx(MagicCommandAutocompletePatterns magicCommandAutocompletePatterns) {
+    this.magicPatterns = checkNotNull(magicCommandAutocompletePatterns);
   }
 
   @Override
@@ -70,16 +51,13 @@ public abstract class AutocompleteServiceBeakerx implements AutocompleteService 
 
   private Optional<AutocompleteResult> findNextWord(String text, LinkedList<String> parts, int cur) {
     String first = parts.removeFirst();
-    AutocompleteNode node = patterns.get(first);
-    if (node == null) {
-      return Optional.empty();
-    }
-    return node.findNextWord(text, parts);
+    Optional<AutocompleteNode> node = magicPatterns.get(first);
+    return node.flatMap(x -> x.findNextWord(text, parts));
   }
 
   private Optional<AutocompleteResult> matchToTheWord(String text, LinkedList<String> parts, String txt) {
     if (parts.size() == 1) {
-      List<AutocompleteNode> collect = findMatches(patterns.values(), txt);
+      List<AutocompleteNode> collect = findMatches(magicPatterns.values(), txt);
       if (collect.isEmpty()) {
         return Optional.empty();
       }
@@ -87,11 +65,8 @@ public abstract class AutocompleteServiceBeakerx implements AutocompleteService 
     } else if (parts.size() > 1) {
       String last = parts.removeLast();
       String first = parts.removeFirst();
-      AutocompleteNode node = patterns.get(first);
-      if (node != null) {
-        return node.matchToTheWord(text, parts, last);
-      }
-      return Optional.empty();
+      Optional<AutocompleteNode> node = magicPatterns.get(first);
+      return node.flatMap(x -> x.matchToTheWord(text, parts, last));
     }
     return Optional.empty();
   }

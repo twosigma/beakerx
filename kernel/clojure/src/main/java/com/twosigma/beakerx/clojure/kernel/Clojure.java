@@ -26,9 +26,18 @@ import com.twosigma.beakerx.clojure.handlers.ClojureCommOpenHandler;
 import com.twosigma.beakerx.clojure.handlers.ClojureKernelInfoHandler;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
-import com.twosigma.beakerx.kernel.*;
+import com.twosigma.beakerx.kernel.CacheFolderFactory;
+import com.twosigma.beakerx.kernel.CloseKernelAction;
+import com.twosigma.beakerx.kernel.CustomMagicCommandsEmptyImpl;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
+import com.twosigma.beakerx.kernel.Kernel;
+import com.twosigma.beakerx.kernel.KernelConfigurationFile;
+import com.twosigma.beakerx.kernel.KernelRunner;
+import com.twosigma.beakerx.kernel.KernelSocketsFactory;
+import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
-import com.twosigma.beakerx.kernel.magic.command.MagicCommandTypesFactory;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfiguration;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfigurationImpl;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
 import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.restserver.impl.GetUrlArgHandler;
@@ -37,7 +46,11 @@ import com.twosigma.beakerx.mimetype.MIMEContainer;
 import jupyter.Displayer;
 import jupyter.Displayers;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
@@ -50,8 +63,15 @@ public class Clojure extends Kernel {
                   Evaluator evaluator,
                   KernelSocketsFactory kernelSocketsFactory,
                   CommRepository commRepository,
-                  BeakerXServer beakerXServer) {
-    super(sessionId, evaluator, kernelSocketsFactory, new CustomMagicCommandsEmptyImpl(), commRepository, beakerXServer);
+                  BeakerXServer beakerXServer,
+                  MagicCommandConfiguration magicCommandConfiguration) {
+    super(sessionId,
+            evaluator,
+            kernelSocketsFactory,
+            new CustomMagicCommandsEmptyImpl(),
+            commRepository,
+            beakerXServer,
+            magicCommandConfiguration);
   }
 
   public Clojure(String sessionId,
@@ -60,7 +80,8 @@ public class Clojure extends Kernel {
                  CloseKernelAction closeKernelAction,
                  CacheFolderFactory cacheFolderFactory,
                  CommRepository commRepository,
-                 BeakerXServer beakerXServer) {
+                 BeakerXServer beakerXServer,
+                 MagicCommandConfiguration magicCommandConfiguration) {
     super(sessionId,
             evaluator,
             kernelSocketsFactory,
@@ -68,7 +89,8 @@ public class Clojure extends Kernel {
             cacheFolderFactory,
             new CustomMagicCommandsEmptyImpl(),
             commRepository,
-            beakerXServer);
+            beakerXServer,
+            magicCommandConfiguration);
   }
 
   @Override
@@ -89,16 +111,21 @@ public class Clojure extends Kernel {
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
               configurationFile);
       NamespaceClient namespaceClient = NamespaceClient.create(id, configurationFile, new ClojureBeakerXJsonSerializer(), beakerXCommRepository);
-      ClojureEvaluator evaluator = new ClojureEvaluator(id, id, getKernelParameters(), namespaceClient);
-
-      return new Clojure(id, evaluator, kernelSocketsFactory, beakerXCommRepository, new ClojureBeakerXServer(new GetUrlArgHandler(namespaceClient)));
+      MagicCommandConfiguration magicConfiguration = new MagicCommandConfigurationImpl();
+      ClojureEvaluator evaluator = new ClojureEvaluator(id, id, getKernelParameters(), namespaceClient, magicConfiguration.patterns());
+      return new Clojure(id,
+              evaluator,
+              kernelSocketsFactory,
+              beakerXCommRepository,
+              new ClojureBeakerXServer(new GetUrlArgHandler(namespaceClient)),
+              magicConfiguration);
     });
   }
 
   @Override
   protected void configureMagicCommands() {
     super.configureMagicCommands();
-    ClasspathAddMvnMagicCommand mvnMagicCommand = MagicCommandTypesFactory.getClasspathAddMvnMagicCommand(this);
+    ClasspathAddMvnMagicCommand mvnMagicCommand = magicCommandConfiguration().getClasspathAddMvnMagicCommand(this);
     mvnMagicCommand.addRepo("clojureRepo", "https://clojars.org/repo");
   }
 

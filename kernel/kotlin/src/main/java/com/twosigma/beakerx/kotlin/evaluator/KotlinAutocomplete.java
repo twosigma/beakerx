@@ -17,11 +17,16 @@ package com.twosigma.beakerx.kotlin.evaluator;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteServiceBeakerx;
+import com.twosigma.beakerx.autocomplete.MagicCommandAutocompletePatterns;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class KotlinAutocomplete extends AutocompleteServiceBeakerx {
+
+  public KotlinAutocomplete(MagicCommandAutocompletePatterns magicCommandAutocompletePatterns) {
+    super(magicCommandAutocompletePatterns);
+  }
 
   @Override
   protected AutocompleteResult doAutocomplete(String txt, int cur) {

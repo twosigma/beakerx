@@ -19,6 +19,7 @@ import com.twosigma.beakerx.BeakerXCommRepositoryMock;
 import com.twosigma.beakerx.BeakerXServerMock;
 import com.twosigma.beakerx.KernelExecutionTest;
 import com.twosigma.beakerx.KernelSocketsServiceTest;
+import com.twosigma.beakerx.MagicCommandConfigurationMock;
 import com.twosigma.beakerx.clojure.evaluator.ClojureEvaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
@@ -26,8 +27,8 @@ import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widget.TestWidgetUtils;
 import com.twosigma.beakerx.widget.BeakerxPlot;
+import com.twosigma.beakerx.widget.TestWidgetUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
@@ -51,19 +52,22 @@ public class ClojureKernelTest extends KernelExecutionTest {
 
   @Override
   protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
+    MagicCommandConfigurationMock magicCommandConfiguration = new MagicCommandConfigurationMock();
     ClojureEvaluator evaluator = new ClojureEvaluator(sessionId,
             sessionId,
             cellExecutor(),
             getTestTempFolderFactory(),
             KERNEL_PARAMETERS,
-            new EvaluatorTest.BeakexClientTestImpl());
+            new EvaluatorTest.BeakexClientTestImpl(),
+            magicCommandConfiguration.patterns());
     return new Clojure(sessionId,
             evaluator,
             kernelSocketsFactory,
             closeKernelAction,
             getCacheFolderFactory(),
             new BeakerXCommRepositoryMock(),
-            BeakerXServerMock.create());
+            BeakerXServerMock.create(),
+            magicCommandConfiguration);
   }
 
   @Override

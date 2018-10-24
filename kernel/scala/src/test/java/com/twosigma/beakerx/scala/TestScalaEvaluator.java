@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.scala;
 
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
+import com.twosigma.beakerx.evaluator.MagicCommandAutocompletePatternsMock;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.scala.evaluator.NoBeakerxObjectTestFactory;
@@ -38,7 +39,8 @@ public class TestScalaEvaluator {
             new NoBeakerxObjectTestFactory(),
             getTestTempFolderFactory(),
             getKernelParameters(),
-            new EvaluatorTest.BeakexClientTestImpl());
+            new EvaluatorTest.BeakexClientTestImpl(),
+            new MagicCommandAutocompletePatternsMock());
     return evaluator;
   }
 
@@ -50,7 +52,8 @@ public class TestScalaEvaluator {
             new NoBeakerxObjectTestFactory(),
             tempFolderFactory,
             getKernelParameters(),
-            new EvaluatorTest.BeakexClientTestImpl());
+            new EvaluatorTest.BeakexClientTestImpl(),
+            new MagicCommandAutocompletePatternsMock());
     return evaluator;
   }
 

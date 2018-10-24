@@ -13,24 +13,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.scala.evaluator;
+package com.twosigma.beakerx.evaluator;
 
-import com.twosigma.beakerx.autocomplete.AutocompleteResult;
-import com.twosigma.beakerx.autocomplete.AutocompleteServiceBeakerx;
+import com.twosigma.beakerx.autocomplete.AutocompleteNode;
 import com.twosigma.beakerx.autocomplete.MagicCommandAutocompletePatterns;
 
-public class ScalaAutocomplete extends AutocompleteServiceBeakerx {
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
 
-  private ScalaEvaluatorGlue shell;
+public class MagicCommandAutocompletePatternsMock implements MagicCommandAutocompletePatterns {
 
-  public ScalaAutocomplete(ScalaEvaluatorGlue shell, MagicCommandAutocompletePatterns autocompletePatterns) {
-    super(autocompletePatterns);
-    this.shell = shell;
+  @Override
+  public Optional<AutocompleteNode> get(String first) {
+    return Optional.empty();
   }
 
   @Override
-  protected AutocompleteResult doAutocomplete(String txt, int cur) {
-    AutocompleteResult lineCompletion = shell.autocomplete(txt, cur);
-    return new AutocompleteResult(lineCompletion.getMatches(), lineCompletion.getStartIndex());
+  public Collection<AutocompleteNode> values() {
+    return new ArrayList<>();
   }
 }

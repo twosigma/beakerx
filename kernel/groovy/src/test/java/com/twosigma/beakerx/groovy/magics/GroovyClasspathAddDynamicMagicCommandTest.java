@@ -17,6 +17,7 @@ package com.twosigma.beakerx.groovy.magics;
 
 import com.twosigma.beakerx.BeakerXCommRepositoryMock;
 import com.twosigma.beakerx.BeakerXServerMock;
+import com.twosigma.beakerx.MagicCommandConfigurationMock;
 import com.twosigma.beakerx.groovy.kernel.Groovy;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
@@ -36,6 +37,7 @@ public class GroovyClasspathAddDynamicMagicCommandTest extends ClasspathAddDynam
             closeKernelAction,
             getCacheFolderFactory(),
             new BeakerXCommRepositoryMock(),
-            BeakerXServerMock.create());
+            BeakerXServerMock.create(),
+            new MagicCommandConfigurationMock());
   }
 }

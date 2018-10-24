@@ -18,6 +18,7 @@ package com.twosigma.beakerx.kotlin.evaluator;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorBaseTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
+import com.twosigma.beakerx.evaluator.MagicCommandAutocompletePatternsMock;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -32,7 +33,13 @@ public class KotlinBaseEvaluatorTest extends EvaluatorBaseTest {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    evaluator = new KotlinEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS, new EvaluatorTest.BeakexClientTestImpl());
+    evaluator = new KotlinEvaluator("id",
+            "sid",
+            cellExecutor(),
+            getTestTempFolderFactory(),
+            KERNEL_PARAMETERS,
+            new EvaluatorTest.BeakexClientTestImpl(),
+            new MagicCommandAutocompletePatternsMock());
   }
 
   @AfterClass
@@ -42,12 +49,24 @@ public class KotlinBaseEvaluatorTest extends EvaluatorBaseTest {
 
   @Override
   protected BaseEvaluator createNewEvaluator() {
-    return new KotlinEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS, new EvaluatorTest.BeakexClientTestImpl());
+    return new KotlinEvaluator("id", "" +
+            "sid",
+            cellExecutor(),
+            getTestTempFolderFactory(),
+            KERNEL_PARAMETERS,
+            new EvaluatorTest.BeakexClientTestImpl(),
+            new MagicCommandAutocompletePatternsMock());
   }
 
   @Override
   protected BaseEvaluator createNewEvaluator(TempFolderFactory tempFolderFactory) {
-    return new KotlinEvaluator("id", "sid", cellExecutor(), tempFolderFactory, KERNEL_PARAMETERS, new EvaluatorTest.BeakexClientTestImpl());
+    return new KotlinEvaluator("id",
+            "sid",
+            cellExecutor(),
+            tempFolderFactory,
+            KERNEL_PARAMETERS,
+            new EvaluatorTest.BeakexClientTestImpl(),
+            new MagicCommandAutocompletePatternsMock());
   }
 
   @Override

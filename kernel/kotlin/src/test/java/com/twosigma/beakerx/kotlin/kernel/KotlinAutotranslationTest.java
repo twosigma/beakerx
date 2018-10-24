@@ -19,6 +19,7 @@ import com.twosigma.beakerx.BeakerXCommRepositoryMock;
 import com.twosigma.beakerx.BeakerXServerMock;
 import com.twosigma.beakerx.DefaultBeakerXJsonSerializer;
 import com.twosigma.beakerx.KernelSetUpFixtureTest;
+import com.twosigma.beakerx.MagicCommandConfigurationMock;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.NamespaceClientTest;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
@@ -50,14 +51,22 @@ public class KotlinAutotranslationTest extends KernelSetUpFixtureTest {
   protected KernelFunctionality createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
     autotranslationService = new NamespaceClientTest.AutotranslationServiceTestImpl();
     NamespaceClient nc = new NamespaceClient(autotranslationService, new DefaultBeakerXJsonSerializer(), new BeakerXCommRepositoryMock());
-    KotlinEvaluator evaluator = new KotlinEvaluator(sessionId, sessionId, cellExecutor(), getTestTempFolderFactory(), getEvaluatorParameters(), nc);
+    MagicCommandConfigurationMock magicCommandConfiguration = new MagicCommandConfigurationMock();
+    KotlinEvaluator evaluator = new KotlinEvaluator(sessionId,
+            sessionId,
+            cellExecutor(),
+            getTestTempFolderFactory(),
+            getEvaluatorParameters(),
+            nc,
+            magicCommandConfiguration.patterns());
     return new Kotlin(sessionId,
             evaluator,
             kernelSocketsFactory,
             closeKernelAction,
             getCacheFolderFactory(),
             new BeakerXCommRepositoryMock(),
-            BeakerXServerMock.create());
+            BeakerXServerMock.create(),
+            magicCommandConfiguration);
   }
 
   private EvaluatorParameters getEvaluatorParameters() {

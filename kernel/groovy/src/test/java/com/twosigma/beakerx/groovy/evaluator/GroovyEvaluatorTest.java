@@ -17,6 +17,7 @@
 package com.twosigma.beakerx.groovy.evaluator;
 
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
+import com.twosigma.beakerx.evaluator.MagicCommandAutocompletePatternsMock;
 import com.twosigma.beakerx.groovy.kernel.GroovyDefaultVariables;
 import com.twosigma.beakerx.groovy.kernel.GroovyKernelMock;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
@@ -58,7 +59,8 @@ public class GroovyEvaluatorTest {
             cellExecutor(),
             getTestTempFolderFactory(),
             kernelParameters,
-            new EvaluatorTest.BeakexClientTestImpl());
+            new EvaluatorTest.BeakexClientTestImpl(),
+            new MagicCommandAutocompletePatternsMock());
     groovyEvaluator.updateEvaluatorParameters(kernelParameters);
     groovyClassLoader = newEvaluator(groovyEvaluator.getImports(), groovyEvaluator.getClasspath(), groovyEvaluator.getOutDir(), icz, newParentClassLoader(groovyEvaluator.getClasspath()));
     scriptBinding = new Binding();

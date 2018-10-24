@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.scala.evaluator;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
-import com.twosigma.beakerx.evaluator.AutocompleteServiceBeakerx;
+import com.twosigma.beakerx.autocomplete.AutocompleteServiceBeakerx;
 
 public class ScalaAutocomplete extends AutocompleteServiceBeakerx {
 

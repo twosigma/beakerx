@@ -17,7 +17,7 @@ package com.twosigma.beakerx.clojure.autocomplete;
 
 import clojure.lang.Var;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
-import com.twosigma.beakerx.evaluator.AutocompleteServiceBeakerx;
+import com.twosigma.beakerx.autocomplete.AutocompleteServiceBeakerx;
 
 import java.util.ArrayList;
 import java.util.Collection;

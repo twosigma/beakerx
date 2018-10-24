@@ -18,7 +18,7 @@ package com.twosigma.beakerx.sql.autocomplete;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.autocomplete.ClasspathScanner;
-import com.twosigma.beakerx.evaluator.AutocompleteServiceBeakerx;
+import com.twosigma.beakerx.autocomplete.AutocompleteServiceBeakerx;
 import com.twosigma.beakerx.sql.autocomplete.db.DbCache;
 import com.twosigma.beakerx.sql.autocomplete.db.DbExplorerFactory;
 import com.twosigma.beakerx.sql.autocomplete.db.DbInfo;

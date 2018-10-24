@@ -20,7 +20,7 @@ import com.twosigma.beakerx.autocomplete.AutocompleteCandidate;
 import com.twosigma.beakerx.autocomplete.AutocompleteRegistry;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.autocomplete.ClassUtils;
-import com.twosigma.beakerx.evaluator.AutocompleteServiceBeakerx;
+import com.twosigma.beakerx.autocomplete.AutocompleteServiceBeakerx;
 import com.twosigma.beakerx.kernel.Imports;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;

@@ -16,6 +16,8 @@
 package com.twosigma.beakerx.evaluator;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.autocomplete.AutocompleteService;
+import com.twosigma.beakerx.autocomplete.AutocompleteServiceBeakerx;
 import org.junit.Test;
 
 import java.util.ArrayList;

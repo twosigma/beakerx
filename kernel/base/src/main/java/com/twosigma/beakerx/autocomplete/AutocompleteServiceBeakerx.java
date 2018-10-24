@@ -13,13 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.evaluator;
+package com.twosigma.beakerx.autocomplete;
 
-import com.twosigma.beakerx.AutocompleteNode;
-import com.twosigma.beakerx.AutocompleteNodeFileSystem;
-import com.twosigma.beakerx.AutocompleteNodeHttpGet;
-import com.twosigma.beakerx.AutocompleteNodeStatic;
-import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.kernel.magic.autocomplete.AutocompleteNodeFileSystem;
+import com.twosigma.beakerx.kernel.magic.autocomplete.AutocompleteNodeHttpGet;
+import com.twosigma.beakerx.kernel.magic.autocomplete.AutocompleteNodeStatic;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +30,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.twosigma.beakerx.AutocompleteNode.NO_CHILDREN;
+import static com.twosigma.beakerx.autocomplete.AutocompleteNode.NO_CHILDREN;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.ClassPathAddMvnCellMagicCommand.CLASSPATH_CELL;
 import static java.util.Arrays.asList;
 

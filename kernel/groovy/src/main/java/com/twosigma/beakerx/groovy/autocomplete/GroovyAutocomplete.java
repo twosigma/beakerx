@@ -20,7 +20,7 @@ import com.twosigma.beakerx.autocomplete.AutocompleteCandidate;
 import com.twosigma.beakerx.autocomplete.AutocompleteRegistry;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.autocomplete.ClassUtils;
-import com.twosigma.beakerx.evaluator.AutocompleteServiceBeakerx;
+import com.twosigma.beakerx.autocomplete.AutocompleteServiceBeakerx;
 import com.twosigma.beakerx.kernel.Imports;
 import groovy.lang.GroovyClassLoader;
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -31,7 +31,6 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.twosigma.beakerx.groovy.autocomplete.AutocompleteRegistryFactory.setup;
 

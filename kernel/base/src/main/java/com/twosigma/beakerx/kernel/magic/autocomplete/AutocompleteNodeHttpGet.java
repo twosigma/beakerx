@@ -13,9 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx;
+package com.twosigma.beakerx.kernel.magic.autocomplete;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twosigma.beakerx.autocomplete.AutocompleteNode;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import org.apache.http.client.fluent.Request;
 import org.jetbrains.annotations.NotNull;

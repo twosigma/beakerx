@@ -49,7 +49,7 @@ public class GroovyAutocomplete extends AutocompleteServiceBeakerx {
   }
 
   @Override
-  public AutocompleteResult doAutocomplete(String txt, int cur) {
+  protected AutocompleteResult doAutocomplete(String txt, int cur) {
     try {
       return tryFindAutocomplete(txt, cur, groovyClassLoader, imports);
     } catch (Exception e) {

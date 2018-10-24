@@ -306,4 +306,75 @@ describe('Java widgets test ', function () {
     });
   });
 
+  describe('Dropdown widget ', function () {
+    var widget;
+    it('Cell has Dropdown widget ', function () {
+      cellIndex += 1;
+      widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.getAttribute('class')).toMatch('widget-dropdown');
+      expect(widget.$$('option').length).toEqual(3);
+    });
+
+    it('Get value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /2018/);
+      expect(widget.$('select').getValue()).toBe('2018');
+    });
+
+    it('Set value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /2019/);
+      expect(widget.$('select').getValue()).toBe('2019');
+    });
+
+    it('Set description to "year" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /year/);
+      expect(widget.$('label.widget-label').getText()).toBe('year');
+    });
+
+    it('Disable widget ', function () {
+      cellIndex += 1;
+      expect(widget.$('select').isEnabled()).toBeTruthy();
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /true/);
+      expect(widget.$('select').isEnabled()).toBeFalsy();
+    });
+  });
+
+  describe('RadioButtons widget ', function () {
+    var widget;
+    it('Cell has RadioButtons widget ', function () {
+      cellIndex += 1;
+      widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.getAttribute('class')).toMatch('widget-radio');
+      expect(widget.$$('input[type="radio"]').length).toEqual(3);
+    });
+
+    it('Get value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /April/);
+      expect(widget.$$('input[type="radio"]')[0].isSelected()).toBeFalsy();
+      expect(widget.$$('input[type="radio"]')[1].isSelected()).toBeTruthy();
+    });
+
+    it('Set value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /May/);
+      expect(widget.$$('input[type="radio"]')[1].isSelected()).toBeFalsy();
+      expect(widget.$$('input[type="radio"]')[2].isSelected()).toBeTruthy();
+    });
+
+    it('Set description to "month" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /month/);
+      expect(widget.$('label.widget-label').getText()).toBe('month');
+    });
+
+    it('Disable widget ', function () {
+      cellIndex += 1;
+      expect(widget.$$('input[type="radio"]')[0].isEnabled()).toBeTruthy();
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /true/);
+      expect(widget.$$('input[type="radio"]')[0].isEnabled()).toBeFalsy();
+    });
+  });
 });

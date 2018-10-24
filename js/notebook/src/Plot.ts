@@ -132,7 +132,7 @@ export class PlotView extends widgets.DOMWidgetView {
     const currentModel = this.model.get('model');
     const updatedModel = _.extend(currentModel, change);
     this.model.set('model', updatedModel, {updated_view: this});
-    this.handleModellUpdate();
+    this.handleModelUpdate();
   }
 
   initStandardPlot(model) {

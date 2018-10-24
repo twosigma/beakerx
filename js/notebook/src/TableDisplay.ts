@@ -53,11 +53,11 @@ export class TableDisplayView extends widgets.DOMWidgetView {
       });
 
       this.listenTo(this.model, 'change:updateData', this.handleUpdateData);
-      this.listenTo(this.model, 'change:model', this.handleModellUpdate);
+      this.listenTo(this.model, 'change:model', this.handleModelUpdate);
     });
   }
 
-  handleModellUpdate(): void {
+  handleModelUpdate(): void {
     this._currentScope.updateModelData(this.model.get('model'));
     this._currentScope.doResetAll();
   }
@@ -67,7 +67,7 @@ export class TableDisplayView extends widgets.DOMWidgetView {
     const currentModel = this.model.get('model');
 
     this.model.set('model', { ...currentModel, ...change }, { updated_view: this });
-    this.handleModellUpdate();
+    this.handleModelUpdate();
   }
 
   showWarning(data): void {

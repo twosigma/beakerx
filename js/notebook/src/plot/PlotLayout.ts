@@ -219,6 +219,8 @@ export default class PlotLayout {
       ? this.calcVertLayoutMargin(stdmodel.yAxisR)
       : DEFAULT_MARGIN;
 
+    this.bottomLayoutMargin = this.topLayoutMargin = DEFAULT_MARGIN;
+
     this.scope.plotZoom.boxZoom.resetLocateBox();
     this.bottomLayoutMargin += plotUtils.fonts.labelHeight * factor;
 

@@ -14,6 +14,7 @@
 
 from enum import Enum
 from dateutil.parser import parse
+from datetime import timezone
 
 
 class TableDisplayAlignmentProvider(Enum):
@@ -44,7 +45,7 @@ class DateType:
     type = "Date"
 
     def __init__(self, value, tz=None):
-        self.timestamp = parse(str(value)).timestamp() * 1000
+        self.timestamp = parse(str(value)).replace(tzinfo=timezone.utc).timestamp() * 1000
         self.tz = tz
 
 class DataBarsRenderer:

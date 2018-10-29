@@ -19,8 +19,9 @@ package com.twosigma.beakerx.javash.autocomplete;
 import com.twosigma.beakerx.autocomplete.AutocompleteCandidate;
 import com.twosigma.beakerx.autocomplete.AutocompleteRegistry;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.autocomplete.AutocompleteServiceBeakerx;
 import com.twosigma.beakerx.autocomplete.ClassUtils;
-import com.twosigma.beakerx.evaluator.AutocompleteServiceBeakerx;
+import com.twosigma.beakerx.autocomplete.MagicCommandAutocompletePatterns;
 import com.twosigma.beakerx.kernel.Imports;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -40,7 +41,8 @@ public class JavaAutocomplete extends AutocompleteServiceBeakerx {
   private JavaClasspathScanner cps;
   private ClassLoader classLoader;
 
-  public JavaAutocomplete(JavaClasspathScanner _cps, ClassLoader classLoader, Imports imports) {
+  public JavaAutocomplete(JavaClasspathScanner _cps, ClassLoader classLoader, Imports imports, MagicCommandAutocompletePatterns autocompletePatterns) {
+    super(autocompletePatterns);
     cps = _cps;
     this.classLoader = classLoader;
     this.imports = imports;

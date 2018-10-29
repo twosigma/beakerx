@@ -18,6 +18,7 @@ package com.twosigma.beakerx.groovy.kernel;
 import com.twosigma.beakerx.BeakerXCommRepositoryMock;
 import com.twosigma.beakerx.BeakerXServerMock;
 import com.twosigma.beakerx.KernelExecutionTest;
+import com.twosigma.beakerx.MagicCommandConfigurationMock;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.Kernel;
@@ -25,6 +26,7 @@ import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.Utils;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.magic.command.CodeFactory;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfigurationImpl;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widget.OutputManager;
@@ -60,7 +62,9 @@ public class GroovyKernelTest extends KernelExecutionTest {
             closeKernelAction,
             getCacheFolderFactory(),
             new BeakerXCommRepositoryMock(),
-            BeakerXServerMock.create());
+            BeakerXServerMock.create(),
+            new MagicCommandConfigurationMock()
+            );
   }
 
   @Test

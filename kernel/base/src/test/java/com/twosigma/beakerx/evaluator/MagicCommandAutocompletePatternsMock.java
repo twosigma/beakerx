@@ -15,15 +15,22 @@
  */
 package com.twosigma.beakerx.evaluator;
 
-import com.twosigma.beakerx.autocomplete.AutocompleteResult;
-import com.twosigma.beakerx.autocomplete.AutocompleteService;
+import com.twosigma.beakerx.autocomplete.AutocompleteNode;
+import com.twosigma.beakerx.autocomplete.MagicCommandAutocompletePatterns;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
 
-public class AutocompleteServiceMock implements AutocompleteService {
+public class MagicCommandAutocompletePatternsMock implements MagicCommandAutocompletePatterns {
 
   @Override
-  public AutocompleteResult find(String txt, int cur) {
-    return new AutocompleteResult(new ArrayList<>(), 0);
+  public Optional<AutocompleteNode> get(String first) {
+    return Optional.empty();
+  }
+
+  @Override
+  public Collection<AutocompleteNode> values() {
+    return new ArrayList<>();
   }
 }

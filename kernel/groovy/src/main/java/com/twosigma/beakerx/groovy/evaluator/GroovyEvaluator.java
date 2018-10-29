@@ -18,6 +18,7 @@ package com.twosigma.beakerx.groovy.evaluator;
 import com.twosigma.beakerx.BeakerXClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.autocomplete.MagicCommandAutocompletePatterns;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
@@ -56,13 +57,18 @@ public class GroovyEvaluator extends BaseEvaluator {
   private BeakerXUrlClassLoader beakerxUrlClassLoader;
   private GroovyAutocomplete gac;
 
-  public GroovyEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerXClient beakerxClient) {
+  public GroovyEvaluator(String id,
+                         String sId,
+                         EvaluatorParameters evaluatorParameters,
+                         BeakerXClient beakerxClient,
+                         MagicCommandAutocompletePatterns autocompletePatterns) {
     this(id,
             sId,
             new BeakerCellExecutor("groovy"),
             new TempFolderFactoryImpl(),
             evaluatorParameters,
-            beakerxClient);
+            beakerxClient,
+            autocompletePatterns);
   }
 
   public GroovyEvaluator(String id,
@@ -70,10 +76,11 @@ public class GroovyEvaluator extends BaseEvaluator {
                          CellExecutor cellExecutor,
                          TempFolderFactory tempFolderFactory,
                          EvaluatorParameters evaluatorParameters,
-                         BeakerXClient beakerxClient) {
-    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient);
+                         BeakerXClient beakerxClient,
+                         MagicCommandAutocompletePatterns autocompletePatterns) {
+    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient, autocompletePatterns);
     reloadClassloader();
-    gac = createGroovyAutocomplete(new GroovyClasspathScanner(), groovyClassLoader, imports);
+    gac = createGroovyAutocomplete(new GroovyClasspathScanner(), groovyClassLoader, imports, autocompletePatterns);
     outDir = envVariablesFilter(outDir, System.getenv());
   }
 
@@ -91,7 +98,7 @@ public class GroovyEvaluator extends BaseEvaluator {
   protected void doResetEnvironment() {
     String cpp = createClasspath(classPath);
     reloadClassloader();
-    gac = createGroovyAutocomplete(new GroovyClasspathScanner(cpp), groovyClassLoader, imports);
+    gac = createGroovyAutocomplete(new GroovyClasspathScanner(cpp), groovyClassLoader, imports, autocompletePatterns);
     executorService.shutdown();
     executorService = Executors.newSingleThreadExecutor();
   }
@@ -114,8 +121,8 @@ public class GroovyEvaluator extends BaseEvaluator {
     addImportPathToImportCustomizer(icz, anImport);
   }
 
-  private GroovyAutocomplete createGroovyAutocomplete(GroovyClasspathScanner c, GroovyClassLoader groovyClassLoader, Imports imports) {
-    return new GroovyAutocomplete(c, groovyClassLoader, imports);
+  private GroovyAutocomplete createGroovyAutocomplete(GroovyClasspathScanner c, GroovyClassLoader groovyClassLoader, Imports imports, MagicCommandAutocompletePatterns autocompletePatterns) {
+    return new GroovyAutocomplete(c, groovyClassLoader, imports, autocompletePatterns);
   }
 
   private String createClasspath(Classpath classPath) {

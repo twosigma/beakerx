@@ -16,13 +16,15 @@
 package com.twosigma.beakerx.scala.evaluator;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
-import com.twosigma.beakerx.evaluator.AutocompleteServiceBeakerx;
+import com.twosigma.beakerx.autocomplete.AutocompleteServiceBeakerx;
+import com.twosigma.beakerx.autocomplete.MagicCommandAutocompletePatterns;
 
 public class ScalaAutocomplete extends AutocompleteServiceBeakerx {
 
   private ScalaEvaluatorGlue shell;
 
-  public ScalaAutocomplete(ScalaEvaluatorGlue shell) {
+  public ScalaAutocomplete(ScalaEvaluatorGlue shell, MagicCommandAutocompletePatterns autocompletePatterns) {
+    super(autocompletePatterns);
     this.shell = shell;
   }
 

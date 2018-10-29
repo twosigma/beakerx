@@ -13,17 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.evaluator;
+package com.twosigma.beakerx.autocomplete;
 
-import com.twosigma.beakerx.autocomplete.AutocompleteResult;
-import com.twosigma.beakerx.autocomplete.AutocompleteService;
+import java.util.Collection;
+import java.util.Optional;
 
-import java.util.ArrayList;
+public interface MagicCommandAutocompletePatterns {
 
-public class AutocompleteServiceMock implements AutocompleteService {
+  Optional<AutocompleteNode> get(String first);
 
-  @Override
-  public AutocompleteResult find(String txt, int cur) {
-    return new AutocompleteResult(new ArrayList<>(), 0);
-  }
+  Collection<AutocompleteNode> values();
 }

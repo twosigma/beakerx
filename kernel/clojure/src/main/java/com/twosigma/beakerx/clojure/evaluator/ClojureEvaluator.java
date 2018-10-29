@@ -24,6 +24,7 @@ import clojure.lang.Var;
 import com.twosigma.beakerx.BeakerXClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.autocomplete.MagicCommandAutocompletePatterns;
 import com.twosigma.beakerx.clojure.autocomplete.ClojureAutocomplete;
 import com.twosigma.beakerx.clojure.autotranslation.NSClientProxy;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
@@ -63,19 +64,21 @@ public class ClojureEvaluator extends BaseEvaluator {
                           CellExecutor cellExecutor,
                           TempFolderFactory tempFolderFactory,
                           EvaluatorParameters evaluatorParameters,
-                          BeakerXClient beakerxClient) {
-    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient);
+                          BeakerXClient beakerxClient,
+                          MagicCommandAutocompletePatterns autocompletePatterns) {
+    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient, autocompletePatterns);
     requirements = new ArrayList<>();
     init();
   }
 
-  public ClojureEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerXClient beakerxClient) {
+  public ClojureEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerXClient beakerxClient, MagicCommandAutocompletePatterns autocompletePatterns) {
     this(id,
             sId,
             new BeakerCellExecutor("clojure"),
             new TempFolderFactoryImpl(),
             evaluatorParameters,
-            beakerxClient);
+            beakerxClient,
+            autocompletePatterns);
   }
 
   @Override
@@ -184,7 +187,7 @@ public class ClojureEvaluator extends BaseEvaluator {
     } catch (Exception e) {
       logger.error(e.getMessage());
     }
-    clojureAutocomplete = new ClojureAutocomplete(clojureLoadString, shellId);
+    clojureAutocomplete = new ClojureAutocomplete(clojureLoadString, shellId, autocompletePatterns);
   }
 
   private void clearClojureNamespace(String ns) {

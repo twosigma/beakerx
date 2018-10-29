@@ -18,6 +18,7 @@ package com.twosigma.beakerx.javash.autocomplete;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
+import com.twosigma.beakerx.evaluator.MagicCommandAutocompletePatternsMock;
 import com.twosigma.beakerx.javash.evaluator.JavaEvaluator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -43,7 +44,8 @@ public class JavaEvaluatorAutocompleteTest {
             cellExecutor(),
             getTestTempFolderFactory(),
             KERNEL_PARAMETERS,
-            new EvaluatorTest.BeakexClientTestImpl());
+            new EvaluatorTest.BeakexClientTestImpl(),
+            new MagicCommandAutocompletePatternsMock());
   }
 
   @AfterClass

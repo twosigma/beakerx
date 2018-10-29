@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.scala.magic.command;
 
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.MagicCommandConfigurationMock;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
@@ -40,6 +41,7 @@ public class EnableSparkSupportMagicInitConfigurationTest {
   private SparkInitCommandFactoryMock commandFactoryMock;
   public static final ArrayList<MagicCommandOutcomeItem> NO_ERRORS = new ArrayList<>();
 
+  private MagicCommandConfigurationMock configurationMock= new MagicCommandConfigurationMock();
   @After
   public void tearDown() {
     kernel.exit();
@@ -56,7 +58,7 @@ public class EnableSparkSupportMagicInitConfigurationTest {
   public void runSparkMagicCommand() {
     //given
     String allCode = ENABLE_SPARK_SUPPORT;
-    MagicCommand command = new MagicCommand(new ClassPathAddMvnCellMagicCommand(kernel.mavenResolverParam, kernel), allCode);
+    MagicCommand command = new MagicCommand(new ClassPathAddMvnCellMagicCommand(configurationMock.mavenResolverParam(kernel), kernel), allCode);
     Code code = Code.createCode(allCode, Collections.singletonList(command), NO_ERRORS, commMsg());
     //when
     MagicCommandOutcomeItem run = sut.run(new MagicCommandExecutionParam(allCode, "", 1, code, true));

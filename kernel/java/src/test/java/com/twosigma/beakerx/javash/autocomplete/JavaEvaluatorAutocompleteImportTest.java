@@ -18,6 +18,7 @@ package com.twosigma.beakerx.javash.autocomplete;
 import com.twosigma.beakerx.autocomplete.JVMEvaluatorAutocompleteImportTest;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
+import com.twosigma.beakerx.evaluator.MagicCommandAutocompletePatternsMock;
 import com.twosigma.beakerx.javash.evaluator.JavaEvaluator;
 import com.twosigma.beakerx.javash.kernel.JavaDefaultVariables;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
@@ -39,7 +40,14 @@ public class JavaEvaluatorAutocompleteImportTest extends JVMEvaluatorAutocomplet
     HashMap<String, Object> map = new HashMap<>();
     map.put(IMPORTS, new JavaDefaultVariables().getImports());
     EvaluatorParameters kernelParameters = new EvaluatorParameters(map);
-    groovyEvaluator = new JavaEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), kernelParameters, new EvaluatorTest.BeakexClientTestImpl());
+    groovyEvaluator = new JavaEvaluator("id",
+            "sid",
+            cellExecutor(),
+            getTestTempFolderFactory(),
+            kernelParameters,
+            new EvaluatorTest.BeakexClientTestImpl(),
+            new MagicCommandAutocompletePatternsMock()
+    );
   }
 
   @AfterClass

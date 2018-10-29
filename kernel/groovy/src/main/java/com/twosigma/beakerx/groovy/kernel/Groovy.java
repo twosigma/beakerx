@@ -33,6 +33,8 @@ import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfiguration;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfigurationImpl;
 import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.restserver.impl.GetUrlArgHandler;
 import com.twosigma.beakerx.message.Message;
@@ -48,8 +50,16 @@ public class Groovy extends Kernel {
                  final Evaluator evaluator,
                  KernelSocketsFactory kernelSocketsFactory,
                  CommRepository commRepository,
-                 BeakerXServer beakerXServer) {
-    super(id, evaluator, kernelSocketsFactory, new CustomMagicCommandsEmptyImpl(), commRepository, beakerXServer);
+                 BeakerXServer beakerXServer,
+                 MagicCommandConfiguration magicCommandConfiguration) {
+    super(id,
+            evaluator,
+            kernelSocketsFactory,
+            new CustomMagicCommandsEmptyImpl(),
+            commRepository,
+            beakerXServer,
+            magicCommandConfiguration
+    );
   }
 
   public Groovy(final String id,
@@ -58,7 +68,8 @@ public class Groovy extends Kernel {
                 CloseKernelAction closeKernelAction,
                 CacheFolderFactory cacheFolderFactory,
                 CommRepository commRepository,
-                BeakerXServer beakerXServer) {
+                BeakerXServer beakerXServer,
+                MagicCommandConfiguration magicCommandConfiguration) {
     super(id,
             evaluator,
             kernelSocketsFactory,
@@ -66,7 +77,8 @@ public class Groovy extends Kernel {
             cacheFolderFactory,
             new CustomMagicCommandsEmptyImpl(),
             commRepository,
-            beakerXServer);
+            beakerXServer,
+            magicCommandConfiguration);
   }
 
   @Override
@@ -88,11 +100,18 @@ public class Groovy extends Kernel {
 
       BeakerXCommRepository beakerXCommRepository = new BeakerXCommRepository();
       NamespaceClient namespaceClient = NamespaceClient.create(id, configurationFile, beakerXCommRepository);
+      MagicCommandConfiguration magicCommandTypesFactory = new MagicCommandConfigurationImpl();
       GroovyEvaluator evaluator = new GroovyEvaluator(id,
               id,
               getEvaluatorParameters(),
-              namespaceClient);
-      return new Groovy(id, evaluator, kernelSocketsFactory, beakerXCommRepository, new GroovyBeakerXServer(new GetUrlArgHandler(namespaceClient)));
+              namespaceClient,
+              magicCommandTypesFactory.patterns());
+      return new Groovy(id,
+              evaluator,
+              kernelSocketsFactory,
+              beakerXCommRepository,
+              new GroovyBeakerXServer(new GetUrlArgHandler(namespaceClient)),
+              magicCommandTypesFactory);
     });
   }
 

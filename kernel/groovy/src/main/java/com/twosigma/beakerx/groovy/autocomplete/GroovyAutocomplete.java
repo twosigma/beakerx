@@ -19,8 +19,9 @@ package com.twosigma.beakerx.groovy.autocomplete;
 import com.twosigma.beakerx.autocomplete.AutocompleteCandidate;
 import com.twosigma.beakerx.autocomplete.AutocompleteRegistry;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.autocomplete.AutocompleteServiceBeakerx;
 import com.twosigma.beakerx.autocomplete.ClassUtils;
-import com.twosigma.beakerx.evaluator.AutocompleteServiceBeakerx;
+import com.twosigma.beakerx.autocomplete.MagicCommandAutocompletePatterns;
 import com.twosigma.beakerx.kernel.Imports;
 import groovy.lang.GroovyClassLoader;
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -31,7 +32,6 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.twosigma.beakerx.groovy.autocomplete.AutocompleteRegistryFactory.setup;
 
@@ -41,7 +41,11 @@ public class GroovyAutocomplete extends AutocompleteServiceBeakerx {
   private GroovyClassLoader groovyClassLoader;
   private Imports imports;
 
-  public GroovyAutocomplete(GroovyClasspathScanner _cps, GroovyClassLoader groovyClassLoader, Imports imports) {
+  public GroovyAutocomplete(GroovyClasspathScanner _cps,
+                            GroovyClassLoader groovyClassLoader,
+                            Imports imports,
+                            MagicCommandAutocompletePatterns autocompletePatterns) {
+    super(autocompletePatterns);
     cps = _cps;
     this.groovyClassLoader = groovyClassLoader;
     this.imports = imports;
@@ -49,7 +53,7 @@ public class GroovyAutocomplete extends AutocompleteServiceBeakerx {
   }
 
   @Override
-  public AutocompleteResult doAutocomplete(String txt, int cur) {
+  protected AutocompleteResult doAutocomplete(String txt, int cur) {
     try {
       return tryFindAutocomplete(txt, cur, groovyClassLoader, imports);
     } catch (Exception e) {

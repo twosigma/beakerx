@@ -17,7 +17,8 @@ package com.twosigma.beakerx.clojure.autocomplete;
 
 import clojure.lang.Var;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
-import com.twosigma.beakerx.evaluator.AutocompleteServiceBeakerx;
+import com.twosigma.beakerx.autocomplete.AutocompleteServiceBeakerx;
+import com.twosigma.beakerx.autocomplete.MagicCommandAutocompletePatterns;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,13 +26,14 @@ import java.util.List;
 
 import static com.twosigma.beakerx.clojure.evaluator.ClojureEvaluator.beaker_clojure_ns;
 
-public class ClojureAutocomplete  extends AutocompleteServiceBeakerx {
+public class ClojureAutocomplete extends AutocompleteServiceBeakerx {
 
 
   private Var clojureLoadString;
   private String shellId;
 
-  public ClojureAutocomplete(Var clojureLoadString, String shellId) {
+  public ClojureAutocomplete(Var clojureLoadString, String shellId, MagicCommandAutocompletePatterns autocompletePatterns) {
+    super(autocompletePatterns);
     this.clojureLoadString = clojureLoadString;
     this.shellId = shellId;
   }

@@ -18,12 +18,13 @@ package com.twosigma.beakerx.groovy.examples;
 import com.twosigma.beakerx.BeakerXCommRepositoryMock;
 import com.twosigma.beakerx.BeakerXServerMock;
 import com.twosigma.beakerx.KernelSocketsServiceTest;
+import com.twosigma.beakerx.MagicCommandConfigurationMock;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.groovy.kernel.Groovy;
-import com.twosigma.beakerx.widget.Widget;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.Widget;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -53,7 +54,8 @@ public abstract class GroovyExamplesSetupTest {
             NO_ACTION,
             getCacheFolderFactory(),
             new BeakerXCommRepositoryMock(),
-            BeakerXServerMock.create());
+            BeakerXServerMock.create(),
+            new MagicCommandConfigurationMock());
     kernelThread = new Thread(() -> KernelRunner.run(() -> kernel));
     kernelThread.start();
     kernelSocketsService.waitForSockets();

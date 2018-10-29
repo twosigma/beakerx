@@ -23,7 +23,6 @@ import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
-import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.CacheFolderFactory;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.CustomMagicCommandsFactory;
@@ -34,6 +33,9 @@ import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfiguration;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfigurationImpl;
+import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.restserver.impl.GetUrlArgHandler;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.scala.comm.ScalaCommOpenHandler;
@@ -56,8 +58,19 @@ import static com.twosigma.beakerx.kernel.Utils.uuid;
 
 public class Scala extends Kernel {
 
-  private Scala(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CommRepository commRepository, BeakerXServer beakerXServer) {
-    super(id, evaluator, kernelSocketsFactory, new CustomMagicCommandsImpl(), commRepository, beakerXServer);
+  private Scala(final String id,
+                final Evaluator evaluator,
+                KernelSocketsFactory kernelSocketsFactory,
+                CommRepository commRepository,
+                BeakerXServer beakerXServer,
+                MagicCommandConfiguration magicCommandConfiguration) {
+    super(id,
+            evaluator,
+            kernelSocketsFactory,
+            new CustomMagicCommandsImpl(),
+            commRepository,
+            beakerXServer,
+            magicCommandConfiguration);
   }
 
   public Scala(final String id, final Evaluator evaluator,
@@ -66,8 +79,17 @@ public class Scala extends Kernel {
                CacheFolderFactory cacheFolderFactory,
                CustomMagicCommandsFactory customMagicCommandsFactory,
                CommRepository commRepository,
-               BeakerXServer beakerXServer) {
-    super(id, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory, customMagicCommandsFactory, commRepository, beakerXServer);
+               BeakerXServer beakerXServer,
+               MagicCommandConfiguration magicCommandConfiguration) {
+    super(id,
+            evaluator,
+            kernelSocketsFactory,
+            closeKernelAction,
+            cacheFolderFactory,
+            customMagicCommandsFactory,
+            commRepository,
+            beakerXServer,
+            magicCommandConfiguration);
   }
 
   @Override
@@ -87,6 +109,7 @@ public class Scala extends Kernel {
       KernelConfigurationFile configurationFile = new KernelConfigurationFile(args);
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(configurationFile);
       NamespaceClient namespaceClient = NamespaceClient.create(id, configurationFile, new ScalaBeakerXJsonSerializer(), commRepository);
+      MagicCommandConfiguration magicConfiguration = new MagicCommandConfigurationImpl();
       ScalaEvaluator se = new ScalaEvaluator(
               id,
               id,
@@ -94,8 +117,14 @@ public class Scala extends Kernel {
               new BeakerxObjectFactoryImpl(),
               new TempFolderFactoryImpl(),
               getKernelParameters(),
-              namespaceClient);
-      return new Scala(id, se, kernelSocketsFactory, commRepository, new ScalaBeakerXServer(new GetUrlArgHandler(namespaceClient)));
+              namespaceClient,
+              magicConfiguration.patterns());
+      return new Scala(id,
+              se,
+              kernelSocketsFactory,
+              commRepository,
+              new ScalaBeakerXServer(new GetUrlArgHandler(namespaceClient)),
+              magicConfiguration);
     });
   }
 

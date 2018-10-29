@@ -19,6 +19,7 @@ import com.twosigma.beakerx.BeakerXClient;
 import com.twosigma.beakerx.BeakerXClientManager;
 import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.TryResult;
+import com.twosigma.beakerx.autocomplete.MagicCommandAutocompletePatterns;
 import com.twosigma.beakerx.inspect.Inspect;
 import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -59,6 +60,7 @@ public abstract class BaseEvaluator implements Evaluator {
   private final CellExecutor executor;
   private Path tempFolder;
   private BeakerXClient beakerXClient;
+  protected MagicCommandAutocompletePatterns autocompletePatterns;
   protected EvaluatorParameters evaluatorParameters;
   private EvaluatorHooks cancelHooks = new EvaluatorHooks();
   private ClassLoaderService classLoaderService = new ClassLoaderService();
@@ -71,12 +73,14 @@ public abstract class BaseEvaluator implements Evaluator {
                        CellExecutor cellExecutor,
                        TempFolderFactory tempFolderFactory,
                        EvaluatorParameters evaluatorParameters,
-                       BeakerXClient beakerXClient) {
+                       BeakerXClient beakerXClient,
+                       MagicCommandAutocompletePatterns autocompletePatterns) {
     shellId = id;
     sessionId = sId;
     executor = cellExecutor;
     tempFolder = tempFolderFactory.createTempFolder();
     this.beakerXClient = BeakerXClientManager.register(beakerXClient);
+    this.autocompletePatterns = autocompletePatterns;
     outDir = getOrCreateFile(tempFolder.toString() + File.separator + "outDir").getPath();
     classPath = new Classpath();
     classPath.add(new PathToJar(outDir));

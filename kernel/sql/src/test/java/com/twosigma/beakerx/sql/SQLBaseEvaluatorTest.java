@@ -18,6 +18,7 @@ package com.twosigma.beakerx.sql;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorBaseTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
+import com.twosigma.beakerx.evaluator.MagicCommandAutocompletePatternsMock;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.sql.evaluator.SQLEvaluator;
@@ -38,7 +39,13 @@ public class SQLBaseEvaluatorTest extends EvaluatorBaseTest {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    evaluator = new SQLEvaluator("shellId1", "sessionId1", cellExecutor(), getTestTempFolderFactory(), kernelParameters(), new EvaluatorTest.BeakexClientTestImpl());
+    evaluator = new SQLEvaluator("shellId1",
+            "sessionId1",
+            cellExecutor(),
+            getTestTempFolderFactory(),
+            kernelParameters(),
+            new EvaluatorTest.BeakexClientTestImpl(),
+            new MagicCommandAutocompletePatternsMock());
   }
 
   @AfterClass
@@ -48,13 +55,25 @@ public class SQLBaseEvaluatorTest extends EvaluatorBaseTest {
 
   @Override
   protected BaseEvaluator createNewEvaluator() {
-    SQLEvaluator evaluator = new SQLEvaluator("shellId1", "sessionId1", cellExecutor(), getTestTempFolderFactory(), kernelParameters(), new EvaluatorTest.BeakexClientTestImpl());
+    SQLEvaluator evaluator = new SQLEvaluator("shellId1",
+            "sessionId1",
+            cellExecutor(),
+            getTestTempFolderFactory(),
+            kernelParameters(),
+            new EvaluatorTest.BeakexClientTestImpl(),
+            new MagicCommandAutocompletePatternsMock());
     return evaluator;
   }
 
   @Override
   protected BaseEvaluator createNewEvaluator(TempFolderFactory tempFolderFactory) {
-    SQLEvaluator evaluator = new SQLEvaluator("shellId1", "sessionId1", cellExecutor(), tempFolderFactory, kernelParameters(), new EvaluatorTest.BeakexClientTestImpl());
+    SQLEvaluator evaluator = new SQLEvaluator("shellId1",
+            "sessionId1",
+            cellExecutor(),
+            tempFolderFactory,
+            kernelParameters(),
+            new EvaluatorTest.BeakexClientTestImpl(),
+            new MagicCommandAutocompletePatternsMock());
     return evaluator;
   }
 

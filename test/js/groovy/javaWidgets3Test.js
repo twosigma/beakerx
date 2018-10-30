@@ -94,11 +94,77 @@ describe('Java widgets test ', function () {
       expect(widget.$('label.widget-label').getText()).toMatch(/I like my eggs/);
     });
 
+    it('Set to vertical orientation ', function () {
+      cellIndex += 1;
+      expect(widget.$('div.ui-slider').getAttribute('class')).toMatch(/ui-slider-horizontal/);
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /vertical/);
+      expect(widget.$('div.ui-slider').getAttribute('class')).toMatch(/ui-slider-vertical/);
+      expect(widget.$('span').getAttribute('style')).toMatch(/bottom: 50%/)
+    });
+
     it('Disable widget ', function () {
       cellIndex += 1;
       expect(widget.$('div.ui-slider').getAttribute('class')).not.toMatch(/ui-slider-disabled/);
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /true/);
       expect(widget.$('div.ui-slider').getAttribute('class')).toMatch(/ui-slider-disabled/);
+    });
+  });
+
+  describe('ToggleButtons widget ', function () {
+    var widget;
+    it('Cell has ToggleButtons widget ', function () {
+      cellIndex += 1;
+      widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.getAttribute('class')).toMatch(/widget-toggle-buttons/);
+      expect(widget.$$('button').length).toEqual(3);
+    });
+
+    it('ToggleButtons has tooltips ', function () {
+      expect(widget.$$('button')[0].getAttribute('title')).toBe('SL');
+      expect(widget.$$('button')[1].getAttribute('title')).toBe('RE');
+      expect(widget.$$('button')[2].getAttribute('title')).toBe('Fast');
+    });
+
+    it('Get value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /Slow/);
+    });
+
+    it('Set value by code ', function () {
+      cellIndex += 1;
+      expect(widget.$$('button')[1].getAttribute('class')).not.toMatch(/mod-active/);
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /Regular/);
+      expect(widget.$$('button')[1].getAttribute('class')).toMatch(/mod-active/);
+    });
+
+    it('Set description to "Speed" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /Speed:/);
+      expect(widget.$('label.widget-label').getText()).toBe('Speed:');
+    });
+
+    it('Set style to "info" ', function () {
+      cellIndex += 1;
+      expect(widget.$$('button')[1].getAttribute('class')).not.toMatch(/mod-info/);
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /info/);
+    });
+
+    it('Set icon by code ', function () {
+      cellIndex += 1;
+      expect(widget.$$('button')[1].isExisting('i.fa-check')).toBeFalsy();
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /check/);
+      expect(widget.$$('button')[1].getAttribute('class')).toMatch(/mod-info/);
+      expect(widget.$$('button')[2].getAttribute('class')).toMatch(/mod-info/);
+      expect(widget.$$('button')[1].isExisting('i.fa-check')).toBeTruthy();
+      expect(widget.$$('button')[2].isExisting('i.fa-check')).toBeTruthy();
+    });
+
+    it('Disable widget ', function () {
+      cellIndex += 1;
+      expect(widget.$$('button')[0].isEnabled()).toBeTruthy();
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /true/);
+      expect(widget.$$('button')[0].isEnabled()).toBeFalsy();
+      expect(widget.$$('button')[1].isEnabled()).toBeFalsy();
     });
   });
 

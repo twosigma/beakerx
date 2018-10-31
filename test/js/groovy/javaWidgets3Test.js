@@ -168,4 +168,79 @@ describe('Java widgets test ', function () {
     });
   });
 
+  describe('SelectMultiple widget ', function () {
+    var widget;
+    it('Cell has SelectMultiple widget ', function () {
+      cellIndex += 1;
+      widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.getAttribute('class')).toMatch(/widget-select-multiple/);
+      expect(widget.$$('option').length).toEqual(3);
+    });
+
+    it('Get value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /Windows.*Linux/);
+      expect(widget.$('option=Windows').isSelected()).toBeTruthy();
+      expect(widget.$('option=Linux').isSelected()).toBeTruthy();
+      expect(widget.$('option=OSX').isSelected()).toBeFalsy();
+    });
+
+    it('Set new value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /Linux/);
+      expect(widget.$('select').getValue()).toBe('Linux');
+      expect(widget.$('option=Linux').isSelected()).toBeTruthy();
+      expect(widget.$('option=OSX').isSelected()).toBeTruthy();
+      expect(widget.$('option=Windows').isSelected()).toBeFalsy();
+    });
+
+    it('Set description to "os" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /os/);
+      expect(widget.$('label.widget-label').getText()).toBe('os');
+    });
+
+    it('Disable widget ', function () {
+      cellIndex += 1;
+      expect(widget.$('select').isEnabled()).toBeTruthy();
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /true/);
+      expect(widget.$('select').isEnabled()).toBeFalsy();
+    });
+  });
+
+  describe('Text widget ', function () {
+    var widget;
+    it('Cell has Text widget ', function () {
+      cellIndex += 1;
+      widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.getAttribute('class')).toMatch(/widget-text/);
+      expect(widget.$('input').getAttribute('type')).toEqual('text');
+    });
+
+    it('Get value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /Test Text/);
+      expect(widget.$('input').getValue()).toMatch(/Test Text/);
+    });
+
+    it('Set new value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /new value/);
+      expect(widget.$('input').getValue()).toMatch(/new value/);
+    });
+
+    it('Set description to "os" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /desc/);
+      expect(widget.$('label.widget-label').getText()).toBe('desc');
+    });
+
+    it('Disable widget ', function () {
+      cellIndex += 1;
+      expect(widget.$('input').isEnabled()).toBeTruthy();
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /true/);
+      expect(widget.$('input').isEnabled()).toBeFalsy();
+    });
+  });
+
 });

@@ -229,7 +229,7 @@ describe('Java widgets test ', function () {
       expect(widget.$('input').getValue()).toMatch(/new value/);
     });
 
-    it('Set description to "os" ', function () {
+    it('Set description to "desc" ', function () {
       cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /desc/);
       expect(widget.$('label.widget-label').getText()).toBe('desc');
@@ -240,6 +240,62 @@ describe('Java widgets test ', function () {
       expect(widget.$('input').isEnabled()).toBeTruthy();
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /true/);
       expect(widget.$('input').isEnabled()).toBeFalsy();
+    });
+  });
+
+  describe('TextArea widget ', function () {
+    var widget;
+    it('Cell has TextArea widget ', function () {
+      cellIndex += 1;
+      widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.getAttribute('class')).toMatch(/widget-textarea/);
+      expect(widget.$('textarea').isExisting()).toBeTruthy();
+    });
+
+    it('Get value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /Textarea example/);
+      expect(widget.$('textarea').getValue()).toMatch(/Textarea example/);
+    });
+
+    it('Set new value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /new value/);
+      expect(widget.$('textarea').getValue()).toMatch(/new value/);
+    });
+
+    it('Set description to "desc" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /desc/);
+      expect(widget.$('label.widget-label').getText()).toBe('desc');
+    });
+
+    it('Disable widget ', function () {
+      cellIndex += 1;
+      expect(widget.$('textarea').isEnabled()).toBeTruthy();
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /true/);
+      expect(widget.$('textarea').isEnabled()).toBeFalsy();
+    });
+  });
+
+  describe('Label widget ', function () {
+    var widget;
+    it('Cell has Label widget ', function () {
+      cellIndex += 1;
+      widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.getAttribute('class')).toMatch(/widget-label/);
+    });
+
+    it('Get value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /Lbl123/);
+      expect(widget.getText()).toMatch(/Lbl123/);
+    });
+
+    it('Set new value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /new value/);
+      expect(widget.getText()).toMatch(/new value/);
     });
   });
 

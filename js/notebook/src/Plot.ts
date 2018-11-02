@@ -76,21 +76,36 @@ export class PlotView extends widgets.DOMWidgetView {
     });
   }
 
-  getNumberOfPointsForStandardPlot(plotModel) {
-    return Math.max.apply(null, plotModel.graphics_list.map((graphic) => {
-      const points = graphic.x ? graphic.x : graphic.y;
+  getNumberOfPointsForPlot(plotModel) {
+    switch(plotModel.type) {
+      case "Histogram":
+        return Math.max.apply(null, plotModel.graphics_list.map((graphic) => {
+          return graphic.length;
+        }));
+      default:
+        return Math.max.apply(null, plotModel.graphics_list.map((graphic) => {
+          const points = graphic.x ? graphic.x : graphic.y;
 
-      return points ? points.length : 0;
-    }));
+          return points ? points.length : 0;
+        }));
+    }
   }
 
-  truncatePointsForStandardPlot(plotModel) {
-    plotModel.graphics_list.forEach((graphic) => {
-      if (graphic.x && graphic.y) {
-        graphic.x = graphic.x.slice(0, OUTUPT_POINTS_PREVIEW_NUMBER);
-        graphic.y = graphic.y.slice(0, OUTUPT_POINTS_PREVIEW_NUMBER);
-      }
-    });
+  truncatePointsForPlot(plotModel) {
+    switch(plotModel.type) {
+      case "Histogram":
+        plotModel.graphics_list.forEach((graphic) => {
+          graphic = graphic.slice(0, OUTUPT_POINTS_PREVIEW_NUMBER);
+        });
+        break;
+      default:
+        plotModel.graphics_list.forEach((graphic) => {
+          if (graphic.x && graphic.y) {
+            graphic.x = graphic.x.slice(0, OUTUPT_POINTS_PREVIEW_NUMBER);
+            graphic.y = graphic.y.slice(0, OUTUPT_POINTS_PREVIEW_NUMBER);
+          }
+        });
+    }
   }
 
   limitPoints(plotModel) {
@@ -101,20 +116,20 @@ export class PlotView extends widgets.DOMWidgetView {
     }
 
     if (!plotModel.plots) {
-      numberOfPoints = this.getNumberOfPointsForStandardPlot(plotModel);
-      this.limitPointsForStandardPlot(plotModel, numberOfPoints);
+      numberOfPoints = this.getNumberOfPointsForPlot(plotModel);
+      this.limitPointsForPlot(plotModel, numberOfPoints);
 
       return;
     }
 
-    numberOfPoints = Math.max.apply(plotModel.plots.map(this.getNumberOfPointsForStandardPlot));
+    numberOfPoints = Math.max.apply(plotModel.plots.map(this.getNumberOfPointsForPlot));
     plotModel.plots.forEach((standardPlotModel) => {
-      this.limitPointsForStandardPlot(standardPlotModel, numberOfPoints);
+      this.limitPointsForPlot(standardPlotModel, numberOfPoints);
     });
   }
 
-  limitPointsForStandardPlot(plotModel, numberOfPoints) {
-    this.truncatePointsForStandardPlot(plotModel);
+  limitPointsForPlot(plotModel, numberOfPoints) {
+    this.truncatePointsForPlot(plotModel);
 
     plotModel.numberOfPoints = numberOfPoints;
     plotModel.outputPointsLimit = OUTUPT_POINTS_LIMIT;

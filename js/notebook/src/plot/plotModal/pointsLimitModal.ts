@@ -35,7 +35,7 @@ export default class PointsLimitModal {
       scopeId: this.scope.id,
       outputPointsLimit: plotModel.outputPointsLimit.toLocaleString('en'),
       outputPointsPreviewNumber: plotModel.outputPointsPreviewNumber.toLocaleString('en'),
-      numberOfPonts: plotModel.numberOfPoints.toLocaleString('en')
+      numberOfPoints: plotModel.numberOfPoints.toLocaleString('en')
     });
     const $modal = $(compiled);
 

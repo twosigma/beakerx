@@ -88,6 +88,17 @@ public class ToggleButtonsTest {
     Assertions.assertThat(toggleButtons.getIcons()).isEqualTo(expected);
   }
 
+  @Test
+  public void setIcons_hasValue() throws Exception {
+    //given
+    ToggleButtons toggleButtons = toggleButtons();
+    //when
+    String[] options = new String[]{"icon1", "icon2"};
+    toggleButtons.setOptions(options);
+    //then
+    Assertions.assertThat(toggleButtons.getValue()).isEqualTo("icon1");
+  }
+
   private  ToggleButtons toggleButtons() throws NoSuchAlgorithmException {
     ToggleButtons widget = new  ToggleButtons();
     kernel.clearPublishedMessages();

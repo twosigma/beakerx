@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.kernel.magic.command;
 
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.MagicCommandConfigurationMock;
 import com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
@@ -57,6 +58,7 @@ public class ClasspathAddMvnDepsCellMagicCommandTest {
 
   private static KernelTest kernel;
   private static EvaluatorTest evaluator;
+  private MagicCommandConfigurationMock configuration = new MagicCommandConfigurationMock();
 
   @Before
   public void setUp() throws Exception {
@@ -94,7 +96,7 @@ public class ClasspathAddMvnDepsCellMagicCommandTest {
     String allCode = "%%classpath add mvn\n"
             + "com.google.code.XXXX:gson:2.6.2";
     //given
-    MagicCommand command = new MagicCommand(new ClassPathAddMvnCellMagicCommand(kernel.mavenResolverParam, kernel), allCode);
+    MagicCommand command = new MagicCommand(new ClassPathAddMvnCellMagicCommand(configuration.mavenResolverParam(kernel), kernel), allCode);
     Code code = Code.createCode(allCode, Collections.singletonList(command), NO_ERRORS, commMsg());
     //when
     code.execute(kernel, 1);
@@ -123,7 +125,7 @@ public class ClasspathAddMvnDepsCellMagicCommandTest {
   }
 
   private void processMagicCommand(String allCode) {
-    MagicCommand command = new MagicCommand(new ClassPathAddMvnCellMagicCommand(kernel.mavenResolverParam, kernel), allCode);
+    MagicCommand command = new MagicCommand(new ClassPathAddMvnCellMagicCommand(configuration.mavenResolverParam(kernel), kernel), allCode);
     Code code = Code.createCode(allCode, Collections.singletonList(command), NO_ERRORS, commMsg());
     code.execute(kernel, 1);
   }
@@ -135,7 +137,7 @@ public class ClasspathAddMvnDepsCellMagicCommandTest {
     List<String> depNames = Files.walk(Paths.get(mvnDir)).map(p -> p.getFileName().toString()).collect(Collectors.toList());
 
     Optional<Message> updateMessage = EvaluatorResultTestWatcher.waitForUpdateMessage(kernel);
-    String text =  (String) TestWidgetUtils.getState(updateMessage.get()).get("value");
+    String text = (String) TestWidgetUtils.getState(updateMessage.get()).get("value");
 
     Assertions.assertThat(kernel.getClasspath().get(0)).contains(mvnDir);
     Assertions.assertThat(expected.stream()

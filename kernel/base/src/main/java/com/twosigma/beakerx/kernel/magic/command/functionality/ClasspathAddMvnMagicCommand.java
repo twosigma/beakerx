@@ -25,10 +25,12 @@ import com.twosigma.beakerx.kernel.magic.command.PomFactory;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.util.Preconditions;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableMap;
 
@@ -49,7 +51,7 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
 
   public ClasspathAddMvnMagicCommand(MavenJarResolver.ResolverParams commandParams, KernelFunctionality kernel) {
     super(kernel);
-    this.commandParams = commandParams;
+    this.commandParams = checkNotNull(commandParams);
     this.pomFactory = new PomFactory();
     resetRepo();
   }

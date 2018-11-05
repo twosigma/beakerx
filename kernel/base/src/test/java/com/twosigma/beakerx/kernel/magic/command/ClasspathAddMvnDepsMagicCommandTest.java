@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.kernel.magic.command;
 
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.MagicCommandConfigurationMock;
 import com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
@@ -48,7 +49,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import static com.twosigma.beakerx.kernel.magic.command.MavenJarResolver.MAVEN_BUILT_CLASSPATH_FILE_NAME;
-import static com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand.*;
+import static com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand.ADD_MVN_FORMAT_ERROR_MESSAGE;
+import static com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand.CLASSPATH_ADD_MVN;
+import static com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand.DEFAULT_MAVEN_REPOS;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathResetMagicCommand.CLASSPATH_RESET;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -63,6 +66,8 @@ public class ClasspathAddMvnDepsMagicCommandTest {
 
   private static KernelTest kernel;
   private static EvaluatorTest evaluator;
+
+  private MagicCommandConfigurationMock configuration = new MagicCommandConfigurationMock();
 
   @Before
   public void setUp() throws Exception {
@@ -94,7 +99,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
   public void unresolvedDependency() {
     //given
     String allCode = CLASSPATH_ADD_MVN + " com.google.code.XXXX gson 2.6.2";
-    MagicCommand command = new MagicCommand(new ClasspathAddMvnMagicCommand(kernel.mavenResolverParam, kernel), allCode);
+    MagicCommand command = new MagicCommand(new ClasspathAddMvnMagicCommand(configuration.mavenResolverParam(kernel), kernel), allCode);
     Code code = Code.createCode(allCode, singletonList(command), NO_ERRORS, new Message(new Header(JupyterMessages.COMM_MSG, "session1")));
     //when
     code.execute(kernel, 1);
@@ -111,12 +116,12 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     String allCode = CLASSPATH_ADD_MVN + " com.google.code.gson:gson:2.6.2";
     handleClasspathAddMvnDep(allCode, "gson-2.6.2.jar");
     kernel.clearMessages();
-    ClasspathAddMvnMagicCommand mvnMagicCommand = MagicCommandTypesFactory.getClasspathAddMvnMagicCommand(kernel);
+    ClasspathAddMvnMagicCommand mvnMagicCommand = configuration.getClasspathAddMvnMagicCommand(kernel);
     mvnMagicCommand.addRepo("jcenter", "jcenter");
     assertTrue(mvnMagicCommand.getRepos().get().size() == DEFAULT_MAVEN_REPOS.size() + 1);
     //when
     String resetCode = CLASSPATH_RESET;
-    ClasspathResetMagicCommand resetMagicCommand = MagicCommandTypesFactory.getClasspathResetMagicCommand(kernel);
+    ClasspathResetMagicCommand resetMagicCommand = configuration.getClasspathResetMagicCommand(kernel);
     MagicCommand command = new MagicCommand(resetMagicCommand, resetCode);
     Code code = Code.createCode(resetCode, singletonList(command), NO_ERRORS, new Message(new Header(JupyterMessages.COMM_MSG, "session1")));
     code.execute(kernel, 1);
@@ -134,7 +139,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
   public void wrongCommandFormat() {
     //given
     String allCode = CLASSPATH_ADD_MVN + " com.google.code.XXXX gson";
-    MagicCommand command = new MagicCommand(new ClasspathAddMvnMagicCommand(kernel.mavenResolverParam, kernel), allCode);
+    MagicCommand command = new MagicCommand(new ClasspathAddMvnMagicCommand(configuration.mavenResolverParam(kernel), kernel), allCode);
     Code code = Code.createCode(allCode, singletonList(command), NO_ERRORS, new Message(new Header(JupyterMessages.COMM_MSG, "session1")));
     //when
     code.execute(kernel, 1);
@@ -145,7 +150,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
   }
 
   private void handleClasspathAddMvnDep(String allCode, String expected) throws Exception {
-    MagicCommand command = new MagicCommand(new ClasspathAddMvnMagicCommand(kernel.mavenResolverParam, kernel), allCode);
+    MagicCommand command = new MagicCommand(new ClasspathAddMvnMagicCommand(configuration.mavenResolverParam(kernel), kernel), allCode);
     Code code = Code.createCode(allCode, singletonList(command), NO_ERRORS, new Message(new Header(JupyterMessages.COMM_MSG, "session1")));
     //when
     code.execute(kernel, 1);
@@ -159,7 +164,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
             file.getFileName().toFile().getName().contains("slf4j"))).findFirst();
     assertThat(dep).isPresent();
     assertThat(kernel.getClasspath().get(0)).contains(mvnDir);
-    assertThat(Files.exists(Paths.get(kernel.mavenResolverParam.getPathToNotebookJars() + File.separator + MAVEN_BUILT_CLASSPATH_FILE_NAME))).isTrue();
+    assertThat(Files.exists(Paths.get(configuration.mavenResolverParam(kernel).getPathToNotebookJars() + File.separator + MAVEN_BUILT_CLASSPATH_FILE_NAME))).isTrue();
     dep.ifPresent(path -> {
       try {
         FileUtils.forceDelete(path.toFile());

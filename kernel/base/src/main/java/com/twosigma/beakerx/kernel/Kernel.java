@@ -29,7 +29,7 @@ import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
-import com.twosigma.beakerx.kernel.magic.command.MagicCommandTypesFactory;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfiguration;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
@@ -69,13 +69,15 @@ public abstract class Kernel implements KernelFunctionality {
   private Map<String, String> commKernelMapping;
   private CommRepository commRepository;
   private BeakerXServer beakerXServer;
+  private MagicCommandConfiguration magicCommandConfiguration;
 
   public Kernel(final String sessionId,
                 final Evaluator evaluator,
                 final KernelSocketsFactory kernelSocketsFactory,
                 CustomMagicCommandsFactory customMagicCommands,
                 CommRepository commRepository,
-                BeakerXServer beakerXServer) {
+                BeakerXServer beakerXServer,
+                MagicCommandConfiguration magicCommandConfiguration) {
     this(
             sessionId,
             evaluator,
@@ -84,7 +86,8 @@ public abstract class Kernel implements KernelFunctionality {
             new EnvCacheFolderFactory(),
             customMagicCommands,
             commRepository,
-            beakerXServer);
+            beakerXServer,
+            magicCommandConfiguration);
   }
 
   protected Kernel(final String sessionId,
@@ -94,7 +97,8 @@ public abstract class Kernel implements KernelFunctionality {
                    CacheFolderFactory cacheFolderFactory,
                    CustomMagicCommandsFactory customMagicCommands,
                    CommRepository commRepository,
-                   BeakerXServer beakerXServer) {
+                   BeakerXServer beakerXServer,
+                   MagicCommandConfiguration magicCommandConfiguration) {
     this.sessionId = sessionId;
     this.cacheFolderFactory = cacheFolderFactory;
     this.kernelSocketsFactory = kernelSocketsFactory;
@@ -107,10 +111,16 @@ public abstract class Kernel implements KernelFunctionality {
     this.handlers = new KernelHandlers(this, getCommOpenHandler(this), getKernelInfoHandler(this));
     this.magicKernels = new HashMap<>();
     this.commKernelMapping = new HashMap<>();
+    this.magicCommandConfiguration = magicCommandConfiguration;
     createMagicCommands();
     DisplayerDataMapper.init();
     configureSignalHandler();
     initJvmRepr();
+  }
+
+  @Override
+  public MagicCommandConfiguration magicCommandConfiguration() {
+    return magicCommandConfiguration;
   }
 
   public abstract CommOpenHandler getCommOpenHandler(Kernel kernel);
@@ -291,7 +301,7 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   private void createMagicCommands() {
-    this.magicCommandTypes = MagicCommandTypesFactory.createDefaults(this);
+    this.magicCommandTypes = magicCommandConfiguration.createDefaults(this);
     customMagicCommands.customMagicCommands(this).forEach(this::registerMagicCommandType);
     configureMagicCommands();
   }

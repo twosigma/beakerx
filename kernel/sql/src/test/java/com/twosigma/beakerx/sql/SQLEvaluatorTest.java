@@ -17,14 +17,14 @@ package com.twosigma.beakerx.sql;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.TryResult;
-import com.twosigma.beakerx.evaluator.AutocompleteServiceMock;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
-import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.evaluator.MagicCommandAutocompletePatternsMock;
 import com.twosigma.beakerx.jvm.object.OutputCell;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.sql.evaluator.SQLEvaluator;
 import com.twosigma.beakerx.table.TableDisplay;
-import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,7 +52,8 @@ public class SQLEvaluatorTest {
             cellExecutor(),
             getTestTempFolderFactory(),
             kernelParameters(),
-            new EvaluatorTest.BeakexClientTestImpl());
+            new EvaluatorTest.BeakexClientTestImpl(),
+            new MagicCommandAutocompletePatternsMock());
     sqlEvaluator.updateEvaluatorParameters(kernelParameters());
     kernelTest = new KernelTest("1", sqlEvaluator);
     KernelManager.register(kernelTest);

@@ -18,11 +18,9 @@ package com.twosigma.beakerx.kernel.magic.command.functionality;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
-import com.twosigma.beakerx.kernel.magic.command.MagicCommandTypesFactory;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem.Status;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
-import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 
@@ -49,7 +47,7 @@ public class ClasspathResetMagicCommand implements MagicCommandFunctionality {
     if (split.length != 2) {
       return new MagicCommandOutput(Status.ERROR, WRONG_FORMAT_MSG + CLASSPATH_RESET);
     }
-    ClasspathAddMvnMagicCommand mvnMagicCommand = MagicCommandTypesFactory.getClasspathAddMvnMagicCommand(kernel);
+    ClasspathAddMvnMagicCommand mvnMagicCommand = kernel.magicCommandConfiguration().getClasspathAddMvnMagicCommand(kernel);
     mvnMagicCommand.resetRepo();
     try {
       fileService.delete(new File(mvnMagicCommand.getCommandParams().getPathToCache()));

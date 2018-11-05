@@ -15,12 +15,10 @@
  */
 package com.twosigma.beakerx.kernel.magic.command.functionality;
 
-import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils.splitPath;
-
 import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfigurationImpl;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
-import com.twosigma.beakerx.kernel.magic.command.MagicCommandTypesFactory;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem.Status;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
@@ -29,6 +27,8 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils.splitPath;
 
 public class ClasspathAddRepoMagicCommand implements MagicCommandFunctionality {
 
@@ -61,7 +61,7 @@ public class ClasspathAddRepoMagicCommand implements MagicCommandFunctionality {
     }
     String repoName = split[3];
     String urlName = split[4];
-    ClasspathAddMvnMagicCommand mvnMagicCommand = MagicCommandTypesFactory.getClasspathAddMvnMagicCommand(kernel);
+    ClasspathAddMvnMagicCommand mvnMagicCommand = kernel.magicCommandConfiguration().getClasspathAddMvnMagicCommand(kernel);
     String result = mvnMagicCommand.addRepo(repoName, urlName);
     return createResult(result);
   }
@@ -69,7 +69,7 @@ public class ClasspathAddRepoMagicCommand implements MagicCommandFunctionality {
   private MagicCommandOutcomeItem handleMvnLocal() {
     String localRepo = BeakerxSystemProperty.getHomeUser() + "/.m2/repository";
     if (Files.exists(Paths.get(localRepo))) {
-      ClasspathAddMvnMagicCommand mvnMagicCommand = MagicCommandTypesFactory.getClasspathAddMvnMagicCommand(kernel);
+      ClasspathAddMvnMagicCommand mvnMagicCommand = kernel.magicCommandConfiguration().getClasspathAddMvnMagicCommand(kernel);
       try {
         String result = mvnMagicCommand.addRepo(MVN_LOCAL, new File(localRepo).toURI().toURL().toString());
         return createResult(result);

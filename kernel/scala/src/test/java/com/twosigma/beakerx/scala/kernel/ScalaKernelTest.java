@@ -18,6 +18,7 @@ package com.twosigma.beakerx.scala.kernel;
 import com.twosigma.beakerx.BeakerXCommRepositoryMock;
 import com.twosigma.beakerx.BeakerXServerMock;
 import com.twosigma.beakerx.KernelExecutionTest;
+import com.twosigma.beakerx.MagicCommandConfigurationMock;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.CustomMagicCommandsEmptyImpl;
@@ -45,6 +46,7 @@ public class ScalaKernelTest extends KernelExecutionTest {
 
   @Override
   protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
+    MagicCommandConfigurationMock magicCommandConfiguration = new MagicCommandConfigurationMock();
     ScalaEvaluator evaluator = new ScalaEvaluator(
             sessionId,
             sessionId,
@@ -52,7 +54,8 @@ public class ScalaKernelTest extends KernelExecutionTest {
             new NoBeakerxObjectTestFactory(),
             getTestTempFolderFactory(),
             EvaluatorTest.KERNEL_PARAMETERS,
-            new EvaluatorTest.BeakexClientTestImpl());
+            new EvaluatorTest.BeakexClientTestImpl(),
+            magicCommandConfiguration.patterns());
     return new Scala(sessionId,
             evaluator,
             kernelSocketsFactory,
@@ -60,7 +63,8 @@ public class ScalaKernelTest extends KernelExecutionTest {
             getCacheFolderFactory(),
             new CustomMagicCommandsEmptyImpl(),
             new BeakerXCommRepositoryMock(),
-            BeakerXServerMock.create());
+            BeakerXServerMock.create(),
+            magicCommandConfiguration);
   }
 
   @Override

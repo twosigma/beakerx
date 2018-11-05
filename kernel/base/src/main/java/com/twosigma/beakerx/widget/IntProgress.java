@@ -21,7 +21,7 @@ import java.util.HashMap;
 /**
  * Progress bar that represents an integer bounded from above and below.
  */
-public class IntProgress extends BoundedIntWidget {
+public class IntProgress extends BoundedIntWidget{
 
   public static final String VIEW_NAME_VALUE = "ProgressView";
   public static final String MODEL_NAME_VALUE = "IntProgressModel";
@@ -74,7 +74,7 @@ public class IntProgress extends BoundedIntWidget {
   }
 
 
-  enum BarStyle {
+  public enum BarStyle {
     SUCCESS("success"),
     INFO("info"),
     WARNING("warning"),

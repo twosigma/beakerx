@@ -19,6 +19,7 @@ package com.twosigma.beakerx.scala.evaluator;
 import com.twosigma.beakerx.BeakerXClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.autocomplete.MagicCommandAutocompletePatterns;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
@@ -50,12 +51,13 @@ public class ScalaEvaluator extends BaseEvaluator {
                         BeakerxObjectFactory beakerxObjectFactory,
                         TempFolderFactory tempFolderFactory,
                         EvaluatorParameters evaluatorParameters,
-                        BeakerXClient beakerxClient) {
-    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient);
+                        BeakerXClient beakerxClient,
+                        MagicCommandAutocompletePatterns autocompletePatterns) {
+    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient, autocompletePatterns);
     this.beakerxObjectFactory = beakerxObjectFactory;
     this.classLoader = newClassLoader();
     this.shell = createNewEvaluator();
-    this.scalaAutocomplete = new ScalaAutocomplete(shell);
+    this.scalaAutocomplete = new ScalaAutocomplete(shell, autocompletePatterns);
   }
 
   @Override
@@ -76,14 +78,14 @@ public class ScalaEvaluator extends BaseEvaluator {
   @Override
   protected void doReloadEvaluator() {
     this.shell = createNewEvaluator(shell);
-    this.scalaAutocomplete = new ScalaAutocomplete(shell);
+    this.scalaAutocomplete = new ScalaAutocomplete(shell, autocompletePatterns);
   }
 
   @Override
   protected void doResetEnvironment() {
     this.classLoader = newClassLoader();
     this.shell = createNewEvaluator();
-    this.scalaAutocomplete = new ScalaAutocomplete(shell);
+    this.scalaAutocomplete = new ScalaAutocomplete(shell, autocompletePatterns);
     executorService.shutdown();
     executorService = Executors.newSingleThreadExecutor();
   }

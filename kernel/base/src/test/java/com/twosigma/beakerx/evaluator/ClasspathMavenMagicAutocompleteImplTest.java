@@ -16,6 +16,9 @@
 package com.twosigma.beakerx.evaluator;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.autocomplete.AutocompleteService;
+import com.twosigma.beakerx.autocomplete.AutocompleteServiceBeakerx;
+import com.twosigma.beakerx.kernel.magic.autocomplete.MagicCommandAutocompletePatternsImpl;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -23,15 +26,14 @@ import java.util.ArrayList;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class AutocompleteServiceImplTest {
+public class ClasspathMavenMagicAutocompleteImplTest {
 
-  private AutocompleteService sut = new AutocompleteServiceBeakerx() {
+  private AutocompleteService sut = new AutocompleteServiceBeakerx(new MagicCommandAutocompletePatternsImpl()) {
     @Override
     protected AutocompleteResult doAutocomplete(String txt, int cur) {
       return new AutocompleteResult(new ArrayList<>(), 0);
     }
   };
-
 
   @Test
   public void shouldAutocompleteToTwoClasspath() {
@@ -113,7 +115,7 @@ public class AutocompleteServiceImplTest {
   @Test
   public void shouldReturnNothingWhenSpaceAfterLastOptionWhichEndsCommand() {
     //given
-    String txt = "%classpath add mvn ";
+    String txt = "%classpath add mvn";
     //when
     AutocompleteResult result = sut.find(txt, txt.length());
     //then

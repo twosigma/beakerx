@@ -65,7 +65,7 @@ public class EvaluatorTest extends BaseEvaluator {
   }
 
   public EvaluatorTest(String id, String sId, CellExecutor cellExecutor, EvaluatorParameters kernelParameters, BeakerXClient beakerXClient) {
-    super(id, sId, cellExecutor, getTestTempFolderFactory(), kernelParameters, beakerXClient);
+    super(id, sId, cellExecutor, getTestTempFolderFactory(), kernelParameters, beakerXClient, new MagicCommandAutocompletePatternsMock());
   }
 
   @Override

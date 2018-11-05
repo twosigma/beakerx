@@ -18,6 +18,7 @@ package com.twosigma.beakerx.groovy.autocomplete;
 
 import com.twosigma.beakerx.MessageFactorTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
+import com.twosigma.beakerx.evaluator.MagicCommandAutocompletePatternsMock;
 import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beakerx.groovy.kernel.GroovyKernelMock;
 import com.twosigma.beakerx.handler.CompleteHandler;
@@ -50,7 +51,8 @@ public class GroovyCompleteHandlerTest {
             cellExecutor(),
             EvaluatorTest.getTestTempFolderFactory(),
             new EvaluatorParameters(new HashedMap()),
-            new EvaluatorTest.BeakexClientTestImpl()
+            new EvaluatorTest.BeakexClientTestImpl(),
+            new MagicCommandAutocompletePatternsMock()
     );
     groovyKernel = new GroovyKernelMock("sid", groovyEvaluator);
   }

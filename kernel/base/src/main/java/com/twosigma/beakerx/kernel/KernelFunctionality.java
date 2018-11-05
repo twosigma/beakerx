@@ -22,6 +22,7 @@ import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfiguration;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
@@ -109,4 +110,6 @@ public interface KernelFunctionality {
   void putEvaluationInToBackground();
 
   BeakerXServer getBeakerXServer();
+
+  MagicCommandConfiguration magicCommandConfiguration();
 }

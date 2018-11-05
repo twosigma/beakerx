@@ -18,6 +18,7 @@ package com.twosigma.beakerx.scala.evaluator;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
+import com.twosigma.beakerx.evaluator.MagicCommandAutocompletePatternsMock;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.scala.kernel.ScalaKernelMock;
@@ -44,7 +45,8 @@ public class ScalaAutocompleteTest {
             new NoBeakerxObjectTestFactory(),
             getTestTempFolderFactory(),
             EvaluatorTest.KERNEL_PARAMETERS,
-            new EvaluatorTest.BeakexClientTestImpl());
+            new EvaluatorTest.BeakexClientTestImpl(),
+            new MagicCommandAutocompletePatternsMock());
   }
 
   @Before
@@ -111,7 +113,8 @@ public class ScalaAutocompleteTest {
                     new NoBeakerxObjectTestFactory(),
                     getTestTempFolderFactory(),
                     EvaluatorTest.KERNEL_PARAMETERS,
-                    new EvaluatorTest.BeakexClientTestImpl());
+                    new EvaluatorTest.BeakexClientTestImpl(),
+                    new MagicCommandAutocompletePatternsMock());
 
     try {
       //when

@@ -19,6 +19,7 @@ import com.twosigma.beakerx.AutotranslationService;
 import com.twosigma.beakerx.BeakerXClient;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
+import com.twosigma.beakerx.evaluator.MagicCommandAutocompletePatternsMock;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beakerx.groovy.kernel.GroovyDefaultVariables;
@@ -63,7 +64,8 @@ public class TestGroovyEvaluator {
             cellExecutor(),
             getTestTempFolderFactory(),
             getKernelParameters(),
-            client);
+            client,
+            new MagicCommandAutocompletePatternsMock());
     return evaluator;
   }
 
@@ -75,7 +77,8 @@ public class TestGroovyEvaluator {
             cellExecutor(),
             getTestTempFolderFactory(),
             getKernelParameters(),
-            new EvaluatorTest.BeakexClientTestImpl());
+            new EvaluatorTest.BeakexClientTestImpl(),
+            new MagicCommandAutocompletePatternsMock());
     return evaluator;
   }
 
@@ -86,7 +89,8 @@ public class TestGroovyEvaluator {
             cellExecutor(),
             tempFolderFactory,
             getKernelParameters(),
-            new EvaluatorTest.BeakexClientTestImpl());
+            new EvaluatorTest.BeakexClientTestImpl(),
+            new MagicCommandAutocompletePatternsMock());
     return evaluator;
   }
 

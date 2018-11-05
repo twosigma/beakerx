@@ -33,6 +33,8 @@ import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfiguration;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfigurationImpl;
 import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.restserver.impl.GetUrlArgHandler;
 import com.twosigma.beakerx.message.Message;
@@ -49,8 +51,15 @@ public class Java extends Kernel {
                final Evaluator evaluator,
                KernelSocketsFactory kernelSocketsFactory,
                CommRepository commRepository,
-               BeakerXServer beakerXServer) {
-    super(id, evaluator, kernelSocketsFactory, new CustomMagicCommandsEmptyImpl(), commRepository, beakerXServer);
+               BeakerXServer beakerXServer,
+               MagicCommandConfiguration magicCommandConfiguration) {
+    super(id,
+            evaluator,
+            kernelSocketsFactory,
+            new CustomMagicCommandsEmptyImpl(),
+            commRepository,
+            beakerXServer,
+            magicCommandConfiguration);
   }
 
   public Java(final String id,
@@ -59,7 +68,8 @@ public class Java extends Kernel {
               CloseKernelAction closeKernelAction,
               CacheFolderFactory cacheFolderFactory,
               CommRepository commRepository,
-              BeakerXServer beakerXServer) {
+              BeakerXServer beakerXServer,
+              MagicCommandConfiguration magicCommandConfiguration) {
     super(id,
             evaluator,
             kernelSocketsFactory,
@@ -67,7 +77,8 @@ public class Java extends Kernel {
             cacheFolderFactory,
             new CustomMagicCommandsEmptyImpl(),
             commRepository,
-            beakerXServer);
+            beakerXServer,
+            magicCommandConfiguration);
   }
 
   @Override
@@ -88,11 +99,13 @@ public class Java extends Kernel {
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
               configurationFile);
       NamespaceClient beakerxClient = NamespaceClient.create(id, configurationFile, commRepository);
+      MagicCommandConfiguration magicConfiguration = new MagicCommandConfigurationImpl();
       JavaEvaluator e = new JavaEvaluator(id,
               id,
               getKernelParameters(),
-              beakerxClient);
-      return new Java(id, e, kernelSocketsFactory, commRepository, new JavaBeakerXServer(new GetUrlArgHandler(beakerxClient)));
+              beakerxClient,
+              magicConfiguration.patterns());
+      return new Java(id, e, kernelSocketsFactory, commRepository, new JavaBeakerXServer(new GetUrlArgHandler(beakerxClient)), magicConfiguration);
     });
   }
 

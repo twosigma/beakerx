@@ -19,25 +19,24 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 /**
- * 
  * Displays a boolean `value` in the form of a green check (True / valid)
  * or a red cross (False / invalid).
  * Parameters
  * ----------
  * value: {True,False}
- *      value of the Valid widget
+ * value of the Valid widget
  *
  * @author konst
- *
  */
-public class Valid extends BoolWidget{
-  
+public class Valid extends BoolWidget {
+
   public static final String VIEW_NAME_VALUE = "ValidView";
   public static final String MODEL_NAME_VALUE = "ValidModel";
-  
+
   protected static final String READOUT = "readout";
-  
-  private Boolean readOut = true;
+  public static final String INVALID = "Invalid";
+
+  private String readOut = INVALID;
 
   public Valid() {
     super();
@@ -50,13 +49,13 @@ public class Valid extends BoolWidget{
     content.put(READOUT, this.readOut);
     return content;
   }
-  
-  public Boolean getReadOut() {
+
+  public String getReadOut() {
     return readOut;
   }
 
-  public void setReadOut(Object readOut) {
-    this.readOut = getBoolean(readOut);
+  public void setReadOut(String readOut) {
+    this.readOut = readOut;
     sendUpdate(READOUT, readOut);
   }
 

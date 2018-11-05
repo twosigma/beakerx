@@ -43,8 +43,12 @@ public class FloatProgress extends BoundedFloatWidget {
   public static final String VIEW_NAME_VALUE = "ProgressView";
   public static final String MODEL_NAME_VALUE = "FloatProgressModel";
   public static final String ORIENTATION = "orientation";
+  public static final String BAR_STYLE = "bar_style";
 
   private String orientation = "horizontal";
+
+  private FloatProgress.BarStyle barStyle = FloatProgress.BarStyle.EMPTY;
+
 
   public FloatProgress() {
     super();
@@ -76,6 +80,29 @@ public class FloatProgress extends BoundedFloatWidget {
   @Override
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
+  }
+
+  public void setBarStyle(FloatProgress.BarStyle style) {
+    this.barStyle = style;
+    sendUpdate(BAR_STYLE, this.barStyle.getValue());
+  }
+
+  public enum BarStyle {
+    SUCCESS("success"),
+    INFO("info"),
+    WARNING("warning"),
+    DANGER("danger"),
+    EMPTY("");
+
+    private String value;
+
+    BarStyle(String value) {
+      this.value = value;
+    }
+
+    public String getValue() {
+      return value;
+    }
   }
 
 }

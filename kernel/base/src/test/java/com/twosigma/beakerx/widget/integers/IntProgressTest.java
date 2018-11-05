@@ -80,4 +80,15 @@ public class IntProgressTest {
     return progress;
   }
 
+  @Test
+  public void shouldSendCommMsgWhenBarStyleChange() throws Exception {
+    //given
+    IntProgress intProgress = intProgress();
+    //when
+    intProgress.setBarStyle(IntProgress.BarStyle.SUCCESS);
+    //then
+    verifyMsgForProperty(groovyKernel, IntProgress.BAR_STYLE, IntProgress.BarStyle.SUCCESS.getValue());
+  }
+
+
 }

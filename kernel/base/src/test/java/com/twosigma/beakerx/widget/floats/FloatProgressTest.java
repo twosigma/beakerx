@@ -79,4 +79,15 @@ public class FloatProgressTest {
     return progress;
   }
 
+
+  @Test
+  public void shouldSendCommMsgWhenBarStyleChange() throws Exception {
+    //given
+    FloatProgress floatProgress = floatProgress();
+    //when
+    floatProgress.setBarStyle(FloatProgress.BarStyle.SUCCESS);
+    //then
+    verifyMsgForProperty(groovyKernel, FloatProgress.BAR_STYLE, FloatProgress.BarStyle.SUCCESS.getValue());
+  }
+
 }

@@ -299,4 +299,61 @@ describe('Java widgets test ', function () {
     });
   });
 
+  describe('HTML widget ', function () {
+    var widget;
+    it('Cell has HTML widget ', function () {
+      cellIndex += 1;
+      widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.getAttribute('class')).toMatch(/widget-html/);
+      expect(widget.$('input').getAttribute('type')).toEqual('text');
+    });
+
+    it('Get value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /<input type="text"/);
+      expect(widget.$('input').getValue()).toMatch(/test/);
+    });
+
+    it('Set new value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /<b>Hello World/);
+      expect(widget.$('b').getText()).toBe('Hello World');
+    });
+
+    it('Set description to "some HTML" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /some HTML:/);
+      expect(widget.$('label.widget-label').getText()).toBe('some HTML:');
+    });
+  });
+
+  describe('HTML Math widget ', function () {
+    var widget;
+    it('Cell has HTML Math widget ', function () {
+      cellIndex += 1;
+      widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.getAttribute('class')).toMatch(/widget-htmlmath/);
+      expect(widget.$('.MathJax').isExisting()).toBeTruthy();
+    });
+
+    it('Get value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /x squared looks as \$x\^2\$/);
+      expect(widget.$('mi').getText()).toMatch(/x/);
+    });
+
+    it('Set new value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /y squared looks as \$y\^2\$/);
+      browser.pause(1000);
+      expect(widget.$('mi').getText()).toMatch(/y/);
+    });
+
+    it('Set description to "formula" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /formula:/);
+      expect(widget.$('label.widget-label').getText()).toBe('formula:');
+    });
+  });
+
 });

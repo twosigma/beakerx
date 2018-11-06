@@ -356,4 +356,38 @@ describe('Java widgets test ', function () {
     });
   });
 
+  describe('Button widget ', function () {
+    var widget;
+    it('Cell has Button widget ', function () {
+      cellIndex += 1;
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      widget = codeCell.$('.jupyter-widgets.widget-button');
+      expect(widget.getTagName()).toEqual('button');
+      expect(widget.getAttribute('title')).toEqual('tooltip1');
+      expect(widget.getText()).toEqual('click me');
+    });
+
+    it('Set icon by code ', function () {
+      cellIndex += 1;
+      expect(widget.isExisting('i.fa-check')).toBeFalsy();
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /check/);
+      expect(widget.isExisting('i.fa-check')).toBeTruthy();
+    });
+
+    it('Set style to "success" ', function () {
+      cellIndex += 1;
+      expect(widget.getAttribute('class')).not.toMatch(/mod-success/);
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /success/);
+      expect(widget.getAttribute('class')).toMatch(/mod-success/);
+    });
+
+    it('Disable widget ', function () {
+      cellIndex += 1;
+      expect(widget.isEnabled()).toBeTruthy();
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /true/);
+      expect(widget.isEnabled()).toBeFalsy();
+    });
+  });
+
 });

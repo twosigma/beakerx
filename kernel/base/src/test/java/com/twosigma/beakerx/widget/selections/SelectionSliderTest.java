@@ -25,8 +25,10 @@ import org.junit.Test;
 
 import java.security.NoSuchAlgorithmException;
 
+import static com.twosigma.beakerx.widget.TestWidgetUtils.findValueForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyMsgForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsg;
+import static java.util.Arrays.asList;
 
 public class SelectionSliderTest {
 
@@ -50,9 +52,9 @@ public class SelectionSliderTest {
     new SelectionSlider();
     //then
     verifyOpenCommMsg(
-        kernel.getPublishedMessages(),
-        SelectionSlider.MODEL_NAME_VALUE,
-        SelectionSlider.VIEW_NAME_VALUE
+            kernel.getPublishedMessages(),
+            SelectionSlider.MODEL_NAME_VALUE,
+            SelectionSlider.VIEW_NAME_VALUE
     );
   }
 
@@ -103,6 +105,31 @@ public class SelectionSliderTest {
     SelectionSlider widget = new SelectionSlider();
     kernel.clearPublishedMessages();
     return widget;
+  }
+
+  @Test
+  public void setValue_shouldSendMessageWithIndex() throws Exception {
+    //given
+    SelectionSlider selectionSlider = selectionSlider();
+    selectionSlider.setOptions(asList("scrambled", "sunny side up", "poached", "over easy"));
+    kernel.clearPublishedMessages();
+    //when
+    selectionSlider.setValue("sunny side up");
+    //then
+    Integer index = findValueForProperty(kernel, SelectionSlider.INDEX, Integer.class);
+    Assertions.assertThat(index).isEqualTo(1);
+  }
+
+  @Test
+  public void updateValue() throws Exception {
+    //given
+    SelectionSlider selectionSlider = selectionSlider();
+    selectionSlider.setOptions(asList("scrambled", "sunny side up", "poached", "over easy"));
+    kernel.clearPublishedMessages();
+    //when
+    selectionSlider.updateValue(2);
+    //then
+    Assertions.assertThat(selectionSlider.getValue()).isEqualTo("poached");
   }
 
 }

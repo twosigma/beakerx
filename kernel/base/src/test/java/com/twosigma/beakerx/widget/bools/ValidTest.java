@@ -47,14 +47,23 @@ public class ValidTest {
     new Valid();
     //then
     verifyOpenCommMsg(
-        kernel.getPublishedMessages(),
-        Valid.MODEL_NAME_VALUE,
-        Valid.VIEW_NAME_VALUE);
+            kernel.getPublishedMessages(),
+            Valid.MODEL_NAME_VALUE,
+            Valid.VIEW_NAME_VALUE);
+  }
+
+  @Test
+  public void readoutShouldBeSetToInvalid() throws Exception {
+    //given
+    //when
+    Valid valid = new Valid();
+    //then
+    Assertions.assertThat(valid.getReadOut()).isEqualTo(Valid.INVALID);
   }
 
   @Test
   public void setReadOutFlag_hasThatReadOutFlag() throws Exception {
-    boolean expected = true;
+    String expected = "hello";
     //given
     Valid valid = new Valid();
     kernel.clearPublishedMessages();

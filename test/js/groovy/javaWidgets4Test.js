@@ -43,4 +43,82 @@ describe('Java widgets test ', function () {
     });
   });
 
+  describe('DatePicker widget ', function () {
+    var widget;
+    it('Cell has DatePicker widget ', function () {
+      cellIndex += 1;
+      widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.getAttribute('class')).toMatch(/datepicker-container/);
+    });
+
+    it('Should select 25th day ', function () {
+      cellIndex += 1;
+      widget.$('a.date-picker-button').click();
+      browser.$('span.flatpickr-day=25').click();
+      expect(widget.$('input[type="text"]').getValue()).toMatch('25');
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText();
+      expect(result).toMatch('25');
+    });
+
+    it('Should select 27th day by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      expect(widget.$('input[type="text"]').getValue()).toMatch('27');
+    });
+
+    it('Set description to "happy day" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /happy day/);
+      expect(widget.$('label.widget-label').getText()).toBe('happy day');
+    });
+
+    it('Disable widget ', function () {
+      cellIndex += 1;
+      expect(widget.$('input').isEnabled()).toBeTruthy();
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /true/);
+      expect(widget.$('input').isEnabled()).toBeFalsy();
+    });
+  });
+
+  describe('ColorPicker widget ', function () {
+    var widget;
+    it('Cell has ColorPicker widget ', function () {
+      cellIndex += 1;
+      widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.getAttribute('class')).toMatch(/widget-colorpicker/);
+    });
+
+    it('Get value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /blue/);
+      expect(widget.$('input').getValue()).toBe('blue');
+    });
+
+    it('Set value by code ', function () {
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      expect(widget.$('input[type="text"]').getValue()).toMatch('red');
+    });
+
+    it('Set "concise" property to true ', function () {
+      cellIndex += 1;
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      expect(widget.$('input').isVisible()).toBeFalsy();
+    });
+
+    it('Set description to "happy color" ', function () {
+      cellIndex += 1;
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /happy color/);
+      expect(widget.$('label.widget-label').getText()).toBe('happy color');
+    });
+
+    it('Disable widget ', function () {
+      cellIndex += 1;
+      expect(widget.$('input').isEnabled()).toBeTruthy();
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /true/);
+      expect(widget.$('input').isEnabled()).toBeFalsy();
+    });
+  });
+
 });

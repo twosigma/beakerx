@@ -121,4 +121,21 @@ describe('Java widgets test ', function () {
     });
   });
 
+  describe('Box widget ', function () {
+    var widget;
+    it('Cell has VBox widget ', function () {
+      cellIndex += 1;
+      widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.getAttribute('class')).toMatch(/widget-vbox/);
+      expect(widget.$$('div.widget-inline-hbox').length).toBe(2);
+    });
+
+    it('Cell has HBox widget ', function () {
+      cellIndex += 1;
+      widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.getAttribute('class')).toMatch(/widget-hbox/);
+      expect(widget.$$('div.widget-inline-hbox').length).toBe(2);
+    });
+  });
+
 });

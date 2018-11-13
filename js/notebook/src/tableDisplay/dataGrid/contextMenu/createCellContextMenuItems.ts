@@ -54,8 +54,8 @@ export default function createCellContextMenuItems(
         dataGrid.commSignal.emit({
           event: 'CONTEXT_MENU_CLICK',
           itemKey : item,
-          row : data.row,
-          column : selectColumnIndexByPosition(dataGrid.store.state, ColumnManager.createPositionFromCell(data))
+          row : dataGrid.rowManager.getRow(data.row).index,
+          column : selectColumnIndexByPosition(dataGrid.store.state, ColumnManager.createPositionFromCell(data)),
         });
       }
     }));
@@ -82,7 +82,7 @@ export default function createCellContextMenuItems(
           const params = {
             actionType: 'CONTEXT_MENU_CLICK',
             contextMenuItem: name,
-            row: data.row,
+            row: dataGrid.rowManager.getRow(data.row).index,
             col: selectColumnIndexByPosition(dataGrid.store.state, ColumnManager.createPositionFromCell(data))
           };
 

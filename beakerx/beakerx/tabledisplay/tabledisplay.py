@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from beakerx.beakerx_widgets import *
-from traitlets import Unicode, Dict
-from beakerx.utils import *
-from beakerx.tabledisplay.tableitems import *
-from pandas import DataFrame, RangeIndex, MultiIndex
-from ipykernel.comm import Comm
 import types
+from beakerx.beakerx_widgets import *
+from beakerx.tabledisplay.tableitems import *
+from beakerx.utils import *
+from ipykernel.comm import Comm
+from pandas import DataFrame, RangeIndex, MultiIndex
+from traitlets import Unicode, Dict
 
 
 class Table(BaseObject):
@@ -110,7 +110,8 @@ class Table(BaseObject):
             if not isinstance(args[0].index, RangeIndex):
                 index_type = self.convert_type(args[0].index.dtype)
                 index_values = args[0].index.get_values()[index]
-                row[:0] = [self.convert_value(index_values, index_type)]
+                tz = self.get_tz(args[0].index)
+                row[:0] = [self.convert_value(index_values, index_type, tz)]
             self.values.append(row)
 
         if not isinstance(args[0].index, RangeIndex) and column is not None:
@@ -123,6 +124,13 @@ class Table(BaseObject):
             self.types[:0] = [self.convert_type(args[0].index.dtype)]
 
     @staticmethod
+    def get_tz(index):
+        tz = index.tz
+        if tz is None:
+            return None
+        return tz.zone
+
+    @staticmethod
     def convert_none_to_index_name(x):
         if x is None:
             return "index"
@@ -130,9 +138,9 @@ class Table(BaseObject):
             return x
 
     @staticmethod
-    def convert_value(value, value_type):
+    def convert_value(value, value_type, tz=None):
         if value_type == "time":
-            return DateType(value)
+            return DateType(value, tz)
         else:
             return str(value)
 

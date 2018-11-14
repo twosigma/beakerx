@@ -65,7 +65,6 @@ class BeakerxExtension implements DocumentRegistry.WidgetExtension {
 
       app.shell.activeChanged.connect((sender, args) => {
         if (args.newValue == panel){
-            console.log(panel.context.session.kernel.id);
             window.beakerx = window.beakerxHolder[panel.context.session.kernel.id];
         }
       });

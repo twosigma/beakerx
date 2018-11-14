@@ -72,7 +72,7 @@ public class NamespaceClientTest {
     namespaceClient.set("x", new Integer(10));
     //then
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
-    Map data = (Map) kernel.getPublishedMessages().get(0).getContent().get("data");
+    Map data = (Map) kernel.getPublishedMessages().get(1).getContent().get("data");
     Map state = (Map) data.get("state");
     assertThat(state.get("name")).isEqualTo("x");
     assertThat(state.get("value")).isEqualTo("10");
@@ -107,7 +107,7 @@ public class NamespaceClientTest {
     namespaceClient.set("table_with_longs", table);
     //then
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
-    Map data = (Map) kernel.getPublishedMessages().get(1).getContent().get("data");
+    Map data = (Map) kernel.getPublishedMessages().get(2).getContent().get("data");
     Map state = (Map) data.get("state");
     assertThat(state.get("name")).isEqualTo("table_with_longs");
     assertThat(isJSONValid(state.get("value"))).isTrue();

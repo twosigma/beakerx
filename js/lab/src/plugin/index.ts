@@ -14,15 +14,15 @@
  *  limitations under the License.
  */
 
-import { Widget } from '@phosphor/widgets';
-import { DisposableDelegate } from '@phosphor/disposable';
-import { DocumentRegistry } from '@jupyterlab/docregistry';
-import { INotebookModel, NotebookPanel } from '@jupyterlab/notebook';
-import { JupyterLab } from "@jupyterlab/application";
-import { ISettingRegistry } from "@jupyterlab/coreutils";
-import { registerCommTargets } from './comm';
+import {Widget} from '@phosphor/widgets';
+import {DisposableDelegate} from '@phosphor/disposable';
+import {DocumentRegistry} from '@jupyterlab/docregistry';
+import {INotebookModel, NotebookPanel} from '@jupyterlab/notebook';
+import {JupyterLab} from "@jupyterlab/application";
+import {ISettingRegistry} from "@jupyterlab/coreutils";
+import {registerCommTargets} from './comm';
 import {extendHighlightModes, registerCommentOutCmd} from './codeEditor';
-import { enableInitializationCellsFeature } from './initializationCells';
+import {enableInitializationCellsFeature} from './initializationCells';
 import UIOptionFeaturesHelper from "./UIOptionFeaturesHelper";
 import {Autotranslation} from "./autotranslation";
 import proxify = Autotranslation.proxify;
@@ -39,11 +39,6 @@ function displayHTML(widget: Widget, html: string): void {
   widget.node.appendChild(childElement);
 }
 
-function registerGlobal(): void {
-  window.beakerx = window.beakerx || {};
-  window.beakerx.displayHTML = displayHTML;
-}
-
 class BeakerxExtension implements DocumentRegistry.WidgetExtension {
   constructor(
     private app: JupyterLab,
@@ -51,7 +46,6 @@ class BeakerxExtension implements DocumentRegistry.WidgetExtension {
   ) {}
 
   createNew(panel: NotebookPanel, context: DocumentRegistry.IContext<INotebookModel>) {
-    registerGlobal();
 
     let app = this.app;
     let settings = this.settings;
@@ -62,7 +56,19 @@ class BeakerxExtension implements DocumentRegistry.WidgetExtension {
       registerCommentOutCmd(panel);
       registerCommTargets(panel, context);
 
-      window.beakerx = proxify(window.beakerx, context.session.kernel);
+      window.beakerxHolder = window.beakerxHolder || {};
+      const beakerxInstance = {
+            displayHTML,
+        };
+      window.beakerx = proxify(beakerxInstance, context.session.kernel);
+      window.beakerxHolder[context.session.kernel.id] = window.beakerx;
+
+      app.shell.activeChanged.connect((sender, args) => {
+        if (args.newValue == panel){
+            console.log(panel.context.session.kernel.id);
+            window.beakerx = window.beakerxHolder[panel.context.session.kernel.id];
+        }
+      });
 
       const originalProcessFn = app.commands.processKeydownEvent;
       app.commands.processKeydownEvent = (event) => {

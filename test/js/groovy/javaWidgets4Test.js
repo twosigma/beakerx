@@ -121,7 +121,7 @@ describe('Java widgets test ', function () {
     });
   });
 
-  describe('Box widget ', function () {
+  describe('Container widgets ', function () {
     var widget;
     it('Cell has VBox widget ', function () {
       cellIndex += 1;
@@ -135,6 +135,20 @@ describe('Java widgets test ', function () {
       widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
       expect(widget.getAttribute('class')).toMatch(/widget-hbox/);
       expect(widget.$$('div.widget-inline-hbox').length).toBe(2);
+    });
+
+    it('Cell has Tabs widget ', function () {
+      cellIndex += 1;
+      widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.getAttribute('class')).toMatch(/widget-tab/);
+      expect(widget.$$('li.p-TabBar-tab').length).toBe(2);
+    });
+
+    it('Cell has Accordion widget ', function () {
+      cellIndex += 1;
+      widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.getAttribute('class')).toMatch(/widget-accordion/);
+      expect(widget.$$('div.p-Accordion-child').length).toBe(2);
     });
   });
 

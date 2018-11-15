@@ -107,12 +107,20 @@ export class DatePickerView extends widgets.LabeledDOMWidgetView {
       if (this.flatpickr && this.flatpickr.input.value != newValue) {
         this.flatpickr.setDate(newValue);
       }
-
-      const disabled = this.model.get('disabled');
-      this.datepicker.disabled = disabled;
+      this.updateDisabled()
     }
 
     super.update.apply(this);
+  }
+
+  updateDisabled(){
+      const disabled = this.model.get('disabled');
+      this.datepicker.prop('disabled', disabled);
+      if (disabled){
+          this.button.removeClass('ui-state-default').addClass('ui-state-disabled');
+      } else{
+          this.button.removeClass('ui-state-disabled').addClass('ui-state-default');
+      }
   }
 
   setValueToModel(value) {

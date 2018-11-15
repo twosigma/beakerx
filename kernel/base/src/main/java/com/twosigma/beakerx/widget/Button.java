@@ -79,6 +79,15 @@ public class Button extends ValueWidget<Boolean> {
     sendUpdate(TAG, tag);
   }
 
+  public String getIcon() {
+    return icon;
+  }
+
+  public void setIcon(String tag) {
+    this.icon = tag;
+    sendUpdate(ICON, icon);
+  }
+
   public void registerOnClick(ActionPerformed actionPerformed) {
     this.actionPerformed = actionPerformed;
   }

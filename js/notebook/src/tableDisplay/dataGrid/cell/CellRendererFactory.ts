@@ -34,6 +34,6 @@ export class CellRendererFactory {
   }
 
   static getHeaderRenderer(dataGrid) {
-    return new HeaderCellRenderer(dataGrid)
+    return new HeaderCellRenderer(dataGrid);
   }
 }

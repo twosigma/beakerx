@@ -232,19 +232,21 @@ export class DataFormatter {
 
     let format = TIME_UNIT_FORMATS.DATETIME.format;
     let valueModifier = 1000;
+    let value = config.value;
 
     if (formatForTimes) {
       format = formatForTimes.format;
       valueModifier = formatForTimes.valueModifier;
     }
 
-    if (_.isObject(config.value) && config.value.type === 'Date') {
-      return formatTimestamp(config.value.timestamp, this.timeZone, format);
+    if (_.isObject(value) && value.type === 'Date') {
+      let tz = value.hasOwnProperty('tz') ? value.tz : this.timeZone;
+      return formatTimestamp(value.timestamp, tz, format);
     }
 
-    let milli = isNaN(config.value) ?
-      config.value :
-      new Big(config.value).times(valueModifier);
+    let milli = isNaN(value) ?
+      value :
+      new Big(value).times(valueModifier);
 
     return formatTimestamp(milli, this.timeZone, format);
   }

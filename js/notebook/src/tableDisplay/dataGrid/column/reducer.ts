@@ -153,6 +153,11 @@ function reduceColumnPositions(state: IColumnsState, action: DataGridColumnsActi
   const columnsFrozenCopy = [...columnsFrozenNames];
   const stateArray = Array.from(state.values());
   const order = [...value];
+  let indexColumnPosition = order.indexOf("index");
+  if (-1 !== indexColumnPosition) {
+    order.splice(indexColumnPosition, 1)
+  }
+
   const hiddenStates: IColumnState[] = stateArray.filter(
     columnState => columnsVisible[columnState.name] === false
   );

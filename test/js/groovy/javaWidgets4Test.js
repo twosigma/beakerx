@@ -152,4 +152,60 @@ describe('Java widgets test ', function () {
     });
   });
 
+  describe('Play widget ', function () {
+    var widget;
+    cellIndex += 1;
+    it('(Link) Cell has Play widget ', function () {
+      cellIndex += 1;
+      widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.$('div.widget-play').isEnabled()).toBeTruthy();
+    });
+
+    it('(Link) Start play ', function () {
+      expect(widget.$('div.widget-readout').getText()).toBe('10');
+      widget.$$('button')[0].click();
+      browser.pause(1000);
+      expect(parseInt(widget.$('div.widget-readout').getText())).toBeGreaterThan(10);
+    });
+
+    it('(jslink) Cell has Play widget ', function () {
+      cellIndex += 1;
+      widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.$('div.widget-play').isEnabled()).toBeTruthy();
+    });
+
+    it('(jslink) Start play ', function () {
+      expect(widget.$('div.widget-readout').getText()).toBe('20');
+      widget.$$('button')[0].click();
+      browser.pause(1000);
+      expect(parseInt(widget.$('div.widget-readout').getText())).toBeGreaterThan(20);
+    });
+
+    it('(DirectionalLink) Cell has Play widget ', function () {
+      cellIndex += 1;
+      widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.$('div.widget-play').isEnabled()).toBeTruthy();
+    });
+
+    it('(DirectionalLink) Start play ', function () {
+      expect(widget.$('div.widget-readout').getText()).toBe('30');
+      widget.$$('button')[0].click();
+      browser.pause(1000);
+      expect(parseInt(widget.$('div.widget-readout').getText())).toBeGreaterThan(30);
+    });
+
+    it('(jsdlink) Cell has Play widget ', function () {
+      cellIndex += 1;
+      widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.$('div.widget-play').isEnabled()).toBeTruthy();
+    });
+
+    it('(jsdlink) Start play ', function () {
+      expect(widget.$('div.widget-readout').getText()).toBe('40');
+      widget.$$('button')[0].click();
+      browser.pause(1000);
+      expect(parseInt(widget.$('div.widget-readout').getText())).toBeGreaterThan(40);
+    });
+  });
+
 });

@@ -87,13 +87,17 @@ export default class ColumnPosition {
   }
 
   reset() {
-    const hasIndex = selectHasIndex(this.store.state);
+    let order = selectColumnOrder(this.store.state);
+
+    if (!order || !order.length) {
+      order = selectColumnNames(this.store.state);
+    }
 
     this.store.dispatch(new DataGridColumnsAction(UPDATE_COLUMN_POSITIONS, {
-      hasIndex,
+      value: order,
+      hasIndex: selectHasIndex(this.store.state),
       columnsFrozenNames: selectColumnsFrozenNames(this.store.state),
       columnsVisible: selectColumnsVisible(this.store.state),
-      value: selectColumnNames(this.store.state)
     }));
 
     this.dataGrid.resize();
@@ -138,15 +142,12 @@ export default class ColumnPosition {
       order = selectColumnNames(this.store.state);
     }
 
-    this.store.dispatch(new DataGridColumnsAction(
-      UPDATE_COLUMN_POSITIONS,
-      {
-        value: order,
-        hasIndex: selectHasIndex(this.store.state),
-        columnsFrozenNames: selectColumnsFrozenNames(this.store.state),
-        columnsVisible: selectColumnsVisible(this.store.state),
-      })
-    );
+    this.store.dispatch(new DataGridColumnsAction(UPDATE_COLUMN_POSITIONS, {
+      value: order,
+      hasIndex: selectHasIndex(this.store.state),
+      columnsFrozenNames: selectColumnsFrozenNames(this.store.state),
+      columnsVisible: selectColumnsVisible(this.store.state),
+    }));
 
     this.dataGrid.resize();
   }

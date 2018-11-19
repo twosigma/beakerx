@@ -40,11 +40,9 @@ describe('(Groovy) Testing Map Like Tables', function () {
     it('A basic table is rendered correctly ', function () {
       cellIndex = 0;
       var fileName = 'cell1_case1.png';
-      var width = 120, height = 60;
+      var width = 130, height = 65;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      expect(imageData.value.length).toBeGreaterThan(0);
-      imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, fileName);
     });
 
@@ -123,17 +121,17 @@ describe('(Groovy) Testing Map Like Tables', function () {
     it('Links are rendered correctly ', function () {
       cellIndex += 2;
       var fileName = 'cell10case1.png';
-      var width = 512, height = 512;
+      var width = 446, height = 124;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);;
+      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
     });
 
     it('Links work correctly', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
+      browser.pause(1000);
       clickOnTable(codeCell, 200, 40);
-      browser.switchTab(browser.getTabIds()[2]);
+      browser.switchTab(browser.getTabIds()[1]);
       expect(browser.title().value).toBe('Two Sigma');
     });
   });

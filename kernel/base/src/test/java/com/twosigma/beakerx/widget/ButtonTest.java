@@ -87,6 +87,16 @@ public class ButtonTest {
   }
 
   @Test
+  public void shouldSendCommMsgWhenIconChange() throws Exception {
+    //given
+    Button widget = button();
+    //when
+    widget.setIcon("check");
+    //then
+    verifyMsgForProperty(groovyKernel, Button.ICON, "check");
+  }
+
+  @Test
   public void setButtonStyle_hasThatButtonStyle() throws Exception {
     String expected = "test";
     //given

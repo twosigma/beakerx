@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 public class BeakerXCommRepository implements CommRepository {
 
   private Map<String, Comm> commMap;
+  private Comm autotranslationComm;
 
   public BeakerXCommRepository() {
     this.commMap = new ConcurrentHashMap<>();
@@ -34,12 +35,10 @@ public class BeakerXCommRepository implements CommRepository {
 
   @Override
   public Comm getOrCreateAutotranslationComm() {
-    Comm commByTargetName = getCommByTargetName(TargetNamesEnum.BEAKER_AUTOTRANSLATION.getTargetName());
-    if (commByTargetName!=null){
-      return commByTargetName;
+    if (autotranslationComm == null) {
+      autotranslationComm = new Comm(TargetNamesEnum.BEAKER_AUTOTRANSLATION);
+      autotranslationComm.open();
     }
-    Comm autotranslationComm = new Comm(TargetNamesEnum.BEAKER_AUTOTRANSLATION);
-    autotranslationComm.open();
     return autotranslationComm;
   }
 
@@ -56,6 +55,10 @@ public class BeakerXCommRepository implements CommRepository {
   @Override
   public void closeComms() {
     this.commMap.values().forEach(Comm::close);
+    if (autotranslationComm != null) {
+      autotranslationComm.close();
+      autotranslationComm = null;
+    }
   }
 
   public synchronized boolean isCommPresent(String hash) {

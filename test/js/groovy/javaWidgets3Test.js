@@ -78,14 +78,14 @@ describe('Java widgets test ', function () {
       cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /sunny side up/);
       expect(widget.$('span').getAttribute('style')).toMatch(/left: 25%/);
-      expect(widget.$('select').getValue()).toBe('sunny side up');
+      expect(widget.$('div.widget-readout').getText()).toBe('sunny side up');
     });
 
     it('Set new value by code ', function () {
       cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /poached/);
       expect(widget.$('span').getAttribute('style')).toMatch(/left: 50%/);
-      expect(widget.$('select').getValue()).toBe('poached');
+      expect(widget.$('div.widget-readout').getText()).toBe('poached');
     });
 
     it('Set description to "I like my eggs" ', function () {

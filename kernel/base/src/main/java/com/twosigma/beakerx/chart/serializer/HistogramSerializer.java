@@ -38,8 +38,6 @@ public class HistogramSerializer extends AbstractChartSerializer<Histogram> {
   public static final String CUMULATIVE = "cumulative";
   public static final String NORMED = "normed";
   public static final String LOG = "log";
-  private static final String NUMBER_OF_ROWS = "totalNumberOfPoints";
-  private static final String TOO_MANY_ROWS = "tooManyRows";
 
   @Override
   public void serialize(Histogram histogram, JsonGenerator jgen, SerializerProvider provider) throws
@@ -78,11 +76,13 @@ public class HistogramSerializer extends AbstractChartSerializer<Histogram> {
     if (Histogram.ROWS_LIMIT < list.size()) {
       jgen.writeObjectField(GRAPHICS_LIST, singletonList(list.subList(0, Histogram.ROWS_LIMIT_T0_INDEX)));
       jgen.writeBooleanField(TOO_MANY_ROWS, true);
+      jgen.writeObjectField(ROWS_LIMIT_ITEMS, Histogram.ROWS_LIMIT);
+      jgen.writeObjectField(NUMBER_OF_POINTS_TO_DISPLAY, Histogram.ROWS_LIMIT_T0_INDEX);
     } else {
       jgen.writeObjectField(GRAPHICS_LIST, singletonList(list));
       jgen.writeBooleanField(TOO_MANY_ROWS, false);
     }
-    jgen.writeObjectField(NUMBER_OF_ROWS, list.size());
+    jgen.writeObjectField(TOTAL_NUMBER_OF_POINTS, list.size());
   }
 
   private void serializeListData(JsonGenerator jgen, List<List<Number>> listData) throws IOException {
@@ -93,7 +93,9 @@ public class HistogramSerializer extends AbstractChartSerializer<Histogram> {
             map(x -> x.subList(0, (x.size() >= Histogram.ROWS_LIMIT) ? Histogram.ROWS_LIMIT_T0_INDEX : x.size())).
             collect(Collectors.toList());
     jgen.writeObjectField(GRAPHICS_LIST, limited);
-    jgen.writeObjectField(NUMBER_OF_ROWS, max.orElse(0));
+    jgen.writeObjectField(TOTAL_NUMBER_OF_POINTS, max.orElse(0));
     jgen.writeBooleanField(TOO_MANY_ROWS, max.isPresent() && Histogram.ROWS_LIMIT <= max.getAsInt());
+    jgen.writeObjectField(ROWS_LIMIT_ITEMS, Histogram.ROWS_LIMIT);
+    jgen.writeObjectField(NUMBER_OF_POINTS_TO_DISPLAY, Histogram.ROWS_LIMIT_T0_INDEX);
   }
 }

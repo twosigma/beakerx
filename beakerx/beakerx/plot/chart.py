@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import copy
 import json
 from beakerx.beakerx_widgets import BeakerxDOMWidget
 from beakerx.plot.legend import LegendPosition, LegendLayout
@@ -105,8 +106,69 @@ class XYChart(AbstractChart):
         self.x_upper_bound = upper
         return self
 
+class HeatMapChart(XYChart):
 
-import copy
+    ROWS_LIMIT = 10000
+    COLUMN_LIMIT = 100
+
+    @staticmethod
+    def total_points(listOfData):
+        return sum(map(lambda x: len(x), listOfData))
+
+    @staticmethod
+    def find_step_for_column(row):
+        step = 2
+        while (int(len(row) / step)) > HeatMapChart.COLUMN_LIMIT:
+            step += 1
+        return step
+
+    @staticmethod
+    def limit_column_in_row(row):
+        if len(row) > HeatMapChart.COLUMN_LIMIT:
+            step = HeatMapChart.find_step_for_column(row)
+            limited_row = list(map(lambda index: row[index],
+                                   filter(lambda s: s % step == 0,
+                                          [index for index in range(len(row))])))
+            return limited_row
+        else:
+            return row
+
+    @staticmethod
+    def limit_elements_in_row(listOfData):
+        return list(map(HeatMapChart.limit_column_in_row, listOfData))
+
+    @staticmethod
+    def limit_rows(listOfData):
+        step = HeatMapChart.find_step_for_column(listOfData)
+        limited_row = list(map(lambda index: listOfData[index],
+                               filter(lambda s: s % step == 0,
+                                      [index for index in range(len(listOfData))])))
+        return limited_row
+
+    @staticmethod
+    def limit_Heatmap(listOfData):
+        limited_elements_in_row = HeatMapChart.limit_elements_in_row(listOfData)
+        total_points = HeatMapChart.total_points(limited_elements_in_row)
+        too_many_rows = total_points > HeatMapChart.ROWS_LIMIT
+        if too_many_rows:
+            return HeatMapChart.limit_rows(limited_elements_in_row)
+        return limited_elements_in_row
+
+    def transform(self):
+        self_copy = copy.copy(self)
+        self_copy.totalNumberOfPoints = HeatMapChart.total_points(self_copy.graphics_list)
+        self_copy.rowsLimitItems = HeatMapChart.ROWS_LIMIT
+        too_many_points = self_copy.totalNumberOfPoints > HeatMapChart.ROWS_LIMIT
+
+        if too_many_points:
+            limited_heat_map_data = HeatMapChart.limit_Heatmap(self_copy.graphics_list);
+            self_copy.graphics_list = limited_heat_map_data
+            self_copy.numberOfPointsToDisplay = HeatMapChart.total_points(self_copy.graphics_list)
+
+        self_copy.numberOfPointsToDisplay = HeatMapChart.total_points(self_copy.graphics_list)
+        self_copy.tooManyRows = too_many_points
+        return super(HeatMapChart, self_copy).transform()
+
 
 class HistogramChart(XYChart):
     ROWS_LIMIT = 1000000
@@ -147,11 +209,13 @@ class HistogramChart(XYChart):
         return max(list(map(lambda x: len(x), listOfData)))
 
     def transform(self):
-        selfCopy = copy.copy(self)
-        selfCopy.totalNumberOfPoints = HistogramChart.total_number(selfCopy.graphics_list)
-        selfCopy.tooManyRows = selfCopy.totalNumberOfPoints >= HistogramChart.ROWS_LIMIT
-        selfCopy.graphics_list = list(map(HistogramChart.limit_points, selfCopy.graphics_list))
-        return super(HistogramChart, selfCopy).transform()
+        self_copy = copy.copy(self)
+        self_copy.totalNumberOfPoints = HistogramChart.total_number(self_copy.graphics_list)
+        self_copy.tooManyRows = self_copy.totalNumberOfPoints >= HistogramChart.ROWS_LIMIT
+        self_copy.rowsLimitItems = HistogramChart.ROWS_LIMIT
+        self_copy.numberOfPointsToDisplay = HistogramChart.ROWS_LIMIT_T0_INDEX
+        self_copy.graphics_list = list(map(HistogramChart.limit_points, self_copy.graphics_list))
+        return super(HistogramChart, self_copy).transform()
 
 
 class CategoryChart(XYChart):
@@ -380,7 +444,7 @@ class HeatMap(BeakerxDOMWidget):
         if not 'legendPosition' in kwargs:
             kwargs['legendPosition'] = LegendPosition(
                 position=LegendPosition.Position.BOTTOM_RIGHT)
-        self.chart = XYChart(**kwargs)
+        self.chart = HeatMapChart(**kwargs)
         color = getValue(kwargs, 'color',
                          ["#FF780004", "#FFF15806", "#FFFFCE1F"])
 

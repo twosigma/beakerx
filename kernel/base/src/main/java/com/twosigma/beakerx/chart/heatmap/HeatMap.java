@@ -30,6 +30,8 @@ public class HeatMap extends AbstractChart {
   private Number[][] data;
   private GradientColor color = GradientColor.BROWN_RED_YELLOW;
 
+  public static final int ROWS_LIMIT = 10_000;
+
   public HeatMap() {
     super();
     setXLowerMargin(0);

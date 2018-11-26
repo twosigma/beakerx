@@ -15,7 +15,8 @@
  */
 
 declare interface Window {
-  beakerx: any
+  beakerx: any;
+  beakerxHolder: any
 }
 
 type Proxy<T> = {

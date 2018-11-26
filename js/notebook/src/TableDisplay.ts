@@ -58,8 +58,8 @@ export class TableDisplayView extends widgets.DOMWidgetView {
   }
 
   handleModelUpdate(): void {
-    this._currentScope.updateModelData(this.model.get('model'));
     this._currentScope.doResetAll();
+    this._currentScope.updateModelData(this.model.get('model'));
   }
 
   handleUpdateData(): void {

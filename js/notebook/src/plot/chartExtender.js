@@ -15,6 +15,7 @@
  */
 
 var PlotLayout = require('./PlotLayout.ts').default;
+var plotUtils = require('./plotUtils');
 
 define([
     'underscore'
@@ -27,7 +28,7 @@ define([
 
       // rendering code
       element.find(".plot-plotcontainer").resizable({
-        maxWidth: element.width(), // no wider than the width of the cell
+        maxWidth: element.parent().width(), // no wider than the width of the cell
         minWidth: 450,
         minHeight: 150,
         handles: "e, s, se",
@@ -46,10 +47,8 @@ define([
         }
       });
 
-      scope.calcRange = function(){
-
+      scope.plotRange.calcMapping = function() {
       };
-
 
       scope.calcLegendableItem = function() {
         scope.legendableItem = 0;
@@ -77,6 +76,8 @@ define([
         scope.resetSvg();
 
         scope.update();
+        scope.adjustModelWidth();
+        scope.emitSizeChange(true);
       };
 
       scope.update = function (first) {
@@ -85,9 +86,18 @@ define([
         }
         scope.resetSvg();
         scope.renderData();
+        scope.updateClipPath();
         scope.plotLegend.render(); // redraw
         scope.updateMargin(); //update plot margins
         scope.calcLegendableItem();
+      };
+
+      scope.updateClipPath = function() {
+        scope.svg.select('#clipPath_' + scope.wrapperId + ' rect')
+          .attr("x", 0)
+          .attr("y", 0)
+          .attr("height", plotUtils.safeHeight(scope.jqsvg))
+          .attr("width", plotUtils.safeWidth(scope.jqsvg));
       };
 
       scope.initLayout = function () {

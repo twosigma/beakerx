@@ -670,9 +670,6 @@ define([
     setNotebookWidth(cfg);
     table_of_contents(cfg);
     $("#toc_button").toggleClass('active', show);
-    if (!$('#data_side_panel').is(':hidden')) {
-      $('#btn_datasets').click();
-    }
   };
 
   var show_settings_dialog = function (cfg, st) {

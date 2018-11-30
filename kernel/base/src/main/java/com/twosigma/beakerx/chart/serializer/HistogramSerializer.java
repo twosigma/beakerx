@@ -22,7 +22,6 @@ import com.twosigma.beakerx.chart.histogram.Histogram;
 import java.io.IOException;
 import java.util.List;
 import java.util.OptionalInt;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -38,6 +37,8 @@ public class HistogramSerializer extends AbstractChartSerializer<Histogram> {
   public static final String CUMULATIVE = "cumulative";
   public static final String NORMED = "normed";
   public static final String LOG = "log";
+
+  private HistogramReducer histogramReducer = new HistogramReducer(Histogram.ROWS_LIMIT, Histogram.NUMBER_OF_POINTS_TO_DISPLAY);
 
   @Override
   public void serialize(Histogram histogram, JsonGenerator jgen, SerializerProvider provider) throws
@@ -74,10 +75,10 @@ public class HistogramSerializer extends AbstractChartSerializer<Histogram> {
 
   private void serializeData(JsonGenerator jgen, List<Number> list) throws IOException {
     if (Histogram.ROWS_LIMIT < list.size()) {
-      jgen.writeObjectField(GRAPHICS_LIST, singletonList(list.subList(0, Histogram.ROWS_LIMIT_T0_INDEX)));
+      jgen.writeObjectField(GRAPHICS_LIST, histogramReducer.limitData(list));
       jgen.writeBooleanField(TOO_MANY_ROWS, true);
       jgen.writeObjectField(ROWS_LIMIT_ITEMS, Histogram.ROWS_LIMIT);
-      jgen.writeObjectField(NUMBER_OF_POINTS_TO_DISPLAY, Histogram.ROWS_LIMIT_T0_INDEX);
+      jgen.writeObjectField(NUMBER_OF_POINTS_TO_DISPLAY, Histogram.NUMBER_OF_POINTS_TO_DISPLAY);
     } else {
       jgen.writeObjectField(GRAPHICS_LIST, singletonList(list));
       jgen.writeBooleanField(TOO_MANY_ROWS, false);
@@ -86,16 +87,13 @@ public class HistogramSerializer extends AbstractChartSerializer<Histogram> {
   }
 
   private void serializeListData(JsonGenerator jgen, List<List<Number>> listData) throws IOException {
-    OptionalInt max = listData.stream().
-            mapToInt(List::size).
-            max();
-    List<List<Number>> limited = listData.stream().
-            map(x -> x.subList(0, (x.size() >= Histogram.ROWS_LIMIT) ? Histogram.ROWS_LIMIT_T0_INDEX : x.size())).
-            collect(Collectors.toList());
+    OptionalInt max = histogramReducer.totalPoints(listData);
+    List<List<Number>> limited = histogramReducer.limitListData(listData);
     jgen.writeObjectField(GRAPHICS_LIST, limited);
     jgen.writeObjectField(TOTAL_NUMBER_OF_POINTS, max.orElse(0));
     jgen.writeBooleanField(TOO_MANY_ROWS, max.isPresent() && Histogram.ROWS_LIMIT <= max.getAsInt());
     jgen.writeObjectField(ROWS_LIMIT_ITEMS, Histogram.ROWS_LIMIT);
-    jgen.writeObjectField(NUMBER_OF_POINTS_TO_DISPLAY, Histogram.ROWS_LIMIT_T0_INDEX);
+    jgen.writeObjectField(NUMBER_OF_POINTS_TO_DISPLAY, Histogram.NUMBER_OF_POINTS_TO_DISPLAY);
   }
+
 }

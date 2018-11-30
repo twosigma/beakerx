@@ -18,18 +18,19 @@ package com.twosigma.beakerx.chart.serializer;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.twosigma.beakerx.chart.heatmap.HeatMap;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.stream.IntStream;
 
+import static com.twosigma.beakerx.chart.heatmap.HeatMap.COLUMN_LIMIT;
+import static com.twosigma.beakerx.chart.heatmap.HeatMap.NUMBER_OF_NODES_LIMIT;
 import static com.twosigma.beakerx.chart.heatmap.HeatMap.ROWS_LIMIT;
 
 public class HeatMapSerializer extends AbstractChartSerializer<HeatMap> {
 
   public static final String GRAPHICS_LIST = "graphics_list";
   public static final String COLOR = "color";
+
+  private HeatMapReducer heatMapReducer = new HeatMapReducer(COLUMN_LIMIT, ROWS_LIMIT);
 
   @Override
   public void serialize(HeatMap heatmap, JsonGenerator jgen, SerializerProvider sp)
@@ -48,13 +49,13 @@ public class HeatMapSerializer extends AbstractChartSerializer<HeatMap> {
   }
 
   private void serializeData(Number[][] data, JsonGenerator jgen) throws IOException {
-    int totalPoints = totalPoints(data);
-    boolean tooManyPoints = totalPoints > ROWS_LIMIT;
+    int totalPoints = HeatMapReducer.totalPoints(data);
+    boolean tooManyPoints = totalPoints > NUMBER_OF_NODES_LIMIT;
     if (tooManyPoints) {
-      Number[][] limitedHeatMapData = limitHeatmap(data);
+      Number[][] limitedHeatMapData = heatMapReducer.limitHeatmap(data);
       jgen.writeObjectField(GRAPHICS_LIST, limitedHeatMapData);
-      jgen.writeObjectField(ROWS_LIMIT_ITEMS, ROWS_LIMIT);
-      jgen.writeObjectField(NUMBER_OF_POINTS_TO_DISPLAY, totalPoints(limitedHeatMapData));
+      jgen.writeObjectField(ROWS_LIMIT_ITEMS, NUMBER_OF_NODES_LIMIT);
+      jgen.writeObjectField(NUMBER_OF_POINTS_TO_DISPLAY, HeatMapReducer.totalPoints(limitedHeatMapData));
     } else {
       jgen.writeObjectField(GRAPHICS_LIST, data);
     }
@@ -62,64 +63,5 @@ public class HeatMapSerializer extends AbstractChartSerializer<HeatMap> {
     jgen.writeBooleanField(TOO_MANY_ROWS, tooManyPoints);
   }
 
-  private Number[][] limitHeatmap(Number[][] data) {
-    Number[][] limitedElementsInRow = limitElementsInRow(data);
-    int totalPoints = totalPoints(limitedElementsInRow);
-    boolean tooManyRows = totalPoints > ROWS_LIMIT;
-    if (tooManyRows) {
-      return limitRows(limitedElementsInRow);
-    }
-    return limitedElementsInRow;
-  }
-
-  private Number[][] limitRows(Number[][] limitedElementsInRow) {
-    int stepForRow = findStepForRow(limitedElementsInRow);
-    Number[][] limitedRows = IntStream.range(0, limitedElementsInRow.length)
-            .filter(n -> n % stepForRow == 0)
-            .mapToObj(index -> limitedElementsInRow[index])
-            .toArray(Number[][]::new);
-    return limitedRows;
-  }
-
-  @NotNull
-  private Number[][] limitElementsInRow(Number[][] data) {
-    Number[][] limitedElements = Arrays.stream(data).
-            map(row -> {
-              if (row.length > 100) {
-                int step = findStepForColumn(row);
-                Number[] limitedRow = IntStream.range(0, row.length)
-                        .filter(n -> n % step == 0)
-                        .mapToObj(index -> row[index])
-                        .toArray(Number[]::new);
-                return limitedRow;
-              } else {
-                return row;
-              }
-            }).toArray(Number[][]::new);
-
-    return limitedElements;
-  }
-
-  private int findStepForRow(Number[][] data) {
-    int step = 2;
-    while ((data.length / step) > 100) {
-      step++;
-    }
-    return step;
-  }
-
-
-  private int findStepForColumn(Number[] row) {
-    int step = 2;
-    while ((row.length / step) > 100) {
-      step++;
-    }
-    return step;
-  }
-
-  private int totalPoints(Number[][] data) {
-    return Arrays.stream(data).
-            mapToInt(x -> x.length).sum();
-  }
 
 }

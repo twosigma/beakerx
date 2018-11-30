@@ -78,6 +78,7 @@ define([
         scope.update();
         scope.adjustModelWidth();
         scope.emitSizeChange(true);
+        this.pointsLimitModal.init();
       };
 
       scope.update = function (first) {

@@ -23,6 +23,7 @@ from enum import Enum
 from ipykernel.comm import Comm
 from pandas import DataFrame
 from traitlets import Unicode, Dict
+from .tree_map_reducer import TreeMapReducer
 
 
 class Chart(BaseObject):
@@ -106,8 +107,8 @@ class XYChart(AbstractChart):
         self.x_upper_bound = upper
         return self
 
-class HeatMapChart(XYChart):
 
+class HeatMapChart(XYChart):
     ROWS_LIMIT = 10000
     COLUMN_LIMIT = 100
 
@@ -238,6 +239,8 @@ class CategoryChart(XYChart):
 
 
 class TreeMapChart(XYChart):
+    ROWS_LIMIT = 1000
+
     def __init__(self, **kwargs):
         super(TreeMapChart, self).__init__(**kwargs)
         self.type = 'TreeMap'
@@ -255,9 +258,18 @@ class TreeMapChart(XYChart):
         self.graphics_list = getValue(kwargs, 'root')
 
     def transform(self):
-
-        self.process(self.graphics_list)
-        return super(TreeMapChart, self).transform()
+        tree_map = self
+        count_nodes = tree_map.countNodes(self.graphics_list, 0)
+        to_many_rows = count_nodes > TreeMapChart.ROWS_LIMIT
+        if to_many_rows:
+            tree_map = copy.copy(self)
+            tree_map.totalNumberOfPoints = count_nodes
+            tree_map.rowsLimitItems = TreeMapChart.ROWS_LIMIT
+            tree_map.numberOfPointsToDisplay = TreeMapChart.ROWS_LIMIT
+            tree_map.graphics_list = TreeMapReducer.limit_tree_map(TreeMapChart.ROWS_LIMIT, self.graphics_list)
+        tree_map.tooManyRows = to_many_rows
+        tree_map.process(tree_map.graphics_list)
+        return super(TreeMapChart, tree_map).transform()
 
     def process(self, node):
         children = node.children
@@ -271,6 +283,14 @@ class TreeMapChart(XYChart):
             toolTipBuilder = self.toolTipBuilder
             if toolTipBuilder is not None:
                 node.tooltip = toolTipBuilder.getToolTip(node)
+
+    def countNodes(self, node, count):
+        count = count + 1
+        children = node.children
+        if children is not None:
+            for child in children:
+                count = self.countNodes(child, count)
+        return count
 
 
 class CombinedChart(BaseObject):

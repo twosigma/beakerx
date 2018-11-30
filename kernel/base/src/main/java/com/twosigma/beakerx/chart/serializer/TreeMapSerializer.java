@@ -16,18 +16,22 @@
 
 package com.twosigma.beakerx.chart.serializer;
 
-import com.twosigma.beakerx.chart.Color;
-import com.twosigma.beakerx.chart.treemap.util.IToolTipBuilder;
-import com.twosigma.beakerx.chart.treemap.TreeMap;
-import net.sf.jtreemap.swing.TreeMapNode;
-import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.twosigma.beakerx.chart.Color;
+import com.twosigma.beakerx.chart.treemap.TreeMap;
+import com.twosigma.beakerx.chart.treemap.util.IToolTipBuilder;
+import net.sf.jtreemap.swing.TreeMapNode;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
+
+import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.NUMBER_OF_POINTS_TO_DISPLAY;
+import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.ROWS_LIMIT_ITEMS;
+import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.TOO_MANY_ROWS;
+import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.TOTAL_NUMBER_OF_POINTS;
+import static com.twosigma.beakerx.chart.treemap.TreeMap.ROWS_LIMIT;
 
 public class TreeMapSerializer extends ChartSerializer<TreeMap> {
 
@@ -39,59 +43,29 @@ public class TreeMapSerializer extends ChartSerializer<TreeMap> {
   public static final String ROUND = "round";
   public static final String VALUE_ACCESSOR = "valueAccessor";
 
+  private final TreeMapReducer treeMapReducer = new TreeMapReducer(ROWS_LIMIT);
+
   protected String toHex(Color col) {
     return "#" + Integer.toHexString(col.getRGB()).substring(2);
-//    return  "RGB(" + col.getRed() + "," + col.getGreen() + "," + col.getBlue() + ")";
   }
 
   @Override
   public void serialize(final TreeMap treeMap,
                         JsonGenerator jgen,
-                        SerializerProvider provider) throws
-                                                     IOException,
-                                                     JsonProcessingException {
+                        SerializerProvider provider) throws IOException {
 
     TreeMapNode root = treeMap.getRoot();
-
-    process(root, new Visitor<TreeMapNode>() {
-      @Override
-      public void visit(TreeMapNode node) {
-        Object userObject = node.getUserObject();
-        Map<String, Object> values;
-        if (userObject instanceof Map) {
-          values = (Map<String, Object>) userObject;
-          if (node.isLeaf()) {
-            Color color = treeMap.getColorProvider().getColor(node);
-            values.put("color", toHex(color));
-            IToolTipBuilder toolTipBuilder = treeMap.getToolTipBuilder();
-            if (toolTipBuilder != null) {
-              values.put(TOOLTIP, toolTipBuilder.getToolTip(node));
-            } else {
-              values.put(TOOLTIP, values.get("label"));
-            }
-          }
-          node.setUserObject(values);
-        }else{
-          values = new HashMap<>();
-          values.put("label", userObject);
-          IToolTipBuilder toolTipBuilder = treeMap.getToolTipBuilder();
-          if (toolTipBuilder != null) {
-            values.put(TOOLTIP, toolTipBuilder.getToolTip(node));
-          } else {
-            values.put(TOOLTIP, userObject);
-          }
-        }
-        if (node.isLeaf()) {
-          Color color = treeMap.getColorProvider().getColor(node);
-          values.put("color", toHex(color));
-        }
-
-        node.setUserObject(values);
-
-      }
-    });
-
+    int numberOfNodes = TreeMapNodeCounter.countAllNodes(root);
     jgen.writeStartObject();
+    jgen.writeObjectField(TOTAL_NUMBER_OF_POINTS, numberOfNodes);
+    boolean tooManyRows = numberOfNodes > ROWS_LIMIT;
+    jgen.writeBooleanField(TOO_MANY_ROWS, tooManyRows);
+    if (tooManyRows) {
+      root = treeMapReducer.limitTreeMap(root);
+      jgen.writeObjectField(ROWS_LIMIT_ITEMS, ROWS_LIMIT);
+      jgen.writeObjectField(NUMBER_OF_POINTS_TO_DISPLAY, TreeMapNodeCounter.countAllNodes(root));
+    }
+    process(root, node -> setUserObject(treeMap, node));
 
     serialize(treeMap, jgen);
 
@@ -110,6 +84,40 @@ public class TreeMapSerializer extends ChartSerializer<TreeMap> {
     jgen.writeObjectField(VALUE_ACCESSOR, treeMap.getValueAccessor());
 
     jgen.writeEndObject();
+  }
+
+  private void setUserObject(TreeMap treeMap, TreeMapNode node) {
+    Object userObject = node.getUserObject();
+    Map<String, Object> values;
+    if (userObject instanceof Map) {
+      values = (Map<String, Object>) userObject;
+      if (node.isLeaf()) {
+        Color color = treeMap.getColorProvider().getColor(node);
+        values.put("color", toHex(color));
+        IToolTipBuilder toolTipBuilder = treeMap.getToolTipBuilder();
+        if (toolTipBuilder != null) {
+          values.put(TOOLTIP, toolTipBuilder.getToolTip(node));
+        } else {
+          values.put(TOOLTIP, values.get("label"));
+        }
+      }
+      node.setUserObject(values);
+    } else {
+      values = new HashMap<>();
+      values.put("label", userObject);
+      IToolTipBuilder toolTipBuilder = treeMap.getToolTipBuilder();
+      if (toolTipBuilder != null) {
+        values.put(TOOLTIP, toolTipBuilder.getToolTip(node));
+      } else {
+        values.put(TOOLTIP, userObject);
+      }
+    }
+    if (node.isLeaf()) {
+      Color color = treeMap.getColorProvider().getColor(node);
+      values.put("color", toHex(color));
+    }
+
+    node.setUserObject(values);
   }
 
   private void process(TreeMapNode node, Visitor<TreeMapNode> visitor) {

@@ -28,6 +28,8 @@ import static com.twosigma.beakerx.widget.BeakerxPlot.VIEW_NAME_VALUE;
 
 public class TreeMap extends Chart {
 
+  public static final int ROWS_LIMIT = 1_000;
+
   // root of the tree
   private TreeMapNode root = null;
 

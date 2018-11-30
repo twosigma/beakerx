@@ -17,7 +17,7 @@ from beakerx.beakerx_widgets import *
 from beakerx.tabledisplay.tableitems import *
 from beakerx.utils import *
 from ipykernel.comm import Comm
-from pandas import DataFrame, RangeIndex, MultiIndex
+from pandas import DataFrame, RangeIndex, MultiIndex, DatetimeIndex
 from traitlets import Unicode, Dict
 
 
@@ -125,6 +125,8 @@ class Table(BaseObject):
 
     @staticmethod
     def get_tz(index):
+        if not isinstance(index, DatetimeIndex):
+            return None
         tz = index.tz
         if tz is None:
             return None

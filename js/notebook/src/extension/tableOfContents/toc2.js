@@ -421,25 +421,25 @@ define([
   // some elements from https://stackoverflow.com/questions/20791374/jquery-check-if-element-is-visible-in-viewport
   function highlightTocItemOnScroll(cfg, st) {
     if (cfg.markTocItemOnScroll) {
-      var scrolling_elt = liveNotebook ? '#site' : window
+      var scrolling_elt = liveNotebook ? '#site' : window;
       $(scrolling_elt).scroll(function() {
-        var headerVisibleHeight = $('#header').is(':visible') ? $('#header').height() : 0
-        var headerHeight = liveNotebook ? headerVisibleHeight : 0
+        var headerVisibleHeight = $('#header').is(':visible') ? $('#header').height() : 0;
+        var headerHeight = liveNotebook ? headerVisibleHeight : 0;
         var bottom_of_screen = $(window).scrollTop() + $(scrolling_elt).height() + headerHeight;
         var top_of_screen = $(window).scrollTop() + headerHeight;
         //loop over all headers
         all_headers.each(function(i, h) {
-          var top_of_element = $(h).offset().top;
+          var top_of_element = Math.round($(h).offset().top);
 
-          if ((bottom_of_screen > top_of_element) && (top_of_screen < top_of_element)) {
+          if ((bottom_of_screen > top_of_element) && (top_of_screen <= top_of_element)) {
             // The element is visible
-            var trg_id = $(h).attr('data-toc-modified-id')
+            var trg_id = $(h).attr('data-toc-modified-id');
             if (trg_id !== undefined) {
               var highlighted_item = $('#toc a').filter(function(idx, elt) {
                 return $(elt).attr('data-toc-modified-id') === trg_id;
               });
-              $('#toc .highlight_on_scroll').removeClass('highlight_on_scroll')
-              highlighted_item.parent().addClass('highlight_on_scroll')
+              $('#toc .highlight_on_scroll').removeClass('highlight_on_scroll');
+              highlighted_item.parent().addClass('highlight_on_scroll');
             }
             return false;
           } else {
@@ -670,9 +670,6 @@ define([
     setNotebookWidth(cfg);
     table_of_contents(cfg);
     $("#toc_button").toggleClass('active', show);
-    if (!$('#data_side_panel').is(':hidden')) {
-      $('#btn_datasets').click();
-    }
   };
 
   var show_settings_dialog = function (cfg, st) {

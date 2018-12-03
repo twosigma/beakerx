@@ -47,21 +47,21 @@ def _classpath_for(kernel):
         'beakerx', os.path.join('kernel', kernel, 'lib', '*'))
 
 
-def _uninstall_nbextension():
-    subprocess.check_call(["jupyter", "nbextension", "disable", "beakerx", "--py", "--sys-prefix"])
-    subprocess.check_call(["jupyter", "nbextension", "uninstall", "beakerx", "--py", "--sys-prefix"])
-    subprocess.check_call(["jupyter", "serverextension", "disable", "beakerx", "--py", "--sys-prefix"])
+def _uninstall_nbextension(extra_args):
+    subprocess.check_call(["jupyter", "nbextension", "disable", "beakerx", "--py"] + extra_args)
+    subprocess.check_call(["jupyter", "nbextension", "uninstall", "beakerx", "--py"] + extra_args)
+    subprocess.check_call(["jupyter", "serverextension", "disable", "beakerx", "--py"] + extra_args)
 
 
-def _install_nbextension():
+def _install_nbextension(extra_args):
     if sys.platform == 'win32':
-        subprocess.check_call(["jupyter", "nbextension", "install", "beakerx", "--py", "--sys-prefix"])
+        subprocess.check_call(["jupyter", "nbextension", "install", "beakerx", "--py"] + extra_args)
     else:
-        subprocess.check_call(["jupyter", "nbextension", "install", "beakerx", "--py", "--symlink", "--sys-prefix"])
+        subprocess.check_call(["jupyter", "nbextension", "install", "beakerx", "--py", "--symlink"] + extra_args)
 
-    subprocess.check_call(["jupyter", "nbextension", "enable", "beakerx", "--py", "--sys-prefix"])
+    subprocess.check_call(["jupyter", "nbextension", "enable", "beakerx", "--py"] + extra_args)
 
-    subprocess.check_call(["jupyter", "serverextension", "enable", "beakerx", "--py", "--sys-prefix"])
+    subprocess.check_call(["jupyter", "serverextension", "enable", "beakerx", "--py"] + extra_args)
 
 
 def _install_labextensions(lab):
@@ -101,7 +101,7 @@ def _install_css():
     shutil.copyfile(os.path.join(src_base, 'custom.css'), os.path.join(dst_base, 'custom.css'))
 
 
-def _install_kernels():
+def _install_kernels(extra_args):
     base_classpath = _classpath_for('base')
 
     for kernel in _all_kernels():
@@ -118,9 +118,9 @@ def _install_kernels():
                 f.write(contents)
             install_cmd = [
                 'jupyter', 'kernelspec', 'install',
-                '--sys-prefix', '--replace',
+                '--replace',
                 '--name', kernel, kernel_dir
-            ]
+            ] + extra_args
             subprocess.check_call(install_cmd)
 
 
@@ -198,24 +198,43 @@ def make_parser():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--prefix",
                         help="location of the environment to install into",
-                        default=sys.prefix)
+                        default="")
     parser.add_argument("--disable",
                         help="Remove Beakerx extension",
                         action='store_true')
+    parser.add_argument("--user",
+                        help="Install to per-user jupyter registry",
+                        action='store_true')
+    parser.add_argument("--sys-prefix",
+                        help="Install to Python's sys.prefix. Useful in conda/virtual environments.",
+                        action='store_true')
     return parser
 
+def _calculate_args(args):
+    args.extra_args = []
+    if args.user and args.sys_prefix:
+        log.warn("Both --user and --sys-prefix specified, ignore --user")
+    if args.sys_prefix:
+        if args.prefix == "":
+            args.prefix = sys.prefix
+        args.extra_args.append("--sys-prefix")
+    elif args.user:
+        if args.prefix == "":
+            args.prefix = os.path.expanduser("~/.local")
+        args.extra_args.append("--user")
+    return args
 
 def _disable_beakerx(args):
-    _uninstall_nbextension()
+    _uninstall_nbextension(args.extra_args)
     _uninstall_labextensions(args.lab)
     _uninstall_kernels()
     _install_kernelspec_manager(args.prefix, disable=True)
 
 
 def _install_beakerx(args):
-    _install_nbextension()
+    _install_nbextension(args.extra_args)
     _install_labextensions(args.lab)
-    _install_kernels()
+    _install_kernels(args.extra_args)
     _install_css()
     _copy_icons()
     _install_kernelspec_manager(args.prefix)
@@ -224,9 +243,11 @@ def _install_beakerx(args):
 
 
 def install(args):
+    _calculate_args(args)
     _install_beakerx(args)
 
 def uninstall(args):
+    _calculate_args(args)
     _disable_beakerx(args)
 
 

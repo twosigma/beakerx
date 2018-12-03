@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.twosigma.beakerx.util.Preconditions.checkNotEmpty;
 import static java.util.Arrays.asList;
 import static java.util.Collections.EMPTY_LIST;
 
@@ -140,12 +141,15 @@ public class SparkConfiguration extends VBox {
 
   public static class Configuration {
 
+    public static final String PROPERTY_NAME_CAN_NOT_BE_EMPTY = "Property 'name' can not be empty";
+    public static final String PROPERTY_VALUE_CAN_NOT_BE_EMPTY = "Property 'value' can not be empty";
+
     private String name;
     private String value;
 
     public Configuration(String name, String value) {
-      this.name = name;
-      this.value = value;
+      this.name = checkNotEmpty(name, PROPERTY_NAME_CAN_NOT_BE_EMPTY);
+      this.value = checkNotEmpty(value, PROPERTY_VALUE_CAN_NOT_BE_EMPTY);
     }
 
     public String getName() {

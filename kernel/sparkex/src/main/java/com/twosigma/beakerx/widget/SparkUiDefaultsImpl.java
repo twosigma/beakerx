@@ -174,7 +174,13 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
       builder.config(key, (String) value);
     } else if (key.equals(PROPERTIES)) {
       List<Map<String, String>> props = (List<Map<String, String>>) value;
-      props.forEach(x -> builder.config(x.get(NAME), x.get(VALUE)));
+      props.forEach(x -> {
+        String pname = x.get(NAME);
+        String pvalue = x.get(VALUE);
+        if ((pname != null && !pname.isEmpty()) && (pvalue != null && !pvalue.isEmpty())) {
+          builder.config(x.get(NAME), x.get(VALUE));
+        }
+      });
     }
   }
 

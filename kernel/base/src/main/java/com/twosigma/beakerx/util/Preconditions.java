@@ -24,7 +24,7 @@ public class Preconditions {
     return reference;
   }
 
-  public static <T> T checkNotNull(T reference,String message) {
+  public static <T> T checkNotNull(T reference, String message) {
     if (reference == null) {
       throw new NullPointerException(message);
     }
@@ -35,6 +35,17 @@ public class Preconditions {
     if (!expression) {
       throw new IllegalStateException();
     }
+  }
+
+  public static String checkNotEmpty(String text) {
+    return checkNotEmpty(text, "");
+  }
+
+  public static String checkNotEmpty(String text, String errorMessage) {
+    if (text == null || text.isEmpty()) {
+      throw new IllegalStateException(errorMessage);
+    }
+    return text;
   }
 
 }

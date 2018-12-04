@@ -135,9 +135,9 @@ def _uninstall_kernels():
             pass #uninstal_cmd prints the appropriate message
 
 
-def _install_magics():
+def _install_magics(prefix):
     log.info("installing groovy magic for python...")
-    dir_path = os.path.join(sys.prefix, 'etc', 'ipython')
+    dir_path = os.path.join(prefix, 'etc', 'ipython')
     os.makedirs(dir_path, exist_ok=True)
     with open(os.path.join(dir_path, 'ipython_config.py'), 'w+') as ipython_config:
         ipython_config.write("c = get_config()\n")
@@ -238,7 +238,7 @@ def _install_beakerx(args):
     _install_css()
     _copy_icons()
     _install_kernelspec_manager(args.prefix)
-    _install_magics()
+    _install_magics(args.prefix)
     _set_conf_privileges()
 
 

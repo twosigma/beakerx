@@ -15,7 +15,7 @@ import argparse
 import sys
 import beakerx
 from notebook import notebookapp as app
-from .install import install, uninstall
+from .install import install, uninstall, make_parser
 from .bkr2ipynb import main
 from beakerx_magics import Py4JServer
 
@@ -23,24 +23,14 @@ from beakerx_magics import Py4JServer
 def install_subparser(subparser):
     install_parser = subparser.add_parser('install', help='installs BeakerX extensions')
     install_parser.set_defaults(func=install)
-    install_parser.add_argument("--prefix",
-                                help="location of the environment to install into",
-                                default=sys.prefix)
-    install_parser.add_argument("--lab",
-                                help="install lab extension",
-                                action='store_true')
+    make_parser(install_parser)
     return subparser
 
 
 def uninstall_subparser(subparser):
     uninstall_parser = subparser.add_parser('uninstall', help='uninstalls BeakerX extensions')
     uninstall_parser.set_defaults(func=uninstall)
-    uninstall_parser.add_argument("--prefix",
-                                  help="location of the environment to uninstall from",
-                                  default=sys.prefix)
-    uninstall_parser.add_argument("--lab",
-                                help="uninstall lab extension",
-                                action='store_true')
+    make_parser(uninstall_parser)
     return subparser
 
 

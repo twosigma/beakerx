@@ -194,19 +194,20 @@ def _install_kernelspec_manager(prefix, disable=False):
     log.info("{}abled BeakerX server config".format(action_prefix))
 
 
-def make_parser():
-    parser = argparse.ArgumentParser(description=__doc__)
+def make_parser(parser=None):
+    if parser is None:
+        parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--prefix",
-                        help="location of the environment to install into",
+                        help="Location of the environment to install/uninstall into",
                         default="")
-    parser.add_argument("--disable",
-                        help="Remove Beakerx extension",
+    parser.add_argument("--lab",
+                        help="Install/uninstall lab extension",
                         action='store_true')
     parser.add_argument("--user",
-                        help="Install to per-user jupyter registry",
+                        help="Install/uninstall to per-user jupyter registry",
                         action='store_true')
     parser.add_argument("--sys-prefix",
-                        help="Install to Python's sys.prefix. Useful in conda/virtual environments.",
+                        help="Install/uninstall to Python's sys.prefix. Useful in conda/virtual environments.",
                         action='store_true')
     return parser
 

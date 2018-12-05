@@ -50,6 +50,9 @@ define([
       scope.plotRange.calcMapping = function() {
       };
 
+      scope.plotRange.calcRange = function() {
+      };
+
       scope.calcLegendableItem = function() {
         scope.legendableItem = 0;
         var visitor = {

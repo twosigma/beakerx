@@ -23,24 +23,32 @@ import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
+import com.twosigma.beakerx.kernel.magic.command.CodeFactory;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
-import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.kernel.magic.command.functionality.LoadMagicMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.scala.evaluator.NoBeakerxObjectTestFactory;
 import com.twosigma.beakerx.scala.evaluator.ScalaEvaluator;
 import com.twosigma.beakerx.scala.kernel.Scala;
 import com.twosigma.beakerx.scala.magic.command.EnableSparkSupportMagicCommand;
-import com.twosigma.beakerx.scala.magic.command.EnableSparkSupportMagicInitConfigurationTest;
-import com.twosigma.beakerx.widget.TestWidgetUtils;
+import com.twosigma.beakerx.scala.magic.command.SparkInitCommandFactory;
+import com.twosigma.beakerx.table.serializer.TableDisplaySerializer;
+import com.twosigma.beakerx.widget.PreviewTableDisplay;
+import org.junit.Test;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import static com.twosigma.beakerx.scala.magic.command.EnableSparkSupportMagicCommand.ENABLE_SPARK_SUPPORT;
-import static com.twosigma.beakerx.table.TableDisplay.VIEW_NAME_VALUE;
-import static com.twosigma.beakerx.widget.Widget.VIEW_NAME;
+import static com.twosigma.beakerx.table.TableDisplay.TABLE_DISPLAY_SUBTYPE;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.getState;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.getValueForProperty;
+import static com.twosigma.beakerx.widget.Widget.DESCRIPTION;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -73,14 +81,38 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
     return new EvaluatorParameters(kernelParameters);
   }
 
-  public void sparkDisplayer() throws Exception {
-    enableSparkSupport();
-    runSparkDataset("ds");
+  @Test
+  public void sparkPreviewDisplayer() throws Exception {
+    try {
+      enableSparkSupport();
+      runSparkDataset("ds");
+      //then
+      Optional<Message> preview = EvaluatorResultTestWatcher.waitForUpdateMessage(getKernelSocketsService().getKernelSockets());
+      assertThat(getValueForProperty(preview.get(), DESCRIPTION, String.class)).contains(PreviewTableDisplay.PREVIEW);
+    } finally {
+      stopSpark();
+    }
   }
 
+  @Test
   public void sparkImplicit() throws Exception {
-    enableSparkSupport();
-    runSparkDataset("ds.display(1)");
+    try {
+      enableSparkSupport();
+      runSparkDataset("ds.display(1)");
+      //then
+      Optional<Message> table = EvaluatorResultTestWatcher.waitForUpdateMessage(getKernelSocketsService().getKernelSockets());
+      assertThat(((Map) getState(table.get()).get("model")).get(TableDisplaySerializer.TYPE)).isEqualTo(TABLE_DISPLAY_SUBTYPE);
+    } finally {
+      stopSpark();
+    }
+  }
+
+  private void stopSpark() {
+    String code =
+            "spark.stop()\n";
+    Message messageWithCode = MessageFactoryTest.getExecuteRequestMessage(code);
+    //when
+    getKernelSocketsService().handleMsg(messageWithCode);
   }
 
   private void enableSparkSupport() throws InterruptedException {
@@ -102,28 +134,137 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
                     "    .master(\"local[*]\")\n" +
                     "    .getOrCreate()\n" +
                     "val ds = spark.read.json(\"file://" + peoplePath + "\")\n"
-                    + returnStatement;
+                    + returnStatement + "\n";
 
     Message messageWithCode = MessageFactoryTest.getExecuteRequestMessage(code);
-    getKernelSocketsService().handleMsg(messageWithCode);
-    Optional<Message> idleMessage = EvaluatorResultTestWatcher.waitForIdleMessage(getKernelSocketsService().getKernelSockets());
-    assertThat(idleMessage).isPresent();
 
-    List<Message> publishedMessages = getKernelSocketsService().getKernelSockets().getPublishedMessages();
-    Message message = publishedMessages.get(2);
-    assertThat(message.type()).isEqualTo(JupyterMessages.COMM_OPEN);
-    Map data = TestWidgetUtils.getData(message);
-    Map state = (Map) data.get("state");
-    assertThat(state.get(VIEW_NAME)).isEqualTo(VIEW_NAME_VALUE);
-    Message display = publishedMessages.get(4);
-    assertThat(display.type()).isEqualTo(JupyterMessages.DISPLAY_DATA);
+    //when
+    getKernelSocketsService().handleMsg(messageWithCode);
   }
 
   MagicCommandType enableSparkSupportMagicCommand(KernelFunctionality kernel) {
     return new MagicCommandType(
             EnableSparkSupportMagicCommand.ENABLE_SPARK_SUPPORT,
             "<>",
-            new EnableSparkSupportMagicCommand(kernel, new EnableSparkSupportMagicInitConfigurationTest.SparkInitCommandFactoryMock()));
+            new EnableSparkSupportMagicCommand(kernel, new EnableSparkSupportTest.SparkInitCommandFactoryMock(kernel)));
   }
+
+  static public class SparkInitCommandFactoryMock implements SparkInitCommandFactory {
+
+    boolean isJarAdded = false;
+    boolean isRunOptions = false;
+    boolean isLoadSparkFrom_SPARK_HOME_IfIsNotOnClasspath = false;
+    boolean isLoadLatestVersionOfSparkIfIsNotOnClasspath = false;
+    private KernelFunctionality kernel;
+
+    public SparkInitCommandFactoryMock(KernelFunctionality kernel) {
+
+      this.kernel = kernel;
+    }
+
+    @Override
+    public Command addSparkexJar() {
+      return new Command() {
+        @Override
+        public MagicCommandOutcomeItem run() {
+          isJarAdded = true;
+          return new MagicCommandOutput(MagicCommandOutput.Status.OK);
+        }
+
+        @Override
+        public String getErrorMessage() {
+          return "addSparkexJarError";
+        }
+      };
+    }
+
+    @Override
+    public Command loadSparkSupportMagicClass() {
+      return new Command() {
+        @Override
+        public MagicCommandOutcomeItem run() {
+          Optional<MagicCommandFunctionality> magic = CodeFactory.findMagicCommandFunctionality(kernel.getMagicCommandTypes(), LoadMagicMagicCommand.LOAD_MAGIC);
+          MagicCommandOutcomeItem magicCommandOutcomeItem = ((LoadMagicMagicCommand) magic.get())
+                  .load("com.twosigma.beakerx.scala.magic.command.LoadSparkSupportMagicCommand");
+          return magicCommandOutcomeItem;
+        }
+
+        @Override
+        public String getErrorMessage() {
+          return "Cannot load LoadSparkSupportMagicCommand class";
+        }
+      };
+    }
+
+    @Override
+    public Command runOptions(MagicCommandExecutionParam param) {
+
+      return new Command() {
+        @Override
+        public MagicCommandOutcomeItem run() {
+          isRunOptions = true;
+          return new MagicCommandOutput(MagicCommandOutput.Status.OK);
+        }
+
+        @Override
+        public String getErrorMessage() {
+          return "runOptionsError";
+        }
+      };
+    }
+
+    @Override
+    public Command loadSparkFrom_SPARK_HOME_IfIsNotOnClasspath() {
+      return new Command() {
+        @Override
+        public MagicCommandOutcomeItem run() {
+          isLoadSparkFrom_SPARK_HOME_IfIsNotOnClasspath = true;
+          return new MagicCommandOutput(MagicCommandOutput.Status.OK);
+        }
+
+        @Override
+        public String getErrorMessage() {
+          return "loadSparkFrom_SPARK_HOME_IfIsNotOnClasspathError";
+        }
+      };
+    }
+
+    @Override
+    public Command loadLatestVersionOfSparkIfIsNotOnClasspath(MagicCommandExecutionParam param) {
+      return new Command() {
+        @Override
+        public MagicCommandOutcomeItem run() {
+          isLoadLatestVersionOfSparkIfIsNotOnClasspath = true;
+          return new MagicCommandOutput(MagicCommandOutput.Status.OK);
+        }
+
+        @Override
+        public String getErrorMessage() {
+          return "loadLatestVersionOfSparkIfIsNotOnClasspathError";
+        }
+      };
+    }
+
+    @Override
+    public Command loadSparkSupportMagic(MagicCommandExecutionParam param) {
+      return new Command() {
+        @Override
+        public MagicCommandOutcomeItem run() {
+          String loadSparkMagic = "%loadSparkSupport";
+          Optional<MagicCommandFunctionality> magic = CodeFactory.findMagicCommandFunctionality(kernel.getMagicCommandTypes(), loadSparkMagic);
+          MagicCommandOutcomeItem execute = magic.get()
+                  .execute(param);
+          return execute;
+        }
+
+        @Override
+        public String getErrorMessage() {
+          return "Error loading Spark, was it added to the classpath?";
+        }
+      };
+    }
+
+  }
+
 
 }

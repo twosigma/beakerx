@@ -15,20 +15,20 @@
  */
 package com.twosigma.beakerx;
 
-import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.restserver.RESTAction;
 
 public class BeakerXServerMock implements BeakerXServer {
 
   @Override
   public BeakerXServer get(KernelFunctionality kernel) {
-    return null;
+    return this;
   }
 
   @Override
   public String getURL() {
-    return null;
+    return "";
   }
 
   @Override

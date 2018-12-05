@@ -38,7 +38,9 @@ dependencies {
 
     provided group: 'org.apache.spark', name: 'spark-core_2.11', version: '2.2.1'
     provided group: 'org.apache.spark', name: 'spark-sql_2.11', version: '2.2.1'
-    provided group: 'com.twosigma', name: 'flint', version: '0.6.0'
+    provided('com.twosigma:flint:0.6.0'){
+        transitive = false
+    }
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile project(':base').sourceSets.test.output

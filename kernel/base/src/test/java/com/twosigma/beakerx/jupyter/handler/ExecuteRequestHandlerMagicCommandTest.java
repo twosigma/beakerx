@@ -16,23 +16,37 @@
 
 package com.twosigma.beakerx.jupyter.handler;
 
-import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
-import static com.twosigma.beakerx.kernel.magic.command.functionality.JavaScriptMagicCommand.JAVASCRIPT;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
+import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.handler.ExecuteRequestHandler;
+import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.TestWidgetUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Optional;
+
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForStreamMessage;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForUpdateMessage;
+import static com.twosigma.beakerx.kernel.magic.command.functionality.JavaScriptMagicCommand.JAVASCRIPT;
+import static com.twosigma.beakerx.mimetype.MIMEContainer.MIME.APPLICATION_JAVASCRIPT;
+import static com.twosigma.beakerx.mimetype.MIMEContainer.MIME.TEXT_PLAIN;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.getValueForProperty;
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class ExecuteRequestHandlerMagicCommandTest {
 
-  public static final String DEMO_FILES_DEMO_RESOURCES_BEAKER_XCLASSPATH_TEST_JAR = "../../doc/resources/jar/BeakerXClasspathTest.jar";
-  public static final String DEMO_FILES_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR = "../../doc/resources/jar/demo.jar";
+  public static final String BEAKERX_CLASSPATH_TEST_JAR = "BeakerXClasspathTest.jar";
+  public static final String DEMO_FILES_DEMO_RESOURCES_BEAKER_XCLASSPATH_TEST_JAR = "../../doc/resources/jar/" + BEAKERX_CLASSPATH_TEST_JAR;
+  public static final String DEMO_JAR = "demo.jar";
+  public static final String DEMO_FILES_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR = "../../doc/resources/jar/" + DEMO_JAR;
+  public static final String COM_TWOSIGMA_BEAKERX_WIDGET_INT_SLIDER = "com.twosigma.beakerx.widget.IntSlider";
+  public static final String CODE_CODE_CODE = "code code code";
 
   private KernelTest kernel;
   private EvaluatorTest evaluator;
@@ -63,9 +77,11 @@ public class ExecuteRequestHandlerMagicCommandTest {
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(code);
     //when
     executeRequestHandler.handle(magicMessage);
-    waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(11);
+    Optional<Message> addedJar = waitForUpdateMessage(kernel);
+    assertThat(getValueForProperty(addedJar.get(), "value", String.class)).isEqualTo(BEAKERX_CLASSPATH_TEST_JAR);
+    Optional<Message> result = waitForResult(kernel);
+    assertThat((String) TestWidgetUtils.getData(result.get()).get(TEXT_PLAIN)).contains("import com.example.Demo");
   }
 
   @Test
@@ -75,9 +91,9 @@ public class ExecuteRequestHandlerMagicCommandTest {
             "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKER_XCLASSPATH_TEST_JAR;
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(code);
     executeRequestHandler.handle(magicMessage);
-    waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(10);
+    Optional<Message> addedJar = waitForUpdateMessage(kernel);
+    assertThat(getValueForProperty(addedJar.get(), "value", String.class)).isEqualTo(BEAKERX_CLASSPATH_TEST_JAR);
   }
 
   @Test
@@ -88,13 +104,15 @@ public class ExecuteRequestHandlerMagicCommandTest {
             "1+1";
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(code);
     executeRequestHandler.handle(magicMessage);
-    waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(11);
+    Optional<Message> addedJar = waitForUpdateMessage(kernel);
+    assertThat(getValueForProperty(addedJar.get(), "value", String.class)).isEqualTo(BEAKERX_CLASSPATH_TEST_JAR);
+    Optional<Message> result = waitForResult(kernel);
+    assertThat((String) TestWidgetUtils.getData(result.get()).get(TEXT_PLAIN)).contains("1+1");
   }
 
   @Test
-  public void noResetEnvironmentForDuplicatedPath() throws Exception {
+  public void noResetEnvironmentForDuplicatedPath() {
     //when
     String code = "" +
             "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKER_XCLASSPATH_TEST_JAR + "\n" +
@@ -113,31 +131,33 @@ public class ExecuteRequestHandlerMagicCommandTest {
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(JAVASCRIPT + jsCode);
     //when
     executeRequestHandler.handle(magicMessage);
-    waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(4);
+    Optional<Message> result = waitForResult(kernel);
+    assertThat((String) TestWidgetUtils.getData(result.get()).get(APPLICATION_JAVASCRIPT)).contains("alert()");
   }
 
+  @Test
   public void handleImportMagicCommandAndExecuteTheCode() throws Exception {
     //given
     String code = "" +
-            "%import com.twosigma.beakerx.widget.IntSlider\n" +
+            "%import " + COM_TWOSIGMA_BEAKERX_WIDGET_INT_SLIDER + "\n" +
             "w = new IntSlider()";
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(code);
     //when
     executeRequestHandler.handle(magicMessage);
-    waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(8);
+    Optional<Message> result = waitForResult(kernel);
+    assertThat((String) TestWidgetUtils.getData(result.get()).get(TEXT_PLAIN)).contains("new IntSlider()");
+    assertThat(kernel.getImports().getImportPaths()).contains(new ImportPath(COM_TWOSIGMA_BEAKERX_WIDGET_INT_SLIDER));
   }
 
   @Test
   public void noResetEnvironmentForDuplicatedImportPath() throws Exception {
     //when
     String code = "" +
-            "%import com.twosigma.beakerx.widget.IntSlider\n" +
-            "%import com.twosigma.beakerx.widget.IntSlider\n" +
-            "%import com.twosigma.beakerx.widget.IntSlider\n";
+            "%import " + COM_TWOSIGMA_BEAKERX_WIDGET_INT_SLIDER + "\n" +
+            "%import " + COM_TWOSIGMA_BEAKERX_WIDGET_INT_SLIDER + "\n" +
+            "%import " + COM_TWOSIGMA_BEAKERX_WIDGET_INT_SLIDER + "\n";
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(code);
     executeRequestHandler.handle(magicMessage);
     waitForIdleMessage(kernel);
@@ -152,6 +172,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     noCode(code);
   }
 
+  @Test
   public void noCodeToExecuteWithWhiteSpaces() throws InterruptedException {
     //given
     String code = "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR + "\n" +
@@ -167,8 +188,6 @@ public class ExecuteRequestHandlerMagicCommandTest {
     executeRequestHandler.handle(magicMessage);
     waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(10);
-    //assertThat(kernel.getSentMessages().size()).isEqualTo(1);
     assertThat(kernel.getCode()).isNull();
   }
 
@@ -176,16 +195,15 @@ public class ExecuteRequestHandlerMagicCommandTest {
   public void codeToExecute() throws InterruptedException {
     //given
     String code = "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR + "\n" +
-            "code code code";
+            CODE_CODE_CODE;
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(code);
     //when
     executeRequestHandler.handle(magicMessage);
-    waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(11);
-    assertThat(kernel.getCode()).isEqualTo("code code code");
+    Optional<Message> result = waitForResult(kernel);
+    assertThat((String) TestWidgetUtils.getData(result.get()).get(TEXT_PLAIN)).contains(CODE_CODE_CODE);
+    assertThat(kernel.getCode()).isEqualTo(CODE_CODE_CODE);
   }
-
 
   @Test
   public void handleMagicClasspathAddJarAndShowClasspath() throws Exception {
@@ -196,23 +214,27 @@ public class ExecuteRequestHandlerMagicCommandTest {
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(code);
     //when
     executeRequestHandler.handle(magicMessage);
-    waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(11);
+    Optional<Message> message = waitForStreamMessage(kernel);
+    assertThat((String) message.get().getContent().get(MessageCreator.TEXT)).contains(DEMO_JAR);
   }
 
   @Test
   public void handleMagicClasspathAddJarAndShowClasspathWithCode() throws Exception {
     //given
+    String codeToExecute = "5+5";
     String code = "" +
             "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR + "\n" +
             "%classpath" + "\n" +
-            "5+5";
+            codeToExecute;
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(code);
     //when
     executeRequestHandler.handle(magicMessage);
     waitForIdleMessage(kernel);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(12);
+    Optional<Message> message = waitForStreamMessage(kernel);
+    assertThat((String) message.get().getContent().get(MessageCreator.TEXT)).contains(DEMO_JAR);
+    Optional<Message> result = waitForResult(kernel);
+    assertThat((String) TestWidgetUtils.getData(result.get()).get(TEXT_PLAIN)).contains(codeToExecute);
   }
 }

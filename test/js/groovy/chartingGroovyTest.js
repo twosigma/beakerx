@@ -31,4 +31,27 @@ describe('Charting Groovy tests ', function () {
     beakerxPO.closeAndHaltNotebook();
   });
 
+  var cellIndex;
+
+  describe('(Groovy) Limit elements for Heatmap ', function(){
+    it('Heatmap has 10_000 elements', function () {
+      cellIndex = 22;
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      var heatmap = dtContainer.$('#maing > g.heatmap');
+      expect(heatmap.isEnabled()).toBeTruthy();
+      expect(heatmap.$$('rect').length).toEqual(10000);
+    });
+  });
+
+  describe('(Groovy) Limit elements for Histogram ', function(){
+    it('Histogram has 10_000 elements', function () {
+      cellIndex += 1;
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      var histgrm = dtContainer.$('#maing > g#i0');
+      expect(histgrm.isEnabled()).toBeTruthy();
+      expect(histgrm.$$('g#i0_yTop > rect').length).toEqual(59);
+      expect(histgrm.$$('g#i0_yTop > rect')[58].getAttribute('id')).toMatch('_9999yTop');
+    });
+  });
+
 });

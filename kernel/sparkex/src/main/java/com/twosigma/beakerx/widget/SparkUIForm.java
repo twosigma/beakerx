@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.widget;
 
-import com.google.gson.internal.LinkedTreeMap;
+import com.twosigma.beakerx.kernel.msg.StacktraceHtmlPrinter;
 import com.twosigma.beakerx.message.Message;
 import org.apache.spark.SparkConf;
 
@@ -70,21 +70,26 @@ public class SparkUIForm extends VBox {
   }
 
   private void createSparkView() {
-    this.profileModal = createProfileModal();
-    this.profileManagement = createProfileManagement();
-    this.masterURL = createMasterURL();
-    this.executorMemory = createExecutorMemory();
-    this.executorCores = createExecutorCores();
-    this.errors = new HBox(new ArrayList<>());
-    this.errors.setDomClasses(asList("bx-spark-connect-error"));
-    this.addConnectButton(createConnectButton(), this.errors);
-    this.add(profileModal);
-    this.add(profileManagement);
-    this.add(masterURL);
-    this.add(executorCores);
-    this.add(executorMemory);
-    this.advancedOption = new SparkConfiguration(sparkEngine.getAdvanceSettings(), sparkEngine.sparkVersion());
-    this.add(advancedOption);
+    try {
+      this.profileModal = createProfileModal();
+      this.profileManagement = createProfileManagement();
+      this.masterURL = createMasterURL();
+      this.executorMemory = createExecutorMemory();
+      this.executorCores = createExecutorCores();
+      this.errors = new HBox(new ArrayList<>());
+      this.errors.setDomClasses(asList("bx-spark-connect-error"));
+      this.addConnectButton(createConnectButton(), this.errors);
+      this.add(profileModal);
+      this.add(profileManagement);
+      this.add(masterURL);
+      this.add(executorCores);
+      this.add(executorMemory);
+      this.advancedOption = new SparkConfiguration(sparkEngine.getAdvanceSettings(), sparkEngine.sparkVersion());
+      this.add(advancedOption);
+    } catch (Exception ex) {
+      sendError(StacktraceHtmlPrinter.printRedBold(ex.getMessage()));
+    }
+
   }
 
   private HBox createProfileModal() {
@@ -136,7 +141,7 @@ public class SparkUIForm extends VBox {
 
     refreshElementsAvailability();
 
-    return new HBox(Arrays.asList(profileDropdown, saveButton,  newButton, removeButton));
+    return new HBox(Arrays.asList(profileDropdown, saveButton, newButton, removeButton));
   }
 
   private void loadProfile() {
@@ -151,7 +156,7 @@ public class SparkUIForm extends VBox {
       this.executorCores.setValue(profileData.getOrDefault(SparkUI.SPARK_EXECUTOR_CORES, SparkUI.SPARK_EXECUTOR_CORES_DEFAULT));
       this.executorMemory.setValue(profileData.getOrDefault(SparkUI.SPARK_EXECUTOR_MEMORY, SparkUI.SPARK_EXECUTOR_MEMORY_DEFAULT));
       Map<String, String> advancedSettings = new HashMap<>();
-      ((ArrayList<Map>)profileData.getOrDefault(SparkUI.SPARK_ADVANCED_OPTIONS, SparkUI.SPARK_ADVANCED_OPTIONS_DEFAULT))
+      ((ArrayList<Map>) profileData.getOrDefault(SparkUI.SPARK_ADVANCED_OPTIONS, SparkUI.SPARK_ADVANCED_OPTIONS_DEFAULT))
               .stream()
               .forEach(x -> {
                 advancedSettings.put(x.get("name").toString(), x.get("value").toString());
@@ -162,11 +167,16 @@ public class SparkUIForm extends VBox {
   }
 
   private void saveProfile() {
-    HashMap sparkProfile = getCurrentConfig();
-    sparkProfile.put("name", profile.getValue());
-    sparkUiDefaults.saveProfile(sparkProfile);
-    profile.setOptions(sparkUiDefaults.getProfileNames());
-    profile.setValue(sparkProfile.get("name"));
+    try {
+      this.clearErrors();
+      HashMap sparkProfile = getCurrentConfig();
+      sparkProfile.put("name", profile.getValue());
+      sparkUiDefaults.saveProfile(sparkProfile);
+      profile.setOptions(sparkUiDefaults.getProfileNames());
+      profile.setValue(sparkProfile.get("name"));
+    } catch (Exception ex) {
+      sendError(StacktraceHtmlPrinter.printRedBold(ex.getMessage()));
+    }
   }
 
   private void newProfile() {
@@ -333,7 +343,7 @@ public class SparkUIForm extends VBox {
     refreshElementsAvailability();
   }
 
-  public void refreshElementsAvailability(){
+  public void refreshElementsAvailability() {
     removeButton.setDisabled(this.profile.getValue().equals(DEFAULT_PROFILE));
   }
 

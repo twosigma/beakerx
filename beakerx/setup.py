@@ -48,7 +48,7 @@ cmdclass['js-lab'] = install_node_modules(
     build_dir=os.path.join(here, '../js/lab', 'dist'),
     source_dir=os.path.join(here, '../js/lab', 'src')
 )
-cmdclass['java'] = run_gradle(cmd='build')
+cmdclass['java'] = run_gradle(cmd='build', skip_tests=True)
 cmdclass['javadoc'] = run_gradle(cmd='base:javadoc')
 
 setup_args = dict(

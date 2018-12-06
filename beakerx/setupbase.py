@@ -21,17 +21,16 @@ contains a set of useful utilities for installing node modules
 within a Python package.
 """
 
-import os
 import functools
+import os
 import pipes
 import sys
-import shutil
-from subprocess import check_call
+from distutils import log
 from setuptools import Command
+from setuptools.command.bdist_egg import bdist_egg
 from setuptools.command.develop import develop
 from setuptools.command.sdist import sdist
-from setuptools.command.bdist_egg import bdist_egg
-from distutils import log
+from subprocess import check_call
 
 try:
     from wheel.bdist_wheel import bdist_wheel
@@ -44,7 +43,6 @@ else:
     def list2cmdline(cmd_list):
         return ' '.join(map(pipes.quote, cmd_list))
 
-
 # ---------------------------------------------------------------------------
 # Top Level Variables
 # ---------------------------------------------------------------------------
@@ -53,7 +51,7 @@ else:
 here = os.path.abspath(os.path.dirname(sys.argv[0]))
 root = os.path.abspath(os.path.join(here, os.pardir))
 kernel_path = os.path.join(root, 'kernel')
-kernel_source = os.path.join(kernel_path, 'base','src', 'main', 'java')
+kernel_source = os.path.join(kernel_path, 'base', 'src', 'main', 'java')
 is_repo = os.path.exists(os.path.join(root, '.git'))
 node_modules = os.path.join(here, 'js', 'node_modules')
 node_modules_path = ':'.join([
@@ -68,17 +66,19 @@ if "--skip-yarn" in sys.argv:
 else:
     skip_yarn = False
 
+
 # ---------------------------------------------------------------------------
 # Public Functions
 # ---------------------------------------------------------------------------
 def _classpath_for(kernel):
     return pkg_resources.resource_filename(
-            'beakerx', os.path.join('kernel', kernel, 'lib', '*'))
+        'beakerx', os.path.join('kernel', kernel, 'lib', '*'))
+
 
 def get_version(path):
     version = {}
     with open(os.path.join(here, path)) as f:
-        exec(f.read(), {}, version)
+        exec (f.read(), {}, version)
     return version['__version__']
 
 
@@ -198,6 +198,7 @@ def combine_commands(*commands):
         def run(self):
             for c in self.commands:
                 c.run()
+
     return CombinedCommand
 
 
@@ -291,7 +292,8 @@ def install_node_modules(path=None, build_dir=None, source_dir=None, build_cmd='
 
     return Yarn
 
-def run_gradle(path=kernel_path, cmd='build'):
+
+def run_gradle(path=kernel_path, cmd='build', skip_tests=False):
     """Return a Command for running gradle scripts.
 
     Parameters
@@ -305,10 +307,18 @@ def run_gradle(path=kernel_path, cmd='build'):
     class Gradle(BaseCommand):
         description = 'Run gradle script'
 
+        def skip_test_option(self, skip):
+            if skip:
+                return '-Dskip.tests=True'
+            else:
+                return '-Dskip.tests=False'
+
         def run(self):
-            run([('' if sys.platform == 'win32' else './') + 'gradlew', '--no-daemon', cmd], cwd=path)
+            run([('' if sys.platform == 'win32' else './') + 'gradlew', '--no-daemon', cmd,
+                 self.skip_test_option(skip_tests)], cwd=path)
 
     return Gradle
+
 
 def ensure_targets(targets):
     """Return a Command that checks that certain files exist.
@@ -396,6 +406,7 @@ def wrap_command(cmds, data_dirs, cls, strict=True):
     strict: boolean, optional
         Wether to raise errors when a pre-command fails.
     """
+
     class WrappedCommand(cls):
 
         def run(self):
@@ -417,6 +428,7 @@ def wrap_command(cmds, data_dirs, cls, strict=True):
             # also update package data
             update_package_data(self.distribution)
             return result
+
     return WrappedCommand
 
 

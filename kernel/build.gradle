@@ -47,6 +47,8 @@ subprojects {
 
   test.finalizedBy jacocoTestReport
 
+  test.onlyIf { ! Boolean.getBoolean('skip.tests') }
+
   test {
     systemProperties 'java.awt.headless': "true"
     if (project.hasProperty('showTestOut')) {

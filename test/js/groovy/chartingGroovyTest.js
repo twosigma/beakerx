@@ -33,8 +33,8 @@ describe('Charting Groovy tests ', function () {
 
   var cellIndex;
 
-  describe('(Groovy) Limit elements for Heatmap ', function(){
-    it('Heatmap has 10_000 elements', function () {
+  describe('(Groovy) Limit of elements for Heatmap ', function(){
+    it('Heatmap has 10_000 elements ', function () {
       cellIndex = 22;
       var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
       var heatmap = dtContainer.$('#maing > g.heatmap');
@@ -43,14 +43,24 @@ describe('Charting Groovy tests ', function () {
     });
   });
 
-  describe('(Groovy) Limit elements for Histogram ', function(){
-    it('Histogram has 10_000 elements', function () {
+  describe('(Groovy) Limit of elements for Histogram ', function(){
+    it('Histogram has 10_000 elements ', function () {
       cellIndex += 1;
       var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
       var histgrm = dtContainer.$('#maing > g#i0');
       expect(histgrm.isEnabled()).toBeTruthy();
       expect(histgrm.$$('g#i0_yTop > rect').length).toEqual(59);
       expect(histgrm.$$('g#i0_yTop > rect')[58].getAttribute('id')).toMatch('_9999yTop');
+    });
+  });
+
+  describe('(Groovy) Limit of elements for TreeMap ', function () {
+    it('TreeMap has 100 elements ', function () {
+      cellIndex += 1;
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      var treemap = dtContainer.$('#maing > g');
+      expect(treemap.isEnabled()).toBeTruthy();
+      expect(treemap.$$('g.cell').length).toEqual(100);
     });
   });
 

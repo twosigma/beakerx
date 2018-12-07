@@ -31,4 +31,35 @@ describe('Charting Python tests ', function () {
     beakerxPO.closeAndHaltNotebook();
   });
 
+  describe('(Python) Limit of elements for Heatmap ', function(){
+    it('Heatmap has 10_000 elements ', function () {
+      cellIndex = 22;
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      var heatmap = dtContainer.$('#maing > g.heatmap');
+      expect(heatmap.isEnabled()).toBeTruthy();
+      expect(heatmap.$$('rect').length).toEqual(10000);
+    });
+  });
+
+  describe('(Python) Limit of elements for Histogram ', function(){
+    it('Histogram has 10_000 elements ', function () {
+      cellIndex += 1;
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      var histgrm = dtContainer.$('#maing > g#i0');
+      expect(histgrm.isEnabled()).toBeTruthy();
+      expect(histgrm.$$('g#i0_yTop > rect').length).toEqual(59);
+      expect(histgrm.$$('g#i0_yTop > rect')[58].getAttribute('id')).toMatch('_9999yTop');
+    });
+  });
+
+  describe('(Python) Limit of elements for TreeMap ', function () {
+    it('TreeMap has 100 elements ', function () {
+      cellIndex += 1;
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      var treemap = dtContainer.$('#maing > g');
+      expect(treemap.isEnabled()).toBeTruthy();
+      expect(treemap.$$('g.cell').length).toEqual(100);
+    });
+  });
+
 });

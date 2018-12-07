@@ -60,6 +60,7 @@ conda config --env --add pinned_packages 'openjdk=8.0.121'
 conda install -y -c conda-forge ipywidgets
 (cd beakerx; pip install -e . --verbose)
 beakerx install
+beakerx_databrowser install
 ```
 
 ### Build and Install (win)
@@ -72,6 +73,7 @@ cd beakerx
 pip install -e . --verbose
 cd ..
 beakerx install
+beakerx_databrowser install
 ```
 
 ### Build and Install for Jupyter Lab

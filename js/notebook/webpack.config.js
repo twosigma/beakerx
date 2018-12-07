@@ -216,21 +216,44 @@ module.exports = [
     plugins: plugins
   },
   {// BeakerXTree JupyterLab bundle
-      entry: './src/tree-lab.ts',
-      output: {
-          filename: 'tree.js',
-          path: path.resolve(__dirname, '../lab/lib/'),
-          libraryTarget: 'amd'
-      },
-      module: {
-          rules: rules
-      },
-      resolve: resolve,
-      externals: externals.concat([
-          '@phosphor/widgets',
-          '@phosphor/commands',
-          '@phosphor/messaging',
-      ]),
-      plugins: plugins
+    entry: './src/tree-lab.ts',
+    output: {
+        filename: 'tree.js',
+        path: path.resolve(__dirname, '../lab/lib/'),
+        libraryTarget: 'amd'
+    },
+    module: {
+        rules: rules
+    },
+    resolve: resolve,
+    externals: externals.concat([
+        '@phosphor/widgets',
+        '@phosphor/commands',
+        '@phosphor/messaging',
+    ]),
+    plugins: plugins
   },
+  {// Bundle of data browser
+    entry: './src/extension/dataBrowser/extension.js',
+    output: {
+      filename: 'extension.js',
+      path: path.resolve(__dirname, '../../beakerx/beakerx_databrowser/static'),
+      libraryTarget: 'amd'
+    },
+    module: {
+      rules: rules
+    },
+    resolve: resolve,
+    externals: [
+      'services/config',
+      'base/js/utils',
+      'base/js/namespace',
+      'base/js/events',
+      'require'
+    ],
+    watchOptions: {
+      ignored: /node_modules/
+    },
+    plugins: plugins
+  }
 ];

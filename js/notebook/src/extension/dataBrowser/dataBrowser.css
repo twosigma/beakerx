@@ -36,10 +36,9 @@
   font-size: 0;
   padding: 12px 12px 15px 12px;
   border: 1px solid #D0D8DF;
-  margin-bottom: 20px;
+  margin: 0 10px 20px 10px;
   border-radius: 1px;
   background: #fff;
-  width: 100%;
   position: relative;
 }
 
@@ -142,8 +141,16 @@ p.hit-description {
   cursor: move;
 }
 
+#data_side_panel a {
+  cursor: pointer;
+}
 .des-column {
   padding: 12px 12px 15px 12px;
   border: 1px solid #D0D8DF;
   margin: 5px 10px 0 10px;
+}
+
+ul.breadcrumb {
+  margin-bottom: 0px;
+  padding: 0 15px;
 }

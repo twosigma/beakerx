@@ -5,7 +5,7 @@
       "description": "Updated daily, this database contains Brave New Coin's Global Weighted Averages.",
       "img": "https://quandl-data-upload.s3.amazonaws.com/uploads/source/profile_image/15084/bnc_logo.png",
       "code": "BNC3/GWA_BTC",
-      "outlink": "https://www.quandl.com/data/BNC3/GWA_BTC-BraveNewCoin-Daily-Global-Price-Index-for-Bitcoin",
+      "outlink": "https://quandl-production-data-upload.s3.amazonaws.com/uploads/vendor/profile_image/27/thumb_bnc_logo.png",
       "frequency": "Monthly",
       "refreshed": "2 months ago",
       "provider": "Quandl"
@@ -49,7 +49,7 @@
     },{
       "name": "National Stock Exchange of India",
       "description": "Stock and index data from the National Stock Exchange of India.",
-      "img": "https://quandl-data-upload.s3.amazonaws.com/uploads/source/profile_image/33/nse.png",
+      "img": "https://quandl-production-data-upload.s3.amazonaws.com/uploads/vendor/profile_image/16/thumb_exchange-data.jpg",
       "code": "NSE/DOLLAR",
       "outlink" : "https://www.quandl.com/data/NSE/DOLLAR-Dollar-Industries-Limited",
       "frequency": "Daily",

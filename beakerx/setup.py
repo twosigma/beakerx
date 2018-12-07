@@ -84,12 +84,16 @@ setup_args = dict(
     ],
     entry_points={
         'console_scripts': [
-            'beakerx = beakerx:run'
+            'beakerx = beakerx:run',
+            'beakerx_databrowser = beakerx_databrowser:run'
         ]
     },
     package_data={
         'beakerx': [
             'kernel/*/kernel.json'
+        ],
+        'beakerx_datacatalog': [
+            'static/*.js'
         ]
     },
     data_files          = [(

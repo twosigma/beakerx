@@ -27,15 +27,15 @@ export default class PointsLimitModal {
   init() {
     const plotModel = this.scope.model.model;
 
-    if (!plotModel.numberOfPoints) {
+    if (!plotModel.totalNumberOfPoints) {
       return;
     }
 
     const compiled = _.template(require('./pointsLimitModal.html'))({
       scopeId: this.scope.id,
-      outputPointsLimit: plotModel.outputPointsLimit.toLocaleString('en'),
-      outputPointsPreviewNumber: plotModel.outputPointsPreviewNumber.toLocaleString('en'),
-      numberOfPoints: plotModel.numberOfPoints.toLocaleString('en')
+      outputPointsLimit: plotModel.rowsLimitItems.toLocaleString('en'),
+      outputPointsPreviewNumber: plotModel.numberOfPointsToDisplay.toLocaleString('en'),
+      numberOfPoints: plotModel.totalNumberOfPoints.toLocaleString('en')
     });
     const $modal = $(compiled);
 
@@ -43,7 +43,7 @@ export default class PointsLimitModal {
 
     this.scope.element.prepend($modal);
 
-    if (plotModel.numberOfPoints > plotModel.outputPointsLimit) {
+    if (plotModel.tooManyRows) {
       $modal.show();
     }
   };

@@ -12,17 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import copy
 import json
-
-from pandas import DataFrame
+from beakerx.beakerx_widgets import BeakerxDOMWidget
 from beakerx.plot.legend import LegendPosition, LegendLayout
-from beakerx.utils import *
 from beakerx.plot.plotitem import *
 from beakerx.plot.plotitem_treemap import *
+from beakerx.utils import *
 from enum import Enum
-from traitlets import Unicode, Dict
-from beakerx.beakerx_widgets import BeakerxDOMWidget
 from ipykernel.comm import Comm
+from pandas import DataFrame
+from traitlets import Unicode, Dict
+from .tree_map_reducer import TreeMapReducer
 
 
 class Chart(BaseObject):
@@ -77,7 +78,7 @@ class XYChart(AbstractChart):
         self.log_x = getValue(kwargs, 'logX', False)
         self.x_log_base = getValue(kwargs, 'xLogBase', 10)
         self.lodThreshold = getValue(kwargs, 'lodThreshold')
-    
+
     def add(self, item):
         if isinstance(item, YAxis):
             self.rangeAxes.append(item)
@@ -107,23 +108,89 @@ class XYChart(AbstractChart):
         return self
 
 
+class HeatMapChart(XYChart):
+    ROWS_LIMIT = 10000
+    COLUMN_LIMIT = 100
+
+    @staticmethod
+    def total_points(listOfData):
+        return sum(map(lambda x: len(x), listOfData))
+
+    @staticmethod
+    def find_step_for_column(row):
+        step = 2
+        while (int(len(row) / step)) > HeatMapChart.COLUMN_LIMIT:
+            step += 1
+        return step
+
+    @staticmethod
+    def limit_column_in_row(row):
+        if len(row) > HeatMapChart.COLUMN_LIMIT:
+            step = HeatMapChart.find_step_for_column(row)
+            limited_row = list(map(lambda index: row[index],
+                                   filter(lambda s: s % step == 0,
+                                          [index for index in range(len(row))])))
+            return limited_row
+        else:
+            return row
+
+    @staticmethod
+    def limit_elements_in_row(listOfData):
+        return list(map(HeatMapChart.limit_column_in_row, listOfData))
+
+    @staticmethod
+    def limit_rows(listOfData):
+        step = HeatMapChart.find_step_for_column(listOfData)
+        limited_row = list(map(lambda index: listOfData[index],
+                               filter(lambda s: s % step == 0,
+                                      [index for index in range(len(listOfData))])))
+        return limited_row
+
+    @staticmethod
+    def limit_Heatmap(listOfData):
+        limited_elements_in_row = HeatMapChart.limit_elements_in_row(listOfData)
+        total_points = HeatMapChart.total_points(limited_elements_in_row)
+        too_many_rows = total_points > HeatMapChart.ROWS_LIMIT
+        if too_many_rows:
+            return HeatMapChart.limit_rows(limited_elements_in_row)
+        return limited_elements_in_row
+
+    def transform(self):
+        self_copy = copy.copy(self)
+        self_copy.totalNumberOfPoints = HeatMapChart.total_points(self_copy.graphics_list)
+        self_copy.rowsLimitItems = HeatMapChart.ROWS_LIMIT
+        too_many_points = self_copy.totalNumberOfPoints > HeatMapChart.ROWS_LIMIT
+
+        if too_many_points:
+            limited_heat_map_data = HeatMapChart.limit_Heatmap(self_copy.graphics_list);
+            self_copy.graphics_list = limited_heat_map_data
+            self_copy.numberOfPointsToDisplay = HeatMapChart.total_points(self_copy.graphics_list)
+
+        self_copy.numberOfPointsToDisplay = HeatMapChart.total_points(self_copy.graphics_list)
+        self_copy.tooManyRows = too_many_points
+        return super(HeatMapChart, self_copy).transform()
+
+
 class HistogramChart(XYChart):
+    ROWS_LIMIT = 1000000
+    ROWS_LIMIT_T0_INDEX = 10000
+
     def __init__(self, **kwargs):
         self.log = getValue(kwargs, 'log', False)
         if self.log:
             kwargs['logY'] = True
-        
+
         super(HistogramChart, self).__init__(**kwargs)
         self.type = 'Histogram'
         self.bin_count = getValue(kwargs, 'binCount')
         self.cumulative = getValue(kwargs, 'cumulative', False)
         self.normed = getValue(kwargs, 'normed', False)
-        
+
         self.range_min = getValue(kwargs, 'rangeMin')
         self.range_max = getValue(kwargs, 'rangeMax')
         self.names = getValue(kwargs, 'names')
         self.displayMode = getValue(kwargs, 'displayMode')
-        
+
         color = getValue(kwargs, 'color')
         if color is not None:
             if isinstance(color, Color):
@@ -131,6 +198,25 @@ class HistogramChart(XYChart):
                 self.colors.append(color)
             else:
                 self.colors = color
+
+    @staticmethod
+    def limit_points(x):
+        if len(x) >= HistogramChart.ROWS_LIMIT:
+            return x[0:HistogramChart.ROWS_LIMIT_T0_INDEX]
+        return x
+
+    @staticmethod
+    def total_number(listOfData):
+        return max(list(map(lambda x: len(x), listOfData)))
+
+    def transform(self):
+        self_copy = copy.copy(self)
+        self_copy.totalNumberOfPoints = HistogramChart.total_number(self_copy.graphics_list)
+        self_copy.tooManyRows = self_copy.totalNumberOfPoints >= HistogramChart.ROWS_LIMIT
+        self_copy.rowsLimitItems = HistogramChart.ROWS_LIMIT
+        self_copy.numberOfPointsToDisplay = HistogramChart.ROWS_LIMIT_T0_INDEX
+        self_copy.graphics_list = list(map(HistogramChart.limit_points, self_copy.graphics_list))
+        return super(HistogramChart, self_copy).transform()
 
 
 class CategoryChart(XYChart):
@@ -153,6 +239,8 @@ class CategoryChart(XYChart):
 
 
 class TreeMapChart(XYChart):
+    ROWS_LIMIT = 1000
+
     def __init__(self, **kwargs):
         super(TreeMapChart, self).__init__(**kwargs)
         self.type = 'TreeMap'
@@ -168,24 +256,41 @@ class TreeMapChart(XYChart):
         self.custom_styles = []
         self.element_styles = {}
         self.graphics_list = getValue(kwargs, 'root')
-    
+
     def transform(self):
-        
-        self.process(self.graphics_list)
-        return super(TreeMapChart, self).transform()
-    
+        tree_map = self
+        count_nodes = tree_map.countNodes(self.graphics_list, 0)
+        to_many_rows = count_nodes > TreeMapChart.ROWS_LIMIT
+        if to_many_rows:
+            tree_map = copy.copy(self)
+            tree_map.totalNumberOfPoints = count_nodes
+            tree_map.rowsLimitItems = TreeMapChart.ROWS_LIMIT
+            tree_map.numberOfPointsToDisplay = TreeMapChart.ROWS_LIMIT
+            tree_map.graphics_list = TreeMapReducer.limit_tree_map(TreeMapChart.ROWS_LIMIT, self.graphics_list)
+        tree_map.tooManyRows = to_many_rows
+        tree_map.process(tree_map.graphics_list)
+        return super(TreeMapChart, tree_map).transform()
+
     def process(self, node):
         children = node.children
-        
+
         if children is not None:
             for child in children:
                 self.process(child)
-        
+
         if node.isLeaf():
             node.color = self.colorProvider.getColor(node)
             toolTipBuilder = self.toolTipBuilder
             if toolTipBuilder is not None:
                 node.tooltip = toolTipBuilder.getToolTip(node)
+
+    def countNodes(self, node, count):
+        count = count + 1
+        children = node.children
+        if children is not None:
+            for child in children:
+                count = self.countNodes(child, count)
+        return count
 
 
 class CombinedChart(BaseObject):
@@ -211,7 +316,7 @@ class Plot(BeakerxDOMWidget):
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
     model = Dict().tag(sync=True)
-    
+
     def __init__(self, **kwargs):
         super(Plot, self).__init__(**kwargs)
         self.chart = XYChart(**kwargs)
@@ -223,7 +328,7 @@ class Plot(BeakerxDOMWidget):
         self.chart.add(item)
         self.model = self.chart.transform()
         return self
-    
+
     def getYAxes(self):
         return self.chart.rangeAxes
 
@@ -303,6 +408,7 @@ class Plot(BeakerxDOMWidget):
             state = {'state': msg}
             comm.send(data=state, buffers=[])
 
+
 class GraphicsActionObject:
     def __init__(self, graphics_object, params):
         self.graphics = graphics_object
@@ -318,7 +424,7 @@ class CategoryPlot(BeakerxDOMWidget):
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
     model = Dict().tag(sync=True)
-    
+
     def __init__(self, **kwargs):
         super(CategoryPlot, self).__init__(**kwargs)
         self.chart = CategoryChart(**kwargs)
@@ -333,13 +439,14 @@ class CategoryPlot(BeakerxDOMWidget):
         self.model = self.chart.transform()
         super(CategoryPlot, self)._ipython_display_(**kwargs)
 
+
 class HeatMap(BeakerxDOMWidget):
     _view_name = Unicode('PlotView').tag(sync=True)
     _model_name = Unicode('PlotModel').tag(sync=True)
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
     model = Dict().tag(sync=True)
-    
+
     def __init__(self, **kwargs):
         super(HeatMap, self).__init__(**kwargs)
         if 'data' in kwargs:
@@ -356,16 +463,16 @@ class HeatMap(BeakerxDOMWidget):
             kwargs['legendLayout'] = LegendLayout.HORIZONTAL
         if not 'legendPosition' in kwargs:
             kwargs['legendPosition'] = LegendPosition(
-                    position=LegendPosition.Position.BOTTOM_RIGHT)
-        self.chart = XYChart(**kwargs)
+                position=LegendPosition.Position.BOTTOM_RIGHT)
+        self.chart = HeatMapChart(**kwargs)
         color = getValue(kwargs, 'color',
                          ["#FF780004", "#FFF15806", "#FFFFCE1F"])
-        
+
         if isinstance(color, GradientColor):
             self.chart.color = color.color
         else:
             self.chart.color = color
-        
+
         self.chart.type = 'HeatMap'
 
         self.model = self.chart.transform()
@@ -376,13 +483,13 @@ class Histogram(BeakerxDOMWidget):
         OVERLAP = 1
         STACK = 2
         SIDE_BY_SIDE = 3
-    
+
     _view_name = Unicode('PlotView').tag(sync=True)
     _model_name = Unicode('PlotModel').tag(sync=True)
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
     model = Dict().tag(sync=True)
-    
+
     def __init__(self, **kwargs):
         super(Histogram, self).__init__()
         self.chart = HistogramChart(**kwargs)
@@ -401,7 +508,7 @@ class TreeMap(BeakerxDOMWidget):
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
     model = Dict().tag(sync=True)
-    
+
     def __init__(self, **kwargs):
         super(TreeMap, self).__init__()
         self.chart = TreeMapChart(**kwargs)
@@ -416,7 +523,7 @@ class TimePlot(Plot):
     def __init__(self, **kwargs):
         super(TimePlot, self).__init__(**kwargs)
         self.chart.type = 'TimePlot'
-    
+
     def getChartColors(self, columnNames, colors):
         chartColors = []
         if colors is not None:
@@ -424,7 +531,7 @@ class TimePlot(Plot):
                 if i < len(colors):
                     chartColors.append(self.createChartColor(colors[i]))
         return chartColors
-    
+
     def createChartColor(self, color):
         if isinstance(color, list):
             try:
@@ -439,7 +546,7 @@ class NanoPlot(TimePlot):
     def __init__(self, **kwargs):
         super(NanoPlot, self).__init__(**kwargs)
         self.chart.type = 'NanoPlot'
-    
+
     def add(self, item):
         super(NanoPlot, self).add(item)
         for l in self.chart.graphics_list:
@@ -466,17 +573,17 @@ class SimpleTimePlot(TimePlot):
         displayLines = getValue(kwargs, 'displayLines', True)
         displayPoints = getValue(kwargs, 'displayPoints', False)
         colors = getValue(kwargs, 'colors')
-        
+
         if len(args) > 0:
             tableData = args[0]
         else:
             tableData = []
-        
+
         if len(args) == 2:
             columnNames = args[1]
         else:
             columnNames = []
-        
+
         xs = []
         yss = []
         dataColumnsNames = []
@@ -489,7 +596,7 @@ class SimpleTimePlot(TimePlot):
                 parse_x = False
                 xs = tableData.index.get_values()
             tableData = tableData.to_dict(orient='rows')
-        
+
         timeColumn = getValue(kwargs, 'timeColumn', time_column_default)
         self.chart.domain_axis_label = getValue(kwargs, 'xLabel', timeColumn)
         if tableData is not None and columnNames is not None:
@@ -500,42 +607,42 @@ class SimpleTimePlot(TimePlot):
                     x = row[timeColumn]
                     x = date_time_2_millis(x)
                     xs.append(x)
-                
+
                 for idx in range(len(columnNames)):
                     column = columnNames[idx]
                     if (idx >= len(yss)):
                         yss.append([])
-                    
+
                     yss[idx].append(row[column])
-            
+
             colors = self.getChartColors(columnNames, colors)
-            
+
             for i in range(len(yss)):
                 ys = yss[i]
                 if displayLines is True:
                     line = Line(x=xs, y=ys)
-                    
+
                     if displayNames is not None and i < len(displayNames):
                         line.display_name = displayNames[i]
                     else:
                         line.display_name = columnNames[i]
-                    
+
                     if i < len(colors):
                         line.color = colors[i]
-                    
+
                     self.add(line)
-                
+
                 if displayPoints is True:
                     points = Points(x=xs, y=ys)
-                    
+
                     if displayNames is not None and i < len(displayNames):
                         points.display_name = displayNames[i]
                     else:
                         points.display_name = columnNames[i]
-                    
+
                     if i < len(colors):
                         points.color = colors[i]
-                    
+
                     self.add(points)
 
 
@@ -545,7 +652,7 @@ class CombinedPlot(BeakerxDOMWidget):
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
     model = Dict().tag(sync=True)
-    
+
     def __init__(self, **kwargs):
         super(CombinedPlot, self).__init__(**kwargs)
         self.chart = CombinedChart(**kwargs)
@@ -560,7 +667,7 @@ class CombinedPlot(BeakerxDOMWidget):
                 self.chart.add(elem.chart, 1)
         else:
             raise Exception('CombinedPlot takes XYChart or List of XYChart')
-        
+
         self.model = self.chart.transform()
         return self
 

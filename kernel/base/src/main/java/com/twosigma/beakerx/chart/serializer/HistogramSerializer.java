@@ -15,13 +15,16 @@
  */
 package com.twosigma.beakerx.chart.serializer;
 
-import com.twosigma.beakerx.chart.histogram.Histogram;
-import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.twosigma.beakerx.chart.histogram.Histogram;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.List;
+import java.util.OptionalInt;
+
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 
 public class HistogramSerializer extends AbstractChartSerializer<Histogram> {
 
@@ -35,10 +38,11 @@ public class HistogramSerializer extends AbstractChartSerializer<Histogram> {
   public static final String NORMED = "normed";
   public static final String LOG = "log";
 
+  private HistogramReducer histogramReducer = new HistogramReducer(Histogram.ROWS_LIMIT, Histogram.NUMBER_OF_POINTS_TO_DISPLAY);
+
   @Override
   public void serialize(Histogram histogram, JsonGenerator jgen, SerializerProvider provider) throws
-                                                                                              IOException,
-                                                                                              JsonProcessingException {
+          IOException {
     jgen.writeStartObject();
 
     serialize(histogram, jgen);
@@ -50,9 +54,9 @@ public class HistogramSerializer extends AbstractChartSerializer<Histogram> {
     }
 
     if (histogram.getListData() != null) {
-      jgen.writeObjectField(GRAPHICS_LIST, histogram.getListData());
+      serializeListData(jgen, histogram.getListData());
     } else {
-      jgen.writeObjectField(GRAPHICS_LIST, Arrays.asList(histogram.getData()));
+      serializeData(jgen, (histogram.getData() != null) ? histogram.getData() : emptyList());
     }
 
     jgen.writeObjectField("right_close", histogram.getRightClose());
@@ -66,8 +70,30 @@ public class HistogramSerializer extends AbstractChartSerializer<Histogram> {
     jgen.writeObjectField(LOG, histogram.getLog());
     jgen.writeObjectField(DISPLAY_MODE, histogram.getDisplayMode());
     jgen.writeObjectField(NAMES, histogram.getNames());
-
     jgen.writeEndObject();
-
   }
+
+  private void serializeData(JsonGenerator jgen, List<Number> list) throws IOException {
+    if (Histogram.ROWS_LIMIT < list.size()) {
+      jgen.writeObjectField(GRAPHICS_LIST, histogramReducer.limitData(list));
+      jgen.writeBooleanField(TOO_MANY_ROWS, true);
+      jgen.writeObjectField(ROWS_LIMIT_ITEMS, Histogram.ROWS_LIMIT);
+      jgen.writeObjectField(NUMBER_OF_POINTS_TO_DISPLAY, Histogram.NUMBER_OF_POINTS_TO_DISPLAY);
+    } else {
+      jgen.writeObjectField(GRAPHICS_LIST, singletonList(list));
+      jgen.writeBooleanField(TOO_MANY_ROWS, false);
+    }
+    jgen.writeObjectField(TOTAL_NUMBER_OF_POINTS, list.size());
+  }
+
+  private void serializeListData(JsonGenerator jgen, List<List<Number>> listData) throws IOException {
+    OptionalInt max = histogramReducer.totalPoints(listData);
+    List<List<Number>> limited = histogramReducer.limitListData(listData);
+    jgen.writeObjectField(GRAPHICS_LIST, limited);
+    jgen.writeObjectField(TOTAL_NUMBER_OF_POINTS, max.orElse(0));
+    jgen.writeBooleanField(TOO_MANY_ROWS, max.isPresent() && Histogram.ROWS_LIMIT <= max.getAsInt());
+    jgen.writeObjectField(ROWS_LIMIT_ITEMS, Histogram.ROWS_LIMIT);
+    jgen.writeObjectField(NUMBER_OF_POINTS_TO_DISPLAY, Histogram.NUMBER_OF_POINTS_TO_DISPLAY);
+  }
+
 }

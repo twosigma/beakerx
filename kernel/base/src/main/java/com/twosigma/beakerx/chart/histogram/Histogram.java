@@ -28,6 +28,9 @@ import static com.twosigma.beakerx.widget.BeakerxPlot.VIEW_NAME_VALUE;
 
 public class Histogram extends AbstractChart {
 
+  public static final int ROWS_LIMIT = 1_000_000;
+  public static final int NUMBER_OF_POINTS_TO_DISPLAY = 10_000;
+
   public enum DisplayMode {
     OVERLAP,
     STACK,

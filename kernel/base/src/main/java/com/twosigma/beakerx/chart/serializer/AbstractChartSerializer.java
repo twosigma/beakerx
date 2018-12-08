@@ -40,6 +40,11 @@ public abstract class AbstractChartSerializer<T extends AbstractChart> extends C
   public static final String TIMEZONE = "timezone";
   public static final String LOG_Y = "log_y";
   public static final String AUTO_ZOOM = "auto_zoom";
+  public static final String TOTAL_NUMBER_OF_POINTS = "totalNumberOfPoints";
+  public static final String TOO_MANY_ROWS = "tooManyRows";
+  public static final String ROWS_LIMIT_ITEMS = "rowsLimitItems";
+  public static final String NUMBER_OF_POINTS_TO_DISPLAY = "numberOfPointsToDisplay";
+
 
   protected void serialize(T chart, JsonGenerator jgen) throws IOException {
 

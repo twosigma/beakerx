@@ -28,8 +28,8 @@ import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
-import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfiguration;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
@@ -69,6 +69,7 @@ public abstract class Kernel implements KernelFunctionality {
   private Map<String, String> commKernelMapping;
   private CommRepository commRepository;
   private BeakerXServer beakerXServer;
+  private BeakerXJson beakerXJson;
   private MagicCommandConfiguration magicCommandConfiguration;
 
   public Kernel(final String sessionId,
@@ -77,7 +78,8 @@ public abstract class Kernel implements KernelFunctionality {
                 CustomMagicCommandsFactory customMagicCommands,
                 CommRepository commRepository,
                 BeakerXServer beakerXServer,
-                MagicCommandConfiguration magicCommandConfiguration) {
+                MagicCommandConfiguration magicCommandConfiguration,
+                BeakerXJson beakerXJson) {
     this(
             sessionId,
             evaluator,
@@ -87,7 +89,8 @@ public abstract class Kernel implements KernelFunctionality {
             customMagicCommands,
             commRepository,
             beakerXServer,
-            magicCommandConfiguration);
+            magicCommandConfiguration,
+            beakerXJson);
   }
 
   protected Kernel(final String sessionId,
@@ -98,7 +101,9 @@ public abstract class Kernel implements KernelFunctionality {
                    CustomMagicCommandsFactory customMagicCommands,
                    CommRepository commRepository,
                    BeakerXServer beakerXServer,
-                   MagicCommandConfiguration magicCommandConfiguration) {
+                   MagicCommandConfiguration magicCommandConfiguration,
+                   BeakerXJson beakerXJson
+  ) {
     this.sessionId = sessionId;
     this.cacheFolderFactory = cacheFolderFactory;
     this.kernelSocketsFactory = kernelSocketsFactory;
@@ -106,6 +111,7 @@ public abstract class Kernel implements KernelFunctionality {
     this.customMagicCommands = customMagicCommands;
     this.commRepository = commRepository;
     this.beakerXServer = beakerXServer;
+    this.beakerXJson = beakerXJson;
     this.executionResultSender = new ExecutionResultSender(this);
     this.evaluator = evaluator;
     this.handlers = new KernelHandlers(this, getCommOpenHandler(this), getKernelInfoHandler(this));
@@ -365,5 +371,10 @@ public abstract class Kernel implements KernelFunctionality {
   @Override
   public boolean checkIfClassExistsInClassloader(String clazzName) {
     return this.evaluator.checkIfClassExistsInClassloader(clazzName);
+  }
+
+  @Override
+  public BeakerXJson getBeakerXJson() {
+    return this.beakerXJson;
   }
 }

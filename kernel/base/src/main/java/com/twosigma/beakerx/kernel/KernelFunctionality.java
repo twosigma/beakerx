@@ -112,4 +112,6 @@ public interface KernelFunctionality {
   BeakerXServer getBeakerXServer();
 
   MagicCommandConfiguration magicCommandConfiguration();
+
+  BeakerXJson getBeakerXJson();
 }

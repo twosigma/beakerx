@@ -18,6 +18,7 @@ package com.twosigma.beakerx;
 import com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.evaluator.TestBeakerCellExecutor;
+import com.twosigma.beakerx.kernel.BeakerXJsonConfig;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.Kernel;
@@ -40,11 +41,15 @@ import com.twosigma.beakerx.table.serializer.TableDisplaySerializer;
 import com.twosigma.beakerx.widget.PreviewTableDisplay;
 import org.junit.Test;
 
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 import static com.twosigma.beakerx.scala.magic.command.EnableSparkSupportMagicCommand.ENABLE_SPARK_SUPPORT;
+import static com.twosigma.beakerx.scala.magic.command.LoadSparkSupportMagicCommand.LOAD_SPARK_SUPPORT;
 import static com.twosigma.beakerx.table.TableDisplay.TABLE_DISPLAY_SUBTYPE;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.getState;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.getValueForProperty;
@@ -73,8 +78,18 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
             kernel -> singletonList(enableSparkSupportMagicCommand(kernel)),
             new BeakerXCommRepositoryMock(),
             BeakerXServerMock.create(),
-            magicCommandConfiguration);
+            magicCommandConfiguration,
+            new BeakerXJsonConfig(getPathToBeakerXJson()));
   }
+
+  private Path getPathToBeakerXJson() {
+    try {
+      return Paths.get(this.getClass().getClassLoader().getResource("beakerxTest.json").toURI());
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
 
   private static EvaluatorParameters getKernelParameters() {
     HashMap<String, Object> kernelParameters = new HashMap<>();
@@ -250,7 +265,7 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
       return new Command() {
         @Override
         public MagicCommandOutcomeItem run() {
-          String loadSparkMagic = "%loadSparkSupport";
+          String loadSparkMagic = LOAD_SPARK_SUPPORT;
           Optional<MagicCommandFunctionality> magic = CodeFactory.findMagicCommandFunctionality(kernel.getMagicCommandTypes(), loadSparkMagic);
           MagicCommandOutcomeItem execute = magic.get()
                   .execute(param);

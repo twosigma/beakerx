@@ -32,12 +32,19 @@ describe('Charting Python tests ', function () {
   });
 
   describe('(Python) Limit of elements for Heatmap ', function(){
-    it('Heatmap has 10_000 elements ', function () {
+    var dtContainer;
+
+    it('Heatmap shows 5300 items ', function () {
       cellIndex = 22;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
       var heatmap = dtContainer.$('#maing > g.heatmap');
       expect(heatmap.isEnabled()).toBeTruthy();
-      expect(heatmap.$$('rect').length).toEqual(10000);
+      expect(heatmap.$$('rect').length).toEqual(5300);
+    });
+    it('Should display warning message ', function () {
+      var heatmap = dtContainer.$('#maing > g.heatmap');
+      expect(heatmap.isEnabled()).toBeTruthy();
+      expect(dtContainer.$('div.points-limit-modal').getText()).toMatch(/The limit is 10,000 items/);
     });
   });
 
@@ -59,6 +66,36 @@ describe('Charting Python tests ', function () {
       var treemap = dtContainer.$('#maing > g');
       expect(treemap.isEnabled()).toBeTruthy();
       expect(treemap.$$('g.cell').length).toEqual(100);
+    });
+  });
+
+  describe('(Python) TreeMap Menu ', function () {
+    var dtContainer;
+    it('Hide 1 element by menu ', function () {
+      cellIndex += 1;
+      dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      var treemap = dtContainer.$('#maing > g');
+      expect(treemap.isEnabled()).toBeTruthy();
+      expect(Math.round(treemap.$('g#i2 > rect').getAttribute('height'))).toBeGreaterThan(0);
+      dtContainer.$$('input')[1].click();
+      treemap = dtContainer.$('#maing > g');
+      expect(Math.round(treemap.$('g#i2 > rect').getAttribute('height'))).toEqual(0);
+    });
+
+    it('Hide All elements by menu ', function () {
+      dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      var treemap = dtContainer.$('#maing > g');
+      expect(treemap.isEnabled()).toBeTruthy();
+      expect(treemap.$$('g.cell').length).toEqual(18);
+      dtContainer.$$('input')[0].click();
+      expect(dtContainer.$$('#maing > g').length).toEqual(0);
+    });
+
+    it('Show All elements by menu ', function () {
+      dtContainer.$$('input')[0].click();
+      var treemap = dtContainer.$('#maing > g');
+      expect(treemap.isEnabled()).toBeTruthy();
+      expect(treemap.$$('g.cell').length).toEqual(18);
     });
   });
 

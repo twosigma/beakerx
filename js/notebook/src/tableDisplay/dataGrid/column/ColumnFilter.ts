@@ -145,8 +145,6 @@ export default class ColumnFilter {
       return;
     }
 
-    debugger;
-
     if (this.useSearch) {
       return this.column.search(this.createExpression(this.filterInput.value));
     }

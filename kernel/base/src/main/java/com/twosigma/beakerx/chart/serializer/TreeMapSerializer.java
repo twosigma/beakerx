@@ -55,8 +55,10 @@ public class TreeMapSerializer extends ChartSerializer<TreeMap> {
                         SerializerProvider provider) throws IOException {
 
     TreeMapNode root = treeMap.getRoot();
-    int numberOfNodes = TreeMapNodeCounter.countAllNodes(root);
+    process(root, node -> setUserObject(treeMap, node));
+
     jgen.writeStartObject();
+    int numberOfNodes = TreeMapNodeCounter.countAllNodes(root);
     jgen.writeObjectField(TOTAL_NUMBER_OF_POINTS, numberOfNodes);
     boolean tooManyRows = numberOfNodes > ROWS_LIMIT;
     jgen.writeBooleanField(TOO_MANY_ROWS, tooManyRows);
@@ -65,7 +67,6 @@ public class TreeMapSerializer extends ChartSerializer<TreeMap> {
       jgen.writeObjectField(ROWS_LIMIT_ITEMS, ROWS_LIMIT);
       jgen.writeObjectField(NUMBER_OF_POINTS_TO_DISPLAY, TreeMapNodeCounter.countAllNodes(root));
     }
-    process(root, node -> setUserObject(treeMap, node));
 
     serialize(treeMap, jgen);
 

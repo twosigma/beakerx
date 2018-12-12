@@ -17,15 +17,14 @@
 package com.twosigma.beakerx.chart.treemap;
 
 import com.twosigma.beakerx.chart.ChartTest;
-import com.twosigma.beakerx.chart.categoryplot.CategoryPlot;
 import com.twosigma.beakerx.chart.treemap.util.IToolTipBuilder;
 import net.sf.jtreemap.swing.DefaultValue;
 import net.sf.jtreemap.swing.TreeMapNode;
 import org.junit.Test;
 
 import java.util.LinkedHashMap;
+import java.util.stream.IntStream;
 
-import static com.twosigma.beakerx.chart.serializer.CategoryPlotSerializer.CATEGORY_NAMES_LABEL_ANGLE;
 import static com.twosigma.beakerx.chart.serializer.TreeMapSerializer.MODE;
 import static com.twosigma.beakerx.chart.serializer.TreeMapSerializer.RATIO;
 import static com.twosigma.beakerx.chart.serializer.TreeMapSerializer.ROUND;
@@ -153,5 +152,20 @@ public class TreeMapTest extends ChartTest<TreeMap> {
     return treeMap;
   }
 
-
+  @Test
+  public void problem_1501_nodes() {
+    //given
+    TreeMapNode rootNode = new TreeMapNode("0");
+    IntStream.range(1, 1501).forEach(it -> {
+      TreeMapNode nodeX = new TreeMapNode("X" + it);
+      nodeX.add(new TreeMapNode("a" + it, it, new DefaultValue(it)));
+      nodeX.add(new TreeMapNode("b" + it, it, new DefaultValue(it)));
+      rootNode.add(nodeX);
+    });
+    TreeMap treeMap = new TreeMap(rootNode);
+    //when
+    treeMap.display();
+    //then
+    assertThat(treeMap).isNotNull();
+  }
 }

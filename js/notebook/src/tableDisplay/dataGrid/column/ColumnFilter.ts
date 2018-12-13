@@ -44,7 +44,7 @@ export default class ColumnFilter {
   static escapeColumnName(columnName: string): string {
     return String(columnName)
       .replace(/\s+/g, '_')
-      .replace('/\W+/g', '');
+      .replace(/\W+/g, '');
   }
 
   constructor(dataGrid: BeakerXDataGrid, column: DataGridColumn, options: { x, y, width, height }) {

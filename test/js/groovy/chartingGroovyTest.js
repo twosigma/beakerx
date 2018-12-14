@@ -46,28 +46,42 @@ describe('Charting Groovy tests ', function () {
     it('Should display warning message ', function () {
       var heatmap = dtContainer.$('#maing > g.heatmap');
       expect(heatmap.isEnabled()).toBeTruthy();
-      expect(dtContainer.$('div.points-limit-modal').getText()).toMatch(/The limit is 10,000 items/);
+      expect(dtContainer.$('div.points-limit-modal').getText()).toMatch(/The limit is 10.000 items/);
     });
   });
 
   describe('(Groovy) Limit of elements for Histogram ', function(){
+    var dtContainer;
+
     it('Histogram has 10_000 elements ', function () {
       cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
       var histgrm = dtContainer.$('#maing > g#i0');
       expect(histgrm.isEnabled()).toBeTruthy();
       expect(histgrm.$$('g#i0_yTop > rect').length).toEqual(59);
       expect(histgrm.$$('g#i0_yTop > rect')[58].getAttribute('id')).toMatch('_9999yTop');
     });
+    it('Should display warning message ', function () {
+      var histgrm = dtContainer.$('#maing > g#i0');
+      expect(histgrm.isEnabled()).toBeTruthy();
+      expect(dtContainer.$('div.points-limit-modal').getText()).toMatch(/The limit is 1.000.000 items/);
+    });
   });
 
   describe('(Groovy) Limit of elements for TreeMap ', function () {
-    it('TreeMap has 100 elements ', function () {
+    var dtContainer;
+
+    it('TreeMap has 1_000 elements ', function () {
       cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
       var treemap = dtContainer.$('#maing > g');
       expect(treemap.isEnabled()).toBeTruthy();
-      expect(treemap.$$('g.cell').length).toEqual(100);
+      expect(treemap.$$('g.cell').length).toEqual(999);
+    });
+    it('Should display warning message ', function () {
+      var treemap = dtContainer.$('#maing > g');
+      expect(treemap.isEnabled()).toBeTruthy();
+      expect(dtContainer.$('div.points-limit-modal').getText()).toMatch(/The limit is 1.000 items/);
     });
   });
 

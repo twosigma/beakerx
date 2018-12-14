@@ -125,7 +125,7 @@ public class ScalaEvaluatorTest {
   }
 
   @Test
-  public void newShellWhenAddJars() throws Exception {
+  public void newShellWhenAddJars() {
     //given
     ScalaEvaluatorGlue shell = scalaEvaluator.getShell();
     ClassLoader classLoader = scalaEvaluator.getClassLoader();
@@ -136,6 +136,34 @@ public class ScalaEvaluatorTest {
     assertThat(scalaEvaluator.getClassLoader()).isEqualTo(classLoader);
     assertThat(shell.interpreter().lastRequest().lineRep().lineId())
             .isEqualTo(scalaEvaluator.getShell().interpreter().lastRequest().lineRep().lineId());
+  }
+
+  @Test
+  public void allowOnlyComment() {
+    //given
+    String code =
+                    "/*\n" +
+                    "*/";
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    seo.setJupyterMessage(commMsg());
+    //when
+    TryResult evaluate = scalaEvaluator.evaluate(seo, code);
+    //then
+    assertThat(evaluate.result()).isNull();
+  }
+
+  @Test
+  public void inputIncomplete() {
+    //given
+    String code =
+                    "/*\n" +
+                    "*";
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    seo.setJupyterMessage(commMsg());
+    //when
+    TryResult evaluate = scalaEvaluator.evaluate(seo, code);
+    //then
+    assertThat(evaluate.error()).isEqualTo(ScalaEvaluatorGlue.INPUT_IS_INCOMPLETE());
   }
 }
 

@@ -22,12 +22,14 @@ import com.twosigma.beakerx.TryResult
 import com.twosigma.beakerx.autocomplete.AutocompleteResult
 import com.twosigma.beakerx.jvm.`object`.SimpleEvaluationObject
 import com.twosigma.beakerx.mimetype.MIMEContainer
+import com.twosigma.beakerx.scala.Comments
+import com.twosigma.beakerx.scala.evaluator.ScalaEvaluatorGlue.INPUT_IS_INCOMPLETE
 
 import scala.tools.jline_embedded.console.completer.Completer
 import scala.tools.nsc.Settings
 import scala.tools.nsc.interpreter.Completion.Candidates
 import scala.tools.nsc.interpreter.Results.{Error, Incomplete, Success}
-import scala.tools.nsc.interpreter.{Completion, IMain, JList, PresentationCompilerCompleter}
+import scala.tools.nsc.interpreter.{Completion, JList, PresentationCompilerCompleter}
 
 case class ResetState(val state: String);
 
@@ -94,7 +96,7 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
   }
 
   def addImports(names: Array[String]): Boolean = {
-    // There's an issue in the Scala interpeter involving long import lists (scala/bug#10956).
+    // There's an issue in the Scala interpreter involving long import lists (scala/bug#10956).
     // Import the list in chunks.
     names.grouped(32).forall(importGroup => addImport(importGroup.mkString(", ")))
   }
@@ -104,7 +106,7 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
     try {
       interpreter.interpret(code) match {
         case Success => ""
-        case Incomplete => "input is incomplete"
+        case Incomplete => INPUT_IS_INCOMPLETE
         case Error => baos.toString()
       }
     } catch {
@@ -128,7 +130,11 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
           }
         }
         case Incomplete => {
-          either = TryResult.createError("input is incomplete")
+          if (codeContainOnlyComment(code)) {
+            either = TryResult.createResult(null)
+          } else {
+            either = TryResult.createError(INPUT_IS_INCOMPLETE)
+          }
         }
         case Error => {
           either = TryResult.createError(baos.toString())
@@ -144,6 +150,11 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
     either
   }
 
+  private def codeContainOnlyComment(code: String) = {
+    val codeWithoutComments: String = Comments.removeComments(code)
+    codeWithoutComments.isEmpty
+  }
+
   private def shouldHideResult() = {
     val print = interpreter.lastRequest.lineRep.call("$print").toString.trim
     print.equals("")
@@ -156,4 +167,8 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
     import scala.collection.JavaConverters._
     new AutocompleteResult(maybes.asScala.map(_.toString).asJava, offset)
   }
+}
+
+object ScalaEvaluatorGlue {
+  val INPUT_IS_INCOMPLETE = "Input is incomplete"
 }

@@ -42,6 +42,7 @@ public class TreeMapSerializer extends ChartSerializer<TreeMap> {
   public static final String RATIO = "ratio";
   public static final String ROUND = "round";
   public static final String VALUE_ACCESSOR = "valueAccessor";
+  public static final String LEAVES = " leaves";
 
   private final TreeMapReducer treeMapReducer = new TreeMapReducer(ROWS_LIMIT);
 
@@ -65,7 +66,7 @@ public class TreeMapSerializer extends ChartSerializer<TreeMap> {
     if (tooManyRows) {
       root = treeMapReducer.limitTreeMap(root);
       jgen.writeObjectField(ROWS_LIMIT_ITEMS, ROWS_LIMIT);
-      jgen.writeObjectField(NUMBER_OF_POINTS_TO_DISPLAY, TreeMapNodeCounter.countAllNodes(root));
+      jgen.writeObjectField(NUMBER_OF_POINTS_TO_DISPLAY, TreeMapNodeCounter.countReducedLeaves(root) + LEAVES);
     }
 
     serialize(treeMap, jgen);
@@ -117,6 +118,7 @@ public class TreeMapSerializer extends ChartSerializer<TreeMap> {
       Color color = treeMap.getColorProvider().getColor(node);
       values.put("color", toHex(color));
     }
+    values.put(TreeMapNodeCounter.IS_LEAF,node.isLeaf());
 
     node.setUserObject(values);
   }

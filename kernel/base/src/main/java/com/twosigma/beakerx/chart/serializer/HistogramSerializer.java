@@ -37,6 +37,7 @@ public class HistogramSerializer extends AbstractChartSerializer<Histogram> {
   public static final String CUMULATIVE = "cumulative";
   public static final String NORMED = "normed";
   public static final String LOG = "log";
+  public static final String ITEMS = " items";
 
   private HistogramReducer histogramReducer = new HistogramReducer(Histogram.ROWS_LIMIT, Histogram.NUMBER_OF_POINTS_TO_DISPLAY);
 
@@ -78,7 +79,7 @@ public class HistogramSerializer extends AbstractChartSerializer<Histogram> {
       jgen.writeObjectField(GRAPHICS_LIST, histogramReducer.limitData(list));
       jgen.writeBooleanField(TOO_MANY_ROWS, true);
       jgen.writeObjectField(ROWS_LIMIT_ITEMS, Histogram.ROWS_LIMIT);
-      jgen.writeObjectField(NUMBER_OF_POINTS_TO_DISPLAY, Histogram.NUMBER_OF_POINTS_TO_DISPLAY);
+      jgen.writeObjectField(NUMBER_OF_POINTS_TO_DISPLAY, Histogram.NUMBER_OF_POINTS_TO_DISPLAY + ITEMS);
     } else {
       jgen.writeObjectField(GRAPHICS_LIST, singletonList(list));
       jgen.writeBooleanField(TOO_MANY_ROWS, false);
@@ -93,7 +94,7 @@ public class HistogramSerializer extends AbstractChartSerializer<Histogram> {
     jgen.writeObjectField(TOTAL_NUMBER_OF_POINTS, max.orElse(0));
     jgen.writeBooleanField(TOO_MANY_ROWS, max.isPresent() && Histogram.ROWS_LIMIT <= max.getAsInt());
     jgen.writeObjectField(ROWS_LIMIT_ITEMS, Histogram.ROWS_LIMIT);
-    jgen.writeObjectField(NUMBER_OF_POINTS_TO_DISPLAY, Histogram.NUMBER_OF_POINTS_TO_DISPLAY);
+    jgen.writeObjectField(NUMBER_OF_POINTS_TO_DISPLAY, Histogram.NUMBER_OF_POINTS_TO_DISPLAY + ITEMS);
   }
 
 }

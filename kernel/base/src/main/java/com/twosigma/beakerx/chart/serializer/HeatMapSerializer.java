@@ -29,6 +29,7 @@ public class HeatMapSerializer extends AbstractChartSerializer<HeatMap> {
 
   public static final String GRAPHICS_LIST = "graphics_list";
   public static final String COLOR = "color";
+  public static final String ITEMS = " items";
 
   private HeatMapReducer heatMapReducer = new HeatMapReducer(COLUMN_LIMIT, ROWS_LIMIT);
 
@@ -55,7 +56,7 @@ public class HeatMapSerializer extends AbstractChartSerializer<HeatMap> {
       Number[][] limitedHeatMapData = heatMapReducer.limitHeatmap(data);
       jgen.writeObjectField(GRAPHICS_LIST, limitedHeatMapData);
       jgen.writeObjectField(ROWS_LIMIT_ITEMS, NUMBER_OF_NODES_LIMIT);
-      jgen.writeObjectField(NUMBER_OF_POINTS_TO_DISPLAY, HeatMapReducer.totalPoints(limitedHeatMapData));
+      jgen.writeObjectField(NUMBER_OF_POINTS_TO_DISPLAY, HeatMapReducer.totalPoints(limitedHeatMapData) + ITEMS);
     } else {
       jgen.writeObjectField(GRAPHICS_LIST, data);
     }

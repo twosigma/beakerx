@@ -49,13 +49,13 @@ import java.util.stream.Collectors;
 import static com.twosigma.beakerx.kernel.PlainCode.createSimpleEvaluationObject;
 import static com.twosigma.beakerx.widget.SparkUI.BEAKERX_ID;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_APP_NAME;
+import static com.twosigma.beakerx.widget.SparkUI.SPARK_CONTEXT_NAME;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXECUTOR_CORES;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXECUTOR_MEMORY;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXTRA_LISTENERS;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_MASTER;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_REPL_CLASS_OUTPUT_DIR;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_SESSION_NAME;
-import static com.twosigma.beakerx.widget.SparkUI.SPARK_CONTEXT_NAME;
 import static com.twosigma.beakerx.widget.SparkUI.STANDARD_SETTINGS;
 import static com.twosigma.beakerx.widget.StartStopSparkListener.START_STOP_SPARK_LISTENER;
 
@@ -73,6 +73,9 @@ public class SparkEngineImpl implements SparkEngine {
     SparkConf sparkConf = createSparkConf(sparkUI.getAdvancedOptions(), getSparkConfBasedOn(this.sparkSessionBuilder));
     sparkConf = configureSparkConf(sparkConf, sparkUI);
     this.sparkSessionBuilder = SparkSession.builder().config(sparkConf);
+    if (sparkUI.getHiveSupport()) {
+      this.sparkSessionBuilder.enableHiveSupport();
+    }
     TryResult sparkSessionTry = createSparkSession(sparkUI, parentMessage);
     if (sparkSessionTry.isError()) {
       return sparkSessionTry;
@@ -252,7 +255,7 @@ public class SparkEngineImpl implements SparkEngine {
         String reason = taskEnd.reason().toString();
         if (reason.equals("Success")) {
           sparkUIManager.taskEnd(taskEnd.stageId(), taskEnd.taskInfo().taskId());
-        } else if(reason.contains("stage cancelled")){
+        } else if (reason.contains("stage cancelled")) {
           sparkUIManager.taskCancelled(taskEnd.stageId(), taskEnd.taskInfo().taskId());
         }
       }

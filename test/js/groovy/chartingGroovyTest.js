@@ -34,33 +34,84 @@ describe('Charting Groovy tests ', function () {
   var cellIndex;
 
   describe('(Groovy) Limit of elements for Heatmap ', function(){
-    it('Heatmap has 10_000 elements ', function () {
+    var dtContainer;
+
+    it('Heatmap shows 5300 items ', function () {
       cellIndex = 22;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
       var heatmap = dtContainer.$('#maing > g.heatmap');
       expect(heatmap.isEnabled()).toBeTruthy();
-      expect(heatmap.$$('rect').length).toEqual(10000);
+      expect(heatmap.$$('rect').length).toEqual(5300);
+    });
+    it('Should display warning message ', function () {
+      var heatmap = dtContainer.$('#maing > g.heatmap');
+      expect(heatmap.isEnabled()).toBeTruthy();
+      expect(dtContainer.$('div.points-limit-modal').getText()).toMatch(/The limit is 10.000 items/);
     });
   });
 
   describe('(Groovy) Limit of elements for Histogram ', function(){
+    var dtContainer;
+
     it('Histogram has 10_000 elements ', function () {
       cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
       var histgrm = dtContainer.$('#maing > g#i0');
       expect(histgrm.isEnabled()).toBeTruthy();
       expect(histgrm.$$('g#i0_yTop > rect').length).toEqual(59);
       expect(histgrm.$$('g#i0_yTop > rect')[58].getAttribute('id')).toMatch('_9999yTop');
     });
+    it('Should display warning message ', function () {
+      var histgrm = dtContainer.$('#maing > g#i0');
+      expect(histgrm.isEnabled()).toBeTruthy();
+      expect(dtContainer.$('div.points-limit-modal').getText()).toMatch(/The limit is 1.000.000 items/);
+    });
   });
 
   describe('(Groovy) Limit of elements for TreeMap ', function () {
-    it('TreeMap has 100 elements ', function () {
+    var dtContainer;
+
+    it('TreeMap has 1_000 elements ', function () {
       cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
       var treemap = dtContainer.$('#maing > g');
       expect(treemap.isEnabled()).toBeTruthy();
-      expect(treemap.$$('g.cell').length).toEqual(100);
+      expect(treemap.$$('g.cell').length).toEqual(999);
+    });
+    it('Should display warning message ', function () {
+      var treemap = dtContainer.$('#maing > g');
+      expect(treemap.isEnabled()).toBeTruthy();
+      expect(dtContainer.$('div.points-limit-modal').getText()).toMatch(/The limit is 1.000 items/);
+    });
+  });
+
+  describe('(Groovy) TreeMap Menu ', function () {
+    var dtContainer;
+    it('Hide 1 element by menu ', function () {
+      cellIndex += 1;
+      dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      var treemap = dtContainer.$('#maing > g');
+      expect(treemap.isEnabled()).toBeTruthy();
+      expect(Math.round(treemap.$('g#i2 > rect').getAttribute('height'))).toBeGreaterThan(0);
+      dtContainer.$$('input')[1].click();
+      treemap = dtContainer.$('#maing > g');
+      expect(Math.round(treemap.$('g#i2 > rect').getAttribute('height'))).toEqual(0);
+    });
+
+    it('Hide All elements by menu ', function () {
+      dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      var treemap = dtContainer.$('#maing > g');
+      expect(treemap.isEnabled()).toBeTruthy();
+      expect(treemap.$$('g.cell').length).toEqual(18);
+      dtContainer.$$('input')[0].click();
+      expect(dtContainer.$$('#maing > g').length).toEqual(0);
+    });
+
+    it('Show All elements by menu ', function () {
+      dtContainer.$$('input')[0].click();
+      var treemap = dtContainer.$('#maing > g');
+      expect(treemap.isEnabled()).toBeTruthy();
+      expect(treemap.$$('g.cell').length).toEqual(18);
     });
   });
 

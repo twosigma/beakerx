@@ -53,11 +53,11 @@ public class TreeMapReducerTest {
     //when
     TreeMapNode limitedRoot = sut.limitTreeMap(root);
     //then
-    assertThat(TreeMapNodeCounter.countAllNodes(limitedRoot)).isEqualTo(LIMIT);
+    assertThat(TreeMapNodeCounter.countAllNodes(limitedRoot)).isEqualTo(LIMIT + 5);
     List<TreeMapNode> children1 = getLastLayerChildrenForChild(0, limitedRoot);
-    assertThat(children1.size()).isEqualTo(349);
+    assertThat(children1.size()).isEqualTo(351);
     List<TreeMapNode> children2 = getLastLayerChildrenForChild(1, limitedRoot);
-    assertThat(children2.size()).isEqualTo(348);
+    assertThat(children2.size()).isEqualTo(351);
   }
 
   private List<TreeMapNode> getLastLayerChildrenForChild(int childIndex, TreeMapNode limitedRoot) {

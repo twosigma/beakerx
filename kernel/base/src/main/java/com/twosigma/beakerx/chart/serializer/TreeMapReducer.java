@@ -75,7 +75,7 @@ public class TreeMapReducer {
     TreeCounter treeCounter = new TreeCounter();
     for (TreeLayer tl : treeLayers) {
       boolean numberOfNodesChanged = true;
-      while (numberOfNodesChanged && treeCounter.getCount() < limit) {
+      while (numberOfNodesChanged && treeCounter.getCount() <= limit) {
         numberOfNodesChanged = tl.addChildToNodeLayers(treeCounter, mapper);
       }
     }
@@ -109,7 +109,7 @@ public class TreeMapReducer {
     boolean addChildToNodeLayers(TreeCounter treeCounter, Map<TreeMapNode, TreeMapNode> mapper) {
       boolean atLeastOneChildAdded = false;
       for (NodeLayer nl : getNodeLayers()) {
-        if (treeCounter.getCount() < limit) {
+        if (treeCounter.getCount() <= limit) {
           atLeastOneChildAdded = nl.addChild(treeCounter, mapper) || atLeastOneChildAdded;
         }
       }
@@ -151,7 +151,9 @@ public class TreeMapReducer {
         TreeMapNode clone = (TreeMapNode) child.clone();
         mapper.get(node).add(clone);
         mapper.put(child, clone);
-        treeCounter.increase();
+        if (child.isLeaf()){
+          treeCounter.increase();
+        }
         return true;
       }
       return false;

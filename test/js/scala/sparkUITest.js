@@ -92,9 +92,56 @@ describe('Spark UI', function () {
     });
   });
 
+  function clickSaveProfile(output) {
+    output.click('button[title="Save profile"]');
+  }
+
+  function clickAddProperty(output) {
+    output.click('button.bx-properties-add-button');
+  }
+  
+  function checkProfileError(output, msg) {
+    expect(output.$('div.bx-spark-connect-error').getText()).toEqual(msg);
+  }
+  
+  describe('Add property to Spark profile', function () {
+    var output;
+
+    it("Shouldn't save with empty 'name' property", function () {
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      output = beakerxPO.getAllOutputsWidget(codeCell)[0];
+      expect(output.$('div.p-Widget.bx-spark-configuration').isEnabled()).toBeTruthy();
+      clickAddProperty(output);
+      clickSaveProfile(output);
+      checkProfileError(output, "Property 'name' can not be empty");
+    });
+    it("Shouldn't start with empty 'name' property", function () {
+      output.$$('button.icon-close')[1].click();
+      clickAddProperty(output);
+      output.click('button.p-Widget.bx-spark-connect');
+      checkProfileError(output, "Property 'name' can not be empty");
+    });
+    it("Shouldn't save with empty 'value' property", function () {
+      output.$$('button.icon-close')[1].click();
+      clickAddProperty(output);
+      output.$('div.bx-config-name input[type="text"]').click();
+      browser.keys('g');
+      clickSaveProfile(output);
+      checkProfileError(output, "Property 'value' can not be empty");
+    });
+    it("Shouldn't start with empty 'value' property", function () {
+      output.$$('button.icon-close')[1].click();
+      clickAddProperty(output);
+      output.$('div.bx-config-name input[type="text"]').click();
+      browser.keys('g');
+      output.click('button.p-Widget.bx-spark-connect');
+      checkProfileError(output, "Property 'value' can not be empty");
+    });
+  });
+
   describe('Spark session', function () {
     it('Should calculate PI', function () {
-      var codeCellSpark1 = beakerxPO.getCodeCellByIndex(1);
+      var codeCellSpark1 =  beakerxPO.runCodeCellByIndex(1);//beakerxPO.getCodeCellByIndex(1);
       startSparkSession(codeCellSpark1);
 
       cellIndex += 1;
@@ -123,7 +170,7 @@ describe('Spark UI', function () {
       var imageData = beakerxPO.getCanvasImageData(canvas, 630, 46);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell5_case1.png');
     });
-  });
+  }); */
 
   describe('Auto Connect', function () {
     it('Should auto connect to spark session', function () {

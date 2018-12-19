@@ -97,9 +97,9 @@ $beakerxFont: "Lato", Helvetica, sans-serif;
   border: 1px solid #cfcfcf;
   padding: 10px;
   font-family: $beakerxFont;
-  overflow: visible;
+  overflow: visible !important;
   position: relative;
-  margin-top: 10px;
+  margin-top: 10px !important;
 
   legend {
     border-bottom: none;

@@ -252,6 +252,10 @@ public class SparkUI extends VBox implements SparkUIApi {
     return this.sparkUIForm.getMasterURL();
   }
 
+  public boolean  getHiveSupport() {
+    return this.sparkUIForm.getHiveSupport().getValue();
+  }
+
   public Text getExecutorMemory() {
     return this.sparkUIForm.getExecutorMemory();
   }

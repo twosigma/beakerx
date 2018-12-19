@@ -51,6 +51,7 @@ public class SparkUIForm extends VBox {
   private Text masterURL;
   private Text executorMemory;
   private Text executorCores;
+  private Checkbox hiveSupport;
   private SparkConfiguration advancedOption;
   private SparkEngine sparkEngine;
   private SparkUI.OnSparkButtonAction onStartAction;
@@ -76,6 +77,7 @@ public class SparkUIForm extends VBox {
       this.masterURL = createMasterURL();
       this.executorMemory = createExecutorMemory();
       this.executorCores = createExecutorCores();
+      this.hiveSupport = createHiveSupport();
       this.errors = new HBox(new ArrayList<>());
       this.errors.setDomClasses(asList("bx-spark-connect-error"));
       this.addConnectButton(createConnectButton(), this.errors);
@@ -84,12 +86,18 @@ public class SparkUIForm extends VBox {
       this.add(masterURL);
       this.add(executorCores);
       this.add(executorMemory);
+      this.add(hiveSupport);
       this.advancedOption = new SparkConfiguration(sparkEngine.getAdvanceSettings(), sparkEngine.sparkVersion());
       this.add(advancedOption);
     } catch (Exception ex) {
       sendError(StacktraceHtmlPrinter.printRedBold(ex.getMessage()));
     }
+  }
 
+  private Checkbox createHiveSupport() {
+    Checkbox checkbox = new Checkbox("Enable Hive Support");
+    checkbox.setDomClasses(new ArrayList<>(asList("bx-spark-hive-support")));
+    return checkbox;
   }
 
   private HBox createProfileModal() {
@@ -291,6 +299,10 @@ public class SparkUIForm extends VBox {
     return this.masterURL;
   }
 
+  public Checkbox getHiveSupport() {
+    return this.hiveSupport;
+  }
+
   public Text getExecutorMemory() {
     return executorMemory;
   }
@@ -330,6 +342,7 @@ public class SparkUIForm extends VBox {
     this.masterURL.setDisabled(true);
     this.executorMemory.setDisabled(true);
     this.executorCores.setDisabled(true);
+    this.hiveSupport.setDisabled(true);
   }
 
   public void setAllToEnabled() {
@@ -340,6 +353,7 @@ public class SparkUIForm extends VBox {
     this.masterURL.setDisabled(false);
     this.executorMemory.setDisabled(false);
     this.executorCores.setDisabled(false);
+    this.hiveSupport.setDisabled(false);
     refreshElementsAvailability();
   }
 

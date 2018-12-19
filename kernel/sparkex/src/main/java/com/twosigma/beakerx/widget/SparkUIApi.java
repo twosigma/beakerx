@@ -38,6 +38,8 @@ public interface SparkUIApi {
 
   Text getMasterURL();
 
+  boolean getHiveSupport();
+
   Text getExecutorMemory();
 
   Text getExecutorCores();

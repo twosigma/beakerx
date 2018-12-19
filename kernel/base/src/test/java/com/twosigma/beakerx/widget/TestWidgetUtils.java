@@ -163,7 +163,7 @@ public class TestWidgetUtils {
               Map state = TestWidgetUtils.getState(message);
               if (state != null) {
                 Object expected = state.get(attribute);
-                if (expected != null) {
+                if (expected != null && expected instanceof String) {
                   return ((String) expected).contains(text);
                 }
               }

@@ -23,6 +23,7 @@ import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.msg.StacktraceHtmlPrinter;
 import com.twosigma.beakerx.kernel.restserver.Context;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.configuration.SparkConfiguration;
 import org.apache.spark.sql.SparkSession;
 
 import java.util.ArrayList;

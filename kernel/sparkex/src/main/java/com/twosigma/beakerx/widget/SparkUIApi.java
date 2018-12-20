@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.configuration.SparkConfiguration;
 
 import java.util.Arrays;
 import java.util.List;

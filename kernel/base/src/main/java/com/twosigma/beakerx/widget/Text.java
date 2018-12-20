@@ -27,6 +27,11 @@ public class Text extends StringWidget {
     openComm();
   }
 
+  public Text(String value) {
+    this();
+    setValue(value);
+  }
+
   @Override
   public String getModelNameValue() {
     return MODEL_NAME_VALUE;
@@ -38,12 +43,12 @@ public class Text extends StringWidget {
   }
 
   @Override
-  public String getModelModuleValue(){
+  public String getModelModuleValue() {
     return MODEL_MODULE_VALUE;
   }
 
   @Override
-  public String getViewModuleValue(){
+  public String getViewModuleValue() {
     return VIEW_MODULE_VALUE;
   }
 }

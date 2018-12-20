@@ -23,6 +23,7 @@ import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.StacktraceHtmlPrinter;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.configuration.SparkConfiguration;
 import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
 import org.apache.spark.scheduler.SparkListener;

@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.configuration.SparkConfiguration;
 import org.apache.spark.scheduler.SparkListenerApplicationEnd;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;

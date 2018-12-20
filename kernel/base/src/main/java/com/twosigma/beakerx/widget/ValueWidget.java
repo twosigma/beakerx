@@ -35,6 +35,7 @@ public abstract class ValueWidget<T extends Serializable> extends DOMWidget {
   protected Boolean visible = true;
   protected String description = "";
   protected Integer msg_throttle = 3;
+  private ActionOnUpdate<T> actionOnUpdate;
 
   public ValueWidget() {
     super();
@@ -64,6 +65,17 @@ public abstract class ValueWidget<T extends Serializable> extends DOMWidget {
   @Override
   public void updateValue(Object input) {
     this.value = updateValueFromObject(input);
+    if (actionOnUpdate != null) {
+      actionOnUpdate.executeAction(this.value);
+    }
+  }
+
+  public void registerActionOnUpdate(ActionOnUpdate<T> actionOnUpdate) {
+    this.actionOnUpdate = actionOnUpdate;
+  }
+
+  public interface ActionOnUpdate<T> {
+    void executeAction(T value);
   }
 
   public abstract T getValueFromObject(Object input);

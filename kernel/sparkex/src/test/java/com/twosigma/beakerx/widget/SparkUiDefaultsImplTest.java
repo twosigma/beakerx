@@ -16,6 +16,7 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.twosigma.beakerx.widget.configuration.SparkConfiguration;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 import org.assertj.core.api.Assertions;

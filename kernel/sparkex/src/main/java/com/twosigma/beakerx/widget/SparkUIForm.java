@@ -17,6 +17,7 @@ package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.kernel.msg.StacktraceHtmlPrinter;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.configuration.SparkConfiguration;
 import org.apache.spark.SparkConf;
 
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public class SparkUIForm extends VBox {
   private Text masterURL;
   private Text executorMemory;
   private Text executorCores;
-  private Checkbox hiveSupport;
+  private HiveSupport hiveSupport;
   private SparkConfiguration advancedOption;
   private SparkEngine sparkEngine;
   private SparkUI.OnSparkButtonAction onStartAction;
@@ -87,17 +88,19 @@ public class SparkUIForm extends VBox {
       this.add(executorCores);
       this.add(executorMemory);
       this.add(hiveSupport);
-      this.advancedOption = new SparkConfiguration(sparkEngine.getAdvanceSettings(), sparkEngine.sparkVersion());
+      this.advancedOption = new SparkConfiguration(sparkEngine.getAdvanceSettings(),
+              sparkEngine.sparkVersion(),
+              hiveSupport);
       this.add(advancedOption);
     } catch (Exception ex) {
       sendError(StacktraceHtmlPrinter.printRedBold(ex.getMessage()));
     }
   }
 
-  private Checkbox createHiveSupport() {
-    Checkbox checkbox = new Checkbox("Enable Hive Support");
-    checkbox.setDomClasses(new ArrayList<>(asList("bx-spark-hive-support")));
-    return checkbox;
+  private HiveSupport createHiveSupport() {
+    HiveSupport hiveSupport = new HiveSupport("Enable Hive Support");
+    hiveSupport.setDomClasses(new ArrayList<>(asList("bx-spark-hive-support")));
+    return hiveSupport;
   }
 
   private HBox createProfileModal() {

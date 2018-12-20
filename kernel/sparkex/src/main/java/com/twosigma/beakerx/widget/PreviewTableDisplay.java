@@ -26,6 +26,7 @@ import static java.util.Arrays.asList;
 
 public class PreviewTableDisplay {
 
+  public static final String PREVIEW = "Preview";
   public static int ROWS = 10;
   private VBox panel;
   private Collection<Map<String, Object>> preview;
@@ -45,7 +46,7 @@ public class PreviewTableDisplay {
   }
 
   private Button configureShowRowsButton(Button button) {
-    button.setDescription("Preview " + ROWS + " Rows");
+    button.setDescription(PREVIEW + " " + ROWS + " Rows");
     button.registerOnClick((content, message) -> {
       if (this.rowsContent == null) {
         TableDisplay tableDisplay = new TableDisplay(allRows.get(ROWS + 1));

@@ -18,7 +18,7 @@ package com.twosigma.beakerx.scala.magic.command;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 
-interface SparkInitCommandFactory {
+public interface SparkInitCommandFactory {
 
   Command addSparkexJar();
 

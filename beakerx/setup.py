@@ -48,7 +48,7 @@ cmdclass['js-lab'] = install_node_modules(
     build_dir=os.path.join(here, '../js/lab', 'dist'),
     source_dir=os.path.join(here, '../js/lab', 'src')
 )
-cmdclass['java'] = run_gradle(cmd='build')
+cmdclass['java'] = run_gradle(cmd='build', skip_tests=False)
 cmdclass['javadoc'] = run_gradle(cmd='base:javadoc')
 
 setup_args = dict(
@@ -101,7 +101,7 @@ setup_args = dict(
         get_data_files(os.path.join('beaker'))
     )],
     install_requires    = [
-        'notebook >=4.4.0',
+        'notebook ==5.6.0',
         'ipywidgets >=7.0.0',
         'pandas',
         'py4j'

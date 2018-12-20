@@ -23,6 +23,8 @@ import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
+import com.twosigma.beakerx.kernel.BeakerXJson;
+import com.twosigma.beakerx.kernel.BeakerXJsonConfig;
 import com.twosigma.beakerx.kernel.CacheFolderFactory;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.CustomMagicCommandsFactory;
@@ -63,14 +65,16 @@ public class Scala extends Kernel {
                 KernelSocketsFactory kernelSocketsFactory,
                 CommRepository commRepository,
                 BeakerXServer beakerXServer,
-                MagicCommandConfiguration magicCommandConfiguration) {
+                MagicCommandConfiguration magicCommandConfiguration,
+                BeakerXJson beakerXJson) {
     super(id,
             evaluator,
             kernelSocketsFactory,
             new CustomMagicCommandsImpl(),
             commRepository,
             beakerXServer,
-            magicCommandConfiguration);
+            magicCommandConfiguration,
+            beakerXJson);
   }
 
   public Scala(final String id, final Evaluator evaluator,
@@ -80,7 +84,8 @@ public class Scala extends Kernel {
                CustomMagicCommandsFactory customMagicCommandsFactory,
                CommRepository commRepository,
                BeakerXServer beakerXServer,
-               MagicCommandConfiguration magicCommandConfiguration) {
+               MagicCommandConfiguration magicCommandConfiguration,
+               BeakerXJson beakerXJson) {
     super(id,
             evaluator,
             kernelSocketsFactory,
@@ -89,7 +94,8 @@ public class Scala extends Kernel {
             customMagicCommandsFactory,
             commRepository,
             beakerXServer,
-            magicCommandConfiguration);
+            magicCommandConfiguration,
+            beakerXJson);
   }
 
   @Override
@@ -124,7 +130,8 @@ public class Scala extends Kernel {
               kernelSocketsFactory,
               commRepository,
               new ScalaBeakerXServer(new GetUrlArgHandler(namespaceClient)),
-              magicConfiguration);
+              magicConfiguration,
+              new BeakerXJsonConfig());
     });
   }
 

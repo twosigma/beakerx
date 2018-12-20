@@ -24,6 +24,7 @@ import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.AddImportStatus;
+import com.twosigma.beakerx.kernel.BeakerXJson;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.ExecutionOptions;
@@ -38,9 +39,7 @@ import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.kernel.PythonEntryPoint;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfiguration;
-import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfigurationImpl;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
-import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
@@ -77,6 +76,8 @@ public class KernelTest implements KernelFunctionality {
   private Map<String, MagicKernelManager> magicKernels;
   private MagicCommandConfigurationMock magicCommandConfiguration = new MagicCommandConfigurationMock();
 
+  private BeakerXJson beakerXJson;
+
 //  public MavenJarResolver.ResolverParams mavenResolverParam = null;
 
   private List<MagicCommandType> magicCommandTypes = null;
@@ -93,6 +94,7 @@ public class KernelTest implements KernelFunctionality {
   public KernelTest(String id, CommRepository commRepository) {
     this.id = id;
     this.commRepository = commRepository;
+    this.beakerXJson = new BeakerXJsonMock();
     initMagicCommands();
     SimpleEvaluationObject value = new SimpleEvaluationObject("ok");
     Message jupyterMessage = commMsg();
@@ -106,6 +108,7 @@ public class KernelTest implements KernelFunctionality {
     this.id = id;
     this.evaluator = evaluator;
     this.commRepository = new BeakerXCommRepositoryMock();
+    this.beakerXJson = new BeakerXJsonMock();
     initMagicCommands();
     SimpleEvaluationObject value = new SimpleEvaluationObject("ok");
     Message jupyterMessage = commMsg();
@@ -383,7 +386,27 @@ public class KernelTest implements KernelFunctionality {
     return magicCommandConfiguration;
   }
 
+  @Override
+  public BeakerXJson getBeakerXJson() {
+    return this.beakerXJson;
+  }
+
   public FileServiceMock getFileService() {
     return magicCommandConfiguration.getFileService();
   }
+
+  public static class BeakerXJsonMock implements BeakerXJson {
+
+    @Override
+    public Map<String, Map> beakerxJsonAsMap() {
+      return null;
+    }
+
+    @Override
+    public void save(Map<String, Map> map) {
+
+    }
+  }
+
 }
+

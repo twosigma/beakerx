@@ -19,6 +19,7 @@ import com.twosigma.beakerx.BeakerXCommRepositoryMock;
 import com.twosigma.beakerx.BeakerXServerMock;
 import com.twosigma.beakerx.DefaultBeakerXJsonSerializer;
 import com.twosigma.beakerx.KernelSetUpFixtureTest;
+import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.MagicCommandConfigurationMock;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.NamespaceClientTest;
@@ -70,7 +71,8 @@ public class JavaAutotranslationTest extends KernelSetUpFixtureTest {
             getCacheFolderFactory(),
             new BeakerXCommRepositoryMock(),
             BeakerXServerMock.create(),
-            magicCommandConfiguration);
+            magicCommandConfiguration,
+            new KernelTest.BeakerXJsonMock());
   }
 
   private EvaluatorParameters getKernelParameters() {

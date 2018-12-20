@@ -19,6 +19,7 @@ import com.twosigma.beakerx.BeakerXCommRepositoryMock;
 import com.twosigma.beakerx.BeakerXServerMock;
 import com.twosigma.beakerx.KernelExecutionTest;
 import com.twosigma.beakerx.KernelSocketsServiceTest;
+import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.MagicCommandConfigurationMock;
 import com.twosigma.beakerx.clojure.evaluator.ClojureEvaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
@@ -67,7 +68,8 @@ public class ClojureKernelTest extends KernelExecutionTest {
             getCacheFolderFactory(),
             new BeakerXCommRepositoryMock(),
             BeakerXServerMock.create(),
-            magicCommandConfiguration);
+            magicCommandConfiguration,
+            new KernelTest.BeakerXJsonMock());
   }
 
   @Override

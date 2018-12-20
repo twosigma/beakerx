@@ -26,6 +26,8 @@ import com.twosigma.beakerx.clojure.handlers.ClojureCommOpenHandler;
 import com.twosigma.beakerx.clojure.handlers.ClojureKernelInfoHandler;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.kernel.BeakerXJson;
+import com.twosigma.beakerx.kernel.BeakerXJsonConfig;
 import com.twosigma.beakerx.kernel.CacheFolderFactory;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.CustomMagicCommandsEmptyImpl;
@@ -64,14 +66,16 @@ public class Clojure extends Kernel {
                   KernelSocketsFactory kernelSocketsFactory,
                   CommRepository commRepository,
                   BeakerXServer beakerXServer,
-                  MagicCommandConfiguration magicCommandConfiguration) {
+                  MagicCommandConfiguration magicCommandConfiguration,
+                  BeakerXJson beakerXJson) {
     super(sessionId,
             evaluator,
             kernelSocketsFactory,
             new CustomMagicCommandsEmptyImpl(),
             commRepository,
             beakerXServer,
-            magicCommandConfiguration);
+            magicCommandConfiguration,
+            beakerXJson);
   }
 
   public Clojure(String sessionId,
@@ -81,7 +85,8 @@ public class Clojure extends Kernel {
                  CacheFolderFactory cacheFolderFactory,
                  CommRepository commRepository,
                  BeakerXServer beakerXServer,
-                 MagicCommandConfiguration magicCommandConfiguration) {
+                 MagicCommandConfiguration magicCommandConfiguration,
+                 BeakerXJson beakerXJson) {
     super(sessionId,
             evaluator,
             kernelSocketsFactory,
@@ -90,7 +95,8 @@ public class Clojure extends Kernel {
             new CustomMagicCommandsEmptyImpl(),
             commRepository,
             beakerXServer,
-            magicCommandConfiguration);
+            magicCommandConfiguration,
+            beakerXJson);
   }
 
   @Override
@@ -118,7 +124,8 @@ public class Clojure extends Kernel {
               kernelSocketsFactory,
               beakerXCommRepository,
               new ClojureBeakerXServer(new GetUrlArgHandler(namespaceClient)),
-              magicConfiguration);
+              magicConfiguration,
+              new BeakerXJsonConfig());
     });
   }
 

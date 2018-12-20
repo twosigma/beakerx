@@ -33,8 +33,6 @@ import com.twosigma.beakerx.widget.SparkUiDefaultsImpl;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 
-import java.io.File;
-import java.nio.file.Paths;
 import java.util.List;
 
 import static java.util.Arrays.copyOfRange;
@@ -55,7 +53,7 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
             kernel,
             new SparkUI.SparkUIFactoryImpl(
                     new SparkEngineImpl.SparkEngineFactoryImpl(),
-                    new SparkUiDefaultsImpl(Paths.get((System.getenv("JUPYTER_CONFIG_DIR") != null ? System.getenv("JUPYTER_CONFIG_DIR") : (System.getProperty("user.home") + File.separator + ".jupyter")) + File.separator + "beakerx.json")),
+                    new SparkUiDefaultsImpl(kernel.getBeakerXJson()),
                     SINGLE_SPARK_SESSION
             )
     );

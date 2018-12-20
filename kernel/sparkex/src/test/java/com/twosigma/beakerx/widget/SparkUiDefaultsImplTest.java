@@ -16,6 +16,7 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.twosigma.beakerx.kernel.BeakerXJsonConfig;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 import org.assertj.core.api.Assertions;
@@ -50,12 +51,14 @@ public class SparkUiDefaultsImplTest {
   private final String PROFILE2 = "profile_2";
   private final String NAME = "name";
   private final String SPARK_OPT = "config";
+  private BeakerXJsonConfig beakerXJson;
 
   @Before
   public void setUp() throws URISyntaxException {
     Path path = Paths.get(this.getClass().getClassLoader().getResource("beakerxTest.json").toURI());
     this.pathToBeakerxTestJson = path;
-    this.sut = new SparkUiDefaultsImpl(pathToBeakerxTestJson);
+    this.beakerXJson = new BeakerXJsonConfig(pathToBeakerxTestJson);
+    this.sut = new SparkUiDefaultsImpl(beakerXJson);
   }
 
   @Test
@@ -68,7 +71,7 @@ public class SparkUiDefaultsImplTest {
     sut.loadDefaults(builder);
     sut.saveProfile(profileConfig);
     //then
-    Map<String, Map> result = sut.beakerxJsonAsMap(pathToBeakerxTestJson);
+    Map<String, Map> result = beakerXJson.beakerxJsonAsMap();
     Assertions.assertThat(result.get("beakerx").get("version")).isEqualTo(2);
   }
 
@@ -143,7 +146,7 @@ public class SparkUiDefaultsImplTest {
   }
 
   private Map getOptions(String profileName, Path path) {
-    Map<String, Map> beakerxTestJson = sut.beakerxJsonAsMap(path).get(BEAKERX);
+    Map<String, Map> beakerxTestJson = beakerXJson.beakerxJsonAsMap().get(BEAKERX);
     List<Map<String, Object>> profiles = (List<Map<String, Object>>) beakerxTestJson.get("spark_options").get("profiles");
     return profiles.stream().filter(x -> x.get(NAME).equals(profileName)).findFirst().orElse(new HashMap<>());
   }

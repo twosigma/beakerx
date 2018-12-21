@@ -17,11 +17,12 @@ from enum import Enum
 
 class TreeMapNode:
     def __init__(self, *args):
-        self.type= 'TreeMapNode'
+        self.type = 'TreeMapNode'
         self.weight = 0
         self.color = '#780004'
         self.children = None
         self.label = args[0]
+        self.user_object = {}
         if len(args) > 1:
             self.doubleValue = args[2].value
             self.labelValue = args[2].label

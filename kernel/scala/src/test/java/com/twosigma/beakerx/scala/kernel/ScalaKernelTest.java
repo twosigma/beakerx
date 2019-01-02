@@ -18,6 +18,7 @@ package com.twosigma.beakerx.scala.kernel;
 import com.twosigma.beakerx.BeakerXCommRepositoryMock;
 import com.twosigma.beakerx.BeakerXServerMock;
 import com.twosigma.beakerx.KernelExecutionTest;
+import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.MagicCommandConfigurationMock;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
@@ -64,7 +65,8 @@ public class ScalaKernelTest extends KernelExecutionTest {
             new CustomMagicCommandsEmptyImpl(),
             new BeakerXCommRepositoryMock(),
             BeakerXServerMock.create(),
-            magicCommandConfiguration);
+            magicCommandConfiguration,
+            new KernelTest.BeakerXJsonMock());
   }
 
   @Override

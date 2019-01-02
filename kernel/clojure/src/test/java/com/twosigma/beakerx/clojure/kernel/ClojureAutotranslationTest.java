@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twosigma.beakerx.BeakerXCommRepositoryMock;
 import com.twosigma.beakerx.BeakerXServerMock;
 import com.twosigma.beakerx.KernelSetUpFixtureTest;
+import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.MagicCommandConfigurationMock;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.NamespaceClientTest;
@@ -69,7 +70,8 @@ public class ClojureAutotranslationTest extends KernelSetUpFixtureTest {
             getCacheFolderFactory(),
             new BeakerXCommRepositoryMock(),
             BeakerXServerMock.create(),
-            commandConfiguration);
+            commandConfiguration,
+            new KernelTest.BeakerXJsonMock());
   }
 
   @Test

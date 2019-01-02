@@ -17,6 +17,7 @@ package com.twosigma.beakerx.sql.kernel;
 
 import com.twosigma.beakerx.BeakerXCommRepositoryMock;
 import com.twosigma.beakerx.BeakerXServerMock;
+import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.MagicCommandConfigurationMock;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
@@ -59,7 +60,8 @@ public class SQLKernelWIthDefaultEnvsTest extends SQLKernelTest {
             getCacheFolderFactory(),
             new BeakerXCommRepositoryMock(),
             BeakerXServerMock.create(),
-            magicCommandConfiguration);
+            magicCommandConfiguration,
+            new KernelTest.BeakerXJsonMock());
     return sqlKernel;
   }
 

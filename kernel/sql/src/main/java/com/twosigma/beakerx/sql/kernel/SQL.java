@@ -21,6 +21,8 @@ import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.kernel.BeakerXJson;
+import com.twosigma.beakerx.kernel.BeakerXJsonConfig;
 import com.twosigma.beakerx.kernel.CacheFolderFactory;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.CustomMagicCommandsFactory;
@@ -68,14 +70,16 @@ public class SQL extends Kernel {
               KernelSocketsFactory kernelSocketsFactory,
               CommRepository commRepository,
               BeakerXServer beakerXServer,
-              MagicCommandConfiguration magicCommandConfiguration) {
+              MagicCommandConfiguration magicCommandConfiguration,
+              BeakerXJson beakerXJson) {
     super(sessionId,
             evaluator,
             kernelSocketsFactory,
             new SQLCustomMagicCommandsImpl(),
             commRepository,
             beakerXServer,
-            magicCommandConfiguration
+            magicCommandConfiguration,
+            beakerXJson
     );
   }
 
@@ -86,7 +90,8 @@ public class SQL extends Kernel {
              CacheFolderFactory cacheFolderFactory,
              CommRepository commRepository,
              BeakerXServer beakerXServer,
-             MagicCommandConfiguration magicCommandConfiguration) {
+             MagicCommandConfiguration magicCommandConfiguration,
+             BeakerXJson beakerXJson) {
     super(sessionId,
             evaluator,
             kernelSocketsFactory,
@@ -95,7 +100,8 @@ public class SQL extends Kernel {
             new SQLCustomMagicCommandsImpl(),
             commRepository,
             beakerXServer,
-            magicCommandConfiguration);
+            magicCommandConfiguration,
+            beakerXJson);
   }
 
   @Override
@@ -124,7 +130,8 @@ public class SQL extends Kernel {
               kernelSocketsFactory,
               commRepository,
               new SQLBeakerXServer(new GetUrlArgHandler(beakerxClient)),
-              magicConfiguration);
+              magicConfiguration,
+              new BeakerXJsonConfig());
     });
   }
 

@@ -23,6 +23,8 @@ import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.javash.comm.JavaCommOpenHandler;
 import com.twosigma.beakerx.javash.evaluator.JavaEvaluator;
 import com.twosigma.beakerx.javash.handler.JavaKernelInfoHandler;
+import com.twosigma.beakerx.kernel.BeakerXJson;
+import com.twosigma.beakerx.kernel.BeakerXJsonConfig;
 import com.twosigma.beakerx.kernel.CacheFolderFactory;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.CustomMagicCommandsEmptyImpl;
@@ -52,14 +54,16 @@ public class Java extends Kernel {
                KernelSocketsFactory kernelSocketsFactory,
                CommRepository commRepository,
                BeakerXServer beakerXServer,
-               MagicCommandConfiguration magicCommandConfiguration) {
+               MagicCommandConfiguration magicCommandConfiguration,
+               BeakerXJson beakerXJson) {
     super(id,
             evaluator,
             kernelSocketsFactory,
             new CustomMagicCommandsEmptyImpl(),
             commRepository,
             beakerXServer,
-            magicCommandConfiguration);
+            magicCommandConfiguration,
+            beakerXJson);
   }
 
   public Java(final String id,
@@ -69,7 +73,8 @@ public class Java extends Kernel {
               CacheFolderFactory cacheFolderFactory,
               CommRepository commRepository,
               BeakerXServer beakerXServer,
-              MagicCommandConfiguration magicCommandConfiguration) {
+              MagicCommandConfiguration magicCommandConfiguration,
+              BeakerXJson beakerXJson) {
     super(id,
             evaluator,
             kernelSocketsFactory,
@@ -78,7 +83,8 @@ public class Java extends Kernel {
             new CustomMagicCommandsEmptyImpl(),
             commRepository,
             beakerXServer,
-            magicCommandConfiguration);
+            magicCommandConfiguration,
+            beakerXJson);
   }
 
   @Override
@@ -105,7 +111,13 @@ public class Java extends Kernel {
               getKernelParameters(),
               beakerxClient,
               magicConfiguration.patterns());
-      return new Java(id, e, kernelSocketsFactory, commRepository, new JavaBeakerXServer(new GetUrlArgHandler(beakerxClient)), magicConfiguration);
+      return new Java(id,
+              e,
+              kernelSocketsFactory,
+              commRepository,
+              new JavaBeakerXServer(new GetUrlArgHandler(beakerxClient)),
+              magicConfiguration,
+              new BeakerXJsonConfig());
     });
   }
 

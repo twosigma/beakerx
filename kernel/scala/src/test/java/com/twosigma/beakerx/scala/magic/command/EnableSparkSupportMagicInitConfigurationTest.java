@@ -41,7 +41,8 @@ public class EnableSparkSupportMagicInitConfigurationTest {
   private SparkInitCommandFactoryMock commandFactoryMock;
   public static final ArrayList<MagicCommandOutcomeItem> NO_ERRORS = new ArrayList<>();
 
-  private MagicCommandConfigurationMock configurationMock= new MagicCommandConfigurationMock();
+  private MagicCommandConfigurationMock configurationMock = new MagicCommandConfigurationMock();
+
   @After
   public void tearDown() {
     kernel.exit();
@@ -171,12 +172,12 @@ public class EnableSparkSupportMagicInitConfigurationTest {
           return new MagicCommandOutput(MagicCommandOutput.Status.OK);
         }
 
-        @Override
-        public String getErrorMessage() {
-          return "loadSparkSupportMagicError";
-        }
-      };
+          @Override
+          public String getErrorMessage () {
+            return "loadSparkSupportMagicError";
+          }
+        };
+      }
     }
-  }
 
-}
+  }

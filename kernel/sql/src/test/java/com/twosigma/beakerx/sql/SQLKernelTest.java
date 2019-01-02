@@ -20,6 +20,7 @@ import com.twosigma.beakerx.BeakerXServerMock;
 import com.twosigma.beakerx.KernelSetUpFixtureTest;
 import com.twosigma.beakerx.KernelSocketsServiceTest;
 import com.twosigma.beakerx.KernelSocketsTest;
+import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.MagicCommandConfigurationMock;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
@@ -68,7 +69,8 @@ public class SQLKernelTest extends KernelSetUpFixtureTest {
             getCacheFolderFactory(),
             new BeakerXCommRepositoryMock(),
             BeakerXServerMock.create(),
-            magicCommandConfiguration);
+            magicCommandConfiguration,
+            new KernelTest.BeakerXJsonMock());
     return sqlKernel;
   }
 

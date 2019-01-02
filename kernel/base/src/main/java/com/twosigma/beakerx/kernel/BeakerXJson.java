@@ -13,31 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx;
+package com.twosigma.beakerx.kernel;
 
-import com.twosigma.beakerx.kernel.KernelFunctionality;
-import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
-import com.twosigma.beakerx.kernel.restserver.RESTAction;
+import java.util.Map;
 
-public class BeakerXServerMock implements BeakerXServer {
+public interface BeakerXJson {
 
-  @Override
-  public BeakerXServer get(KernelFunctionality kernel) {
-    return this;
-  }
+  Map<String, Map> beakerxJsonAsMap();
 
-  @Override
-  public String getURL() {
-    return "";
-  }
-
-  @Override
-  public void addPostMapping(String path, RESTAction restAction) {
-
-  }
-
-
-  public static BeakerXServer create() {
-    return new BeakerXServerMock();
-  }
+  void save(Map<String, Map> map);
 }

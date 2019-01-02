@@ -92,9 +92,83 @@ describe('Spark UI', function () {
     });
   });
 
+  function clickSaveProfile(output) {
+    output.click('button[title="Save profile"]');
+  }
+
+  function clickAddProperty(output) {
+    cleanProfileProperties(output);
+    output.click('button.bx-properties-add-button');
+  }
+  
+  function checkProfileError(output, msg) {
+    expect(output.$('div.bx-spark-connect-error').getText()).toEqual(msg);
+  }
+
+  function cleanProfileProperties(output){
+    while(output.$$('button.icon-close').length > 1){
+      output.$$('button.icon-close')[1].click();
+      browser.pause(500);
+    }
+  }
+
+  describe('Add property to Spark profile', function () {
+    var output;
+
+    it("Can't save when 'name' property is empty ", function () {
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      output = beakerxPO.getAllOutputsWidget(codeCell)[0];
+      expect(output.$('div.p-Widget.bx-spark-configuration').isEnabled()).toBeTruthy();
+      clickAddProperty(output);
+      browser.pause(1000);
+      clickSaveProfile(output);
+      checkProfileError(output, "Property 'name' can not be empty");
+    });
+    it("Can't start when 'name' property is empty ", function () {
+      output.$$('button.icon-close')[1].click();
+      clickAddProperty(output);
+      output.click('button.p-Widget.bx-spark-connect');
+      checkProfileError(output, "Property 'name' can not be empty");
+    });
+    it("Can't save when 'value' property is empty ", function () {
+      output.$$('button.icon-close')[1].click();
+      clickAddProperty(output);
+      output.$('div.bx-spark-configuration').$$('input')[0].click();
+      browser.keys('g');
+      clickSaveProfile(output);
+      checkProfileError(output, "Property 'value' can not be empty");
+    });
+    it("Can't start when 'value' property is empty ", function () {
+      output.$$('button.icon-close')[1].click();
+      clickAddProperty(output);
+      output.$('div.bx-spark-configuration').$$('input')[0].click();
+      browser.keys('g');
+      output.click('button.p-Widget.bx-spark-connect');
+      checkProfileError(output, "Property 'value' can not be empty");
+    });
+    it("Should save not empty property ", function () {
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      output = beakerxPO.getAllOutputsWidget(codeCell)[0];
+      expect(output.$('div.p-Widget.bx-spark-configuration').isEnabled()).toBeTruthy();
+      clickAddProperty(output);
+      output.$('div.bx-spark-configuration').$$('input')[0].click();
+      browser.keys('n');
+      output.$('div.bx-spark-configuration').$$('input')[1].click();
+      browser.keys('v');
+      clickSaveProfile(output);
+      expect(output.$('div.bx-spark-connect-error').getText().length).toEqual(0);
+    });
+    it("Should remove property ", function () {
+      expect(output.$('div.bx-spark-configuration').$$('input').length).toEqual(2);
+      output.$$('button.icon-close')[1].click();
+      clickSaveProfile(output);
+      expect(output.$('div.bx-spark-connect-error').getText().length).toEqual(0);
+    });
+  });
+
   describe('Spark session', function () {
     it('Should calculate PI', function () {
-      var codeCellSpark1 = beakerxPO.getCodeCellByIndex(1);
+      var codeCellSpark1 =  beakerxPO.runCodeCellByIndex(1);
       startSparkSession(codeCellSpark1);
 
       cellIndex += 1;

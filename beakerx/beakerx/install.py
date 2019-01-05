@@ -30,6 +30,24 @@ from jupyter_core import paths
 from traitlets.config.manager import BaseJSONConfigManager
 from distutils import log
 
+ipython_config_str="""\
+from contextlib import suppress
+with suppress(Exception): import beakerx_config
+""".strip()
+
+beakerx_config_str="""\
+c = get_config()
+c.InteractiveShellApp.extensions = [
+'beakerx.autotranslation',
+'beakerx_magics.kernel_magic',
+'beakerx_magics.groovy_magic',
+'beakerx_magics.clojure_magic',
+'beakerx_magics.kotlin_magic',
+'beakerx_magics.scala_magic',
+'beakerx_magics.sql_magic',
+'beakerx_magics.java_magic'
+]
+""".strip()
 
 def _all_kernels():
     kernels = pkg_resources.resource_listdir(
@@ -139,19 +157,47 @@ def _install_magics():
     log.info("installing groovy magic for python...")
     dir_path = os.path.join(sys.prefix, 'etc', 'ipython')
     os.makedirs(dir_path, exist_ok=True)
-    with open(os.path.join(dir_path, 'ipython_config.py'), 'w+') as ipython_config:
-        ipython_config.write("c = get_config()\n")
-        ipython_config.write("c.InteractiveShellApp.extensions = ["
-                             "'beakerx.autotranslation',\n"
-                             "'beakerx_magics.kernel_magic',\n"
-                             "'beakerx_magics.groovy_magic',\n"
-                             "'beakerx_magics.clojure_magic',\n"
-                             "'beakerx_magics.kotlin_magic',\n"
-                             "'beakerx_magics.scala_magic',\n"
-                             "'beakerx_magics.sql_magic',\n"
-                             "'beakerx_magics.java_magic'\n"
-                             "]\n")
+    fn_i=os.path.join(dir_path, 'ipython_config.py')
+    if os.path.isfile(fn_i):
+        with open(fn_i) as f:
+            content=f.read()
+        evacuate_file(content, fn_i) #maintenance
+    with open(fn_i, 'w+') as ipython_config:
+        ipython_config.write(ipython_config_str)
+    fn_b=os.path.join(dir_path, 'beakerx_config.py')
+    with open(fn_b, 'w+') as beakerx_config:
+        beakerx_config.write(beakerx_config_str)
 
+def evacuate_file(config_str, fn):
+    with open(fn) as f: content=f.read()
+    content = correct_line_break(content).replace(config_str, "")
+    with open(fn, 'w') as f: #write replaced
+        f.write(content)
+                             
+def _uninstall_magics():
+    log.info("uninstalling beakerx_magics for python...")
+    dir_path = os.path.join(sys.prefix, 'etc', 'ipython')
+    fn_i=os.path.join(dir_path, 'ipython_config.py')
+    if not 'ipython_config.py' in os.listdir(dir_path):
+        return #clean
+    check_file_empty_and_remove(fn_i)
+    evacuate_file(ipython_config_str, fn_i)
+    check_file_empty_and_remove(fn_i) #final check if can be removed
+    fn_b = os.path.join(dir_path, 'beakerx_config.py')
+    evacuate_file(beakerx_config_str, fn_b)
+    check_file_empty_and_remove(fn_b)
+
+def check_file_empty_and_remove(fn):
+    with open(fn) as f:
+        content=f.read()
+    if not content: #nothing here? remove!
+        os.remove(fn)
+    return content
+
+def correct_line_break(c):
+    r="c.InteractiveShellApp.extensions = [\n'beakerx.autotranslation',"
+    return c.replace(r.replace("\n", ""), r)    
+    
 def _set_conf_privileges():
     config_path = os.path.join(paths.jupyter_config_dir(), 'beakerx.json')
     if pathlib.Path(config_path).exists():
@@ -210,6 +256,7 @@ def _disable_beakerx(args):
     _uninstall_labextensions(args.lab)
     _uninstall_kernels()
     _install_kernelspec_manager(args.prefix, disable=True)
+    _uninstall_magics()
 
 
 def _install_beakerx(args):

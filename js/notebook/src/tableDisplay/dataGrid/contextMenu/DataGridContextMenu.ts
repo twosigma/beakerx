@@ -34,7 +34,15 @@ export default class DataGridContextMenu extends BkoContextMenu {
       ...createCellContextMenuItems(this.scope.dataGrid, this)
     ];
 
-    new BeakerXApi(`${(Jupyter.notebook_list || Jupyter.notebook).base_url}`)
+    let baseUrl;
+
+    try {
+      baseUrl = `${(Jupyter.notebook_list || Jupyter.notebook).base_url}`;
+    } catch (e) {
+      baseUrl = `${window.location.origin}/`;
+    }
+
+    new BeakerXApi(baseUrl)
       .loadSettings()
       .then(ret => {
         if (ret.ui_options.show_publication) {

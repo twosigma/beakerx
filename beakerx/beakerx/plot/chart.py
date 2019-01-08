@@ -23,6 +23,7 @@ from enum import Enum
 from ipykernel.comm import Comm
 from pandas import DataFrame
 from traitlets import Unicode, Dict
+
 from .tree_map_reducer import TreeMapReducer
 
 
@@ -164,9 +165,8 @@ class HeatMapChart(XYChart):
         if too_many_points:
             limited_heat_map_data = HeatMapChart.limit_Heatmap(self_copy.graphics_list);
             self_copy.graphics_list = limited_heat_map_data
-            self_copy.numberOfPointsToDisplay = HeatMapChart.total_points(self_copy.graphics_list)
 
-        self_copy.numberOfPointsToDisplay = HeatMapChart.total_points(self_copy.graphics_list)
+        self_copy.numberOfPointsToDisplay = str(HeatMapChart.total_points(self_copy.graphics_list)) + " items"
         self_copy.tooManyRows = too_many_points
         return super(HeatMapChart, self_copy).transform()
 
@@ -214,7 +214,7 @@ class HistogramChart(XYChart):
         self_copy.totalNumberOfPoints = HistogramChart.total_number(self_copy.graphics_list)
         self_copy.tooManyRows = self_copy.totalNumberOfPoints >= HistogramChart.ROWS_LIMIT
         self_copy.rowsLimitItems = HistogramChart.ROWS_LIMIT
-        self_copy.numberOfPointsToDisplay = HistogramChart.ROWS_LIMIT_T0_INDEX
+        self_copy.numberOfPointsToDisplay = str(HistogramChart.ROWS_LIMIT_T0_INDEX) + " items"
         self_copy.graphics_list = list(map(HistogramChart.limit_points, self_copy.graphics_list))
         return super(HistogramChart, self_copy).transform()
 
@@ -259,16 +259,18 @@ class TreeMapChart(XYChart):
 
     def transform(self):
         tree_map = self
-        count_nodes = tree_map.countNodes(self.graphics_list, 0)
+        tree_map.process(tree_map.graphics_list)
+        count_nodes = tree_map.count_nodes(self.graphics_list, self.increase_by_one, 0)
         to_many_rows = count_nodes > TreeMapChart.ROWS_LIMIT
         if to_many_rows:
             tree_map = copy.copy(self)
             tree_map.totalNumberOfPoints = count_nodes
             tree_map.rowsLimitItems = TreeMapChart.ROWS_LIMIT
-            tree_map.numberOfPointsToDisplay = TreeMapChart.ROWS_LIMIT
             tree_map.graphics_list = TreeMapReducer.limit_tree_map(TreeMapChart.ROWS_LIMIT, self.graphics_list)
+            tree_map.numberOfPointsToDisplay = str(
+                tree_map.count_nodes(tree_map.graphics_list, self.increase_by_one_when_leaf, 0)
+            ) + " leaves"
         tree_map.tooManyRows = to_many_rows
-        tree_map.process(tree_map.graphics_list)
         return super(TreeMapChart, tree_map).transform()
 
     def process(self, node):
@@ -277,19 +279,29 @@ class TreeMapChart(XYChart):
         if children is not None:
             for child in children:
                 self.process(child)
-
+        node.user_object["isLeaf"] = node.isLeaf()
         if node.isLeaf():
             node.color = self.colorProvider.getColor(node)
             toolTipBuilder = self.toolTipBuilder
             if toolTipBuilder is not None:
                 node.tooltip = toolTipBuilder.getToolTip(node)
 
-    def countNodes(self, node, count):
-        count = count + 1
+    @staticmethod
+    def increase_by_one(node, count):
+        return count + 1
+
+    @staticmethod
+    def increase_by_one_when_leaf(node, count):
+        if node.user_object["isLeaf"]:
+            count = count + 1
+        return count
+
+    def count_nodes(self, node, increase_fun, count):
+        count = increase_fun(node, count)
         children = node.children
         if children is not None:
             for child in children:
-                count = self.countNodes(child, count)
+                count = self.count_nodes(child, increase_fun, count)
         return count
 
 

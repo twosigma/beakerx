@@ -74,8 +74,10 @@ function setupPublisher() {
 }
 
 function openPublishDialog(): void {
-  new GistPublishModal()
-    .show(personalAccessToken => doPublish(personalAccessToken));
+  GistPublisherUtils.saveWidgetStateHandler()
+    .then(() => new GistPublishModal()
+      .show(personalAccessToken => doPublish(personalAccessToken))
+    );
 }
 
 function showErrorDialog(errorMsg) {

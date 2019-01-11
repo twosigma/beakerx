@@ -301,6 +301,10 @@ describe('DataFormatter', () => {
       expect(datetimeFormatFn({ ...cellConfig, value: 'something' }).toString()).to.equal('Invalid date');
     });
 
+    it('should return NaT', () => {
+        expect(datetimeFormatFn({ ...cellConfig, value: 'NaT' }).toString()).to.equal('NaT');
+    });
+
   });
 
   describe('dataFormatter.boolean', () => {

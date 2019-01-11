@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import types
+import numpy as np
 from beakerx.beakerx_widgets import *
 from beakerx.tabledisplay.tableitems import *
 from beakerx.utils import *
@@ -22,6 +22,9 @@ from traitlets import Unicode, Dict
 
 
 class Table(BaseObject):
+
+    NAT_VALUE = "NaT"
+
     def __init__(self, *args, **kwargs):
 
         self.values = []
@@ -142,6 +145,8 @@ class Table(BaseObject):
     @staticmethod
     def convert_value(value, value_type, tz=None):
         if value_type == "time":
+            if np.isnat(value):
+                return str(Table.NAT_VALUE)
             return DateType(value, tz)
         else:
             return str(value)

@@ -16,24 +16,22 @@
 
 import * as moment from 'moment-timezone/builds/moment-timezone-with-data';
 import * as _ from 'underscore';
-import {
-  isDoubleWithPrecision,
-  getDoublePrecisionByType
-} from './dataTypes';
-import { DataGridHelpers } from './dataGridHelpers';
-import { TIME_UNIT_FORMATS } from './consts';
+import {getDoublePrecisionByType, isDoubleWithPrecision} from './dataTypes';
+import {DataGridHelpers} from './dataGridHelpers';
+import {TIME_UNIT_FORMATS} from './consts';
 import {CellRenderer} from "@phosphor/datagrid";
 import {IColumnState} from "./interface/IColumn";
 import {
-  selectColumnNames,
-  selectStringFormatForColumn, selectFormatForTimes,
-  selectStringFormatForType,
-  selectTimeStrings,
-  selectTimeZone
+    selectColumnNames,
+    selectFormatForTimes,
+    selectStringFormatForColumn,
+    selectStringFormatForType,
+    selectTimeStrings,
+    selectTimeZone
 } from "./model/selectors";
 import {BeakerXDataStore} from "./store/BeakerXDataStore";
-import formatTimestamp = DataGridHelpers.formatTimestamp;
 import * as Big from "big.js";
+import formatTimestamp = DataGridHelpers.formatTimestamp;
 
 export const DEFAULT_TIME_FORMAT = 'YYYYMMDD HH:mm:ss.SSS ZZ';
 
@@ -85,7 +83,7 @@ export class DataFormatter {
   get columnNames() {
     return selectColumnNames(this.store.state);
   }
-  
+
   getFormatFnByDisplayType(displayType, columnState?: IColumnState): CellRenderer.ConfigFunc<string> {
     if (isDoubleWithPrecision(displayType)) {
       return this.doubleWithPrecision(getDoublePrecisionByType(displayType));
@@ -229,24 +227,30 @@ export class DataFormatter {
     if (this.timeStrings) {
       return this.timeStrings[config.row];
     }
+    let value = config.value;
+    if (value==='NaT'){
+      return value;
+    }
+    return this.formatDatetime(value, formatForTimes);
+  }
 
+  private formatDatetime(value:any, formatForTimes: any){
     let format = TIME_UNIT_FORMATS.DATETIME.format;
     let valueModifier = 1000;
-    let value = config.value;
 
     if (formatForTimes) {
-      format = formatForTimes.format;
-      valueModifier = formatForTimes.valueModifier;
+        format = formatForTimes.format;
+        valueModifier = formatForTimes.valueModifier;
     }
 
     if (_.isObject(value) && value.type === 'Date') {
-      let tz = value.hasOwnProperty('tz') ? value.tz : this.timeZone;
-      return formatTimestamp(value.timestamp, tz, format);
+        let tz = value.hasOwnProperty('tz') ? value.tz : this.timeZone;
+        return formatTimestamp(value.timestamp, tz, format);
     }
 
     let milli = isNaN(value) ?
-      value :
-      new Big(value).times(valueModifier);
+        value :
+        new Big(value).times(valueModifier);
 
     return formatTimestamp(milli, this.timeZone, format);
   }

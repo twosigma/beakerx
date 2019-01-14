@@ -56,7 +56,7 @@ class TreeMapReducer:
         tree_counter = TreeCounter()
         for tl in tree_layers:
             number_of_nodes_changed = True
-            while number_of_nodes_changed and tree_counter.get_count() < limit:
+            while number_of_nodes_changed and tree_counter.get_count() <= limit:
                 number_of_nodes_changed = tl.add_child_to_node_layers(tree_counter, mapper, limit)
         return mapper
 
@@ -75,7 +75,7 @@ class TreeLayer:
     def add_child_to_node_layers(self, tree_counter, mapper, limit):
         at_least_one_child_added = False
         for nl in self.get_node_layers():
-            if tree_counter.get_count() < limit:
+            if tree_counter.get_count() <= limit:
                 added = nl.add_child(tree_counter, mapper)
                 if added:
                     at_least_one_child_added = True
@@ -105,7 +105,8 @@ class NodeLayer:
                 cloned_child.children = []
             mapper[self.node].add(cloned_child)
             mapper[child] = cloned_child
-            tree_counter.increase()
+            if child.isLeaf():
+                tree_counter.increase()
             return True
         return False
 

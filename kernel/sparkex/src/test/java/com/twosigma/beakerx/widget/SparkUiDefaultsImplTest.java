@@ -17,6 +17,7 @@
 package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.kernel.BeakerXJsonConfig;
+import com.twosigma.beakerx.widget.configuration.SparkConfiguration;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 import org.assertj.core.api.Assertions;
@@ -50,7 +51,6 @@ public class SparkUiDefaultsImplTest {
   private final String PROFILE1 = "profile_1";
   private final String PROFILE2 = "profile_2";
   private final String NAME = "name";
-  private final String SPARK_OPT = "config";
   private BeakerXJsonConfig beakerXJson;
 
   @Before

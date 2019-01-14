@@ -13,39 +13,43 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget;
+package com.twosigma.beakerx.widget.configuration;
+
+import com.twosigma.beakerx.widget.Button;
+import com.twosigma.beakerx.widget.HBox;
+import com.twosigma.beakerx.widget.Text;
 
 import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 import static java.util.Arrays.asList;
 
-public class PropertyItem extends HBox {
+class PropertyItem extends HBox {
 
   private Text name;
   private Text value;
   private Button remove;
 
-  public PropertyItem(Text name, Text value, Button remove) {
+  PropertyItem(Text name, Text value, Button remove) {
     super(asList(checkNotNull(name), checkNotNull(value), checkNotNull(remove)));
     this.name = name;
     this.value = value;
     this.remove = remove;
   }
 
-  public String getNameAsString() {
+  String getNameAsString() {
     return name.getValue();
   }
 
-  public String getValueAsString() {
+  String getValueAsString() {
     return value.getValue();
   }
 
-  public void disable() {
+  void disable() {
     name.setDisabled(true);
     value.setDisabled(true);
     remove.setDisabled(true);
   }
 
-  public void enable() {
+  void enable() {
     name.setDisabled(false);
     value.setDisabled(false);
     remove.setDisabled(false);

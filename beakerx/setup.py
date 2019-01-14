@@ -101,7 +101,7 @@ setup_args = dict(
         get_data_files(os.path.join('beaker'))
     )],
     install_requires    = [
-        'notebook ==5.6.0',
+        'notebook ==5.7.4',
         'ipywidgets >=7.0.0',
         'pandas',
         'py4j'

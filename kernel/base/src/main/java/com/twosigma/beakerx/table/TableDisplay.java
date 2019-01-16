@@ -15,6 +15,34 @@
  */
 package com.twosigma.beakerx.table;
 
+import com.twosigma.beakerx.chart.Color;
+import com.twosigma.beakerx.handler.Handler;
+import com.twosigma.beakerx.jvm.serialization.BasicObjectSerializer;
+import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
+import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.mimetype.MIMEContainer;
+import com.twosigma.beakerx.table.action.TableActionDetails;
+import com.twosigma.beakerx.table.format.TableDisplayStringFormat;
+import com.twosigma.beakerx.table.format.TimeStringFormat;
+import com.twosigma.beakerx.table.format.ValueStringFormat;
+import com.twosigma.beakerx.table.highlight.TableDisplayCellHighlighter;
+import com.twosigma.beakerx.table.highlight.ValueHighlighter;
+import com.twosigma.beakerx.table.renderer.TableDisplayCellRenderer;
+import com.twosigma.beakerx.widget.BeakerxWidget;
+import com.twosigma.beakerx.widget.RunWidgetClosure;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeAlignmentForColumn;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeAlignmentForType;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeCellHighlighters;
@@ -38,33 +66,6 @@ import static com.twosigma.beakerx.table.TableDisplayToJson.serializeTimeZone;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeTooltips;
 import static com.twosigma.beakerx.widget.CompiledCodeRunner.runCompiledCode;
 import static java.util.Arrays.asList;
-
-import com.twosigma.beakerx.chart.Color;
-import com.twosigma.beakerx.jvm.serialization.BasicObjectSerializer;
-import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
-import com.twosigma.beakerx.table.action.TableActionDetails;
-import com.twosigma.beakerx.table.format.TableDisplayStringFormat;
-import com.twosigma.beakerx.table.format.ValueStringFormat;
-import com.twosigma.beakerx.table.highlight.TableDisplayCellHighlighter;
-import com.twosigma.beakerx.table.highlight.ValueHighlighter;
-import com.twosigma.beakerx.table.renderer.TableDisplayCellRenderer;
-import com.twosigma.beakerx.widget.BeakerxWidget;
-import com.twosigma.beakerx.widget.RunWidgetClosure;
-import com.twosigma.beakerx.handler.Handler;
-import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.mimetype.MIMEContainer;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 public class TableDisplay extends BeakerxWidget {
 
@@ -280,8 +281,7 @@ public class TableDisplay extends BeakerxWidget {
   }
 
   public void setStringFormatForTimes(TimeUnit stringFormatForTimes) {
-    this.stringFormatForTimes = stringFormatForTimes;
-    sendModelUpdate(serializeStringFormatForTimes(this.stringFormatForTimes));
+    handleUnitTime(ColumnType.Time, TableDisplayStringFormat.getTimeFormat(stringFormatForTimes));
   }
 
   public Map<ColumnType, TableDisplayStringFormat> getStringFormatForType() {
@@ -289,8 +289,22 @@ public class TableDisplay extends BeakerxWidget {
   }
 
   public void setStringFormatForType(ColumnType type, TableDisplayStringFormat format) {
+    if (ColumnType.Time.equals(type) && format instanceof TimeStringFormat) {
+      handleUnitTime(type, (TimeStringFormat) format);
+    } else {
+      putFormatForType(type, format);
+    }
+  }
+
+  private void putFormatForType(ColumnType type, TableDisplayStringFormat format) {
     this.stringFormatForType.put(type, format);
     sendModelUpdate(serializeStringFormatForType(this.stringFormatForType));
+  }
+
+  private void handleUnitTime(ColumnType type, TimeStringFormat format) {
+    this.stringFormatForTimes = format.getUnit();
+    sendModelUpdate(serializeStringFormatForTimes(this.stringFormatForTimes));
+    putFormatForType(type, format);
   }
 
   public Map<String, TableDisplayStringFormat> getStringFormatForColumn() {

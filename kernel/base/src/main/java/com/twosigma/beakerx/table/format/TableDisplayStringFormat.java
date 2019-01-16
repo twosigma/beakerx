@@ -35,22 +35,22 @@ public class TableDisplayStringFormat {
   }
 
   // Get a formatter that will show Date in a timestamp format with millisecond precision
-  public static TableDisplayStringFormat getTimeFormat() {
+  public static TimeStringFormat getTimeFormat() {
     return new TimeStringFormat();
   }
 
   // Get a formatter that will show Date in a timestamp format with millisecond precision
-  public static TableDisplayStringFormat getTimeFormat(boolean humanFriendly) {
+  public static TimeStringFormat getTimeFormat(boolean humanFriendly) {
     return new TimeStringFormat(humanFriendly);
   }
 
   // Get a formatter that will show Date in a timestamp format with the specified precision
-  public static TableDisplayStringFormat getTimeFormat(TimeUnit unit) {
+  public static TimeStringFormat getTimeFormat(TimeUnit unit) {
     return new TimeStringFormat(unit);
   }
 
   // Get a formatter that will show Date in a timestamp format with the specified precision
-  public static TableDisplayStringFormat getTimeFormat(TimeUnit unit, boolean humanFriendly) {
+  public static TimeStringFormat getTimeFormat(TimeUnit unit, boolean humanFriendly) {
     return new TimeStringFormat(unit, humanFriendly);
   }
 

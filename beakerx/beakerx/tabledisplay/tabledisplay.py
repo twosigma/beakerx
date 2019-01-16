@@ -22,7 +22,6 @@ from traitlets import Unicode, Dict
 
 
 class Table(BaseObject):
-
     NAT_VALUE = "NaT"
 
     def __init__(self, *args, **kwargs):
@@ -64,6 +63,7 @@ class Table(BaseObject):
         self.columnsFrozenRight = {}
         self.columnsVisible = {}
         self.hasDoubleClickAction = False
+        self.filteredValues = []
 
     def convert_from_dict(self, args):
         self.columnNames.append("Key")
@@ -90,7 +90,7 @@ class Table(BaseObject):
             row = []
             for columnName in self.columnNames:
                 value = element.get(columnName, "")
-                value_type = types_map.get(columnName);
+                value_type = types_map.get(columnName)
                 row.append(self.convert_value(value, value_type))
             self.values.append(row)
 
@@ -149,7 +149,7 @@ class Table(BaseObject):
                 return str(Table.NAT_VALUE)
             return DateType(value, tz)
         else:
-            return str(value)
+            return value
 
     @staticmethod
     def convert_type(object_type):
@@ -164,6 +164,37 @@ class Table(BaseObject):
             return "boolean"
         else:
             return "string"
+
+    def setToolTip(self, configTooltip):
+        for row_ind in range(0, len(self.values)):
+            row = self.values[row_ind]
+            rowToolTips = []
+            for col_ind in range(0, len(row)):
+                rowToolTips.append(configTooltip(row_ind, col_ind, self))
+            self.tooltips.append(rowToolTips)
+
+    def setDataFontSize(self, dataFontSize):
+        self.dataFontSize = dataFontSize
+
+    def setHeaderFontSize(self, headerFontSize):
+        self.headerFontSize = headerFontSize
+
+    def setFontColorProvider(self, colorProvider):
+        for row_ind in range(0, len(self.values)):
+            row = self.values[row_ind]
+            row_font_colors = []
+            for col_ind in range(0, len(row)):
+                row_font_colors.append(colorProvider(row_ind, col_ind, self))
+            self.fontColor.append(row_font_colors)
+
+    def setHeadersVertical(self, headersVertical):
+        self.headersVertical = headersVertical
+
+    def setRowFilter(self, filter_row):
+        self.filteredValues = []
+        for row_ind in range(0, len(self.values)):
+            if filter_row(row_ind, self.values):
+                self.filteredValues.append(self.values[row_ind])
 
 
 class TableDisplay(BeakerxDOMWidget):
@@ -183,6 +214,12 @@ class TableDisplay(BeakerxDOMWidget):
         self.model = self.chart.transform()
         self.on_msg(self.handle_msg)
         self.details = None
+
+    def setAlignmentProviderForType(self, type, alignmentProvider):
+        if isinstance(type, ColumnType):
+            self.chart.alignmentForType[type.value] = alignmentProvider
+            self.model = self.chart.transform()
+        return self
 
     def setAlignmentProviderForColumn(self, column_name, display_alignment):
         if isinstance(display_alignment, TableDisplayAlignmentProvider):
@@ -243,7 +280,7 @@ class TableDisplay(BeakerxDOMWidget):
         return self
 
     def addCellHighlighter(self, highlighter):
-        if isinstance(highlighter, HeatmapHighlighter):
+        if isinstance(highlighter, Highlighter):
             self.chart.cellHighlighters.append(highlighter)
             self.model = self.chart.transform()
         return self
@@ -308,6 +345,30 @@ class TableDisplay(BeakerxDOMWidget):
     @property
     def values(self):
         return self.chart.values
+
+    def setToolTip(self, configTooltip):
+        self.chart.setToolTip(configTooltip)
+        self.model = self.chart.transform()
+
+    def setDataFontSize(self, dataFontSize):
+        self.chart.setDataFontSize(dataFontSize)
+        self.model = self.chart.transform()
+
+    def setHeaderFontSize(self, headerFontSize):
+        self.chart.setHeaderFontSize(headerFontSize)
+        self.model = self.chart.transform()
+
+    def setFontColorProvider(self, colorProvider):
+        self.chart.setFontColorProvider(colorProvider)
+        self.model = self.chart.transform()
+
+    def setHeadersVertical(self, headersVertical):
+        self.chart.setHeadersVertical(headersVertical)
+        self.model = self.chart.transform()
+
+    def setRowFilter(self, filter_row):
+        self.chart.setRowFilter(filter_row)
+        self.model = self.chart.transform()
 
 
 class TableActionDetails:

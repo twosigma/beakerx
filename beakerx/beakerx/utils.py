@@ -14,11 +14,12 @@
 
 import inspect
 import json
-import pytz
 import time
 from datetime import datetime
-from dateutil import parser
 from enum import Enum
+
+import pytz
+from dateutil import parser
 from pandas import Timestamp
 
 current_milli_time = lambda: int(round(time.time() * 1000))
@@ -57,6 +58,35 @@ class BaseObject:
 
 
 class Color:
+    white = None
+    WHITE = None
+    lightGray = None
+    LIGHT_GRAY = None
+    gray = None
+    GRAY = None
+    darkGray = None
+    DARK_GRAY = None
+    black = None
+    BLACK = None
+    red = None
+    RED = None
+    pink = None
+    PINK = None
+    orange = None
+    ORANGE = None
+    yellow = None
+    YELLOW = None
+    green = None
+    GREEN = None
+    darkGreen = None
+    DARK_GREEN = None
+    magenta = None
+    MAGENTA = None
+    cyan = None
+    CYAN = None
+    blue = None
+    BLUE = None
+
     def __init__(self, r, g, b, a=255):
         self.R = r
         self.B = b
@@ -94,6 +124,8 @@ Color.yellow = Color(255, 255, 0)
 Color.YELLOW = Color.yellow
 Color.green = Color(0, 255, 0)
 Color.GREEN = Color.green
+Color.darkGreen = Color(0, 100, 0)
+Color.DARK_GREEN = Color.darkGreen
 Color.magenta = Color(255, 0, 255)
 Color.MAGENTA = Color.magenta
 Color.cyan = Color(0, 255, 255)
@@ -136,7 +168,7 @@ class ObjectEncoder(json.JSONEncoder):
         if isinstance(obj, datetime):
             return self.default(date_time_2_millis(obj))
         elif isinstance(obj, Enum):
-            return self.default(obj.name)
+            return self.default(obj.value)
         elif isinstance(obj, Color):
             return self.default(obj.hex())
         elif hasattr(obj, "__dict__"):

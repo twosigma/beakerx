@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from enum import Enum
-from dateutil.parser import parse
 from datetime import timezone
+from enum import Enum
+
+from dateutil.parser import parse
 
 
 class TableDisplayAlignmentProvider(Enum):
@@ -24,13 +25,13 @@ class TableDisplayAlignmentProvider(Enum):
 
 
 class TimeUnit(Enum):
-    NANOSECONDS = 1
-    MICROSECONDS = 2
-    MILLISECONDS = 3
-    SECONDS = 4
-    MINUTES = 5
-    DAYS = 6
-    HOURS = 7
+    NANOSECONDS = "NANOSECONDS"
+    MICROSECONDS = "MICROSECONDS"
+    MILLISECONDS = "MILLISECONDS"
+    SECONDS = "SECONDS"
+    MINUTES = "MINUTES"
+    DAYS = "DAYS"
+    HOURS = "HOURS"
 
 
 class ColumnType(Enum):
@@ -48,6 +49,7 @@ class DateType:
         self.timestamp = parse(str(value)).replace(tzinfo=timezone.utc).timestamp() * 1000
         self.tz = tz
 
+
 class DataBarsRenderer:
     type = "DataBars"
     includeText = True
@@ -62,6 +64,14 @@ class DecimalStringFormat:
     def __init__(self, min=4, max=4):
         self.minDecimals = min
         self.maxDecimals = max
+
+
+class TimeStringFormat:
+    type = "time"
+
+    def __init__(self, unit, human_friendly=False):
+        self.unit = unit
+        self.humanFriendly = human_friendly
 
 
 class ImageFormat:
@@ -81,11 +91,15 @@ class HTMLFormat:
 
 
 class HighlightStyle(Enum):
-    FULL_ROW = 1
-    SINGLE_COLUMN = 2
+    FULL_ROW = "FULL_ROW"
+    SINGLE_COLUMN = "SINGLE_COLUMN"
 
 
-class HeatmapHighlighter:
+class Highlighter:
+    pass
+
+
+class HeatmapHighlighter(Highlighter):
     type = "HeatmapHighlighter"
 
     def __init__(self, colName, style, minVal, maxVal, minColor, maxColor):
@@ -97,6 +111,14 @@ class HeatmapHighlighter:
         self.maxColor = maxColor
 
 
+class UniqueEntriesHighlighter(Highlighter):
+    type = "UniqueEntriesHighlighter"
+
+    def __init__(self, colName, style=HighlightStyle.FULL_ROW):
+        self.colName = colName
+        self.style = style.value
+
+
 class TableDisplayCellRenderer:
     @staticmethod
     def getDataBarsRenderer(include_text=True):
@@ -104,6 +126,10 @@ class TableDisplayCellRenderer:
 
 
 class TableDisplayStringFormat:
+
+    @staticmethod
+    def getTimeFormat(unit=TimeUnit.MILLISECONDS, human_friendly=False):
+        return TimeStringFormat(unit, human_friendly)
 
     @staticmethod
     def getDecimalFormat(min, max):
@@ -117,6 +143,7 @@ class TableDisplayStringFormat:
     def getImageFormat(**kwargs):
         return ImageFormat(**kwargs)
 
+
 class TableDisplayCellHighlighter:
     FULL_ROW = HighlightStyle.FULL_ROW
     SINGLE_COLUMN = HighlightStyle.SINGLE_COLUMN
@@ -124,5 +151,8 @@ class TableDisplayCellHighlighter:
 
     @staticmethod
     def getHeatmapHighlighter(colName, style=defaultStyle, minVal=None, maxVal=None, minColor=None, maxColor=None):
-        return HeatmapHighlighter (colName, style, minVal, maxVal, minColor, maxColor)
+        return HeatmapHighlighter(colName, style, minVal, maxVal, minColor, maxColor)
 
+    @staticmethod
+    def getUniqueEntriesHighlighter(colName, style=defaultStyle):
+        return UniqueEntriesHighlighter(colName, style)

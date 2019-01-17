@@ -25,6 +25,7 @@ var LabPageObject = function () {
       return browser.$('body').getAttribute('data-left-sidebar-widget') === 'filebrowser';
     });
     browser.$('div.p-Widget.jp-DirListing.jp-FileBrowser-listing').waitForEnabled();
+    browser.$('span.jp-HomeIcon').waitForEnabled();
     browser.$('span.jp-HomeIcon').click();
     browser.pause(2000);
     var dirs = (shortName != null)? shortName.split('/') : url.split('/');
@@ -69,9 +70,8 @@ var LabPageObject = function () {
     acceptDialogButton.waitForEnabled();
     acceptDialogButton.click();
     browser.waitUntil(function(){
-      console.log(browser.$$('li[data-type="document-title"]').length);
       return browser.$$('li[data-type="document-title"]').length < 1;
-    }, 5000);
+    }, 10000);
     browser.pause(5000);
   };
 
@@ -106,7 +106,7 @@ var LabPageObject = function () {
   };
 
   this.clickRunCellWithoutWaiting = function () {
-    browser.$('button.jp-Toolbar-button.jp-RunIcon.jp-Toolbar-item').click();
+    browser.$('button.jp-ToolbarButtonComponent > span.jp-RunIcon').click();
   };
 
   this.clickRunAllCells = function() {
@@ -121,7 +121,7 @@ var LabPageObject = function () {
   };
 
   this.clickInterruptKernel = function () {
-    browser.$('button.jp-Toolbar-button.jp-StopIcon.jp-Toolbar-item]').click();
+    browser.$('button.jp-ToolbarButtonComponent > span.jp-StopIcon').click();
   };
 
   this.getAllOutputAreaChildren = function (codeCell) {

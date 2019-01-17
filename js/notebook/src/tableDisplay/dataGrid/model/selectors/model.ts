@@ -39,7 +39,7 @@ export const selectContextMenuItems = (state) => selectModel(state).contextMenuI
 export const selectContextMenuTags = (state) => selectModel(state).contextMenuTags || {};
 export const selectStringFormatForType = (state) => selectModel(state).stringFormatForType;
 export const selectStringFormatForColumn = (state) => selectModel(state).stringFormatForColumn || {};
-export const selectStringFormatForTimes = (state) => selectStringFormatForType(state)['time']['unit'];
+export const selectStringFormatForTimes = (state) => (selectStringFormatForType(state)["time"] || { unit: "DATETIME" })['unit'];
 export const selectFormatForTimes = (state) => TIME_UNIT_FORMATS[selectStringFormatForTimes(state)];
 export const selectTimeStrings = (state) => selectModel(state).timeStrings;
 export const selectRendererForColumn = (state, column) => selectModel(state).rendererForColumn[column.name];

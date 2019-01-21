@@ -16,6 +16,8 @@
 import random
 import unittest
 
+import pandas as pd
+
 from ..chart import Histogram, HistogramChart, XYChart
 
 
@@ -60,3 +62,16 @@ class TestHistogram(unittest.TestCase):
         self.assertEqual(model[XYChart.TOTAL_NUMBER_OF_POINTS], 1000001)
         self.assertEqual(model[XYChart.NUMBER_OF_POINTS_TO_DISPLAY], str(10000) + " items")
         self.assertEqual(model[XYChart.ROWS_LIMIT_ITEMS], HistogramChart.ROWS_LIMIT)
+
+    def test_support_data_frame(self):
+        # given
+        data1 = []
+        data2 = []
+        for x in range(1, 10000):
+            data1.append(random.gauss(0, 1))
+            data2.append(random.gauss(0, 1))
+        df = pd.DataFrame({'data1': data1, 'data2': data2})
+        # when
+        histogram = Histogram(data=df['data1'])
+        # then
+        self.assertEqual(len(histogram.model['graphics_list'][0]), 9999)

@@ -212,7 +212,7 @@ class BasedXYGraphics(XYGraphics):
         if isinstance(base, list):
             self.bases = base
         else:
-            self.base = getValue(kwargs, 'base', 0)
+            self.bases = getValue(kwargs, 'base', 0)
 
 
 class Bars(BasedXYGraphics):

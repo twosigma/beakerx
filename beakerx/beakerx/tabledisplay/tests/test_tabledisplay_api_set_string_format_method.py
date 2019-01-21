@@ -21,6 +21,8 @@ import pandas as pd
 from ..tabledisplay import TableDisplay
 from ..tableitems import ColumnType, TableDisplayStringFormat, TimeUnit
 
+STRING_FORMAT_FOR_TYPE = 'stringFormatForType'
+
 
 class TestTableDisplayAPI_seStringFormatMethod(unittest.TestCase):
 
@@ -31,7 +33,7 @@ class TestTableDisplayAPI_seStringFormatMethod(unittest.TestCase):
         # when
         table.setStringFormatForType(ColumnType.Time, TableDisplayStringFormat.getTimeFormat())
         # then
-        time = table.model['stringFormatForType']['time']
+        time = table.model[STRING_FORMAT_FOR_TYPE]['time']
         self.assertEqual(time['type'], "time")
         self.assertEqual(time['unit'], TimeUnit.MILLISECONDS.name)
         self.assertEqual(time['humanFriendly'], False)
@@ -43,7 +45,7 @@ class TestTableDisplayAPI_seStringFormatMethod(unittest.TestCase):
         # when
         table.setStringFormatForType(ColumnType.Time, TableDisplayStringFormat.getTimeFormat(TimeUnit.DAYS))
         # then
-        time = table.model['stringFormatForType']['time']
+        time = table.model[STRING_FORMAT_FOR_TYPE]['time']
         self.assertEqual(time['type'], "time")
         self.assertEqual(time['unit'], TimeUnit.DAYS.name)
 
@@ -54,5 +56,16 @@ class TestTableDisplayAPI_seStringFormatMethod(unittest.TestCase):
         # when
         table.setStringFormatForType(ColumnType.Time, TableDisplayStringFormat.getTimeFormat(TimeUnit.DAYS, True))
         # then
-        time = table.model['stringFormatForType']['time']
+        time = table.model[STRING_FORMAT_FOR_TYPE]['time']
         self.assertEqual(time['humanFriendly'], True)
+
+    def test_should_set_string_format_for_times(self):
+        # given
+        df = pd.read_csv(os.path.dirname(__file__) + "/resources/" + 'interest-rates.csv')
+        table = TableDisplay(df)
+        # when
+        table.setStringFormatForTimes(TimeUnit.DAYS)
+        # then
+        time = table.model[STRING_FORMAT_FOR_TYPE]['time']
+        self.assertEqual(time['type'], "time")
+        self.assertEqual(time['unit'], TimeUnit.DAYS.name)

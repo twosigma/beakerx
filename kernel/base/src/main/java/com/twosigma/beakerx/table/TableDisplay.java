@@ -60,7 +60,6 @@ import static com.twosigma.beakerx.table.TableDisplayToJson.serializeHeadersVert
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeRendererForColumn;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeRendererForType;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeStringFormatForColumn;
-import static com.twosigma.beakerx.table.TableDisplayToJson.serializeStringFormatForTimes;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeStringFormatForType;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeTimeZone;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeTooltips;
@@ -82,7 +81,6 @@ public class TableDisplay extends BeakerxWidget {
   private final List<String> classes;
   private String subtype;
 
-  private TimeUnit stringFormatForTimes;
   private Map<ColumnType, TableDisplayStringFormat> stringFormatForType = new HashMap<>();
   private Map<String, TableDisplayStringFormat> stringFormatForColumn = new HashMap<>();
   private Map<ColumnType, TableDisplayCellRenderer> rendererForType = new HashMap<>();
@@ -277,11 +275,15 @@ public class TableDisplay extends BeakerxWidget {
   }
 
   public TimeUnit getStringFormatForTimes() {
-    return stringFormatForTimes;
+    TableDisplayStringFormat tableDisplayStringFormat = this.stringFormatForType.get(ColumnType.Time);
+    if (tableDisplayStringFormat instanceof TimeStringFormat) {
+      return ((TimeStringFormat) tableDisplayStringFormat).getUnit();
+    }
+    return null;
   }
 
   public void setStringFormatForTimes(TimeUnit stringFormatForTimes) {
-    handleUnitTime(ColumnType.Time, TableDisplayStringFormat.getTimeFormat(stringFormatForTimes));
+    setStringFormatForType(ColumnType.Time, TableDisplayStringFormat.getTimeFormat(stringFormatForTimes));
   }
 
   public Map<ColumnType, TableDisplayStringFormat> getStringFormatForType() {
@@ -289,22 +291,8 @@ public class TableDisplay extends BeakerxWidget {
   }
 
   public void setStringFormatForType(ColumnType type, TableDisplayStringFormat format) {
-    if (ColumnType.Time.equals(type) && format instanceof TimeStringFormat) {
-      handleUnitTime(type, (TimeStringFormat) format);
-    } else {
-      putFormatForType(type, format);
-    }
-  }
-
-  private void putFormatForType(ColumnType type, TableDisplayStringFormat format) {
     this.stringFormatForType.put(type, format);
     sendModelUpdate(serializeStringFormatForType(this.stringFormatForType));
-  }
-
-  private void handleUnitTime(ColumnType type, TimeStringFormat format) {
-    this.stringFormatForTimes = format.getUnit();
-    sendModelUpdate(serializeStringFormatForTimes(this.stringFormatForTimes));
-    putFormatForType(type, format);
   }
 
   public Map<String, TableDisplayStringFormat> getStringFormatForColumn() {

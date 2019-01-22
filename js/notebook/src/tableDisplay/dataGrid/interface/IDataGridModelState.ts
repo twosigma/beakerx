@@ -37,7 +37,6 @@ export default interface IDataModelState {
   rendererForColumn?: {},
   rendererForType?: {},
   stringFormatForColumn: {},
-  stringFormatForTimes?: string|null,
   stringFormatForType?: {},
   subtype?: string,
   timeZone?: string,

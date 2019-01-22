@@ -76,10 +76,10 @@ export const TIME_UNIT_FORMATS = {
   DAYS:         { title: 'date', format: 'YYYYMMDD', valueModifier: 1000 },
   DAYS_MS:      { title: 'date (ms)', format: 'YYYYMMDD', valueModifier: 1 },
   DAYS_NS:      { title: 'date (ns)', format: 'YYYYMMDD', valueModifier: 0.000001 },
-  HOURS:        { title: 'hours', format: 'YYYYMMDD HH:mm ZZ' },
-  MINUTES:      { title: 'minutes', format: 'HH:mm ZZ' },
-  SECONDS:      { title: 'seconds', format: 'HH:mm:ss ZZ' },
-  MILLISECONDS: { title: 'milliseconds', format: 'HH:mm:ss.SSS ZZ' }
+  HOURS:        { title: 'hours', format: 'YYYYMMDD HH:mm ZZ', valueModifier: 1000 },
+  MINUTES:      { title: 'minutes', format: 'HH:mm ZZ', valueModifier: 1000 },
+  SECONDS:      { title: 'seconds', format: 'HH:mm:ss ZZ', valueModifier: 1000 },
+  MILLISECONDS: { title: 'milliseconds', format: 'HH:mm:ss.SSS ZZ', valueModifier: 1000 }
 };
 
 export default {

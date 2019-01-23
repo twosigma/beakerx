@@ -17,6 +17,7 @@ package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.kernel.msg.StacktraceHtmlPrinter;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.configuration.SparkConfiguration;
 import org.apache.spark.SparkConf;
 
 import java.util.ArrayList;
@@ -51,6 +52,7 @@ public class SparkUIForm extends VBox {
   private Text masterURL;
   private Text executorMemory;
   private Text executorCores;
+  private HiveSupport hiveSupport;
   private SparkConfiguration advancedOption;
   private SparkEngine sparkEngine;
   private SparkUI.OnSparkButtonAction onStartAction;
@@ -76,6 +78,7 @@ public class SparkUIForm extends VBox {
       this.masterURL = createMasterURL();
       this.executorMemory = createExecutorMemory();
       this.executorCores = createExecutorCores();
+      this.hiveSupport = createHiveSupport();
       this.errors = new HBox(new ArrayList<>());
       this.errors.setDomClasses(asList("bx-spark-connect-error"));
       this.addConnectButton(createConnectButton(), this.errors);
@@ -84,12 +87,20 @@ public class SparkUIForm extends VBox {
       this.add(masterURL);
       this.add(executorCores);
       this.add(executorMemory);
-      this.advancedOption = new SparkConfiguration(sparkEngine.getAdvanceSettings(), sparkEngine.sparkVersion());
+      this.add(hiveSupport);
+      this.advancedOption = new SparkConfiguration(sparkEngine.getAdvanceSettings(),
+              sparkEngine.sparkVersion(),
+              hiveSupport);
       this.add(advancedOption);
     } catch (Exception ex) {
       sendError(StacktraceHtmlPrinter.printRedBold(ex.getMessage()));
     }
+  }
 
+  private HiveSupport createHiveSupport() {
+    HiveSupport hiveSupport = new HiveSupport("Enable Hive Support");
+    hiveSupport.setDomClasses(new ArrayList<>(asList("bx-spark-hive-support")));
+    return hiveSupport;
   }
 
   private HBox createProfileModal() {
@@ -291,6 +302,10 @@ public class SparkUIForm extends VBox {
     return this.masterURL;
   }
 
+  public Checkbox getHiveSupport() {
+    return this.hiveSupport;
+  }
+
   public Text getExecutorMemory() {
     return executorMemory;
   }
@@ -330,6 +345,7 @@ public class SparkUIForm extends VBox {
     this.masterURL.setDisabled(true);
     this.executorMemory.setDisabled(true);
     this.executorCores.setDisabled(true);
+    this.hiveSupport.setDisabled(true);
   }
 
   public void setAllToEnabled() {
@@ -340,6 +356,7 @@ public class SparkUIForm extends VBox {
     this.masterURL.setDisabled(false);
     this.executorMemory.setDisabled(false);
     this.executorCores.setDisabled(false);
+    this.hiveSupport.setDisabled(false);
     refreshElementsAvailability();
   }
 

@@ -13,38 +13,56 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget;
+package com.twosigma.beakerx.widget.configuration;
+
+import com.twosigma.beakerx.widget.VBox;
+import com.twosigma.beakerx.widget.Widget;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PropertiesWidget {
+class PropertiesWidget {
 
   private final VBox widget;
 
-  public PropertiesWidget(List<PropertyItem> children) {
+  PropertiesWidget(List<PropertyItem> children) {
     this.widget = new VBox(children.stream().map(x -> (Widget) x).collect(Collectors.toList()));
   }
 
-  public List<PropertyItem> getItems() {
+  List<PropertyItem> getItems() {
     return this.widget.getChildren().stream()
             .map(x -> (PropertyItem) x)
             .collect(Collectors.toList());
   }
 
-  public VBox getWidget() {
+  VBox getWidget() {
     return widget;
   }
 
-  public void add(PropertyItem propertyItem) {
+  void add(PropertyItem propertyItem) {
     this.widget.add(propertyItem);
   }
 
-  public void disable() {
-    getItems().forEach(x -> x.disable());
+  void disable() {
+    getItems().forEach(PropertyItem::disable);
   }
 
-  public void enable() {
-    getItems().forEach(x -> x.enable());
+  void enable() {
+    getItems().forEach(PropertyItem::enable);
+  }
+
+  void remove(PropertyItem propertyItem) {
+    getWidget().remove(propertyItem);
+  }
+
+  void remove(List<PropertyItem> propertyItems) {
+    propertyItems.forEach(item -> getWidget().remove(item));
+  }
+
+  List<PropertyItem> findByName(final String name, final String value) {
+    return getItems().stream().
+            filter(item -> name.equals(item.getNameAsString())).
+            filter(item -> value.equals(item.getValueAsString())).
+            collect(Collectors.toList());
   }
 }

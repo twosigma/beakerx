@@ -90,6 +90,7 @@ describe('Testing of table Actions ', function () {
       maxWidth = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
       var tableMenu = beakerxPO.getTableIndexMenu(tblDisplay);
       tableMenu.click('[data-command="Hide All Columns"]');
+      browser.pause(1000);
       var minWidth = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
       expect(maxWidth).toBeGreaterThan(minWidth);
     });

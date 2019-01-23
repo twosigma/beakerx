@@ -30,185 +30,156 @@ describe('(Groovy) Testing of MIME types', function () {
 
   var cellIndex;
 
-  describe('(Groovy) Display MIME types', function () {
+  describe('(Groovy) Display MIME types ', function () {
     var testValues = {
-      mathematicalSymbols: 'α+η',
-      headerText: 'Hello, world!',
-      markdownTestValue: "It's very easy to do bold and italics:",
-      markdownBoldValue: "bold",
-      markdownItalicsValue: "italics",
-      mathematicalFormula: 'F(k)=∫f(x)2eπikdx',
-      groovyFileName: 'GroovyTest.ipynb'
+      mathematicalSymbols: /α+η/,
+      headerText: /Hello, world!/,
+      markdownTestValue: /It's very easy to do bold and italics:/,
+      markdownBoldValue: /bold/,
+      markdownItalicsValue: /italics/,
+      mathematicalFormula: /F\(k\)=∫f\(x\)2eπikdx/,
+      groovyFileName: /GroovyTest.ipynb/
     };
 
-    it('Cell outputs mathematical symbols', function () {
+    it('(Latex) Cell outputs mathematical symbols ', function () {
       cellIndex = 0;
-
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$('div.output_latex').getText().trim()).toContain(testValues.mathematicalSymbols);
-
-      // browser.waitUntil(function () {
-      //   return codeCell.$('div.output_latex').getText() === testValues.mathematicalSymbols;
-      // })
+      var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText();
+      expect(result.charCodeAt(0).toString(16)).toEqual('3b1');
+      expect(result.charCodeAt(1).toString(16)).toEqual('2b');
+      expect(result.charCodeAt(2).toString(16)).toEqual('3b7');
     });
 
-    it('Cell displays html code', function () {
+    it('(HTML) Cell displays html code ', function () {
       cellIndex += 1;
-
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      browser.waitUntil(function () {
-        return codeCell.$('div.output_result > h1').getText() === testValues.headerText;
-      });
+      var result = beakerxPO.getAllOutputsHtmlType(codeCell)[0];
+      expect(result.$('h1').isExisting()).toBeTruthy();
+      expect(result.getText()).toMatch(testValues.headerText);
     });
 
-    it('Cell displays html code', function () {
+    it('(MIMEContainer) Cell displays html code ', function () {
       cellIndex += 1;
-
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      browser.waitUntil(function () {
-        return codeCell.$('div.output_result > h2').getText() === testValues.headerText;
-      });
+      var result = beakerxPO.getAllOutputsHtmlType(codeCell)[0];
+      expect(result.$('h2').isExisting()).toBeTruthy();
+      expect(result.getText()).toMatch(testValues.headerText);
     });
 
-    it('Cell displays html code', function () {
+    it('(MIMEContainer.MIME.TEXT_HTML) Cell displays html code ', function () {
       cellIndex += 1;
-
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      browser.waitUntil(function () {
-        return codeCell.$('div.output_result > h3').getText() === testValues.headerText;
-      });
+      var result = beakerxPO.getAllOutputsHtmlType(codeCell)[0];
+      expect(result.$('h3').isExisting()).toBeTruthy();
+      expect(result.getText()).toMatch(testValues.headerText);
     });
 
-    it('Cell outputs mathematical symbols', function () {
+    it('(MIMEContainer) Cell outputs mathematical symbols ', function () {
       cellIndex += 1;
-
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      browser.waitUntil(function () {
-        return codeCell.$('div.output_result').getText() === testValues.mathematicalSymbols;
-      })
+      var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText();
+      expect(result.charCodeAt(0).toString(16)).toEqual('3b1');
+      expect(result.charCodeAt(1).toString(16)).toEqual('2b');
+      expect(result.charCodeAt(2).toString(16)).toEqual('3b7');
     });
 
-    it('Cell outputs multiple file links', function () {
+    it('(FileLinks) Cell outputs multiple file links ', function () {
       cellIndex += 1;
-
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      var fileLinks = codeCell.$$('div.output_subarea > a')
-
-      expect(fileLinks.length).toBeGreaterThan(0);
+      var result = beakerxPO.getAllOutputsHtmlType(codeCell)[0];
+      expect(result.$$('a').length).toBeGreaterThan(0);
     });
 
-    it('Cell outputs single file link', function () {
+    it('(File Link) Cell outputs single file link ', function () {
       cellIndex += 1;
-
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      browser.waitUntil(function () {
-        return codeCell.$('div.output_subarea > a').getText() === testValues.groovyFileName;
-      })
+      var result = beakerxPO.getAllOutputsHtmlType(codeCell)[0];
+      expect(result.$('a').getText()).toMatch(testValues.groovyFileName);
     });
 
-    it('Cell displays markdown', function () {
+    it('(Markdown) Cell displays markdown ', function () {
       cellIndex += 1;
-
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$('div.output_subarea > p').getText()).toBe(testValues.markdownTestValue);
-      expect(codeCell.$('div.output_subarea > p > strong').getText()).toBe(testValues.markdownBoldValue);
-      expect(codeCell.$('div.output_subarea > p > em').getText()).toBe(testValues.markdownItalicsValue);
+      var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0];
+      expect(result.getText()).toMatch(testValues.markdownTestValue);
+      expect(result.$('strong').getText()).toMatch(testValues.markdownBoldValue);
+      expect(result.$('em').getText()).toMatch(testValues.markdownItalicsValue);
     });
 
-    it('Cell displays mathematical formula', function () {
+    it('(Math) Cell displays mathematical formula ', function () {
       cellIndex += 1;
-
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$('div.output_subarea').getText()).toContain(testValues.mathematicalFormula);
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, testValues.mathematicalFormula);
     });
 
-    it('Cell displays an iFrame', function () {
+    it('(IFrame) Cell displays an iFrame ', function () {
       cellIndex += 1;
-
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$("div.output_subarea > iframe[src='http://jupyter.org/']").isEnabled()).toBeTruthy();
+      var result = beakerxPO.getAllOutputsHtmlType(codeCell)[0];
+      expect(result.$('iframe[src="http://jupyter.org/"]').isEnabled()).toBeTruthy();
     });
 
-    it('Cell displays a Scribd document', function () {
+    it('(ScribdDocument) Cell displays a Scribd document ', function () {
       cellIndex += 1;
-
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$("div.output_subarea > iframe[src='https://www.scribd.com/embeds/71048089/content?start_page=5&view_mode=slideshow']").isEnabled()).toBeTruthy();
+      var result = beakerxPO.getAllOutputsHtmlType(codeCell)[0];
+      expect(result.$('iframe[src="https://www.scribd.com/embeds/71048089/content?start_page=5&view_mode=slideshow"]').isEnabled()).toBeTruthy();
     });
 
-    it('Cell displays a Vimeo video', function () {
+    it('(VimeoVideo) Cell displays a Vimeo video ', function () {
       cellIndex += 1;
-
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$("div.output_subarea > iframe[src='https://player.vimeo.com/video/139304565']").isEnabled()).toBeTruthy();
+      var result = beakerxPO.getAllOutputsHtmlType(codeCell)[0];
+      expect(result.$('iframe[src="https://player.vimeo.com/video/139304565"]').isEnabled()).toBeTruthy();
     });
 
-    it('Cell displays a YouTube video', function () {
+    it('(YoutubeVideo) Cell displays a YouTube video ', function () {
       cellIndex += 1;
-
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$("div.output_subarea > iframe[src='https://www.youtube.com/embed/gSVvxOchT8Y']").isEnabled()).toBeTruthy();
+      var result = beakerxPO.getAllOutputsHtmlType(codeCell)[0];
+      expect(result.$('iframe[src="https://www.youtube.com/embed/gSVvxOchT8Y"]').isEnabled()).toBeTruthy();
     });
 
-    it('Cell displays video', function () {
+    it('(Video) Cell displays video ', function () {
       cellIndex += 1;
-
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$('div.output_subarea > video').isEnabled()).toBeTruthy();
+      var result = beakerxPO.getAllOutputsHtmlType(codeCell)[0];
+      expect(result.$('video[src="https://archive.org/download/Sita_Sings_the_Blues/Sita_Sings_the_Blues_small.mp4"]').isEnabled()).toBeTruthy();
     });
 
-    it('Cell displays an SVG element', function () {
+    it('(SVG) Cell displays an SVG element ', function () {
       cellIndex += 1;
-
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$('div.output_subarea > div > svg').isEnabled()).toBeTruthy();
+      var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0];
+      expect(result.$('svg').isEnabled()).toBeTruthy();
     });
 
-    it('Cell displays an SVG element from a file', function () {
+    it('(SVG) Cell displays an SVG element from a file', function () {
       cellIndex += 1;
-
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$('div.output_subarea > div > svg').isEnabled()).toBeTruthy();
+      var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0];
+      expect(result.$('svg').isEnabled()).toBeTruthy();
     });
 
-    it('Cell displays an image element', function () {
+    it('(Image) Cell displays an image element', function () {
       cellIndex += 1;
-
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$('div.output_subarea > img').isEnabled()).toBeTruthy();
+      var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0];
+      expect(result.$('img').isEnabled()).toBeTruthy();
     });
 
-    it('Cell displays an image element from file', function () {
+    it('(Image) Cell displays an image element from file', function () {
       cellIndex += 1;
-
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$('div.output_subarea > img').isEnabled()).toBeTruthy();
+      var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0];
+      expect(result.$('img').isEnabled()).toBeTruthy();
     });
 
-    it('Cell displays an image element from byte array', function () {
+    it('(Image) Cell displays an image element from byte array', function () {
       cellIndex += 1;
-
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$('div.output_subarea > img').isEnabled()).toBeTruthy();
+      var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0];
+      expect(result.$('img').isEnabled()).toBeTruthy();
     });
   });
+
 });

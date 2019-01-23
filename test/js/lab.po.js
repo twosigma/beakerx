@@ -140,6 +140,10 @@ var LabPageObject = function () {
     return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output[data-mime-type="application/vnd.jupyter.stderr"]');
   };
 
+  this.getAllOutputsHtmlType = function (codeCell) {
+    return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output[data-mime-type="text/html"]');
+  };
+
   this.getAllOutputsWidget = function(codeCell){
     return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output');
   };

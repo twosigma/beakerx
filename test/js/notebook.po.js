@@ -107,6 +107,10 @@ var NotebookPageObject = function () {
     return codeCell.$$('div.output_subarea.jupyter-widgets-view');
   };
 
+  this.getAllOutputsHtmlType = function (codeCell) {
+    return codeCell.$$('div.output_subarea.output_html');
+  };
+
   this.callAutocompleteAndGetItsList = function (codeCell, codeStr) {
     codeCell.scroll();
     codeCell.click('div.CodeMirror-code[role="presentation"]');

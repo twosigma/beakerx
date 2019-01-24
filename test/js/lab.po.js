@@ -25,6 +25,8 @@ var LabPageObject = function () {
       return browser.$('body').getAttribute('data-left-sidebar-widget') === 'filebrowser';
     });
     browser.$('div.p-Widget.jp-DirListing.jp-FileBrowser-listing').waitForEnabled();
+    browser.$('span.jp-HomeIcon').waitForEnabled();
+    browser.$('span.jp-HomeIcon').click();
     browser.pause(2000);
     var dirs = (shortName != null)? shortName.split('/') : url.split('/');
     var i = 0;
@@ -67,6 +69,10 @@ var LabPageObject = function () {
     var acceptDialogButton = browser.$('button.jp-Dialog-button.jp-mod-accept.jp-mod-warn.jp-mod-styled');
     acceptDialogButton.waitForEnabled();
     acceptDialogButton.click();
+    browser.waitUntil(function(){
+      return browser.$$('li[data-type="document-title"]').length < 1;
+    }, 10000);
+    browser.pause(5000);
   };
 
   this.saveAndCloseNotebook = function () {
@@ -93,14 +99,14 @@ var LabPageObject = function () {
   };
 
   this.clickRunCell = function () {
-    var buttonRunCell = browser.$('button.jp-Toolbar-button.jp-RunIcon.jp-Toolbar-item');
+    var buttonRunCell = browser.$('button.jp-ToolbarButtonComponent > span.jp-RunIcon');
     buttonRunCell.waitForEnabled();
     buttonRunCell.click();
     this.kernelIdleIcon.waitForEnabled();
   };
 
   this.clickRunCellWithoutWaiting = function () {
-    browser.$('button.jp-Toolbar-button.jp-RunIcon.jp-Toolbar-item').click();
+    browser.$('button.jp-ToolbarButtonComponent > span.jp-RunIcon').click();
   };
 
   this.clickRunAllCells = function() {
@@ -115,7 +121,7 @@ var LabPageObject = function () {
   };
 
   this.clickInterruptKernel = function () {
-    browser.$('button.jp-Toolbar-button.jp-StopIcon.jp-Toolbar-item]').click();
+    browser.$('button.jp-ToolbarButtonComponent > span.jp-StopIcon').click();
   };
 
   this.getAllOutputAreaChildren = function (codeCell) {
@@ -132,6 +138,10 @@ var LabPageObject = function () {
 
   this.getAllOutputsStderr = function (codeCell) {
     return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output[data-mime-type="application/vnd.jupyter.stderr"]');
+  };
+
+  this.getAllOutputsHtmlType = function (codeCell) {
+    return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output[data-mime-type="text/html"]');
   };
 
   this.getAllOutputsWidget = function(codeCell){

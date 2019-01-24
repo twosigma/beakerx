@@ -24,7 +24,7 @@ describe('Charting Groovy tests ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/test/ipynb/groovy/ChartingTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/ipynb/groovy/XChartingTest.ipynb');
   }, 2);
 
   afterAll(function () {

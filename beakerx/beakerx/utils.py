@@ -21,6 +21,8 @@ from enum import Enum
 import pytz
 from dateutil import parser
 from pandas import Timestamp
+import numpy as np
+import pandas as pd
 
 current_milli_time = lambda: int(round(time.time() * 1000))
 
@@ -171,6 +173,10 @@ class ObjectEncoder(json.JSONEncoder):
             return self.default(obj.value)
         elif isinstance(obj, Color):
             return self.default(obj.hex())
+        elif isinstance(obj, pd.Series):
+            return self.default(obj.tolist())
+        elif isinstance(obj, np.ndarray):
+            return self.default(obj.tolist())
         elif hasattr(obj, "__dict__"):
             d = dict(
                 (key, value)

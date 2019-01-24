@@ -39,7 +39,6 @@ public class TableDisplaySerializer extends ObservableTableDisplaySerializer<Tab
   public static final String RENDERER_FOR_TYPE = "rendererForType";
   public static final String FILTERED_VALUES = "filteredValues";
   public static final String STRING_FORMAT_FOR_COLUMN = "stringFormatForColumn";
-  public static final String STRING_FORMAT_FOR_TIMES = "stringFormatForTimes";
   public static final String STRING_FORMAT_FOR_TYPE = "stringFormatForType";
   public static final String TIME_ZONE = "timeZone";
   public static final String VALUES = "values";
@@ -61,7 +60,6 @@ public class TableDisplaySerializer extends ObservableTableDisplaySerializer<Tab
       jgen.writeObjectField("columnNames", value.getColumnNames());
       jgen.writeObjectField("types", value.getTypes());
       jgen.writeObjectField("subtype", value.getSubtype());
-      jgen.writeObjectField(STRING_FORMAT_FOR_TIMES, value.getStringFormatForTimes());
       jgen.writeObjectField(STRING_FORMAT_FOR_TYPE, value.getStringFormatForType());
       jgen.writeObjectField(STRING_FORMAT_FOR_COLUMN, value.getStringFormatForColumn());
       jgen.writeObjectField(RENDERER_FOR_TYPE, value.getRendererForType());

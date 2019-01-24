@@ -159,7 +159,11 @@ class HeatMap(BeakerxDOMWidget):
     def __init__(self, rows_limit=10000, column_limit=100, **kwargs):
         super(HeatMap, self).__init__()
         if 'data' in kwargs:
-            kwargs['graphics'] = kwargs['data']
+            data_from_kwargs = kwargs['data']
+            if isinstance(data_from_kwargs, DataFrame):
+                kwargs['graphics'] = data_from_kwargs.values.tolist()
+            else:
+                kwargs['graphics'] = data_from_kwargs
         if not 'xLowerMargin' in kwargs:
             kwargs['xLowerMargin'] = 0.0
         if not 'yLowerMargin' in kwargs:

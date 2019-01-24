@@ -16,6 +16,8 @@
 import unittest
 from random import randint
 
+import pandas as pd
+
 from ..chart import HeatMap, XYChart
 
 
@@ -75,6 +77,35 @@ class TestHeatMap(unittest.TestCase):
         data = [[randint(1, 100) for x in range(maxdepth)] for y in range(maxdepth)]
         # when
         widget = HeatMap(100, 10, data=data)
+        # then
+        model = widget.model
+        self.assertTrue(model[XYChart.TOO_MANY_ROWS])
+        self.assertEqual(model[XYChart.TOTAL_NUMBER_OF_POINTS], 1002001)
+        self.assertEqual(model[XYChart.NUMBER_OF_POINTS_TO_DISPLAY], 10201)
+        self.assertEqual(model[XYChart.ROWS_LIMIT_ITEMS], 100)
+
+    def test_support_data_frame_series(self):
+        # given
+        maxdepth = 1001
+        data = [[randint(1, 100) for x in range(maxdepth)] for y in range(maxdepth)]
+        heat_map_df = pd.DataFrame({'data': data})
+        # when
+        widget = HeatMap(100, 10, data=heat_map_df['data'])
+        # then
+        self.assertEqual(len(widget.model['graphics_list'][0]), 101)
+        model = widget.model
+        self.assertTrue(model[XYChart.TOO_MANY_ROWS])
+        self.assertEqual(model[XYChart.TOTAL_NUMBER_OF_POINTS], 1002001)
+        self.assertEqual(model[XYChart.NUMBER_OF_POINTS_TO_DISPLAY], 10201)
+        self.assertEqual(model[XYChart.ROWS_LIMIT_ITEMS], 100)
+
+    def test_support_data_frame(self):
+        # given
+        maxdepth = 1001
+        data = [[randint(1, 100) for x in range(maxdepth)] for y in range(maxdepth)]
+        heat_map_df = pd.DataFrame(data)
+        # when
+        widget = HeatMap(100, 10, data=heat_map_df)
         # then
         model = widget.model
         self.assertTrue(model[XYChart.TOO_MANY_ROWS])

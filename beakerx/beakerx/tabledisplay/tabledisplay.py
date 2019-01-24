@@ -49,7 +49,6 @@ class Table(BaseObject):
         self.fontColor = []
         self.contextMenuTags = {}
         self.cellHighlighters = []
-        self.stringFormatForTimes = None
         self.type = "TableDisplay"
         self.timeZone = None
         self.tooltips = []
@@ -228,8 +227,7 @@ class TableDisplay(BeakerxDOMWidget):
         return self
 
     def setStringFormatForTimes(self, time_unit):
-        self.chart.stringFormatForTimes = time_unit.name
-        self.model = self.chart.transform()
+        self.setStringFormatForType(ColumnType.Time, TableDisplayStringFormat.getTimeFormat(time_unit))
         return self
 
     def setStringFormatForType(self, type, formater):

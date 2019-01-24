@@ -73,7 +73,6 @@ import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.HEADE
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.RENDERER_FOR_COLUMN;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.RENDERER_FOR_TYPE;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_COLUMN;
-import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_TIMES;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_TYPE;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.TABLE_DISPLAY;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.TIME_ZONE;
@@ -504,7 +503,8 @@ public class TableDisplayTest {
     assertThat(tableDisplay.getStringFormatForTimes()).isEqualTo(days);
     LinkedHashMap model = getModelUpdate();
     assertThat(model.size()).isEqualTo(1);
-    assertThat(model.get(STRING_FORMAT_FOR_TIMES)).isEqualTo(days.toString());
+    Map time = (Map)((Map)model.get(STRING_FORMAT_FOR_TYPE)).get(ColumnType.Time.toString());
+    assertThat(time.get("unit")).isEqualTo(days.toString());
   }
 
   @Test

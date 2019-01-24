@@ -43,7 +43,6 @@ let modelStateMock: IDataGridModelState = {
   headersVertical: false,
   rendererForColumn: {},
   rendererForType: {},
-  stringFormatForTimes: null,
   stringFormatForType: {},
   subtype: 'Tabledisplay',
   timeStrings: null,

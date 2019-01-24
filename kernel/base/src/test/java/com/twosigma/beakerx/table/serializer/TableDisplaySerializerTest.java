@@ -43,6 +43,7 @@ import static com.twosigma.beakerx.table.serializer.DataBarsRendererSerializer.I
 import static com.twosigma.beakerx.table.serializer.DecimalStringFormatSerializer.MAX_DECIMALS;
 import static com.twosigma.beakerx.table.serializer.DecimalStringFormatSerializer.MIN_DECIMALS;
 import static com.twosigma.beakerx.table.serializer.DecimalStringFormatSerializer.TYPE;
+import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_TYPE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TableDisplaySerializerTest {
@@ -139,9 +140,10 @@ public class TableDisplaySerializerTest {
     //given
     tableDisplay.setStringFormatForTimes(TimeUnit.DAYS);
     //when
-    Map actualObj = serializeTableDisplay();
+    Map model = serializeTableDisplay();
     //then
-    assertThat(actualObj.get("stringFormatForTimes")).isEqualTo(TimeUnit.DAYS.toString());
+    Map time = (Map)((Map)model.get(STRING_FORMAT_FOR_TYPE)).get(ColumnType.Time.toString());
+    assertThat(time.get("unit")).isEqualTo(TimeUnit.DAYS.toString());
   }
 
   @Test

@@ -35,7 +35,7 @@ import static com.twosigma.beakerx.sql.kernel.SQL.BEAKERX_SQL_DEFAULT_JDBC;
 import static com.twosigma.beakerx.sql.kernel.SQL.getKernelParameters;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SQLKernelWIthDefaultEnvsTest extends SQLKernelTest {
+public class SQLKernelWithDefaultEnvsTest extends SQLKernelTest {
   @Override
   protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
     EvaluatorParameters kernelParameters = getKernelParameters(name -> {

@@ -170,13 +170,15 @@ class ObjectEncoder(json.JSONEncoder):
         if isinstance(obj, datetime):
             return self.default(date_time_2_millis(obj))
         elif isinstance(obj, Enum):
-            return self.default(obj.value)
+            return self.default(obj.name)
         elif isinstance(obj, Color):
             return self.default(obj.hex())
         elif isinstance(obj, pd.Series):
             return self.default(obj.tolist())
         elif isinstance(obj, np.ndarray):
             return self.default(obj.tolist())
+        elif isinstance(obj, np.int64):
+            return self.default(obj.item())
         elif hasattr(obj, "__dict__"):
             d = dict(
                 (key, value)

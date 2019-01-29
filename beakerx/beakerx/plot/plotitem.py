@@ -29,12 +29,12 @@ class ShapeType(Enum):
     TRIANGLE = 3
     DIAMOND = 4
     DCROSS = 5
-    DOWNTRIANGLE = 5
     CROSS = 6
     DEFAULT = 7
     LEVEL = 8
     VLEVEL = 9
     LINECROSS = 10
+    DOWNTRIANGLE = 11
 
 
 class StrokeType(Enum):
@@ -43,7 +43,7 @@ class StrokeType(Enum):
     DASH = 3
     DOT = 4
     DASHDOT = 5
-    LONGDASH = 5
+    LONGDASH = 6
 
 
 class PlotOrientationType(Enum):

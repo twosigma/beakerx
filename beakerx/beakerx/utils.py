@@ -170,7 +170,7 @@ class ObjectEncoder(json.JSONEncoder):
         if isinstance(obj, datetime):
             return self.default(date_time_2_millis(obj))
         elif isinstance(obj, Enum):
-            return self.default(obj.name)
+            return self.default(obj.value)
         elif isinstance(obj, Color):
             return self.default(obj.hex())
         elif isinstance(obj, pd.Series):

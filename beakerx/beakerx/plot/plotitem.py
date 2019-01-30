@@ -24,39 +24,39 @@ import uuid
 
 
 class ShapeType(Enum):
-    SQUARE = 1
-    CIRCLE = 2
-    TRIANGLE = 3
-    DIAMOND = 4
-    DCROSS = 5
-    CROSS = 6
-    DEFAULT = 7
-    LEVEL = 8
-    VLEVEL = 9
-    LINECROSS = 10
-    DOWNTRIANGLE = 11
+    SQUARE = "SQUARE"
+    CIRCLE = "CIRCLE"
+    TRIANGLE = "TRIANGLE"
+    DIAMOND = "DIAMOND"
+    DCROSS = "DCROSS"
+    CROSS = "CROSS"
+    DEFAULT = "DEFAULT"
+    LEVEL = "LEVEL"
+    VLEVEL = "VLEVEL"
+    LINECROSS = "LINECROSS"
+    DOWNTRIANGLE = "DOWNTRIANGLE"
 
 
 class StrokeType(Enum):
-    NONE = 1
-    SOLID = 2
-    DASH = 3
-    DOT = 4
-    DASHDOT = 5
-    LONGDASH = 6
+    NONE = "NONE"
+    SOLID = "SOLID"
+    DASH = "DASH"
+    DOT = "DOT"
+    DASHDOT = "DASHDOT"
+    LONGDASH = "LONGDASH"
 
 
 class PlotOrientationType(Enum):
-    VERTICAL = 1
-    HORIZONTAL = 2
+    VERTICAL = "VERTICAL"
+    HORIZONTAL = "HORIZONTAL"
 
 
 class LabelPositionType(Enum):
-    VALUE_OUTSIDE = 1
-    VALUE_INSIDE = 2
-    CENTER = 3
-    BASE_OUTSIDE = 4
-    BASE_INSIDE = 5
+    VALUE_OUTSIDE = "VALUE_OUTSIDE"
+    VALUE_INSIDE = "VALUE_INSIDE"
+    CENTER = "CENTER"
+    BASE_OUTSIDE = "BASE_OUTSIDE"
+    BASE_INSIDE = "BASE_INSIDE"
 
 
 class GradientColor:

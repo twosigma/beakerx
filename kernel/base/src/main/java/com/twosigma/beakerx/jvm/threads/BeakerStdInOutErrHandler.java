@@ -15,25 +15,33 @@
  */
 package com.twosigma.beakerx.jvm.threads;
 
+import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.widget.OutputManager;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class BeakerStdOutErrHandler {
+public class BeakerStdInOutErrHandler {
 
-  private static BeakerStdOutErrHandler instance;
+  private static BeakerStdInOutErrHandler instance;
   private ConcurrentHashMap<ThreadGroup, BeakerOutputHandlers> handlers = new ConcurrentHashMap<>();
   private PrintStream orig_out;
   private PrintStream orig_err;
+  private KernelFunctionality kernel;
+  private InputStream orig_in;
 
-  static synchronized public void init() {
+  public BeakerStdInOutErrHandler(KernelFunctionality kernel) {
+    this.kernel = kernel;
+  }
+
+  static synchronized public void init(KernelFunctionality kernel) {
     if (instance == null) {
-      instance = new BeakerStdOutErrHandler();
+      instance = new BeakerStdInOutErrHandler(kernel);
       instance.theinit();
     }
   }
@@ -59,9 +67,11 @@ public class BeakerStdOutErrHandler {
   private void theinit() {
     orig_out = System.out;
     orig_err = System.err;
+    orig_in = System.in;
     try {
       System.setOut(new PrintStream(new MyOutputStream(true), false, StandardCharsets.UTF_8.name()));
       System.setErr(new PrintStream(new MyOutputStream(false), false, StandardCharsets.UTF_8.name()));
+      System.setIn(new BxInputStream(kernel, new InputRequestMessageFactoryImpl()));
     } catch (UnsupportedEncodingException e) {
       throw new RuntimeException(e);
     }
@@ -70,6 +80,7 @@ public class BeakerStdOutErrHandler {
   private void thefini() {
     System.setOut(orig_out);
     System.setErr(orig_err);
+    System.setIn(orig_in);
   }
 
 

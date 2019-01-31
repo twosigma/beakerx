@@ -60,8 +60,8 @@ class Mode(Enum):
     SLICE_DIC = "slice-dic" # alternating between horizontal and vertical subdivision.
 
 class ValueAccessor(Enum):
-    VALUE = 1
-    WEIGHT = 2
+    VALUE = "VALUE"
+    WEIGHT = "WEIGHT"
 
 
 class ColorProvider:

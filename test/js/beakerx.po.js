@@ -159,8 +159,8 @@ function BeakerXPageObject() {
     this.waitAndCheckOutputText(cellIndex, expectedText, this.getAllOutputsWidget, outputIndex);
   };
 
-  this.waitAndCheckOutputTextOfWidget = function (cellIndex, expectedText, outputIndex) {
-    this.waitAndCheckOutputText(cellIndex, expectedText, this.getAllOutputsHtmlType(), outputIndex);
+  this.waitAndCheckOutputTextOfHtmlType = function (cellIndex, expectedText, outputIndex) {
+    this.waitAndCheckOutputText(cellIndex, expectedText, this.getAllOutputsHtmlType, outputIndex);
   };
 
   this.waitAndCheckOutputText = function (index, expectedText, getTextElements, outputIndex) {

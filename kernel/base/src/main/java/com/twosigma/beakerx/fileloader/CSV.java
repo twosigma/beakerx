@@ -25,7 +25,11 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class CSV {
 
@@ -46,28 +50,28 @@ public class CSV {
       header = rows.next();
     }
 
-      @Override
-      public boolean hasNext() {
-        return rows.hasNext();
-      }
+    @Override
+    public boolean hasNext() {
+      return rows.hasNext();
+    }
 
-      @Override
-      public Map<String, Object> next() {
-        if (!hasNext()) return null;
-        else {
-          String[] row = rows.next();
-          Map<String, Object> entry = new HashMap<>();
-          int index = 0;
-          for (String hc : header) {
-            if (hc.equals(TIME_COLUMN)) {
-              entry.put(hc, convertDate(row[index++]));
-            } else {
-              entry.put(hc, convertToNumber(row[index++]));
-            }
+    @Override
+    public Map<String, Object> next() {
+      if (!hasNext()) return null;
+      else {
+        String[] row = rows.next();
+        Map<String, Object> entry = new HashMap<>();
+        int index = 0;
+        for (String hc : header) {
+          if (hc.equals(TIME_COLUMN)) {
+            entry.put(hc, convertDate(row[index++]));
+          } else {
+            entry.put(hc, convertToNumber(row[index++]));
           }
-          return entry;
         }
+        return entry;
       }
+    }
 
     @Override
     public void close() throws Exception {
@@ -107,16 +111,31 @@ public class CSV {
       Date date = (Date) x;
       return date;
     } else if (x instanceof String) {
-      Date inputDate = null;
-      try {
-        inputDate = new SimpleDateFormat("yyyy-MM-dd").parse((String) x);
-      } catch (ParseException e) {
-        throw new IllegalArgumentException("time column accepts String date in a following format yyyy-MM-dd");
-      }
-      return inputDate;
+      return parseToDate((String) x);
     } else {
       throw new IllegalArgumentException("time column accepts numbers or java.util.Date objects or String date in a following format yyyy-MM-dd");
     }
+  }
+
+  private Object parseToDate(String x) {
+    Date inputDate = getDateWithTimezone(x);
+    if (inputDate == null) {
+      try {
+        inputDate = new SimpleDateFormat("yyyy-MM-dd").parse(x);
+      } catch (ParseException e) {
+        throw new IllegalArgumentException("time column accepts String date in a following format yyyy-MM-dd");
+      }
+    }
+    return inputDate;
+  }
+
+  private Date getDateWithTimezone(String x) {
+    Date inputDate = null;
+    try {
+      inputDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS Z").parse(x);
+    } catch (ParseException e) {
+    }
+    return inputDate;
   }
 
 }

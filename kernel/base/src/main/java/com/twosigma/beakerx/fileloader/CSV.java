@@ -126,16 +126,31 @@ public class CSV {
       Date date = (Date) x;
       return date;
     } else if (x instanceof String) {
-      Date inputDate = null;
-      try {
-        inputDate = new SimpleDateFormat("yyyy-MM-dd").parse((String) x);
-      } catch (ParseException e) {
-        throw new IllegalArgumentException("time column accepts String date in a following format yyyy-MM-dd");
-      }
-      return inputDate;
+      return parseToDate((String) x);
     } else {
       throw new IllegalArgumentException("time column accepts numbers or java.util.Date objects or String date in a following format yyyy-MM-dd");
     }
+  }
+
+  private Object parseToDate(String x) {
+    Date inputDate = getDateWithTimezone(x);
+    if (inputDate == null) {
+      try {
+        inputDate = new SimpleDateFormat("yyyy-MM-dd").parse(x);
+      } catch (ParseException e) {
+        throw new IllegalArgumentException("time column accepts String date in a following format yyyy-MM-dd");
+      }
+    }
+    return inputDate;
+  }
+
+  private Date getDateWithTimezone(String x) {
+    Date inputDate = null;
+    try {
+      inputDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS Z").parse(x);
+    } catch (ParseException e) {
+    }
+    return inputDate;
   }
 
 }

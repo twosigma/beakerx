@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -60,6 +61,9 @@ public class CSV {
       if (!hasNext()) return null;
       else {
         String[] row = rows.next();
+        if (rowIsEmpty(row, header)) {
+          return null;
+        }
         Map<String, Object> entry = new HashMap<>();
         int index = 0;
         for (String hc : header) {
@@ -73,6 +77,10 @@ public class CSV {
       }
     }
 
+    private boolean rowIsEmpty(String[] row, String[] header) {
+      return (header.length > row.length) && row.length == 1 && row[0].isEmpty();
+    }
+
     @Override
     public void close() throws Exception {
       reader.close();
@@ -80,7 +88,14 @@ public class CSV {
   }
 
   public List<Map<String, Object>> read(String fileName) throws IOException {
-    List<Map<String, Object>> result = IteratorUtils.toList(new CSVIterator(fileName));
+    List<Map<String, Object>> result = new ArrayList<>();
+    CSVIterator iterator = new CSVIterator(fileName);
+    while (iterator.hasNext()) {
+      Map<String, Object> next = iterator.next();
+      if (next!=null){
+        result.add(next);
+      }
+    }
     return result;
   }
 

@@ -13,26 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx;
+package com.twosigma.beakerx.jvm.threads;
 
-import com.twosigma.beakerx.kernel.msg.JupyterMessages;
-import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 
-import java.util.Arrays;
-import java.util.List;
-
-public class MessageFactorTest {
-
-  public static final List<byte[]> MESSAGE_IDENTITIES = Arrays.asList("MessageIdentities123".getBytes());
-
-  public static Message commMsg() {
-    return msg(JupyterMessages.COMM_MSG);
-  }
-
-  public static Message msg(JupyterMessages type) {
-    Message msg1 = new Message(new Header(type, "session1"));
-    msg1.setIdentities(MESSAGE_IDENTITIES);
-    return msg1;
-  }
+public interface InputRequestMessageFactory {
+  Message create(Message parent);
 }

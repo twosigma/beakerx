@@ -18,7 +18,7 @@ package com.twosigma.beakerx.easyform.formitem.widgets;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.easyform.EasyFormComponent;
 import com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher;
-import com.twosigma.beakerx.jvm.threads.BeakerStdOutErrHandler;
+import com.twosigma.beakerx.jvm.threads.BeakerStdInOutErrHandler;
 import com.twosigma.beakerx.widget.Button;
 import com.twosigma.beakerx.message.Message;
 import org.junit.Test;
@@ -95,7 +95,7 @@ public class ButtonComponentWidgetTest extends EasyFormWidgetTest {
     try {
       //given
       String outputText = "handleOutput";
-      BeakerStdOutErrHandler.init();
+      BeakerStdInOutErrHandler.init(kernel);
       ButtonComponentWidget widget = new ButtonComponentWidget();
       kernel.clearPublishedMessages();
       widget.actionPerformed = value -> System.out.print(outputText);
@@ -106,7 +106,7 @@ public class ButtonComponentWidgetTest extends EasyFormWidgetTest {
       assertThat(outputMessage.getContent().get(NAME)).isEqualTo(STDOUT);
       assertThat(outputMessage.getContent().get(TEXT)).isEqualTo(outputText);
     } finally {
-      BeakerStdOutErrHandler.fini();
+      BeakerStdInOutErrHandler.fini();
     }
   }
 

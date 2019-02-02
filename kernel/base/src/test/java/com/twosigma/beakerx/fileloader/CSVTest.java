@@ -78,4 +78,14 @@ public class CSVTest {
     assertThat(values.get(0).get("a")).isEqualTo(7.8981);
   }
 
+
+  @Test
+  public void handleEmptyLines() throws Exception {
+    //when
+    List<Map<String, Object>> values = new CSV().read(getOsAppropriatePath(getClass().getClassLoader(), "interest-rates-with-empty-line-in-the-end.csv"));
+    //then
+    assertThat(values.size()).isEqualTo(2);
+    assertThat(values.get(0).get("m3")).isEqualTo(7.8981);
+  }
+
 }

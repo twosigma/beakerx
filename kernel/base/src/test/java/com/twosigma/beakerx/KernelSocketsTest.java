@@ -39,6 +39,11 @@ public class KernelSocketsTest extends KernelSockets {
     sentMessages.add(message);
   }
 
+  @Override
+  public String sendStdIn(Message message) {
+    return "stdin message";
+  }
+
   public List<Message> getPublishedMessages() {
     return copy(this.publishedMessages);
   }

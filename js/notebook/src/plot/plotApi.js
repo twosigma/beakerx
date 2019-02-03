@@ -499,7 +499,7 @@ define([ 'underscore' ], function(_) {
      var tmpl = PlotLayout.buildTemplate(currentScope);
      var tmplElement = $(tmpl);
 
-     tmplElement.appendTo(output_area.element);
+     tmplElement.appendTo(output_area.element || output_area.node);
 
      currentScope.setModelData(this);
      currentScope.setElement(tmplElement.children('.dtcontainer'));
@@ -684,7 +684,7 @@ define([ 'underscore' ], function(_) {
      var tmpl = currentScope.buildTemplate();
      var tmplElement = $(tmpl);
 
-     tmplElement.appendTo(output_area.element);
+     tmplElement.appendTo(output_area.element || output_area.node);
 
      currentScope.setModelData(this);
      currentScope.setElement(tmplElement);
@@ -692,6 +692,11 @@ define([ 'underscore' ], function(_) {
    };
 
    //Plots//
+
+   var panel;
+   var _tmp = function(_panel) {
+       panel = _panel;
+   };
 
    var api = {
      AbstractChart: AbstractChart,
@@ -717,8 +722,10 @@ define([ 'underscore' ], function(_) {
      LegendPosition: LegendPosition,
      Filter: Filter,
      Color: Color,
-     XYStacker: XYStacker
+     XYStacker: XYStacker,
+     _tmp: _tmp,
    };
+
    var list = function () {
      return api;
    };
@@ -736,9 +743,15 @@ define([ 'underscore' ], function(_) {
    // -------------------
 
    function getCellFromOutputArea(output_area) {
-     var cell_element = output_area.element.parents('.cell');
-     var cell_idx = Jupyter.notebook.get_cell_elements().index(cell_element);
-     var cell = Jupyter.notebook.get_cell(cell_idx);
+     var cell;
+     try {
+       var cell_element = output_area.element.parents('.cell');
+       var cell_idx = Jupyter.notebook.get_cell_elements().index(cell_element);
+       cell = Jupyter.notebook.get_cell(cell_idx);
+     } catch(e) {
+       cell = panel.content.activeCell.outputArea;
+
+     }
      return cell;
    }
 

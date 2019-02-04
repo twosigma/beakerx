@@ -88,6 +88,7 @@ public class CSVTest {
     //then
     Date time = (Date) values.get(0).get("time");
     assertThat(time.getTime()).isEqualTo(633744000000L);
+  }
 
   public void handleEmptyLines() throws Exception {
     //when

@@ -50,6 +50,7 @@ public enum JupyterMessages {
   CLEAR_OUTPUT,
   ERROR,
   IS_COMPLETE_REQUEST,
+  INPUT_REQUEST,
   IS_COMPLETE_REPLY;
   
   public String getName() {

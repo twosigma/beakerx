@@ -15,23 +15,22 @@
  */
 package com.twosigma.beakerx.message;
 
-import static com.twosigma.beakerx.kernel.Utils.timestamp;
-import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.twosigma.beakerx.kernel.msg.JupyterMessages;
-import com.twosigma.beakerx.util.Preconditions;
+import static com.twosigma.beakerx.kernel.Utils.timestamp;
+import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 
 @JsonPropertyOrder({"identities", "header", "parentHeader", "metadata", "content"})
 public class Message {
 
-  private List<byte[]> identities = new ArrayList<>();
+  private List<byte[]> identities;
   private Header header;
   @JsonProperty("parent_header")
   private Header parentHeader;
@@ -39,9 +38,14 @@ public class Message {
   private Map<String, Serializable> content;
   private List<byte[]> buffers = new ArrayList<>();
 
-  public Message(Header header) {
+  public Message(Header header, List<byte[]> identities) {
+    this.identities = identities;
     this.header = checkNotNull(header);
     header.setDate(timestamp());
+  }
+
+  public Message(Header header) {
+    this(header, new ArrayList<>());
   }
 
   public JupyterMessages type() {

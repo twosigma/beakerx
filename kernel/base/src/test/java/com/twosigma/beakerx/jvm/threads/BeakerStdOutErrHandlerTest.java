@@ -16,6 +16,7 @@
 
 package com.twosigma.beakerx.jvm.threads;
 
+import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import org.junit.After;
 import org.junit.Before;
@@ -31,7 +32,8 @@ public class BeakerStdOutErrHandlerTest {
 
   @Before
   public void setUp() throws Exception {
-    BeakerStdOutErrHandler.init();
+    KernelTest kernel = new KernelTest();
+    BeakerStdInOutErrHandler.init(kernel);
     stdout = new SimpleOutputHandlerTest();
     stderr = new SimpleErrHandlerTest();
     seo = new SimpleEvaluationObject("code", stdout, stderr);
@@ -41,7 +43,7 @@ public class BeakerStdOutErrHandlerTest {
   @After
   public void tearDownClass() throws Exception {
     seo.clrOutputHandler();
-    BeakerStdOutErrHandler.fini();
+    BeakerStdInOutErrHandler.fini();
   }
 
   @Test

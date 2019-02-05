@@ -136,6 +136,7 @@ public abstract class Kernel implements KernelFunctionality {
   @Override
   public void run() {
     KernelManager.register(this);
+
     logger.debug("Jupyter kernel starting.");
     this.kernelSockets = kernelSocketsFactory.create(this, this::closeComms);
     this.kernelSockets.start();
@@ -211,6 +212,10 @@ public abstract class Kernel implements KernelFunctionality {
 
   public void send(Message message) {
     this.kernelSockets.send(message);
+  }
+
+  public String sendStdIn(Message message) {
+    return this.kernelSockets.sendStdIn(message);
   }
 
   public Handler<Message> getHandler(JupyterMessages type) {

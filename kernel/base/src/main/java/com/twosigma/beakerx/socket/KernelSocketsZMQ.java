@@ -15,15 +15,15 @@
  */
 package com.twosigma.beakerx.socket;
 
-import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.kernel.Config;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelSockets;
 import com.twosigma.beakerx.kernel.SocketCloseAction;
-import com.twosigma.beakerx.handler.Handler;
-import com.twosigma.beakerx.message.MessageSerializer;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.message.MessageSerializer;
 import com.twosigma.beakerx.security.HashedMessageAuthenticationCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,8 +40,8 @@ import java.util.List;
 
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.SHUTDOWN_REPLY;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.SHUTDOWN_REQUEST;
-import static java.util.Arrays.asList;
 import static com.twosigma.beakerx.message.MessageSerializer.toJson;
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
 public class KernelSocketsZMQ extends KernelSockets {
@@ -93,6 +93,11 @@ public class KernelSocketsZMQ extends KernelSockets {
 
   public void send(Message message) {
     sendMsg(this.shellSocket, singletonList(message));
+  }
+
+  public String sendStdIn(Message message) {
+    sendMsg(this.stdinSocket, singletonList(message));
+    return handleStdIn();
   }
 
   private synchronized void sendMsg(ZMQ.Socket socket, List<Message> messages) {
@@ -178,9 +183,9 @@ public class KernelSocketsZMQ extends KernelSockets {
     }
   }
 
-  private void handleStdIn() {
-    byte[] buffer = stdinSocket.recv();
-    logger.info("Stdin: {}", new String(buffer));
+  private String handleStdIn() {
+    Message msg = readMessage(stdinSocket);
+    return (String) msg.getContent().get("value");
   }
 
   private void handleShell() {

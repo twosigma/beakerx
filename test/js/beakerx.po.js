@@ -304,6 +304,13 @@ function BeakerXPageObject() {
     deleteButton.click();
   };
 
+  this.getDataGridTooltip = function(){
+    browser.waitUntil(function () {
+      return browser.isVisible('div.p-DataGrid-tooltip');
+    }, 10000, 'doc tooltip is not visible');
+    return $('div.p-DataGrid-tooltip');
+  };
+
 };
 
 module.exports = BeakerXPageObject;

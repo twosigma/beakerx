@@ -24,4 +24,6 @@ public abstract class KernelSockets extends Thread {
   public abstract void publish(List<Message> message);
 
   public abstract void send(Message message);
+
+  public abstract String sendStdIn(Message message);
 }

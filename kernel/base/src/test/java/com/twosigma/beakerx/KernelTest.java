@@ -53,6 +53,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Observer;
@@ -81,6 +82,7 @@ public class KernelTest implements KernelFunctionality {
 //  public MavenJarResolver.ResolverParams mavenResolverParam = null;
 
   private List<MagicCommandType> magicCommandTypes = null;
+  private LinkedList<String> stdinText = new LinkedList<>();
 
 
   public KernelTest() {
@@ -130,6 +132,15 @@ public class KernelTest implements KernelFunctionality {
   @Override
   public void send(Message message) {
     this.sentMessages.add(message);
+  }
+
+  @Override
+  public String sendStdIn(Message message) {
+    return this.stdinText.pop();
+  }
+
+  public void addToStdin(String s) {
+    this.stdinText.add(s);
   }
 
   public String getSessionId() {
@@ -394,6 +405,7 @@ public class KernelTest implements KernelFunctionality {
   public FileServiceMock getFileService() {
     return magicCommandConfiguration.getFileService();
   }
+
 
   public static class BeakerXJsonMock implements BeakerXJson {
 

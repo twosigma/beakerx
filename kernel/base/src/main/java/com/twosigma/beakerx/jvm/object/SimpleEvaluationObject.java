@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.jvm.object;
 
 import com.twosigma.beakerx.jvm.threads.BeakerOutputHandler;
-import com.twosigma.beakerx.jvm.threads.BeakerStdOutErrHandler;
+import com.twosigma.beakerx.jvm.threads.BeakerStdInOutErrHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -140,12 +140,12 @@ public class SimpleEvaluationObject extends Observable {
   }
 
   public void setOutputHandler() {
-    BeakerStdOutErrHandler.setOutputHandler(getStdOutputHandler(), getStdErrorHandler());
+    BeakerStdInOutErrHandler.setOutputHandler(getStdOutputHandler(), getStdErrorHandler());
   }
 
   public void clrOutputHandler() {
     closeProgressUpdater();
-    BeakerStdOutErrHandler.clrOutputHandler();
+    BeakerStdInOutErrHandler.clrOutputHandler();
   }
 
   private void closeProgressUpdater() {

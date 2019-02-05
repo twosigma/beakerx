@@ -20,6 +20,7 @@ import org.junit.Test;
 import java.math.BigInteger;
 import java.net.URI;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -76,6 +77,25 @@ public class CSVTest {
             new CSV().read(getOsAppropriatePath(getClass().getClassLoader(), DOUBLE_ROWS_TEST_CSV));
     //then
     assertThat(values.get(0).get("a")).isEqualTo(7.8981);
+  }
+
+
+  @Test
+  public void dateFormat() throws Exception {
+    //when
+    List<Map<String, Object>> values =
+            new CSV().read(getOsAppropriatePath(getClass().getClassLoader(), "interest-rates.csv"));
+    //then
+    Date time = (Date) values.get(0).get("time");
+    assertThat(time.getTime()).isEqualTo(633744000000L);
+  }
+
+  public void handleEmptyLines() throws Exception {
+    //when
+    List<Map<String, Object>> values = new CSV().read(getOsAppropriatePath(getClass().getClassLoader(), "interest-rates-with-empty-line-in-the-end.csv"));
+    //then
+    assertThat(values.size()).isEqualTo(2);
+    assertThat(values.get(0).get("m3")).isEqualTo(7.8981);
   }
 
 }

@@ -13,26 +13,29 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx;
+package com.twosigma.beakerx.jvm.threads;
 
-import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 
-import java.util.Arrays;
-import java.util.List;
+import java.io.Serializable;
+import java.util.HashMap;
 
-public class MessageFactorTest {
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.INPUT_REQUEST;
 
-  public static final List<byte[]> MESSAGE_IDENTITIES = Arrays.asList("MessageIdentities123".getBytes());
-
-  public static Message commMsg() {
-    return msg(JupyterMessages.COMM_MSG);
+public class InputRequestMessageFactoryImpl implements InputRequestMessageFactory {
+  @Override
+  public Message create(Message parent) {
+    Message message = new Message(new Header(INPUT_REQUEST, parent.getHeader().getSession()), parent.getIdentities());
+    message.setContent(content());
+    message.setParentHeader(parent.getHeader());
+    return message;
   }
 
-  public static Message msg(JupyterMessages type) {
-    Message msg1 = new Message(new Header(type, "session1"));
-    msg1.setIdentities(MESSAGE_IDENTITIES);
-    return msg1;
+  private HashMap<String, Serializable> content() {
+    HashMap<String, Serializable> map = new HashMap<>();
+    map.put("prompt", "");
+    map.put("password", false);
+    return map;
   }
 }

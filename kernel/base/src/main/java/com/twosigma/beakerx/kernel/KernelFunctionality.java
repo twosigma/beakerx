@@ -43,6 +43,8 @@ public interface KernelFunctionality {
 
   void send(Message message);
 
+  String sendStdIn(Message message);
+
   String getSessionId();
 
   Observer getExecutionResultSender();

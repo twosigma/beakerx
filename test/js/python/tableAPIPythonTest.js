@@ -203,8 +203,7 @@ describe('Testing of table (python)', function () {
       var width = 400, height = 90;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell162_case1.png');
-      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell162_case1.png');
+       beakerxPO.checkImageData(imageData.value, imageDir, 'cell162_case1.png');
     });
   });
 
@@ -214,8 +213,7 @@ describe('Testing of table (python)', function () {
       var width = 400, height = 90;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell163_case1.png');
-      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell163_case1.png');
+       beakerxPO.checkImageData(imageData.value, imageDir, 'cell163_case1.png');
     });
   });
 
@@ -225,8 +223,7 @@ describe('Testing of table (python)', function () {
       var width = 660, height = 90;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell17_case1.png');
-      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell17_case1.png');
+       beakerxPO.checkImageData(imageData.value, imageDir, 'cell17_case1.png');
     });
   });
 
@@ -246,8 +243,7 @@ describe('Testing of table (python)', function () {
       var width = 300, height = 100;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell182_case1.png');
-      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell182_case1.png');
+       beakerxPO.checkImageData(imageData.value, imageDir, 'cell182_case1.png');
     });
   });
 
@@ -257,8 +253,7 @@ describe('Testing of table (python)', function () {
       var width = 644, height = 90;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell19_case1.png');
-      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell19_case1.png');
+       beakerxPO.checkImageData(imageData.value, imageDir, 'cell19_case1.png');
     });
   });
 
@@ -289,15 +284,13 @@ describe('Testing of table (python)', function () {
       cellIndex += 2;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width6, height6);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell21_case2.png');
-      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell21_case2.png');
+       beakerxPO.checkImageData(imageData.value, imageDir, 'cell21_case2.png');
     });
     it('Should remove all CellHighlighters ', function() {
       var codeCell = beakerxPO.getCodeCellByIndex(cellIndex - 2);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width6, height6);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell21_case2.png');
-      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell21_case2.png');
+       beakerxPO.checkImageData(imageData.value, imageDir, 'cell21_case2.png');
     });
   });
 
@@ -307,8 +300,7 @@ describe('Testing of table (python)', function () {
       var width = 440, height = 90;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell22_case1.png');
-      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell22_case1.png');
+       beakerxPO.checkImageData(imageData.value, imageDir, 'cell22_case1.png');
     });
   });
 
@@ -319,7 +311,6 @@ describe('Testing of table (python)', function () {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell23_case1.png');
-      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell23_case1.png');
     });
   });
 
@@ -329,8 +320,7 @@ describe('Testing of table (python)', function () {
       var width = 440, height = 90;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell24_case1.png');
-      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell24_case1.png');
+       beakerxPO.checkImageData(imageData.value, imageDir, 'cell24_case1.png');
     });
   });
 
@@ -340,8 +330,7 @@ describe('Testing of table (python)', function () {
       var width = 440, height = 90;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell25_case1.png');
-      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell25_case1.png');
+       beakerxPO.checkImageData(imageData.value, imageDir, 'cell25_case1.png');
     });
   });
 
@@ -351,8 +340,7 @@ describe('Testing of table (python)', function () {
       var width = 162, height = 90;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell26_case1.png');
-      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell26_case1.png');
+       beakerxPO.checkImageData(imageData.value, imageDir, 'cell26_case1.png');
     });
   });
 

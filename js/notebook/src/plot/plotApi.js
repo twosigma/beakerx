@@ -504,6 +504,9 @@ define([ 'underscore' ], function(_) {
      currentScope.setModelData(this);
      currentScope.setElement(tmplElement.children('.dtcontainer'));
      currentScope.init();
+     setTimeout(function() {
+        currentScope.updatePlot();
+     }, 10);
    };
 
    var TimePlot = function (data) {
@@ -689,6 +692,11 @@ define([ 'underscore' ], function(_) {
      currentScope.setModelData(this);
      currentScope.setElement(tmplElement);
      currentScope.init();
+
+     setTimeout(function() {
+         debugger;
+       currentScope.updatePlot();
+     }, 10);
    };
 
    //Plots//

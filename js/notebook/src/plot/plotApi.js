@@ -495,7 +495,7 @@ define([ 'underscore' ], function(_) {
    Plot.prototype.display = function(output_area) {
      var cell = getCellFromOutputArea(output_area);
 
-     var currentScope = new PlotScope('wrap_'+cell.cell_id);
+     var currentScope = new PlotScope('wrap_'+cell.cell_id || bkUtils.generateId(6));
      var tmpl = PlotLayout.buildTemplate(currentScope);
      var tmplElement = $(tmpl);
 
@@ -680,7 +680,7 @@ define([ 'underscore' ], function(_) {
    CombinedPlot.prototype.display = function(output_area) {
      var cell = getCellFromOutputArea(output_area);
 
-     var currentScope = new CombinedPlotScope('wrap_'+cell.cell_id);
+     var currentScope = new CombinedPlotScope('wrap_'+cell.cell_id || bkUtils.generateId(6));
      var tmpl = currentScope.buildTemplate();
      var tmplElement = $(tmpl);
 

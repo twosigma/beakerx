@@ -67,11 +67,11 @@ class BeakerxExtension implements DocumentRegistry.WidgetExtension {
       window.beakerx = proxify(beakerxInstance, context.session.kernel);
       window.beakerxHolder[context.session.kernel.id] = window.beakerx;
 
-      plotApiList._tmp(panel);
+      plotApiList.setActiveLabPanel(panel);
       app.shell.activeChanged.connect((sender, args) => {
         if (args.newValue == panel){
             window.beakerx = window.beakerxHolder[panel.context.session.kernel.id];
-            plotApiList._tmp(panel);
+            plotApiList.setActiveLabPanel(panel);
         }
       });
 

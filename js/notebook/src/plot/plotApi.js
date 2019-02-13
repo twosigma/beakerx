@@ -701,9 +701,9 @@ define([ 'underscore' ], function(_) {
 
    //Plots//
 
-   var panel;
-   var _tmp = function(_panel) {
-       panel = _panel;
+   var _labPanel;
+   var setActiveLabPanel = function(panel) {
+       _labPanel = panel;
    };
 
    var api = {
@@ -731,7 +731,7 @@ define([ 'underscore' ], function(_) {
      Filter: Filter,
      Color: Color,
      XYStacker: XYStacker,
-     _tmp: _tmp,
+     setActiveLabPanel: setActiveLabPanel,
    };
 
    var list = function () {
@@ -757,7 +757,7 @@ define([ 'underscore' ], function(_) {
        var cell_idx = Jupyter.notebook.get_cell_elements().index(cell_element);
        cell = Jupyter.notebook.get_cell(cell_idx);
      } catch(e) {
-       cell = panel.content.activeCell.outputArea;
+       cell = _labPanel.content.activeCell.outputArea;
 
      }
      return cell;

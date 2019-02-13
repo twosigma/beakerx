@@ -159,8 +159,8 @@ function BeakerXPageObject() {
     this.waitAndCheckOutputText(cellIndex, expectedText, this.getAllOutputsWidget, outputIndex);
   };
 
-  this.waitAndCheckOutputTextOfWidget = function (cellIndex, expectedText, outputIndex) {
-    this.waitAndCheckOutputText(cellIndex, expectedText, this.getAllOutputsHtmlType(), outputIndex);
+  this.waitAndCheckOutputTextOfHtmlType = function (cellIndex, expectedText, outputIndex) {
+    this.waitAndCheckOutputText(cellIndex, expectedText, this.getAllOutputsHtmlType, outputIndex);
   };
 
   this.waitAndCheckOutputText = function (index, expectedText, getTextElements, outputIndex) {
@@ -302,6 +302,13 @@ function BeakerXPageObject() {
   this.removeProperty = function () {
     var deleteButton = $('button > i.fa-times');
     deleteButton.click();
+  };
+
+  this.getDataGridTooltip = function(){
+    browser.waitUntil(function () {
+      return browser.isVisible('div.p-DataGrid-tooltip');
+    }, 10000, 'doc tooltip is not visible');
+    return $('div.p-DataGrid-tooltip');
   };
 
 };

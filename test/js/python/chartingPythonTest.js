@@ -76,7 +76,7 @@ describe('Charting Python tests ', function () {
       dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
       var treemap = dtContainer.$('#maing > g');
       expect(treemap.isEnabled()).toBeTruthy();
-      expect(treemap.$$('g.cell').length).toEqual(999);
+      expect(treemap.$$('g.cell').length).toEqual(1000);
     });
     it('Should display warning message ', function () {
       var treemap = dtContainer.$('#maing > g');

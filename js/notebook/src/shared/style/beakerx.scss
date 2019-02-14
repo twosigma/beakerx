@@ -70,6 +70,8 @@
 }
 
 .bko-modal {
+  font-size: 14px;
+  line-height: 20px;
   position: absolute;
   left: 50%;
   margin-left: -150px;
@@ -80,18 +82,82 @@
   overflow: visible;
   animation: 1s fadeIn;
   animation-fill-mode: forwards;
-  .modal-dialog{
+
+  .modal-dialog {
     width: 300px;
-  }
-  .modal-content{
-    border: none;
-  }
-  .modal-body{
-    padding-top: 25px;
+    position: relative;
+    margin: 10px;
   }
 
+  .modal-content {
+    //border: none;
+    position: relative;
+    background-color: $bxBgColor1;
+    background-clip: padding-box;
+    border: 1px solid $bxBorderColor1;
+    border-radius: 3px;
+    // Remove focus outline from opened modal
+    outline: 0;
+    -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  }
+
+  .modal-body {
+    position: relative;
+    padding: 25px 15px 15px 15px;
+  }
+
+  // Footer (for actions)
+  .modal-footer {
+    padding: 15px;
+    text-align: right; // right align buttons
+    border-top: 1px solid $bxBorderColor1;
+
+    .btn {
+      display: inline-block;
+      margin-bottom: 0;
+      font-weight: normal;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      touch-action: manipulation;
+      cursor: pointer;
+      background-image: none;
+      border: 1px solid transparent;
+      padding: 6px 12px;
+      font-size: 13px;
+      line-height: 1.42857143;
+      border-radius: 2px;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    .btn-primary {
+      color: #fff;
+      background-color: #337ab7;
+      border-color: #2e6da4;
+    }
+
+    // Properly space out buttons
+    .btn + .btn {
+      margin-bottom: 0; // account for input[type="submit"] which gets the bottom margin like all other inputs
+      margin-left: 5px;
+    }
+
+    // but override that for button groups
+    .btn-group .btn + .btn {
+      margin-left: -1px;
+    }
+
+    // and override it for block buttons as well
+    .btn-block + .btn-block {
+      margin-left: 0;
+    }
+
+  }
 }
-
 .jp-Toolbar-button.fa {
   line-height: 100%;
 }

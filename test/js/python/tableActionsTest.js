@@ -41,11 +41,17 @@ describe('Testing of table Actions ', function () {
   describe('ContextMenuItem action ', function () {
     var codeCell;
 
-    it('ContextMenuItem should change table cell value ', function () {
+    it('Create table with Context Menu ', function () {
       cellIndex = 0;
-      codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var canvas = codeCell.$('canvas');
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell1_case1.png');
+      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell1_case1.png');
+    });
+
+    it('ContextMenuItem should change table cell value ', function () {
+      codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      var canvas = codeCell.$('canvas');
 
       codeCell.rightClick('canvas', 40, 40);
       browser.click('div.p-Menu-itemLabel=plusOne');
@@ -53,8 +59,8 @@ describe('Testing of table Actions ', function () {
       browser.pause(1000);
       canvas = codeCell.$('canvas');
       imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      // beakerxPO.checkImageData(imageData.value, imageDir, 'cell1_case2.png');
-      beakerxPO.createTableImage(imageData.value, imageDir, 'cell1_case2.png');
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell1_case2.png');
+      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell1_case2.png');
     });
 
     it('ContextMenuItem should run tag (by string) ', function () {
@@ -64,12 +70,6 @@ describe('Testing of table Actions ', function () {
       beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex + 1, /1:0=4/);
     });
 
-    it('ContextMenuItem should run tag (by closure) ', function () {
-      codeCell.rightClick('canvas', 100, 55);
-      browser.click('div.p-Menu-itemLabel=tag1ByClosure');
-      beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex + 1, /1:1=5/);
-    });
   });
 
 });

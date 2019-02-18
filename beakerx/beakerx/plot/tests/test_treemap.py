@@ -16,7 +16,7 @@
 import unittest
 
 from ..chart import TreeMap, XYChart
-from ..plotitem_treemap import TreeMapNode, DefaultValue
+from ..plotitem_treemap import TreeMapNode, DefaultValue, ValueAccessor
 
 
 class TestTreeMap(unittest.TestCase):
@@ -43,6 +43,16 @@ class TestTreeMap(unittest.TestCase):
         self.assertEqual(model[XYChart.TOTAL_NUMBER_OF_POINTS], 1498)
         self.assertEqual(model[XYChart.NUMBER_OF_POINTS_TO_DISPLAY], str(998) + " leaves")
         self.assertEqual(model[XYChart.ROWS_LIMIT_ITEMS], 1000)
+
+    def test_should_set_value_accessor(self):
+        # given
+        menu_node = self.create_tree_map(100)
+        # when
+        widget = TreeMap(root=menu_node,
+                         valueAccessor=ValueAccessor.WEIGHT)
+        # then
+        model = widget.model
+        self.assertFalse(model[XYChart.TOO_MANY_ROWS])
 
     @staticmethod
     def create_tree_map(number_of_nodes):

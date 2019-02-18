@@ -16,7 +16,7 @@
 import unittest
 
 from ..chart import Plot, YAxis, Text, ConstantLine, ConstantBand
-from ..plotitem import StrokeType, Color, Crosshair
+from ..plotitem import StrokeType, Color, Crosshair, Points, ShapeType
 
 
 class TestPlot(unittest.TestCase):
@@ -132,8 +132,28 @@ class TestPlot(unittest.TestCase):
 
     def test_should_set_crosshair(self):
         # given
-        ch = Crosshair(color=Color.black, width=2, style=StrokeType.DOT)
+        ch = Crosshair(color=Color.black, width=2)
         # when
         plot = Plot(crosshair=ch)
         # then
         self.assertTrue('crosshair' in plot.model)
+
+    def test_should_set_stroke_type(self):
+        # given
+        ch = Crosshair(color=Color.black, width=2, style=StrokeType.DOT)
+        # when
+        plot = Plot(crosshair=ch)
+        # then
+        self.assertEqual(plot.model['crosshair']['style'], 'DOT')
+
+    def test_set_shape_type(self):
+        # given
+        plot = Plot()
+        # when
+        plot.add(Points(y=[1, 3, 6, 3, 1],
+                        x=[1, 2, 3, 4, 5],
+                        size=10,
+                        shape=ShapeType.DIAMOND))
+        # then
+        item = plot.model['graphics_list'][0]
+        self.assertEqual(item['shape'], "DIAMOND")

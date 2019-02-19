@@ -31,4 +31,7 @@ export * from './Spinner';
 export * from './GistPublisher'
 export * from './GistPublisherUtils'
 
+export const PlotApi = require('./plot/plotApi');
+export const bkCoreManager = require('./shared/bkCoreManager').default;
+
 export const version = require('../package.json').version;

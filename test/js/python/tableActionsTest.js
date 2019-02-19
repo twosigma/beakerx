@@ -51,8 +51,6 @@ describe('Testing of table Actions ', function () {
 
     it('ContextMenuItem should change table cell value ', function () {
       codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
-      var canvas = codeCell.$('canvas');
-
       codeCell.rightClick('canvas', 40, 40);
       browser.click('div.p-Menu-itemLabel=plusOne');
       beakerxPO.kernelIdleIcon.waitForEnabled();
@@ -70,7 +68,57 @@ describe('Testing of table Actions ', function () {
       beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex + 1, /1:0=4/);
     });
 
+    it('ContextMenuItem should run tag (by closure) ', function () {
+      cellIndex += 4;
+      codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      codeCell.rightClick('canvas', 40, 55);
+      browser.click('div.p-Menu-itemLabel=runTagFunc');
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex + 1, /1:0=4/);
+    });
   });
 
+  describe('DoubleClickAction action ', function () {
+    it('Create table with DoubleClick Action ', function () {
+      cellIndex += 2;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell2_case1.png');
+      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell2_case1.png');
+    });
+
+    it('DoubleClickAction should change table cell value ', function () {
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
+      doubleClickOnTable(codeCell, 40, 40);
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell2_case2.png');
+      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell2_case2.png');
+    });
+
+    it('DoubleClickAction should run tag (by string) ', function () {
+      cellIndex += 3;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell3_case1.png');
+      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell3_case1.png')
+
+      doubleClickOnTable(codeCell, 40, 40);
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex + 1, /0:0=1/);
+    });
+
+    it('DoubleClickAction should run tag (by closure) ', function () {
+      cellIndex += 3;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell4_case1.png');
+      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell4_case1.png')
+
+      doubleClickOnTable(codeCell, 40, 40);
+      beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex + 1, /0:0=1/);
+    });
+  });
 });
 

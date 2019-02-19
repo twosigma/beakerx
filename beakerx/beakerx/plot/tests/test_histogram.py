@@ -13,15 +13,21 @@
 # limitations under the License.
 
 
+import pandas as pd
 import random
 import unittest
-
-import pandas as pd
 
 from ..chart import Histogram, HistogramChart, XYChart
 
 
 class TestHistogram(unittest.TestCase):
+
+    def setUp(self):
+        self.data1 = []
+        self.data2 = []
+        for x in range(1, 10000):
+            self.data1.append(random.gauss(0, 1))
+            self.data2.append(random.gauss(0, 1))
 
     def test_empty_data(self):
         # given
@@ -65,13 +71,15 @@ class TestHistogram(unittest.TestCase):
 
     def test_support_data_frame(self):
         # given
-        data1 = []
-        data2 = []
-        for x in range(1, 10000):
-            data1.append(random.gauss(0, 1))
-            data2.append(random.gauss(0, 1))
-        df = pd.DataFrame({'data1': data1, 'data2': data2})
+        df = pd.DataFrame({'data1': self.data1, 'data2': self.data2})
         # when
         histogram = Histogram(data=df['data1'])
         # then
         self.assertEqual(len(histogram.model['graphics_list'][0]), 9999)
+
+    def test_legend_default_position(self):
+        # given
+        # when
+        histogram = Histogram(data=[self.data1, self.data2])
+        # then
+        self.assertEqual(histogram.model['legend_position']['position'], "TOP_RIGHT")

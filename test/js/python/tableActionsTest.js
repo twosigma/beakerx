@@ -46,7 +46,6 @@ describe('Testing of table Actions ', function () {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell1_case1.png');
-      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell1_case1.png');
     });
 
     it('ContextMenuItem should change table cell value ', function () {
@@ -58,7 +57,6 @@ describe('Testing of table Actions ', function () {
       canvas = codeCell.$('canvas');
       imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell1_case2.png');
-      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell1_case2.png');
     });
 
     it('ContextMenuItem should run tag (by string) ', function () {
@@ -84,7 +82,6 @@ describe('Testing of table Actions ', function () {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell2_case1.png');
-      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell2_case1.png');
     });
 
     it('DoubleClickAction should change table cell value ', function () {
@@ -93,7 +90,6 @@ describe('Testing of table Actions ', function () {
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell2_case2.png');
-      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell2_case2.png');
     });
 
     it('DoubleClickAction should run tag (by string) ', function () {
@@ -102,7 +98,6 @@ describe('Testing of table Actions ', function () {
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell3_case1.png');
-      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell3_case1.png')
 
       doubleClickOnTable(codeCell, 40, 40);
       beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex + 1, /0:0=1/);
@@ -114,7 +109,6 @@ describe('Testing of table Actions ', function () {
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell4_case1.png');
-      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell4_case1.png')
 
       doubleClickOnTable(codeCell, 40, 40);
       beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex + 1, /0:0=1/);

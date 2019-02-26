@@ -62,7 +62,7 @@ class Table(BaseObject):
         self.columnsFrozenRight = {}
         self.columnsVisible = {}
         self.hasDoubleClickAction = False
-        self.filteredValues = []
+        self.filteredValues = None
 
     def convert_from_dict(self, args):
         self.columnNames.append("Key")

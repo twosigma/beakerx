@@ -23,24 +23,30 @@ export namespace Autotranslation {
 
   export function proxify(beakerxInstance: any): Proxy<any> {
     const utils = require('base/js/utils');
-    const comm = Jupyter.notebook.kernel.comm_manager.new_comm(
-      BEAKER_AUTOTRANSLATION,
-      null,
-      null,
-      null,
-      utils.uuid()
-    );
 
-    const handler = {
+      function createCommForAT() {
+          return Jupyter.notebook.kernel.comm_manager.new_comm(
+              BEAKER_AUTOTRANSLATION,
+              null,
+              null,
+              null,
+              utils.uuid()
+          );
+      }
+
+      let atComm= undefined;
+      const handler = {
       get(obj, prop) {
         return prop in obj ? obj[prop] : undefined;
       },
 
       set(obj, prop, value) {
         obj[prop] = value;
-
         if (prop !== LOCK_PROXY && !window.beakerx[LOCK_PROXY]) {
-          comm.send({ name: prop, value });
+          if (!atComm){
+              atComm = createCommForAT();
+          }
+          atComm.send({ name: prop, value });
         }
 
         return true;

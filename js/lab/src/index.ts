@@ -24,6 +24,7 @@ import BeakerxTreeJupyterLabPlugin from "./tree";
 import RequirejsLoader from "./plugin/requirejs";
 import { themeLightPlugin, themeDarkPlugin } from './theme';
 import beakerx from "./beakerx";
+import {databrowserPlugin} from "./databrowser";
 
 export const beakerx_ext: JupyterLabPlugin<void>|IPlugin<JupyterLab, void> = {
   id: 'beakerx',
@@ -53,6 +54,7 @@ export const requirejs_ext: JupyterLabPlugin<void> = {
 
 export const beakerx_theme_light_ext: JupyterLabPlugin<void> = themeLightPlugin;
 export const beakerx_theme_dark_ext: JupyterLabPlugin<void> = themeDarkPlugin;
+export const beakerx_databrowser_ext: JupyterLabPlugin<void> = databrowserPlugin;
 
 export default [
   requirejs_ext,
@@ -60,4 +62,5 @@ export default [
   tree_ext,
   beakerx_theme_light_ext,
   beakerx_theme_dark_ext,
+  beakerx_databrowser_ext,
 ];

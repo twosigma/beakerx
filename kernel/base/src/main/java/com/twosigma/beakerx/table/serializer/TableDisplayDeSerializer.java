@@ -167,7 +167,7 @@ public class TableDisplayDeSerializer implements ObjectDeserializer {
     }
     TableDisplay td = new TableDisplay(values, columns, classes);
     if (!standardIndex) {
-      td.setHasIndex("true");
+      td.setHasIndex(true);
     }
     return td;
   }

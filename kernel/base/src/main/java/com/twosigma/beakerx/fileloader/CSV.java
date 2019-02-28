@@ -17,7 +17,6 @@
 package com.twosigma.beakerx.fileloader;
 
 import com.opencsv.CSVReader;
-import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.io.FileReader;
@@ -27,8 +26,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -64,7 +63,7 @@ public class CSV {
         if (rowIsEmpty(row, header)) {
           return null;
         }
-        Map<String, Object> entry = new HashMap<>();
+        Map<String, Object> entry = new LinkedHashMap<>();
         int index = 0;
         for (String hc : header) {
           if (hc.equals(TIME_COLUMN)) {

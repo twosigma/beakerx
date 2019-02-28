@@ -30,7 +30,6 @@ class Table(BaseObject):
         self.types = []
         types_map = dict()
         self.columnNames = []
-        self.hasIndex = None
         if isinstance(args[0], DataFrame):
             self.convert_from_pandas(args, types_map)
         elif isinstance(args[0], dict):
@@ -38,6 +37,7 @@ class Table(BaseObject):
         elif isinstance(args[0], list):
             self.convert_from_list(args, types_map)
 
+        self.hasIndex = "index" in self.columnNames
         self.headersVertical = False
         self.headerFontSize = None
         self.contextMenuItems = []

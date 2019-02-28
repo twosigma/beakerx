@@ -98,7 +98,7 @@ public class TableDisplay extends BeakerxWidget {
   private List<List<Color>> fontColor = new ArrayList<>();
   private List<List<?>> filteredValues;
   private boolean headersVertical;
-  private String hasIndex;
+  private boolean hasIndex;
   private String timeZone;
 
   private Object doubleClickListener;
@@ -131,7 +131,7 @@ public class TableDisplay extends BeakerxWidget {
     classes = cl;
     subtype = TABLE_DISPLAY_SUBTYPE;
     openComm();
-    addToValues(buildValuesFromList(v, new BasicObjectSerializer()));
+    initData(buildValuesFromList(v, new BasicObjectSerializer()));
   }
 
   public TableDisplay(Collection<Map<String, Object>> v) {
@@ -204,7 +204,7 @@ public class TableDisplay extends BeakerxWidget {
     }
 
     openComm();
-    addToValues(buildValues(v, serializer));
+    initData(buildValues(v, serializer));
   }
 
   public TableDisplay(Map<?, ?> v) {
@@ -214,15 +214,16 @@ public class TableDisplay extends BeakerxWidget {
     this.classes = new ArrayList<>();
     this.subtype = DICTIONARY_SUBTYPE;
     openComm();
-    addToValues(buildValuesFromMap(v));
+    initData(buildValuesFromMap(v));
   }
 
   public TableDisplay(int rowCount, int columnCount, List<String> columnNames, Element element) {
     this(TableDisplayConverter.convert(rowCount, columnCount, columnNames, element));
   }
 
-  private void addToValues(List<List<?>> items) {
+  private void initData(List<List<?>> items) {
     values.addAll(items);
+    setHasIndex(this.columns.contains(INDEX));
   }
 
   private List<List<?>> buildValuesFromList(List<List<?>> v, BasicObjectSerializer basicObjectSerializer) {
@@ -588,12 +589,12 @@ public class TableDisplay extends BeakerxWidget {
     return headersVertical;
   }
 
-  public void setHasIndex(String hasIndex) {
+  public void setHasIndex(boolean hasIndex) {
     this.hasIndex = hasIndex;
     sendModelUpdate(serializeHasIndex(this.hasIndex));
   }
 
-  public String getHasIndex() {
+  public boolean getHasIndex() {
     return hasIndex;
   }
 

@@ -272,7 +272,7 @@ public class TableDisplayToJson {
     return value;
   }
 
-  static Map<Object, Object> serializeHasIndex(String hasIndex) {
+  static Map<Object, Object> serializeHasIndex(boolean hasIndex) {
     Map<Object, Object> value = new LinkedHashMap<>();
     value.put(HAS_INDEX, hasIndex);
     return value;

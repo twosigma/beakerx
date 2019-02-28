@@ -20,8 +20,8 @@ import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.chart.Color;
 import com.twosigma.beakerx.chart.xychart.XYChart;
 import com.twosigma.beakerx.fileloader.CSV;
-import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.serialization.DateSerializer;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.table.format.TableDisplayStringFormat;
@@ -92,6 +92,7 @@ public class TableDisplayTest {
 
   public static final String COL_1 = "str1";
   public static final String COL_3 = "str3";
+  public static final String INTEREST_RATES_WITH_INDEX_CSV = "interest-rates_withIndex.csv";
 
   protected KernelTest kernel;
 
@@ -230,7 +231,7 @@ public class TableDisplayTest {
   @Test
   public void shouldSendCommMsgWhenHasIndexChange() throws Exception {
     //given
-    String index1 = "index1";
+    boolean index1 = true;
     //when
     tableDisplay.setHasIndex(index1);
     //then
@@ -503,7 +504,7 @@ public class TableDisplayTest {
     assertThat(tableDisplay.getStringFormatForTimes()).isEqualTo(days);
     LinkedHashMap model = getModelUpdate();
     assertThat(model.size()).isEqualTo(1);
-    Map time = (Map)((Map)model.get(STRING_FORMAT_FOR_TYPE)).get(ColumnType.Time.toString());
+    Map time = (Map) ((Map) model.get(STRING_FORMAT_FOR_TYPE)).get(ColumnType.Time.toString());
     assertThat(time.get("unit")).isEqualTo(days.toString());
   }
 
@@ -900,6 +901,26 @@ public class TableDisplayTest {
       //then
       assertThat(e.getMessage()).contains("UnknownColumnName");
     }
+  }
+
+  @Test
+  public void shouldSetHasIndexOnFalseWhenDataDoesNotContainIndex() throws Exception {
+    //given
+    List<Map<String, Object>> data = new CSV().read(getOsAppropriatePath(getClass().getClassLoader(), TABLE_ROWS_TEST_CSV));
+    //when
+    TableDisplay tableDisplay = new TableDisplay(data);
+    //then
+    assertThat(tableDisplay.getHasIndex()).isFalse();
+  }
+
+  @Test
+  public void shouldSetHasIndexOnTrueWhenDataContainsIndex() throws Exception {
+    //given
+    List<Map<String, Object>> data = new CSV().read(getOsAppropriatePath(getClass().getClassLoader(), INTEREST_RATES_WITH_INDEX_CSV));
+    //when
+    TableDisplay tableDisplay = new TableDisplay(data);
+    //then
+    assertThat(tableDisplay.getHasIndex()).isTrue();
   }
 
 }

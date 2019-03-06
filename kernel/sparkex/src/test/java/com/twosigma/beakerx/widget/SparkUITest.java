@@ -120,7 +120,7 @@ public class SparkUITest {
     }
   }
 
-  static class SparkManagerImplTest implements SparkEngine {
+  static class SparkManagerImplTest implements SparkEngineWithUI {
 
     public static final String SPARK_APP_ID_MOCK = "SparkAppId1";
 

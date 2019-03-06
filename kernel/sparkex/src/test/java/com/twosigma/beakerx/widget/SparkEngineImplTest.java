@@ -26,7 +26,7 @@ public class SparkEngineImplTest {
   @Test
   public void sparkVersion() {
     //given
-    SparkEngineImpl sparkEngine = new SparkEngineImpl(SparkSession.builder());
+    SparkEngineBase sparkEngine = new SparkEngineWithUIImpl(SparkSession.builder());
     //when
     String version = sparkEngine.sparkVersion();
     //then

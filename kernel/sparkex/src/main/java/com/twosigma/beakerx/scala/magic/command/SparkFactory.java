@@ -15,22 +15,15 @@
  */
 package com.twosigma.beakerx.scala.magic.command;
 
-import org.apache.commons.cli.Options;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
+import com.twosigma.beakerx.scala.magic.command.SparkMagicCommandOptions.SparkOptionCommand;
 
-public class SparkOptions {
+import java.util.List;
 
-  public static final String START = "start";
-  public static final String NO_UI = "noUI";
-  public static final String VERSION = "version";
-  private Options options = new Options();
+public interface SparkFactory {
 
-  public SparkOptions() {
-    options.addOption("s", START, false, "Start spark");
-    options.addOption("nu", NO_UI, false, "No UI");
-    options.addOption("v", VERSION, true, "Load spark version");
-  }
+  MagicCommandOutcomeItem createSparkUI(MagicCommandExecutionParam param, List<SparkOptionCommand> options);
 
-  public Options getOptions() {
-    return options;
-  }
+  MagicCommandOutcomeItem createSparkWithoutUI(MagicCommandExecutionParam param);
 }

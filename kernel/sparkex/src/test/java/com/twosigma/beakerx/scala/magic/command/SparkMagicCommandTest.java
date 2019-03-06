@@ -23,7 +23,10 @@ import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widget.SingleSparkSession;
-import com.twosigma.beakerx.widget.SparkEngine;
+import com.twosigma.beakerx.widget.SparkEngineNoUI;
+import com.twosigma.beakerx.widget.SparkEngineNoUIImpl;
+import com.twosigma.beakerx.widget.SparkEngineWithUI;
+import com.twosigma.beakerx.widget.SparkEngineWithUIImpl;
 import com.twosigma.beakerx.widget.SparkUI;
 import com.twosigma.beakerx.widget.SparkUIApi;
 import com.twosigma.beakerx.widget.SparkUiDefaults;
@@ -54,7 +57,7 @@ public class SparkMagicCommandTest {
     singleSparkSession = new SparkMagicCommand.SingleSparkSessionImpl();
     SparkUI.SparkUIFactory sparkUIFactory = createSparkUIFactory(singleSparkSession);
     kernel = new KernelTest();
-    sparkMagicCommand = new SparkMagicCommand(kernel, sparkUIFactory);
+    sparkMagicCommand = new SparkMagicCommand(kernel, new SparkFactoryImpl(kernel, new SparkManagerNoUIFactoryMock(), sparkUIFactory));
   }
 
   @Test
@@ -100,7 +103,7 @@ public class SparkMagicCommandTest {
   private SparkUI.SparkUIFactory createSparkUIFactory(SingleSparkSession singleSparkSession) {
     return new SparkUI.SparkUIFactory() {
 
-      private SparkUI.SparkUIFactoryImpl factory = new SparkUI.SparkUIFactoryImpl(new SparkManagerFactoryTest(), new SparkUiDefaultsImplTest(), singleSparkSession);
+      private SparkUI.SparkUIFactoryImpl factory = new SparkUI.SparkUIFactoryImpl(new SparkEngineWithUIFactoryMock(), new SparkUiDefaultsImplTest(), singleSparkSession);
 
       @Override
       public SparkUI create(SparkSession.Builder builder) {
@@ -110,15 +113,64 @@ public class SparkMagicCommandTest {
     };
   }
 
-
-  static class SparkManagerFactoryTest implements SparkEngine.SparkEngineFactory {
+  static class SparkEngineWithUIFactoryMock implements SparkEngineWithUIImpl.SparkEngineWithUIFactory {
 
     @Override
-    public SparkEngine create(SparkSession.Builder sparkSessionBuilder) {
-      return new SparkEngine() {
+    public SparkEngineWithUI create(SparkSession.Builder sparkSessionBuilder) {
+      return new SparkEngineWithUI() {
+
         @Override
-        public TryResult configure(KernelFunctionality kernel, SparkUIApi spark, Message parentMessage) {
+        public TryResult configure(KernelFunctionality kernel, SparkUIApi sparkUIApi, Message parentMessage) {
           return TryResult.createResult("ok");
+        }
+
+        @Override
+        public SparkSession getOrCreate() {
+          return null;
+        }
+
+        @Override
+        public SparkConf getSparkConf() {
+          return new SparkConf();
+        }
+
+        @Override
+        public String getSparkAppId() {
+          return "sparkAppId1";
+        }
+
+        @Override
+        public Map<String, String> getAdvanceSettings() {
+          return new HashMap<>();
+        }
+
+        @Override
+        public String getSparkUiWebUrl() {
+          return "";
+        }
+
+        @Override
+        public String getSparkMasterUrl() {
+          return "";
+        }
+
+        @Override
+        public String sparkVersion() {
+          return null;
+        }
+      };
+    }
+  }
+
+
+  public static class SparkManagerNoUIFactoryMock implements SparkEngineNoUIImpl.SparkEngineNoUIFactory {
+
+    @Override
+    public SparkEngineNoUI create(SparkSession.Builder sparkSessionBuilder) {
+      return new SparkEngineNoUI() {
+        @Override
+        public TryResult configure(KernelFunctionality kernel, Message parentMessage) {
+          return null;
         }
 
         @Override

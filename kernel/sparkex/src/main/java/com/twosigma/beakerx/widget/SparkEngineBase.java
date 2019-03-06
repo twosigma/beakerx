@@ -20,19 +20,10 @@ import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
-import com.twosigma.beakerx.kernel.msg.StacktraceHtmlPrinter;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widget.configuration.SparkConfiguration;
 import org.apache.spark.SparkConf;
-import org.apache.spark.SparkContext;
-import org.apache.spark.scheduler.SparkListener;
-import org.apache.spark.scheduler.SparkListenerJobEnd;
-import org.apache.spark.scheduler.SparkListenerJobStart;
-import org.apache.spark.scheduler.SparkListenerStageCompleted;
-import org.apache.spark.scheduler.SparkListenerStageSubmitted;
-import org.apache.spark.scheduler.SparkListenerTaskEnd;
-import org.apache.spark.scheduler.SparkListenerTaskStart;
 import org.apache.spark.sql.RuntimeConfig;
 import org.apache.spark.sql.SparkSession;
 import scala.Tuple2;
@@ -58,53 +49,37 @@ import static com.twosigma.beakerx.widget.SparkUI.SPARK_MASTER;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_REPL_CLASS_OUTPUT_DIR;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_SESSION_NAME;
 import static com.twosigma.beakerx.widget.SparkUI.STANDARD_SETTINGS;
-import static com.twosigma.beakerx.widget.StartStopSparkListener.START_STOP_SPARK_LISTENER;
 
-public class SparkEngineImpl implements SparkEngine {
+abstract class SparkEngineBase implements SparkEngine {
 
-  private SparkSession.Builder sparkSessionBuilder;
+  protected SparkSession.Builder sparkSessionBuilder;
+  private ErrorPrinter errorPrinter;
 
-  SparkEngineImpl(SparkSession.Builder sparkSessionBuilder) {
+  SparkEngineBase(SparkSession.Builder sparkSessionBuilder, ErrorPrinter errorPrinter) {
     this.sparkSessionBuilder = sparkSessionBuilder;
-    configureSparkSessionBuilder(this.sparkSessionBuilder);
+    this.errorPrinter = errorPrinter;
   }
 
-  @Override
-  public TryResult configure(KernelFunctionality kernel, SparkUIApi sparkUI, Message parentMessage) {
-    SparkConf sparkConf = createSparkConf(sparkUI.getAdvancedOptions(), getSparkConfBasedOn(this.sparkSessionBuilder));
-    sparkConf = configureSparkConf(sparkConf, sparkUI);
-    this.sparkSessionBuilder = SparkSession.builder().config(sparkConf);
-    if (sparkUI.getHiveSupport()) {
-      this.sparkSessionBuilder.enableHiveSupport();
+
+  protected TryResult createSparkSession() {
+    try {
+      SparkSession sparkSession = getOrCreate();
+      return TryResult.createResult(sparkSession);
+    } catch (Exception e) {
+      return TryResult.createError(errorPrinter.print(e));
     }
-    TryResult sparkSessionTry = createSparkSession(sparkUI, parentMessage);
-    if (sparkSessionTry.isError()) {
-      return sparkSessionTry;
-    }
-    addListener(getOrCreate().sparkContext(), sparkUI);
-    SparkVariable.putSparkSession(getOrCreate());
-    TryResult tryResultSparkContext = initSparkContextInShell(kernel, parentMessage);
-    if (!tryResultSparkContext.isError()) {
-      kernel.registerCancelHook(SparkVariable::cancelAllJobs);
-    }
-    return tryResultSparkContext;
   }
 
-  private TryResult createSparkSession(SparkUIApi sparkUI, Message parentMessage) {
+  protected TryResult createSparkSession(SparkUIApi sparkUI, Message parentMessage) {
     sparkUI.startSpinner(parentMessage);
     try {
       SparkSession sparkSession = getOrCreate();
       return TryResult.createResult(sparkSession);
     } catch (Exception e) {
-      return TryResult.createError(formatError(e));
+      return TryResult.createError(errorPrinter.print(e));
     } finally {
       sparkUI.stopSpinner();
     }
-  }
-
-  private String formatError(Exception e) {
-    String[] print = StacktraceHtmlPrinter.print(Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString).toArray(String[]::new));
-    return String.join(System.lineSeparator(), print);
   }
 
   @Override
@@ -142,7 +117,7 @@ public class SparkEngineImpl implements SparkEngine {
     }
   }
 
-  private TryResult initSparkContextInShell(KernelFunctionality kernel, Message parent) {
+  protected TryResult initSparkContextInShell(KernelFunctionality kernel, Message parent) {
     String addSc = String.format(("import com.twosigma.beakerx.widget.SparkVariable\n" +
                     "val %s = SparkVariable.getSparkSession()\n" +
                     "val %s = %s.sparkContext\n" +
@@ -156,7 +131,7 @@ public class SparkEngineImpl implements SparkEngine {
     return kernel.executeCode(addSc, seo);
   }
 
-  private SparkConf createSparkConf(List<SparkConfiguration.Configuration> configurations, SparkConf old) {
+  protected SparkConf createSparkConf(List<SparkConfiguration.Configuration> configurations, SparkConf old) {
     SparkConf sparkConf = new SparkConf();
     sparkConf.set(SPARK_EXTRA_LISTENERS, old.get(SPARK_EXTRA_LISTENERS));
     sparkConf.set(BEAKERX_ID, old.get(BEAKERX_ID));
@@ -191,78 +166,31 @@ public class SparkEngineImpl implements SparkEngine {
     }
   }
 
-  private SparkSession.Builder configureSparkSessionBuilder(SparkSession.Builder builder) {
-    builder.config(SPARK_EXTRA_LISTENERS, START_STOP_SPARK_LISTENER);
-    builder.config(BEAKERX_ID, UUID.randomUUID().toString());
-    return builder;
-  }
-
-  private SparkConf configureSparkConf(SparkConf sparkConf, SparkUIApi sparkUI) {
+  protected SparkConf configureSparkConf(SparkConf sparkConf) {
     if (!sparkConf.contains(SPARK_APP_NAME)) {
       sparkConf.setAppName("beaker_" + UUID.randomUUID().toString());
-    }
-    if (sparkUI.getMasterURL().getValue() != null && !sparkUI.getMasterURL().getValue().isEmpty()) {
-      sparkConf.set(SPARK_MASTER, sparkUI.getMasterURL().getValue());
     }
     if (!isLocalSpark(sparkConf)) {
       sparkConf.set(SPARK_REPL_CLASS_OUTPUT_DIR, KernelManager.get().getOutDir());
     }
-    if (sparkUI.getExecutorMemory().getValue() != null && !sparkUI.getExecutorMemory().getValue().isEmpty()) {
-      sparkConf.set(SPARK_EXECUTOR_MEMORY, sparkUI.getExecutorMemory().getValue());
-    }
-
-    if (sparkUI.getExecutorCores().getValue() != null && !sparkUI.getExecutorCores().getValue().isEmpty()) {
-      sparkConf.set(SPARK_EXECUTOR_CORES, sparkUI.getExecutorCores().getValue());
-    }
-
     return sparkConf;
   }
 
+  protected SparkConf configureSparkConf(SparkConf sc, SparkUIApi sparkUI) {
+    if (sparkUI.getMasterURL().getValue() != null && !sparkUI.getMasterURL().getValue().isEmpty()) {
+      sc.set(SPARK_MASTER, sparkUI.getMasterURL().getValue());
+    }
+    if (sparkUI.getExecutorMemory().getValue() != null && !sparkUI.getExecutorMemory().getValue().isEmpty()) {
+      sc.set(SPARK_EXECUTOR_MEMORY, sparkUI.getExecutorMemory().getValue());
+    }
 
-  private SparkContext addListener(SparkContext sc, SparkUIApi sparkUIManager) {
-    sc.addSparkListener(new SparkListener() {
+    if (sparkUI.getExecutorCores().getValue() != null && !sparkUI.getExecutorCores().getValue().isEmpty()) {
+      sc.set(SPARK_EXECUTOR_CORES, sparkUI.getExecutorCores().getValue());
+    }
 
-      @Override
-      public void onJobStart(SparkListenerJobStart jobStart) {
-        super.onJobStart(jobStart);
-      }
-
-      @Override
-      public void onJobEnd(SparkListenerJobEnd jobEnd) {
-        super.onJobEnd(jobEnd);
-      }
-
-      @Override
-      public void onStageSubmitted(SparkListenerStageSubmitted stageSubmitted) {
-        super.onStageSubmitted(stageSubmitted);
-        sparkUIManager.startStage(stageSubmitted.stageInfo().stageId(), stageSubmitted.stageInfo().numTasks());
-      }
-
-      @Override
-      public void onStageCompleted(SparkListenerStageCompleted stageCompleted) {
-        super.onStageCompleted(stageCompleted);
-        sparkUIManager.endStage(stageCompleted.stageInfo().stageId());
-      }
-
-      @Override
-      public void onTaskStart(SparkListenerTaskStart taskStart) {
-        super.onTaskStart(taskStart);
-        sparkUIManager.taskStart(taskStart.stageId(), taskStart.taskInfo().taskId());
-      }
-
-      @Override
-      public void onTaskEnd(SparkListenerTaskEnd taskEnd) {
-        super.onTaskEnd(taskEnd);
-        String reason = taskEnd.reason().toString();
-        if (reason.equals("Success")) {
-          sparkUIManager.taskEnd(taskEnd.stageId(), taskEnd.taskInfo().taskId());
-        } else if (reason.contains("stage cancelled")) {
-          sparkUIManager.taskCancelled(taskEnd.stageId(), taskEnd.taskInfo().taskId());
-        }
-      }
-    });
-    return sc;
+    return configureSparkConf(sc);
   }
+
 
   public Map<String, String> getAdvanceSettings() {
     return Arrays.stream(getSparkConf().getAll())
@@ -276,15 +204,6 @@ public class SparkEngineImpl implements SparkEngine {
 
   private static boolean isLocalSpark(SparkConf sparkConf) {
     return sparkConf.contains(SPARK_MASTER) && sparkConf.get(SPARK_MASTER) != null && sparkConf.get("spark.master").startsWith("local");
-  }
-
-
-  public static class SparkEngineFactoryImpl implements SparkEngineFactory {
-
-    @Override
-    public SparkEngine create(SparkSession.Builder sparkSessionBuilder) {
-      return new SparkEngineImpl(sparkSessionBuilder);
-    }
   }
 
 }

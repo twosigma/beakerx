@@ -13,24 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.scala.magic.command;
+package com.twosigma.beakerx.widget;
 
-import org.apache.commons.cli.Options;
+import com.twosigma.beakerx.TryResult;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.message.Message;
 
-public class SparkOptions {
+public interface SparkEngineWithUI extends SparkEngine{
 
-  public static final String START = "start";
-  public static final String NO_UI = "noUI";
-  public static final String VERSION = "version";
-  private Options options = new Options();
+  TryResult configure(KernelFunctionality kernel, SparkUIApi sparkUI, Message parentMessage);
 
-  public SparkOptions() {
-    options.addOption("s", START, false, "Start spark");
-    options.addOption("nu", NO_UI, false, "No UI");
-    options.addOption("v", VERSION, true, "Load spark version");
-  }
-
-  public Options getOptions() {
-    return options;
-  }
 }

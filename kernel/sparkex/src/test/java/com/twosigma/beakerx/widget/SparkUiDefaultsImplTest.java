@@ -167,7 +167,7 @@ public class SparkUiDefaultsImplTest {
     //then
     SparkSession.Builder builder = SparkSession.builder();
     sut.loadDefaults(builder);
-    SparkConf sparkConfBasedOn = SparkEngineImpl.getSparkConfBasedOn(builder);
+    SparkConf sparkConfBasedOn = SparkEngineBase.getSparkConfBasedOn(builder);
     assertThat(sparkConfBasedOn.get("sparkOption2")).isEqualTo("3");
     assertThat(sparkConfBasedOn.get(SPARK_MASTER)).isEqualTo("local[4]");
   }

@@ -17,10 +17,10 @@ package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.InternalVariable;
-import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.msg.StacktraceHtmlPrinter;
+import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.restserver.Context;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widget.configuration.SparkConfiguration;
@@ -54,16 +54,16 @@ public class SparkUI extends VBox implements SparkUIApi {
   private Map<Integer, SparkStateGroupPanel> progressBarMap = new HashMap<>();
   private SparkFoldout jobPanel = null;
   private Message currentParentHeader = null;
-  private SparkEngine sparkEngine;
+  private SparkEngineWithUI sparkEngine;
   private SparkUiDefaults sparkUiDefaults;
   private SingleSparkSession singleSparkSession;
 
-  SparkUI(SparkSession.Builder builder, SparkEngine.SparkEngineFactory sparkEngineFactory, SparkUiDefaults sparkUiDefaults, SingleSparkSession singleSparkSession) {
+  SparkUI(SparkSession.Builder builder, SparkEngineWithUIImpl.SparkEngineWithUIFactory sparkEngineFactory, SparkUiDefaults sparkUiDefaults, SingleSparkSession singleSparkSession) {
     super(new ArrayList<>());
     this.sparkUiDefaults = sparkUiDefaults;
-    this.singleSparkSession = singleSparkSession;
     this.sparkUiDefaults.loadDefaults(builder);
     this.sparkEngine = sparkEngineFactory.create(builder);
+    this.singleSparkSession = singleSparkSession;
     VBox sparkUIFormPanel = new VBox(new ArrayList<>());
     add(sparkUIFormPanel);
     SparkVariable.putSparkUI(this);
@@ -253,7 +253,7 @@ public class SparkUI extends VBox implements SparkUIApi {
     return this.sparkUIForm.getMasterURL();
   }
 
-  public boolean  getHiveSupport() {
+  public boolean getHiveSupport() {
     return this.sparkUIForm.getHiveSupport().getValue();
   }
 
@@ -278,12 +278,12 @@ public class SparkUI extends VBox implements SparkUIApi {
   }
 
   public static class SparkUIFactoryImpl implements SparkUIFactory {
-    SparkEngine.SparkEngineFactory sparkEngineFactory;
+    SparkEngineWithUIImpl.SparkEngineWithUIFactory sparkEngineFactory;
     SparkUiDefaults sparkUiDefaults;
     private SingleSparkSession singleSparkSession;
 
-    public SparkUIFactoryImpl(SparkEngine.SparkEngineFactory sparkEngineFactory, SparkUiDefaults sparkUiDefaults, SingleSparkSession singleSparkSession) {
-      this.sparkEngineFactory = sparkEngineFactory;
+    public SparkUIFactoryImpl(SparkEngineWithUIImpl.SparkEngineWithUIFactory sparkEngineWithUIFactory, SparkUiDefaults sparkUiDefaults, SingleSparkSession singleSparkSession) {
+      this.sparkEngineFactory = sparkEngineWithUIFactory;
       this.sparkUiDefaults = sparkUiDefaults;
       this.singleSparkSession = singleSparkSession;
     }

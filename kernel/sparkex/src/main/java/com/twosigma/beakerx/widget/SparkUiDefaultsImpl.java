@@ -69,7 +69,7 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
 
   @Override
   public void loadDefaults(SparkSession.Builder builder) {
-    SparkConf sparkConf = SparkEngineImpl.getSparkConfBasedOn(builder);
+    SparkConf sparkConf = SparkEngineBase.getSparkConfBasedOn(builder);
     loadProfiles();
     Map<String, Object> map = getProfileByName(currentProfile);
     if (map != null) {

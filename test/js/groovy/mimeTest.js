@@ -30,6 +30,14 @@ describe('(Groovy) Testing of MIME types', function () {
 
   var cellIndex;
 
+  function getAndWaitHtmlType(codeCell, index){
+    browser.waitUntil(function () {
+      var output = beakerxPO.getAllOutputsHtmlType(codeCell)[index];
+      return output != null && output.isEnabled();
+    }, 10000);
+    return beakerxPO.getAllOutputsHtmlType(codeCell)[index];
+  }
+
   describe('(Groovy) Display MIME types ', function () {
     var testValues = {
       mathematicalSymbols: /α+η/,
@@ -114,35 +122,29 @@ describe('(Groovy) Testing of MIME types', function () {
     it('(IFrame) Cell displays an iFrame ', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var result = beakerxPO.getAllOutputsHtmlType(codeCell)[0];
+      var result = getAndWaitHtmlType(codeCell, 0);
       expect(result.$('iframe[src="http://jupyter.org/"]').isEnabled()).toBeTruthy();
-    });
-
-    it('(ScribdDocument) Cell displays a Scribd document ', function () {
-      cellIndex += 1;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var result = beakerxPO.getAllOutputsHtmlType(codeCell)[0];
-      expect(result.$('iframe[src="https://www.scribd.com/embeds/71048089/content?start_page=5&view_mode=slideshow"]').isEnabled()).toBeTruthy();
+      beakerxPO.clickCellAllOutputClear();
     });
 
     it('(VimeoVideo) Cell displays a Vimeo video ', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var result = beakerxPO.getAllOutputsHtmlType(codeCell)[0];
+      var result = getAndWaitHtmlType(codeCell, 0);
       expect(result.$('iframe[src="https://player.vimeo.com/video/139304565"]').isEnabled()).toBeTruthy();
     });
 
     it('(YoutubeVideo) Cell displays a YouTube video ', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var result = beakerxPO.getAllOutputsHtmlType(codeCell)[0];
+      var result = getAndWaitHtmlType(codeCell, 0);
       expect(result.$('iframe[src="https://www.youtube.com/embed/gSVvxOchT8Y"]').isEnabled()).toBeTruthy();
     });
 
     it('(Video) Cell displays video ', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var result = beakerxPO.getAllOutputsHtmlType(codeCell)[0];
+      var result = getAndWaitHtmlType(codeCell, 0);
       expect(result.$('video[src="https://archive.org/download/Sita_Sings_the_Blues/Sita_Sings_the_Blues_small.mp4"]').isEnabled()).toBeTruthy();
     });
 
@@ -179,6 +181,13 @@ describe('(Groovy) Testing of MIME types', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0];
       expect(result.$('img').isEnabled()).toBeTruthy();
+    });
+
+    it('(ScribdDocument) Cell displays a Scribd document ', function () {
+      cellIndex += 1;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var result = getAndWaitHtmlType(codeCell, 0);
+      expect(result.$('iframe[src="https://www.scribd.com/embeds/71048089/content?start_page=5&view_mode=slideshow"]').isEnabled()).toBeTruthy();
     });
   });
 

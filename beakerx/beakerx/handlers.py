@@ -19,7 +19,7 @@ import tornado
 import zmq
 from notebook.base.handlers import APIHandler, IPythonHandler
 from notebook.utils import url_path_join
-from tornado import web
+from tornado import web, gen
 
 from .beakerx_autotranslation_server import start_autotranslation_server
 from .environment import *
@@ -31,7 +31,7 @@ class BeakerxRestHandler(APIHandler):
         pass
 
     @web.authenticated
-    @tornado.web.asynchronous
+    @gen.coroutine
     def post(self):
 
         data = tornado.escape.json_decode(self.request.body)
@@ -84,7 +84,7 @@ class SparkMetricsExecutorsHandler(APIHandler):
         pass
 
     @web.authenticated
-    @tornado.web.asynchronous
+    @gen.coroutine
     def get(self):
 
         def handle_response(response):

@@ -42,8 +42,7 @@ public class MessageCreatorTest {
   @Before
   public void setUp() throws Exception {
     kernel = new KernelTest();
-    seo = new SimpleEvaluationObject("code");
-    seo.setJupyterMessage(commMsg());
+    seo = new SimpleEvaluationObject("code", new KernelTest.SeoConfigurationFactoryMock(kernel,commMsg()));
   }
 
   @Test

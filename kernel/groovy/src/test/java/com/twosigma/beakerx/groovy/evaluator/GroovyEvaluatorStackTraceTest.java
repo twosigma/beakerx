@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.groovy.evaluator;
 
+import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
@@ -41,8 +42,8 @@ public class GroovyEvaluatorStackTraceTest {
 
   @Test
   public void arithmeticException() throws Exception {
-    String code ="1/0";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    String code = "1/0";
+    SimpleEvaluationObject seo = KernelTest.createSeo(code);
     //when
     TryResult evaluate = groovyEvaluator.evaluate(seo, code);
     //then
@@ -52,8 +53,8 @@ public class GroovyEvaluatorStackTraceTest {
 
   @Test
   public void unableToResolveClass() throws Exception {
-    String code ="new IntSlider()";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    String code = "new IntSlider()";
+    SimpleEvaluationObject seo = KernelTest.createSeo(code);
     //when
     TryResult evaluate = groovyEvaluator.evaluate(seo, code);
     //then

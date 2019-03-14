@@ -15,45 +15,45 @@
  */
 package com.twosigma.beakerx.jvm.object;
 
+import com.twosigma.beakerx.jvm.threads.BeakerInputHandler;
 import com.twosigma.beakerx.jvm.threads.BeakerOutputHandler;
 import com.twosigma.beakerx.jvm.threads.BeakerStdInOutErrHandler;
+import com.twosigma.beakerx.kernel.threads.ResultSender;
+import com.twosigma.beakerx.message.Message;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import com.twosigma.beakerx.message.Message;
 
 /**
  * Abstraction around an evaluation, for communication of the state over REST to the plugin.
  */
-public class SimpleEvaluationObject extends Observable {
+public class SimpleEvaluationObject {
 
   private Message jupyterMessage;
   private int executionCount;
   private EvaluationStatus status;
   private final String expression;
   private Object payload;
+  private ResultSender resultSender;
   private BeakerOutputHandler stdout;
   private BeakerOutputHandler stderr;
+  private BeakerInputHandler stdin;
   private Queue<ConsoleOutput> consoleOutput = new ConcurrentLinkedQueue<>();
   private ProgressReporting progressReporting;
   private boolean showResult = true;
 
-  public SimpleEvaluationObject(String e, BeakerOutputHandler stdout, BeakerOutputHandler stderr) {
+  public SimpleEvaluationObject(String e, ConfigurationFactory factory) {
     expression = e;
     status = EvaluationStatus.QUEUED;
-    this.stdout = stdout;
-    this.stderr = stderr;
-  }
-
-  public SimpleEvaluationObject(String e) {
-    expression = e;
-    status = EvaluationStatus.QUEUED;
-    this.stdout = new SimpleOutputHandler(false);
-    this.stderr = new SimpleOutputHandler(true);
+    Configuration config = factory.create(this);
+    this.stdout = config.getStdout();
+    this.stderr = config.getStderr();
+    this.resultSender = config.getResultSender();
+    this.stdin = config.getStdin();
+    this.jupyterMessage = config.getMessage();
+    this.executionCount = config.getExecutionCount();
   }
 
   public boolean isShowResult() {
@@ -62,31 +62,27 @@ public class SimpleEvaluationObject extends Observable {
 
   public void started() {
     this.status = EvaluationStatus.RUNNING;
-    setChanged();
-    notifyObservers();
+    resultSender.update(this);
   }
 
   public void finished(Object r) {
     clrOutputHandler();
     this.status = EvaluationStatus.FINISHED;
     payload = r;
-    setChanged();
-    notifyObservers();
+    resultSender.update(this);
   }
 
   public void error(Object r) {
     clrOutputHandler();
     this.status = EvaluationStatus.ERROR;
     payload = r;
-    setChanged();
-    notifyObservers();
+    resultSender.update(this);
   }
 
   public void update(Object r) {
     this.status = EvaluationStatus.RUNNING;
     payload = r;
-    setChanged();
-    notifyObservers();
+    resultSender.update(this);
   }
 
   public String getExpression() {
@@ -112,22 +108,25 @@ public class SimpleEvaluationObject extends Observable {
     this.showResult = false;
   }
 
-  public static enum EvaluationStatus {
+  public enum EvaluationStatus {
     QUEUED, RUNNING, FINISHED, ERROR
   }
 
-  public class SimpleOutputHandler implements BeakerOutputHandler {
+  public static class SimpleOutputHandler implements BeakerOutputHandler {
     private boolean error;
+    private ResultSender executionResultSender;
+    private SimpleEvaluationObject seo;
 
-    public SimpleOutputHandler(boolean error) {
+    public SimpleOutputHandler(boolean error, ResultSender executionResultSender, SimpleEvaluationObject seo) {
       this.error = error;
+      this.executionResultSender = executionResultSender;
+      this.seo = seo;
     }
 
     @Override
     public void write(String b) {
-      consoleOutput.add(new ConsoleOutput(error, b));
-      setChanged();
-      notifyObservers();
+      seo.consoleOutput.add(new ConsoleOutput(error, b));
+      executionResultSender.update(seo);
     }
   }
 
@@ -140,7 +139,11 @@ public class SimpleEvaluationObject extends Observable {
   }
 
   public void setOutputHandler() {
-    BeakerStdInOutErrHandler.setOutputHandler(getStdOutputHandler(), getStdErrorHandler());
+    BeakerStdInOutErrHandler.setOutputHandler(getStdOutputHandler(), getStdErrorHandler(), getStdinHandler());
+  }
+
+  private BeakerInputHandler getStdinHandler() {
+    return stdin;
   }
 
   public void clrOutputHandler() {
@@ -159,16 +162,8 @@ public class SimpleEvaluationObject extends Observable {
     return jupyterMessage;
   }
 
-  public void setJupyterMessage(Message jupyterMessage) {
-    this.jupyterMessage = jupyterMessage;
-  }
-
   public int getExecutionCount() {
     return executionCount;
-  }
-
-  public void setExecutionCount(int executionCount) {
-    this.executionCount = executionCount;
   }
 
   public Queue<ConsoleOutput> getConsoleOutput() {
@@ -249,8 +244,7 @@ public class SimpleEvaluationObject extends Observable {
         }
         outputdataCount++;
       }
-      setChanged();
-      notifyObservers();
+      resultSender.update(this);
     }
   }
 
@@ -320,8 +314,7 @@ public class SimpleEvaluationObject extends Observable {
         }
         outputdataCount++;
       }
-      setChanged();
-      notifyObservers();
+      resultSender.update(this);
     }
   }
 
@@ -340,5 +333,4 @@ public class SimpleEvaluationObject extends Observable {
       payload = s;
     }
   }
-
 }

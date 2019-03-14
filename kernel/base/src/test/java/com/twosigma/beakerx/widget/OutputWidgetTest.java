@@ -50,9 +50,8 @@ public class OutputWidgetTest {
   }
 
   private Message submitCodeToExecution() {
-    SimpleEvaluationObject value = new SimpleEvaluationObject("output");
-    Message jupyterMessage =commMsg();
-    value.setJupyterMessage(jupyterMessage);
+    Message jupyterMessage = commMsg();
+    SimpleEvaluationObject value = new SimpleEvaluationObject("output", new KernelTest.SeoConfigurationFactoryMock(groovyKernel, jupyterMessage));
     InternalVariable.setValue(value);
     return jupyterMessage;
   }

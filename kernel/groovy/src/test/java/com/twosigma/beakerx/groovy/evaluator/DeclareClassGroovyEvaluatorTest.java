@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.groovy.evaluator;
 
+import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.MessageFactorTest;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
@@ -57,9 +58,7 @@ public class DeclareClassGroovyEvaluatorTest {
   }
 
   private TryResult runCode(String code) {
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
-    Message message = MessageFactorTest.commMsg();
-    seo.setJupyterMessage(message);
+    SimpleEvaluationObject seo = KernelTest.createSeo(code);
     return groovyEvaluator.evaluate(seo, code);
   }
 }

@@ -16,33 +16,34 @@
 
 package com.twosigma.beakerx.groovy.widgets;
 
-import static com.twosigma.beakerx.MessageFactorTest.commMsg;
-import static com.twosigma.beakerx.kernel.comm.Comm.COMM_ID;
-import static com.twosigma.beakerx.kernel.comm.Comm.DATA;
-import static com.twosigma.beakerx.widget.strings.TextTest.verifyTextField;
-
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.jupyter.SearchMessages;
 import com.twosigma.beakerx.jupyter.handler.JupyterHandlerTest;
+import com.twosigma.beakerx.jvm.object.ConfigurationFactoryImpl;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widget.DOMWidget;
-import com.twosigma.beakerx.widget.Widget;
 import com.twosigma.beakerx.widget.Text;
+import com.twosigma.beakerx.widget.Widget;
+import org.assertj.core.api.Assertions;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
+import static com.twosigma.beakerx.kernel.comm.Comm.COMM_ID;
+import static com.twosigma.beakerx.kernel.comm.Comm.DATA;
+import static com.twosigma.beakerx.widget.strings.TextTest.verifyTextField;
 
 public class InteractiveTest {
   private BaseEvaluator groovyEvaluator;
@@ -93,8 +94,7 @@ public class InteractiveTest {
 
   private void callInteractWithStringParam(String param) throws Exception {
     String code = getInteractiveCode(param);
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
-    seo.setJupyterMessage(commMsg());
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ConfigurationFactoryImpl(groovyKernel, commMsg(), 1));
     //when
     groovyEvaluator.evaluate(seo, code);
   }

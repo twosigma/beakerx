@@ -30,7 +30,7 @@ import com.twosigma.beakerx.kernel.SocketEnum;
 
 import static java.util.Collections.singletonList;
 
-public class ExecutionResultSender implements Observer {
+public class ExecutionResultSender implements ResultSender {
 
   public static Logger logger = LoggerFactory.getLogger(ExecutionResultSender.class);
   private KernelFunctionality kernel;
@@ -40,8 +40,7 @@ public class ExecutionResultSender implements Observer {
   }
 
   @Override
-  public void update(Observable o, Object arg) {
-    SimpleEvaluationObject seo = (SimpleEvaluationObject) o;
+  public void update(SimpleEvaluationObject seo ) {
     if (seo != null) {
       List<MessageHolder> message = MessageCreator.createMessage(seo);
       message.forEach(job -> {

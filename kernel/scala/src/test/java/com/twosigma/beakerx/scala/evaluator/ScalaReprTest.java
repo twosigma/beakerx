@@ -16,6 +16,7 @@
 
 package com.twosigma.beakerx.scala.evaluator;
 
+import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelManager;
@@ -60,8 +61,7 @@ public class ScalaReprTest {
   public void unitObjectShouldBeRepresentedAsHIDDEN() {
     //given
     String code = "()";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
-    seo.setJupyterMessage(commMsg());
+    SimpleEvaluationObject seo = KernelTest.createSeo(code);
     //when
     TryResult evaluate = scalaEvaluator.evaluate(seo, code);
     //then
@@ -72,8 +72,7 @@ public class ScalaReprTest {
   public void emptyStringShouldBeRepresentedAsEmptyString() {
     //given
     String code = "\"\"";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
-    seo.setJupyterMessage(commMsg());
+    SimpleEvaluationObject seo = KernelTest.createSeo(code);
     //when
     TryResult evaluate = scalaEvaluator.evaluate(seo, code);
     //then

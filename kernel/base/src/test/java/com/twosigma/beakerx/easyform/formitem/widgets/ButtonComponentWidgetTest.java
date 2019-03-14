@@ -95,7 +95,7 @@ public class ButtonComponentWidgetTest extends EasyFormWidgetTest {
     try {
       //given
       String outputText = "handleOutput";
-      BeakerStdInOutErrHandler.init(kernel);
+      BeakerStdInOutErrHandler.init();
       ButtonComponentWidget widget = new ButtonComponentWidget();
       kernel.clearPublishedMessages();
       widget.actionPerformed = value -> System.out.print(outputText);

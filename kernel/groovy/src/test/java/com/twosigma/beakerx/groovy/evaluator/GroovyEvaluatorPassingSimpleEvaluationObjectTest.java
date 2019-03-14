@@ -15,14 +15,15 @@
  */
 package com.twosigma.beakerx.groovy.evaluator;
 
+import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.message.Message;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import com.twosigma.beakerx.message.Message;
 
 import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,9 +48,8 @@ public class GroovyEvaluatorPassingSimpleEvaluationObjectTest {
     String code = "" +
             "import com.twosigma.beakerx.evaluator.InternalVariable\n" +
             "InternalVariable.getParentHeader()";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     Message message = commMsg();
-    seo.setJupyterMessage(message);
+    SimpleEvaluationObject seo = KernelTest.createSeo(code, message);
     //when
     TryResult evaluate = groovyEvaluator.evaluate(seo, code);
     //then

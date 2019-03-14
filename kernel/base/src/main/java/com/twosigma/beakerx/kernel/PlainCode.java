@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.kernel;
 
 import com.twosigma.beakerx.TryResult;
+import com.twosigma.beakerx.jvm.object.ConfigurationFactoryImpl;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.message.Message;
@@ -55,10 +56,6 @@ public class PlainCode extends CodeFrame {
   }
 
   public static SimpleEvaluationObject createSimpleEvaluationObject(String code, KernelFunctionality kernel, Message message, int executionCount) {
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
-    seo.setJupyterMessage(message);
-    seo.setExecutionCount(executionCount);
-    seo.addObserver(kernel.getExecutionResultSender());
-    return seo;
+    return new SimpleEvaluationObject(code, new ConfigurationFactoryImpl(kernel, message, executionCount));
   }
 }

@@ -77,6 +77,7 @@ beakerx_databrowser install
 ```
 conda env create -n labx -f configuration.yml
 source activate labx
+conda install -y -c conda-forge jupyterlab
 (cd beakerx; pip install -e . --verbose)
 beakerx install
 jupyter labextension install @jupyter-widgets/jupyterlab-manager

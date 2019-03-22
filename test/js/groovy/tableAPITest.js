@@ -64,4 +64,111 @@ describe('Testing of table (groovy) ', function () {
     });
   });
 
+  describe('Set string format for times, type and column ', function () {
+    it('Should display formatted table ', function() {
+      cellIndex += 2;
+      var width = 500, height = 90;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell4_case1.png');
+      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell4_case1.png');
+    });
+  });
+
+  describe('Set HTML format for column ', function () {
+    it('Should display formatted table ', function() {
+      cellIndex += 2;
+      var width = 300, height = 100;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell5_case1.png');
+      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell5_case1.png');
+    });
+  });
+
+  describe('Set column visible ', function () {
+    it('Should display formatted table ', function() {
+      cellIndex += 2;
+      var width = 644, height = 90;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell6_case1.png');
+      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell6_case1.png');
+    });
+  });
+
+  describe('Set column order ', function () {
+    it('Should display formatted table ', function() {
+      cellIndex += 2;
+      var width = 410, height = 90;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell7_case1.png');
+      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell7_case1.png');
+    });
+  });
+
+  describe('Add HeatmapHighlighter for row ', function () {
+    it('Should display formatted table ', function() {
+      cellIndex += 2;
+      var width = 440, height = 150;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell8_case1.png');
+      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell8_case1.png');
+    });
+  });
+
+  describe('Add HeatmapHighlighter for column ', function () {
+    it('Should display formatted table ', function() {
+      cellIndex += 2;
+      var width = 440, height = 150;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell9_case1.png');
+      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell9_case1.png');
+    });
+  });
+
+  describe('Remove all CellHighlighters ', function () {
+    var width9 = 440, height9 = 150;
+
+    it('Should display formatted table ', function() {
+      cellIndex += 2;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width9, height9);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell9_case2.png');
+      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell9_case2.png');
+    });
+    it('Should remove all CellHighlighters ', function() {
+      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex - 2);
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width9, height9);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell9_case2.png');
+      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell9_case2.png');
+    });
+  });
+
+  describe('Add UniqueEntriesHighlighter for row ', function () {
+    it('Should display formatted table ', function() {
+      cellIndex += 2;
+      var width = 440, height = 150;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell10_case1.png');
+      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell10_case1.png');
+    });
+  });
+
+  describe('Add UniqueEntriesHighlighter for column ', function () {
+    it('Should display formatted table ', function() {
+      cellIndex += 2;
+      var width = 440, height = 150;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell11_case1.png');
+      // beakerxPO.createTableImage(imageData.value, imageDir, 'cell11_case1.png');
+    });
+  });
+
 });

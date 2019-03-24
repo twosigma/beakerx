@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.scala.evaluator
 
-import com.twosigma.beakerx.jvm.`object`.SimpleEvaluationObject
+import com.twosigma.beakerx.KernelTest
 import com.twosigma.beakerx.scala.TestScalaEvaluator
 import org.junit.Test
 import org.scalatest.Matchers._
@@ -38,11 +38,11 @@ class ScalaEvaluatorImportTest {
       """.stripMargin
 
     val scalaEvaluator = TestScalaEvaluator.evaluator
-    val importSeo = new SimpleEvaluationObject(importCode)
+    val importSeo = KernelTest.createSeo(importCode)
     val importEvaluate = scalaEvaluator.evaluate(importSeo, importCode)
     importEvaluate.isError shouldBe false
 
-    val classSeo = new SimpleEvaluationObject(classCode)
+    val classSeo = KernelTest.createSeo(classCode)
     val classEvaluate = scalaEvaluator.evaluate(classSeo, classCode)
     classEvaluate.isError shouldBe false
   }

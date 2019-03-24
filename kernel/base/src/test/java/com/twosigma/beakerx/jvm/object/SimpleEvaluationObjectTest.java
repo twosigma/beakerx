@@ -17,30 +17,32 @@
 package com.twosigma.beakerx.jvm.object;
 
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.kernel.KernelManager;
-import com.twosigma.beakerx.jvm.ObserverObjectTest;
+import com.twosigma.beakerx.KernelTest.SeoConfigurationFactoryMock;
 import com.twosigma.beakerx.jvm.threads.BeakerOutputHandler;
+import com.twosigma.beakerx.kernel.KernelManager;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.*;
+import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.ERROR;
+import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
+import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.QUEUED;
+import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.RUNNING;
 
 public class SimpleEvaluationObjectTest {
 
   private SimpleEvaluationObject seo;
-  private ObserverObjectTest observer;
   private KernelTest kernel;
+  private KernelTest.ExecutionResultSenderMock senderMock;
 
   @Before
   public void setUp() throws Exception {
-    seo = new SimpleEvaluationObject("code");
-    observer = new ObserverObjectTest();
-    seo.addObserver(observer);
-    kernel = new KernelTest();
+    senderMock = new KernelTest.ExecutionResultSenderMock();
+    kernel = new KernelTest(senderMock);
+    seo = new SimpleEvaluationObject("code", new SeoConfigurationFactoryMock(kernel));
     KernelManager.register(kernel);
-}
+  }
 
   @After
   public void tearDown() throws Exception {
@@ -48,9 +50,19 @@ public class SimpleEvaluationObjectTest {
   }
 
   @Test
+  public void executionCount() throws Exception {
+    //given
+    //when
+    SimpleEvaluationObject simpleEvaluationObject = new SimpleEvaluationObject("code", new SeoConfigurationFactoryMock(123));
+
+    //then
+    Assertions.assertThat(simpleEvaluationObject.getExecutionCount()).isEqualTo(123);
+  }
+
+  @Test
   public void createWithParam_hasExpressionIsParamAndStatusIsQueued() throws Exception {
     //when
-    SimpleEvaluationObject object = new SimpleEvaluationObject("code");
+    SimpleEvaluationObject object = new SimpleEvaluationObject("code", new SeoConfigurationFactoryMock(kernel));
     //then
     Assertions.assertThat(object.getExpression()).isEqualTo("code");
     Assertions.assertThat(object.getStatus()).isEqualTo(QUEUED);
@@ -61,7 +73,7 @@ public class SimpleEvaluationObjectTest {
     //when
     seo.started();
     //then
-    Assertions.assertThat(observer.getObjectList().get(0)).isEqualTo(seo);
+    Assertions.assertThat(senderMock.getObjectList().get(0)).isEqualTo(seo);
   }
 
   @Test
@@ -69,7 +81,7 @@ public class SimpleEvaluationObjectTest {
     //when
     seo.finished(new Object());
     //then
-    Assertions.assertThat(observer.getObjectList().get(0)).isEqualTo(seo);
+    Assertions.assertThat(senderMock.getObjectList().get(0)).isEqualTo(seo);
   }
 
   @Test
@@ -77,7 +89,7 @@ public class SimpleEvaluationObjectTest {
     //when
     seo.error(new Object());
     //then
-    Assertions.assertThat(observer.getObjectList().get(0)).isEqualTo(seo);
+    Assertions.assertThat(senderMock.getObjectList().get(0)).isEqualTo(seo);
   }
 
   @Test
@@ -85,7 +97,7 @@ public class SimpleEvaluationObjectTest {
     //when
     seo.update(new Object());
     //then
-    Assertions.assertThat(observer.getObjectList().get(0)).isEqualTo(seo);
+    Assertions.assertThat(senderMock.getObjectList().get(0)).isEqualTo(seo);
   }
 
   @Test
@@ -157,7 +169,7 @@ public class SimpleEvaluationObjectTest {
     //when
     handler.write("test");
     //then
-    Assertions.assertThat(observer.getObjectList().get(0)).isEqualTo(seo);
+    Assertions.assertThat(senderMock.getObjectList().get(0)).isEqualTo(seo);
   }
 
   @Test
@@ -167,7 +179,7 @@ public class SimpleEvaluationObjectTest {
     //when
     handler.write("t");
     //then
-    Assertions.assertThat(observer.getObjectList().get(0)).isEqualTo(seo);
+    Assertions.assertThat(senderMock.getObjectList().get(0)).isEqualTo(seo);
   }
 
   @Test
@@ -177,7 +189,7 @@ public class SimpleEvaluationObjectTest {
     //when
     handler.write("test");
     //then
-    Assertions.assertThat(observer.getObjectList().get(0)).isEqualTo(seo);
+    Assertions.assertThat(senderMock.getObjectList().get(0)).isEqualTo(seo);
   }
 
   @Test
@@ -205,7 +217,7 @@ public class SimpleEvaluationObjectTest {
     //when
     seo.appendOutput("test\n");
     //then
-    Assertions.assertThat(observer.getObjectList().get(0)).isEqualTo(seo);
+    Assertions.assertThat(senderMock.getObjectList().get(0)).isEqualTo(seo);
   }
 
   @Test
@@ -214,9 +226,9 @@ public class SimpleEvaluationObjectTest {
     seo.appendOutput("test\n" + generateDoubleMaxSizeString());
     //then
     Assertions.assertThat(seo.getOutputdata().get(0))
-        .isInstanceOf(SimpleEvaluationObject.EvaluationStdOutput.class);
+            .isInstanceOf(SimpleEvaluationObject.EvaluationStdOutput.class);
     SimpleEvaluationObject.EvaluationStdOutput stdOut =
-        (SimpleEvaluationObject.EvaluationStdOutput) seo.getOutputdata().get(0);
+            (SimpleEvaluationObject.EvaluationStdOutput) seo.getOutputdata().get(0);
     Assertions.assertThat(stdOut.payload.split("\n").length).isEqualTo(2);
   }
 
@@ -225,7 +237,7 @@ public class SimpleEvaluationObjectTest {
     //when
     seo.appendError("test\n");
     //then
-    Assertions.assertThat(observer.getObjectList().get(0)).isEqualTo(seo);
+    Assertions.assertThat(senderMock.getObjectList().get(0)).isEqualTo(seo);
   }
 
   @Test
@@ -234,9 +246,9 @@ public class SimpleEvaluationObjectTest {
     seo.appendError("test\n" + generateDoubleMaxSizeString());
     //then
     Assertions.assertThat(seo.getOutputdata().get(0))
-        .isInstanceOf(SimpleEvaluationObject.EvaluationStdError.class);
+            .isInstanceOf(SimpleEvaluationObject.EvaluationStdError.class);
     SimpleEvaluationObject.EvaluationStdError stdErr =
-        (SimpleEvaluationObject.EvaluationStdError) seo.getOutputdata().get(0);
+            (SimpleEvaluationObject.EvaluationStdError) seo.getOutputdata().get(0);
     Assertions.assertThat(stdErr.payload.split("\n").length).isEqualTo(2);
   }
 
@@ -247,7 +259,7 @@ public class SimpleEvaluationObjectTest {
     seo.appendError("test\n" + notDesirableMessage + "\n");
     //then
     SimpleEvaluationObject.EvaluationStdError stdErr =
-        (SimpleEvaluationObject.EvaluationStdError) seo.getOutputdata().get(0);
+            (SimpleEvaluationObject.EvaluationStdError) seo.getOutputdata().get(0);
     Assertions.assertThat(stdErr.payload).doesNotContain(notDesirableMessage);
     Assertions.assertThat(stdErr.payload).contains("test");
   }
@@ -271,7 +283,7 @@ public class SimpleEvaluationObjectTest {
     Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
   }
 
-  private String generateDoubleMaxSizeString(){
+  private String generateDoubleMaxSizeString() {
     int MAX_LINE_LENGTH = 240;
     StringBuffer sb = new StringBuffer();
     for (int i = 0; i < MAX_LINE_LENGTH * 2; i++) {

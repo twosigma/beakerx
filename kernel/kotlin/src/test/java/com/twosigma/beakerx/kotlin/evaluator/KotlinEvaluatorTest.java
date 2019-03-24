@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.kotlin.evaluator;
 
+import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.evaluator.MagicCommandAutocompletePatternsMock;
@@ -31,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
-import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.KERNEL_PARAMETERS;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
@@ -74,7 +74,7 @@ public class KotlinEvaluatorTest {
     //when
     evaluator.updateEvaluatorParameters(kernelParameters);
     String code = "val x = staticMethod()";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    SimpleEvaluationObject seo = KernelTest.createSeo(code);
     TryResult evaluate = evaluator.evaluate(seo, code);
     //then
     assertThat(evaluate.result()).isNull();
@@ -89,8 +89,7 @@ public class KotlinEvaluatorTest {
     String code = "val plot = Plot()\n" +
             "plot.setTitle(\"test title\");\n" +
             "plot.display();";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
-    seo.setJupyterMessage(commMsg());
+    SimpleEvaluationObject seo = KernelTest.createSeo(code);
     //when
     TryResult evaluate = evaluator.evaluate(seo, code);
     //then
@@ -103,8 +102,7 @@ public class KotlinEvaluatorTest {
     String code = "" +
             "import com.twosigma.beakerx.chart.xychart.*\n" +
             "val plot = Plot()";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
-    seo.setJupyterMessage(commMsg());
+    SimpleEvaluationObject seo = KernelTest.createSeo(code);
     //when
     TryResult evaluate = evaluator.evaluate(seo, code);
     //then
@@ -115,8 +113,7 @@ public class KotlinEvaluatorTest {
   public void handleErrors() throws Exception {
     //given
     String code = "val plot = UndefinedPlot()";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
-    seo.setJupyterMessage(commMsg());
+    SimpleEvaluationObject seo = KernelTest.createSeo(code);
     //when
     TryResult evaluate = evaluator.evaluate(seo, code);
     //then
@@ -134,7 +131,7 @@ public class KotlinEvaluatorTest {
             "\n" +
             "println(f(2.0))\n" +
             "f(2.0)";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    SimpleEvaluationObject seo = KernelTest.createSeo(code);
     //when
     TryResult evaluate = evaluator.evaluate(seo, code);
     //then

@@ -75,7 +75,7 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
     if (map != null) {
       map.entrySet().stream()
               .filter(x -> !sparkConf.contains(x.getKey()))
-              .forEach(x -> addToBuilder(builder, x.getKey(), x.getValue()));
+              .forEach(x -> addToBuilder(builder, x.getKey(), x.getValue(),sparkConf));
     }
   }
 
@@ -150,7 +150,7 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
   }
 
   @SuppressWarnings("unchecked")
-  private void addToBuilder(SparkSession.Builder builder, String key, Object value) {
+  private void addToBuilder(SparkSession.Builder builder, String key, Object value, SparkConf sparkConf) {
     if (isOneOfMainProp(key)) {
       builder.config(key, (String) value);
     } else if (key.equals(PROPERTIES)) {
@@ -158,7 +158,7 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
       props.forEach(x -> {
         String pname = x.get(NAME);
         String pvalue = x.get(VALUE);
-        if ((pname != null && !pname.isEmpty()) && (pvalue != null && !pvalue.isEmpty())) {
+        if ((pname != null && !pname.isEmpty() && !sparkConf.contains(pname)) && (pvalue != null && !pvalue.isEmpty())) {
           builder.config(x.get(NAME), x.get(VALUE));
         }
       });

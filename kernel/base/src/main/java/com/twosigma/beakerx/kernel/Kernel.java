@@ -105,6 +105,7 @@ public abstract class Kernel implements KernelFunctionality {
                    MagicCommandConfiguration magicCommandConfiguration,
                    BeakerXJson beakerXJson
   ) {
+    KernelManager.register(this);
     this.sessionId = sessionId;
     this.cacheFolderFactory = cacheFolderFactory;
     this.kernelSocketsFactory = kernelSocketsFactory;
@@ -136,8 +137,6 @@ public abstract class Kernel implements KernelFunctionality {
 
   @Override
   public void run() {
-    KernelManager.register(this);
-
     logger.debug("Jupyter kernel starting.");
     this.kernelSockets = kernelSocketsFactory.create(this, this::closeComms);
     this.kernelSockets.start();

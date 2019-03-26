@@ -54,10 +54,8 @@ how to install and run BeakerX.
 ### Build and Install (linux and mac)
 
 ```
-conda create -y -n beakerx 'python>=3' nodejs pandas 'openjdk=8.0.121' maven py4j requests
+conda env create -n beakerx -f configuration.yml
 source activate beakerx
-conda config --env --add pinned_packages 'openjdk=8.0.121'
-conda install -y -c conda-forge ipywidgets
 (cd beakerx; pip install -e . --verbose)
 beakerx install
 beakerx_databrowser install
@@ -65,10 +63,8 @@ beakerx_databrowser install
 
 ### Build and Install (win)
 ```
-conda create -y -n beakerx python>=3 nodejs pandas openjdk=8.0.121 maven py4j requests
+conda env create -n beakerx -f configuration.yml
 activate beakerx
-conda config --env --add pinned_packages openjdk=8.0.121
-conda install -y -c conda-forge ipywidgets
 cd beakerx
 pip install -e . --verbose
 cd ..
@@ -79,9 +75,8 @@ beakerx_databrowser install
 ### Build and Install for Jupyter Lab
 
 ```
-conda create -y -n labx 'python>=3' nodejs pandas 'openjdk=8.0.121' maven py4j requests
+conda env create -n labx -f configuration.yml
 source activate labx
-conda config --env --add pinned_packages 'openjdk=8.0.121'
 conda install -y -c conda-forge jupyterlab
 (cd beakerx; pip install -e . --verbose)
 beakerx install

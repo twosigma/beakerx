@@ -16,6 +16,7 @@
 
 package com.twosigma.beakerx.scala.evaluator;
 
+import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.evaluator.MagicCommandAutocompletePatternsMock;
@@ -118,7 +119,7 @@ public class ScalaAutocompleteTest {
 
     try {
       //when
-      localEvaluator.evaluate(new SimpleEvaluationObject(""), "val xyzzy = 32");
+      localEvaluator.evaluate(KernelTest.createSeo(""), "val xyzzy = 32");
       AutocompleteResult autocomplete = localEvaluator.autocomplete("xyz", 3);
       //then
       Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();

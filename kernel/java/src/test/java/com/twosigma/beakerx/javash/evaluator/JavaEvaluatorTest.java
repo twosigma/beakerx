@@ -27,7 +27,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static com.twosigma.beakerx.MessageFactorTest.commMsg;
+import static com.twosigma.beakerx.KernelTest.createSeo;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.KERNEL_PARAMETERS;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
@@ -62,8 +62,7 @@ public class JavaEvaluatorTest {
     String code = "import com.twosigma.beakerx.chart.xychart.*;\n" +
             "Plot plot = new Plot(); plot.setTitle(\"test title\");\n" +
             "return plot;";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
-    seo.setJupyterMessage(commMsg());
+    SimpleEvaluationObject seo = createSeo(code);
     //when
     TryResult evaluate = javaEvaluator.evaluate(seo, code);
     //then
@@ -75,7 +74,7 @@ public class JavaEvaluatorTest {
   public void evaluateDivisionByZero_shouldReturnArithmeticException() throws Exception {
     //given
     String code = "return 16/0;";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    SimpleEvaluationObject seo = createSeo(code);
     //when
     TryResult evaluate = javaEvaluator.evaluate(seo, code);
     //then
@@ -86,7 +85,7 @@ public class JavaEvaluatorTest {
   public void singleImport() throws Exception {
     //given
     String code = "import java.util.Date;";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    SimpleEvaluationObject seo = createSeo(code);
     //when
     TryResult evaluate = javaEvaluator.evaluate(seo, code);
     //then
@@ -97,7 +96,7 @@ public class JavaEvaluatorTest {
   public void onlyPackage() throws Exception {
     //given
     String code = "package beaker.test;";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    SimpleEvaluationObject seo = createSeo(code);
     //when
     TryResult evaluate = javaEvaluator.evaluate(seo, code);
     //then
@@ -108,7 +107,7 @@ public class JavaEvaluatorTest {
   public void noCode() throws Exception {
     //given
     String code = "";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    SimpleEvaluationObject seo = createSeo(code);
     //when
     TryResult evaluate = javaEvaluator.evaluate(seo, code);
     //then
@@ -122,7 +121,7 @@ public class JavaEvaluatorTest {
             "return Stream.of(1, 2, 3, 4).map(i -> { \n" +
             "    return i * 10;\n" +
             "});";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    SimpleEvaluationObject seo = createSeo(code);
     //when
     TryResult evaluate = javaEvaluator.evaluate(seo, code);
     //then
@@ -134,7 +133,7 @@ public class JavaEvaluatorTest {
     //given
     String code = "import java.util.stream.Stream;\n" +
             "return Stream.of(1, 2, 3, 4).map(i -> { return i * 10;});";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    SimpleEvaluationObject seo = createSeo(code);
     //when
     TryResult evaluate = javaEvaluator.evaluate(seo, code);
     //then
@@ -145,7 +144,7 @@ public class JavaEvaluatorTest {
   public void evaluateVoid() throws Exception {
     //given
     String code = "System.out.println(\"Hello\");";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    SimpleEvaluationObject seo = createSeo(code);
     //when
     TryResult evaluate = javaEvaluator.evaluate(seo, code);
     //then
@@ -161,7 +160,7 @@ public class JavaEvaluatorTest {
             "}else {\n" +
             "    return \"BBB\";\n" +
             "}";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    SimpleEvaluationObject seo = createSeo(code);
     //when
     TryResult evaluate = javaEvaluator.evaluate(seo, code);
     //then
@@ -199,7 +198,7 @@ public class JavaEvaluatorTest {
   }
 
   private TryResult runCode(String s) {
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(s);
+    SimpleEvaluationObject seo = createSeo(s);
     return javaEvaluator.evaluate(seo, s);
   }
 

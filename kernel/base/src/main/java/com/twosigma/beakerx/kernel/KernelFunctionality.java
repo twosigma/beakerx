@@ -26,6 +26,8 @@ import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfiguration;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
+import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
+import com.twosigma.beakerx.kernel.threads.ResultSender;
 import com.twosigma.beakerx.message.Message;
 
 import java.nio.file.Path;
@@ -47,7 +49,7 @@ public interface KernelFunctionality {
 
   String getSessionId();
 
-  Observer getExecutionResultSender();
+  ResultSender getExecutionResultSender();
 
   Comm getComm(String string);
 

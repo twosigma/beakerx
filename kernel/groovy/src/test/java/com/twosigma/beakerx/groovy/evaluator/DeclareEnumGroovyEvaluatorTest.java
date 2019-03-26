@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.groovy.evaluator;
 
+import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
@@ -58,9 +59,7 @@ public class DeclareEnumGroovyEvaluatorTest {
   }
 
   private TryResult runCode(String code) {
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
-    Message message = commMsg();
-    seo.setJupyterMessage(message);
+    SimpleEvaluationObject seo = KernelTest.createSeo(code);
     return groovyEvaluator.evaluate(seo, code);
   }
 

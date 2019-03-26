@@ -22,7 +22,7 @@ import com.twosigma.beakerx.message.Message;
 import java.io.InputStream;
 import java.util.Iterator;
 
-public class BxInputStream extends InputStream {
+public class BxInputStream extends InputStream implements BeakerInputHandler {
 
   private KernelFunctionality kernel;
   private InputRequestMessageFactory inputRequestMessageFactory;

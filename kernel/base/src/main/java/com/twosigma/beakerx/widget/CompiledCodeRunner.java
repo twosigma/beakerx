@@ -17,6 +17,7 @@ package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.MIMEContainerFactory;
 import com.twosigma.beakerx.evaluator.InternalVariable;
+import com.twosigma.beakerx.jvm.object.ConfigurationFactoryImpl;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
@@ -90,10 +91,8 @@ public class CompiledCodeRunner {
   }
 
   private static SimpleEvaluationObject initOutput(Message message) {
-    final SimpleEvaluationObject seo = new SimpleEvaluationObject("");
-    seo.setJupyterMessage(message);
+    final SimpleEvaluationObject seo = new SimpleEvaluationObject("", new ConfigurationFactoryImpl(KernelManager.get(), message, 1));
     seo.setOutputHandler();
-    seo.addObserver(KernelManager.get().getExecutionResultSender());
     return seo;
   }
 

@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.groovy.evaluator;
 
-import com.twosigma.beakerx.BeakerXCommRepository;
 import com.twosigma.beakerx.BeakerXCommRepositoryMock;
 import com.twosigma.beakerx.DefaultBeakerXJsonSerializer;
 import com.twosigma.beakerx.NamespaceClient;
@@ -70,8 +69,7 @@ public class GroovyEvaluatorProgressReportingTest {
                     "  " + BEAKER_VARIABLE_NAME + ".showProgressUpdate(\"msg\"+i, i)\n" +
                     "}\n" +
                     "\"finished\"";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
-    seo.setJupyterMessage(commMsg());
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code,new KernelTest.SeoConfigurationFactoryMock(groovyKernel));
     //when
     TryResult evaluate = groovyEvaluator.evaluate(seo, code);
     //then

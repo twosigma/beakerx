@@ -25,7 +25,7 @@ class TestTableDisplayAPI_date_format(unittest.TestCase):
     def test_date_format(self):
         # given
         df = pd.read_csv(os.path.dirname(__file__) + "/resources/" + 'interest-rates.csv')
-        df['time'] = df['time'].str.slice(0, 27).astype('datetime64[ns]')
+        df['time'] = pd.to_datetime(df['time'], utc=True)
         # when
         table = TableDisplay(df)
         # then

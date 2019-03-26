@@ -34,6 +34,7 @@ import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
+import com.twosigma.beakerx.kernel.threads.ResultSender;
 import com.twosigma.beakerx.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +60,7 @@ public abstract class Kernel implements KernelFunctionality {
   private String sessionId;
   private KernelSocketsFactory kernelSocketsFactory;
   private KernelHandlers handlers;
-  private ExecutionResultSender executionResultSender;
+  private ResultSender executionResultSender;
   private Evaluator evaluator;
   private KernelSockets kernelSockets;
   private List<MagicCommandType> magicCommandTypes;
@@ -226,7 +227,7 @@ public abstract class Kernel implements KernelFunctionality {
     return sessionId;
   }
 
-  public ExecutionResultSender getExecutionResultSender() {
+  public ResultSender getExecutionResultSender() {
     return executionResultSender;
   }
 

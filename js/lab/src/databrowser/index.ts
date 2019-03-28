@@ -28,6 +28,3 @@ export const databrowserPlugin: JupyterLabPlugin<void> = {
   },
   autoStart: true
 };
-
-
-

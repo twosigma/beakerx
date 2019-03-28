@@ -110,4 +110,3 @@ export default class DataBrowser extends Widget {
   }
 
 }
-

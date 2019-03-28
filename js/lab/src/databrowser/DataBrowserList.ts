@@ -209,6 +209,9 @@ export default class DataBrowserList extends Widget {
 
     elCode.addEventListener('click', () => {
       let currentPanel = this.dataBrowser.currentPanel;
+      if (currentPanel === null) {
+        return;
+      }
       NotebookActions.insertBelow(currentPanel.content);
       currentPanel.content.activeCell.editor['editor'].setValue(codeSample);
     });

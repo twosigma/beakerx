@@ -144,6 +144,7 @@ var NotebookPageObject = function () {
   this.setJVMProperties = function (heapSize, key, value, url) {
     this.openUIWindow();
     browser.window(browser.windowHandles().value[1]);
+    browser.pause(1000);
     browser.waitForEnabled('a#beakerx_tab');
     browser.click('a#beakerx_tab');
     browser.$$('li.p-TabBar-tab')[0].click();

@@ -294,3 +294,7 @@ span.flatpickr-weekday {
 .lds-spinner div {
   background-color: #2196F3;
 }
+
+.bx-dataBrowser-icon {
+  color: var(--md-grey-300);
+}

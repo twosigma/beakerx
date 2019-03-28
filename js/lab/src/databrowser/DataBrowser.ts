@@ -56,6 +56,9 @@ export default class DataBrowser extends Widget {
   }
 
   protected onAfterAttach(msg): void {
+    if (this.list) {
+      return;
+    }
     this.list = new DataBrowserList(this);
     Widget.attach(this.list, this.node.querySelector('.bx-dataBrowser-content'));
   }

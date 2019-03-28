@@ -14,6 +14,16 @@
  *  limitations under the License.
  */
 
-@import './fonts.css';
-@import './base.css';
-@import './databrowser.css';
+import IDataBrowserProviderList, {IDataBrowserProviderListItem} from "./IDataBrowserProviderList";
+
+export default interface IDataBrowserProvider {
+  readonly providerName: string;
+  readonly labelName: string;
+  readonly icon: string;
+  readonly color: string;
+
+  getList: () => IDataBrowserProviderList;
+  getDetail: (name: string) => IDataBrowserProviderListItem | null;
+  getDataSet: () => IDataBrowserProviderListItem[];
+  getCodeSample: (entry: { code: string }, language: string) => string;
+}

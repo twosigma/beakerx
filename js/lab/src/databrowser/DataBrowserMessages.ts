@@ -14,6 +14,21 @@
  *  limitations under the License.
  */
 
-@import './fonts.css';
-@import './base.css';
-@import './databrowser.css';
+import {Message} from "@phosphor/messaging";
+
+export const TYPE_DATABROWSER_SEARCH = 'beakerx:databrowser-search';
+export const TYPE_DATABROWSER_HIDE_SEARCH = 'beakerx:databrowser-hide-search';
+export const TYPE_DATABROWSER_SHOW_SEARCH = 'beakerx:databrowser-show-search';
+
+export class SearchMessage extends Message {
+  private _query: string;
+
+  constructor(query: string) {
+    super(TYPE_DATABROWSER_SEARCH);
+    this._query = query;
+  }
+
+  get query(): string {
+    return this._query;
+  }
+}

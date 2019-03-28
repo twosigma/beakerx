@@ -14,6 +14,17 @@
  *  limitations under the License.
  */
 
-@import './fonts.css';
-@import './base.css';
-@import './databrowser.css';
+export interface IDataBrowserProviderListItem {
+  name: string;
+  description: string;
+  img: string;
+  code: string;
+  outlink: string;
+  frequency: string;
+  refreshed: string;
+  provider: string;
+}
+
+export default interface IDataBrowserProviderList {
+  items: IDataBrowserProviderListItem[];
+}

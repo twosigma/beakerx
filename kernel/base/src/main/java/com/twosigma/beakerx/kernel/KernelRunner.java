@@ -20,8 +20,8 @@ import com.twosigma.beakerx.jvm.threads.BeakerStdInOutErrHandler;
 public class KernelRunner {
 
   public static void run(KernelFactory kernelFactory) {
+    BeakerStdInOutErrHandler.init();
     KernelFunctionality kernel = kernelFactory.createKernel();
-    BeakerStdInOutErrHandler.init(kernel);
     kernel.run();
     BeakerStdInOutErrHandler.fini();
   }

@@ -16,7 +16,7 @@
 import unittest
 
 from ..chart import CategoryPlot
-from ..plotitem import CategoryBars
+from ..plotitem import CategoryBars, LabelPositionType
 
 
 class TestCategoryPlot(unittest.TestCase):
@@ -47,4 +47,11 @@ class TestCategoryPlot(unittest.TestCase):
         model = cplot.model
         self.assertEqual(len(model['graphics_list']), 1)
 
-
+    def test_label_position(self):
+        # given
+        cplot = CategoryPlot()
+        # when
+        cplot.add(CategoryBars(value=[[1, 2, 3], [1, 3, 5]], labelPosition=LabelPositionType.VALUE_INSIDE))
+        # then
+        item = cplot.model['graphics_list'][0]
+        self.assertEqual(item['labelPosition'], "VALUE_INSIDE")

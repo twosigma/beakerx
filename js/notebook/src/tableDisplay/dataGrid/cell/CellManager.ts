@@ -273,11 +273,11 @@ export default class CellManager {
       for (let i = 0; i < cells.length; i++) {
         let row = cells[i];
 
-        for (let j = 0; j < row.length; j++) {
+        for (let j = 1; j < row.length; j++) {
           let cellData = row[j];
 
           out.push(`${
-            j !== 0 ? exportOptions.sep : ''
+            j !== 1 ? exportOptions.sep : ''
           }${
             exportOptions.qot
           }${

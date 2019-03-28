@@ -12,14 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import beakerx
-import json
 import os
+
+import beakerx
 import tornado
 import zmq
 from notebook.base.handlers import APIHandler, IPythonHandler
 from notebook.utils import url_path_join
-from tornado import web
+from tornado import web, gen
+from tornado.simple_httpclient import HTTPStreamClosedError
 
 from .beakerx_autotranslation_server import start_autotranslation_server
 from .environment import *
@@ -31,7 +32,7 @@ class BeakerxRestHandler(APIHandler):
         pass
 
     @web.authenticated
-    @tornado.web.asynchronous
+    @gen.coroutine
     def post(self):
 
         data = tornado.escape.json_decode(self.request.body)
@@ -41,42 +42,29 @@ class BeakerxRestHandler(APIHandler):
         type = params.get('type')
         url = params['url']
         if type == "python":
-            self.handle_python(content, url)
+            context = zmq.Context()
+            socket = context.socket(zmq.REQ)
+            socket.connect(url)
+            socket.send_string(content)
+            response = socket.recv()
+            self.finish(response)
+            socket.close()
+            context.destroy()
         else:
-            self.handle_rest(self.handle_response, url)
-
-    def handle_rest(self, handle_response, url):
-        req = tornado.httpclient.HTTPRequest(
-            url=url,
-            method=self.request.method,
-            body=self.request.body,
-            headers=self.request.headers,
-            follow_redirects=False,
-            allow_nonstandard_methods=True
-        )
-        client = tornado.httpclient.AsyncHTTPClient()
-        try:
-            client.fetch(req, handle_response)
-        except tornado.httpclient.HTTPError as e:
-            if hasattr(e, 'response') and e.response:
-                handle_response(e.response)
-            else:
-                self.set_status(500)
-                self.write('Internal server error:\n' + str(e))
-                self.finish()
-
-    def handle_python(self, content, url):
-        context = zmq.Context()
-        socket = context.socket(zmq.REQ)
-        socket.connect(url)
-        socket.send_string(content)
-        response = socket.recv()
-        self.finish(response)
-        socket.close()
-        context.destroy()
-
-    def handle_response(self, response):
-        self.finish(response.body)
+            req = tornado.httpclient.HTTPRequest(
+                url=url,
+                method=self.request.method,
+                body=self.request.body,
+                headers=self.request.headers,
+                follow_redirects=False,
+                allow_nonstandard_methods=True
+            )
+            client = tornado.httpclient.AsyncHTTPClient()
+            try:
+                res = yield client.fetch(req)
+                self.finish(res.body)
+            except Exception as e:
+                raise web.HTTPError(500, 'Internal server error:\n' + str(e))
 
 
 class SparkMetricsExecutorsHandler(APIHandler):
@@ -84,11 +72,8 @@ class SparkMetricsExecutorsHandler(APIHandler):
         pass
 
     @web.authenticated
-    @tornado.web.asynchronous
+    @gen.coroutine
     def get(self):
-
-        def handle_response(response):
-            self.finish(response.body)
 
         app_id = self.get_argument('sparkAppId', None)
         ui_web_url = self.get_argument('sparkUiWebUrl', None)
@@ -105,14 +90,14 @@ class SparkMetricsExecutorsHandler(APIHandler):
 
         client = tornado.httpclient.AsyncHTTPClient()
         try:
-            client.fetch(req, handle_response)
-        except tornado.httpclient.HTTPError as e:
-            if hasattr(e, 'response') and e.response:
-                handle_response(e.response)
-            else:
-                self.set_status(500)
-                self.write('Internal server error:\n' + str(e))
-                self.finish()
+            res = yield client.fetch(req)
+            self.finish(res.body)
+        except ConnectionRefusedError as cre:
+            pass  # spark was stopped
+        except HTTPStreamClosedError as hsce:
+            pass  # spark was stopped
+        except Exception as ex:
+            raise web.HTTPError(500, 'Internal server error:\n' + str(ex))
 
 
 class SettingsHandler(APIHandler):

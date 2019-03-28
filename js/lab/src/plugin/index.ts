@@ -25,6 +25,7 @@ import {extendHighlightModes, registerCommentOutCmd} from './codeEditor';
 import {enableInitializationCellsFeature} from './initializationCells';
 import UIOptionFeaturesHelper from "./UIOptionFeaturesHelper";
 import {Autotranslation} from "./autotranslation";
+import beakerx from "./../beakerx";
 import proxify = Autotranslation.proxify;
 
 function displayHTML(widget: Widget, html: string): void {
@@ -57,15 +58,20 @@ class BeakerxExtension implements DocumentRegistry.WidgetExtension {
       registerCommTargets(panel, context);
 
       window.beakerxHolder = window.beakerxHolder || {};
+      const plotApiList = beakerx.PlotApi.list();
       const beakerxInstance = {
-            displayHTML,
-        };
+        ...plotApiList,
+        displayHTML,
+        prefs: beakerx.bkCoreManager.getBkApp().getBeakerObject().beakerObj.prefs,
+      };
       window.beakerx = proxify(beakerxInstance, context.session.kernel);
       window.beakerxHolder[context.session.kernel.id] = window.beakerx;
 
+      plotApiList.setActiveLabPanel(panel);
       app.shell.activeChanged.connect((sender, args) => {
         if (args.newValue == panel){
             window.beakerx = window.beakerxHolder[panel.context.session.kernel.id];
+            plotApiList.setActiveLabPanel(panel);
         }
       });
 

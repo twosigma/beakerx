@@ -35,7 +35,7 @@ describe('Testing of table (python)', function () {
 
     it('Can use Array of Integers parameter', function () {
       cellIndex = 0;
-      var width = 120, height = 90;
+      var width = 120, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell1_case1.png');
@@ -48,7 +48,7 @@ describe('Testing of table (python)', function () {
 
     it('Can use 2D Array of Integers parameter', function () {
       cellIndex += 2;
-      var width = 120, height = 65;
+      var width = 124, height = 67;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell2_case1.png');
@@ -56,7 +56,7 @@ describe('Testing of table (python)', function () {
 
     it('Can use Array of Decimals parameter', function () {
       cellIndex += 2;
-      var width = 120, height = 90;
+      var width = 125, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell3_case1.png');
@@ -64,7 +64,7 @@ describe('Testing of table (python)', function () {
 
     it('Can use 2D Array of Decimals parameter', function () {
       cellIndex += 2;
-      var width = 128, height = 65;
+      var width = 130, height = 67;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell4_case1.png');
@@ -72,7 +72,7 @@ describe('Testing of table (python)', function () {
 
     it('Can use Array of Strings parameter', function () {
       cellIndex += 2;
-      var width = 130, height = 90;
+      var width = 144, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell5_case1.png');
@@ -80,7 +80,7 @@ describe('Testing of table (python)', function () {
 
     it('Can use 2D Array of Strings parameter', function () {
       cellIndex += 2;
-      var width = 110, height = 65;
+      var width = 110, height = 68;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell6_case1.png');
@@ -88,7 +88,7 @@ describe('Testing of table (python)', function () {
 
     it('Can use Array of Integer Arrays parameter', function () {
       cellIndex += 2;
-      var width = 128, height = 90;
+      var width = 130, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell7_case1.png');
@@ -96,7 +96,7 @@ describe('Testing of table (python)', function () {
 
     it('Can use 2D Array of Integer Arrays parameter', function () {
       cellIndex += 2;
-      var width = 180, height = 65;
+      var width = 180, height = 68;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell8_case1.png');
@@ -104,7 +104,7 @@ describe('Testing of table (python)', function () {
 
     it('Can use 2D Array of Integer,Decimal,String,Array Arrays parameter', function () {
       cellIndex += 2;
-      var width = 220, height = 115;
+      var width = 164, height = 116;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell9_case1.png');
@@ -112,7 +112,7 @@ describe('Testing of table (python)', function () {
 
     it('Can use [Integer,Decimal,String,Array] parameter', function () {
       cellIndex += 2;
-      var width = 128, height = 115;
+      var width = 129, height = 116;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell10_case1.png');
@@ -120,7 +120,7 @@ describe('Testing of table (python)', function () {
 
     it('Can use 2D Arrays of [Integer,Decimal,String,Array] parameter', function () {
       cellIndex += 2;
-      var width = 220, height = 65;
+      var width = 252, height = 67;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell11_case1.png');
@@ -128,7 +128,7 @@ describe('Testing of table (python)', function () {
 
     it('Can use numbers as name of Array keys (Array parameter)', function () {
       cellIndex += 2;
-      var width = 125, height = 115;
+      var width = 156, height = 116;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell12_case1.png');
@@ -136,7 +136,7 @@ describe('Testing of table (python)', function () {
 
     it('Can use numbers as name of Array keys (2D Array parameter)', function () {
       cellIndex += 2;
-      var width = 250, height = 65;
+      var width = 256, height = 67;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell13_case1.png');
@@ -147,7 +147,7 @@ describe('Testing of table (python)', function () {
     it('TableDisplay should display table from pandas dataFrame', function () {
       cellIndex += 2;
       browser.log('browser'); // reset log
-      var width = 100, height = 65;
+      var width = 100, height = 67;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell14_case1.png');
@@ -176,7 +176,7 @@ describe('Testing of table (python)', function () {
     it('Should display table. ', function () {
       cellIndex += 1;
       browser.log('browser'); // reset log
-      var width = 70, height = 42;
+      var width = 70, height = 44;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell15_case1.png');
@@ -190,7 +190,7 @@ describe('Testing of table (python)', function () {
   describe('Pandas read csv ', function(){
     it('Should display table ', function() {
       cellIndex += 2;
-      var width = 650, height = 90;
+      var width = 646, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell16_case1.png');
@@ -200,7 +200,7 @@ describe('Testing of table (python)', function () {
   describe('Set alignment provider for column ', function () {
     it('Should display formatted table ', function() {
       cellIndex += 2;
-      var width = 400, height = 90;
+      var width = 420, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
        beakerxPO.checkImageData(imageData.value, imageDir, 'cell162_case1.png');
@@ -210,7 +210,7 @@ describe('Testing of table (python)', function () {
   describe('Set alignment provider for type ', function () {
     it('Should display formatted table ', function() {
       cellIndex += 2;
-      var width = 400, height = 90;
+      var width = 404, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
        beakerxPO.checkImageData(imageData.value, imageDir, 'cell163_case1.png');
@@ -220,7 +220,7 @@ describe('Testing of table (python)', function () {
   describe('Set bar render for type ', function () {
     it('Should display formatted table ', function() {
       cellIndex += 2;
-      var width = 660, height = 90;
+      var width = 648, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
        beakerxPO.checkImageData(imageData.value, imageDir, 'cell17_case1.png');
@@ -230,7 +230,7 @@ describe('Testing of table (python)', function () {
   describe('Set string format for times, type and column ', function () {
     it('Should display formatted table ', function() {
       cellIndex += 2;
-      var width = 500, height = 90;
+      var width = 520, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell18_case1.png');
@@ -240,7 +240,7 @@ describe('Testing of table (python)', function () {
   describe('Set HTML format for column ', function () {
     it('Should display formatted table ', function() {
       cellIndex += 2;
-      var width = 300, height = 100;
+      var width = 300, height = 102;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
        beakerxPO.checkImageData(imageData.value, imageDir, 'cell182_case1.png');
@@ -250,7 +250,7 @@ describe('Testing of table (python)', function () {
   describe('Set column visible ', function () {
     it('Should display formatted table ', function() {
       cellIndex += 2;
-      var width = 644, height = 90;
+      var width = 646, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
        beakerxPO.checkImageData(imageData.value, imageDir, 'cell19_case1.png');
@@ -260,7 +260,7 @@ describe('Testing of table (python)', function () {
   describe('Set column order ', function () {
     it('Should display formatted table ', function() {
       cellIndex += 2;
-      var width = 410, height = 90;
+      var width = 417, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell20_case1.png');
@@ -270,7 +270,7 @@ describe('Testing of table (python)', function () {
   describe('Add HeatmapHighlighter ', function () {
     it('Should display formatted table ', function() {
       cellIndex += 2;
-      var width = 440, height = 90;
+      var width = 464, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell21_case1.png');
@@ -278,7 +278,7 @@ describe('Testing of table (python)', function () {
   });
 
   describe('Remove all CellHighlighters ', function () {
-    var width6 = 440, height6 = 90;
+    var width6 = 464, height6 = 92;
 
     it('Should display formatted table ', function() {
       cellIndex += 2;
@@ -297,7 +297,7 @@ describe('Testing of table (python)', function () {
   describe('Add UniqueEntriesHighlighter ', function () {
     it('Should display formatted table ', function() {
       cellIndex += 2;
-      var width = 440, height = 90;
+      var width = 480, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
        beakerxPO.checkImageData(imageData.value, imageDir, 'cell22_case1.png');
@@ -307,7 +307,7 @@ describe('Testing of table (python)', function () {
   describe('Add Highlighter for column ', function () {
     it('Should display formatted table ', function() {
       cellIndex += 2;
-      var width = 440, height = 90;
+      var width = 250, height = 192;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell23_case1.png');
@@ -317,7 +317,7 @@ describe('Testing of table (python)', function () {
   describe('Add Font size ', function () {
     it('Should display formatted table ', function() {
       cellIndex += 2;
-      var width = 440, height = 90;
+      var width = 450, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
        beakerxPO.checkImageData(imageData.value, imageDir, 'cell24_case1.png');
@@ -327,7 +327,7 @@ describe('Testing of table (python)', function () {
   describe('Set headers as vertical ', function () {
     it('Should display formatted table ', function() {
       cellIndex += 2;
-      var width = 440, height = 90;
+      var width = 500, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
        beakerxPO.checkImageData(imageData.value, imageDir, 'cell25_case1.png');
@@ -337,7 +337,7 @@ describe('Testing of table (python)', function () {
   describe('Add Color provider ', function () {
     it('Should display formatted table ', function() {
       cellIndex += 2;
-      var width = 162, height = 90;
+      var width = 162, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
        beakerxPO.checkImageData(imageData.value, imageDir, 'cell26_case1.png');
@@ -351,7 +351,7 @@ describe('Testing of table (python)', function () {
       codeCell.leftClick('canvas', 0, 0);
       codeCell.moveToObject('canvas', 55, 55);
       var tooltip = beakerxPO.getDataGridTooltip();
-      expect(tooltip.getText()).toMatch(/The value is: 7.2905/);
+      expect(tooltip.getText()).toMatch(/The value is: 8.0021/);
     });
   });
 

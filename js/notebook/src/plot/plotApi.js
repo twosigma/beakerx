@@ -495,15 +495,18 @@ define([ 'underscore' ], function(_) {
    Plot.prototype.display = function(output_area) {
      var cell = getCellFromOutputArea(output_area);
 
-     var currentScope = new PlotScope('wrap_'+cell.cell_id);
+     var currentScope = new PlotScope('wrap_'+cell.cell_id || bkUtils.generateId(6));
      var tmpl = PlotLayout.buildTemplate(currentScope);
      var tmplElement = $(tmpl);
 
-     tmplElement.appendTo(output_area.element);
+     tmplElement.appendTo(output_area.element || output_area.node);
 
      currentScope.setModelData(this);
      currentScope.setElement(tmplElement.children('.dtcontainer'));
      currentScope.init();
+     setTimeout(function() {
+        currentScope.updatePlot();
+     }, 10);
    };
 
    var TimePlot = function (data) {
@@ -680,18 +683,28 @@ define([ 'underscore' ], function(_) {
    CombinedPlot.prototype.display = function(output_area) {
      var cell = getCellFromOutputArea(output_area);
 
-     var currentScope = new CombinedPlotScope('wrap_'+cell.cell_id);
+     var currentScope = new CombinedPlotScope('wrap_'+cell.cell_id || bkUtils.generateId(6));
      var tmpl = currentScope.buildTemplate();
      var tmplElement = $(tmpl);
 
-     tmplElement.appendTo(output_area.element);
+     tmplElement.appendTo(output_area.element || output_area.node);
 
      currentScope.setModelData(this);
      currentScope.setElement(tmplElement);
      currentScope.init();
+
+     setTimeout(function() {
+         debugger;
+       currentScope.updatePlot();
+     }, 10);
    };
 
    //Plots//
+
+   var _labPanel;
+   var setActiveLabPanel = function(panel) {
+       _labPanel = panel;
+   };
 
    var api = {
      AbstractChart: AbstractChart,
@@ -717,8 +730,10 @@ define([ 'underscore' ], function(_) {
      LegendPosition: LegendPosition,
      Filter: Filter,
      Color: Color,
-     XYStacker: XYStacker
+     XYStacker: XYStacker,
+     setActiveLabPanel: setActiveLabPanel,
    };
+
    var list = function () {
      return api;
    };
@@ -736,9 +751,15 @@ define([ 'underscore' ], function(_) {
    // -------------------
 
    function getCellFromOutputArea(output_area) {
-     var cell_element = output_area.element.parents('.cell');
-     var cell_idx = Jupyter.notebook.get_cell_elements().index(cell_element);
-     var cell = Jupyter.notebook.get_cell(cell_idx);
+     var cell;
+     try {
+       var cell_element = output_area.element.parents('.cell');
+       var cell_idx = Jupyter.notebook.get_cell_elements().index(cell_element);
+       cell = Jupyter.notebook.get_cell(cell_idx);
+     } catch(e) {
+       cell = _labPanel.content.activeCell.outputArea;
+
+     }
      return cell;
    }
 

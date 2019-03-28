@@ -19,6 +19,7 @@ from random import randint
 import pandas as pd
 
 from ..chart import HeatMap, XYChart
+from ..legend import LegendPosition
 
 
 class TestHeatMap(unittest.TestCase):
@@ -112,3 +113,20 @@ class TestHeatMap(unittest.TestCase):
         self.assertEqual(model[XYChart.TOTAL_NUMBER_OF_POINTS], 1002001)
         self.assertEqual(model[XYChart.NUMBER_OF_POINTS_TO_DISPLAY], 10201)
         self.assertEqual(model[XYChart.ROWS_LIMIT_ITEMS], 100)
+
+    def test_legend_default_position(self):
+        # given
+        # when
+        widget = HeatMap(data=[],
+                         legendPosition=LegendPosition(position=LegendPosition.Position.TOP))
+        # then
+        model = widget.model
+        self.assertEqual(model['legend_position']['position'], "TOP")
+
+    def test_legend_default_layout(self):
+        # given
+        # when
+        widget = HeatMap(data=[])
+        # then
+        model = widget.model
+        self.assertEqual(model['legend_layout'], "HORIZONTAL")

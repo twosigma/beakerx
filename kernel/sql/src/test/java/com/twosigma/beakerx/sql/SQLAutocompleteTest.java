@@ -107,7 +107,7 @@ public class SQLAutocompleteTest {
   }
 
   private void givenColorTable() {
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(SQLForColorTable.CREATE_AND_SELECT_ALL);
+    SimpleEvaluationObject seo = KernelTest.createSeo(SQLForColorTable.CREATE_AND_SELECT_ALL);
     sqlEvaluator.evaluate(seo, SQLForColorTable.CREATE_AND_SELECT_ALL);
   }
 

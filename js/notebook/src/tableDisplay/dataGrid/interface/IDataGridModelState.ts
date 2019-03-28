@@ -30,6 +30,7 @@ export default interface IDataModelState {
   dataFontSize?: number|null,
   doubleClickTag?: string|null,
   fontColor?: string[],
+  filteredValues?: any[],
   hasDoubleClickAction?: boolean,
   hasIndex: boolean,
   headerFontSize?: number|null,

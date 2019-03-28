@@ -15,9 +15,11 @@
  */
 package com.twosigma.beakerx.evaluator;
 
+import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.GroupName;
+import com.twosigma.beakerx.kernel.Kernel;
 import org.junit.Test;
 
 import java.nio.file.Files;
@@ -54,7 +56,7 @@ public abstract class EvaluatorBaseTest {
   public void shouldDivide16By2() throws Exception {
     //given
     String code = codeForDivide16By2();
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    SimpleEvaluationObject seo = KernelTest.createSeo(code);
     //when
     TryResult result = evaluator().evaluate(seo, code);
     //then
@@ -67,7 +69,7 @@ public abstract class EvaluatorBaseTest {
   public void shouldCreateErrorResultWithArithmeticExceptionWhenDivisionByZero() throws Exception {
     //given
     String code = codeForDivisionByZero();
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    SimpleEvaluationObject seo = KernelTest.createSeo(code);
     //when
     TryResult either = evaluator().evaluate(seo, code);
     //then
@@ -84,7 +86,7 @@ public abstract class EvaluatorBaseTest {
   public void returnHelloString() throws Exception {
     //given
     String code = codeForHello();
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    SimpleEvaluationObject seo = KernelTest.createSeo(code);
     //when
     TryResult result = evaluator().evaluate(seo, code);
     //then
@@ -97,7 +99,7 @@ public abstract class EvaluatorBaseTest {
   public void returnPrintln() throws Exception {
     //given
     String code = codeForPrintln();
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    SimpleEvaluationObject seo = KernelTest.createSeo(code);
     //when
     TryResult result = evaluator().evaluate(seo, code);
     //then

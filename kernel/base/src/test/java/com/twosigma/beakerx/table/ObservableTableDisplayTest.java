@@ -29,13 +29,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
+
 public class ObservableTableDisplayTest {
 
   private TableDisplay tableDisplay;
   private int rowId = 0, colId = 0;
 
   @Before
-  public void setUp(){
+  public void setUp() {
     KernelManager.register(new KernelTest());
     tableDisplay = new TableDisplay(getListOfMapsData());
   }
@@ -69,7 +71,7 @@ public class ObservableTableDisplayTest {
     int result = sumAllElements(getRowValues(rowId, tableDisplay), colId);
     tableDisplay.setDoubleClickAction(getClosure(this::sumAllElements));
     //when
-    tableDisplay.fireDoubleClick(new ArrayList<Object>(Arrays.asList(rowId, colId)), null);
+    tableDisplay.fireDoubleClick(new ArrayList<Object>(Arrays.asList(rowId, colId)), commMsg());
     //then
     Assertions.assertThat(tableDisplay.getValues().get(rowId).get(colId)).isEqualTo(result);
   }
@@ -80,19 +82,20 @@ public class ObservableTableDisplayTest {
     int result = negateValue(getRowValues(rowId, tableDisplay), colId);
     tableDisplay.addContextMenuItem("negate", getClosure(this::negateValue));
     //when
-    tableDisplay.fireContextMenuClick("negate", new ArrayList<Object>(Arrays.asList(rowId, colId)), null);
+    tableDisplay.fireContextMenuClick("negate", new ArrayList<Object>(Arrays.asList(rowId, colId)), commMsg());
     //then
     Assertions.assertThat(tableDisplay.getValues().get(rowId).get(colId)).isEqualTo(result);
   }
 
-  private ClosureTest getClosure(TableActionTest action){
+  private ClosureTest getClosure(TableActionTest action) {
     return new ClosureTest() {
       @Override
       public Object call(Object row, Object col, Object tableDisplay) {
-        List<Integer> rowValues = getRowValues((int)row, (TableDisplay) tableDisplay);
-        rowValues.set((int)col, action.execute(rowValues, (int)col));
+        List<Integer> rowValues = getRowValues((int) row, (TableDisplay) tableDisplay);
+        rowValues.set((int) col, action.execute(rowValues, (int) col));
         return true;
       }
+
       @Override
       public int getMaximumNumberOfParameters() {
         return 3;
@@ -104,36 +107,36 @@ public class ObservableTableDisplayTest {
     int execute(List<Integer> rowValues, int colId);
   }
 
-  private List<Integer> getRowValues(int rowId, TableDisplay tableDisplay){
-    return (List<Integer>)(List<?>)tableDisplay.getValues().get(rowId);
+  private List<Integer> getRowValues(int rowId, TableDisplay tableDisplay) {
+    return (List<Integer>) (List<?>) tableDisplay.getValues().get(rowId);
   }
 
-  private int sumAllElements(List<Integer> rowValues, int colId){
+  private int sumAllElements(List<Integer> rowValues, int colId) {
     return rowValues.stream().mapToInt(i -> i).sum();
   }
 
-  private int negateValue(List<Integer> rowValues, int colId){
-    return rowValues.get(colId)*(-1);
+  private int negateValue(List<Integer> rowValues, int colId) {
+    return rowValues.get(colId) * (-1);
   }
 
   public static List<Map<String, Object>> getListOfMapsData() {
     List<Map<String, Object>> list = new ArrayList<>();
     list.add(
-        new HashMap<String, Object>() {
-          {
-            put("col1", 1);
-            put("col2", 2);
-            put("col3", 3);
-          }
-        });
+            new HashMap<String, Object>() {
+              {
+                put("col1", 1);
+                put("col2", 2);
+                put("col3", 3);
+              }
+            });
     list.add(
-        new HashMap<String, Object>() {
-          {
-            put("col1", 10);
-            put("col2", 20);
-            put("col3", 30);
-          }
-        });
+            new HashMap<String, Object>() {
+              {
+                put("col1", 10);
+                put("col2", 20);
+                put("col3", 30);
+              }
+            });
     return list;
   }
 }

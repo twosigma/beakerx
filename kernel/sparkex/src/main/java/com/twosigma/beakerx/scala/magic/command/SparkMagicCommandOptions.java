@@ -15,6 +15,8 @@
  */
 package com.twosigma.beakerx.scala.magic.command;
 
+import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.SparkUI;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -23,6 +25,7 @@ import org.apache.commons.cli.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.twosigma.beakerx.scala.magic.command.SparkOptions.NO_UI;
 import static com.twosigma.beakerx.scala.magic.command.SparkOptions.START;
 
 public class SparkMagicCommandOptions {
@@ -37,11 +40,34 @@ public class SparkMagicCommandOptions {
 
   public OptionsResult parseOptions(String[] args) {
     CommandLineParser parser = new BasicParser();
-    List<SparkMagicCommand.SparkOptionCommand> commands = new ArrayList<>();
+    List<SparkOptionCommand> commands = new ArrayList<>();
     try {
       CommandLine cmd = parser.parse(sparkOptions.getOptions(), args);
       if (cmd.hasOption(START)) {
-        commands.add((sparkUI, parent) -> sparkMagicCommand.connectToSparkSession(sparkUI, parent));
+        commands.add(new SparkOptionCommand() {
+          @Override
+          public void run(SparkUI sparkUI, Message parent) {
+            sparkMagicCommand.connectToSparkSession(sparkUI, parent);
+          }
+
+          @Override
+          public String getName() {
+            return START;
+          }
+        });
+      }
+      if (cmd.hasOption(NO_UI)) {
+        commands.add(new SparkOptionCommand() {
+          @Override
+          public void run(SparkUI sparkUI, Message parent) {
+
+          }
+
+          @Override
+          public String getName() {
+            return NO_UI;
+          }
+        });
       }
     } catch (ParseException e) {
       return new ErrorOptionsResult(e.getMessage());
@@ -54,7 +80,7 @@ public class SparkMagicCommandOptions {
 
     String errorMsg();
 
-    List<SparkMagicCommand.SparkOptionCommand> options();
+    List<SparkOptionCommand> options();
   }
 
   private class ErrorOptionsResult implements OptionsResult {
@@ -75,15 +101,15 @@ public class SparkMagicCommandOptions {
     }
 
     @Override
-    public List<SparkMagicCommand.SparkOptionCommand> options() {
+    public List<SparkOptionCommand> options() {
       return new ArrayList<>();
     }
   }
 
   private class SparkOptionsResult implements OptionsResult {
-    private List<SparkMagicCommand.SparkOptionCommand> sparkOptions;
+    private List<SparkOptionCommand> sparkOptions;
 
-    public SparkOptionsResult(List<SparkMagicCommand.SparkOptionCommand> sparkOptions) {
+    public SparkOptionsResult(List<SparkOptionCommand> sparkOptions) {
       this.sparkOptions = sparkOptions;
     }
 
@@ -98,9 +124,15 @@ public class SparkMagicCommandOptions {
     }
 
     @Override
-    public List<SparkMagicCommand.SparkOptionCommand> options() {
+    public List<SparkOptionCommand> options() {
       return sparkOptions;
     }
+  }
+
+  interface SparkOptionCommand {
+    void run(SparkUI sparkUI, Message parent);
+
+    String getName();
   }
 }
 

@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.jvm.threads;
 
-import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.widget.OutputManager;
 
 import java.io.IOException;
@@ -32,16 +31,14 @@ public class BeakerStdInOutErrHandler {
   private ConcurrentHashMap<ThreadGroup, BeakerOutputHandlers> handlers = new ConcurrentHashMap<>();
   private PrintStream orig_out;
   private PrintStream orig_err;
-  private KernelFunctionality kernel;
   private InputStream orig_in;
 
-  public BeakerStdInOutErrHandler(KernelFunctionality kernel) {
-    this.kernel = kernel;
+  private BeakerStdInOutErrHandler() {
   }
 
-  static synchronized public void init(KernelFunctionality kernel) {
+  static synchronized public void init() {
     if (instance == null) {
-      instance = new BeakerStdInOutErrHandler(kernel);
+      instance = new BeakerStdInOutErrHandler();
       instance.theinit();
     }
   }
@@ -53,9 +50,9 @@ public class BeakerStdInOutErrHandler {
     }
   }
 
-  static synchronized public void setOutputHandler(BeakerOutputHandler out, BeakerOutputHandler err) {
+  static synchronized public void setOutputHandler(BeakerOutputHandler out, BeakerOutputHandler err, BeakerInputHandler stdin) {
     if (instance != null) {
-      instance.theSetOutputHandler(out, err, Thread.currentThread().getThreadGroup());
+      instance.theSetOutputHandler(out, err, stdin, Thread.currentThread().getThreadGroup());
     }
   }
 
@@ -69,9 +66,9 @@ public class BeakerStdInOutErrHandler {
     orig_err = System.err;
     orig_in = System.in;
     try {
-      System.setOut(new PrintStream(new MyOutputStream(true), false, StandardCharsets.UTF_8.name()));
-      System.setErr(new PrintStream(new MyOutputStream(false), false, StandardCharsets.UTF_8.name()));
-      System.setIn(new BxInputStream(kernel, new InputRequestMessageFactoryImpl()));
+      System.setOut(new PrintStream(new ProxyOutputStream(true), false, StandardCharsets.UTF_8.name()));
+      System.setErr(new PrintStream(new ProxyOutputStream(false), false, StandardCharsets.UTF_8.name()));
+      System.setIn(new ProxyInputStream());
     } catch (UnsupportedEncodingException e) {
       throw new RuntimeException(e);
     }
@@ -84,9 +81,9 @@ public class BeakerStdInOutErrHandler {
   }
 
 
-  private synchronized void theSetOutputHandler(BeakerOutputHandler out, BeakerOutputHandler err, ThreadGroup threadGroup) {
+  private synchronized void theSetOutputHandler(BeakerOutputHandler out, BeakerOutputHandler err, BeakerInputHandler stdin, ThreadGroup threadGroup) {
     removeGroupsWithAllNoAliveThreads();
-    handlers.put(threadGroup, new BeakerOutputHandlers(out, err));
+    handlers.put(threadGroup, new BeakerOutputHandlers(out, err, stdin));
   }
 
   private synchronized void removeGroupsWithAllNoAliveThreads() {
@@ -128,12 +125,27 @@ public class BeakerStdInOutErrHandler {
     }
   }
 
+  private class ProxyInputStream extends InputStream {
+    @Override
+    public int read() throws IOException {
+      return instance.readStdin();
+    }
+  }
 
-  private class MyOutputStream extends OutputStream {
+  private int readStdin() {
+    BeakerOutputHandlers hrs = handlers.get(Thread.currentThread().getThreadGroup());
+    if (hrs != null && hrs.stdin_handler != null) {
+      return hrs.stdin_handler.read();
+    }
+    return 0;
+  }
+
+
+  private class ProxyOutputStream extends OutputStream {
 
     private boolean is_out;
 
-    public MyOutputStream(boolean isout) {
+    public ProxyOutputStream(boolean isout) {
       is_out = isout;
     }
 
@@ -169,10 +181,12 @@ public class BeakerStdInOutErrHandler {
   static class BeakerOutputHandlers {
     BeakerOutputHandler out_handler;
     BeakerOutputHandler err_handler;
+    BeakerInputHandler stdin_handler;
 
-    BeakerOutputHandlers(BeakerOutputHandler out, BeakerOutputHandler err) {
+    BeakerOutputHandlers(BeakerOutputHandler out, BeakerOutputHandler err, BeakerInputHandler stdin) {
       out_handler = out;
       err_handler = err;
+      stdin_handler = stdin;
     }
   }
 

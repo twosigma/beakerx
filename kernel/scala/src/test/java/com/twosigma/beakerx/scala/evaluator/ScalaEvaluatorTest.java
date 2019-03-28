@@ -16,6 +16,7 @@
 
 package com.twosigma.beakerx.scala.evaluator;
 
+import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.chart.xychart.Plot;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -73,8 +74,7 @@ public class ScalaEvaluatorTest {
     String code = "import com.twosigma.beakerx.chart.xychart.Plot;\n" +
             "val plot = new Plot();\n" +
             "plot.setTitle(\"test title\");";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
-    seo.setJupyterMessage(commMsg());
+    SimpleEvaluationObject seo = KernelTest.createSeo(code);
     //when
     TryResult evaluate = scalaEvaluator.evaluate(seo, code);
     //then
@@ -94,7 +94,7 @@ public class ScalaEvaluatorTest {
     //when
     scalaEvaluator.updateEvaluatorParameters(kernelParameters);
     String code = "val x = staticMethod()";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    SimpleEvaluationObject seo = KernelTest.createSeo(code);
     TryResult evaluate = scalaEvaluator.evaluate(seo, code);
     //then
     assertThat(evaluate.result()).isNull();
@@ -104,7 +104,7 @@ public class ScalaEvaluatorTest {
   public void incompleteInput_shouldBeDetected() throws Exception {
     //given
     String code = "1 to 10 map { i => i * 2";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    SimpleEvaluationObject seo = KernelTest.createSeo(code);
     //when
     TryResult evaluate = scalaEvaluator.evaluate(seo, code);
     //then
@@ -116,8 +116,7 @@ public class ScalaEvaluatorTest {
     //given
     String code = "val table = new TableDisplay(new CSV().readFile(\"src/test/resources/tableRowsTest.csv\"))\n" +
             "table";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
-    seo.setJupyterMessage(commMsg());
+    SimpleEvaluationObject seo = KernelTest.createSeo(code);
     //when
     TryResult evaluate = scalaEvaluator.evaluate(seo, code);
     //then
@@ -144,8 +143,7 @@ public class ScalaEvaluatorTest {
     String code =
                     "/*\n" +
                     "*/";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
-    seo.setJupyterMessage(commMsg());
+    SimpleEvaluationObject seo = KernelTest.createSeo(code);
     //when
     TryResult evaluate = scalaEvaluator.evaluate(seo, code);
     //then
@@ -158,8 +156,7 @@ public class ScalaEvaluatorTest {
     String code =
                     "/*\n" +
                     "*";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
-    seo.setJupyterMessage(commMsg());
+    SimpleEvaluationObject seo = KernelTest.createSeo(code);
     //when
     TryResult evaluate = scalaEvaluator.evaluate(seo, code);
     //then

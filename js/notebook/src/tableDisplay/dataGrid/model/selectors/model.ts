@@ -21,7 +21,7 @@ import IDataModelState from "../../interface/IDataGridModelState";
 import IHihglighterState from "../../interface/IHighlighterState"
 
 export const selectModel = (state): IDataModelState => state.model;
-export const selectValues = (state) => selectModel(state).values;
+export const selectValues = (state) => { let model = selectModel(state); return model.hasOwnProperty("filteredValues") ? model.filteredValues: model.values };
 export const selectHasIndex = (state) => selectModel(state).hasIndex;
 export const selectTooltips = (state) => selectModel(state).tooltips || [];
 export const selectCellHighlighters = (state): IHihglighterState[] => selectModel(state).cellHighlighters || [];

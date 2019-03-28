@@ -20,11 +20,13 @@ import org.apache.commons.cli.Options;
 public class SparkOptions {
 
   public static final String START = "start";
+  public static final String NO_UI = "noUI";
   public static final String VERSION = "version";
   private Options options = new Options();
 
   public SparkOptions() {
     options.addOption("s", START, false, "Start spark");
+    options.addOption("nu", NO_UI, false, "No UI");
     options.addOption("v", VERSION, true, "Load spark version");
   }
 

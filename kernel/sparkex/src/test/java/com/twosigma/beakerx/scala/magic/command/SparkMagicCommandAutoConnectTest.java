@@ -20,7 +20,7 @@ import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.widget.SingleSparkSession;
-import com.twosigma.beakerx.widget.SparkEngine;
+import com.twosigma.beakerx.widget.SparkEngineWithUIImpl;
 import com.twosigma.beakerx.widget.SparkUI;
 import com.twosigma.beakerx.widget.SparkUiDefaults;
 import org.apache.spark.sql.SparkSession;
@@ -43,8 +43,9 @@ public class SparkMagicCommandAutoConnectTest {
   @Before
   public void setUp() {
     singleSparkSession = new SparkMagicCommand.SingleSparkSessionImpl();
-    SparkUI.SparkUIFactory sparkUIFactory = createSparkUIFactory(new SparkMagicCommandTest.SparkManagerFactoryTest(), singleSparkSession);
-    sparkMagicCommand = new SparkMagicCommand(new KernelTest(), sparkUIFactory);
+    SparkUI.SparkUIFactory sparkUIFactory = createSparkUIFactory(new SparkMagicCommandTest.SparkEngineWithUIFactoryMock(), singleSparkSession);
+    KernelTest kernel = new KernelTest();
+    sparkMagicCommand = new SparkMagicCommand(kernel, new SparkFactoryImpl(kernel, new SparkMagicCommandTest.SparkManagerNoUIFactoryMock(), sparkUIFactory));
   }
 
   @Test
@@ -83,7 +84,7 @@ public class SparkMagicCommandAutoConnectTest {
     return execute;
   }
 
-  private SparkUI.SparkUIFactory createSparkUIFactory(SparkEngine.SparkEngineFactory sparkManagerFactory, SingleSparkSession singleSparkSession) {
+  private SparkUI.SparkUIFactory createSparkUIFactory(SparkEngineWithUIImpl.SparkEngineWithUIFactory sparkManagerFactory, SingleSparkSession singleSparkSession) {
     return new SparkUI.SparkUIFactory() {
       private SparkUI.SparkUIFactoryImpl factory = new SparkUI.SparkUIFactoryImpl(sparkManagerFactory, new SparkUiDefaults() {
 

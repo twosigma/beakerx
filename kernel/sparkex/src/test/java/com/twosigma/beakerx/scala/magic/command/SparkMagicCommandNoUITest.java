@@ -65,12 +65,7 @@ public class SparkMagicCommandNoUITest {
   static class SparkFactoryNoUIMock implements SparkFactory {
 
     @Override
-    public MagicCommandOutcomeItem createSparkUI(MagicCommandExecutionParam param, List<SparkMagicCommandOptions.SparkOptionCommand> options) {
-      return new MagicCommandOutput(MagicCommandOutcomeItem.Status.ERROR);
-    }
-
-    @Override
-    public MagicCommandOutcomeItem createSparkWithoutUI(MagicCommandExecutionParam param) {
+    public MagicCommandOutcomeItem createSpark(MagicCommandExecutionParam param, List<SparkMagicCommandOptions.SparkOptionCommand> options) {
       return new MagicCommandOutput(MagicCommandOutcomeItem.Status.OK);
     }
   }

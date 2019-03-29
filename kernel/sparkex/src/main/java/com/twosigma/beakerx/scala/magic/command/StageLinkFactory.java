@@ -15,10 +15,8 @@
  */
 package com.twosigma.beakerx.scala.magic.command;
 
-import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widget.SparkUI;
+import org.apache.spark.sql.SparkSession;
 
-public interface SparkMagicActionOptions {
-
-  void connectToSparkSession(SparkUI sparkUI, Message parent);
+public interface StageLinkFactory {
+  String create(SparkSession sparkSession, int stageId);
 }

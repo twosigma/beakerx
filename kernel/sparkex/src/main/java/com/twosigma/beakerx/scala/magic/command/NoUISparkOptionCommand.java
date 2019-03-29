@@ -16,13 +16,19 @@
 package com.twosigma.beakerx.scala.magic.command;
 
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widget.SparkUI;
+import com.twosigma.beakerx.widget.SparkEngine;
 
-import java.util.HashMap;
+import static com.twosigma.beakerx.scala.magic.command.SparkOptions.NO_UI;
 
-class SparkMagicActionOptionsImpl implements SparkMagicActionOptions {
+public class NoUISparkOptionCommand implements SparkMagicCommandOptions.SparkOptionCommand {
+
   @Override
-  public void connectToSparkSession(SparkUI sparkUI, Message parent) {
-    sparkUI.getConnectButton().onClick(new HashMap(), parent);
+  public void run(SparkEngine sparkEngine, Message parent) {
+
+  }
+
+  @Override
+  public String getName() {
+    return NO_UI;
   }
 }

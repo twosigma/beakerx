@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Map;
 
 public class StartStopSparkListenerTest {
 
@@ -115,6 +116,16 @@ public class StartStopSparkListenerTest {
 
     @Override
     public void taskCancelled(int stageId, long taskId) {
+
+    }
+
+    @Override
+    public Button getConnectButton() {
+      return null;
+    }
+
+    @Override
+    public void afterDisplay(Message message) {
 
     }
   }

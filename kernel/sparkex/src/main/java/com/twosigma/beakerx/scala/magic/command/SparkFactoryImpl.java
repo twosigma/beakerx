@@ -28,8 +28,11 @@ import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.scala.magic.command.SparkMagicCommandOptions.SparkOptionCommand;
 import com.twosigma.beakerx.widget.SparkEngineNoUI;
 import com.twosigma.beakerx.widget.SparkEngineNoUIImpl.SparkEngineNoUIFactory;
-import com.twosigma.beakerx.widget.SparkUI;
+import com.twosigma.beakerx.widget.SparkEngineWithUI;
+import com.twosigma.beakerx.widget.SparkEngineWithUIImpl;
 import com.twosigma.beakerx.widget.SparkUI.SparkUIFactory;
+import com.twosigma.beakerx.widget.SparkUIApi;
+import com.twosigma.beakerx.widget.SparkUiDefaults;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 
@@ -47,15 +50,25 @@ public class SparkFactoryImpl implements SparkFactory {
   private KernelFunctionality kernel;
   private SparkEngineNoUIFactory sparkEngineNoUIFactory;
   private SparkUIFactory sparkUIFactory;
+  private SparkUiDefaults sparkUiDefaults;
 
-  public SparkFactoryImpl(KernelFunctionality kernel, SparkEngineNoUIFactory sparkEngineNoUIFactory, SparkUIFactory sparkUIFactory) {
+  public SparkFactoryImpl(KernelFunctionality kernel, SparkEngineNoUIFactory sparkEngineNoUIFactory, SparkUIFactory sparkUIFactory, SparkUiDefaults sparkUiDefaults ) {
     this.kernel = kernel;
     this.sparkEngineNoUIFactory = sparkEngineNoUIFactory;
     this.sparkUIFactory = sparkUIFactory;
+    this.sparkUiDefaults = sparkUiDefaults;
   }
 
   @Override
-  public MagicCommandOutcomeItem createSparkUI(MagicCommandExecutionParam param, List<SparkOptionCommand> options) {
+  public MagicCommandOutcomeItem createSpark(MagicCommandExecutionParam param, List<SparkOptionCommand> options) {
+    if (noUi(options)) {
+      return createSparkWithoutUI(param, options);
+    } else {
+      return createSparkUI(param, options);
+    }
+  }
+
+  private MagicCommandOutcomeItem createSparkUI(MagicCommandExecutionParam param, List<SparkOptionCommand> options) {
     if (param.getCommandCodeBlock().isEmpty()) {
       return createSparkBasedOnEmptyConfiguration(param, options);
     } else {
@@ -66,10 +79,10 @@ public class SparkFactoryImpl implements SparkFactory {
     }
   }
 
-  @Override
-  public MagicCommandOutcomeItem createSparkWithoutUI(MagicCommandExecutionParam param) {
+  private MagicCommandOutcomeItem createSparkWithoutUI(MagicCommandExecutionParam param, List<SparkOptionCommand> options) {
     return createSparkBasedOnUserSparkConfiguration(param, (builder, message) -> {
       SparkEngineNoUI sparkEngine = sparkEngineNoUIFactory.create(builder);
+      options.forEach(option -> option.run(sparkEngine, message));
       TryResult configure = sparkEngine.configure(kernel, param.getCode().getMessage());
       if (configure.isError()) {
         return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, configure.error());
@@ -79,8 +92,12 @@ public class SparkFactoryImpl implements SparkFactory {
   }
 
   private void createAndDisplaySparkUI(List<SparkOptionCommand> options, SparkSession.Builder builder, Message message) {
-    SparkUI sparkUI = sparkUIFactory.create(builder);
-    displaySparkUI(sparkUI, message, options);
+    sparkUiDefaults.loadDefaults();
+    SparkEngineWithUIImpl.SparkEngineWithUIFactoryImpl sparkEngineWithUIFactory = new SparkEngineWithUIImpl.SparkEngineWithUIFactoryImpl();
+    SparkEngineWithUI sparkEngineWithUI = sparkEngineWithUIFactory.create(builder);
+    options.forEach(option -> option.run(sparkEngineWithUI, message));
+    SparkUIApi sparkUI = sparkUIFactory.create(builder, sparkEngineWithUI, sparkUiDefaults);
+    displaySparkUI(sparkUI,message);
   }
 
   private MagicCommandOutcomeItem createSparkBasedOnEmptyConfiguration(MagicCommandExecutionParam param, List<SparkOptionCommand> options) {
@@ -121,13 +138,19 @@ public class SparkFactoryImpl implements SparkFactory {
     MagicCommandOutput run(SparkSession.Builder builder, Message message);
   }
 
-  private SparkUI displaySparkUI(SparkUI sparkUI, Message message, List<SparkOptionCommand> options) {
+  private SparkUIApi displaySparkUI(SparkUIApi sparkUI, Message message) {
     Display.display(sparkUI);
-    options.forEach(option -> option.run(sparkUI, message));
+    sparkUI.afterDisplay(message);
     return sparkUI;
   }
 
   private SimpleEvaluationObject createSEO(MagicCommandExecutionParam param) {
     return PlainCode.createSimpleEvaluationObject(param.getCommandCodeBlock(), kernel, param.getCode().getMessage(), param.getExecutionCount());
   }
+
+  private boolean noUi(List<SparkMagicCommandOptions.SparkOptionCommand> options) {
+    return options.stream()
+            .anyMatch(x -> x.getName().equals(SparkOptions.NO_UI));
+  }
+
 }

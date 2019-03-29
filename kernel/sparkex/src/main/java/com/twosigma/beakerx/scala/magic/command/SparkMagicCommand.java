@@ -22,11 +22,8 @@ import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 import com.twosigma.beakerx.widget.SingleSparkSession;
 import com.twosigma.beakerx.widget.SparkEngineNoUIImpl;
-import com.twosigma.beakerx.widget.SparkEngineWithUIImpl;
 import com.twosigma.beakerx.widget.SparkUI;
 import com.twosigma.beakerx.widget.SparkUiDefaultsImpl;
-
-import java.util.List;
 
 import static java.util.Arrays.copyOfRange;
 
@@ -46,10 +43,8 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
             kernel,
             new SparkFactoryImpl(kernel,
                     new SparkEngineNoUIImpl.SparkEngineNoUIFactoryImpl(),
-                    new SparkUI.SparkUIFactoryImpl(
-                            new SparkEngineWithUIImpl.SparkEngineWithUIFactoryImpl(),
-                            new SparkUiDefaultsImpl(kernel.getBeakerXJson()),
-                            SINGLE_SPARK_SESSION)
+                    new SparkUI.SparkUIFactoryImpl(SINGLE_SPARK_SESSION),
+                    new SparkUiDefaultsImpl(kernel.getBeakerXJson())
             )
     );
   }
@@ -57,7 +52,7 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
   SparkMagicCommand(KernelFunctionality kernel, SparkFactory sparkFactory) {
     this.kernel = kernel;
     this.sparkFactory = sparkFactory;
-    this.sparkMagicCommandOptions = new SparkMagicCommandOptions(new SparkMagicActionOptionsImpl());
+    this.sparkMagicCommandOptions = new SparkMagicCommandOptions();
   }
 
   @Override
@@ -72,16 +67,7 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
     if (optionsResult.hasError()) {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, optionsResult.errorMsg());
     }
-    if (noUi(optionsResult.options())) {
-      return sparkFactory.createSparkWithoutUI(param);
-    } else {
-      return sparkFactory.createSparkUI(param, optionsResult.options());
-    }
-  }
-
-  private boolean noUi(List<SparkMagicCommandOptions.SparkOptionCommand> options) {
-    return options.stream()
-            .anyMatch(x -> x.getName().equals(SparkOptions.NO_UI));
+    return sparkFactory.createSpark(param, optionsResult.options());
   }
 
   private String[] getOptions(MagicCommandExecutionParam param) {

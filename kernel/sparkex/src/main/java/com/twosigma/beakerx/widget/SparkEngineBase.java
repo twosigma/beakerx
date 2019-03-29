@@ -22,6 +22,8 @@ import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.scala.magic.command.JobLinkFactory;
+import com.twosigma.beakerx.scala.magic.command.StageLinkFactory;
 import com.twosigma.beakerx.widget.configuration.SparkConfiguration;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.RuntimeConfig;
@@ -31,12 +33,11 @@ import scala.collection.Iterator;
 
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com.twosigma.beakerx.kernel.PlainCode.createSimpleEvaluationObject;
 import static com.twosigma.beakerx.widget.SparkUI.BEAKERX_ID;
@@ -53,13 +54,66 @@ import static com.twosigma.beakerx.widget.SparkUI.STANDARD_SETTINGS;
 abstract class SparkEngineBase implements SparkEngine {
 
   protected SparkSession.Builder sparkSessionBuilder;
+
   private ErrorPrinter errorPrinter;
+  protected SparkEngineConf conf = new SparkEngineConf();
+
+  private StageLinkFactory stageLinkFactory;
+  private JobLinkFactory jobLinkFactory;
 
   SparkEngineBase(SparkSession.Builder sparkSessionBuilder, ErrorPrinter errorPrinter) {
     this.sparkSessionBuilder = sparkSessionBuilder;
     this.errorPrinter = errorPrinter;
+    this.jobLinkFactory((sparkSession, jobId) -> {
+      if (sparkSession.sparkContext().uiWebUrl().isDefined()) {
+        return sparkSession.sparkContext().uiWebUrl().get() + "/jobs/job/?id=" + jobId;
+      } else {
+        return "";
+      }
+    });
+    this.stageLinkFactory((sparkSession, stageId) -> {
+      if (sparkSession.sparkContext().uiWebUrl().isDefined()) {
+        return sparkSession.sparkContext().uiWebUrl().get() + "/stages/stage/?id=" + stageId + "&attempt=0";
+      } else {
+        return "";
+      }
+    });
   }
 
+  @Override
+  public void jobLinkFactory(JobLinkFactory jobLinkFactory) {
+    this.jobLinkFactory = jobLinkFactory;
+  }
+
+  @Override
+  public void stageLinkFactory(StageLinkFactory stageLinkFactory) {
+    this.stageLinkFactory = stageLinkFactory;
+  }
+
+  @Override
+  public String stageLink(SparkSession sparkSession, int stageId) {
+    return this.stageLinkFactory.create(sparkSession, stageId);
+  }
+
+  @Override
+  public String jobLink(SparkSession sparkSession, int jobId) {
+    return this.jobLinkFactory.create(sparkSession, jobId);
+  }
+
+
+  @Override
+  public void additionalConf(SparkEngineConf conf) {
+    this.conf = conf;
+  }
+
+  @Override
+  public SparkEngineConf getSparkEngineConf() {
+    return conf;
+  }
+
+  @Override
+  public void configAutoStart() {
+  }
 
   protected TryResult createSparkSession() {
     try {
@@ -151,19 +205,13 @@ abstract class SparkEngineBase implements SparkEngine {
   }
 
   public static SparkConf getSparkConfBasedOn(SparkSession.Builder sparkSessionBuilder) {
-    try {
-      SparkConf sparkConf = new SparkConf();
-      Field options = sparkSessionBuilder.getClass().getDeclaredField("org$apache$spark$sql$SparkSession$Builder$$options");
-      options.setAccessible(true);
-      Iterator iterator = ((scala.collection.mutable.HashMap) options.get(sparkSessionBuilder)).iterator();
-      while (iterator.hasNext()) {
-        Tuple2 x = (Tuple2) iterator.next();
-        sparkConf.set((String) (x)._1, (String) (x)._2);
-      }
-      return sparkConf;
-    } catch (Exception e) {
-      throw new RuntimeException(e);
+    SparkConf sparkConf = new SparkConf();
+    Iterator iterator = getConfigIterator(sparkSessionBuilder);
+    while (iterator.hasNext()) {
+      Tuple2 x = (Tuple2) iterator.next();
+      sparkConf.set((String) (x)._1, (String) (x)._2);
     }
+    return sparkConf;
   }
 
   protected SparkConf configureSparkConf(SparkConf sparkConf) {
@@ -173,6 +221,7 @@ abstract class SparkEngineBase implements SparkEngine {
     if (!isLocalSpark(sparkConf)) {
       sparkConf.set(SPARK_REPL_CLASS_OUTPUT_DIR, KernelManager.get().getOutDir());
     }
+    this.conf.getConfigs().forEach(sparkConf::set);
     return sparkConf;
   }
 
@@ -191,11 +240,33 @@ abstract class SparkEngineBase implements SparkEngine {
     return configureSparkConf(sc);
   }
 
+  @Override
+  public Map<String, String> getAdvanceSettings(SparkUiDefaults defaults) {
+    Map<String, String> configs = new HashMap<>();
+    Iterator iterator = getConfigIterator(sparkSessionBuilder);
+    while (iterator.hasNext()) {
+      Tuple2 x = (Tuple2) iterator.next();
+      if (isAdvancedSettings((String) x._1)) {
+        configs.put((String) (x)._1, (String) (x)._2);
+      }
+    }
+    Map<String, String> props = defaults.getProperties();
+    props.forEach((pname, pvalue) -> {
+      if ((pname != null && !pname.isEmpty() && !configs.containsKey(pname)) && (pvalue != null && !pvalue.isEmpty())) {
+        configs.put(pname, pvalue);
+      }
+    });
+    return configs;
+  }
 
-  public Map<String, String> getAdvanceSettings() {
-    return Arrays.stream(getSparkConf().getAll())
-            .filter(x -> isAdvancedSettings(x._1))
-            .collect(Collectors.toMap(Tuple2::_1, Tuple2::_2));
+  private static Iterator getConfigIterator(SparkSession.Builder sparkSessionBuilder) {
+    try {
+      Field options = sparkSessionBuilder.getClass().getDeclaredField("org$apache$spark$sql$SparkSession$Builder$$options");
+      options.setAccessible(true);
+      return ((scala.collection.mutable.HashMap) options.get(sparkSessionBuilder)).iterator();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private boolean isAdvancedSettings(String name) {

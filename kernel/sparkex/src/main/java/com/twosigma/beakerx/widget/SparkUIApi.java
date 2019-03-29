@@ -20,6 +20,7 @@ import com.twosigma.beakerx.widget.configuration.SparkConfiguration;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public interface SparkUIApi {
 
@@ -62,4 +63,8 @@ public interface SparkUIApi {
   void stopSpinner();
 
   void taskCancelled(int stageId, long taskId);
+
+  Button getConnectButton();
+
+  void afterDisplay(Message message);
 }

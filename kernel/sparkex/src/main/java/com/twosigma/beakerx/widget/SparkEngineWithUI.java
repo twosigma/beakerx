@@ -19,8 +19,10 @@ import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.message.Message;
 
-public interface SparkEngineWithUI extends SparkEngine{
+public interface SparkEngineWithUI extends SparkEngine {
 
   TryResult configure(KernelFunctionality kernel, SparkUIApi sparkUI, Message parentMessage);
+
+  boolean isAutoStart();
 
 }

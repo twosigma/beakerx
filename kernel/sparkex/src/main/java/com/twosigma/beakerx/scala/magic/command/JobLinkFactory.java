@@ -15,25 +15,8 @@
  */
 package com.twosigma.beakerx.scala.magic.command;
 
-import org.apache.commons.cli.Options;
+import org.apache.spark.sql.SparkSession;
 
-public class SparkOptions {
-
-  public static final String START = "start";
-  public static final String NO_UI = "noUI";
-  public static final String YARN = "yarn";
-  public static final String VERSION = "version";
-  private Options options = new Options();
-
-  public SparkOptions() {
-    options.addOption("s", START, false, "Start spark");
-    options.addOption("nu", NO_UI, false, "No UI");
-    options.addOption("y", YARN, false, "Yarn mode");
-
-    options.addOption("v", VERSION, true, "Load spark version");
-  }
-
-  public Options getOptions() {
-    return options;
-  }
+public interface JobLinkFactory {
+  String create(SparkSession sparkSession, int jobId);
 }

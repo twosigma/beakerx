@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.scala.magic.command;
 
-public interface StageLinkFactory {
-  String create(int stageId);
+public interface SparkUiWebUrlFactory {
+
+  String create();
 }

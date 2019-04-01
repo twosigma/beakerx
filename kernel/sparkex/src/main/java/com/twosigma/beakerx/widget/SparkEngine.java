@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.scala.magic.command.JobLinkFactory;
+import com.twosigma.beakerx.scala.magic.command.SparkUiWebUrlFactory;
 import com.twosigma.beakerx.scala.magic.command.StageLinkFactory;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
@@ -46,11 +47,13 @@ public interface SparkEngine {
 
   void configAutoStart();
 
-  String stageLink(SparkSession sparkSession, int stageId);
+  String stageLink(int stageId);
 
-  String jobLink(SparkSession sparkSession, int jobId);
+  String jobLink(int jobId);
 
-  void jobLinkFactory(JobLinkFactory jobLinkFactory);
+  void jobLinkFactory(JobLinkFactory factory);
 
-  void stageLinkFactory(StageLinkFactory stageLinkFactory);
+  void stageLinkFactory(StageLinkFactory factory);
+
+  void sparkUiWebUrlFactory(SparkUiWebUrlFactory factory);
 }

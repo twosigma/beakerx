@@ -229,11 +229,11 @@ public class SparkUI extends VBox implements SparkUIApi {
   }
 
   private String stageLink(int stageId) {
-    return this.sparkEngine.stageLink(getSparkSession(), stageId);
+    return this.sparkEngine.stageLink(stageId);
   }
 
   private String jobLink(int jobId) {
-    return this.sparkEngine.jobLink(getSparkSession(), jobId);
+    return this.sparkEngine.jobLink(jobId);
   }
 
   public void cancelAllJobs() {

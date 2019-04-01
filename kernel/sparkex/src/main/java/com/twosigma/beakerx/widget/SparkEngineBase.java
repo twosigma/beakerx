@@ -23,11 +23,13 @@ import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.scala.magic.command.JobLinkFactory;
+import com.twosigma.beakerx.scala.magic.command.SparkUiWebUrlFactory;
 import com.twosigma.beakerx.scala.magic.command.StageLinkFactory;
 import com.twosigma.beakerx.widget.configuration.SparkConfiguration;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.RuntimeConfig;
 import org.apache.spark.sql.SparkSession;
+import org.jetbrains.annotations.NotNull;
 import scala.Tuple2;
 import scala.collection.Iterator;
 
@@ -57,49 +59,27 @@ abstract class SparkEngineBase implements SparkEngine {
 
   private ErrorPrinter errorPrinter;
   protected SparkEngineConf conf = new SparkEngineConf();
-
   private StageLinkFactory stageLinkFactory;
   private JobLinkFactory jobLinkFactory;
+  private SparkUiWebUrlFactory sparkUiWebUrlFactory;
 
   SparkEngineBase(SparkSession.Builder sparkSessionBuilder, ErrorPrinter errorPrinter) {
     this.sparkSessionBuilder = sparkSessionBuilder;
     this.errorPrinter = errorPrinter;
-    this.jobLinkFactory((sparkSession, jobId) -> {
-      if (sparkSession.sparkContext().uiWebUrl().isDefined()) {
-        return sparkSession.sparkContext().uiWebUrl().get() + "/jobs/job/?id=" + jobId;
-      } else {
-        return "";
-      }
-    });
-    this.stageLinkFactory((sparkSession, stageId) -> {
-      if (sparkSession.sparkContext().uiWebUrl().isDefined()) {
-        return sparkSession.sparkContext().uiWebUrl().get() + "/stages/stage/?id=" + stageId + "&attempt=0";
-      } else {
-        return "";
-      }
-    });
+    this.jobLinkFactory(createJobLinkFactory());
+    this.stageLinkFactory(createStageLinkFactory());
+    this.sparkUiWebUrlFactory(createSparkUiWebUrl());
   }
 
   @Override
-  public void jobLinkFactory(JobLinkFactory jobLinkFactory) {
-    this.jobLinkFactory = jobLinkFactory;
+  public String stageLink(int stageId) {
+    return this.stageLinkFactory.create(stageId);
   }
 
   @Override
-  public void stageLinkFactory(StageLinkFactory stageLinkFactory) {
-    this.stageLinkFactory = stageLinkFactory;
+  public String jobLink(int jobId) {
+    return this.jobLinkFactory.create(jobId);
   }
-
-  @Override
-  public String stageLink(SparkSession sparkSession, int stageId) {
-    return this.stageLinkFactory.create(sparkSession, stageId);
-  }
-
-  @Override
-  public String jobLink(SparkSession sparkSession, int jobId) {
-    return this.jobLinkFactory.create(sparkSession, jobId);
-  }
-
 
   @Override
   public void additionalConf(SparkEngineConf conf) {
@@ -149,7 +129,7 @@ abstract class SparkEngineBase implements SparkEngine {
 
   @Override
   public String getSparkUiWebUrl() {
-    return getOrCreate().sparkContext().uiWebUrl().get();
+    return sparkUiWebUrlFactory.create();
   }
 
   @Override
@@ -275,6 +255,48 @@ abstract class SparkEngineBase implements SparkEngine {
 
   private static boolean isLocalSpark(SparkConf sparkConf) {
     return sparkConf.contains(SPARK_MASTER) && sparkConf.get(SPARK_MASTER) != null && sparkConf.get("spark.master").startsWith("local");
+  }
+
+  @Override
+  public void jobLinkFactory(JobLinkFactory jobLinkFactory) {
+    this.jobLinkFactory = jobLinkFactory;
+  }
+
+  @Override
+  public void stageLinkFactory(StageLinkFactory stageLinkFactory) {
+    this.stageLinkFactory = stageLinkFactory;
+  }
+
+  @Override
+  public void sparkUiWebUrlFactory(SparkUiWebUrlFactory factory) {
+    this.sparkUiWebUrlFactory = factory;
+  }
+
+  @NotNull
+  private StageLinkFactory createStageLinkFactory() {
+    return (stageId) -> {
+      if (getOrCreate().sparkContext().uiWebUrl().isDefined()) {
+        return getOrCreate().sparkContext().uiWebUrl().get() + "/stages/stage/?id=" + stageId + "&attempt=0";
+      } else {
+        return "";
+      }
+    };
+  }
+
+  @NotNull
+  private JobLinkFactory createJobLinkFactory() {
+    return (jobId) -> {
+      if (getOrCreate().sparkContext().uiWebUrl().isDefined()) {
+        return getOrCreate().sparkContext().uiWebUrl().get() + "/jobs/job/?id=" + jobId;
+      } else {
+        return "";
+      }
+    };
+  }
+
+  @NotNull
+  private SparkUiWebUrlFactory createSparkUiWebUrl() {
+    return () -> getOrCreate().sparkContext().uiWebUrl().get();
   }
 
 }

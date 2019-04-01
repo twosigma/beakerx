@@ -19,6 +19,7 @@ import com.twosigma.beakerx.kernel.KernelInfo;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widget.SparkEngine;
 import com.twosigma.beakerx.widget.SparkEngineConf;
+import org.apache.spark.sql.SparkSession;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,19 +41,20 @@ public class YarnSparkOptionCommand implements SparkMagicCommandOptions.SparkOpt
     configs.put("spark.yarn.jars", KernelInfo.mvnRepoPath() + "/*");
     conf.setConfigs(configs);
     sparkEngine.additionalConf(conf);
-    sparkEngine.stageLinkFactory((sparkSession, stageId) -> {
-      if (sparkSession.sparkContext().getConf().contains(PROXY_URI_BASES)) {
-        String url = sparkSession.sparkContext().getConf().get(PROXY_URI_BASES);
-        return url + "/stages/stage/?id=" + stageId + "&attempt=0";
+    sparkEngine.sparkUiWebUrlFactory(() -> {
+      SparkSession sparkSession = sparkEngine.getOrCreate();
+      if (sparkSession!= null && sparkSession.sparkContext().getConf().contains(PROXY_URI_BASES)) {
+        return sparkEngine.getOrCreate().sparkContext().getConf().get(PROXY_URI_BASES);
       }
       return "";
     });
-    sparkEngine.jobLinkFactory((sparkSession, jobId) -> {
-      if (sparkSession.sparkContext().getConf().contains(PROXY_URI_BASES)) {
-        String url = sparkSession.sparkContext().getConf().get(PROXY_URI_BASES);
-        return url + "/jobs/job/?id=" + jobId;
-      }
-      return "";
+    sparkEngine.stageLinkFactory((stageId) -> {
+      String url = sparkEngine.getSparkUiWebUrl();
+      return url + "/stages/stage/?id=" + stageId + "&attempt=0";
+    });
+    sparkEngine.jobLinkFactory((jobId) -> {
+      String url = sparkEngine.getSparkUiWebUrl();
+      return url + "/jobs/job/?id=" + jobId;
     });
   }
 

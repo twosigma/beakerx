@@ -15,8 +15,6 @@
  */
 package com.twosigma.beakerx.scala.magic.command;
 
-import org.apache.spark.sql.SparkSession;
-
 public interface JobLinkFactory {
-  String create(SparkSession sparkSession, int jobId);
+  String create(int jobId);
 }

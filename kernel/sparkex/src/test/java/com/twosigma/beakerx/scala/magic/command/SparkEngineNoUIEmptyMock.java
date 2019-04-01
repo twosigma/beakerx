@@ -83,12 +83,12 @@ public class SparkEngineNoUIEmptyMock implements SparkEngineNoUI {
   }
 
   @Override
-  public String stageLink(SparkSession sparkSession, int stageId) {
+  public String stageLink(int stageId) {
     return null;
   }
 
   @Override
-  public String jobLink(SparkSession sparkSession, int jobId) {
+  public String jobLink(int jobId) {
     return null;
   }
 
@@ -99,6 +99,11 @@ public class SparkEngineNoUIEmptyMock implements SparkEngineNoUI {
 
   @Override
   public void stageLinkFactory(StageLinkFactory stageLinkFactory) {
+
+  }
+
+  @Override
+  public void sparkUiWebUrlFactory(SparkUiWebUrlFactory factory) {
 
   }
 }

@@ -40,7 +40,7 @@ describe('(Groovy) Testing of MIME types', function () {
 
   describe('(Groovy) Display MIME types ', function () {
     var testValues = {
-      mathematicalSymbols: /α+η/,
+      mathematicalSymbols: /𝛼+𝜂/,
       headerText: /Hello, world!/,
       markdownTestValue: /It's very easy to do bold and italics:/,
       markdownBoldValue: /bold/,
@@ -53,9 +53,9 @@ describe('(Groovy) Testing of MIME types', function () {
       cellIndex = 0;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText();
-      expect(result.charCodeAt(0).toString(16)).toEqual('3b1');
-      expect(result.charCodeAt(1).toString(16)).toEqual('2b');
-      expect(result.charCodeAt(2).toString(16)).toEqual('3b7');
+      expect(result.charCodeAt(1).toString(16)).toEqual('defc');
+      expect(result.charCodeAt(2).toString(16)).toEqual('2b');
+      expect(result.charCodeAt(4).toString(16)).toEqual('df02');
     });
 
     it('(HTML) Cell displays html code ', function () {
@@ -86,9 +86,9 @@ describe('(Groovy) Testing of MIME types', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText();
-      expect(result.charCodeAt(0).toString(16)).toEqual('3b1');
-      expect(result.charCodeAt(1).toString(16)).toEqual('2b');
-      expect(result.charCodeAt(2).toString(16)).toEqual('3b7');
+      expect(result.charCodeAt(1).toString(16)).toEqual('defc');
+      expect(result.charCodeAt(2).toString(16)).toEqual('2b');
+      expect(result.charCodeAt(4).toString(16)).toEqual('df02');
     });
 
     it('(FileLinks) Cell outputs multiple file links ', function () {

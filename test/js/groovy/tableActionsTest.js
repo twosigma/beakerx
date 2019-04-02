@@ -44,6 +44,7 @@ describe('Testing of table Actions ', function () {
     it('ContextMenuItem should change table cell value ', function () {
       cellIndex = 0;
       codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      browser.pause(1000);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell1_case1.png');

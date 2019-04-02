@@ -138,6 +138,7 @@ var NotebookPageObject = function () {
 
   this.openUIWindow = function(){
     browser.newWindow('http://127.0.0.1:8888/tree');
+    browser.pause(1000);
     browser.window(browser.windowHandles().value[0]);
   };
 

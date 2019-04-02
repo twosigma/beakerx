@@ -87,8 +87,11 @@ describe('Testing of table Actions ', function () {
 
     it('Hide All Columns', function () {
       var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
-      maxWidth = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
       var tableMenu = beakerxPO.getTableIndexMenu(tblDisplay);
+      tableMenu.click('[data-command="Show All Columns"]');
+      browser.pause(1000);
+      maxWidth = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
+      tableMenu = beakerxPO.getTableIndexMenu(tblDisplay);
       tableMenu.click('[data-command="Hide All Columns"]');
       browser.pause(1000);
       var minWidth = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
@@ -97,9 +100,13 @@ describe('Testing of table Actions ', function () {
 
     it('Show All Columns', function () {
       var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
+      tableMenu = beakerxPO.getTableIndexMenu(tblDisplay);
+      tableMenu.click('[data-command="Hide All Columns"]');
+      browser.pause(1000);
       var width_1 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
       var tableMenu = beakerxPO.getTableIndexMenu(tblDisplay);
       tableMenu.click('[data-command="Show All Columns"]');
+      browser.pause(1000);
       var width_2 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
       expect(width_2).toBeGreaterThan(width_1);
       expect(maxWidth).toEqual(width_2);

@@ -138,12 +138,14 @@ var NotebookPageObject = function () {
 
   this.openUIWindow = function(){
     browser.newWindow('http://127.0.0.1:8888/tree');
+    browser.pause(1000);
     browser.window(browser.windowHandles().value[0]);
   };
 
   this.setJVMProperties = function (heapSize, key, value, url) {
     this.openUIWindow();
     browser.window(browser.windowHandles().value[1]);
+    browser.pause(1000);
     browser.waitForEnabled('a#beakerx_tab');
     browser.click('a#beakerx_tab');
     browser.$$('li.p-TabBar-tab')[0].click();

@@ -36,7 +36,7 @@ describe('Testing of table Actions ', function () {
 
   var cellIndex;
   var imageDir = 'groovy/tableActions';
-  var width = 130, height = 65;
+  var width = 130, height = 67;
 
   describe('ContextMenuItem action ', function () {
     var codeCell;
@@ -44,8 +44,10 @@ describe('Testing of table Actions ', function () {
     it('ContextMenuItem should change table cell value ', function () {
       cellIndex = 0;
       codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      browser.pause(1000);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell1_case1.png');
 
       codeCell.rightClick('canvas', 40, 40);
       browser.click('div.p-Menu-itemLabel=plusOne');

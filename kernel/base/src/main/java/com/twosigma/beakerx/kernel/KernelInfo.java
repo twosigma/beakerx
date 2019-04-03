@@ -13,16 +13,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget;
+package com.twosigma.beakerx.kernel;
 
-import com.twosigma.beakerx.TryResult;
-import com.twosigma.beakerx.kernel.KernelFunctionality;
-import com.twosigma.beakerx.message.Message;
+import static com.twosigma.beakerx.kernel.magic.command.MavenJarResolver.MVN_DIR;
 
-public interface SparkEngineWithUI extends SparkEngine {
+public class KernelInfo {
 
-  TryResult configure(KernelFunctionality kernel, SparkUIApi sparkUI, Message parentMessage);
+  public static String mvnRepoPath() {
+    KernelFunctionality kernel = KernelManager.get();
+    return kernel.getTempFolder().toString() + MVN_DIR;
+  }
 
-  boolean isAutoStart();
-
+  public static String outputDir() {
+    return KernelManager.get().getOutDir();
+  }
 }

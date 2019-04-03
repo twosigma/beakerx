@@ -25,6 +25,10 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.twosigma.beakerx.widget.SparkUIApi.SPARK_EXECUTOR_CORES;
+import static com.twosigma.beakerx.widget.SparkUIApi.SPARK_EXECUTOR_MEMORY;
+import static com.twosigma.beakerx.widget.SparkUIApi.SPARK_MASTER;
+
 public class SparkEngineNoUIImpl extends SparkEngineBase implements SparkEngineNoUI {
 
   SparkEngineNoUIImpl(SparkSession.Builder sparkSessionBuilder) {
@@ -33,8 +37,9 @@ public class SparkEngineNoUIImpl extends SparkEngineBase implements SparkEngineN
 
   @Override
   public TryResult configure(KernelFunctionality kernel, Message parentMessage) {
-    SparkConf sparkConf = getSparkConfBasedOn(this.sparkSessionBuilder);
-    sparkConf = configureSparkConf(sparkConf);
+    final SparkConf sparkConf = getSparkConfBasedOn(this.sparkSessionBuilder);
+    configureSparkConfDefaults(sparkConf);
+    configureSparkConf(sparkConf);
     this.sparkSessionBuilder = SparkSession.builder().config(sparkConf);
     TryResult sparkSessionTry = createSparkSession();
     if (sparkSessionTry.isError()) {
@@ -46,6 +51,18 @@ public class SparkEngineNoUIImpl extends SparkEngineBase implements SparkEngineN
       kernel.registerCancelHook(SparkVariable::cancelAllJobs);
     }
     return tryResultSparkContext;
+  }
+
+  private void configureSparkConfDefaults(SparkConf sparkConf) {
+    if (!sparkConf.contains(SPARK_MASTER)) {
+      this.conf.getMaster().ifPresent(sparkConf::setMaster);
+    }
+    if (!sparkConf.contains(SPARK_EXECUTOR_CORES)) {
+      this.conf.getExecutorCores().ifPresent(x -> sparkConf.set(SPARK_EXECUTOR_CORES, x));
+    }
+    if (!sparkConf.contains(SPARK_EXECUTOR_MEMORY)) {
+      this.conf.getExecutorMemory().ifPresent(x -> sparkConf.set(SPARK_EXECUTOR_MEMORY, x));
+    }
   }
 
   public interface SparkEngineNoUIFactory {

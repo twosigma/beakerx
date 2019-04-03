@@ -15,6 +15,8 @@
  */
 package com.twosigma.beakerx.scala.magic.command;
 
+import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.widget.SparkEngine;
 import com.twosigma.beakerx.widget.SparkEngineConf;
 import com.twosigma.beakerx.widget.SparkUiDefaults;
@@ -25,64 +27,67 @@ import org.junit.Test;
 
 import java.util.Map;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SparkMagicCommandOptionsTest {
+public class YarnSparkOptionCommandTest {
 
-  private SparkMagicCommandOptions sut;
-  private SparkEngineMock engineMock;
+  private YarnSparkOptionCommand sut;
+  private SparkEngineMock sparkEngineMock;
 
   @Before
-  public void setUp() {
-    engineMock = new SparkEngineMock();
-    sut = new SparkMagicCommandOptions();
+  public void setUp() throws Exception {
+    sparkEngineMock = new SparkEngineMock();
+    sut = new YarnSparkOptionCommand();
+    KernelManager.register(new KernelTest());
   }
 
   @Test
-  public void parseLongStartOption() {
+  public void yarnMaster() {
     //given
-    String options = "--start -v 2.2.1";
+
     //when
-    runOptions(options);
+    sut.run(sparkEngineMock, commMsg());
     //then
-    assertThat(engineMock.sparkConnected).isTrue();
+    assertThat(sparkEngineMock.conf.getMaster().get()).isEqualTo("yarn");
   }
 
   @Test
-  public void parseShortStartOption() {
+  public void yarnJobLink() {
     //given
-    String options = "-s";
+    sut.run(sparkEngineMock, commMsg());
     //when
-    runOptions(options);
+    String job = sparkEngineMock.jobLinkFactory.create(1);
     //then
-    assertThat(engineMock.sparkConnected).isTrue();
+    assertThat(job).contains("1");
   }
 
   @Test
-  public void unknownOption() {
+  public void yarnStageLink() {
     //given
-    String options = "--unknownOption";
+    sut.run(sparkEngineMock, commMsg());
     //when
-    SparkMagicCommandOptions.OptionsResult optionsResult = sut.parseOptions(args(options));
+    String stage = sparkEngineMock.stageLinkFactory.create(1);
     //then
-    assertThat(optionsResult.hasError()).isTrue();
+    assertThat(stage).contains("1");
   }
 
-  private void runOptions(String options) {
-    SparkMagicCommandOptions.OptionsResult optionsResult = sut.parseOptions(args(options));
+  @Test
+  public void yarnSparkUiWebUrl() {
+    //given
+    sut.run(sparkEngineMock, commMsg());
+    //when
+    String url = sparkEngineMock.sparkUiWebUrlFactory.create();
     //then
-    assertThat(optionsResult.hasError()).isFalse();
-    optionsResult.options().forEach(x -> x.run(engineMock, null));
+    assertThat(url).isNotNull();
   }
-
-  private String[] args(String options) {
-    return options.split(" ");
-  }
-
 
   class SparkEngineMock implements SparkEngine {
 
-    boolean sparkConnected = false;
+    private JobLinkFactory jobLinkFactory;
+    private StageLinkFactory stageLinkFactory;
+    private SparkUiWebUrlFactory sparkUiWebUrlFactory;
+    private SparkEngineConf conf;
 
     @Override
     public SparkSession getOrCreate() {
@@ -121,7 +126,7 @@ public class SparkMagicCommandOptionsTest {
 
     @Override
     public void additionalConf(SparkEngineConf conf) {
-
+      this.conf = conf;
     }
 
     @Override
@@ -131,7 +136,7 @@ public class SparkMagicCommandOptionsTest {
 
     @Override
     public void configAutoStart() {
-      this.sparkConnected = true;
+
     }
 
     @Override
@@ -145,18 +150,18 @@ public class SparkMagicCommandOptionsTest {
     }
 
     @Override
-    public void jobLinkFactory(JobLinkFactory jobLinkFactory) {
-
+    public void jobLinkFactory(JobLinkFactory factory) {
+      this.jobLinkFactory = factory;
     }
 
     @Override
-    public void stageLinkFactory(StageLinkFactory stageLinkFactory) {
-
+    public void stageLinkFactory(StageLinkFactory factory) {
+      this.stageLinkFactory = factory;
     }
 
     @Override
     public void sparkUiWebUrlFactory(SparkUiWebUrlFactory factory) {
-
+      this.sparkUiWebUrlFactory = factory;
     }
   }
 

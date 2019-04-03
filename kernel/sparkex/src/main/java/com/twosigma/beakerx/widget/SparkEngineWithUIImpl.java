@@ -46,6 +46,17 @@ public class SparkEngineWithUIImpl extends SparkEngineBase implements SparkEngin
     configureSparkSessionBuilder(this.sparkSessionBuilder);
   }
 
+  private boolean autoStart;
+
+  @Override
+  public void configAutoStart() {
+    this.autoStart = true;
+  }
+
+  public boolean isAutoStart() {
+    return this.autoStart;
+  }
+
   @Override
   public TryResult configure(KernelFunctionality kernel, SparkUIApi sparkUI, Message parentMessage) {
     SparkConf sparkConf = createSparkConf(sparkUI.getAdvancedOptions(), getSparkConfBasedOn(this.sparkSessionBuilder));
@@ -117,7 +128,6 @@ public class SparkEngineWithUIImpl extends SparkEngineBase implements SparkEngin
     builder.config(BEAKERX_ID, UUID.randomUUID().toString());
     return builder;
   }
-
 
   public interface SparkEngineWithUIFactory {
     SparkEngineWithUI create(SparkSession.Builder sparkSessionBuilder);

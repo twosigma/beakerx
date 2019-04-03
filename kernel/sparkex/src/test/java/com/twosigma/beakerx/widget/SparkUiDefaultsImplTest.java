@@ -64,11 +64,10 @@ public class SparkUiDefaultsImplTest {
   @Test
   public void loadAndSaveWithoutChangesShouldBeIdempotent() throws IOException {
     //given
-    SparkSession.Builder builder = SparkSession.builder();
     HashMap<String, Object> profileConfig = new HashMap<>();
     profileConfig.put(NAME, DEFAULT_PROFILE);
     //when
-    sut.loadDefaults(builder);
+    sut.loadDefaults();
     sut.saveProfile(profileConfig);
     //then
     Map<String, Map> result = beakerXJson.beakerxJsonAsMap();
@@ -165,11 +164,9 @@ public class SparkUiDefaultsImplTest {
     //when
     sut.saveProfile(profileConfig);
     //then
-    SparkSession.Builder builder = SparkSession.builder();
-    sut.loadDefaults(builder);
-    SparkConf sparkConfBasedOn = SparkEngineBase.getSparkConfBasedOn(builder);
-    assertThat(sparkConfBasedOn.get("sparkOption2")).isEqualTo("3");
-    assertThat(sparkConfBasedOn.get(SPARK_MASTER)).isEqualTo("local[4]");
+    sut.loadDefaults();
+    assertThat(sut.getProperties().get("sparkOption2")).isEqualTo("3");
+    assertThat(sut.get(SPARK_MASTER)).isEqualTo("local[4]");
   }
 
   @Test

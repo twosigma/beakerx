@@ -18,7 +18,9 @@ package com.twosigma.beakerx.scala.magic.command;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.SparkEngineConf;
 import com.twosigma.beakerx.widget.SparkEngineNoUI;
+import com.twosigma.beakerx.widget.SparkUiDefaults;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 
@@ -46,7 +48,7 @@ public class SparkEngineNoUIEmptyMock implements SparkEngineNoUI {
   }
 
   @Override
-  public Map<String, String> getAdvanceSettings() {
+  public Map<String, String> getAdvanceSettings(SparkUiDefaults defaults) {
     return null;
   }
 
@@ -63,5 +65,45 @@ public class SparkEngineNoUIEmptyMock implements SparkEngineNoUI {
   @Override
   public String sparkVersion() {
     return null;
+  }
+
+  @Override
+  public void additionalConf(SparkEngineConf conf) {
+
+  }
+
+  @Override
+  public SparkEngineConf getSparkEngineConf() {
+    return null;
+  }
+
+  @Override
+  public void configAutoStart() {
+
+  }
+
+  @Override
+  public String stageLink(int stageId) {
+    return null;
+  }
+
+  @Override
+  public String jobLink(int jobId) {
+    return null;
+  }
+
+  @Override
+  public void jobLinkFactory(JobLinkFactory jobLinkFactory) {
+
+  }
+
+  @Override
+  public void stageLinkFactory(StageLinkFactory stageLinkFactory) {
+
+  }
+
+  @Override
+  public void sparkUiWebUrlFactory(SparkUiWebUrlFactory factory) {
+
   }
 }

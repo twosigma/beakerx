@@ -17,6 +17,7 @@ package com.twosigma.beakerx.kernel.magic.command;
 
 import com.twosigma.beakerx.autocomplete.MagicCommandAutocompletePatterns;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.KernelInfo;
 import com.twosigma.beakerx.kernel.magic.autocomplete.MagicCommandAutocompletePatternsImpl;
 import com.twosigma.beakerx.kernel.magic.command.functionality.AddImportMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.AddStaticImportMagicCommand;
@@ -169,7 +170,7 @@ public class MagicCommandConfigurationImpl implements MagicCommandConfiguration 
   private MavenJarResolver.ResolverParams getMvnMagicCommandParams(KernelFunctionality kernel) {
     return new MavenJarResolver.ResolverParams(
             kernel.getCacheFolder().toString() + "/maven/cache",
-            kernel.getTempFolder().toString() + MVN_DIR);
+            KernelInfo.mvnRepoPath());
   }
 
   private MagicCommandType addJarByMvnCell(KernelFunctionality kernel) {

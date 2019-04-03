@@ -63,6 +63,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.twosigma.beakerx.AutotranslationServiceImpl.BEAKERX;
 import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static java.util.Arrays.asList;
 import static java.util.Collections.synchronizedList;
@@ -415,7 +416,9 @@ public class KernelTest implements KernelFunctionality {
 
     @Override
     public Map<String, Map> beakerxJsonAsMap() {
-      return null;
+      HashMap<String, Map> stringMapHashMap = new HashMap<>();
+      stringMapHashMap.put(BEAKERX, new HashMap());
+      return stringMapHashMap;
     }
 
     @Override

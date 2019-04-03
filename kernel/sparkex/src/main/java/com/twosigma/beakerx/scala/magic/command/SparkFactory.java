@@ -23,7 +23,5 @@ import java.util.List;
 
 public interface SparkFactory {
 
-  MagicCommandOutcomeItem createSparkUI(MagicCommandExecutionParam param, List<SparkOptionCommand> options);
-
-  MagicCommandOutcomeItem createSparkWithoutUI(MagicCommandExecutionParam param);
+  MagicCommandOutcomeItem createSpark(MagicCommandExecutionParam param, List<SparkOptionCommand> options);
 }

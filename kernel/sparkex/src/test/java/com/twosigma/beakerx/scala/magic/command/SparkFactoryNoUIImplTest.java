@@ -16,6 +16,7 @@ package com.twosigma.beakerx.scala.magic.command;
  *  limitations under the License.
  */
 
+import com.google.common.collect.ImmutableList;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.Code;
@@ -25,7 +26,9 @@ import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widget.SparkEngineNoUI;
 import com.twosigma.beakerx.widget.SparkEngineNoUIImpl;
+import com.twosigma.beakerx.widget.SparkEngineWithUI;
 import com.twosigma.beakerx.widget.SparkUI;
+import com.twosigma.beakerx.widget.SparkUiDefaults;
 import org.apache.spark.sql.SparkSession;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
@@ -48,7 +51,7 @@ public class SparkFactoryNoUIImplTest {
   public void setUp() throws Exception {
     kernel = new KernelFunctionalityMock();
     sparkEngineNoUIFactory = new SparkEngineNoUIFactoryMock();
-    sparkFactory = new SparkFactoryImpl(kernel, sparkEngineNoUIFactory, new SparkUIFactoryMock());
+    sparkFactory = new SparkFactoryImpl(kernel, sparkEngineNoUIFactory, new SparkUIFactoryMock(), new SparkFactoryWithUIImplTest.SparkUiDefaultsImplMock());
   }
 
   @Test
@@ -56,7 +59,7 @@ public class SparkFactoryNoUIImplTest {
     //given
     sparkEngineNoUIFactory.goodConfiguration();
     //when
-    MagicCommandOutcomeItem sparkWithoutUI = sparkFactory.createSparkWithoutUI(sparkNoUIParam());
+    MagicCommandOutcomeItem sparkWithoutUI = sparkFactory.createSpark(sparkNoUIParam(), ImmutableList.of(new NoUISparkOptionCommand()));
     //then
     assertThat(sparkWithoutUI.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.OK);
     Object data = sparkWithoutUI.getMIMEContainer().get().getData();
@@ -68,7 +71,7 @@ public class SparkFactoryNoUIImplTest {
     //given
     sparkEngineNoUIFactory.wrongConfiguration();
     //when
-    MagicCommandOutcomeItem sparkWithoutUI = sparkFactory.createSparkWithoutUI(sparkNoUIParam());
+    MagicCommandOutcomeItem sparkWithoutUI = sparkFactory.createSpark(sparkNoUIParam(), ImmutableList.of(new NoUISparkOptionCommand()));
     //then
     assertThat(sparkWithoutUI.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.ERROR);
   }
@@ -78,7 +81,7 @@ public class SparkFactoryNoUIImplTest {
     //given
     kernel.result = TryResult.createResult(null);
     //when
-    MagicCommandOutcomeItem sparkWithoutUI = sparkFactory.createSparkWithoutUI(sparkNoUIParam());
+    MagicCommandOutcomeItem sparkWithoutUI = sparkFactory.createSpark(sparkNoUIParam(), ImmutableList.of(new NoUISparkOptionCommand()));
     //then
     assertThat(sparkWithoutUI.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.ERROR);
     Object data = sparkWithoutUI.getMIMEContainer().get().getData();
@@ -124,7 +127,7 @@ public class SparkFactoryNoUIImplTest {
   class SparkUIFactoryMock implements SparkUI.SparkUIFactory {
 
     @Override
-    public SparkUI create(SparkSession.Builder builder) {
+    public SparkUI create(SparkSession.Builder builder, SparkEngineWithUI sparkEngineWithUI, SparkUiDefaults sparkUiDefaults) {
       return null;
     }
   }

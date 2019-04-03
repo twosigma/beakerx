@@ -58,11 +58,10 @@ public class SparkUI extends VBox implements SparkUIApi {
   private SparkUiDefaults sparkUiDefaults;
   private SingleSparkSession singleSparkSession;
 
-  SparkUI(SparkSession.Builder builder, SparkEngineWithUIImpl.SparkEngineWithUIFactory sparkEngineFactory, SparkUiDefaults sparkUiDefaults, SingleSparkSession singleSparkSession) {
+  SparkUI(SparkEngineWithUI sparkEngine, SparkUiDefaults sparkUiDefaults, SingleSparkSession singleSparkSession) {
     super(new ArrayList<>());
     this.sparkUiDefaults = sparkUiDefaults;
-    this.sparkUiDefaults.loadDefaults(builder);
-    this.sparkEngine = sparkEngineFactory.create(builder);
+    this.sparkEngine = sparkEngine;
     this.singleSparkSession = singleSparkSession;
     VBox sparkUIFormPanel = new VBox(new ArrayList<>());
     add(sparkUIFormPanel);
@@ -230,19 +229,11 @@ public class SparkUI extends VBox implements SparkUIApi {
   }
 
   private String stageLink(int stageId) {
-    if (getSparkSession().sparkContext().uiWebUrl().isDefined()) {
-      return getSparkSession().sparkContext().uiWebUrl().get() + "/stages/stage/?id=" + stageId + "&attempt=0";
-    } else {
-      return "";
-    }
+    return this.sparkEngine.stageLink(stageId);
   }
 
   private String jobLink(int jobId) {
-    if (getSparkSession().sparkContext().uiWebUrl().isDefined()) {
-      return getSparkSession().sparkContext().uiWebUrl().get() + "/jobs/job/?id=" + jobId;
-    } else {
-      return "";
-    }
+    return this.sparkEngine.jobLink(jobId);
   }
 
   public void cancelAllJobs() {
@@ -273,24 +264,26 @@ public class SparkUI extends VBox implements SparkUIApi {
     return this.sparkUIForm.getConnectButton();
   }
 
+  public void afterDisplay(Message parent) {
+    if (this.sparkEngine.isAutoStart()) {
+      getConnectButton().onClick(new HashMap(), parent);
+    }
+  }
+
   public interface SparkUIFactory {
-    SparkUI create(SparkSession.Builder builder);
+    SparkUIApi create(SparkSession.Builder builder, SparkEngineWithUI sparkEngineWithUI, SparkUiDefaults sparkUiDefaults);
   }
 
   public static class SparkUIFactoryImpl implements SparkUIFactory {
-    SparkEngineWithUIImpl.SparkEngineWithUIFactory sparkEngineFactory;
-    SparkUiDefaults sparkUiDefaults;
     private SingleSparkSession singleSparkSession;
 
-    public SparkUIFactoryImpl(SparkEngineWithUIImpl.SparkEngineWithUIFactory sparkEngineWithUIFactory, SparkUiDefaults sparkUiDefaults, SingleSparkSession singleSparkSession) {
-      this.sparkEngineFactory = sparkEngineWithUIFactory;
-      this.sparkUiDefaults = sparkUiDefaults;
+    public SparkUIFactoryImpl(SingleSparkSession singleSparkSession) {
       this.singleSparkSession = singleSparkSession;
     }
 
     @Override
-    public SparkUI create(SparkSession.Builder builder) {
-      return new SparkUI(builder, sparkEngineFactory, sparkUiDefaults, singleSparkSession);
+    public SparkUI create(SparkSession.Builder builder, SparkEngineWithUI sparkEngine, SparkUiDefaults sparkUiDefaults) {
+      return new SparkUI(sparkEngine, sparkUiDefaults, singleSparkSession);
     }
   }
 

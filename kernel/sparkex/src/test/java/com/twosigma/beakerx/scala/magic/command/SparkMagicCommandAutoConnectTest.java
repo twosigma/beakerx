@@ -20,7 +20,7 @@ import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.widget.SingleSparkSession;
-import com.twosigma.beakerx.widget.SparkEngineWithUIImpl;
+import com.twosigma.beakerx.widget.SparkEngineWithUI;
 import com.twosigma.beakerx.widget.SparkUI;
 import com.twosigma.beakerx.widget.SparkUiDefaults;
 import org.apache.spark.sql.SparkSession;
@@ -28,8 +28,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,9 +41,9 @@ public class SparkMagicCommandAutoConnectTest {
   @Before
   public void setUp() {
     singleSparkSession = new SparkMagicCommand.SingleSparkSessionImpl();
-    SparkUI.SparkUIFactory sparkUIFactory = createSparkUIFactory(new SparkMagicCommandTest.SparkEngineWithUIFactoryMock(), singleSparkSession);
+    SparkUI.SparkUIFactory sparkUIFactory = createSparkUIFactory(singleSparkSession);
     KernelTest kernel = new KernelTest();
-    sparkMagicCommand = new SparkMagicCommand(kernel, new SparkFactoryImpl(kernel, new SparkMagicCommandTest.SparkManagerNoUIFactoryMock(), sparkUIFactory));
+    sparkMagicCommand = new SparkMagicCommand(kernel, new SparkFactoryImpl(kernel, new SparkMagicCommandTest.SparkManagerNoUIFactoryMock(), sparkUIFactory, new SparkFactoryWithUIImplTest.SparkUiDefaultsImplMock()));
   }
 
   @Test
@@ -84,67 +82,15 @@ public class SparkMagicCommandAutoConnectTest {
     return execute;
   }
 
-  private SparkUI.SparkUIFactory createSparkUIFactory(SparkEngineWithUIImpl.SparkEngineWithUIFactory sparkManagerFactory, SingleSparkSession singleSparkSession) {
+  private SparkUI.SparkUIFactory createSparkUIFactory(SingleSparkSession singleSparkSession) {
     return new SparkUI.SparkUIFactory() {
-      private SparkUI.SparkUIFactoryImpl factory = new SparkUI.SparkUIFactoryImpl(sparkManagerFactory, new SparkUiDefaults() {
-
-        @Override
-        public void saveSparkConf(List<Map<String, Object>> sparkConf) {
-
-        }
-
-        @Override
-        public void loadDefaults(SparkSession.Builder builder) {
-
-        }
-
-        @Override
-        public List<Map<String, Object>> getProfiles() {
-          return null;
-        }
-
-        @Override
-        public Map<String, Object> getProfileByName(String name) {
-          return null;
-        }
-
-        @Override
-        public void removeSparkConf(String profileName) {
-
-        }
-
-        @Override
-        public void loadProfiles() {
-
-        }
-
-        @Override
-        public void saveProfile(Map<String, Object> profile) {
-
-        }
-
-        @Override
-        public List<String> getProfileNames() {
-          return null;
-        }
-
-        @Override
-        public void saveProfileName(String profileName) {
-
-        }
-
-        @Override
-        public String getCurrentProfileName() {
-          return null;
-        }
-
-      }, singleSparkSession);
-
       @Override
-      public SparkUI create(SparkSession.Builder builder) {
-        sparkUI = factory.create(builder);
+      public SparkUI create(SparkSession.Builder builder, SparkEngineWithUI sparkEngineWithUI, SparkUiDefaults sparkUiDefaults) {
+        sparkUI = factory.create(builder, sparkEngineWithUI, sparkUiDefaults);
         return sparkUI;
       }
+
+      private SparkUI.SparkUIFactoryImpl factory = new SparkUI.SparkUIFactoryImpl(singleSparkSession);
     };
   }
 

@@ -21,7 +21,13 @@ import com.twosigma.beakerx.kernel.magic.command.functionality.MvnLoggerWidget;
 import com.twosigma.beakerx.util.Preconditions;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.maven.shared.invoker.*;
+import org.apache.maven.shared.invoker.DefaultInvocationRequest;
+import org.apache.maven.shared.invoker.DefaultInvoker;
+import org.apache.maven.shared.invoker.InvocationRequest;
+import org.apache.maven.shared.invoker.InvocationResult;
+import org.apache.maven.shared.invoker.Invoker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,7 +37,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -43,6 +55,8 @@ public class MavenJarResolver {
   public static final String POM_XML = "PomTemplateMagicCommand.xml";
   public static final String GOAL = "validate";
   public static final String MAVEN_BUILT_CLASSPATH_FILE_NAME = "mavenclasspathfilename.txt";
+
+  private static final Logger logger = LoggerFactory.getLogger(MavenJarResolver.class);
 
   private final String pathToMavenRepo;
   private ResolverParams commandParams;
@@ -142,7 +156,9 @@ public class MavenJarResolver {
   private List<String> transformFromMavenRepoToKernelRepo(List<String> jarNamesFromBuildClasspath, Map<String, Path> jarNames) {
     List<String> result = new ArrayList<>();
     jarNamesFromBuildClasspath.forEach(jarName -> {
-      result.add(jarNames.get(jarName).toAbsolutePath().toString());
+      if (jarNames.get(jarName) != null) {
+        result.add(jarNames.get(jarName).toAbsolutePath().toString());
+      }
     });
     return result;
   }

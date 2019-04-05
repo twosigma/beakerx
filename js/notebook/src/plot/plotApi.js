@@ -659,7 +659,9 @@ define([ 'underscore' ], function(_) {
        "x_label": data.xLabel,
        "plots": getValue(data, 'plots', []),
        "weights": getValue(data, 'weights', []),
-       "auto_zoom": data.autoZoom
+       "auto_zoom": data.autoZoom,
+       "x_tickLabels_visible": true,
+       "y_tickLabels_visible": true,
      });
      this.version = 'groovy';
      setPlotType(this);

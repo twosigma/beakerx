@@ -26,6 +26,8 @@ import { themeLightPlugin, themeDarkPlugin } from './theme';
 import beakerx from "./beakerx";
 import {databrowserPlugin} from "./databrowser";
 
+import '../style/index.css';
+
 export const beakerx_ext: JupyterLabPlugin<void>|IPlugin<JupyterLab, void> = {
   id: 'beakerx',
   requires: [IJupyterWidgetRegistry, ISettingRegistry],

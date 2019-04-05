@@ -16,7 +16,6 @@
 
 @import './fonts.css';
 @import './base.css';
-@import './databrowser.css';
 
 body {
   background-color: var(--jp-layout-color3);

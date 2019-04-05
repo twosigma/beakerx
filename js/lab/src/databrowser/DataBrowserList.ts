@@ -102,6 +102,16 @@ export default class DataBrowserList extends Widget {
   }
 
   private displayElement(elData: IDataBrowserProviderListItem) {
+    if (this.dataBrowser.currentPanel === null) {
+      this.doDisplayElement(elData);
+    } else {
+      this.dataBrowser.currentPanel.session.ready.then(() => {
+        this.doDisplayElement(elData);
+      });
+    }
+  }
+
+  private doDisplayElement(elData: IDataBrowserProviderListItem) {
     this.isDetail = true;
     this.detailName = elData.name;
 

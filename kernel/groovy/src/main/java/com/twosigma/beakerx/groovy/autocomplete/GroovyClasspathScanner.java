@@ -15,14 +15,14 @@
  */
 package com.twosigma.beakerx.groovy.autocomplete;
 
-import com.twosigma.beakerx.autocomplete.ClasspathScanner;
+import com.twosigma.beakerx.autocomplete.AutocompleteClasspathScanner;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GroovyClasspathScanner extends ClasspathScanner {
+public class GroovyClasspathScanner extends AutocompleteClasspathScanner {
   protected Map<String,String> fileForClass;
   
   public GroovyClasspathScanner() {

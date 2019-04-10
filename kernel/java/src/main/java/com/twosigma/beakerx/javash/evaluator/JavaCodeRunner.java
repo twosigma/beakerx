@@ -50,8 +50,6 @@ class JavaCodeRunner implements Callable<TryResult> {
 
   @Override
   public TryResult call() throws Exception {
-    ClassLoader oldld = Thread.currentThread().getContextClassLoader();
-    Thread.currentThread().setContextClassLoader(javaEvaluator.getJavaClassLoader());
     TryResult either;
     try {
       theOutput.setOutputHandler();
@@ -69,7 +67,6 @@ class JavaCodeRunner implements Callable<TryResult> {
       }
     } finally {
       theOutput.clrOutputHandler();
-      Thread.currentThread().setContextClassLoader(oldld);
     }
     return either;
   }

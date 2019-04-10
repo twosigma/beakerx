@@ -24,7 +24,7 @@ public class ClasspathScannerTest {
   @Test
   public void createClasspathScanner_hasPackagesAndClasses(){
     //when
-    ClasspathScanner cps = new ClasspathScanner();
+    AutocompleteClasspathScanner cps = new AutocompleteClasspathScanner();
     //then
     Assertions.assertThat(cps.getPackages()).isNotEmpty();
     Assertions.assertThat(cps.getClasses("java.lang")).isNotEmpty();

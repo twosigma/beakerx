@@ -26,11 +26,11 @@ import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.CacheFolderFactory;
 import com.twosigma.beakerx.kernel.Classpath;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.ExecutionOptions;
 import com.twosigma.beakerx.kernel.GroupName;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
-import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.io.FileUtils;
@@ -65,7 +65,14 @@ public class EvaluatorTest extends BaseEvaluator {
   }
 
   public EvaluatorTest(String id, String sId, CellExecutor cellExecutor, EvaluatorParameters kernelParameters, BeakerXClient beakerXClient) {
-    super(id, sId, cellExecutor, getTestTempFolderFactory(), kernelParameters, beakerXClient, new MagicCommandAutocompletePatternsMock());
+    super(id,
+            sId,
+            cellExecutor,
+            getTestTempFolderFactory(),
+            kernelParameters,
+            beakerXClient,
+            new MagicCommandAutocompletePatternsMock(),
+            new ClasspathScannerMock());
   }
 
   @Override

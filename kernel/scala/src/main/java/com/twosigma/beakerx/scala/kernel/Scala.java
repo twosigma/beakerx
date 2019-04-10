@@ -19,25 +19,21 @@ import com.twosigma.beakerx.BeakerXCommRepository;
 import com.twosigma.beakerx.CommRepository;
 import com.twosigma.beakerx.DisplayerDataMapper;
 import com.twosigma.beakerx.NamespaceClient;
+import com.twosigma.beakerx.evaluator.ClasspathScannerImpl;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
-import com.twosigma.beakerx.kernel.BeakerXJson;
 import com.twosigma.beakerx.kernel.BeakerXJsonConfig;
-import com.twosigma.beakerx.kernel.CacheFolderFactory;
-import com.twosigma.beakerx.kernel.CloseKernelAction;
-import com.twosigma.beakerx.kernel.CustomMagicCommandsFactory;
+import com.twosigma.beakerx.kernel.Configuration;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelConfigurationFile;
 import com.twosigma.beakerx.kernel.KernelRunner;
-import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfiguration;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfigurationImpl;
-import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.restserver.impl.GetUrlArgHandler;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.scala.comm.ScalaCommOpenHandler;
@@ -60,42 +56,8 @@ import static com.twosigma.beakerx.kernel.Utils.uuid;
 
 public class Scala extends Kernel {
 
-  private Scala(final String id,
-                final Evaluator evaluator,
-                KernelSocketsFactory kernelSocketsFactory,
-                CommRepository commRepository,
-                BeakerXServer beakerXServer,
-                MagicCommandConfiguration magicCommandConfiguration,
-                BeakerXJson beakerXJson) {
-    super(id,
-            evaluator,
-            kernelSocketsFactory,
-            new CustomMagicCommandsImpl(),
-            commRepository,
-            beakerXServer,
-            magicCommandConfiguration,
-            beakerXJson);
-  }
-
-  public Scala(final String id, final Evaluator evaluator,
-               KernelSocketsFactory kernelSocketsFactory,
-               CloseKernelAction closeKernelAction,
-               CacheFolderFactory cacheFolderFactory,
-               CustomMagicCommandsFactory customMagicCommandsFactory,
-               CommRepository commRepository,
-               BeakerXServer beakerXServer,
-               MagicCommandConfiguration magicCommandConfiguration,
-               BeakerXJson beakerXJson) {
-    super(id,
-            evaluator,
-            kernelSocketsFactory,
-            closeKernelAction,
-            cacheFolderFactory,
-            customMagicCommandsFactory,
-            commRepository,
-            beakerXServer,
-            magicCommandConfiguration,
-            beakerXJson);
+  public Scala(final String sessionId, final Evaluator evaluator, Configuration configuration) {
+    super(sessionId, evaluator, configuration);
   }
 
   @Override
@@ -124,14 +86,17 @@ public class Scala extends Kernel {
               new TempFolderFactoryImpl(),
               getKernelParameters(),
               namespaceClient,
-              magicConfiguration.patterns());
+              magicConfiguration.patterns(),
+              new ClasspathScannerImpl());
       return new Scala(id,
               se,
-              kernelSocketsFactory,
-              commRepository,
-              new ScalaBeakerXServer(new GetUrlArgHandler(namespaceClient)),
-              magicConfiguration,
-              new BeakerXJsonConfig());
+              new Configuration(
+                      kernelSocketsFactory,
+                      new CustomMagicCommandsImpl(),
+                      commRepository,
+                      new ScalaBeakerXServer(new GetUrlArgHandler(namespaceClient)),
+                      magicConfiguration,
+                      new BeakerXJsonConfig()));
     });
   }
 

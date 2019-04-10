@@ -85,4 +85,8 @@ public interface Evaluator {
   BeakerXClient getBeakerX();
 
   void putEvaluationInToBackground();
+
+  void startEvaluation();
+
+  void endEvaluation();
 }

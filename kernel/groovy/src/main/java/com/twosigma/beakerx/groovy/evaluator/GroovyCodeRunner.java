@@ -44,13 +44,11 @@ class GroovyCodeRunner implements Callable<TryResult> {
 
   @Override
   public TryResult call() {
-    ClassLoader oldld = Thread.currentThread().getContextClassLoader();
     TryResult either;
     String scriptName = SCRIPT_NAME;
     try {
       Object result = null;
       theOutput.setOutputHandler();
-      Thread.currentThread().setContextClassLoader(groovyEvaluator.getGroovyClassLoader());
       scriptName += System.currentTimeMillis();
       Class<?> parsedClass = groovyEvaluator.getGroovyClassLoader().parseClass(theCode, scriptName);
       if (canBeInstantiated(parsedClass)) {
@@ -64,7 +62,6 @@ class GroovyCodeRunner implements Callable<TryResult> {
       either = handleError(scriptName, e);
     } finally {
       theOutput.clrOutputHandler();
-      Thread.currentThread().setContextClassLoader(oldld);
     }
     return either;
   }

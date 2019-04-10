@@ -20,8 +20,11 @@ import com.twosigma.beakerx.BeakerXServerMock;
 import com.twosigma.beakerx.KernelExecutionTest;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.MagicCommandConfigurationMock;
+import com.twosigma.beakerx.RuntimetoolsMock;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.Code;
+import com.twosigma.beakerx.kernel.Configuration;
+import com.twosigma.beakerx.kernel.CustomMagicCommandsEmptyImpl;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.Utils;
@@ -58,14 +61,16 @@ public class GroovyKernelTest extends KernelExecutionTest {
   protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
     return new Groovy(sessionId,
             groovyEvaluator(),
-            kernelSocketsFactory,
-            closeKernelAction,
-            getCacheFolderFactory(),
-            new BeakerXCommRepositoryMock(),
-            BeakerXServerMock.create(),
-            new MagicCommandConfigurationMock(),
-            new KernelTest.BeakerXJsonMock()
-            );
+            new Configuration(
+                    kernelSocketsFactory,
+                    closeKernelAction,
+                    getCacheFolderFactory(),
+                    new CustomMagicCommandsEmptyImpl(),
+                    new BeakerXCommRepositoryMock(),
+                    BeakerXServerMock.create(),
+                    new MagicCommandConfigurationMock(),
+                    new KernelTest.BeakerXJsonMock(),
+                    new RuntimetoolsMock()));
   }
 
   @Test

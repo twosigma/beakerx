@@ -18,6 +18,8 @@ package com.twosigma.beakerx.groovy;
 import com.twosigma.beakerx.AutotranslationService;
 import com.twosigma.beakerx.BeakerXClient;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.ClasspathScanner;
+import com.twosigma.beakerx.evaluator.ClasspathScannerMock;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.evaluator.MagicCommandAutocompletePatternsMock;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
@@ -65,12 +67,17 @@ public class TestGroovyEvaluator {
             getTestTempFolderFactory(),
             getKernelParameters(),
             client,
-            new MagicCommandAutocompletePatternsMock());
+            new MagicCommandAutocompletePatternsMock(),
+            new ClasspathScannerMock());
     return evaluator;
   }
 
 
   public static BaseEvaluator groovyEvaluator() {
+    return groovyEvaluator(new ClasspathScannerMock());
+  }
+
+  public static BaseEvaluator groovyEvaluator(ClasspathScanner classpathScanner) {
     GroovyEvaluator evaluator = new GroovyEvaluator(
             "id",
             "sid",
@@ -78,7 +85,8 @@ public class TestGroovyEvaluator {
             getTestTempFolderFactory(),
             getKernelParameters(),
             new EvaluatorTest.BeakexClientTestImpl(),
-            new MagicCommandAutocompletePatternsMock());
+            new MagicCommandAutocompletePatternsMock(),
+            classpathScanner);
     return evaluator;
   }
 
@@ -90,7 +98,8 @@ public class TestGroovyEvaluator {
             tempFolderFactory,
             getKernelParameters(),
             new EvaluatorTest.BeakexClientTestImpl(),
-            new MagicCommandAutocompletePatternsMock());
+            new MagicCommandAutocompletePatternsMock(),
+            new ClasspathScannerMock());
     return evaluator;
   }
 

@@ -30,16 +30,16 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
-public class ClasspathScanner {
+public class AutocompleteClasspathScanner {
   protected Map<String,List<String>> packages;
 
-  public ClasspathScanner() {
+  public AutocompleteClasspathScanner() {
     packages = new HashMap<String,List<String>>();
     String classpath = System.getProperty("java.class.path");
     scanClasses(classpath);
   }
 
-  public ClasspathScanner(String classpath) {
+  public AutocompleteClasspathScanner(String classpath) {
     packages = new HashMap<String,List<String>>();
     scanClasses(classpath);
   }

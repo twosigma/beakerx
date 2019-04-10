@@ -17,6 +17,7 @@ package com.twosigma.beakerx.sql;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.evaluator.ClasspathScannerMock;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.evaluator.MagicCommandAutocompletePatternsMock;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -50,7 +51,8 @@ public class SQLAutocompleteTest {
             getTestTempFolderFactory(),
             kernelParameters(),
             new EvaluatorTest.BeakexClientTestImpl(),
-            new MagicCommandAutocompletePatternsMock());
+            new MagicCommandAutocompletePatternsMock(),
+            new ClasspathScannerMock());
     kernelTest = new KernelTest("id1", sqlEvaluator);
   }
 

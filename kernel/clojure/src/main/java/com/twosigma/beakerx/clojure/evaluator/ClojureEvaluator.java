@@ -28,6 +28,7 @@ import com.twosigma.beakerx.autocomplete.MagicCommandAutocompletePatterns;
 import com.twosigma.beakerx.clojure.autocomplete.ClojureAutocomplete;
 import com.twosigma.beakerx.clojure.autotranslation.NSClientProxy;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.ClasspathScanner;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
@@ -65,20 +66,22 @@ public class ClojureEvaluator extends BaseEvaluator {
                           TempFolderFactory tempFolderFactory,
                           EvaluatorParameters evaluatorParameters,
                           BeakerXClient beakerxClient,
-                          MagicCommandAutocompletePatterns autocompletePatterns) {
-    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient, autocompletePatterns);
+                          MagicCommandAutocompletePatterns autocompletePatterns,
+                          ClasspathScanner classpathScanner) {
+    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient, autocompletePatterns,classpathScanner);
     requirements = new ArrayList<>();
     init();
   }
 
-  public ClojureEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerXClient beakerxClient, MagicCommandAutocompletePatterns autocompletePatterns) {
+  public ClojureEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters, BeakerXClient beakerxClient, MagicCommandAutocompletePatterns autocompletePatterns,ClasspathScanner classpathScanner) {
     this(id,
             sId,
             new BeakerCellExecutor("clojure"),
             new TempFolderFactoryImpl(),
             evaluatorParameters,
             beakerxClient,
-            autocompletePatterns);
+            autocompletePatterns,
+            classpathScanner);
   }
 
   @Override

@@ -19,7 +19,7 @@ package com.twosigma.beakerx.javash.autocomplete;
 import com.twosigma.beakerx.autocomplete.AutocompleteCandidate;
 import com.twosigma.beakerx.autocomplete.AutocompleteRegistry;
 import com.twosigma.beakerx.autocomplete.ClassUtils;
-import com.twosigma.beakerx.autocomplete.ClasspathScanner;
+import com.twosigma.beakerx.autocomplete.AutocompleteClasspathScanner;
 import com.twosigma.beakerx.javash.autocomplete.JavaParser.ImportDeclarationContext;
 
 import java.util.List;
@@ -32,10 +32,10 @@ public class JavaImportDeclarationCompletion extends JavaAbstractListener {
   private int cursor;
   private String text;
   private AutocompleteRegistry registry;
-  private ClasspathScanner cps;
+  private AutocompleteClasspathScanner cps;
   private ClassUtils classUtils;
 
-  public JavaImportDeclarationCompletion(String t, int startIndex, AutocompleteRegistry r, ClasspathScanner p, ClassUtils cu) {
+  public JavaImportDeclarationCompletion(String t, int startIndex, AutocompleteRegistry r, AutocompleteClasspathScanner p, ClassUtils cu) {
     cursor = startIndex;
     text = t;
     registry = r;

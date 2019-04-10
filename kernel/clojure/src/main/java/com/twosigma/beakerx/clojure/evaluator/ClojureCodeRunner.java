@@ -39,8 +39,6 @@ class ClojureCodeRunner implements Callable<TryResult> {
 
   @Override
   public TryResult call() throws Exception {
-    ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-    Thread.currentThread().setContextClassLoader(clojureEvaluator.getClassLoader());
     TryResult either;
     try {
       theOutput.setOutputHandler();
@@ -66,7 +64,6 @@ class ClojureCodeRunner implements Callable<TryResult> {
       }
     } finally {
       theOutput.setOutputHandler();
-      Thread.currentThread().setContextClassLoader(oldLoader);
     }
     return either;
   }

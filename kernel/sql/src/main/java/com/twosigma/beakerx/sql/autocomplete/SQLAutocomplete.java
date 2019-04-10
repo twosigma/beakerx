@@ -18,7 +18,7 @@ package com.twosigma.beakerx.sql.autocomplete;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteServiceBeakerx;
-import com.twosigma.beakerx.autocomplete.ClasspathScanner;
+import com.twosigma.beakerx.autocomplete.AutocompleteClasspathScanner;
 import com.twosigma.beakerx.autocomplete.MagicCommandAutocompletePatterns;
 import com.twosigma.beakerx.sql.ConnectionStringHolder;
 import com.twosigma.beakerx.sql.JDBCClient;
@@ -60,7 +60,7 @@ public class SQLAutocomplete extends AutocompleteServiceBeakerx {
   private final DbCache cache;
 
 
-  public SQLAutocomplete(ClasspathScanner _cps,
+  public SQLAutocomplete(AutocompleteClasspathScanner _cps,
                          JDBCClient jdbcClient,
                          String sessionId,
                          ConnectionStringHolder defaultConnectionString,

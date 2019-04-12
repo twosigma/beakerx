@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.sql;
 
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.ClasspathScannerMock;
 import com.twosigma.beakerx.evaluator.EvaluatorBaseTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.evaluator.MagicCommandAutocompletePatternsMock;
@@ -45,7 +46,8 @@ public class SQLBaseEvaluatorTest extends EvaluatorBaseTest {
             getTestTempFolderFactory(),
             kernelParameters(),
             new EvaluatorTest.BeakexClientTestImpl(),
-            new MagicCommandAutocompletePatternsMock());
+            new MagicCommandAutocompletePatternsMock(),
+            new ClasspathScannerMock());
   }
 
   @AfterClass
@@ -61,7 +63,8 @@ public class SQLBaseEvaluatorTest extends EvaluatorBaseTest {
             getTestTempFolderFactory(),
             kernelParameters(),
             new EvaluatorTest.BeakexClientTestImpl(),
-            new MagicCommandAutocompletePatternsMock());
+            new MagicCommandAutocompletePatternsMock(),
+            new ClasspathScannerMock());
     return evaluator;
   }
 
@@ -73,7 +76,8 @@ public class SQLBaseEvaluatorTest extends EvaluatorBaseTest {
             tempFolderFactory,
             kernelParameters(),
             new EvaluatorTest.BeakexClientTestImpl(),
-            new MagicCommandAutocompletePatternsMock());
+            new MagicCommandAutocompletePatternsMock(),
+            new ClasspathScannerMock());
     return evaluator;
   }
 

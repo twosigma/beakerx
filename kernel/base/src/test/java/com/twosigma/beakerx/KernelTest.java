@@ -81,10 +81,7 @@ public class KernelTest implements KernelFunctionality {
   private Path tempFolder;
   private Map<String, MagicKernelManager> magicKernels;
   private MagicCommandConfigurationMock magicCommandConfiguration = new MagicCommandConfigurationMock();
-
   private BeakerXJson beakerXJson;
-
-//  public MavenJarResolver.ResolverParams mavenResolverParam = null;
 
   private List<MagicCommandType> magicCommandTypes = null;
   private LinkedList<String> stdinText = new LinkedList<>();
@@ -405,6 +402,16 @@ public class KernelTest implements KernelFunctionality {
   @Override
   public BeakerXJson getBeakerXJson() {
     return this.beakerXJson;
+  }
+
+  @Override
+  public void startEvaluation() {
+
+  }
+
+  @Override
+  public void endEvaluation() {
+
   }
 
   public FileServiceMock getFileService() {

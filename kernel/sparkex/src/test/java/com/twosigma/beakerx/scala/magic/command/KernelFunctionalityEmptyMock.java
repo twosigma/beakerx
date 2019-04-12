@@ -256,4 +256,14 @@ public class KernelFunctionalityEmptyMock implements KernelFunctionality {
   public BeakerXJson getBeakerXJson() {
     return null;
   }
+
+  @Override
+  public void startEvaluation() {
+
+  }
+
+  @Override
+  public void endEvaluation() {
+
+  }
 }

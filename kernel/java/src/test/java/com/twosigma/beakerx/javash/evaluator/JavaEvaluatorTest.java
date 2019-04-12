@@ -18,6 +18,7 @@ package com.twosigma.beakerx.javash.evaluator;
 
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.chart.xychart.Plot;
+import com.twosigma.beakerx.evaluator.ClasspathScannerMock;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.evaluator.MagicCommandAutocompletePatternsMock;
 import com.twosigma.beakerx.javash.kernel.JavaKernelMock;
@@ -45,7 +46,8 @@ public class JavaEvaluatorTest {
             getTestTempFolderFactory(),
             KERNEL_PARAMETERS,
             new EvaluatorTest.BeakexClientTestImpl(),
-            new MagicCommandAutocompletePatternsMock());
+            new MagicCommandAutocompletePatternsMock(),
+            new ClasspathScannerMock());
     JavaKernelMock kernel = new JavaKernelMock("id", javaEvaluator);
     KernelManager.register(kernel);
   }

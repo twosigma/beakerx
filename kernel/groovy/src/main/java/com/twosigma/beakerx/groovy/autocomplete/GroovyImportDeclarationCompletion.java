@@ -19,7 +19,7 @@ package com.twosigma.beakerx.groovy.autocomplete;
 import com.twosigma.beakerx.autocomplete.AutocompleteCandidate;
 import com.twosigma.beakerx.autocomplete.AutocompleteRegistry;
 import com.twosigma.beakerx.autocomplete.ClassUtils;
-import com.twosigma.beakerx.autocomplete.ClasspathScanner;
+import com.twosigma.beakerx.autocomplete.AutocompleteClasspathScanner;
 import com.twosigma.beakerx.groovy.autocomplete.GroovyParser.ImportStatementContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,10 +36,10 @@ public class GroovyImportDeclarationCompletion extends GroovyAbstractListener {
   private int cursor;
   private String text;
   private AutocompleteRegistry registry;
-  private ClasspathScanner cps;
+  private AutocompleteClasspathScanner cps;
   private ClassUtils classUtils;
 
-  public GroovyImportDeclarationCompletion(String t, int c, AutocompleteRegistry r, ClasspathScanner p, ClassUtils cu) {
+  public GroovyImportDeclarationCompletion(String t, int c, AutocompleteRegistry r, AutocompleteClasspathScanner p, ClassUtils cu) {
     cursor = c;
     text = t;
     registry = r;

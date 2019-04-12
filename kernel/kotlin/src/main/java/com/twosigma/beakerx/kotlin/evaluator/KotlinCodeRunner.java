@@ -16,7 +16,6 @@
 package com.twosigma.beakerx.kotlin.evaluator;
 
 import com.twosigma.beakerx.TryResult;
-import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import org.jetbrains.kotlin.cli.common.repl.ReplEvalResult;
 import org.jetbrains.kotlin.cli.jvm.repl.ReplInterpreter;
@@ -26,19 +25,17 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.Callable;
 
-import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
+import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 
 class KotlinCodeRunner implements Callable<TryResult> {
 
   private final SimpleEvaluationObject theOutput;
-  private final ClassLoader loader;
   private final ReplInterpreter repl;
   private final String codeToBeExecuted;
 
-  public KotlinCodeRunner(SimpleEvaluationObject out, ClassLoader ld, ReplInterpreter repl, String codeToBeExecuted) {
+  public KotlinCodeRunner(SimpleEvaluationObject out, ReplInterpreter repl, String codeToBeExecuted) {
     this.theOutput = checkNotNull(out);
-    this.loader = checkNotNull(ld);
     this.repl = checkNotNull(repl);
     this.codeToBeExecuted = codeToBeExecuted;
   }
@@ -46,8 +43,6 @@ class KotlinCodeRunner implements Callable<TryResult> {
   @Override
   public TryResult call() throws Exception {
     TryResult either;
-    ClassLoader oldld = Thread.currentThread().getContextClassLoader();
-    Thread.currentThread().setContextClassLoader(loader);
     try {
       theOutput.setOutputHandler();
       ReplEvalResult eval = repl.eval(this.codeToBeExecuted);
@@ -63,9 +58,8 @@ class KotlinCodeRunner implements Callable<TryResult> {
         e.printStackTrace(pw);
         either = TryResult.createError(sw.toString());
       }
-    }finally {
+    } finally {
       theOutput.clrOutputHandler();
-      Thread.currentThread().setContextClassLoader(oldld);
     }
     return either;
   }

@@ -36,7 +36,7 @@ describe('Testing of table Actions ', function () {
 
   var cellIndex;
   var imageDir = 'python/tableActions';
-  var width = 130, height = 65;
+  var width = 130, height = 67;
 
   describe('ContextMenuItem action ', function () {
     var codeCell;
@@ -54,8 +54,8 @@ describe('Testing of table Actions ', function () {
       browser.click('div.p-Menu-itemLabel=plusOne');
       beakerxPO.kernelIdleIcon.waitForEnabled();
       browser.pause(1000);
-      canvas = codeCell.$('canvas');
-      imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell1_case2.png');
     });
 

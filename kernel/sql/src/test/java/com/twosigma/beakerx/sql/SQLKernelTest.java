@@ -22,8 +22,12 @@ import com.twosigma.beakerx.KernelSocketsServiceTest;
 import com.twosigma.beakerx.KernelSocketsTest;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.MagicCommandConfigurationMock;
+import com.twosigma.beakerx.RuntimetoolsMock;
+import com.twosigma.beakerx.evaluator.ClasspathScannerMock;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
+import com.twosigma.beakerx.kernel.Configuration;
+import com.twosigma.beakerx.kernel.CustomMagicCommandsEmptyImpl;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
@@ -61,16 +65,20 @@ public class SQLKernelTest extends KernelSetUpFixtureTest {
             getTestTempFolderFactory(),
             kernelParameters(),
             new EvaluatorTest.BeakexClientTestImpl(),
-            magicCommandConfiguration.patterns());
+            magicCommandConfiguration.patterns(),
+            new ClasspathScannerMock());
     Kernel sqlKernel = new SQL(sessionId,
             sqlEvaluator,
-            kernelSocketsFactory,
-            closeKernelAction,
-            getCacheFolderFactory(),
-            new BeakerXCommRepositoryMock(),
-            BeakerXServerMock.create(),
-            magicCommandConfiguration,
-            new KernelTest.BeakerXJsonMock());
+            new Configuration(
+                    kernelSocketsFactory,
+                    closeKernelAction,
+                    getCacheFolderFactory(),
+                    new CustomMagicCommandsEmptyImpl(),
+                    new BeakerXCommRepositoryMock(),
+                    BeakerXServerMock.create(),
+                    magicCommandConfiguration,
+                    new KernelTest.BeakerXJsonMock(),
+                    new RuntimetoolsMock()));
     return sqlKernel;
   }
 

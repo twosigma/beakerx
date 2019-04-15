@@ -41,7 +41,7 @@ class KotlinWorkerThread implements Callable<TryResult> {
       j.outputObject.started();
 
       try {
-        KotlinCodeRunner kotlinCodeRunner = new KotlinCodeRunner(j.outputObject, kotlinEvaluator.getClassLoader(), kotlinEvaluator.getRepl(), j.codeToBeExecuted);
+        KotlinCodeRunner kotlinCodeRunner = new KotlinCodeRunner(j.outputObject, kotlinEvaluator.getRepl(), j.codeToBeExecuted);
         either = kotlinEvaluator.executeTask(kotlinCodeRunner, j.getExecutionOptions());
       } catch (Exception e) {
         either = TryResult.createError(e.getMessage());

@@ -19,12 +19,12 @@ import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
 
+import java.util.List;
+
 import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
-
-import java.util.List;
 
 public class Code {
 
@@ -86,8 +86,13 @@ public class Code {
         kernel.send(MessageCreator.buildReplyWithErrorStatus(message, executionCount));
       });
     } else {
-      takeCodeFramesWithoutLast().forEach(frame -> frame.executeFrame(this, kernel, message, executionCount));
-      takeLastCodeFrame().executeLastFrame(this, kernel, message, executionCount);
+      try {
+        kernel.startEvaluation();
+        takeCodeFramesWithoutLast().forEach(frame -> frame.executeFrame(this, kernel, message, executionCount));
+        takeLastCodeFrame().executeLastFrame(this, kernel, message, executionCount);
+      } finally {
+        kernel.endEvaluation();
+      }
     }
   }
 

@@ -18,13 +18,13 @@ package com.twosigma.beakerx.javash.autocomplete;
 import com.twosigma.beakerx.autocomplete.AutocompleteCandidate;
 import com.twosigma.beakerx.autocomplete.AutocompleteRegistry;
 import com.twosigma.beakerx.autocomplete.ClassUtils;
-import com.twosigma.beakerx.autocomplete.ClasspathScanner;
+import com.twosigma.beakerx.autocomplete.AutocompleteClasspathScanner;
 
 import java.util.List;
 
 public class AutocompleteRegistryFactory {
 
-  public static AutocompleteRegistry createRegistry(ClasspathScanner cps) {
+  public static AutocompleteRegistry createRegistry(AutocompleteClasspathScanner cps) {
     AutocompleteRegistry registry = AutocompleteRegistryFactory.create(JavaCompletionTypes.NUM_TYPES);
     for (String pkg : cps.getPackages()) {
       String[] pkgv = pkg.split("\\.");
@@ -295,7 +295,7 @@ public class AutocompleteRegistryFactory {
   }
 
 
-  public static void addDefaultImports(ClassUtils cu,AutocompleteRegistry registry, List<String> imports, ClasspathScanner cps) {
+  public static void addDefaultImports(ClassUtils cu,AutocompleteRegistry registry, List<String> imports, AutocompleteClasspathScanner cps) {
     for (String imp : imports) {
       // this imports using '*'
       if (imp.endsWith(".*")) {

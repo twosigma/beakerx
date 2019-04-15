@@ -22,6 +22,7 @@ include 'clojure'
 include 'sql'
 include 'sparkex'
 include 'doclet'
+include 'runtimetools'
 
 if (System.getProperty('includeCpp', 'false') == 'true') {
   include 'cpp'

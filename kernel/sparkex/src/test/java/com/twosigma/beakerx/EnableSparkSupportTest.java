@@ -15,11 +15,13 @@
  */
 package com.twosigma.beakerx;
 
+import com.twosigma.beakerx.evaluator.ClasspathScannerMock;
 import com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.evaluator.TestBeakerCellExecutor;
 import com.twosigma.beakerx.kernel.BeakerXJsonConfig;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
+import com.twosigma.beakerx.kernel.Configuration;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
@@ -69,17 +71,20 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
             EvaluatorTest.getTestTempFolderFactory(),
             getKernelParameters(),
             new EvaluatorTest.BeakexClientTestImpl(),
-            magicCommandConfiguration.patterns());
+            magicCommandConfiguration.patterns(),
+            new ClasspathScannerMock());
     return new Scala(sessionId,
             evaluator,
-            kernelSocketsFactory,
-            closeKernelAction,
-            EvaluatorTest.getCacheFolderFactory(),
-            kernel -> singletonList(enableSparkSupportMagicCommand(kernel)),
-            new BeakerXCommRepositoryMock(),
-            BeakerXServerMock.create(),
-            magicCommandConfiguration,
-            new BeakerXJsonConfig(getPathToBeakerXJson()));
+            new Configuration(
+                    kernelSocketsFactory,
+                    closeKernelAction,
+                    EvaluatorTest.getCacheFolderFactory(),
+                    kernel -> singletonList(enableSparkSupportMagicCommand(kernel)),
+                    new BeakerXCommRepositoryMock(),
+                    BeakerXServerMock.create(),
+                    magicCommandConfiguration,
+                    new BeakerXJsonConfig(getPathToBeakerXJson()),
+                    new RuntimetoolsMock()));
   }
 
   private Path getPathToBeakerXJson() {

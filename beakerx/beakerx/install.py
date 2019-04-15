@@ -34,7 +34,7 @@ from distutils import log
 def _all_kernels():
     kernels = pkg_resources.resource_listdir(
         'beakerx', 'kernel')
-    return [kernel for kernel in kernels if (kernel != 'base' and kernel !='sparkex')]
+    return [kernel for kernel in kernels if (kernel != 'base' and kernel !='sparkex' and kernel !='runtimetools')]
 
 
 def _base_classpath_for(kernel):

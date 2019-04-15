@@ -75,55 +75,37 @@ public abstract class Kernel implements KernelFunctionality {
 
   public Kernel(final String sessionId,
                 final Evaluator evaluator,
-                final KernelSocketsFactory kernelSocketsFactory,
-                CustomMagicCommandsFactory customMagicCommands,
-                CommRepository commRepository,
-                BeakerXServer beakerXServer,
-                MagicCommandConfiguration magicCommandConfiguration,
-                BeakerXJson beakerXJson) {
-    this(
-            sessionId,
-            evaluator,
-            kernelSocketsFactory,
-            () -> System.exit(0),
-            new EnvCacheFolderFactory(),
-            customMagicCommands,
-            commRepository,
-            beakerXServer,
-            magicCommandConfiguration,
-            beakerXJson);
-  }
-
-  protected Kernel(final String sessionId,
-                   final Evaluator evaluator,
-                   final KernelSocketsFactory kernelSocketsFactory,
-                   CloseKernelAction closeKernelAction,
-                   CacheFolderFactory cacheFolderFactory,
-                   CustomMagicCommandsFactory customMagicCommands,
-                   CommRepository commRepository,
-                   BeakerXServer beakerXServer,
-                   MagicCommandConfiguration magicCommandConfiguration,
-                   BeakerXJson beakerXJson
-  ) {
+                Configuration configuration) {
     KernelManager.register(this);
     this.sessionId = sessionId;
-    this.cacheFolderFactory = cacheFolderFactory;
-    this.kernelSocketsFactory = kernelSocketsFactory;
-    this.closeKernelAction = closeKernelAction;
-    this.customMagicCommands = customMagicCommands;
-    this.commRepository = commRepository;
-    this.beakerXServer = beakerXServer;
-    this.beakerXJson = beakerXJson;
+    this.cacheFolderFactory = configuration.getCacheFolderFactory();
+    this.kernelSocketsFactory = configuration.getKernelSocketsFactory();
+    this.closeKernelAction = configuration.getCloseKernelAction();
+    this.customMagicCommands = configuration.getCustomMagicCommands();
+    this.commRepository = configuration.getCommRepository();
+    this.beakerXServer = configuration.getBeakerXServer();
+    this.beakerXJson = configuration.getBeakerXJson();
     this.executionResultSender = new ExecutionResultSender(this);
     this.evaluator = evaluator;
     this.handlers = new KernelHandlers(this, getCommOpenHandler(this), getKernelInfoHandler(this));
     this.magicKernels = new HashMap<>();
     this.commKernelMapping = new HashMap<>();
-    this.magicCommandConfiguration = magicCommandConfiguration;
+    this.magicCommandConfiguration = configuration.getMagicCommandConfiguration();
     createMagicCommands();
     DisplayerDataMapper.init();
     configureSignalHandler();
     initJvmRepr();
+    configuration.getRuntimetools().configRuntimeJars(this);
+  }
+
+  @Override
+  public void startEvaluation() {
+    this.evaluator.startEvaluation();
+  }
+
+  @Override
+  public void endEvaluation() {
+    this.evaluator.endEvaluation();
   }
 
   @Override
@@ -382,4 +364,5 @@ public abstract class Kernel implements KernelFunctionality {
   public BeakerXJson getBeakerXJson() {
     return this.beakerXJson;
   }
+
 }

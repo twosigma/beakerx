@@ -118,4 +118,8 @@ public interface KernelFunctionality {
   MagicCommandConfiguration magicCommandConfiguration();
 
   BeakerXJson getBeakerXJson();
+
+  void startEvaluation();
+
+  void endEvaluation();
 }

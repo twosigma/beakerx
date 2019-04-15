@@ -18,7 +18,7 @@ package com.twosigma.beakerx.kotlin.evaluator;
 import com.twosigma.beakerx.BeakerXClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
-import com.twosigma.beakerx.autocomplete.ClasspathScanner;
+import com.twosigma.beakerx.autocomplete.AutocompleteClasspathScanner;
 import com.twosigma.beakerx.autocomplete.MagicCommandAutocompletePatterns;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
@@ -47,7 +47,7 @@ import static java.util.Collections.singletonList;
 
 public class KotlinEvaluator extends BaseEvaluator {
 
-  private ClasspathScanner cps;
+  private AutocompleteClasspathScanner cps;
   private ReplInterpreter repl;
   private ReplClassLoader loader = null;
   private BeakerXUrlClassLoader kotlinClassLoader;
@@ -57,14 +57,15 @@ public class KotlinEvaluator extends BaseEvaluator {
                          String sId,
                          EvaluatorParameters evaluatorParameters,
                          BeakerXClient beakerxClient,
-                         MagicCommandAutocompletePatterns autocompletePatterns) {
+                         MagicCommandAutocompletePatterns autocompletePatterns,
+                         com.twosigma.beakerx.evaluator.ClasspathScanner classpathScanner) {
     this(id,
             sId,
             new BeakerCellExecutor("kotlin"),
             new TempFolderFactoryImpl(),
             evaluatorParameters,
             beakerxClient,
-            autocompletePatterns);
+            autocompletePatterns, classpathScanner);
   }
 
   public KotlinEvaluator(String id,
@@ -73,9 +74,10 @@ public class KotlinEvaluator extends BaseEvaluator {
                          TempFolderFactory tempFolderFactory,
                          EvaluatorParameters evaluatorParameters,
                          BeakerXClient beakerxClient,
-                         MagicCommandAutocompletePatterns autocompletePatterns) {
-    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient, autocompletePatterns);
-    cps = new ClasspathScanner();
+                         MagicCommandAutocompletePatterns autocompletePatterns,
+                         com.twosigma.beakerx.evaluator.ClasspathScanner classpathScanner) {
+    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient, autocompletePatterns, classpathScanner);
+    cps = new AutocompleteClasspathScanner();
     createRepl();
     this.kotlinAutocomplete = new KotlinAutocomplete(autocompletePatterns);
   }
@@ -83,7 +85,7 @@ public class KotlinEvaluator extends BaseEvaluator {
   @Override
   protected void doResetEnvironment() {
     String cpp = createClasspath(classPath, outDir);
-    cps = new ClasspathScanner(cpp);
+    cps = new AutocompleteClasspathScanner(cpp);
     createRepl();
     executorService.shutdown();
     executorService = Executors.newSingleThreadExecutor();

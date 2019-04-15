@@ -15,16 +15,16 @@
  */
 package com.twosigma.beakerx.scala.spark
 
-import java.{lang, util}
-
-import com.twosigma.beakerx.mimetype.MIMEContainer
-import jupyter.{Displayer, Displayers}
+import java.util
 import java.util.{HashMap, Map}
 
+import com.twosigma.beakerx.mimetype.MIMEContainer
 import com.twosigma.beakerx.widget.PreviewTableDisplay
-import com.twosigma.beakerx.widget.PreviewTableDisplay.{Rows}
+import com.twosigma.beakerx.widget.PreviewTableDisplay.Rows
+import jupyter.{Displayer, Displayers}
 
 import scala.collection.immutable.ListMap
+import scala.collection.{JavaConverters, mutable}
 
 object SparkDisplayers {
 
@@ -72,14 +72,24 @@ object SparkDisplayers {
 
   private def toListMap(tuples: Array[(String, Any)]): ListMap[String, Any] = {
     var list: ListMap[String, Any] = ListMap()
-    tuples.foreach(x => list += x._1 -> x._2)
+    tuples.foreach(x => list += x._1 -> convert(x._2))
     list
   }
 
   private def toListFromTuples(tuples: Array[(String, String)]) = {
     var list: ListMap[String, Any] = ListMap()
-    tuples.foreach(x => list += x._1 -> x._2)
+    tuples.foreach(x => list += x._1 -> convert(x._2))
     list
+  }
+
+  def convert(scalaObject: Any): Any = {
+    scalaObject match {
+      case array:  Seq[Any] =>
+        val objects = JavaConverters.asJavaCollectionConverter(array).asJavaCollection
+        return objects
+      case _ =>
+    }
+    scalaObject
   }
 
 }

@@ -47,6 +47,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -104,7 +105,7 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
   @Test
   public void sparkPreviewDisplayer() throws Exception {
     try {
-      enableSparkSupport();
+      enableSparkSupport(ENABLE_SPARK_SUPPORT);
       runSparkDataset("ds");
       //then
       Optional<Message> preview = EvaluatorResultTestWatcher.waitForUpdateMessage(getKernelSocketsService().getKernelSockets());
@@ -117,11 +118,34 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
   @Test
   public void sparkImplicit() throws Exception {
     try {
-      enableSparkSupport();
+      enableSparkSupport(ENABLE_SPARK_SUPPORT);
       runSparkDataset("ds.display(1)");
       //then
       Optional<Message> table = EvaluatorResultTestWatcher.waitForUpdateMessage(getKernelSocketsService().getKernelSockets());
       assertThat(((Map) getState(table.get()).get("model")).get(TableDisplaySerializer.TYPE)).isEqualTo(TABLE_DISPLAY_SUBTYPE);
+    } finally {
+      stopSpark();
+    }
+  }
+
+  @Test
+  public void convertSeqToList() throws Exception {
+    try {
+      enableSparkSupport(ENABLE_SPARK_SUPPORT + " --start");
+      String code =
+              "import spark.implicits._\n" +
+                      "import org.apache.spark.sql.functions._\n" +
+                      "val df = Seq(\"en,fr,de\", \"en,fr\", \"ru,ua\", \"en,ru\").toDF(\"languages\")\n" +
+                      "df.withColumn(\"langArray\", split(col(\"languages\"), \",\")).display(4)";
+      Message messageWithCode = MessageFactoryTest.getExecuteRequestMessage(code);
+      //when
+      getKernelSocketsService().handleMsg(messageWithCode);
+      //then
+      Optional<Message> table = EvaluatorResultTestWatcher.waitForUpdateMessage(getKernelSocketsService().getKernelSockets());
+      List values = (List) ((Map) getState(table.get()).get("model")).get("values");
+      List firstRow = (List) values.get(0);
+      List actual = (List) firstRow.get(1);
+      assertThat(actual.get(0)).isEqualTo("en");
     } finally {
       stopSpark();
     }
@@ -135,8 +159,7 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
     getKernelSocketsService().handleMsg(messageWithCode);
   }
 
-  private void enableSparkSupport() throws InterruptedException {
-    String code = ENABLE_SPARK_SUPPORT;
+  private void enableSparkSupport(String code) throws InterruptedException {
     Message messageWithCode = MessageFactoryTest.getExecuteRequestMessage(code);
     getKernelSocketsService().handleMsg(messageWithCode);
     Optional<Message> idleMessage = EvaluatorResultTestWatcher.waitForIdleMessage(getKernelSocketsService().getKernelSockets());

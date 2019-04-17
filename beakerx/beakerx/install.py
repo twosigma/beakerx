@@ -149,7 +149,8 @@ def _install_magics():
                              "'beakerx_magics.kotlin_magic',\n"
                              "'beakerx_magics.scala_magic',\n"
                              "'beakerx_magics.sql_magic',\n"
-                             "'beakerx_magics.java_magic'\n"
+                             "'beakerx_magics.java_magic',\n"
+                             "'beakerx_magics.kernel_runner_magic'\n"
                              "]\n")
 
 def _set_conf_privileges():

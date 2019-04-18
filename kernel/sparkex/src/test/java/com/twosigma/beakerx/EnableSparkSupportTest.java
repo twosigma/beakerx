@@ -25,6 +25,7 @@ import com.twosigma.beakerx.kernel.Configuration;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.magic.command.CodeFactory;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
@@ -41,6 +42,8 @@ import com.twosigma.beakerx.scala.magic.command.EnableSparkSupportMagicCommand;
 import com.twosigma.beakerx.scala.magic.command.SparkInitCommandFactory;
 import com.twosigma.beakerx.table.serializer.TableDisplaySerializer;
 import com.twosigma.beakerx.widget.PreviewTableDisplay;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.net.URISyntaxException;
@@ -60,55 +63,35 @@ import static com.twosigma.beakerx.widget.Widget.DESCRIPTION;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
+public class EnableSparkSupportTest {
 
-  @Override
-  protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
-    MagicCommandConfigurationMock magicCommandConfiguration = new MagicCommandConfigurationMock();
-    ScalaEvaluator evaluator = new ScalaEvaluator(sessionId,
-            sessionId,
-            TestBeakerCellExecutor.cellExecutor(),
-            new NoBeakerxObjectTestFactory(),
-            EvaluatorTest.getTestTempFolderFactory(),
-            getKernelParameters(),
-            new EvaluatorTest.BeakexClientTestImpl(),
-            magicCommandConfiguration.patterns(),
-            new ClasspathScannerMock());
-    return new Scala(sessionId,
-            evaluator,
-            new Configuration(
-                    kernelSocketsFactory,
-                    closeKernelAction,
-                    EvaluatorTest.getCacheFolderFactory(),
-                    kernel -> singletonList(enableSparkSupportMagicCommand(kernel)),
-                    new BeakerXCommRepositoryMock(),
-                    BeakerXServerMock.create(),
-                    magicCommandConfiguration,
-                    new BeakerXJsonConfig(getPathToBeakerXJson()),
-                    new RuntimetoolsMock()));
+  private static KernelSocketsServiceTest kernelSocketsService;
+  private static KernelFunctionality kernel;
+  private static Thread kernelThread;
+
+  @BeforeClass
+  public static void setUp() throws Exception {
+    kernelSocketsService = new KernelSocketsServiceTest();
+    kernel = createKernel("s1", kernelSocketsService, KernelCloseKernelAction.NO_ACTION);
+    kernelThread = new Thread(() -> KernelRunner.run(() -> kernel));
+    kernelThread.start();
+    kernelSocketsService.waitForSockets();
   }
 
-  private Path getPathToBeakerXJson() {
-    try {
-      return Paths.get(this.getClass().getClassLoader().getResource("beakerxTest.json").toURI());
-    } catch (URISyntaxException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-
-  private static EvaluatorParameters getKernelParameters() {
-    HashMap<String, Object> kernelParameters = new HashMap<>();
-    return new EvaluatorParameters(kernelParameters);
+  @AfterClass
+  public static void tearDown() throws Exception {
+    kernelSocketsService.shutdown();
+    kernelThread.join();
   }
 
   @Test
   public void sparkPreviewDisplayer() throws Exception {
     try {
       enableSparkSupport(ENABLE_SPARK_SUPPORT);
+      //when
       runSparkDataset("ds");
       //then
-      Optional<Message> preview = EvaluatorResultTestWatcher.waitForUpdateMessage(getKernelSocketsService().getKernelSockets());
+      Optional<Message> preview = EvaluatorResultTestWatcher.waitForUpdateMessage(kernelSocketsService.getKernelSockets());
       assertThat(getValueForProperty(preview.get(), DESCRIPTION, String.class)).contains(PreviewTableDisplay.PREVIEW);
     } finally {
       stopSpark();
@@ -119,9 +102,10 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
   public void sparkImplicit() throws Exception {
     try {
       enableSparkSupport(ENABLE_SPARK_SUPPORT);
+      //when
       runSparkDataset("ds.display(1)");
       //then
-      Optional<Message> table = EvaluatorResultTestWatcher.waitForUpdateMessage(getKernelSocketsService().getKernelSockets());
+      Optional<Message> table = EvaluatorResultTestWatcher.waitForUpdateMessage(kernelSocketsService.getKernelSockets());
       assertThat(((Map) getState(table.get()).get("model")).get(TableDisplaySerializer.TYPE)).isEqualTo(TABLE_DISPLAY_SUBTYPE);
     } finally {
       stopSpark();
@@ -139,9 +123,9 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
                       "df.withColumn(\"langArray\", split(col(\"languages\"), \",\")).display(4)";
       Message messageWithCode = MessageFactoryTest.getExecuteRequestMessage(code);
       //when
-      getKernelSocketsService().handleMsg(messageWithCode);
+      kernelSocketsService.handleMsg(messageWithCode);
       //then
-      Optional<Message> table = EvaluatorResultTestWatcher.waitForUpdateMessage(getKernelSocketsService().getKernelSockets());
+      Optional<Message> table = EvaluatorResultTestWatcher.waitForUpdateMessage(kernelSocketsService.getKernelSockets());
       List values = (List) ((Map) getState(table.get()).get("model")).get("values");
       List firstRow = (List) values.get(0);
       List actual = (List) firstRow.get(1);
@@ -151,23 +135,26 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
     }
   }
 
-  private void stopSpark() {
+  private void stopSpark() throws InterruptedException {
+    kernelSocketsService.getKernelSockets().clear();
     String code =
             "spark.stop()\n";
     Message messageWithCode = MessageFactoryTest.getExecuteRequestMessage(code);
     //when
-    getKernelSocketsService().handleMsg(messageWithCode);
+    kernelSocketsService.handleMsg(messageWithCode);
+    Optional<Message> idleMessage = EvaluatorResultTestWatcher.waitForIdleMessage(kernelSocketsService.getKernelSockets());
+    assertThat(idleMessage).isPresent();
   }
 
   private void enableSparkSupport(String code) throws InterruptedException {
     Message messageWithCode = MessageFactoryTest.getExecuteRequestMessage(code);
-    getKernelSocketsService().handleMsg(messageWithCode);
-    Optional<Message> idleMessage = EvaluatorResultTestWatcher.waitForIdleMessage(getKernelSocketsService().getKernelSockets());
+    kernelSocketsService.handleMsg(messageWithCode);
+    Optional<Message> idleMessage = EvaluatorResultTestWatcher.waitForIdleMessage(kernelSocketsService.getKernelSockets());
     assertThat(idleMessage).isPresent();
-    getKernelSocketsService().getKernelSockets().clear();
+    kernelSocketsService.getKernelSockets().clear();
   }
 
-  private void runSparkDataset(String returnStatement) throws InterruptedException {
+  private void runSparkDataset(String returnStatement) {
     //given
     String peoplePath = EnableSparkSupportTest.class.getClassLoader().getResource("people.json").getPath();
     String code =
@@ -182,10 +169,10 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
     Message messageWithCode = MessageFactoryTest.getExecuteRequestMessage(code);
 
     //when
-    getKernelSocketsService().handleMsg(messageWithCode);
+    kernelSocketsService.handleMsg(messageWithCode);
   }
 
-  MagicCommandType enableSparkSupportMagicCommand(KernelFunctionality kernel) {
+  static MagicCommandType enableSparkSupportMagicCommand(KernelFunctionality kernel) {
     return new MagicCommandType(
             EnableSparkSupportMagicCommand.ENABLE_SPARK_SUPPORT,
             "<>",
@@ -201,7 +188,6 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
     private KernelFunctionality kernel;
 
     public SparkInitCommandFactoryMock(KernelFunctionality kernel) {
-
       this.kernel = kernel;
     }
 
@@ -309,5 +295,42 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
 
   }
 
+  private static Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
+    MagicCommandConfigurationMock magicCommandConfiguration = new MagicCommandConfigurationMock();
+    ScalaEvaluator evaluator = new ScalaEvaluator(sessionId,
+            sessionId,
+            TestBeakerCellExecutor.cellExecutor(),
+            new NoBeakerxObjectTestFactory(),
+            EvaluatorTest.getTestTempFolderFactory(),
+            getKernelParameters(),
+            new EvaluatorTest.BeakexClientTestImpl(),
+            magicCommandConfiguration.patterns(),
+            new ClasspathScannerMock());
+    return new Scala(sessionId,
+            evaluator,
+            new Configuration(
+                    kernelSocketsFactory,
+                    closeKernelAction,
+                    EvaluatorTest.getCacheFolderFactory(),
+                    kernel -> singletonList(enableSparkSupportMagicCommand(kernel)),
+                    new BeakerXCommRepositoryMock(),
+                    BeakerXServerMock.create(),
+                    magicCommandConfiguration,
+                    new BeakerXJsonConfig(getPathToBeakerXJson()),
+                    new RuntimetoolsMock()));
+  }
 
+  private static Path getPathToBeakerXJson() {
+    try {
+      return Paths.get(EnableSparkSupportTest.class.getClassLoader().getResource("beakerxTest.json").toURI());
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+
+  private static EvaluatorParameters getKernelParameters() {
+    HashMap<String, Object> kernelParameters = new HashMap<>();
+    return new EvaluatorParameters(kernelParameters);
+  }
 }

@@ -53,6 +53,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 import static com.twosigma.beakerx.scala.magic.command.EnableSparkSupportMagicCommand.ENABLE_SPARK_SUPPORT;
 import static com.twosigma.beakerx.scala.magic.command.LoadSparkSupportMagicCommand.LOAD_SPARK_SUPPORT;
@@ -68,6 +69,8 @@ public class EnableSparkSupportTest {
   private static KernelSocketsServiceTest kernelSocketsService;
   private static KernelFunctionality kernel;
   private static Thread kernelThread;
+
+  private final static Logger logger = Logger.getLogger(EnableSparkSupportTest.class.getName());
 
   @BeforeClass
   public static void setUp() throws Exception {
@@ -106,6 +109,8 @@ public class EnableSparkSupportTest {
       runSparkDataset("ds.display(1)");
       //then
       Optional<Message> table = EvaluatorResultTestWatcher.waitForUpdateMessage(kernelSocketsService.getKernelSockets());
+      logger.info(">>>>>>>>>>>>>>>>>>>>>1: "+table.toString());
+      logger.info(">>>>>>>>>>>>>>>>>>>>>2: "+kernelSocketsService.getKernelSockets().getPublishedMessages().toString());
       assertThat(((Map) getState(table.get()).get("model")).get(TableDisplaySerializer.TYPE)).isEqualTo(TABLE_DISPLAY_SUBTYPE);
     } finally {
       stopSpark();

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -39,31 +39,46 @@ import com.twosigma.beakerx.scala.evaluator.ScalaEvaluator;
 import com.twosigma.beakerx.scala.kernel.Scala;
 import com.twosigma.beakerx.scala.magic.command.EnableSparkSupportMagicCommand;
 import com.twosigma.beakerx.scala.magic.command.SparkInitCommandFactory;
-import com.twosigma.beakerx.table.serializer.TableDisplaySerializer;
-import com.twosigma.beakerx.widget.PreviewTableDisplay;
-import org.junit.Test;
 
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-import static com.twosigma.beakerx.scala.magic.command.EnableSparkSupportMagicCommand.ENABLE_SPARK_SUPPORT;
 import static com.twosigma.beakerx.scala.magic.command.LoadSparkSupportMagicCommand.LOAD_SPARK_SUPPORT;
-import static com.twosigma.beakerx.table.TableDisplay.TABLE_DISPLAY_SUBTYPE;
-import static com.twosigma.beakerx.widget.TestWidgetUtils.getState;
-import static com.twosigma.beakerx.widget.TestWidgetUtils.getValueForProperty;
-import static com.twosigma.beakerx.widget.Widget.DESCRIPTION;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
+public class KernelFactoryFixtureSetup {
 
-  @Override
-  protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
+  public static void runCode(String code, KernelSocketsServiceTest kernelSocketsService) {
+    Message messageWithCode = MessageFactoryTest.getExecuteRequestMessage(code);
+    kernelSocketsService.handleMsg(messageWithCode);
+  }
+
+  public static void stopSpark(KernelSocketsServiceTest kernelSocketsService) throws InterruptedException {
+    kernelSocketsService.getKernelSockets().clear();
+    String code =
+            "spark.stop()\n";
+    Message messageWithCode = MessageFactoryTest.getExecuteRequestMessage(code);
+    //when
+    kernelSocketsService.handleMsg(messageWithCode);
+    Optional<Message> idleMessage = EvaluatorResultTestWatcher.waitForIdleMessage(kernelSocketsService.getKernelSockets());
+    assertThat(idleMessage).isPresent();
+    kernelSocketsService.getKernelSockets().clear();
+  }
+
+  public static void enableSparkSupport(String code, KernelSocketsServiceTest kernelSocketsService) throws InterruptedException {
+    kernelSocketsService.getKernelSockets().clear();
+    Message messageWithCode = MessageFactoryTest.getExecuteRequestMessage(code);
+    kernelSocketsService.handleMsg(messageWithCode);
+    Optional<Message> idleMessage = EvaluatorResultTestWatcher.waitForIdleMessage(kernelSocketsService.getKernelSockets());
+    assertThat(idleMessage).isPresent();
+    kernelSocketsService.getKernelSockets().clear();
+  }
+
+  public static Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
     MagicCommandConfigurationMock magicCommandConfiguration = new MagicCommandConfigurationMock();
     ScalaEvaluator evaluator = new ScalaEvaluator(sessionId,
             sessionId,
@@ -88,9 +103,29 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
                     new RuntimetoolsMock()));
   }
 
-  private Path getPathToBeakerXJson() {
+  public static void runSparkDataset(KernelSocketsServiceTest kernelSocketsService) throws InterruptedException {
+    kernelSocketsService.getKernelSockets().clear();
+    //given
+    String peoplePath = SparkPreviewTest.class.getClassLoader().getResource("people.json").getPath();
+    String code =
+            "val spark = SparkSession\n" +
+                    "    .builder\n" +
+                    "    .appName(\"jupyter\")\n" +
+                    "    .master(\"local[*]\")\n" +
+                    "    .getOrCreate()\n" +
+                    "val ds = spark.read.json(\"file://" + peoplePath + "\")\n";
+
+    Message messageWithCode = MessageFactoryTest.getExecuteRequestMessage(code);
+    //when
+    kernelSocketsService.handleMsg(messageWithCode);
+    Optional<Message> idleMessage = EvaluatorResultTestWatcher.waitForIdleMessage(kernelSocketsService.getKernelSockets());
+    assertThat(idleMessage).isPresent();
+    kernelSocketsService.getKernelSockets().clear();
+  }
+
+  private static Path getPathToBeakerXJson() {
     try {
-      return Paths.get(this.getClass().getClassLoader().getResource("beakerxTest.json").toURI());
+      return Paths.get(KernelFactoryFixtureSetup.class.getClassLoader().getResource("beakerxTest.json").toURI());
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
     }
@@ -102,94 +137,11 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
     return new EvaluatorParameters(kernelParameters);
   }
 
-  @Test
-  public void sparkPreviewDisplayer() throws Exception {
-    try {
-      enableSparkSupport(ENABLE_SPARK_SUPPORT);
-      runSparkDataset("ds");
-      //then
-      Optional<Message> preview = EvaluatorResultTestWatcher.waitForUpdateMessage(getKernelSocketsService().getKernelSockets());
-      assertThat(getValueForProperty(preview.get(), DESCRIPTION, String.class)).contains(PreviewTableDisplay.PREVIEW);
-    } finally {
-      stopSpark();
-    }
-  }
-
-  @Test
-  public void sparkImplicit() throws Exception {
-    try {
-      enableSparkSupport(ENABLE_SPARK_SUPPORT);
-      runSparkDataset("ds.display(1)");
-      //then
-      Optional<Message> table = EvaluatorResultTestWatcher.waitForUpdateMessage(getKernelSocketsService().getKernelSockets());
-      assertThat(((Map) getState(table.get()).get("model")).get(TableDisplaySerializer.TYPE)).isEqualTo(TABLE_DISPLAY_SUBTYPE);
-    } finally {
-      stopSpark();
-    }
-  }
-
-  @Test
-  public void convertSeqToList() throws Exception {
-    try {
-      enableSparkSupport(ENABLE_SPARK_SUPPORT + " --start");
-      String code =
-              "import spark.implicits._\n" +
-                      "import org.apache.spark.sql.functions._\n" +
-                      "val df = Seq(\"en,fr,de\", \"en,fr\", \"ru,ua\", \"en,ru\").toDF(\"languages\")\n" +
-                      "df.withColumn(\"langArray\", split(col(\"languages\"), \",\")).display(4)";
-      Message messageWithCode = MessageFactoryTest.getExecuteRequestMessage(code);
-      //when
-      getKernelSocketsService().handleMsg(messageWithCode);
-      //then
-      Optional<Message> table = EvaluatorResultTestWatcher.waitForUpdateMessage(getKernelSocketsService().getKernelSockets());
-      List values = (List) ((Map) getState(table.get()).get("model")).get("values");
-      List firstRow = (List) values.get(0);
-      List actual = (List) firstRow.get(1);
-      assertThat(actual.get(0)).isEqualTo("en");
-    } finally {
-      stopSpark();
-    }
-  }
-
-  private void stopSpark() {
-    String code =
-            "spark.stop()\n";
-    Message messageWithCode = MessageFactoryTest.getExecuteRequestMessage(code);
-    //when
-    getKernelSocketsService().handleMsg(messageWithCode);
-  }
-
-  private void enableSparkSupport(String code) throws InterruptedException {
-    Message messageWithCode = MessageFactoryTest.getExecuteRequestMessage(code);
-    getKernelSocketsService().handleMsg(messageWithCode);
-    Optional<Message> idleMessage = EvaluatorResultTestWatcher.waitForIdleMessage(getKernelSocketsService().getKernelSockets());
-    assertThat(idleMessage).isPresent();
-    getKernelSocketsService().getKernelSockets().clear();
-  }
-
-  private void runSparkDataset(String returnStatement) throws InterruptedException {
-    //given
-    String peoplePath = EnableSparkSupportTest.class.getClassLoader().getResource("people.json").getPath();
-    String code =
-            "val spark = SparkSession\n" +
-                    "    .builder\n" +
-                    "    .appName(\"jupyter\")\n" +
-                    "    .master(\"local[*]\")\n" +
-                    "    .getOrCreate()\n" +
-                    "val ds = spark.read.json(\"file://" + peoplePath + "\")\n"
-                    + returnStatement + "\n";
-
-    Message messageWithCode = MessageFactoryTest.getExecuteRequestMessage(code);
-
-    //when
-    getKernelSocketsService().handleMsg(messageWithCode);
-  }
-
-  MagicCommandType enableSparkSupportMagicCommand(KernelFunctionality kernel) {
+  static MagicCommandType enableSparkSupportMagicCommand(KernelFunctionality kernel) {
     return new MagicCommandType(
             EnableSparkSupportMagicCommand.ENABLE_SPARK_SUPPORT,
             "<>",
-            new EnableSparkSupportMagicCommand(kernel, new EnableSparkSupportTest.SparkInitCommandFactoryMock(kernel)));
+            new EnableSparkSupportMagicCommand(kernel, new SparkInitCommandFactoryMock(kernel)));
   }
 
   static public class SparkInitCommandFactoryMock implements SparkInitCommandFactory {
@@ -308,6 +260,5 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
     }
 
   }
-
 
 }

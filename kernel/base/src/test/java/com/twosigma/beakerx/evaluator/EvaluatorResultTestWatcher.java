@@ -132,6 +132,17 @@ public class EvaluatorResultTestWatcher {
     return idleMessage;
   }
 
+  public static Optional<Message> waitForUpdateMessage(KernelSocketsTest socketsTest, MessagePreconditions preconditions) throws InterruptedException {
+    int count = 0;
+    Optional<Message> idleMessage = getUpdate(socketsTest.getPublishedMessages());
+    while (!preconditions.match(idleMessage) && count < ATTEMPT) {
+      Thread.sleep(SLEEP_IN_MILLIS);
+      idleMessage = getUpdate(socketsTest.getPublishedMessages());
+      count++;
+    }
+    return idleMessage;
+  }
+
   public static Optional<Message> waitForUpdateMessage(KernelTest kernelTest) throws InterruptedException {
     int count = 0;
     Optional<Message> idleMessage = getUpdate(kernelTest.getPublishedMessages());

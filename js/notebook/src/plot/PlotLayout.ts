@@ -105,7 +105,7 @@ export default class PlotLayout {
   }
 
   applyElementStyles(stdmodel) {
-    if(stdmodel['elementStyles']) {
+    if(!stdmodel['elementStyles']) {
       return;
     }
 

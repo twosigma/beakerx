@@ -696,7 +696,6 @@ define([ 'underscore' ], function(_) {
      currentScope.init();
 
      setTimeout(function() {
-         debugger;
        currentScope.updatePlot();
      }, 10);
    };

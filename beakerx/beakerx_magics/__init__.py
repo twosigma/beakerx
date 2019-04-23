@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from .kernel_magic import *
+from .kernel_runner_magic import *
 from .clojure_magic import *
 from .groovy_magic import *
 from .java_magic import *

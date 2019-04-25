@@ -1,4 +1,4 @@
-# Copyright 2017 TWO SIGMA OPEN SOURCE, LLC  #
+# Copyright 2019 TWO SIGMA OPEN SOURCE, LLC  #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -12,26 +12,34 @@
 # limitations under the License.
 
 from IPython import get_ipython
-from IPython.core.magic import (magics_class, cell_magic)
-from beakerx_magics import KernelRunnerMagic
+from IPython.core.magic import (magics_class, cell_magic, Magics)
+from beakerx_magics import KernelMagics
 from ipykernel.zmqshell import ZMQInteractiveShell
 
+
 @magics_class
-class ScalaMagics(KernelRunnerMagic):
+class KernelRunnerMagic(Magics):
+
+    kernels = {}
 
     def __init__(self, shell):
-        super(ScalaMagics, self).__init__(shell)
+        super(KernelRunnerMagic, self).__init__(shell)
 
     @cell_magic
-    def scala(self, line, cell):
-        return super(ScalaMagics, self).kernel("scala", cell)
+    def kernel(self, line, cell):
+        if line not in self.kernels:
+            km = KernelMagics(self.shell)
+            km.start(line)
+            self.kernels[line] = km
+
+        return self.kernels[line].run_cell(line, cell)
 
 
 def load_ipython_extension(ipython):
     if isinstance(ipython, ZMQInteractiveShell):
-        ipython.register_magics(ScalaMagics)
+        ipython.register_magics(KernelRunnerMagic)
 
 
 if __name__ == '__main__':
     ip = get_ipython()
-    ip.register_magics(ScalaMagics)
+    ip.register_magics(KernelRunnerMagic)

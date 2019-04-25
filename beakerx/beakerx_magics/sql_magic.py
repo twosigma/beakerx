@@ -13,11 +13,13 @@
 
 from IPython import get_ipython
 from IPython.core.magic import (magics_class, cell_magic)
-from .kernel_magic import KernelMagics
+from beakerx_magics import KernelRunnerMagic
+
 from ipykernel.zmqshell import ZMQInteractiveShell
 
+
 @magics_class
-class SqlMagics(KernelMagics):
+class SqlMagics(KernelRunnerMagic):
 
     def __init__(self, shell):
         super(SqlMagics, self).__init__(shell)
@@ -27,7 +29,7 @@ class SqlMagics(KernelMagics):
 
     @cell_magic
     def sql(self, line, cell):
-        return self.run_cell(line, cell)
+        return super(SqlMagics, self).kernel("SQL", cell)
 
 
 def load_ipython_extension(ipython):

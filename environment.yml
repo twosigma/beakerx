@@ -2,5 +2,4 @@ name: beakerx
 channels:
   - conda-forge
 dependencies:
-  - ipywidgets
-  - beakerx
+  - beakerx == 1.1.0

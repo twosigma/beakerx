@@ -22,6 +22,15 @@ var NotebookPageObject = function () {
     console.log('jupyter notebook application')
     browser.url('http://127.0.0.1:8888/notebooks' + url);
     this.kernelIdleIcon.waitForEnabled();
+    this.increaseWindowWidth(200);
+  };
+
+  this.increaseWindowWidth = function (addWidth) {
+    var curSize = browser.windowHandleSize();
+    browser.setViewportSize({
+      width: curSize.value.width + addWidth,
+      height: curSize.value.height
+    });
   };
 
   this.clickSaveNotebook = function () {

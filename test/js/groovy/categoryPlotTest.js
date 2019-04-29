@@ -60,5 +60,172 @@ describe('Category Plot ', function () {
     });
   });
 
+  describe('Set category labels ', function () {
+    it('CategoryPlot has 3 category labels ', function () {
+      cellIndex += 1;
+      var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
+      expect(svgg.$$('text.plot-label-x').length).toEqual(3);
+      expect(svgg.$('text#label_x_0').getText()).toMatch(/Helium/);
+      expect(svgg.$('text#label_x_1').getText()).toMatch(/Neon/);
+      expect(svgg.$('text#label_x_2').getText()).toMatch(/Argon/);
+    });
+  });
+
+  describe('Set series labels ', function () {
+    it('CategoryPlot has 2 series labels ', function () {
+      cellIndex += 1;
+      var dtConteainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      var legendLines = dtConteainer.$$('div.plot-legenditeminrow.plot-legendline');
+      expect(legendLines.length).toEqual(3);
+      expect(legendLines[0].getText()).toMatch(/All/);
+      expect(legendLines[1].getText()).toMatch(/Gas/);
+      expect(legendLines[2].getText()).toMatch(/Liquid/);
+    });
+  });
+
+  describe('Show legend ', function () {
+    var dtConteainer;
+    it('Legend has default names ', function () {
+      cellIndex += 1;
+      dtConteainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      var legendLines = dtConteainer.$$('div.plot-legenditeminrow.plot-legendline');
+      expect(legendLines.length).toEqual(3);
+      expect(legendLines[0].getText()).toMatch(/All/);
+      expect(legendLines[1].getText()).toMatch(/series0/);
+      expect(legendLines[2].getText()).toMatch(/series1/);
+    });
+    it('Hide/show first series ', function () {
+      var svgg = beakerxPO.getSvgElementByIndex(cellIndex);
+      expect(svgg.$$('g#i0 > rect').length).toEqual(3);
+      var legendLines = dtConteainer.$$('div.plot-legenditeminrow.plot-legendline');
+      legendLines[0].click('input');
+      expect(svgg.$$('g#i0 > rect').length).toEqual(0);
+      legendLines[0].click('input');
+      expect(svgg.$$('g#i0 > rect').length).toEqual(3);
+    });
+  });
+
+  describe('Set horizontal orientation ', function () {
+    it('CategoryPlot has horizontal orientation ', function () {
+      cellIndex += 1;
+      var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
+      var rect1 = svgg.$('rect#i0_1');
+      expect(Math.round(rect1.getAttribute('width'))).toBeGreaterThan(Math.round(rect1.getAttribute('height')));
+    });
+  });
+
+  describe('Set label orientation ', function () {
+    it('CategoryPlot has rotated labels ', function () {
+      cellIndex += 1;
+      var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
+      expect(svgg.$('text#label_x_0').getAttribute('transform')).toMatch(/rotate.45/);
+      expect(svgg.$('text#label_x_1').getAttribute('transform')).toMatch(/rotate.45/);
+    });
+  });
+
+  function getMathAttribute(svgg, selector, attribute){
+    return Math.round(svgg.$(selector).getAttribute(attribute));
+  }
+
+  describe('Set margin ', function () {
+    it('Space between categories is greater than width ', function () {
+      cellIndex += 1;
+      var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
+      var rectX_0_1 = getMathAttribute(svgg, 'rect#i0_1', 'x');
+      var rectW_0_1 = getMathAttribute(svgg, 'rect#i0_1', 'width');
+      var rectX_1_0 = getMathAttribute(svgg, 'rect#i1_0', 'x');
+      var rectW_1_0 = getMathAttribute(svgg, 'rect#i1_0', 'width');
+      expect(rectW_0_1).toEqual(rectW_1_0);
+      expect(rectX_0_1 - (rectX_1_0 + rectW_1_0)).toBeGreaterThan(rectW_1_0)
+    });
+  });
+
+  describe('Set color by single value ', function () {
+    it('All bars have the same color ', function () {
+      cellIndex += 1;
+      var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
+      expect(svgg.$('g#i0').getAttribute('style')).toMatch(/fill: rgb\(255, 175, 175\)/);
+      expect(svgg.$('g#i1').getAttribute('style')).toMatch(/fill: rgb\(255, 175, 175\)/);
+      expect(svgg.$('g#i2').getAttribute('style')).toMatch(/fill: rgb\(255, 175, 175\)/);
+    });
+  });
+
+  describe('Set color by list of values ', function () {
+    it('Each bar has different color ', function () {
+      cellIndex += 1;
+      var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
+      expect(svgg.$('g#i0').getAttribute('style')).toMatch(/fill: rgb\(255, 175, 175\)/);
+      expect(svgg.$('rect#i1_0').getAttribute('style')).toMatch(/fill: rgb\(255, 0, 0\)/);
+      expect(svgg.$('rect#i1_1').getAttribute('style')).toMatch(/fill: rgb\(128, 128, 128\)/);
+      expect(svgg.$('rect#i1_2').getAttribute('style')).toMatch(/fill: rgb\(0, 0, 255\)/);
+    });
+  });
+
+  describe('Set base by single value ', function () {
+    it('CategoryPlot has base  ', function () {
+      cellIndex += 1;
+      var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
+      var tickMin2 = getMathAttribute(svgg, 'line#tick_y_0', 'y1');
+      expect(svgg.$('text#label_y_0').getText()).toMatch(/-2/);
+      var firstRect = getMathAttribute(svgg, 'rect#i0_0', 'height') + getMathAttribute(svgg, 'rect#i0_0', 'y');
+      var secondRect = getMathAttribute(svgg, 'rect#i1_0', 'height') + getMathAttribute(svgg, 'rect#i1_0', 'y');
+      expect(secondRect - firstRect).toBeLessThan(2);
+      expect(secondRect - tickMin2).toBeLessThan(2);
+    });
+  });
+
+  describe('Set base by list of values ', function () {
+    it('Each bar has different base ', function () {
+      cellIndex += 1;
+      var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
+      var tickMin2 = getMathAttribute(svgg, 'line#tick_y_2', 'y1');
+      expect(svgg.$('text#label_y_2').getText()).toMatch(/-2/);
+      expect(svgg.$('text#label_y_0').getText()).toMatch(/-4/);
+      var firstRect = getMathAttribute(svgg, 'rect#i0_0', 'height') + getMathAttribute(svgg, 'rect#i0_0', 'y');
+      var secondRect = getMathAttribute(svgg, 'rect#i1_0', 'height') + getMathAttribute(svgg, 'rect#i1_0', 'y');
+      expect(secondRect - firstRect).toBeGreaterThan(2);
+      expect(secondRect - tickMin2).toBeGreaterThan(2);
+    });
+  });
+
+  describe('Set the width by single value ', function () {
+    it('All bars have the same width ', function () {
+      cellIndex += 1;
+      var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
+      expect(getMathAttribute(svgg, 'rect#i1_0', 'width')).toEqual(getMathAttribute(svgg, 'rect#i0_1', 'width'));
+      expect(getMathAttribute(svgg, 'rect#i0_2', 'width')).toEqual(getMathAttribute(svgg, 'rect#i1_2', 'width'));
+    });
+  });
+
+  describe('Set width by list of values ', function () {
+    it('Each bar has different width ', function () {
+      cellIndex += 1;
+      var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
+      expect(getMathAttribute(svgg, 'rect#i1_0', 'width')).toBeGreaterThan(getMathAttribute(svgg, 'rect#i0_1', 'width'));
+      expect(getMathAttribute(svgg, 'rect#i0_2', 'width')).toBeGreaterThan(getMathAttribute(svgg, 'rect#i1_2', 'width'));
+    });
+  });
+
+  describe('Set the fill by single value ', function () {
+    it('All bars have the same fill ', function () {
+      cellIndex += 1;
+      var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
+      expect(svgg.$('g#i0').getAttribute('style')).toMatch(/fill: none/);
+      expect(svgg.$('g#i1').getAttribute('style')).toMatch(/fill: none/);
+    });
+  });
+
+  describe('Set the fill by list of values ', function () {
+    it('Each bar has different fill ', function () {
+      cellIndex += 1;
+      var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
+      expect(svgg.$('g#i0').getAttribute('style')).toMatch(/fill: rgb\(./);
+      expect(svgg.$('rect#i0_0').getAttribute('style')).toMatch(/fill: none/);
+      expect(svgg.$('rect#i0_1').getAttribute('style')).not.toMatch(/fill: none/);
+      expect(svgg.$('rect#i0_2').getAttribute('style')).toMatch(/fill: none/);
+      expect(svgg.$('rect#i1_1').getAttribute('style')).not.toMatch(/fill: none/);
+    });
+  });
+
 });
 

@@ -2,4 +2,6 @@ name: beakerx
 channels:
   - conda-forge
 dependencies:
-  - beakerx == 1.1.0
+  - python>=3.7
+  - numpy
+  - beakerx

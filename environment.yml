@@ -2,6 +2,15 @@ name: beakerx
 channels:
   - conda-forge
 dependencies:
-  - python>=3.7
+  - python
+  - notebook >=5.7.4
+  - openjdk ==8.0.121
+  - maven
+  - py4j
   - numpy
+  - pandas
+  - ipywidgets >=7.0
+  - widgetsnbextension
+  - pytest
+  - requests
   - beakerx

@@ -14,8 +14,9 @@
 
 
 import unittest
+import pandas as pd
 
-from ..chart import TimePlot, Line
+from ..chart import TimePlot, Line, ConstantLine
 
 
 class TestTimePlot(unittest.TestCase):
@@ -43,3 +44,11 @@ class TestTimePlot(unittest.TestCase):
         # then
         model = plot.model
         self.assertEqual(len(model['graphics_list']), 1)
+
+    def test_add_ConstantLine_to_plot_with_pandas_date_time(self):
+        # given
+        plot = TimePlot()
+        # when
+        plot.add(ConstantLine(x=pd.to_datetime('2015-02-04 15:00:00')))
+        # then
+        self.assertEqual(plot.model['constant_lines'][0]['x'], 1423062000000)

@@ -12,15 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from enum import Enum
-import math
-import pandas as pd
-from beakerx.utils import *
-
-from dateutil.parser import parse
-import numpy as np
 import datetime as dt
+import math
 import uuid
+
+import numpy as np
+from beakerx.utils import *
+from dateutil.parser import parse
 
 
 class ShapeType(Enum):
@@ -121,15 +119,22 @@ class Graphics(BaseObject):
     def fireKey(self, details, key):
         self.onKeyListeners.get(key, lambda *args: None)(details)
 
+
 class ConstantLine(Graphics):
     def __init__(self, **kwargs):
         super(ConstantLine, self).__init__(**kwargs)
-        self.x = getValue(kwargs, 'x')
+        self.x = self.transform_value_to_number(getValue(kwargs, 'x'))
         self.y = getValue(kwargs, 'y')
         self.color = getColor(getValue(kwargs, 'color'))
         self.width = getValue(kwargs, 'width', 1.5)
         self.style = getValue(kwargs, 'style')
         self.showLabel = getValue(kwargs, 'showLabel')
+
+    @staticmethod
+    def transform_value_to_number(value):
+        if isinstance(value, datetime):
+            return datetime_to_number(value)
+        return value
 
 
 class ConstantBand(Graphics):

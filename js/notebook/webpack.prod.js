@@ -14,30 +14,27 @@
  *  limitations under the License.
  */
 
-const webpack = require('webpack');
 const merge = require('webpack-merge');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const config = require('./webpack.config');
 
 const prodConfig = {
+  mode: 'production',
   devtool: 'source-map',
-  plugins: [
-    new UglifyJSPlugin({
-      sourceMap: true,
-      parallel: true,
-      include: '/\/src/',
-      uglifyOptions: {
-        compress: {
-          unused: false
+  optimization: {
+    minimizer: [
+      new UglifyJSPlugin({
+        sourceMap: true,
+        parallel: true,
+        include: '/\/src/',
+        uglifyOptions: {
+          compress: {
+            unused: false
+          }
         }
-      }
-    }),
-    new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('production')
-      }
-    })
-  ]
+      })
+    ]
+  }
 };
 
 for (var i in config) {

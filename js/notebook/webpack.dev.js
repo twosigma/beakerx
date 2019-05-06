@@ -18,7 +18,8 @@ const merge = require('webpack-merge');
 const config = require('./webpack.config');
 
 const devConfig = {
-  devtool: 'source-map'
+  devtool: 'source-map',
+  mode: 'development'
 };
 
 for (var i in config) {

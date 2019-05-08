@@ -14,18 +14,18 @@
  *  limitations under the License.
  */
 
-var webpack = require('webpack');
-var package = require('./package.json');
-var path = require('path');
-var ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-var TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-var tsConfigPath = path.resolve(__dirname, './src/tsconfig.json');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack');
+const pkg = require('./package.json');
+const path = require('path');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const tsConfigPath = path.resolve(__dirname, './src/tsconfig.json');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 // Custom webpack loaders are generally the same for all webpack bundles, hence
 // stored in a separate local variable.
-var rules = [
-  { test: /\.json$/, use: 'json-loader' },
+const rules = [
+  { test: /\.json$/, loader: 'json-loader' },
   { test: /\.ts$/, loader: 'ts-loader', options: {
     transpileOnly: true
   }},
@@ -47,33 +47,33 @@ var rules = [
   { test: /\.html$/, use: 'html-loader' }
 ];
 
-var plugins = [
-  new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+const plugins = [
+  new webpack.IgnorePlugin({ resourceRegExp: /^\.\/locale$/, contextRegExp: /moment$/ }),
   new webpack.ProvidePlugin({
     "$":"jquery",
     "jQuery":"jquery",
     "window.jQuery":"jquery",
     "d3": "d3"
   }),
-  new TsconfigPathsPlugin({ configFile: tsConfigPath }),
   new ForkTsCheckerWebpackPlugin({
     tsconfig: tsConfigPath,
     watch: 'src',
-    workers: ForkTsCheckerWebpackPlugin.TWO_CPUS_FREE
+    workers: ForkTsCheckerWebpackPlugin.ONE_CPU
   }),
   new webpack.DefinePlugin({
     BEAKERX_MODULE_VERSION: JSON.stringify("*") // The latest version
   })
 ];
 
-var externals = [
+const externals = [
   '@jupyter-widgets/base',
   '@jupyter-widgets/controls'
 ];
 
-var resolve = {
+const resolve = {
   modules: ['web_modules', 'node_modules'],
-  extensions: ['.ts', '.jsx','.js','.less','.css']
+  extensions: ['.ts', '.jsx','.js','.less','.css'],
+  plugins: [new TsconfigPathsPlugin({ configFile: tsConfigPath })]
 };
 
 module.exports = [
@@ -152,7 +152,7 @@ module.exports = [
       filename: 'index.js',
       path: path.resolve(__dirname, './dist/'),
       libraryTarget: 'amd',
-      publicPath: 'https://unpkg.com/' + package.name + '@' + package.version + '/dist/'
+      publicPath: 'https://unpkg.com/' + pkg.name + '@' + pkg.version + '/dist/'
     },
     module: {
       rules: rules

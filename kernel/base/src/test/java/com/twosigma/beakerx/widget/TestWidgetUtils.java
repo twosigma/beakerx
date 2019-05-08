@@ -15,12 +15,6 @@
  */
 package com.twosigma.beakerx.widget;
 
-import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_OPEN;
-import static com.twosigma.beakerx.widget.Widget.DISPLAY;
-import static com.twosigma.beakerx.widget.Widget.METHOD;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
-
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.jupyter.SearchMessages;
 import com.twosigma.beakerx.kernel.comm.Comm;
@@ -28,10 +22,17 @@ import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Message;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_OPEN;
+import static com.twosigma.beakerx.widget.Widget.DISPLAY;
+import static com.twosigma.beakerx.widget.Widget.METHOD;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class TestWidgetUtils {
 
@@ -95,7 +96,7 @@ public class TestWidgetUtils {
     if (null != data) {
       return (Map) ((Map) data).getOrDefault(Comm.STATE, null);
     }
-    return null;
+    return new HashMap();
   }
 
   public static Map getContent(Message message) {
@@ -132,7 +133,7 @@ public class TestWidgetUtils {
   public static <T> T findValueForProperty(KernelTest kernel, String propertyName, Class<T> clazz) {
     List<Message> messages = SearchMessages
             .getListByDataAttr(kernel.getPublishedMessages(), Comm.METHOD, Comm.UPDATE);
-    messages = messages.stream().filter( x -> getState(x).containsKey(propertyName)).collect(Collectors.toList());
+    messages = messages.stream().filter(x -> getState(x).containsKey(propertyName)).collect(Collectors.toList());
     assertTrue("No update comm message.", messages.size() > 0);
     return getValueForProperty(messages.get(0), propertyName, clazz);
   }

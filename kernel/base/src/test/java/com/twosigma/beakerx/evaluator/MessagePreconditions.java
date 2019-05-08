@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,17 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package com.twosigma.beakerx.evaluator;
 
-const merge = require('webpack-merge');
-const config = require('./webpack.config');
+import com.twosigma.beakerx.message.Message;
 
-const devConfig = {
-  devtool: 'source-map',
-  mode: 'development'
-};
+import java.util.Optional;
 
-for (var i in config) {
-  config[i] = merge(config[i], devConfig);
+public interface MessagePreconditions {
+
+  boolean match(Optional<Message> message);
 }
-
-module.exports = config;

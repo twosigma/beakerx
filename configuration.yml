@@ -7,7 +7,7 @@ dependencies:
   - notebook>=5.7.6
   - tornado>6
   - ipywidgets>=7.0.0
-  - nodejs=10.13.0
+  - nodejs
   - pandas
   - maven
   - py4j

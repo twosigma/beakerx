@@ -92,6 +92,9 @@ export default class CombinedPlotScope {
   }
 
   preparePlotModels() {
+    if (this.models.length) {
+      return;
+    }
     const plots = this.stdmodel.plots;
 
     // create a plot model and a saved state for each plot

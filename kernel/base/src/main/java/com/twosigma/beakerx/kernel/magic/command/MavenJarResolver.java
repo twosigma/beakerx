@@ -17,7 +17,9 @@ package com.twosigma.beakerx.kernel.magic.command;
 
 import com.twosigma.beakerx.kernel.commands.MavenInvocationSilentOutputHandler;
 import com.twosigma.beakerx.kernel.commands.MavenJarResolverSilentLogger;
-import com.twosigma.beakerx.kernel.magic.command.functionality.MvnLoggerWidget;
+import com.twosigma.beakerx.kernel.magic.command.functionality.MvnDownloadLoggerWidget;
+import com.twosigma.beakerx.kernel.magic.command.functionality.MvnLogsWidget;
+import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.util.Preconditions;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -62,6 +64,7 @@ public class MavenJarResolver {
   private ResolverParams commandParams;
   private String mavenLocation;
   private PomFactory pomFactory;
+  private MvnLogsWidget logs;
 
   public MavenJarResolver(final ResolverParams commandParams,
                           PomFactory pomFactory) {
@@ -70,30 +73,42 @@ public class MavenJarResolver {
     this.pomFactory = pomFactory;
   }
 
-  public AddMvnCommandResult retrieve(Dependency dependency, MvnLoggerWidget progress) {
+  public AddMvnCommandResult retrieve(Dependency dependency, Message parent) {
     List<Dependency> dependencies = singletonList(dependency);
-    return retrieve(dependencies, progress);
+    return retrieve(dependencies, parent);
   }
 
-  public AddMvnCommandResult retrieve(List<Dependency> dependencies, MvnLoggerWidget progress) {
+  public AddMvnCommandResult retrieve(List<Dependency> dependencies, Message parent) {
     File finalPom = null;
     try {
       String pomAsString = pomFactory.createPom(new PomFactory.Params(pathToMavenRepo, dependencies, commandParams.getRepos(), GOAL, MAVEN_BUILT_CLASSPATH_FILE_NAME));
       finalPom = saveToFile(commandParams.getPathToNotebookJars(), pomAsString);
-      InvocationRequest request = createInvocationRequest();
-      request.setOffline(commandParams.getOffline());
-      request.setPomFile(finalPom);
-      request.setUpdateSnapshots(true);
-      Invoker invoker = getInvoker(progress);
+      InvocationRequest request = createInvocationRequest(finalPom);
+      MvnDownloadLoggerWidget progress = new MvnDownloadLoggerWidget(parent);
+      this.logs = manageOutput(this.logs, parent);
+      MavenInvocationSilentOutputHandler outputHandler = new MavenInvocationSilentOutputHandler(progress, this.logs);
+      Invoker invoker = getInvoker(outputHandler);
       progress.display();
       InvocationResult invocationResult = invoker.execute(request);
       progress.close();
+      this.logs.stop();
       return getResult(invocationResult, dependencies);
     } catch (Exception e) {
       return AddMvnCommandResult.error(e.getMessage());
     } finally {
       deletePomFolder(finalPom);
     }
+  }
+
+  private MvnLogsWidget manageOutput(MvnLogsWidget output, Message parent) {
+    if (output != null) {
+      output.close();
+    }
+    MvnLogsWidget newInstance = new MvnLogsWidget(parent);
+    if (BxMavenManager.isLogsOn()) {
+      newInstance.display();
+    }
+    return newInstance;
   }
 
   private File saveToFile(String pathToNotebookJars, String pomAsString)
@@ -104,12 +119,12 @@ public class MavenJarResolver {
     return finalPom;
   }
 
-  private Invoker getInvoker(MvnLoggerWidget progress) {
+  private Invoker getInvoker(MavenInvocationSilentOutputHandler mavenInvocationSilentOutputHandler) {
     Invoker invoker = new DefaultInvoker();
     String mvn = findMvn();
     System.setProperty("maven.home", mvn);
     invoker.setLogger(new MavenJarResolverSilentLogger());
-    invoker.setOutputHandler(new MavenInvocationSilentOutputHandler(progress));
+    invoker.setOutputHandler(mavenInvocationSilentOutputHandler);
     invoker.setLocalRepositoryDirectory(getOrCreateFile(this.commandParams.getPathToCache()));
     return invoker;
   }
@@ -185,9 +200,12 @@ public class MavenJarResolver {
     return stream.map(x -> Paths.get(x).getFileName().toString()).collect(Collectors.toList());
   }
 
-  private InvocationRequest createInvocationRequest() {
+  private InvocationRequest createInvocationRequest(File finalPom) {
     InvocationRequest request = new DefaultInvocationRequest();
     request.setGoals(singletonList(GOAL));
+    request.setOffline(commandParams.getOffline());
+    request.setPomFile(finalPom);
+    request.setUpdateSnapshots(true);
     return request;
   }
 

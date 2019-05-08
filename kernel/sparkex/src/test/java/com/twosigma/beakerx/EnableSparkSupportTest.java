@@ -115,7 +115,7 @@ public class EnableSparkSupportTest extends KernelSetUpFixtureTest {
     }
   }
 
-//  @Test
+  @Test
   public void sparkImplicit() throws Exception {
     try {
       enableSparkSupport(ENABLE_SPARK_SUPPORT);

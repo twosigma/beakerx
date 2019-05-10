@@ -25,7 +25,6 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 // Custom webpack loaders are generally the same for all webpack bundles, hence
 // stored in a separate local variable.
 const rules = [
-  { test: /\.json$/, loader: 'json-loader' },
   { test: /\.ts$/, loader: 'ts-loader', options: {
     transpileOnly: true
   }},

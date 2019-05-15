@@ -40,7 +40,6 @@ describe('(Groovy) Testing of MIME types', function () {
 
   describe('(Groovy) Display MIME types ', function () {
     var testValues = {
-      mathematicalSymbols: /𝛼+𝜂/,
       headerText: /Hello, world!/,
       markdownTestValue: /It's very easy to do bold and italics:/,
       markdownBoldValue: /bold/,
@@ -52,6 +51,7 @@ describe('(Groovy) Testing of MIME types', function () {
     it('(Latex) Cell outputs mathematical symbols ', function () {
       cellIndex = 0;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      browser.pause(1000);
       var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText();
       expect(result.charCodeAt(1).toString(16)).toEqual('defc');
       expect(result.charCodeAt(2).toString(16)).toEqual('2b');
@@ -85,6 +85,7 @@ describe('(Groovy) Testing of MIME types', function () {
     it('(MIMEContainer) Cell outputs mathematical symbols ', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      browser.pause(1000);
       var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText();
       expect(result.charCodeAt(1).toString(16)).toEqual('defc');
       expect(result.charCodeAt(2).toString(16)).toEqual('2b');

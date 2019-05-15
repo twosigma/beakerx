@@ -254,5 +254,23 @@ module.exports = [
       ignored: /node_modules/
     },
     plugins: plugins
-  }
+  },
+    {// Table Display
+
+        entry: './src/tableDisplay/dataGrid/index.ts',
+        output: {
+            filename: 'tableDisplayExtension.js',
+            path: path.resolve(__dirname, '../../beakerx/beakerx_tabledisplay/static'),
+            libraryTarget: 'amd'
+        },
+        module: {
+            rules: rules
+        },
+        resolve: resolve,
+        externals: externals,
+        watchOptions: {
+            ignored: /node_modules/
+        },
+        plugins: plugins
+    }
 ];

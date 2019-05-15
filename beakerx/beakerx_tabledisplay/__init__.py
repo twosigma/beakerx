@@ -22,7 +22,7 @@ def _jupyter_nbextension_paths():
         'section': 'notebook',
         'src': 'static',
         'dest': 'beakerx_tabledisplay',
-        'require': 'beakerx_tabledisplay/extension'
+        'require': 'beakerx_tabledisplay/tableDisplayExtension'
     }
     ]
 

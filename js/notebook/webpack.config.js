@@ -255,11 +255,10 @@ module.exports = [
     },
     plugins: plugins
   },
-    {// Table Display
-
-        entry: './src/tableDisplay/dataGrid/index.ts',
+    {// Bundle of tabledisplay
+        entry: './src/tdextension.ts',
         output: {
-            filename: 'tableDisplayExtension.js',
+            filename: 'tdextension.js',
             path: path.resolve(__dirname, '../../beakerx/beakerx_tabledisplay/static'),
             libraryTarget: 'amd'
         },

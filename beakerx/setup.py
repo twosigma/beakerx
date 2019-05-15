@@ -85,7 +85,8 @@ setup_args = dict(
     entry_points={
         'console_scripts': [
             'beakerx = beakerx:run',
-            'beakerx_databrowser = beakerx_databrowser:run'
+            'beakerx_databrowser = beakerx_databrowser:run',
+            'beakerx_tabledisplay = beakerx_tabledisplay:run'
         ]
     },
     package_data={

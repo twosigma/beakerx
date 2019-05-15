@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numpy as np
 from beakerx.beakerx_widgets import *
-from beakerx.tabledisplay.tableitems import *
+from beakerx_tabledisplay.tableitems import *
 from beakerx.utils import *
 from ipykernel.comm import Comm
 from pandas import DataFrame, RangeIndex, MultiIndex, DatetimeIndex

@@ -1,4 +1,4 @@
-# Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+# Copyright 2019 TWO SIGMA OPEN SOURCE, LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,31 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .plot import *
-from .easyform import *
-from .output_container import *
 from ._version import version_info, __version__
 from .handlers import load_jupyter_server_extension
-from .environment import *
 from .commands import parse
+
 
 def _jupyter_nbextension_paths():
     return [{
-        'section': 'tree',
-        'src': 'static',
-        'dest': 'beakerx',
-        'require': 'beakerx/tree'
-    }, {
         'section': 'notebook',
         'src': 'static',
-        'dest': 'beakerx',
-        'require': 'beakerx/extension'
+        'dest': 'beakerx_tabledisplay',
+        'require': 'beakerx_tabledisplay/extension'
     }
     ]
 
 
 def _jupyter_server_extension_paths():
-    return [dict(module="beakerx")]
+    return [dict(module="beakerx_tabledisplay")]
 
 def run():
     try:

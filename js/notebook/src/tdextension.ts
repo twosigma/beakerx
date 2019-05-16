@@ -14,12 +14,19 @@
  *  limitations under the License.
  */
 
-/*
-* /// <reference path='./types/index.d.ts'/>
-*/
-
-__webpack_public_path__ = document.querySelector('body').getAttribute('data-base-url') + 'nbextensions/beakerx/';
-
+// Configure requirejs
+if (window.require) {
+  window.require.config({
+    map: {
+      "*": {
+        "beakerx_tabledisplay": "nbextensions/beakerx_tabledisplay/index",
+        "jupyter-js-widgets": "nbextensions/jupyter-js-widgets/extension",
+        "@jupyter-widgets/base": "nbextensions/jupyter-js-widgets/extension",
+        "@jupyter-widgets/controls": "nbextensions/jupyter-js-widgets/extension"
+      }
+    }
+  });
+}
 // Export widget models and views, and the npm package version number.
 export * from './TableDisplay';
 export const version = require('../package.json').version;

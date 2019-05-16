@@ -258,7 +258,7 @@ module.exports = [
     {// Bundle of tabledisplay
         entry: './src/tdextension.ts',
         output: {
-            filename: 'tableDisplayExtension.js',
+            filename: 'index.js',
             path: path.resolve(__dirname, '../../beakerx/beakerx_tabledisplay/static'),
             libraryTarget: 'amd'
         },

@@ -33,7 +33,6 @@ import 'flatpickr/dist/flatpickr.css';
 import 'jquery-ui/themes/base/all.css';
 import 'jquery-ui/ui/widgets/button';
 import 'jquery-ui/ui/widgets/autocomplete';
-import BeakerXThemeHelper from "./BeakerXThemeHelper";
 
 export class EasyFormModel extends widgets.DOMWidgetModel {
   defaults() {
@@ -56,6 +55,10 @@ export class EasyFormModel extends widgets.DOMWidgetModel {
 }
 
 export class EasyFormView extends widgets.BoxView {
+  public static get isDark(): boolean {
+    return document.body.classList.contains('bx-dark-theme');
+  }
+
   render() {
     super.render.apply(this);
 
@@ -68,7 +71,7 @@ export class EasyFormView extends widgets.BoxView {
 
     this.$legend = $('<legend>'+formTitle+'</legend>');
     this.displayed.then(() => {
-      if (BeakerXThemeHelper.isDark) {
+      if (EasyFormView.isDark) {
         this.$legend.css('background-color', '#636363');
       }
 

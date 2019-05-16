@@ -19,8 +19,8 @@ import {ICellData} from "../interface/ICell";
 import CellTooltip from "./CellTooltip";
 import ColumnManager from "../column/ColumnManager";
 import DataGridCell from "./DataGridCell";
-import {selectHasIndex, selectTooltips} from "../model/selectors/model";
 import {COLUMN_TYPES} from "../column/enums";
+import {selectHasIndex, selectTooltips} from "../model/selectors";
 
 export default class CellTooltipManager {
   activeTooltips: CellTooltip[] = [];

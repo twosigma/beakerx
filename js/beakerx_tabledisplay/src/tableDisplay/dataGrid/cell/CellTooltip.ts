@@ -15,7 +15,7 @@
  */
 
 export default class CellTooltip {
-  timeoutId: number;
+  timeoutId: NodeJS.Timeout;
   node: HTMLElement;
   container: HTMLElement;
 

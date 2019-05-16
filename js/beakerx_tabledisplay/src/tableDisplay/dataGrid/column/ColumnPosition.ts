@@ -42,7 +42,7 @@ export default class ColumnPosition {
   dropCellData: ICellData|null;
   draggableHeaderCanvas: HTMLCanvasElement;
   draggableHeaderOffsetLeft: number|null;
-  dragStartTimeoutId: number;
+  dragStartTimeoutId: NodeJS.Timeout;
 
   constructor(dataGrid: BeakerXDataGrid) {
     this.dataGrid = dataGrid;

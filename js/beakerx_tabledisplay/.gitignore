@@ -1,0 +1,7 @@
+/.classpath
+/.project
+/.settings/
+/dist
+node_modules/
+/build/
+/.nyc_output

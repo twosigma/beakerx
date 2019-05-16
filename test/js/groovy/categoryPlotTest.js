@@ -227,7 +227,7 @@ describe('Category Plot ', function () {
     });
   });
 
-  describe('(Python) Set the outline by single value ', function () {
+  describe('Set the outline by single value ', function () {
     it('All bars have the same outline ', function () {
       cellIndex += 1;
       var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
@@ -236,7 +236,7 @@ describe('Category Plot ', function () {
     });
   });
 
-  describe('(Python) Set the outline by list of values ', function () {
+  describe('Set the outline by list of values ', function () {
     it('Each bar has different outline ', function () {
       cellIndex += 1;
       var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
@@ -247,7 +247,7 @@ describe('Category Plot ', function () {
     });
   });
 
-  describe('(Python) Set the outline color by single value ', function () {
+  describe('Set the outline color by single value ', function () {
     it('All bars have the same outline color ', function () {
       cellIndex += 1;
       var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
@@ -256,7 +256,7 @@ describe('Category Plot ', function () {
     });
   });
 
-  describe('(Python) Set the outline color by list of values ', function () {
+  describe('Set the outline color by list of values ', function () {
     it('Each bar has different outline color ', function () {
       cellIndex += 1;
       var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);

@@ -227,4 +227,44 @@ describe('(Python) Category Plot ', function () {
     });
   });
 
+  describe('(Python) Set the outline by single value ', function () {
+    it('All bars have the same outline ', function () {
+      cellIndex += 1;
+      var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
+      expect(svgg.$('rect#i0_0').getAttribute('style')).toMatch(/stroke: rgb\(./);
+      expect(svgg.$('rect#i1_0').getAttribute('style')).toMatch(/stroke: rgb\(./);
+    });
+  });
+
+  describe('(Python) Set the outline by list of values ', function () {
+    it('Each bar has different outline ', function () {
+      cellIndex += 1;
+      var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
+      expect(svgg.$('rect#i0_0').getAttribute('style')).nothing();
+      expect(svgg.$('rect#i0_1').getAttribute('style')).toMatch(/stroke: rgb\(./);
+      expect(svgg.$('rect#i0_2').getAttribute('style')).nothing();
+      expect(svgg.$('rect#i1_1').getAttribute('style')).toMatch(/stroke: rgb\(./);
+    });
+  });
+
+  describe('(Python) Set the outline color by single value ', function () {
+    it('All bars have the same outline color ', function () {
+      cellIndex += 1;
+      var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
+      expect(svgg.$('rect#i0_0').getAttribute('style')).toMatch(/stroke: rgb\(./);
+      expect(svgg.$('rect#i1_0').getAttribute('style')).toMatch(/stroke: rgb\(./);
+    });
+  });
+
+  describe('(Python) Set the outline color by list of values ', function () {
+    it('Each bar has different outline color ', function () {
+      cellIndex += 1;
+      var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
+      expect(svgg.$('rect#i0_0').getAttribute('style')).toMatch(/stroke: rgb\(0, 255, 0/);
+      expect(svgg.$('rect#i1_0').getAttribute('style')).toMatch(/stroke: rgb\(255, 0, 0/);
+      expect(svgg.$('rect#i0_1').getAttribute('style')).nothing(/stroke: rgb\(0, 255, 0/);
+      expect(svgg.$('rect#i1_1').getAttribute('style')).toMatch(/stroke: rgb\(255, 0, 0/);
+    });
+  });
+
 });

@@ -17,11 +17,11 @@
 var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('Category Plot ', function () {
+describe('(Python) Category Plot ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/test/ipynb/groovy/CategoryPlotTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/ipynb/python/CategoryPlotTest.ipynb');
   }, 2);
 
   afterAll(function () {
@@ -30,7 +30,7 @@ describe('Category Plot ', function () {
 
   var cellIndex;
 
-  describe('Run cell with CategoryBars plot ', function () {
+  describe('(Python) Run cell with CategoryBars plot ', function () {
     it('Should display 2 categories with 3 bars ', function () {
       cellIndex = 0;
       var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
@@ -42,7 +42,7 @@ describe('Category Plot ', function () {
     });
   });
 
-  describe('Set width and height ', function () {
+  describe('(Python) Set width and height ', function () {
     it('CategoryPlot has width=400 and height=200 ', function () {
       cellIndex += 1;
       var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
@@ -50,7 +50,7 @@ describe('Category Plot ', function () {
     });
   });
 
-  describe('Set title, x and y axis labels ', function () {
+  describe('(Python) Set title, x and y axis labels ', function () {
     it('CategoryPlot has title, x and y axis labels ', function () {
       cellIndex += 1;
       var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
@@ -60,7 +60,7 @@ describe('Category Plot ', function () {
     });
   });
 
-  describe('Set category labels ', function () {
+  describe('(Python) Set category labels ', function () {
     it('CategoryPlot has 3 category labels ', function () {
       cellIndex += 1;
       var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
@@ -71,7 +71,7 @@ describe('Category Plot ', function () {
     });
   });
 
-  describe('Set series labels ', function () {
+  describe('(Python) Set series labels ', function () {
     it('CategoryPlot has 2 series labels ', function () {
       cellIndex += 1;
       var dtConteainer = beakerxPO.runCellToGetDtContainer(cellIndex);
@@ -83,7 +83,7 @@ describe('Category Plot ', function () {
     });
   });
 
-  describe('Show legend ', function () {
+  describe('(Python) Show legend ', function () {
     var dtConteainer;
     it('Legend has default names ', function () {
       cellIndex += 1;
@@ -105,7 +105,7 @@ describe('Category Plot ', function () {
     });
   });
 
-  describe('Set horizontal orientation ', function () {
+  describe('(Python) Set horizontal orientation ', function () {
     it('CategoryPlot has horizontal orientation ', function () {
       cellIndex += 1;
       var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
@@ -114,7 +114,7 @@ describe('Category Plot ', function () {
     });
   });
 
-  describe('Set label orientation ', function () {
+  describe('(Python) Set label orientation ', function () {
     it('CategoryPlot has rotated labels ', function () {
       cellIndex += 1;
       var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
@@ -127,7 +127,7 @@ describe('Category Plot ', function () {
     return Math.round(svgg.$(selector).getAttribute(attribute));
   }
 
-  describe('Set margin ', function () {
+  describe('(Python) Set margin ', function () {
     it('Space between categories is greater than width ', function () {
       cellIndex += 1;
       var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
@@ -140,7 +140,7 @@ describe('Category Plot ', function () {
     });
   });
 
-  describe('Set color by single value ', function () {
+  describe('(Python) Set color by single value ', function () {
     it('All bars have the same color ', function () {
       cellIndex += 1;
       var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
@@ -150,7 +150,7 @@ describe('Category Plot ', function () {
     });
   });
 
-  describe('Set color by list of values ', function () {
+  describe('(Python) Set color by list of values ', function () {
     it('Each bar has different color ', function () {
       cellIndex += 1;
       var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
@@ -161,7 +161,7 @@ describe('Category Plot ', function () {
     });
   });
 
-  describe('Set base by single value ', function () {
+  describe('(Python) Set base by single value ', function () {
     it('CategoryPlot has base  ', function () {
       cellIndex += 1;
       var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
@@ -174,7 +174,7 @@ describe('Category Plot ', function () {
     });
   });
 
-  describe('Set base by list of values ', function () {
+  describe('(Python) Set base by list of values ', function () {
     it('Each bar has different base ', function () {
       cellIndex += 1;
       var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
@@ -188,7 +188,7 @@ describe('Category Plot ', function () {
     });
   });
 
-  describe('Set the width by single value ', function () {
+  describe('(Python) Set the width by single value ', function () {
     it('All bars have the same width ', function () {
       cellIndex += 1;
       var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
@@ -197,7 +197,7 @@ describe('Category Plot ', function () {
     });
   });
 
-  describe('Set width by list of values ', function () {
+  describe('(Python) Set width by list of values ', function () {
     it('Each bar has different width ', function () {
       cellIndex += 1;
       var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
@@ -206,7 +206,7 @@ describe('Category Plot ', function () {
     });
   });
 
-  describe('Set the fill by single value ', function () {
+  describe('(Python) Set the fill by single value ', function () {
     it('All bars have the same fill ', function () {
       cellIndex += 1;
       var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
@@ -215,7 +215,7 @@ describe('Category Plot ', function () {
     });
   });
 
-  describe('Set the fill by list of values ', function () {
+  describe('(Python) Set the fill by list of values ', function () {
     it('Each bar has different fill ', function () {
       cellIndex += 1;
       var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
@@ -227,7 +227,7 @@ describe('Category Plot ', function () {
     });
   });
 
-  describe('Set the outline by single value ', function () {
+  describe('(Python) Set the outline by single value ', function () {
     it('All bars have the same outline ', function () {
       cellIndex += 1;
       var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
@@ -236,7 +236,7 @@ describe('Category Plot ', function () {
     });
   });
 
-  describe('Set the outline by list of values ', function () {
+  describe('(Python) Set the outline by list of values ', function () {
     it('Each bar has different outline ', function () {
       cellIndex += 1;
       var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
@@ -247,7 +247,7 @@ describe('Category Plot ', function () {
     });
   });
 
-  describe('Set the outline color by single value ', function () {
+  describe('(Python) Set the outline color by single value ', function () {
     it('All bars have the same outline color ', function () {
       cellIndex += 1;
       var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
@@ -256,7 +256,7 @@ describe('Category Plot ', function () {
     });
   });
 
-  describe('Set the outline color by list of values ', function () {
+  describe('(Python) Set the outline color by list of values ', function () {
     it('Each bar has different outline color ', function () {
       cellIndex += 1;
       var svgg = beakerxPO.runCellToGetSvgElement(cellIndex);
@@ -268,4 +268,3 @@ describe('Category Plot ', function () {
   });
 
 });
-

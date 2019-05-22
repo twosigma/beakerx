@@ -14,8 +14,6 @@
  *  limitations under the License.
  */
 
-/// <reference path='../../../types/index.d.ts'/>
-
 import IHihglighterState, {
   HIGHLIGHTER_STYLE,
   HIGHLIGHTER_TYPE

@@ -14,8 +14,6 @@
  *  limitations under the License.
  */
 
-/// <reference path='../../../types/index.d.ts'/>
-
 import IHihglighterState, { HIGHLIGHTER_STYLE } from "../interface/IHighlighterState";
 import { CellRenderer } from "@phosphor/datagrid";
 import DataGridColumn from "../column/DataGridColumn";

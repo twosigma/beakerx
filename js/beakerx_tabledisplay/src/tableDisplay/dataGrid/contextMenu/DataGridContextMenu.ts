@@ -23,7 +23,7 @@ import BeakerXApi from "../../../tree/Utils/BeakerXApi";
 
 export default class DataGridContextMenu extends BkoContextMenu {
   constructor(scope: DataGridScope) {
-    super({ ...scope, element: [scope.dataGrid.node] });
+    super({ ...scope, element: [scope.dataGrid.node], dataGrid: scope.dataGrid });
   }
 
   protected buildMenu(): void {

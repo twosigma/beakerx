@@ -30,16 +30,18 @@ export class DataGridScope {
 
   private element: HTMLElement;
   private store: BeakerXDataStore;
-  public readonly dataGrid: BeakerXDataGrid;
+  protected _dataGrid: BeakerXDataGrid;
   private tableDisplayModel: any;
   private tableDisplayView: any;
+
+  public get dataGrid():BeakerXDataGrid { return this._dataGrid; }
 
   constructor(options: IDataGridScopeOptions) {
     this.store = createStore(options.data);
     this.element = options.element;
     this.tableDisplayModel = options.widgetModel;
     this.tableDisplayView = options.widgetView;
-    this.dataGrid = new BeakerXDataGrid(
+    this._dataGrid = new BeakerXDataGrid(
       {
         style: BeakerXThemeHelper.getStyle(),
         cellRenderers: new RendererMap({ priority: ['body|{dataType: html}','body|'] })
@@ -67,7 +69,7 @@ export class DataGridScope {
     this.contextMenu.destroy();
 
     setTimeout(() => {
-      this.dataGrid = null;
+      this._dataGrid = null;
       this.store = null;
     });
   }

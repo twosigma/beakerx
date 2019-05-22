@@ -1,0 +1,19 @@
+{
+  "name": "beakerx_shared",
+  "version": "1.0.0",
+  "description": "BeakerX - shared files",
+  "author": "Two Sigma Open Source, LLC",
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "tsc --build"
+  },
+  "dependencies": {
+    "@phosphor/commands": "^1.6.1",
+    "@phosphor/widgets": "^1.6.0",
+    "ts-node": "^8.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^11.13.10",
+    "typescript": "^3.4.5"
+  }
+}

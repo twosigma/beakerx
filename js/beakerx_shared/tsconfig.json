@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "composite": true,
+    "declaration": true,
+    "esModuleInterop": true,
+    "incremental": true,
+    "module": "ES2015",
+    "moduleResolution": "node",
+    "noEmitOnError": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "preserveWatchOutput": true,
+    "resolveJsonModule": true,
+    "strictNullChecks": true,
+    "target": "es6",
+    "outDir": "lib",
+    "lib": ["dom"],
+    "types": ["node"],
+    "rootDir": "src"
+  },
+  "include": [
+    "src/**/*"
+  ]
+}

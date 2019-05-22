@@ -106,7 +106,7 @@ export default class EventManager {
     }
 
     if (this.isOutsideGrid(event)) {
-      this.dataGrid.cellHovered.emit({ data: null });
+      this.dataGrid.cellHovered.emit({ data: null, event: event });
       this.dataGrid.dataGridResize.setCursorStyle('auto');
     }
   }

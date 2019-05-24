@@ -18,29 +18,49 @@ import time
 from datetime import datetime
 from enum import Enum
 
+import numpy as np
+import pandas as pd
 import pytz
 from dateutil import parser
 from pandas import Timestamp
-import numpy as np
-import pandas as pd
 
 current_milli_time = lambda: int(round(time.time() * 1000))
 
 
+def get_epoch():
+    return parser.parse("1970-01-01 00:00:00+00:00")
+
+
+def date_to_int(value):
+    epoch = get_epoch()
+    date = parser.parse(value)
+    delta = date.replace(tzinfo=pytz.utc) - epoch
+    return int(delta.total_seconds() * 1000.0)
+
+
+def pandas_timestamp_to_int(value):
+    epoch = get_epoch()
+    date = value.to_pydatetime()
+    delta = date.replace(tzinfo=pytz.utc) - epoch
+    return int(delta.total_seconds() * 1000.0)
+
+
+def datetime_to_number(value):
+    if isinstance(value, Timestamp):
+        return pandas_timestamp_to_int(value)
+    else:
+        return date_to_int(value)
+
+
 def unix_time(dt):
-    epoch = parser.parse("1970-01-01 00:00:00+00:00")
     if isinstance(dt, Timestamp):
-        date = dt.to_pydatetime()
-        delta = date.replace(tzinfo=pytz.utc) - epoch
         j_object = {
             'type': 'Date',
-            'timestamp': int(delta.total_seconds() * 1000.0)
+            'timestamp': pandas_timestamp_to_int(dt)
         }
         return j_object
     else:
-        date = parser.parse(dt)
-        delta = date.replace(tzinfo=pytz.utc) - epoch
-        return int(delta.total_seconds() * 1000.0)
+        return date_to_int(dt)
 
 
 def date_time_2_millis(dt):

@@ -13,9 +13,11 @@
   },
   "dependencies": {
     "@phosphor/commands": "^1.6.1",
-    "@phosphor/widgets": "^1.6.0"
+    "@phosphor/widgets": "^1.6.0",
+    "moment-timezone": "^0.5.13"
   },
   "devDependencies": {
+    "@types/moment-timezone": "^0.5.12",
     "rimraf": "^2.6.3",
     "typescript": "^3.4.5"
   },

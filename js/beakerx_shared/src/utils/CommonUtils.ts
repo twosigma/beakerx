@@ -14,23 +14,23 @@
  *  limitations under the License.
  */
 
-define([
-  'moment-timezone/builds/moment-timezone-with-data.min'
-], function(moment) {
-  return {
-    applyTimezone: function(timestamp, tz) {
-      var time = moment(timestamp);
-      if (tz) {
-        if (tz.startsWith("GMT")) {
-          time.utcOffset(tz);
-        } else {
-          time.tz(tz);
-        }
+import moment from "moment-timezone";
+
+export default class CommonUtils {
+
+  public static applyTimezone(timestamp: number, tz: string): moment.Moment {
+    var time = moment(timestamp);
+    if (tz) {
+      if (tz.startsWith("GMT")) {
+        time.utcOffset(tz);
+      } else {
+        time.tz(tz);
       }
-      return time;
-    },
-    formatTimestamp: function(timestamp, tz, format) {
-      return this.applyTimezone(timestamp, tz).format(format);
     }
-  };
-});
+    return time;
+  }
+
+  public static formatTimestamp(timestamp: number, tz: string, format: string): string {
+    return this.applyTimezone(timestamp, tz).format(format);
+  }
+}

@@ -14,5 +14,4 @@
  *  limitations under the License.
  */
 
-export * from "./contextMenu";
-export * from "./utils";
+export * from './CommonUtils';

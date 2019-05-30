@@ -351,7 +351,7 @@ export default class DataGridColumn {
       selectStringFormatForType(this.store.state),
       selectStringFormatForColumn(this.store.state)[this.name]
     ));
-    this.setAlignment(selectInitialColumnAlignment(this.store.state, this.getDataType(), name));
+    this.setAlignment(selectInitialColumnAlignment(this.store.state, this.getDataType(), this.name));
     this.toggleVisibility(selectColumnsVisible(this.store.state)[this.name] !== false);
     this.toggleDataBarsRenderer(false);
     this.resetHighlighters();
@@ -360,7 +360,7 @@ export default class DataGridColumn {
     this.assignFormatFn();
 
     const position = this.getPosition();
-    this.dataGrid.dataGridResize.setInitialSectionWidth(this, position.region);
+    this.dataGrid.dataGridResize.setInitialSectionWidth({ index: position.value }, position.region);
     this.dataGrid.dataGridResize.updateWidgetWidth();
   }
 

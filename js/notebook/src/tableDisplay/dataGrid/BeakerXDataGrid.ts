@@ -145,6 +145,7 @@ export class BeakerXDataGrid extends DataGrid {
     this.model.updateData(state);
     this.columnManager.recalculateMinMaxValues();
     this.dataGridResize.setInitialSize();
+    this.addHighlighterManager();
   }
 
   setWrapperId(id: string) {

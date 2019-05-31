@@ -20,7 +20,7 @@ import DataGridColumn from "../column/DataGridColumn";
 import { reduce } from "@phosphor/algorithm";
 import { CellRenderer } from "@phosphor/datagrid";
 import {selectColumnNames} from "../model/selectors/column";
-import BeakerXThemeHelper from "../../../BeakerXThemeHelper";
+import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
 
 const MAX_HUE_VALUE = 360;
 const DEFAULT_HSL_COMPONENT_STEPS_COUNT = 50;

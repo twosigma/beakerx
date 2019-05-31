@@ -48,7 +48,7 @@ export default class CellTooltip {
 
     this.container.appendChild(this.node);
     clearTimeout(this.timeoutId);
-    this.timeoutId = setTimeout(() => this.node.classList.add('visible'), CellTooltip.TOOLTIP_ANIMATION_DELAY);
+    this.timeoutId = setTimeout(() => this.node.classList.add('visible'), CellTooltip.TOOLTIP_ANIMATION_DELAY) as any;
   }
 
   hide(): void {
@@ -62,6 +62,6 @@ export default class CellTooltip {
         }
       },
       2 * CellTooltip.TOOLTIP_ANIMATION_DELAY
-    )
+    ) as any
   }
 }

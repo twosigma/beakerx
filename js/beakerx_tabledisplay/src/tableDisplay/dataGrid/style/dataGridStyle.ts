@@ -14,11 +14,10 @@
  *  limitations under the License.
  */
 
-import bkUtils from '../../../shared/bkUtils';
-import bkHelper from '../../../shared/bkHelper';
-import GLOBALS from '../../../shared/bkGlobals';
-
 import './dataGrid.scss';
+import CommonUtils from "beakerx_shared/lib/utils/CommonUtils";
+import GLOBALS from "beakerx_shared/lib/bk/bkGlobals";
+import {getTheme} from "beakerx_shared/lib/bk/bkHelper";
 
 export const DEFAULT_DATA_FONT_SIZE = 13;
 export const DEFAULT_BORDER_COLOR = '#D4D0D0';
@@ -41,7 +40,7 @@ export const DEFAULT_COLORS = {
 };
 
 export function rgbToHex(r, g, b) {
-  return formatColor(bkUtils.rgbaToHex(r, g, b));
+  return formatColor(CommonUtils.rgbaToHex(r, g, b));
 }
 
 // Darken function for color in 'rgb(r, g, b)' format
@@ -63,7 +62,7 @@ export function darken(color: string, factor = 0.8): string {
 }
 
 export function getDefaultColor(color) {
-  return DEFAULT_COLORS[bkHelper.getTheme()][color];
+  return DEFAULT_COLORS[getTheme()][color];
 }
 
 export function formatColor(hexColor) {

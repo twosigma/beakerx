@@ -172,7 +172,7 @@ export default class ColumnPosition {
   private debounceDragStart(data) {
     this.dragStartTimeoutId = setTimeout(() => {
       this.handleDragStart(data);
-    }, DRAG_START_DEBOUNCE_TIME);
+    }, DRAG_START_DEBOUNCE_TIME) as any;
   }
 
   private handleDragStart(data) {

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import * as moment from 'moment-timezone/builds/moment-timezone-with-data';
+import moment from 'moment-timezone';
 import * as _ from 'underscore';
 import {getDoublePrecisionByType, isDoubleWithPrecision} from './dataTypes';
 import {DataGridHelpers} from './dataGridHelpers';
@@ -22,15 +22,15 @@ import {TIME_UNIT_FORMATS} from './consts';
 import {CellRenderer} from "@phosphor/datagrid";
 import {IColumnState} from "./interface/IColumn";
 import {
-    selectColumnNames,
-    selectFormatForTimes,
-    selectStringFormatForColumn,
-    selectStringFormatForType,
-    selectTimeStrings,
-    selectTimeZone
+  selectColumnNames,
+  selectFormatForTimes,
+  selectStringFormatForColumn,
+  selectStringFormatForType,
+  selectTimeStrings,
+  selectTimeZone
 } from "./model/selectors";
 import {BeakerXDataStore} from "./store/BeakerXDataStore";
-import * as Big from "big.js";
+import Big from "big.js";
 import formatTimestamp = DataGridHelpers.formatTimestamp;
 
 export const DEFAULT_TIME_FORMAT = 'YYYYMMDD HH:mm:ss.SSS ZZ';

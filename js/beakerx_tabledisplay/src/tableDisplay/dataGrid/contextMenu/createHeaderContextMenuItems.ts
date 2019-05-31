@@ -14,15 +14,15 @@
  *  limitations under the License.
  */
 
-import MenuItem from '../../../shared/interfaces/contextMenuItemInterface';
 import {BeakerXDataGrid} from "../BeakerXDataGrid";
 import DataGridContextMenu from "./DataGridContextMenu";
 import {selectHeadersVertical} from "../model/selectors";
+import IContextMenuItem from "beakerx_shared/lib/contextMenu/IContextMenuItem";
 
 export default function createHeaderContextMenuItems(
   dataGrid: BeakerXDataGrid,
   contextMenu: DataGridContextMenu
-): MenuItem[] {
+): IContextMenuItem[] {
   const selector = `#${dataGrid.wrapperId} canvas`;
 
   const rotateMenuItemAction = (headersVertical: boolean) => (event: MouseEvent) => {

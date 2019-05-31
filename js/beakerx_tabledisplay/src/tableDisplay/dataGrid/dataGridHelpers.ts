@@ -18,11 +18,11 @@ import {SectionList} from "@phosphor/datagrid/lib/sectionlist";
 import {darken, DEFAULT_DATA_FONT_SIZE} from "./style/dataGridStyle";
 import {KEYBOARD_KEYS} from "./event/enums";
 import DataGridColumn from "./column/DataGridColumn";
-import * as moment from 'moment-timezone/builds/moment-timezone-with-data';
-import {sanitizeHTML} from "../../plot/plotSanitize";
-import BeakerXThemeHelper from "../../BeakerXThemeHelper";
+import moment from 'moment-timezone';
 import {CellRenderer} from "@phosphor/datagrid";
 import {BeakerXDataGrid} from "./BeakerXDataGrid";
+import SanitizeUtils from "beakerx_shared/lib/utils/SanitizeUtils";
+import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
 
 export namespace DataGridHelpers {
   const urlRegex = /((https?|ftp|file):\/\/)(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[A-Z0-9+&@#/%=~_|$])/i;
@@ -78,7 +78,7 @@ export namespace DataGridHelpers {
     let width: number;
     let height: number;
 
-    divEl.innerHTML = sanitizeHTML(value, true);
+    divEl.innerHTML = SanitizeUtils.sanitizeHTML(value, true);
     divEl.style.fontFamily = 'Lato, Helvetica, sans-serif';
     divEl.style.fontSize = `${fontSize || DEFAULT_DATA_FONT_SIZE}px`;
     divEl.style.padding = '5px';

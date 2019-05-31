@@ -27,7 +27,7 @@ import DataGridColumn from "../column/DataGridColumn";
 import {selectCellHighlighters} from "../model/selectors/model";
 import {DataGridColumnAction} from "../store/DataGridAction";
 import {ADD_COLUMN_HIGHLIGHTER, REMOVE_COLUMN_HIGHLIGHTER} from "../model/reducer";
-import BeakerXThemeHelper from "../../../BeakerXThemeHelper";
+import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
 
 export default class HighlighterManager {
   highlighters: Highlighter[];

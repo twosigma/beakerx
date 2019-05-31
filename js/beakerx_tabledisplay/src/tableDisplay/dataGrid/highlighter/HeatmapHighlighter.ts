@@ -20,7 +20,7 @@ import Highlighter from "./Highlighter";
 import IHihglighterState from "../interface/IHighlighterState";
 import DataGridColumn from "../column/DataGridColumn";
 import { CellRenderer } from "@phosphor/datagrid";
-import BeakerXThemeHelper from "../../../BeakerXThemeHelper";
+import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
 
 export default class HeatmapHighlighter extends Highlighter {
   colorScale: Function;

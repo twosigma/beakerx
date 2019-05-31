@@ -17,7 +17,7 @@
 import { CellRenderer, GraphicsContext } from "@phosphor/datagrid";
 import BeakerXCellRenderer from "./BeakerXCellRenderer";
 import { selectHeadersVertical } from "../model/selectors";
-import BeakerXThemeHelper from "../../../BeakerXThemeHelper";
+import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
 
 export default class HeaderCellRenderer extends BeakerXCellRenderer {
 

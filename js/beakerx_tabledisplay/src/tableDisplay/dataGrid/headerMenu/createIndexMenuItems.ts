@@ -14,14 +14,14 @@
  *  limitations under the License.
  */
 
-import MenuItem from '../../../shared/interfaces/menuItemInterface';
 import { createFormatMenuItems } from './createFormatMenuItems';
 import DataGridColumn from "../column/DataGridColumn";
 import { selectBodyColumnStates } from "../column/selectors";
 import {COLUMN_TYPES} from "../column/enums";
 import {DEFAULT_PAGE_LENGTH, scopeData} from "../consts";
+import IMenuItem from "beakerx_shared/lib/contextMenu/IMenuItem";
 
-export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
+export function createIndexMenuItems(column: DataGridColumn): IMenuItem[] {
 
   const dataGrid = column.dataGrid;
 
@@ -29,8 +29,8 @@ export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
     return [];
   }
 
-  const createShowColumnSubmenu = (): MenuItem[] => {
-    const items: MenuItem[] = [];
+  const createShowColumnSubmenu = (): IMenuItem[] => {
+    const items: IMenuItem[] = [];
     const columnsStates = selectBodyColumnStates(dataGrid.store.state);
 
     columnsStates.forEach((state) => {
@@ -56,8 +56,8 @@ export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
     return items;
   };
 
-  const createRowsToShowSubmenu = (): MenuItem[] => {
-    const items: MenuItem[] = [];
+  const createRowsToShowSubmenu = (): IMenuItem[] => {
+    const items: IMenuItem[] = [];
 
     scopeData.rowsToDisplayMenu[0].forEach((item, index) => {
       items.push({

@@ -14,15 +14,15 @@
  *  limitations under the License.
  */
 
-import MenuItem from '../../../shared/interfaces/contextMenuItemInterface';
 import DataGridContextMenu from "./DataGridContextMenu";
 import {BeakerXDataGrid} from "../BeakerXDataGrid";
 import {GistPublisherUtils} from "../../../GistPublisherUtils";
+import IContextMenuItem from "beakerx_shared/lib/contextMenu/IContextMenuItem";
 
 export default function createPublishMenuItems(
   dataGrid: BeakerXDataGrid,
   contextMenu: DataGridContextMenu
-): MenuItem[] {
+): IContextMenuItem[] {
   const selector = `#${dataGrid.wrapperId} canvas`;
 
   return [

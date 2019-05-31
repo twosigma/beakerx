@@ -21,7 +21,7 @@ import DataGridColumn from "../column/DataGridColumn";
 import { selectVisibleBodyColumns } from "../column/selectors";
 import { KEYBOARD_KEYS } from "../event/enums";
 import { selectColumnsFrozenNames } from "../model/selectors";
-import BeakerXThemeHelper from "../../../BeakerXThemeHelper";
+import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
 
 export default class CellFocusManager {
   dataGrid: BeakerXDataGrid;

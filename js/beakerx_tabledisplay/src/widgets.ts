@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-const base = require('@jupyter-widgets/base');
-const controls = require('@jupyter-widgets/controls');
+import * as base from "@jupyter-widgets/base";
+import * as controls from "@jupyter-widgets/controls";
 
 export const widgets = {
   ...base,

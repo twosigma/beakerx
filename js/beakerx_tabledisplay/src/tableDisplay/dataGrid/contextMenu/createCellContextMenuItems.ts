@@ -14,17 +14,17 @@
  *  limitations under the License.
  */
 
-import MenuItem from '../../../shared/interfaces/contextMenuItemInterface';
 import {BeakerXDataGrid} from "../BeakerXDataGrid";
 import DataGridContextMenu from "./DataGridContextMenu";
 import {selectContextMenuItems, selectContextMenuTags} from "../model/selectors";
 import {selectColumnIndexByPosition} from "../column/selectors";
 import ColumnManager from "../column/ColumnManager";
+import IContextMenuItem from "beakerx_shared/lib/contextMenu/IContextMenuItem";
 
 export default function createCellContextMenuItems(
   dataGrid: BeakerXDataGrid,
   contextMenu: DataGridContextMenu
-): MenuItem[] {
+): IContextMenuItem[] {
   const selector = `#${dataGrid.wrapperId} canvas`;
   const contextMenuItems = selectContextMenuItems(dataGrid.store.state);
   const contextMenuTags = selectContextMenuTags(dataGrid.store.state);
@@ -38,7 +38,7 @@ export default function createCellContextMenuItems(
     return true;
   };
 
-  function createFromModelContextMenuItems(): MenuItem[] {
+  function createFromModelContextMenuItems(): IContextMenuItem[] {
     return contextMenuItems.map((item: string) => ({
       selector,
       isVisible,
@@ -61,8 +61,8 @@ export default function createCellContextMenuItems(
     }));
   }
 
-  function createFromModelContextMenuTags(): MenuItem[] {
-    const items: MenuItem[] = [];
+  function createFromModelContextMenuTags(): IContextMenuItem[] {
+    const items: IContextMenuItem[] = [];
 
     Object.keys(contextMenuTags).forEach((name) => {
       let tag = contextMenuTags[name];

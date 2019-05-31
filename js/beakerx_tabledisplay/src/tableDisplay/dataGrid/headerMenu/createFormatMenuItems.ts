@@ -14,14 +14,14 @@
  *  limitations under the License.
  */
 
-import MenuItem from "../../../shared/interfaces/menuItemInterface";
 import { TIME_UNIT_FORMATS, scopeData } from '../consts';
 import { ALL_TYPES, getAllowedTypesByType } from "../dataTypes";
 import DataGridColumn from "../column/DataGridColumn";
+import IMenuItem from "beakerx_shared/lib/contextMenu/IMenuItem";
 
 export function createFormatMenuItems(column: DataGridColumn) {
   const types = getAllowedTypesByType(column.getDataType());
-  let items: MenuItem[] = [];
+  let items: IMenuItem[] = [];
 
   if (!column.dataGrid) {
     return [];
@@ -34,7 +34,7 @@ export function createFormatMenuItems(column: DataGridColumn) {
       return;
     }
 
-    let item: MenuItem = {
+    let item: IMenuItem = {
       title: obj.name,
       id: `format_${obj.name}`,
       isChecked: (column) => column && column.getDisplayType() === obj.type
@@ -51,8 +51,8 @@ export function createFormatMenuItems(column: DataGridColumn) {
   return items;
 }
 
-export function createPrecisionSubitems(column: DataGridColumn): MenuItem[] {
-  const items: MenuItem[] = [];
+export function createPrecisionSubitems(column: DataGridColumn): IMenuItem[] {
+  const items: IMenuItem[] = [];
 
   scopeData.allPrecissions.forEach((precision) => {
     let item = {
@@ -68,8 +68,8 @@ export function createPrecisionSubitems(column: DataGridColumn): MenuItem[] {
   return items;
 }
 
-export function createTimeSubitems(): MenuItem[] {
-  const items: MenuItem[] = [];
+export function createTimeSubitems(): IMenuItem[] {
+  const items: IMenuItem[] = [];
 
   Object.keys(TIME_UNIT_FORMATS).forEach((key) => {
     let item = {

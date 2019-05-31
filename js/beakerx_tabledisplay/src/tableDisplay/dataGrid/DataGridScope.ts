@@ -22,8 +22,8 @@ import DataGridContextMenu from "./contextMenu/DataGridContextMenu";
 import ColumnLimitModal from "./modal/ColumnLimitModal";
 import createStore, { BeakerXDataStore } from "./store/BeakerXDataStore";
 import { selectModel } from "./model/selectors";
-import BeakerXThemeHelper from "../../BeakerXThemeHelper";
 import IDataModelState from "./interface/IDataGridModelState";
+import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
 
 export class DataGridScope {
   contextMenu: DataGridContextMenu;

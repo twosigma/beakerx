@@ -18,7 +18,7 @@ import IHihglighterState, { HIGHLIGHTER_STYLE } from "../interface/IHighlighterS
 import { CellRenderer } from "@phosphor/datagrid";
 import DataGridColumn from "../column/DataGridColumn";
 import {BeakerXDataGridModel} from "../model/BeakerXDataGridModel";
-import BeakerXThemeHelper from "../../../BeakerXThemeHelper";
+import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
 
 export default class Highlighter {
   column: DataGridColumn;

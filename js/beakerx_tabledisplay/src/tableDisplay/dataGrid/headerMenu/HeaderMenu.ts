@@ -18,15 +18,15 @@ import { CommandRegistry } from '@phosphor/commands';
 import { Widget } from '@phosphor/widgets';
 import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import Menu from './BkoMenu';
-import MenuItem from '../../../shared/interfaces/menuItemInterface';
-import MenuInterface from '../../../shared/interfaces/menuInterface';
 import DataGridColumn from "../column/DataGridColumn";
 import {SORT_ORDER} from "../column/enums";
 import {DataGridHelpers} from "../dataGridHelpers";
 import getEventKeyCode = DataGridHelpers.getEventKeyCode;
 import {KEYBOARD_KEYS} from "../event/enums";
+import IMenu from "beakerx_shared/lib/contextMenu/IMenu";
+import IMenuItem from "beakerx_shared/lib/contextMenu/IMenuItem";
 
-export default abstract class HeaderMenu implements MenuInterface {
+export default abstract class HeaderMenu implements IMenu {
   columnIndex: number;
 
   protected commands: CommandRegistry;
@@ -140,7 +140,7 @@ export default abstract class HeaderMenu implements MenuInterface {
       this.open(submenuIndex);
   }
 
-  createItems(items: MenuItem[], menu: Menu): void {
+  createItems(items: IMenuItem[], menu: Menu): void {
     for (let i = 0, ien = items.length; i < ien; i++) {
       let menuItem = items[i];
 
@@ -160,7 +160,7 @@ export default abstract class HeaderMenu implements MenuInterface {
     }
   }
 
-  addCommand(menuItem: MenuItem, menu: Menu): string {
+  addCommand(menuItem: IMenuItem, menu: Menu): string {
     const commandId = menuItem.id || menuItem.title;
 
     this.commands.addCommand(commandId, {
@@ -196,7 +196,7 @@ export default abstract class HeaderMenu implements MenuInterface {
     return commandId;
   }
 
-  createSubmenu(menuItem: MenuItem, subitems: MenuItem[]): Menu {
+  createSubmenu(menuItem: IMenuItem, subitems: IMenuItem[]): Menu {
     const submenu = new Menu({ commands: this.commands });
 
     submenu.addClass('dropdown-submenu');

@@ -25,7 +25,7 @@ import IRenderer, { RENDERER_TYPE } from "../interface/IRenderer";
 import { DataGridHelpers } from "../dataGridHelpers";
 import getStringSize = DataGridHelpers.getStringSize;
 import retrieveUrl = DataGridHelpers.retrieveUrl;
-import BeakerXThemeHelper from "../../../BeakerXThemeHelper";
+import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
 
 export interface ICellRendererOptions {
   font?: string,

@@ -17,9 +17,9 @@
 import createHeaderContextMenuItems from './createHeaderContextMenuItems';
 import createCellContextMenuItems from './createCellContextMenuItems';
 import createPublishMenuItems from "./createPublishMenuItem";
-import BkoContextMenu from '../../../contextMenu/BkoContextMenu';
-import {DataGridScope} from "../DataGridScope";
-import BeakerXApi from "../../../tree/Utils/BeakerXApi";
+import { DataGridScope } from "../DataGridScope";
+import BkoContextMenu from "beakerx_shared/lib/contextMenu/BkoContextMenu";
+import BeakerXApi from "beakerx_shared/lib/api/BeakerXApi";
 
 export default class DataGridContextMenu extends BkoContextMenu {
   constructor(scope: DataGridScope) {
@@ -50,6 +50,6 @@ export default class DataGridContextMenu extends BkoContextMenu {
         }
         this.createItems(menuItems, this.contextMenu);
         this.bindEvents();
-      });
+      }).catch(() => {});
   }
 }

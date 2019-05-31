@@ -15,15 +15,15 @@
  */
 
 import { createFormatMenuItems } from './createFormatMenuItems';
-import MenuItem from "../../../shared/interfaces/menuItemInterface";
 import DataGridColumn from "../column/DataGridColumn";
 import { CENTER, LEFT, RIGHT } from "../column/columnAlignment";
 import {HIGHLIGHTER_TYPE} from "../interface/IHighlighterState";
 import {selectVisibleBodyColumns} from "../column/selectors";
 import {SORT_ORDER} from "../column/enums";
 import {selectVisibleColumnsFrozenCount} from "../model/selectors";
+import IMenuItem from "beakerx_shared/lib/contextMenu/IMenuItem";
 
-export function createColumnMenuItems(column: DataGridColumn): MenuItem[] {
+export function createColumnMenuItems(column: DataGridColumn): IMenuItem[] {
   if (!column || !column.dataGrid) {
     return [];
   }

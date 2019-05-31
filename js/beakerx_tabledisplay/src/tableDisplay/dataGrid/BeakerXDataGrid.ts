@@ -31,7 +31,6 @@ import {DataGridHelpers} from "./dataGridHelpers";
 import EventManager from "./event/EventManager";
 import CellFocusManager from "./cell/CellFocusManager";
 import CellTooltipManager from "./cell/CellTooltipManager";
-import bkUtils from '../../shared/bkUtils';
 import {BeakerXDataStore} from "./store/BeakerXDataStore";
 import {
   selectHasIndex,
@@ -46,8 +45,14 @@ import {SectionList} from "@phosphor/datagrid/lib/sectionlist";
 import ColumnRegion = DataModel.ColumnRegion;
 import {DataGridResize} from "./DataGridResize";
 import {ALL_TYPES} from "./dataTypes";
-import BeakerXThemeHelper from "../../BeakerXThemeHelper";
+import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
+import CommonUtils from "beakerx_shared/lib/utils/CommonUtils";
 
+declare global {
+  interface Window {
+    beakerx: any;
+  }
+}
 export class BeakerXDataGrid extends DataGrid {
   id: string;
   store: BeakerXDataStore;
@@ -92,7 +97,7 @@ export class BeakerXDataGrid extends DataGrid {
   }
 
   init(store: BeakerXDataStore) {
-    this.id = 'grid_' + bkUtils.generateId(6);
+    this.id = 'grid_' + CommonUtils.generateId(6);
     this.store = store;
     this.columnManager = new ColumnManager(this);
     this.columnPosition = new ColumnPosition(this);

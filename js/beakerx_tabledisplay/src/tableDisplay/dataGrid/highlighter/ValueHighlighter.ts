@@ -19,7 +19,7 @@ import DataGridColumn from "../column/DataGridColumn";
 import Highlighter from "./Highlighter";
 import {CellRenderer} from "@phosphor/datagrid";
 import {formatColor} from "../style/dataGridStyle";
-import BeakerXThemeHelper from "../../../BeakerXThemeHelper";
+import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
 
 export default class ValueHighlighter extends Highlighter {
   constructor(column: DataGridColumn, state: IHihglighterState) {

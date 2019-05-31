@@ -74,7 +74,6 @@ export class TableDisplayView extends widgets.DOMWidgetView {
     const rowLimitMsg = data.rowLimitMsg;
     const modal = document.createElement('div');
 
-    modal.setAttribute('id', this.wrapperId);
     modal.innerHTML = `<p class="ansired">${rowLimitMsg}</p>`;
 
     this.el.appendChild(modal);

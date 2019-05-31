@@ -31,6 +31,12 @@ public class Preconditions {
     return reference;
   }
 
+  public static void checkState(boolean expression, String message) {
+    if (!expression) {
+      throw new IllegalStateException(message);
+    }
+  }
+
   public static void checkState(boolean expression) {
     if (!expression) {
       throw new IllegalStateException();

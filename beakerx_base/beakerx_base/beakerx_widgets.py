@@ -371,6 +371,8 @@ class SelectionContainer(BeakerxBox):
 class Tab(SelectionContainer):
     _view_name = Unicode('TabView').tag(sync=True)
     _model_name = Unicode('TabModel').tag(sync=True)
+    _view_module = Unicode('beakerx').tag(sync=True)
+    _model_module = Unicode('beakerx').tag(sync=True)
 
     def __init__(self, childrens, labels):
         super(Tab, self).__init__(childrens, labels)

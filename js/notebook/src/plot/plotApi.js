@@ -496,7 +496,7 @@ define([ 'underscore' ], function(_) {
      var cell = getCellFromOutputArea(output_area);
 
      var currentScope = new PlotScope('wrap_'+cell.cell_id || bkUtils.generateId(6));
-     var tmpl = PlotLayout.buildTemplate(currentScope);
+     var tmpl = PlotLayout.buildTemplate(currentScope.wrapperId);
      var tmplElement = $(tmpl);
 
      tmplElement.appendTo(output_area.element || output_area.node);
@@ -696,7 +696,6 @@ define([ 'underscore' ], function(_) {
      currentScope.init();
 
      setTimeout(function() {
-         debugger;
        currentScope.updatePlot();
      }, 10);
    };

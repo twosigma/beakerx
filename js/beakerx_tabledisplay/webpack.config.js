@@ -17,14 +17,16 @@
 const webpack = require('webpack');
 const path = require('path');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-const tsConfigPath = path.resolve(__dirname, './src/tsconfig.json');
+// const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+// const tsConfigPath = path.resolve(__dirname, './src/tsconfig.json');
 
 // Custom webpack loaders are generally the same for all webpack bundles, hence
 // stored in a separate local variable.
 const rules = [
   { test: /\.ts$/, loader: 'ts-loader', options: {
-    transpileOnly: true
+    transpileOnly: true,
+      context: __dirname,
+      configFile: 'tsconfig.src.json'
   }},
   { test: /\.css$/, use: [
     "style-loader",
@@ -52,11 +54,11 @@ const plugins = [
     "window.jQuery":"jquery",
     "d3": "d3"
   }),
-  new ForkTsCheckerWebpackPlugin({
-    tsconfig: tsConfigPath,
-    watch: 'src',
-    workers: ForkTsCheckerWebpackPlugin.ONE_CPU
-  }),
+  // new ForkTsCheckerWebpackPlugin({
+  //   tsconfig: tsConfigPath,
+  //   watch: 'src',
+  //   workers: ForkTsCheckerWebpackPlugin.ONE_CPU
+  // }),
   new webpack.DefinePlugin({
     BEAKERX_MODULE_VERSION: JSON.stringify("*") // The latest version
   })
@@ -70,7 +72,9 @@ const externals = [
 const resolve = {
   modules: ['web_modules', 'node_modules'],
   extensions: ['.ts', '.jsx','.js','.less','.css'],
-  plugins: [new TsconfigPathsPlugin({ configFile: tsConfigPath })]
+  plugins: [
+      // new TsconfigPathsPlugin({ configFile: tsConfigPath })
+  ]
 };
 
 module.exports = [

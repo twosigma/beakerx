@@ -12,38 +12,46 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 import unittest
 
-from ..tabledisplay import TableDisplay
+from beakerx_tabledisplay import TableDisplay
 
 
-class TestTableDisplayRowFilter(unittest.TestCase):
+class TestTableDisplayAPI_row_filter(unittest.TestCase):
 
-    def test_no_filtered_values_when_no_setRowFilter(self):
+    def test_should_filter_all_rows(self):
         # given
-        mapListFilter = [
+        mapList4 = [
             {"a": 1, "b": 2, "c": 3},
             {"a": 4, "b": 5, "c": 6},
             {"a": 7, "b": 8, "c": 5}
         ]
+        tabledisplay = TableDisplay(mapList4)
+
+        def filter_row(row, model):
+            return True
+
         # when
-        display = TableDisplay(mapListFilter)
+        tabledisplay.setRowFilter(filter_row)
         # then
-        self.assertFalse('filteredValues' in display.model)
+        self.assertEqual(tabledisplay.model["filteredValues"][0], [1, 2, 3])
+        self.assertEqual(tabledisplay.model["filteredValues"][1], [4, 5, 6])
+        self.assertEqual(tabledisplay.model["filteredValues"][2], [7, 8, 5])
 
-    def test_filtered_values(self):
+    def test_should_filter_last_row(self):
         # given
-        mapListFilter = [
+        mapList4 = [
             {"a": 1, "b": 2, "c": 3},
             {"a": 4, "b": 5, "c": 6},
             {"a": 7, "b": 8, "c": 5}
         ]
-        display = TableDisplay(mapListFilter)
+        tabledisplay = TableDisplay(mapList4)
 
         def filter_row(row, model):
             return model[row][1] == 8
 
         # when
-        display.setRowFilter(filter_row)
+        tabledisplay.setRowFilter(filter_row)
         # then
-        self.assertEqual(display.model["filteredValues"], [[7, 8, 5]])
+        self.assertEqual(tabledisplay.model["filteredValues"], [[7, 8, 5]])

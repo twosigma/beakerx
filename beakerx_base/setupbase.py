@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env python
+# coding: utf-8
+
 # Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,12 +15,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -ex
-source activate beakerx
-(cd beakerx; pip install -r requirements.txt --verbose)
-beakerx install
-beakerx_databrowser install
-jupyter labextension install @jupyter-widgets/jupyterlab-manager
-(cd js/lab; jupyter labextension install .)
+import sys
+import os
 
-rm -rf docker .DS_Store .git .gradle .idea jitpack.yml kernel RELEASE.md test .cache .yarn .local logs .ipynb_checkpoints
+here = os.path.abspath(os.path.dirname(sys.argv[0]))
+
+def get_version(path):
+    version = {}
+    with open(os.path.join(here, path)) as f:
+        exec (f.read(), {}, version)
+    return version['__version__']

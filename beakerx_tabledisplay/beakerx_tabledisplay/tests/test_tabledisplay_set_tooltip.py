@@ -15,23 +15,25 @@
 
 import unittest
 
-from beakerx import Plot
-
-from ..plotitem import XYStacker, Area
+from beakerx_tabledisplay import TableDisplay
 
 
-class TestStacking(unittest.TestCase):
+class TestTableDisplayAPI_tooltip(unittest.TestCase):
 
-    def test_plot(self):
+    def test_should_set_tooltip(self):
         # given
-        y1 = [1, 5, 3, 2, 3]
-        y2 = [7, 2, 4, 1, 3]
-        plot = Plot()
-        a1 = Area(y=y1, displayName='y1')
-        a2 = Area(y=y2, displayName='y2')
-        stacker = XYStacker()
+        mapList4 = [
+            {"a": 1, "b": 2, "c": 3},
+            {"a": 4, "b": 5, "c": 6},
+            {"a": 7, "b": 8, "c": 5}
+        ]
+        tabledisplay = TableDisplay(mapList4)
+
+        def config_tooltip(row, column, table):
+            return "The value is: " + str(table.values[row][column])
+
         # when
-        plot.add(stacker.stack([a1, a2]))
+        tabledisplay.setToolTip(config_tooltip)
         # then
-        model = plot.model
-        self.assertEqual(len(model['graphics_list']), 2)
+        tooltips = tabledisplay.chart.tooltips
+        self.assertEqual(tooltips[2][2], "The value is: 5")

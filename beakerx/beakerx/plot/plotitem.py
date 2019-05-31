@@ -15,7 +15,7 @@
 from enum import Enum
 import math
 import pandas as pd
-from beakerx.utils import *
+from beakerx_base import *
 
 from dateutil.parser import parse
 import numpy as np

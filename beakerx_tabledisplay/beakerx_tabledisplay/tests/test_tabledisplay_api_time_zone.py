@@ -15,43 +15,33 @@
 
 import unittest
 
-from beakerx.tabledisplay import TableDisplay
+from beakerx_tabledisplay import TableDisplay
 
 
-class TestTableDisplayAPI_row_filter(unittest.TestCase):
+class TestTableDisplayAPI_time_zone(unittest.TestCase):
 
-    def test_should_filter_all_rows(self):
+    def test_default_time_zone(self):
         # given
         mapList4 = [
             {"a": 1, "b": 2, "c": 3},
             {"a": 4, "b": 5, "c": 6},
             {"a": 7, "b": 8, "c": 5}
         ]
-        tabledisplay = TableDisplay(mapList4)
-
-        def filter_row(row, model):
-            return True
-
         # when
-        tabledisplay.setRowFilter(filter_row)
+        tabledisplay = TableDisplay(mapList4)
         # then
-        self.assertEqual(tabledisplay.model["filteredValues"][0], [1, 2, 3])
-        self.assertEqual(tabledisplay.model["filteredValues"][1], [4, 5, 6])
-        self.assertEqual(tabledisplay.model["filteredValues"][2], [7, 8, 5])
+        self.assertTrue("timeZone" not in tabledisplay.model)
 
-    def test_should_filter_last_row(self):
+    def test_should_set_time_zone(self):
         # given
+        timezone = "TZ1"
         mapList4 = [
             {"a": 1, "b": 2, "c": 3},
             {"a": 4, "b": 5, "c": 6},
             {"a": 7, "b": 8, "c": 5}
         ]
         tabledisplay = TableDisplay(mapList4)
-
-        def filter_row(row, model):
-            return model[row][1] == 8
-
         # when
-        tabledisplay.setRowFilter(filter_row)
+        tabledisplay.setTimeZone(timezone)
         # then
-        self.assertEqual(tabledisplay.model["filteredValues"], [[7, 8, 5]])
+        self.assertEqual(tabledisplay.model["timeZone"], timezone)

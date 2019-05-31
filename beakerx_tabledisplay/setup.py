@@ -19,56 +19,35 @@ from setuptools import setup, find_packages
 from setupbase import (
     create_cmdclass,
     install_node_modules,
-    run_gradle,
     get_version,
-    get_data_files,
     here
 )
 import os
 
 
 cmdclass = create_cmdclass(develop_wrappers=[
-    'js',
-    'js-lab',
-    'java',
-    'javadoc',
+    'js'
 ], distribute_wrappers=[
-    'js',
-    'js-lab',
-    'java',
-    'javadoc',
+    'js'
 ])
 cmdclass['js'] = install_node_modules(
     path='../js/notebook',
     build_dir=os.path.join(here, '../js/notebook', 'dist'),
     source_dir=os.path.join(here, '../js/notebook', 'src')
 )
-cmdclass['js-lab'] = install_node_modules(
-    path='../js/lab',
-    build_dir=os.path.join(here, '../js/lab', 'dist'),
-    source_dir=os.path.join(here, '../js/lab', 'src')
-)
-cmdclass['java'] = run_gradle(cmd='build', skip_tests=False)
-cmdclass['javadoc'] = run_gradle(cmd='base:javadoc')
 
 setup_args = dict(
-    name                = 'beakerx',
+    name                = 'beakerx_tabledisplay',
     description         = 'BeakerX: Beaker Extensions for Jupyter Notebook',
     long_description    = 'BeakerX: Beaker Extensions for Jupyter Notebook',
-    version             = get_version(os.path.join('beakerx', '_version.py')),
+    version             = get_version(os.path.join('beakerx_tabledisplay', '_version.py')),
     author              = 'Two Sigma Open Source, LLC',
     author_email        = 'beakerx-feedback@twosigma.com',
     url                 = 'http://beakerx.com',
     keywords            = [
         'ipython',
         'jupyter',
-        'widgets',
-        'java',
-        'clojure',
-        'groovy',
-        'scala',
-        'kotlin',
-        'sql',
+        'widgets'
     ],
     classifiers         = [
         'Development Status :: 4 - Beta',
@@ -84,22 +63,9 @@ setup_args = dict(
     ],
     entry_points={
         'console_scripts': [
-            'beakerx = beakerx:run',
-            'beakerx_databrowser = beakerx_databrowser:run'
+            'beakerx_tabledisplay = beakerx_tabledisplay:run'
         ]
     },
-    package_data={
-        'beakerx': [
-            'kernel/*/kernel.json'
-        ],
-        'beakerx_datacatalog': [
-            'static/*.js'
-        ]
-    },
-    data_files          = [(
-        'share/jupyter/nbextensions/beakerx',
-        get_data_files(os.path.join('beaker'))
-    )],
     python_requires='>=3',
     zip_safe            = False,
     include_package_data= True,

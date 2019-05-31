@@ -12,34 +12,38 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 import unittest
 
-from ..tabledisplay import TableDisplay
+from beakerx_tabledisplay import TableDisplay
 
 
-class TestTableDisplayAPI_double_click(unittest.TestCase):
+class TestTableDisplayRowFilter(unittest.TestCase):
 
-    def test_sum_rows_when_double_click(self):
+    def test_no_filtered_values_when_no_setRowFilter(self):
         # given
-        mapList4 = [
+        mapListFilter = [
             {"a": 1, "b": 2, "c": 3},
             {"a": 4, "b": 5, "c": 6},
             {"a": 7, "b": 8, "c": 5}
         ]
-        tabledisplay = TableDisplay(mapList4)
-
-        def dclick(row, column, table):
-            table.values[row][column] = sum(map(int, table.values[row]))
-
-        tabledisplay.setDoubleClickAction(dclick)
-        param = {
-            'event': 'DOUBLE_CLICK',
-            'row': 0,
-            'column': 0
-        }
         # when
-        tabledisplay.handle_msg(tabledisplay, param, [])
+        display = TableDisplay(mapListFilter)
         # then
-        values = tabledisplay.chart.values
-        self.assertEqual(values[0][0], 6)
+        self.assertFalse('filteredValues' in display.model)
+
+    def test_filtered_values(self):
+        # given
+        mapListFilter = [
+            {"a": 1, "b": 2, "c": 3},
+            {"a": 4, "b": 5, "c": 6},
+            {"a": 7, "b": 8, "c": 5}
+        ]
+        display = TableDisplay(mapListFilter)
+
+        def filter_row(row, model):
+            return model[row][1] == 8
+
+        # when
+        display.setRowFilter(filter_row)
+        # then
+        self.assertEqual(display.model["filteredValues"], [[7, 8, 5]])

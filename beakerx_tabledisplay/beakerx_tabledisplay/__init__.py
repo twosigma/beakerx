@@ -12,21 +12,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
+from .tableitems import *
+from .tabledisplay import *
+from ._version import version_info, __version__
+from .handlers import load_jupyter_server_extension
+from .commands import parse
 
-from ..tabledisplay import TableDisplay, Table
-import numpy as np
-import pandas as pd
+def _jupyter_nbextension_paths():
+    return [{
+        'section': 'notebook',
+        'src': 'static',
+        'dest': 'beakerx_tabledisplay',
+        'require': 'beakerx_tabledisplay/index'
+    }
+    ]
 
 
-class TestTableDisplay(unittest.TestCase):
+def _jupyter_server_extension_paths():
+    return [dict(module="beakerx_tabledisplay")]
 
-    def test_NaT_support(self):
-        # given
-        df = pd.DataFrame(np.random.randn(5, 3), index=['a', 'c', 'e', 'f', 'h'], columns=['one', 'two', 'three'])
-        df['timestamp'] = pd.Timestamp('20120101')
-        df.loc[['a', 'c', 'h'], ['one', 'timestamp']] = np.nan
-        # when
-        display = TableDisplay(df)
-        # then
-        self.assertTrue(display.values[0][4] == Table.NAT_VALUE)
+def run():
+    try:
+        parse()
+    except KeyboardInterrupt:
+        return 130
+    return 0

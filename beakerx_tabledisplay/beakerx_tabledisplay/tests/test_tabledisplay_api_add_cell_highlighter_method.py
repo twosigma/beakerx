@@ -18,8 +18,7 @@ import unittest
 
 import pandas as pd
 
-from ..tabledisplay import TableDisplay
-from ..tableitems import TableDisplayCellHighlighter, HighlightStyle, UniqueEntriesHighlighter, HeatmapHighlighter
+from beakerx_tabledisplay import TableDisplay, TableDisplayCellHighlighter, HighlightStyle, UniqueEntriesHighlighter, HeatmapHighlighter
 
 
 class TestTableDisplayAPI_addCellHighlighter(unittest.TestCase):

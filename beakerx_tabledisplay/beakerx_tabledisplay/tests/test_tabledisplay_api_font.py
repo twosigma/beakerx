@@ -15,8 +15,7 @@
 
 import unittest
 
-from beakerx.tabledisplay import TableDisplay
-from beakerx.utils import *
+from beakerx_tabledisplay import TableDisplay, Color
 
 
 class TestTableDisplayAPI_font(unittest.TestCase):

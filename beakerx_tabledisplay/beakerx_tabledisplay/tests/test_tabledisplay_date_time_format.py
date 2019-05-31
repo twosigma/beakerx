@@ -17,7 +17,7 @@ import os
 import pandas as pd
 import unittest
 
-from ..tabledisplay import TableDisplay
+from beakerx_tabledisplay import TableDisplay
 
 
 class TestTableDisplayAPI_date_format(unittest.TestCase):

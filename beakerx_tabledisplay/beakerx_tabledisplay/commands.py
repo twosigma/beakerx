@@ -14,6 +14,7 @@
 
 import argparse
 import sys
+
 import beakerx_tabledisplay
 from notebook import notebookapp as app
 from .install import install, uninstall

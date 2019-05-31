@@ -18,8 +18,7 @@ import unittest
 
 import pandas as pd
 
-from ..tabledisplay import TableDisplay
-from ..tableitems import ColumnType, TableDisplayAlignmentProvider
+from beakerx_tabledisplay import TableDisplay, ColumnType, TableDisplayAlignmentProvider
 
 
 class TestTableDisplayAPI_setAlignmentProviderForType(unittest.TestCase):

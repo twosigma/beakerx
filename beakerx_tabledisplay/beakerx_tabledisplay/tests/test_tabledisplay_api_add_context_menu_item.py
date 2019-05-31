@@ -15,24 +15,12 @@
 
 import unittest
 
-from beakerx.tabledisplay import TableDisplay
+from beakerx_tabledisplay import TableDisplay
 
 
-class TestTableDisplayAPI_header(unittest.TestCase):
+class TestTableDisplayAPI_add_context_menu_item(unittest.TestCase):
 
-    def test_default_headers_vertical_should_be_false(self):
-        # given
-        mapList4 = [
-            {"a": 1, "b": 2, "c": 3},
-            {"a": 4, "b": 5, "c": 6},
-            {"a": 7, "b": 8, "c": 5}
-        ]
-        # when
-        tabledisplay = TableDisplay(mapList4)
-        # then
-        self.assertEqual(tabledisplay.model["headersVertical"], False)
-
-    def test_should_set_headers_vertical_to_true(self):
+    def test_negate_when_context_menu_item_event(self):
         # given
         mapList4 = [
             {"a": 1, "b": 2, "c": 3},
@@ -40,7 +28,20 @@ class TestTableDisplayAPI_header(unittest.TestCase):
             {"a": 7, "b": 8, "c": 5}
         ]
         tabledisplay = TableDisplay(mapList4)
+
+        def negate(row, column, table):
+            table.values[row][column] = -1 * int(table.values[row][column])
+
+        tabledisplay.addContextMenuItem("negate", negate)
+
+        param = {
+            'event': 'CONTEXT_MENU_CLICK',
+            'itemKey': 'negate',
+            'row': 1,
+            'column': 1
+        }
         # when
-        tabledisplay.setHeadersVertical(True)
+        tabledisplay.handle_msg(tabledisplay, param, [])
         # then
-        self.assertEqual(tabledisplay.model["headersVertical"], True)
+        values = tabledisplay.chart.values
+        self.assertEqual(values[1][1], -5)

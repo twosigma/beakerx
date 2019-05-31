@@ -15,12 +15,12 @@
 
 import unittest
 
-from beakerx.tabledisplay import TableDisplay
+from beakerx_tabledisplay import TableDisplay
 
 
-class TestTableDisplayAPI_time_zone(unittest.TestCase):
+class TestTableDisplayAPI_header(unittest.TestCase):
 
-    def test_default_time_zone(self):
+    def test_default_headers_vertical_should_be_false(self):
         # given
         mapList4 = [
             {"a": 1, "b": 2, "c": 3},
@@ -30,11 +30,10 @@ class TestTableDisplayAPI_time_zone(unittest.TestCase):
         # when
         tabledisplay = TableDisplay(mapList4)
         # then
-        self.assertTrue("timeZone" not in tabledisplay.model)
+        self.assertEqual(tabledisplay.model["headersVertical"], False)
 
-    def test_should_set_time_zone(self):
+    def test_should_set_headers_vertical_to_true(self):
         # given
-        timezone = "TZ1"
         mapList4 = [
             {"a": 1, "b": 2, "c": 3},
             {"a": 4, "b": 5, "c": 6},
@@ -42,6 +41,6 @@ class TestTableDisplayAPI_time_zone(unittest.TestCase):
         ]
         tabledisplay = TableDisplay(mapList4)
         # when
-        tabledisplay.setTimeZone(timezone)
+        tabledisplay.setHeadersVertical(True)
         # then
-        self.assertEqual(tabledisplay.model["timeZone"], timezone)
+        self.assertEqual(tabledisplay.model["headersVertical"], True)

@@ -12,13 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .plot import *
-from .easyform import *
-from .output_container import *
 from ._version import version_info, __version__
-from .handlers import load_jupyter_server_extension
+from .commands import parse as beakerx_parse
+from .easyform import *
 from .environment import *
-from .commands import parse
+from .handlers import load_jupyter_server_extension
+from .output_container import *
+from .plot import *
+import beakerx_tabledisplay
+from beakerx_tabledisplay import *
 
 def _jupyter_nbextension_paths():
     return [{
@@ -38,9 +40,11 @@ def _jupyter_nbextension_paths():
 def _jupyter_server_extension_paths():
     return [dict(module="beakerx")]
 
+
 def run():
     try:
-        parse()
+        beakerx_tabledisplay.run()
+        beakerx_parse()
     except KeyboardInterrupt:
         return 130
     return 0

@@ -56,7 +56,7 @@ how to install and run BeakerX.
 ```
 conda env create -n beakerx -f configuration.yml
 source activate beakerx
-(cd beakerx; pip install -e . --verbose)
+(cd beakerx; pip install -r requirements.txt --verbose)
 beakerx install
 beakerx_databrowser install
 ```
@@ -66,7 +66,7 @@ beakerx_databrowser install
 conda env create -n beakerx -f configuration.yml
 activate beakerx
 cd beakerx
-pip install -e . --verbose
+pip install -r requirements.txt --verbose
 cd ..
 beakerx install
 beakerx_databrowser install
@@ -78,7 +78,7 @@ beakerx_databrowser install
 conda env create -n labx -f configuration.yml
 source activate labx
 conda install -y -c conda-forge jupyterlab
-(cd beakerx; pip install -e . --verbose)
+(cd beakerx; pip install -r requirements.txt --verbose)
 beakerx install
 jupyter labextension install @jupyter-widgets/jupyterlab-manager
 (cd js/lab; jupyter labextension install .)

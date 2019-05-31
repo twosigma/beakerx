@@ -35,6 +35,8 @@ from beakerx.plot import BaseObject, chart
 from ipykernel.comm import Comm
 from traitlets import Unicode
 
+from beakerx_tabledisplay import TableDisplay
+
 
 class OutputContainer:
     def __init__(self):

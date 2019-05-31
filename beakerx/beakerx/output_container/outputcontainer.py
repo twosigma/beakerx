@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from beakerx_tabledisplay.tabledisplay import *
+from beakerx_base import *
+from beakerx_tabledisplay import TableDisplay
 from ipywidgets import Widget
 from abc import *
 from pandas import *

@@ -12,12 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from beakerx.beakerx_widgets import *
-from beakerx_tabledisplay.tableitems import *
-from beakerx.utils import *
+from beakerx_base import *
+from .tableitems import *
 from ipykernel.comm import Comm
 from pandas import DataFrame, RangeIndex, MultiIndex, DatetimeIndex
 from traitlets import Unicode, Dict
+import numpy as np
+import types
 
 
 class Table(BaseObject):

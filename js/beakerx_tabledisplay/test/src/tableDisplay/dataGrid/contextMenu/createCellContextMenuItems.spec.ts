@@ -17,8 +17,9 @@
 import { expect } from 'chai';
 import {Widget} from '@phosphor/widgets';
 import modelStateMock from "../mock/modelStateMock";
-import { DataGridScope } from '@beakerx/tableDisplay/dataGrid/DataGridScope';
-import createCellContextMenuItems from "@beakerx/tableDisplay/dataGrid/contextMenu/createCellContextMenuItems";
+import {DataGridScope} from "../../../../../src/tableDisplay/dataGrid";
+import createCellContextMenuItems
+  from "../../../../../src/tableDisplay/dataGrid/contextMenu/createCellContextMenuItems";
 
 describe('createCellContextMenuItems', () => {
   let dataGridScope;

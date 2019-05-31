@@ -15,7 +15,7 @@
  */
 
 import { expect } from 'chai';
-import DataGridRow from "@beakerx/tableDisplay/dataGrid/row/DataGridRow";
+import DataGridRow from "../../../../../src/tableDisplay/dataGrid/row/DataGridRow";
 
 describe('DataGridRow', () => {
   const values = [1,2,3,4];

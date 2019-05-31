@@ -15,14 +15,14 @@
  */
 
 import { expect } from 'chai';
-import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
-import HighlighterFactory from "@beakerx/tableDisplay/dataGrid/highlighter/HighlighterFactory";
-import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 import highlighterStateMock from "../mock/highlighterStateMock";
 import modelStateMock from "../mock/modelStateMock";
 import columnOptionsMock from "../mock/columnOptionsMock";
-import HeatmapHighlighter from "@beakerx/tableDisplay/dataGrid/highlighter/HeatmapHighlighter";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
+import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
+import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
+import DataGridColumn from "../../../../../src/tableDisplay/dataGrid/column/DataGridColumn";
+import HighlighterFactory from "../../../../../src/tableDisplay/dataGrid/highlighter/HighlighterFactory";
+import HeatmapHighlighter from "../../../../../src/tableDisplay/dataGrid/highlighter/HeatmapHighlighter";
 
 describe('HighlighterFactory', () => {
   const dataStore = createStore(modelStateMock);

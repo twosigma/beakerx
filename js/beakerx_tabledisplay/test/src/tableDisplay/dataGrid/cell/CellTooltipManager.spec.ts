@@ -15,11 +15,10 @@
  */
 
 import { expect } from 'chai';
-import CellTooltipManager from "@beakerx/tableDisplay/dataGrid/cell/CellTooltipManager";
 import modelStateMock from "../mock/modelStateMock";
-import {BeakerXDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
-import CellTooltip from "@beakerx/tableDisplay/dataGrid/cell/CellTooltip";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
+import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
+import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
+import CellTooltipManager from "../../../../../src/tableDisplay/dataGrid/cell/CellTooltipManager";
 
 describe('CellTooltipManager', () => {
   let dataGrid;

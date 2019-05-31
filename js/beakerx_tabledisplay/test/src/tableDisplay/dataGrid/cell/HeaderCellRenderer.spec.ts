@@ -16,20 +16,20 @@
 
 import * as sinon from 'sinon';
 import { expect } from 'chai';
-import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import {GraphicsContext, TextRenderer} from "@phosphor/datagrid";
 import modelStateMock from "../mock/modelStateMock";
-import BeakerXCellRenderer from "@beakerx/tableDisplay/dataGrid/cell/BeakerXCellRenderer";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 import cellConfigMock from "../mock/cellConfigMock";
-import HeaderCellRenderer from "@beakerx/tableDisplay/dataGrid/cell/HeaderCellRenderer";
-import BeakerXThemeHelper from "../../../../../src/BeakerXThemeHelper";
+import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
+import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
+import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
+import HeaderCellRenderer from "../../../../../src/tableDisplay/dataGrid/cell/HeaderCellRenderer";
+import BeakerXCellRenderer from "../../../../../src/tableDisplay/dataGrid/cell/BeakerXCellRenderer";
 
 describe('HeaderCellRenderer', () => {
   let dataGrid;
   let cellRenderer;
   let dataStore;
-  let gc: GraphicsContext;
+  let gc;
 
   before(() => {
     dataStore = createStore({ ...modelStateMock, headersVertical: true });

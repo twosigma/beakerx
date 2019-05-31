@@ -16,20 +16,21 @@
 
 import * as sinon from 'sinon';
 import { expect } from 'chai';
-import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import {GraphicsContext, TextRenderer} from "@phosphor/datagrid";
 import modelStateMock from "../mock/modelStateMock";
-import BeakerXCellRenderer from "@beakerx/tableDisplay/dataGrid/cell/BeakerXCellRenderer";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 import cellConfigMock from "../mock/cellConfigMock";
 import cellDataMock from "../mock/cellDataMock";
-import DefaultCellRenderer from "@beakerx/tableDisplay/dataGrid/cell/DefaultCellRenderer";
+import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
+import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
+import DefaultCellRenderer from "../../../../../src/tableDisplay/dataGrid/cell/DefaultCellRenderer";
+import BeakerXCellRenderer from "../../../../../src/tableDisplay/dataGrid/cell/BeakerXCellRenderer";
+
 
 describe('DefaultCellRenderer', () => {
   let dataGrid;
   let cellRenderer;
   let dataStore;
-  let gc: GraphicsContext;
+  let gc;
 
   before(() => {
     dataStore = createStore(modelStateMock);

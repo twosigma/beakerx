@@ -15,15 +15,14 @@
  */
 
 import { expect } from 'chai';
-import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
+
 import modelStateMock from "../mock/modelStateMock";
+import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
+import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
 import ColumnFilter, {
   FILTER_INPUT_TOOLTIP,
   SEARCH_INPUT_TOOLTIP
-} from "@beakerx/tableDisplay/dataGrid/column/ColumnFilter";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
-
-declare var require: Function;
+} from "../../../../../src/tableDisplay/dataGrid/column/ColumnFilter";
 
 describe('ColumnFilter', () => {
   const dataStore = createStore(modelStateMock);

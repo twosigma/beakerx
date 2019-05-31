@@ -16,17 +16,17 @@
 
 import { expect } from 'chai';
 import modelStateMock from "../mock/modelStateMock";
+import highlighterStateMock from "../mock/highlighterStateMock";
+import {RENDERER_TYPE} from "../../../../../src/tableDisplay/dataGrid/interface/IRenderer";
+import {DataGridColumnAction} from "../../../../../src/tableDisplay/dataGrid/store/DataGridAction";
 import reducer, {
   ADD_COLUMN_HIGHLIGHTER, REMOVE_COLUMN_HIGHLIGHTER,
   UPDATE_COLUMN_FROZEN,
   UPDATE_COLUMN_ORDER,
   UPDATE_COLUMN_RENDERER, UPDATE_COLUMN_VISIBLE, UPDATE_COLUMNS_VISIBLE
-} from "@beakerx/tableDisplay/dataGrid/model/reducer";
-import {DataGridColumnAction} from "@beakerx/tableDisplay/dataGrid/store/DataGridAction";
-import {RENDERER_TYPE} from "@beakerx/tableDisplay/dataGrid/interface/IRenderer";
-import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
-import highlighterStateMock from "../mock/highlighterStateMock";
-import {HIGHLIGHTER_TYPE} from "@beakerx/tableDisplay/dataGrid/interface/IHighlighterState";
+} from "../../../../../src/tableDisplay/dataGrid/model/reducer";
+import {COLUMN_TYPES} from "../../../../../src/tableDisplay/dataGrid/column/enums";
+import {HIGHLIGHTER_TYPE} from "../../../../../src/tableDisplay/dataGrid/interface/IHighlighterState";
 
 describe('model reducer', () => {
   const state = {...modelStateMock};

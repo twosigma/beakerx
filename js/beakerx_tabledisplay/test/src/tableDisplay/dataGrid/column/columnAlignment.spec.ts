@@ -15,11 +15,8 @@
  */
 
 import { expect } from 'chai';
-import { ALL_TYPES } from "@beakerx/tableDisplay/dataGrid/dataTypes";
-import {
-  DEFAULT_ALIGNMENT,
-  getAlignmentByType
-} from "@beakerx/tableDisplay/dataGrid/column/columnAlignment";
+import {DEFAULT_ALIGNMENT, getAlignmentByType} from "../../../../../src/tableDisplay/dataGrid/column/columnAlignment";
+import {ALL_TYPES} from "../../../../../src/tableDisplay/dataGrid/dataTypes";
 
 describe('columnAlignment', () => {
   it('should return default alignment', () => {

@@ -17,9 +17,9 @@
 import * as sinon from 'sinon';
 import { expect } from 'chai';
 import {Menu, Widget} from '@phosphor/widgets';
-import BkoMenu from '@beakerx/tableDisplay/dataGrid/headerMenu/BkoMenu';
 import {CommandRegistry} from '@phosphor/commands';
 import {Message} from '@phosphor/messaging';
+import BkoMenu from "../../../../../src/tableDisplay/dataGrid/headerMenu/BkoMenu";
 
 describe('BkoMenu', () => {
   let bkoMenu;

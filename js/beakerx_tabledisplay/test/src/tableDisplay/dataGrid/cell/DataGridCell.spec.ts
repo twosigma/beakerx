@@ -15,9 +15,8 @@
  */
 
 import { expect } from 'chai';
-import { CellRenderer } from "@phosphor/datagrid";
-import DataGridCell from "@beakerx/tableDisplay/dataGrid/cell/DataGridCell";
 import CellConfigMock from "../mock/cellConfigMock";
+import DataGridCell from "../../../../../src/tableDisplay/dataGrid/cell/DataGridCell";
 
 describe('DataGridCell', () => {
   describe('isHeaderCell', () => {
@@ -26,7 +25,7 @@ describe('DataGridCell', () => {
     });
 
     it('should return false', () => {
-      let mock: CellRenderer.ICellConfig = { ...CellConfigMock };
+      let mock = { ...CellConfigMock };
       expect(DataGridCell.isHeaderCell(mock)).to.be.false;
     });
   });

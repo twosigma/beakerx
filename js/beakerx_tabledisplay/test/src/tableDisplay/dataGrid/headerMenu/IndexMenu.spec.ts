@@ -17,13 +17,12 @@
 import * as sinon from 'sinon';
 import { expect } from 'chai';
 import { Menu } from '@phosphor/widgets';
-import IndexMenu from '@beakerx/tableDisplay/dataGrid/headerMenu/IndexMenu';
-import { createIndexMenuItems } from '@beakerx/tableDisplay/dataGrid/headerMenu/createIndexMenuItems';
-import HeaderMenu from '@beakerx/tableDisplay/dataGrid/headerMenu/HeaderMenu';
-import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import modelStateMock from "../mock/modelStateMock";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
-import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
+import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
+import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
+import {COLUMN_TYPES} from "../../../../../src/tableDisplay/dataGrid/column/enums";
+import HeaderMenu from "../../../../../src/tableDisplay/dataGrid/headerMenu/HeaderMenu";
+import {createIndexMenuItems} from "../../../../../src/tableDisplay/dataGrid/headerMenu/createIndexMenuItems";
 
 describe('IndexMenu', () => {
   let dataGrid;

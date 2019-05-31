@@ -16,17 +16,14 @@
 
 import * as sinon from 'sinon';
 import { expect } from 'chai';
-import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
-import DataGridColumn from '@beakerx/tableDisplay/dataGrid/column/DataGridColumn';
-import ColumnMenu from "@beakerx/tableDisplay/dataGrid/headerMenu/ColumnMenu";
-import IndexMenu from "@beakerx/tableDisplay/dataGrid/headerMenu/IndexMenu";
 import modelStateMock from "../mock/modelStateMock";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
-import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
-import {ALIGNMENTS_BY_CHAR} from "@beakerx/tableDisplay/dataGrid/column/columnAlignment";
-import {ALL_TYPES} from "@beakerx/tableDisplay/dataGrid/dataTypes";
-
-declare var require: Function;
+import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
+import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
+import {COLUMN_TYPES} from "../../../../../src/tableDisplay/dataGrid/column/enums";
+import ColumnMenu from "../../../../../src/tableDisplay/dataGrid/headerMenu/ColumnMenu";
+import {ALIGNMENTS_BY_CHAR} from "../../../../../src/tableDisplay/dataGrid/column/columnAlignment";
+import {ALL_TYPES} from "../../../../../src/tableDisplay/dataGrid/dataTypes";
+import IndexMenu from "../../../../../src/tableDisplay/dataGrid/headerMenu/IndexMenu";
 
 describe('DataGridColumn', () => {
   const dataStore = createStore({

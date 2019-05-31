@@ -16,7 +16,7 @@
 
 import { expect } from 'chai';
 import { DataGrid } from '@phosphor/datagrid';
-import BeakerXThemeHelper from '@beakerx/BeakerXThemeHelper';
+import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
 
 describe('dataGridStyle', () => {
   it('should be an object', () => {

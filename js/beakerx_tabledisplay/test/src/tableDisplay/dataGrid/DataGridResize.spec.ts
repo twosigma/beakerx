@@ -16,14 +16,14 @@
 
 import * as sinon from 'sinon';
 import { expect } from 'chai';
-import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import modelStateMock from "./mock/modelStateMock";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
-import {DataGridResize} from "@beakerx/tableDisplay/dataGrid/DataGridResize";
+import createStore from "../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
+import {BeakerXDataGrid} from "../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
+import {DataGridResize} from "../../../../src/tableDisplay/dataGrid/DataGridResize";
 import {
   DEFAULT_GRID_BORDER_WIDTH,
   DEFAULT_GRID_PADDING, DEFAULT_ROW_HEIGHT
-} from "@beakerx/tableDisplay/dataGrid/style/dataGridStyle";
+} from "../../../../src/tableDisplay/dataGrid/style/dataGridStyle";
 
 describe('DataGridResize', () => {
   let dataGrid;

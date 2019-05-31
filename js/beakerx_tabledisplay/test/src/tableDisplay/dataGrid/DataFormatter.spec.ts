@@ -16,16 +16,14 @@
 
 import * as sinon from 'sinon';
 import { expect, assert } from 'chai';
-import { DataFormatter } from '@beakerx/tableDisplay/dataGrid/DataFormatter';
-import { TIME_UNIT_FORMATS } from '@beakerx/tableDisplay/dataGrid/consts';
 import * as moment from 'moment-timezone/builds/moment-timezone-with-data';
 import modelStateMock from "./mock/modelStateMock";
-import {BeakerXDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
-import {ALL_TYPES} from "@beakerx/tableDisplay/dataGrid/dataTypes";
 import cellConfigMock from "./mock/cellConfigMock";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
-
-declare var require: Function;
+import createStore from "../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
+import {DataFormatter} from "../../../../src/tableDisplay/dataGrid/DataFormatter";
+import {ALL_TYPES} from "../../../../src/tableDisplay/dataGrid/dataTypes";
+import {TIME_UNIT_FORMATS} from "../../../../src/tableDisplay/dataGrid/consts";
+import CommonUtils from "beakerx_shared/lib/utils/CommonUtils";
 
 describe('DataFormatter', () => {
   const dataStore = createStore(modelStateMock);
@@ -276,17 +274,16 @@ describe('DataFormatter', () => {
 
   describe('dataFormatter.datetime', () => {
     const datetimeFormatFn = dataFormatter.getFormatFnByDisplayType(ALL_TYPES.datetime);
-    const bkUtils = require('@beakerx/shared/bkUtils').default;
-
+    let st;
     before (() => {
-      sinon.stub(
-        bkUtils,
+      st = sinon.stub(
+        CommonUtils,
         'formatTimestamp',
       ).callsFake((value) => moment(new Date(value)).format(TIME_UNIT_FORMATS.DATETIME.format));
     });
 
     after(() => {
-      bkUtils.formatTimestamp.restore()
+      st.restore()
     });
 
     it('should return formatted datetime', () => {

@@ -15,14 +15,13 @@
  */
 
 import * as sinon from 'sinon';
-import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 import {expect} from "chai";
-import {BeakerXDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import modelStateMock from "../mock/modelStateMock";
-import ColumnManager from "@beakerx/tableDisplay/dataGrid/column/ColumnManager";
 import cellConfigMock from "../mock/cellConfigMock";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
-import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
+import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
+import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
+import {COLUMN_TYPES} from "../../../../../src/tableDisplay/dataGrid/column/enums";
+import DataGridColumn from "../../../../../src/tableDisplay/dataGrid/column/DataGridColumn";
 
 describe('ColumnManager', () => {
   let dataGrid;

@@ -15,17 +15,17 @@
  */
 
 import { expect } from 'chai';
-import HeatmapHighlighter from "@beakerx/tableDisplay/dataGrid/highlighter/HeatmapHighlighter";
-import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 import highlighterStateMock from "../mock/highlighterStateMock";
-import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import modelStateMock from "../mock/modelStateMock";
 import columnOptionsMock from "../mock/columnOptionsMock";
 import cellConfigMock from "../mock/cellConfigMock";
+import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
+import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
+import DataGridColumn from "../../../../../src/tableDisplay/dataGrid/column/DataGridColumn";
 import ThreeColorHeatmapHighlighter
-  from "@beakerx/tableDisplay/dataGrid/highlighter/ThreeColorHeatmapHighlighter";
-import { HIGHLIGHTER_TYPE } from "@beakerx/tableDisplay/dataGrid/interface/IHighlighterState";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
+  from "../../../../../src/tableDisplay/dataGrid/highlighter/ThreeColorHeatmapHighlighter";
+import {HIGHLIGHTER_TYPE} from "../../../../../src/tableDisplay/dataGrid/interface/IHighlighterState";
+import HeatmapHighlighter from "../../../../../src/tableDisplay/dataGrid/highlighter/HeatmapHighlighter";
 
 describe('ThreeColorHeatmapHighlighter', () => {
   const dataStore = createStore({ ...modelStateMock, types: ['double', 'double']});

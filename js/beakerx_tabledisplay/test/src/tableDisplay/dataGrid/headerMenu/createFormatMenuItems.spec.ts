@@ -15,16 +15,15 @@
  */
 
 import { expect } from 'chai';
+import modelStateMock from "../mock/modelStateMock";
+import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
+import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
+import {COLUMN_TYPES} from "../../../../../src/tableDisplay/dataGrid/column/enums";
+import {scopeData, TIME_UNIT_FORMATS} from "../../../../../src/tableDisplay/dataGrid/consts";
 import {
   createFormatMenuItems,
-  createPrecisionSubitems,
-  createTimeSubitems
-} from '@beakerx/tableDisplay/dataGrid/headerMenu/createFormatMenuItems';
-import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
-import { scopeData, TIME_UNIT_FORMATS } from '@beakerx/tableDisplay/dataGrid/consts';
-import modelStateMock from "../mock/modelStateMock";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
-import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
+  createPrecisionSubitems, createTimeSubitems
+} from "../../../../../src/tableDisplay/dataGrid/headerMenu/createFormatMenuItems";
 
 describe('createFormatMenuItems', () => {
   let dataGrid;

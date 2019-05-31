@@ -15,15 +15,15 @@
  */
 
 import { expect } from 'chai';
-import UniqueEntriesHighlighter from "@beakerx/tableDisplay/dataGrid/highlighter/UniqueEntriesHighlighter";
-import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 import highlighterStateMock from "../mock/highlighterStateMock";
-import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import modelStateMock from "../mock/modelStateMock";
 import columnOptionsMock from "../mock/columnOptionsMock";
 import cellConfigMock from "../mock/cellConfigMock";
-import { HIGHLIGHTER_TYPE } from "@beakerx/tableDisplay/dataGrid/interface/IHighlighterState";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
+import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
+import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
+import DataGridColumn from "../../../../../src/tableDisplay/dataGrid/column/DataGridColumn";
+import UniqueEntriesHighlighter from "../../../../../src/tableDisplay/dataGrid/highlighter/UniqueEntriesHighlighter";
+import {HIGHLIGHTER_TYPE} from "../../../../../src/tableDisplay/dataGrid/interface/IHighlighterState";
 
 describe('UniqueEntriesHighlighter', () => {
   const dataStore = createStore({ ...modelStateMock, types: ['double', 'double']});

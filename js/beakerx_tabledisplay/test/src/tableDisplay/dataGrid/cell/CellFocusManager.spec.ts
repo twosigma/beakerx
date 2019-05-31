@@ -15,15 +15,16 @@
  */
 
 import { expect } from 'chai';
-import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
-import modelStateMock from "../mock/modelStateMock";
-import CellFocusManager from "@beakerx/tableDisplay/dataGrid/cell/CellFocusManager";
 import cellDataMock from "../mock/cellDataMock";
 import cellConfigMock from "../mock/cellConfigMock";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
-import { COLUMN_TYPES } from "@beakerx/tableDisplay/dataGrid/column/enums";
-import { KEYBOARD_KEYS } from "@beakerx/tableDisplay/dataGrid/event/enums";
-import BeakerXThemeHelper from "@beakerx/BeakerXThemeHelper";
+import modelStateMock from "../mock/modelStateMock";
+
+import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
+import CellFocusManager from "../../../../../src/tableDisplay/dataGrid/cell/CellFocusManager";
+import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
+import {KEYBOARD_KEYS} from "../../../../../src/tableDisplay/dataGrid/event/enums";
+import {COLUMN_TYPES} from "../../../../../src/tableDisplay/dataGrid/column/enums";
+import {BeakerXDataGrid} from '../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid';
 
 describe('CellFocusManager', () => {
   let dataGrid;

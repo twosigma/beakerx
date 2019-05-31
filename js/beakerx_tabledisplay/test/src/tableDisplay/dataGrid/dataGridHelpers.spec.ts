@@ -15,7 +15,7 @@
  */
 
 import { expect } from 'chai';
-import { DataGridHelpers } from '@beakerx/tableDisplay/dataGrid/dataGridHelpers';
+import {DataGridHelpers} from "../../../../src/tableDisplay/dataGrid/dataGridHelpers";
 
 describe('DataGridHelpers', () => {
   it('should export escapeHTML helper function', () => {

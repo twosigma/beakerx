@@ -15,13 +15,10 @@
  */
 
 import modelStateMock from "./mock/modelStateMock";
-
-declare var require: Function;
-
 import { expect, assert } from 'chai';
 import * as sinon from 'sinon';
 import { Widget } from "@phosphor/widgets";
-import { DataGridScope } from '@beakerx/tableDisplay/dataGrid/DataGridScope';
+import {DataGridScope} from "../../../../src/tableDisplay/dataGrid";
 
 const element = document.createElement('div');
 
@@ -38,7 +35,7 @@ describe('dataGridScope', () => {
     assert.throws(
       () => { new DataGridScope({ ...scopeOptions, data: {} }); },
       Error,
-      "Cannot read property 'slice' of undefined"
+      "columnOrder is not iterable"
     );
   });
 

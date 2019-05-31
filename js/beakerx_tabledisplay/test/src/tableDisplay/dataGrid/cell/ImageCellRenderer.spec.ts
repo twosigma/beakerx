@@ -15,17 +15,17 @@
  */
 
 import { expect } from 'chai';
-import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import {GraphicsContext, CellRenderer} from "@phosphor/datagrid";
 import modelStateMock from "../mock/modelStateMock";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
-import ImageCellRenderer from "@beakerx/tableDisplay/dataGrid/cell/ImageCellRenderer";
+import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
+import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
+import ImageCellRenderer from "../../../../../src/tableDisplay/dataGrid/cell/ImageCellRenderer";
 
 describe('ImageCellRenderer', () => {
   let dataGrid;
   let cellRenderer;
   let dataStore;
-  let gc: GraphicsContext;
+  let gc;
 
   before(() => {
     dataStore = createStore(modelStateMock);

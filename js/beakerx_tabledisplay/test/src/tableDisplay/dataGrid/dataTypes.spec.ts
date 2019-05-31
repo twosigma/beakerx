@@ -15,7 +15,8 @@
  */
 
 import { expect } from 'chai';
-import {getTypeByName, getDisplayType, ALL_TYPES} from '@beakerx/tableDisplay/dataGrid/dataTypes';
+import {ALL_TYPES, getDisplayType, getTypeByName} from "../../../../src/tableDisplay/dataGrid/dataTypes";
+
 
 describe('dataTypes', () => {
   describe('getTypeByName', () => {

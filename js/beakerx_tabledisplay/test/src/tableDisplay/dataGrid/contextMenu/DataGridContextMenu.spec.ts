@@ -17,8 +17,8 @@
 import { expect } from 'chai';
 import {ContextMenu, Widget} from '@phosphor/widgets';
 import modelStateMock from "../mock/modelStateMock";
-import { DataGridScope } from '@beakerx/tableDisplay/dataGrid/DataGridScope';
-import DataGridContextMenu from "@beakerx/tableDisplay/dataGrid/contextMenu/DataGridContextMenu";
+import {DataGridScope} from "../../../../../src/tableDisplay/dataGrid";
+import DataGridContextMenu from "../../../../../src/tableDisplay/dataGrid/contextMenu/DataGridContextMenu";
 
 describe('DataGridContextMenu', () => {
   let dataGridScope;
@@ -46,7 +46,7 @@ describe('DataGridContextMenu', () => {
 
   it('should have the contextMenu property', () => {
     expect(contextMenu).to.have.property('contextMenu');
-    expect(contextMenu.contextMenu).to.be.an.instanceof(ContextMenu);
+    expect(contextMenu.contextMenu.constructor.name).to.equal('ContextMenu');
   });
 
   it('should implement buildMenu method', () => {

@@ -15,22 +15,21 @@
  */
 
 import { expect } from 'chai';
-import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import modelStateMock from "../mock/modelStateMock";
-import CellSelectionManager from "@beakerx/tableDisplay/dataGrid/cell/CellSelectionManager";
-import {ICellData} from "@beakerx/tableDisplay/dataGrid/interface/ICell";
 import cellConfigMock from "../mock/cellConfigMock";
 import cellDataMock from "../mock/cellDataMock";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
-import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
-import BeakerXThemeHelper from "@beakerx/BeakerXThemeHelper";
+import {COLUMN_TYPES} from "../../../../../src/tableDisplay/dataGrid/column/enums";
+import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
+import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
+import CellSelectionManager from "../../../../../src/tableDisplay/dataGrid/cell/CellSelectionManager";
+import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
 
 describe('CellSelectionManager', () => {
   let dataGrid;
   let dataStore;
   let cellSelectionManager;
-  let startCell: ICellData = { ...cellDataMock, type: COLUMN_TYPES.index };
-  let endCell: ICellData = { ...cellDataMock, row: 2, column: 3 };
+  let startCell = { ...cellDataMock, type: COLUMN_TYPES.index };
+  let endCell = { ...cellDataMock, row: 2, column: 3 };
 
   before(() => {
     dataStore = createStore(modelStateMock);

@@ -15,11 +15,10 @@
  */
 
 import { expect } from 'chai';
-import { BeakerXDataGridModel } from '../../../../../src/tableDisplay/dataGrid/model/BeakerXDataGridModel';
 import { DataModel } from "@phosphor/datagrid";
 import modelStateMock from "../mock/modelStateMock";
-import {BeakerXDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
+import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
+import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
 
 describe('BeakerXDataGridModel', () => {
   describe('BeakerXDataGridModel.hasIndex === false', () => {

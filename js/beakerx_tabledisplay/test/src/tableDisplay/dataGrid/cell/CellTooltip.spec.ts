@@ -15,7 +15,7 @@
  */
 
 import { expect } from 'chai';
-import CellTooltip from "@beakerx/tableDisplay/dataGrid/cell/CellTooltip";
+import CellTooltip from "../../../../../src/tableDisplay/dataGrid/cell/CellTooltip";
 
 describe('CellTooltip', () => {
   const tooltip = new CellTooltip('test', document.body);

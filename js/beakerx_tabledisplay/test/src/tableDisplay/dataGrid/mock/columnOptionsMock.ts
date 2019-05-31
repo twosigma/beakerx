@@ -14,14 +14,14 @@
  *  limitations under the License.
  */
 
-import {IColumnOptions} from "@beakerx/tableDisplay/dataGrid/interface/IColumn";
-import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/enums";
+import {IColumnOptions} from "../../../../../src/tableDisplay/dataGrid/interface/IColumn";
+import {COLUMN_TYPES} from "../../../../../src/tableDisplay/dataGrid/column/enums";
 
 let columnOptionsMock: IColumnOptions = {
   index: 0,
   name: 'test',
   type: COLUMN_TYPES.body,
-  menuOptions: { x: 0, y: 0, height: 20, width: 20 }
+  // menuOptions: { x: 0, y: 0, height: 20, width: 20 }
 };
 
 export default columnOptionsMock;

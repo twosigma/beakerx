@@ -15,11 +15,10 @@
  */
 
 import { expect } from 'chai';
-import RowManager from "@beakerx/tableDisplay/dataGrid/row/RowManager";
-import {BeakerXDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import modelStateMock from "../mock/modelStateMock";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
-import {COLUMN_TYPES, SORT_ORDER} from "@beakerx/tableDisplay/dataGrid/column/enums";
+import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
+import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
+import {COLUMN_TYPES, SORT_ORDER} from "../../../../../src/tableDisplay/dataGrid/column/enums";
 
 describe('RowManager', () => {
   const values = [[1,2,3,4], [5,6,7,8]];

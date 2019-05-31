@@ -16,13 +16,11 @@
 
 import { expect } from 'chai';
 import * as sinon from 'sinon';
-import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
 import modelStateMock from "../mock/modelStateMock";
-import ColumnPosition from "@beakerx/tableDisplay/dataGrid/column/ColumnPosition";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
 import cellDataMock from "../mock/cellDataMock";
-
-declare var require: Function;
+import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
+import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
+import ColumnPosition from "../../../../../src/tableDisplay/dataGrid/column/ColumnPosition";
 
 describe('ColumnPosition', () => {
   const dataStore = createStore({

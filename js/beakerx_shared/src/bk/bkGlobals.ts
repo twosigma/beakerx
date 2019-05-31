@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-export default {
+const GLOBALS = {
   DEFAULT_EVALUATOR: 'JavaScript',
   REQUIREJS_TIMEOUT: 30,
   RECONNECT_TIMEOUT: 30 * 1000, // 30 seconds
@@ -51,3 +51,5 @@ export default {
     AMBIANCE: 'ambiance'
   }
 };
+
+export default GLOBALS;

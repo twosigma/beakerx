@@ -15,7 +15,6 @@
  */
 
 import { DataGrid } from "@phosphor/datagrid";
-import { DEFAULT_BORDER_COLOR } from "./tableDisplay/dataGrid/style/dataGridStyle";
 
 export default class BeakerXThemeHelper {
 
@@ -87,7 +86,7 @@ export default class BeakerXThemeHelper {
       voidColor: '#ffffff',
       headerBackgroundColor: '#E6E6E6',
       rowBackgroundColor: i => i % 2 === 0 ? '#f9f9f9' : '',
-      gridLineColor: DEFAULT_BORDER_COLOR
+      gridLineColor: '#D4D0D0'
     };
   }
 }

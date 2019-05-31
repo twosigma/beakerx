@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-export default interface Menu {
-  open: Function,
-  destroy: Function
-}
+export * from "./BeakerXApi";
+export * from "./IApiSettingsResponse";
+export * from "./IJVMOptions";
+export * from "./IUIOptions";

@@ -14,7 +14,14 @@
  *  limitations under the License.
  */
 
-export default interface Menu {
-  open: Function,
-  destroy: Function
+export default interface IJVMOptions extends IDefaultJVMOptions {
+  other: IOtherJVMOptions;
+  properties: IPropertiesJVMOptions;
 }
+
+export interface IDefaultJVMOptions {
+  heap_GB: number|null;
+}
+
+export interface IOtherJVMOptions extends Array<any> {}
+export interface IPropertiesJVMOptions extends Array<{ name: string; value: string; }> {}

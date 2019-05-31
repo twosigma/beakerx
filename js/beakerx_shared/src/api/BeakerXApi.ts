@@ -14,10 +14,11 @@
  *  limitations under the License.
  */
 
+import IApiSettingsResponse from "./IApiSettingsResponse";
 import * as $ from "jquery";
-import IApiSettingsResponse from "../Types/IApiSettingsResponse";
 
-function getCookie(name) {
+// TODO replace $.ajax with fetch api and remove jquery
+function getCookie(name: string) {
   // from tornado docs: http://www.tornadoweb.org/en/stable/guide/security.html
   let r = document.cookie.match('\\b' + name + '=([^;]*)\\b');
   return r ? r[1] : void 0;
@@ -43,7 +44,7 @@ export default class BeakerXApi {
     version: 2
   };
 
-  private apiUrl: string;
+  private readonly apiUrl: string;
 
   constructor(baseUrl: string = '/') {
     this.apiUrl = `${baseUrl}beakerx/`;
@@ -99,7 +100,7 @@ export default class BeakerXApi {
     return merged;
   }
 
-  public saveSettings(data): Promise<any> {
+  public saveSettings(data: any): Promise<any> {
     return new Promise<any>((resolve, reject) => {
 
       $.ajax(this.getApiUrl('settings'), {
@@ -123,7 +124,7 @@ export default class BeakerXApi {
     }) ;
   }
 
-  public restService(data): Promise<any> {
+  public restService(data: any): Promise<any> {
     return new Promise<any>((resolve, reject) => {
 
       $.ajax(this.getApiUrl('rest'), {

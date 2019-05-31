@@ -13,6 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+declare global{
+ interface Window {
+   chrome: any;
+ }
+}
 
 import GLOBALS from './bkGlobals';
 import bkCoreManager from './bkCoreManager';
@@ -49,7 +54,6 @@ export function getCurrentApp() {
   return bkCoreManager.getBkApp();
 }
 
-// @ts-ignore
 export const isChrome = !!window.chrome && !!window.chrome.webstore;
 
 export function getTheme() {

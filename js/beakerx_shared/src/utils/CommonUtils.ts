@@ -33,4 +33,38 @@ export default class CommonUtils {
   public static formatTimestamp(timestamp: number, tz: string, format: string): string {
     return this.applyTimezone(timestamp, tz).format(format);
   }
+
+  public static generateId(length: number = 6): string {
+    const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let textArray: string[] = [];
+
+    for (let i = 0; i < length; i++) {
+      textArray.push(possible.charAt(Math.floor(Math.random() * possible.length)));
+    }
+
+    return textArray.join('');
+  }
+
+  public static rgbaToHex(r: number, g: number, b: number, a: number = 0xFF): string {
+    let num = ((a & 0xFF) << 24) |
+      ((r & 0xFF) << 16) |
+      ((g & 0xFF) << 8)  |
+      ((b & 0xFF));
+    if(num < 0) {
+      num = 0xFFFFFFFF + num + 1;
+    }
+
+    return `#${num.toString(16)}`;
+  }
+
+  public static formatBytes(bytes: number): string {
+    if (bytes <= 1000) return '0 KB';
+
+    let k = 1000;
+    let dm = 0;
+    let sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    let i = Math.floor(Math.log(bytes) / Math.log(k));
+
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+  }
 }

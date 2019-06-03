@@ -19,8 +19,11 @@ from .environment import *
 from .handlers import load_jupyter_server_extension
 from .output_container import *
 from .plot import *
-import beakerx_tabledisplay
-from beakerx_tabledisplay import *
+
+
+# ========== enable classes from modules ==============================
+from beakerx_tabledisplay.tabledisplay import *
+# =====================================================================
 
 def _jupyter_nbextension_paths():
     return [{
@@ -43,7 +46,6 @@ def _jupyter_server_extension_paths():
 
 def run():
     try:
-        beakerx_tabledisplay.run()
         beakerx_parse()
     except KeyboardInterrupt:
         return 130

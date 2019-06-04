@@ -14,7 +14,7 @@
 
 from enum import Enum
 
-from beakerx_base import *
+from beakerx_base import getValue
 
 
 class LegendLayout(Enum):

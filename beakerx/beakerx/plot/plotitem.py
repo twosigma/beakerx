@@ -15,8 +15,10 @@
 import datetime as dt
 import math
 import uuid
+from enum import Enum
 
-from beakerx_base import *
+from beakerx_base import Color, getValue, BaseObject, getColor, datetime_to_number, datetime, pd, np, \
+    date_time_2_millis, padYs
 from dateutil.parser import parse
 
 

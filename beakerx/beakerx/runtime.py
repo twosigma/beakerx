@@ -472,7 +472,7 @@ class TableDisplayWrapper(object):
         return f
 
 
-from .beakerx_server import *
+from .beakerx_server import BeakerxZMQServer
 from queue import Queue
 
 

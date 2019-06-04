@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from beakerx_base import *
-from .tableitems import *
+from beakerx_base import BaseObject, BeakerxDOMWidget
+from .tableitems import DateType, ColumnType, TableDisplayAlignmentProvider, TableDisplayStringFormat, Highlighter
 from ipykernel.comm import Comm
 from pandas import DataFrame, RangeIndex, MultiIndex, DatetimeIndex
 from traitlets import Unicode, Dict

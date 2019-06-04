@@ -22,7 +22,9 @@ from .plot import *
 
 
 # ========== enable classes from modules ==============================
+from beakerx_base import *
 from beakerx_tabledisplay.tabledisplay import *
+from beakerx_tabledisplay.tableitems import *
 # =====================================================================
 
 def _jupyter_nbextension_paths():

@@ -383,10 +383,11 @@ export default class EventManager {
       return;
     }
 
+    const row = this.getRowIndex(data.row);
     if (selectHasDoubleClickAction(this.store.state)) {
       this.dataGrid.commSignal.emit({
+        row,
         event: 'DOUBLE_CLICK',
-        row : data.row,
         column: data.column
       });
     }
@@ -395,8 +396,8 @@ export default class EventManager {
       this.dataGrid.commSignal.emit({
         event: 'actiondetails',
         params: {
+          row,
           actionType: 'DOUBLE_CLICK',
-          row: data.row,
           col: data.column
         }
       });
@@ -426,5 +427,13 @@ export default class EventManager {
       this.store = null;
       this.cellHoverControll = null
     });
+  }
+
+  /**
+   * Return row index of unsorted/unfiltered dataGrid
+   * @param renderedRowIndex - row-index of rendered dataGrid, either with applied search/filters or without.
+   */
+  private getRowIndex(renderedRowIndex: number): number {
+    return this.dataGrid.rowManager.rows[renderedRowIndex].index;
   }
 }

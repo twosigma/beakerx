@@ -15,5 +15,6 @@
  */
 
 export * from './BeakerXThemeHelper';
+export * from './BigNumberUtils';
 export * from './CommonUtils';
 export * from './SanitizeUtils';

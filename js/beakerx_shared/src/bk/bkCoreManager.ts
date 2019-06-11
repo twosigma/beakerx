@@ -56,7 +56,7 @@ const bkCoreManager = {
   },
 
   _prefs: {
-    getTheme: function () {
+    getTheme: function (): string {
       if (this.theme === undefined) {
         return "default";
       }
@@ -65,7 +65,7 @@ const bkCoreManager = {
     }
   },
 
-  getTheme: function () {
+  getTheme: function (): string {
     return this._prefs.getTheme();
   },
 

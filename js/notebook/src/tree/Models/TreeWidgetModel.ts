@@ -14,14 +14,14 @@
  *  limitations under the License.
  */
 
-import BeakerXApi from "../Utils/BeakerXApi";
-import IJVMOptions from "../Types/IJVMOptions";
-import IUIOptions from "../Types/IUIOptions";
-import IApiSettingsResponse from "../Types/IApiSettingsResponse";
+import BeakerXApi from "beakerx_shared/lib/api/BeakerXApi";
 import JVMOptionsModel from "./JVMOptionsModel";
 import UIOptionsModel from "./UIOptionsModel";
 import DefaultOptionsModel from "./DefaultOptionsModel";
 import SyncIndicatorWidget from "../Widgets/SyncIndicatorWidget";
+import IApiSettingsResponse from "beakerx_shared/lib/api/IApiSettingsResponse";
+import IUIOptions from "beakerx_shared/lib/api/IUIOptions";
+import IJVMOptions from "beakerx_shared/lib/api/IJVMOptions";
 
 export default class TreeWidgetModel {
 

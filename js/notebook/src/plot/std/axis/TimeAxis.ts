@@ -17,8 +17,8 @@
 import * as Big from 'big.js';
 import * as _ from 'underscore';
 import * as moment from 'moment-timezone/builds/moment-timezone-with-data.min';
-import bkUtils from "../../../shared/bkUtils";
 import DefaultAxis from "./DefaultAxis";
+import CommonUtils from "beakerx_shared/lib/utils/CommonUtils";
 
 const NANOTIME_TYPE = 'nanotime';
 const plotUtils = require('../../plotUtils');
@@ -286,8 +286,8 @@ export default class TimeAxis extends DefaultAxis {
   }
 
   selectStartOrEndInterval(value, interval) {
-    const nextIntervalStart = bkUtils.applyTimezone(value, this.axisTimezone).endOf(interval).add(1, "ms");
-    const intervalStart = bkUtils.applyTimezone(value, this.axisTimezone).startOf(interval);
+    const nextIntervalStart = CommonUtils.applyTimezone(value, this.axisTimezone).endOf(interval).add(1, "ms");
+    const intervalStart = CommonUtils.applyTimezone(value, this.axisTimezone).startOf(interval);
 
     return  ((nextIntervalStart - value) > (value - intervalStart)) ? intervalStart : nextIntervalStart;
   }
@@ -311,39 +311,39 @@ export default class TimeAxis extends DefaultAxis {
     }
 
     if (plotUtils.lte(span, this.SECOND) && this.axisType === "time") {
-      return bkUtils.formatTimestamp(
+      return CommonUtils.formatTimestamp(
         timestamp, this.axisTimezone, ".SSS"
       ) + ( (timestamp - Math.floor(timestamp)).toFixed(this.axisFixed));
     }
 
     if (plotUtils.lte(span, this.MINUTE) && this.axisType === "time") {
-      return bkUtils.formatTimestamp(timestamp, this.axisTimezone, "mm:ss.SSS");
+      return CommonUtils.formatTimestamp(timestamp, this.axisTimezone, "mm:ss.SSS");
     }
 
     if (plotUtils.lte(span, this.HOUR)) {
       if (this.axisType !== "nanotime") {
-        return bkUtils.formatTimestamp(timestamp, this.axisTimezone, "HH:mm:ss");
+        return CommonUtils.formatTimestamp(timestamp, this.axisTimezone, "HH:mm:ss");
       }
 
       if (moment(timestamp) < this.SECOND) {
         return "." + plotUtils.padStr(nanosec, 9);
       }
 
-      return bkUtils.formatTimestamp(timestamp, this.axisTimezone, "HH:mm:ss") + "." + plotUtils.padStr(nanosec, 9);
+      return CommonUtils.formatTimestamp(timestamp, this.axisTimezone, "HH:mm:ss") + "." + plotUtils.padStr(nanosec, 9);
     }
 
     if (plotUtils.lte(span, this.DAY)) {
-      return bkUtils.formatTimestamp(timestamp, this.axisTimezone, "YYYY MMM DD, HH:mm");
+      return CommonUtils.formatTimestamp(timestamp, this.axisTimezone, "YYYY MMM DD, HH:mm");
     }
 
     if (plotUtils.lte(span, this.MONTH)) {
-      return bkUtils.formatTimestamp(timestamp, this.axisTimezone, "YYYY MMM DD");
+      return CommonUtils.formatTimestamp(timestamp, this.axisTimezone, "YYYY MMM DD");
     }
 
     if (plotUtils.lte(span, this.YEAR)) {
-      return bkUtils.formatTimestamp(timestamp, this.axisTimezone, "YYYY MMM");
+      return CommonUtils.formatTimestamp(timestamp, this.axisTimezone, "YYYY MMM");
     }
 
-    return bkUtils.formatTimestamp(timestamp, this.axisTimezone, "YYYY");
+    return CommonUtils.formatTimestamp(timestamp, this.axisTimezone, "YYYY");
   }
 }

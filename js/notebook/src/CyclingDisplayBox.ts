@@ -16,8 +16,6 @@
 
 import widgets from './widgets';
 
-let interval = undefined;
-let period = undefined;
 let currentWidgetIndex = 0;
 
 export class CyclingDisplayBoxModel extends widgets.BoxModel {

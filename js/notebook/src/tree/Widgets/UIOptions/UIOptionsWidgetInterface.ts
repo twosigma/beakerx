@@ -14,7 +14,8 @@
  *  limitations under the License.
  */
 
-import IUIOptions from "../../Types/IUIOptions";
+
+import IUIOptions from "beakerx_shared/lib/api/IUIOptions";
 
 export default interface UIOptionsWidgetInterface {
   onLoad: (options: IUIOptions) => void;

@@ -20,10 +20,10 @@ import { Widget } from "@phosphor/widgets";
 import { MessageLoop } from "@phosphor/messaging";
 
 import UIOptionsWidgetInterface from "./UIOptionsWidgetInterface";
-import IUIOptions from "../../Types/IUIOptions";
 import { Messages } from "../../Messages";
 import OptionsWidget from "../OptionsWidget";
 import DOMUtils from "../../Utils/DOMUtils";
+import IUIOptions from "beakerx_shared/lib/api/IUIOptions";
 
 export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface {
 

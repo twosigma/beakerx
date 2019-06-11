@@ -15,7 +15,7 @@
  */
 
 import OtherOptionsWidgetInterface from "../Widgets/JVMOptions/OtherOptionsWidgetInterface";
-import { IOtherJVMOptions } from "../Types/IJVMOptions";
+import {IOtherJVMOptions} from "beakerx_shared/lib/api/IJVMOptions";
 
 export default class OtherOptionsModel {
 

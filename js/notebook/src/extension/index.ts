@@ -24,16 +24,15 @@ import {enableInitializationCellsFeature} from './initializationCells';
 import {Autotranslation} from './autotranslation';
 import {BeakerXKernel} from './kernel';
 import {displayHTML} from '../htmlOutput/htmlOutput';
-import bkCoreManager from '../shared/bkCoreManager';
 
 import '../shared/style/beakerx.scss';
 import '../plot/bko-combinedplot.css';
 import '../plot/bko-plot.css';
 import './dataBrowser/dataBrowser.css';
 import './tableOfContents/toc.css';
+import bkCoreManager from "beakerx_shared/lib/bk/bkCoreManager";
 
 const configmod = require('services/config');
-const comm = require('services/kernels/comm');
 const utils = require('base/js/utils');
 const Jupyter = require('base/js/namespace');
 const events = require('base/js/events');

@@ -135,7 +135,7 @@ export class FoldoutView extends widgets.BoxView {
     this.timeoutId = setTimeout(
       this.activateFoldoutCallback.bind(this),
       PREVIEW_ANIMATION_DURATION
-    );
+    ) as any;
   }
 
   deactivateFoldout() {
@@ -146,7 +146,7 @@ export class FoldoutView extends widgets.BoxView {
       this.timeoutId = setTimeout(
         this.deactivateFoldoutCallback.bind(this),
         ANIMATION_DURATION
-      );
+      ) as any;
     });
   }
 
@@ -166,7 +166,7 @@ export class FoldoutView extends widgets.BoxView {
         this.content.node.style.height = 'auto'
       },
       ANIMATION_DURATION
-    );
+    ) as any;
   }
 
   deactivateFoldoutCallback() {

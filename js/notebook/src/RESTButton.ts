@@ -1,5 +1,5 @@
 import widgets from './widgets';
-import BeakerXApi from "./tree/Utils/BeakerXApi";
+import BeakerXApi from "beakerx_shared/lib/api/BeakerXApi";
 
 export class RESTButtonModel extends widgets.ButtonModel {
   defaults() {

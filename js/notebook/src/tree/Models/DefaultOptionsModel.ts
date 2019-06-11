@@ -15,7 +15,7 @@
  */
 
 import DefaultOptionsWidgetInterface from "../Widgets/JVMOptions/DefaultOptionsWidgetInterface";
-import { IDefaultJVMOptions } from "../Types/IJVMOptions";
+import {IDefaultJVMOptions} from "beakerx_shared/lib/api/IJVMOptions";
 
 export default class DefaultOptionsModel {
 

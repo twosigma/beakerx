@@ -20,12 +20,12 @@ import PlotLayout from "./PlotLayout";
 import CombinedPlotModel from "./models/CombinedPlotModel";
 import PlotScope from './PlotScope';
 import CombinedPlotScopeUtils from './combinedPlotScopeUtils';
-import bkUtils from './../shared/bkUtils';
 import PlotFocus from './zoom/PlotFocus';
 import ContextMenu from './contextMenu/plotContextMenu';
 import { GistPublisherUtils } from "../GistPublisherUtils";
 
 import "jquery-ui/ui/widgets/resizable";
+import CommonUtils from "beakerx_shared/lib/utils/CommonUtils";
 
 const plotUtils = require('./plotUtils');
 const combinedPlotFormatter = require('./combinedPlotFormatter');
@@ -186,7 +186,7 @@ export default class CombinedPlotScope {
     this.canvas = <HTMLCanvasElement>this.element.find("canvas")[0];
     this.canvas.style.display = "none";
 
-    this.id = `bko-plot-${bkUtils.generateId(6)}`;
+    this.id = `bko-plot-${CommonUtils.generateId(6)}`;
     this.element.find('.combplot-plotcontainer').attr('id', this.id);
     this.element.find('.plot-title').attr('class', `plot-title plot-title-${this.id}`);
     this.saveAsMenuContainer = $(`#${this.id}`);

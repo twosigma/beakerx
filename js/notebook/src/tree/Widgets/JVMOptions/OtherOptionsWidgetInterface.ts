@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { IOtherJVMOptions } from "../../Types/IJVMOptions";
+import {IOtherJVMOptions} from "beakerx_shared/lib/api/IJVMOptions";
 
 export default interface OtherOptionsWidgetInterface {
   onLoad: (other: IOtherJVMOptions) => void;

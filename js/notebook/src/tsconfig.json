@@ -14,5 +14,6 @@
       "jquery": ["jquery/dist/jquery.js"]
     }
   },
-  "include": ["./types/*.d.ts"]
+  "include": ["./*.ts"],
+  "exclude": ["./*.d.ts"]
 }

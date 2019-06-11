@@ -15,7 +15,7 @@
  */
 
 import PropertiesWidgetInterface from "../Widgets/JVMOptions/PropertiesWidgetInterface";
-import { IPropertiesJVMOptions } from "../Types/IJVMOptions";
+import {IPropertiesJVMOptions} from "beakerx_shared/lib/api/IJVMOptions";
 
 export default class PropertiesModel {
 

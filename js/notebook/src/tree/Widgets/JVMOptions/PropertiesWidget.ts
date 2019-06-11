@@ -20,8 +20,8 @@ import * as _ from "underscore";
 import { Widget } from "@phosphor/widgets";
 import { MessageLoop, Message } from "@phosphor/messaging";
 
-import { IPropertiesJVMOptions } from "../../Types/IJVMOptions";
 import { Messages } from "../../Messages";
+import {IPropertiesJVMOptions} from "beakerx_shared/lib/api/IJVMOptions";
 
 export default class PropertiesWidget extends Widget {
 

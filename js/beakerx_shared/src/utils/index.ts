@@ -20,3 +20,4 @@ export * from './CommonUtils';
 export * from './SanitizeUtils';
 export * from "./PlotColorUtils";
 export * from "./PlotKeyboardUtils";
+export * from "./PlotStyleUtils";

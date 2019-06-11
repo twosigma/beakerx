@@ -4,8 +4,6 @@
 // dynamic baseURL for the static assets and may load some css that would
 // already be loaded by the notebook otherwise.
 
-/// <reference path='./types/index.d.ts'/>
-
 // Export widget models and views, and the npm package version number.
 import './shared/style/beakerx.scss';
 import './shared/style/tree.scss';

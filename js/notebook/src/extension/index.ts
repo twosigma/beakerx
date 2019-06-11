@@ -18,8 +18,6 @@
 // It contains some requirejs configuration and the `load_ipython_extension`
 // which is required for any notebook extension.
 
-/// <reference path='../types/index.d.ts'/>
-
 import {extendHighlightModes, extendWithLineComment} from "./codeEditor";
 import {registerFeature} from './UIOptionsHelper';
 import {enableInitializationCellsFeature} from './initializationCells';

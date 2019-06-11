@@ -14,8 +14,6 @@
  *  limitations under the License.
  */
 
-/// <reference path='../types/index.d.ts'/>
-
 import {registerCommTargets} from './comm';
 import BeakerXApi from "../tree/Utils/BeakerXApi";
 

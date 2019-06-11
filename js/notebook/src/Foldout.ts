@@ -59,6 +59,7 @@ export class FoldoutView extends widgets.BoxView {
   }
 
   add_child_model(model) {
+    // @ts-ignore
     return this.create_child_view(model).then((view: widgets.DOMWidgetView) => {
       this.restorePreviewContent();
 

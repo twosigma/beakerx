@@ -405,6 +405,7 @@ export default class PlotInteraction {
     return Object.entries(this.scope.legendMergedLines)
       .reduce((total, pair) => {
         const [key, value] = pair;
+        // @ts-ignore
         return total && value.showItem;
       }, true);
   }

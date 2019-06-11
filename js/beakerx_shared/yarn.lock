@@ -114,6 +114,11 @@
     "@phosphor/signaling" "^1.2.2"
     "@phosphor/virtualdom" "^1.1.2"
 
+"@types/big.js@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@types/big.js/-/big.js-3.2.0.tgz#89dc7f8c06c410bd666464d76639de89543f2656"
+  integrity sha512-Sf0ev5h1+qtr+YF+f1ppy8kioa4uCi4quhUgACoAzYINs+wakYzoQVhADsAlPR/tZl+rj8NzW/h1d58CAZmL9g==
+
 "@types/jquery@^3.3.29":
   version "3.3.29"
   resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-3.3.29.tgz#680a2219ce3c9250483722fccf5570d1e2d08abd"
@@ -137,6 +142,11 @@ balanced-match@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
   integrity sha1-ibTRmasr7kneFk6gK4nORi1xt2c=
+
+big.js@^3.1.3:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/big.js/-/big.js-3.2.0.tgz#a5fc298b81b9e0dca2e458824784b65c52ba588e"
+  integrity sha512-+hN/Zh2D08Mx65pZ/4g5bsmNiZUuChDiQfTUQ7qJr4/kuopCr88xZsAXv6mBoZEsUI4OuGHlX59qE94K2mMW8Q==
 
 brace-expansion@^1.1.7:
   version "1.1.11"

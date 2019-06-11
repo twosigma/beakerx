@@ -18,3 +18,5 @@ export * from './BeakerXThemeHelper';
 export * from './BigNumberUtils';
 export * from './CommonUtils';
 export * from './SanitizeUtils';
+export * from "./PlotColorUtils";
+export * from "./PlotKeyboardUtils";

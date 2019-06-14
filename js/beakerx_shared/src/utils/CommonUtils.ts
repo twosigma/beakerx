@@ -34,7 +34,7 @@ export default class CommonUtils {
     return this.applyTimezone(timestamp, tz).format(format);
   }
 
-  public static generateId(length: number = 6): string {
+  public static randomString(length: number = 6): string {
     const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let textArray: string[] = [];
 
@@ -43,6 +43,10 @@ export default class CommonUtils {
     }
 
     return textArray.join('');
+  }
+
+  public static generateId(lengt: number = 6): string {
+    return this.randomString(lengt);
   }
 
   public static rgbaToHex(r: number, g: number, b: number, a: number = 0xFF): string {
@@ -66,5 +70,9 @@ export default class CommonUtils {
     let i = Math.floor(Math.log(bytes) / Math.log(k));
 
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+  }
+
+  public static padStr(val: number, len: number): string {
+    return `${Math.abs(val)}`.padStart(len, '0');
   }
 }

@@ -25,7 +25,7 @@ export default class PlotStyleUtils {
     return bkHelper.isChrome ? this.getComputedStyle(e, 'height') : e.height();
   }
 
-  public static outerWidth(e: JQuery<Element>, includeMargin: boolean): number | null {
+  public static outerWidth(e: JQuery<Element>, includeMargin: boolean = false): number | null {
     if (!e || e.length === 0) {
       return null;
     }
@@ -38,7 +38,7 @@ export default class PlotStyleUtils {
       .reduce((p, c) => p + c, 0);
   }
 
-  public static outerHeight(e: JQuery<Element>, includeMargin: boolean): number | null {
+  public static outerHeight(e: JQuery<Element>, includeMargin: boolean = false): number | null {
     if (!e || e.length === 0) {
       return null;
     }
@@ -79,7 +79,7 @@ export default class PlotStyleUtils {
     return elementStyles;
   }
 
-  public static getActualCss(jqElement: JQuery<Element>, jqFunction: keyof JQuery, jqFunctionParams: any) {
+  public static getActualCss(jqElement: JQuery<Element>, jqFunction: keyof JQuery, jqFunctionParams?: any) {
     //to get actual size/position/etc values of hidden elements
     let value;
     let getValue = () => {

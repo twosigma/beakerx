@@ -37,8 +37,8 @@ import CommonUtils from "beakerx_shared/lib/utils/CommonUtils";
 
 import 'jquery-ui/ui/widgets/draggable';
 import 'jquery-ui/ui/widgets/resizable';
+import PlotStyleUtils from "beakerx_shared/lib/utils/PlotStyleUtils";
 
-const plotUtils = require('./plotUtils');
 const bkoChartExtender = require('./chartExtender');
 
 export default class PlotScope {
@@ -275,8 +275,8 @@ export default class PlotScope {
   }
 
   updateClipPath() {
-    const W = plotUtils.safeWidth(this.jqsvg);
-    const H = plotUtils.safeHeight(this.jqsvg);
+    const W = PlotStyleUtils.safeWidth(this.jqsvg);
+    const H = PlotStyleUtils.safeHeight(this.jqsvg);
 
     this.svg.select('#clipPath_' + this.wrapperId + ' rect')
       .attr("x", this.layout.leftLayoutMargin)

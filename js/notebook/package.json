@@ -16,11 +16,12 @@
     "ipywidgets"
   ],
   "scripts": {
+    "clean": "rimraf node_modules/beakerx_shared && yarn install --force",
     "build": "yarn run build:dev",
-    "build:prod": "webpack --config webpack.prod.js && yarn run build-lab-extension",
-    "build:dev": "webpack --config webpack.dev.js && yarn run build-lab-extension",
+    "build:prod": "yarn run clean && webpack --config webpack.prod.js && yarn run build-lab-extension",
+    "build:dev": "yarn run clean && webpack --config webpack.dev.js && yarn run build-lab-extension",
     "build-lab-extension": "cd ../lab && npm install",
-    "prepublish": "yarn run build:prod"
+    "prepublishOnly": "yarn run build:prod"
   },
   "devDependencies": {
     "@jupyter-widgets/base": "^1.2.4",
@@ -69,6 +70,7 @@
     "moment": "^2.17.1",
     "moment-timezone": "^0.5.13",
     "reselect": "^3.0.1",
+    "rimraf": "^2.6.3",
     "underscore": "^1.8.3"
   }
 }

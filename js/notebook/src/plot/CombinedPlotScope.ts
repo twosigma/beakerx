@@ -26,8 +26,9 @@ import { GistPublisherUtils } from "../GistPublisherUtils";
 
 import "jquery-ui/ui/widgets/resizable";
 import CommonUtils from "beakerx_shared/lib/utils/CommonUtils";
+import PlotUtils from "./PlotUtils";
+import PlotStyleUtils from "beakerx_shared/lib/utils/PlotStyleUtils";
 
-const plotUtils = require('./plotUtils');
 const combinedPlotFormatter = require('./combinedPlotFormatter');
 const bkoChartExtender = require('./chartExtender');
 
@@ -249,18 +250,18 @@ export default class CombinedPlotScope {
 
     const plotTitle = this.element.find("#combplotTitle");
 
-    plotUtils.addTitleToSvg(combinedSvg[0], plotTitle, {
+    PlotUtils.addTitleToSvg(combinedSvg[0], plotTitle, {
       width: plotTitle.width(),
-      height: plotUtils.getActualCss(plotTitle, "outerHeight")
+      height: PlotStyleUtils.getActualCss(plotTitle, "outerHeight")
     });
 
-    let combinedSvgHeight = plotUtils.getActualCss(plotTitle, "outerHeight",  true);
+    let combinedSvgHeight = PlotStyleUtils.getActualCss(plotTitle, "outerHeight",  true);
     let combinedSvgWidth = 0;
 
     for (let i = 0; i < plots.length; i++) {
       let svg = plots[i].getSvgToSave();
 
-      plotUtils.translateChildren(svg, 0, combinedSvgHeight);
+      PlotUtils.translateChildren(svg, 0, combinedSvgHeight);
       combinedSvgHeight += parseInt(svg.getAttribute("height"));
       combinedSvgWidth = Math.max(parseInt(svg.getAttribute("width")), combinedSvgWidth);
       combinedSvg.append(svg.children);
@@ -275,12 +276,12 @@ export default class CombinedPlotScope {
   saveAsSvg() {
     const svgToSave = this.getSvgToSave();
 
-    plotUtils.addInlineFonts(svgToSave);
+    PlotUtils.addInlineFonts(svgToSave);
 
-    const html = plotUtils.convertToXHTML(svgToSave.outerHTML);
+    const html = PlotStyleUtils.convertToXHTML(svgToSave.outerHTML);
     const fileName = _.isEmpty(this.stdmodel.title) ? 'combinedplot' : this.stdmodel.title;
 
-    plotUtils.download(
+    PlotUtils.download(
       `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(html)))}`,
       `${fileName}.svg`
     );
@@ -288,18 +289,18 @@ export default class CombinedPlotScope {
 
   saveAsPng(scale?) {
     const svg = this.getSvgToSave();
-    plotUtils.addInlineFonts(svg);
+    PlotUtils.addInlineFonts(svg);
 
     scale = scale === undefined ? 1 : scale;
 
     this.canvas.width = Number(svg.getAttribute("width")) * scale;
     this.canvas.height = Number(svg.getAttribute("height")) * scale;
 
-    const html = plotUtils.convertToXHTML(svg.outerHTML);
+    const html = PlotStyleUtils.convertToXHTML(svg.outerHTML);
     const imgsrc = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html)));
     const fileName = _.isEmpty(this.stdmodel.title) ? 'combinedplot' : this.stdmodel.title;
 
-    plotUtils.drawPng(this.canvas, imgsrc, `${fileName}.png`);
+    PlotUtils.drawPng(this.canvas, imgsrc, `${fileName}.png`);
   }
 
   publish() {

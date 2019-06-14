@@ -16,8 +16,8 @@
 
 import * as _ from 'underscore';
 import * as d3 from 'd3';
-
-const plotUtils = require('./plotUtils');
+import PlotUtils from "./PlotUtils";
+import PlotStyleUtils from "beakerx_shared/lib/utils/PlotStyleUtils";
 
 namespace PlotTip {
 
@@ -60,7 +60,7 @@ namespace PlotTip {
     }
 
     const drag = (e, ui) => {
-      d.scrx = ui.position.left - plotUtils.fonts.tooltipWidth;
+      d.scrx = ui.position.left - PlotUtils.fonts.tooltipWidth;
       d.scry = ui.position.top;
       d.datax = scope.plotRange.scr2dataX(d.scrx);
       d.datay = scope.plotRange.scr2dataY(d.scry);
@@ -71,7 +71,7 @@ namespace PlotTip {
     tipdiv.draggable({ drag, stop: drag });
 
     tipdiv
-      .css("left", x + plotUtils.fonts.tooltipWidth)
+      .css("left", x + PlotUtils.fonts.tooltipWidth)
       .css("top", y);
 
     if (d.isresp === true) {
@@ -187,7 +187,7 @@ namespace PlotTip {
     d = Private.extendTipsData(scope, d, mousePos);
 
     scope.jqcontainer.find("#tip_" + d.id)
-      .css("left", x + plotUtils.fonts.tooltipWidth)
+      .css("left", x + PlotUtils.fonts.tooltipWidth)
       .css("top", y);
   }
 
@@ -212,13 +212,13 @@ namespace PlotTip {
       });
 
       const getPositive = (value) => value > 0 ? value : 0;
-      const position = plotUtils.getActualCss(tooltip, 'position');
+      const position = PlotStyleUtils.getActualCss(tooltip, 'position');
       const x = getPositive(position.left);
       const y = position.top != null ? getPositive(position.top) : getPositive(position.bottom);
 
       svg.append('foreignObject')
-        .attr("width", plotUtils.getActualCss(tooltip, 'outerWidth', true) + 1)//add 1 because jQuery round size
-        .attr("height", plotUtils.getActualCss(tooltip, 'outerHeight', true) + 1)
+        .attr("width", PlotStyleUtils.getActualCss(tooltip, 'outerWidth', true) + 1)//add 1 because jQuery round size
+        .attr("height", PlotStyleUtils.getActualCss(tooltip, 'outerHeight', true) + 1)
         .attr("x", x)
         .attr("y", y)
         .append('xhtml:body')

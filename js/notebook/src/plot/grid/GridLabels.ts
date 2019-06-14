@@ -19,8 +19,6 @@ import PlotRange from "../range/PlotRange";
 import PlotFocus from "../zoom/PlotFocus";
 import {LabelData} from "./interfaces";
 
-const plotUtils = require('../plotUtils');
-
 export default class GridLabels {
   scope: any;
   plotRange: PlotRange;

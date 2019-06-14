@@ -76,8 +76,11 @@ def _uninstall_labextensions(lab):
         subprocess.check_call(["jupyter", "labextension", "uninstall", "@jupyter-widgets/jupyterlab-manager"])
 
 
-def _install_tabledisplay():
-    subprocess.check_call(["beakerx_tabledisplay", "install"])
+def _install_tabledisplay(lab):
+    if lab:
+        subprocess.check_call(["beakerx_tabledisplay", "install", "--lab"])
+    else:
+        subprocess.check_call(["beakerx_tabledisplay", "install"])
 
 
 def _uninstall_tabledisplay():
@@ -219,7 +222,7 @@ def _disable_beakerx(args):
     _uninstall_labextensions(args.lab)
     _uninstall_kernels()
     _install_kernelspec_manager(args.prefix, disable=True)
-    _uninstall_tabledisplay()
+    _uninstall_tabledisplay(args.lab)
 
 
 def _install_beakerx(args):
@@ -231,7 +234,7 @@ def _install_beakerx(args):
     _install_kernelspec_manager(args.prefix)
     _install_magics()
     _set_conf_privileges()
-    _install_tabledisplay()
+    _install_tabledisplay(args.lab)
 
 
 def install(args):

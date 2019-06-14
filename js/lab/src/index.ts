@@ -34,25 +34,15 @@ export const beakerx_ext: JupyterLabPlugin<void>|IPlugin<JupyterLab, void> = {
       version: beakerx.version,
       exports: beakerx
     });
+    widgets.registerWidget({
+         name: 'beakerx_tabledisplay',
+         version: beakerx.version,
+         exports: beakerx
+    });
 
     app.docRegistry.addWidgetExtension('Notebook', new BeakerxExtension(app, settings));
   },
   autoStart: true
-};
-
-export const beakerx_tabledisplay_ext: JupyterLabPlugin<void>|IPlugin<JupyterLab, void> = {
-    id: 'beakerx_tabledisplay_ext',
-    requires: [IJupyterWidgetRegistry, ISettingRegistry],
-    activate: (app: JupyterLab, widgets: IJupyterWidgetRegistry, settings: ISettingRegistry): void => {
-        widgets.registerWidget({
-            name: 'beakerx_tabledisplay',
-            version: beakerx.version,
-            exports: beakerx
-        });
-
-        app.docRegistry.addWidgetExtension('Notebook', new BeakerxExtension(app, settings));
-    },
-    autoStart: true
 };
 
 export const tree_ext: JupyterLabPlugin<void> = BeakerxTreeJupyterLabPlugin;
@@ -72,7 +62,6 @@ export const beakerx_theme_dark_ext: JupyterLabPlugin<void> = themeDarkPlugin;
 export default [
   requirejs_ext,
   beakerx_ext,
-  beakerx_tabledisplay_ext,
   tree_ext,
   beakerx_theme_light_ext,
   beakerx_theme_dark_ext,

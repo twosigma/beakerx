@@ -128,6 +128,23 @@ The Java and TypeScript unit tests are run with every build. See [test/README.md
 
 <img width="900" alt="screen shot" src="https://user-images.githubusercontent.com/963093/38704584-d1fc16d8-3e74-11e8-95d5-c916bd44d10b.png">
 
+## Table Display from conda package
+### notebook
+```
+conda create --name beakerx
+source activate beakerx_td
+conda install beakerx_tabledisplay
+```
+
+### lab
+```
+conda create --name labx
+source activate beakerx_labx
+conda install -y -c conda-forge jupyterlab
+conda install beakerx_tabledisplay
+beakerx_tabledisplay install --lab
+```
+
 ## Architecture and Code Overview
 
 BeakerX is a collection of kernels and extensions for Jupyter.

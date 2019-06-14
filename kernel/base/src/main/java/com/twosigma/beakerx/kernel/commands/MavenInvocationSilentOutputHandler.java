@@ -15,19 +15,26 @@
  */
 package com.twosigma.beakerx.kernel.commands;
 
-import com.twosigma.beakerx.kernel.magic.command.functionality.MvnLoggerWidget;
+import com.twosigma.beakerx.kernel.magic.command.BxMavenManager;
+import com.twosigma.beakerx.kernel.magic.command.functionality.MvnDownloadLoggerWidget;
+import com.twosigma.beakerx.kernel.magic.command.functionality.MvnLogsWidget;
 import org.apache.maven.shared.invoker.InvocationOutputHandler;
 
 public class MavenInvocationSilentOutputHandler implements InvocationOutputHandler {
 
-  private MvnLoggerWidget intProgress;
+  private MvnDownloadLoggerWidget mvnLoggerWidget;
+  private MvnLogsWidget logs;
 
-  public MavenInvocationSilentOutputHandler(MvnLoggerWidget intProgress) {
-    this.intProgress = intProgress;
+  public MavenInvocationSilentOutputHandler(MvnDownloadLoggerWidget mvnLoggerWidget, MvnLogsWidget logs) {
+    this.mvnLoggerWidget = mvnLoggerWidget;
+    this.logs = logs;
   }
 
   @Override
   public void consumeLine(String line) {
-    intProgress.sendLog(line);
+    if (BxMavenManager.isLogsOn()) {
+      logs.sendLog(line);
+    }
+    mvnLoggerWidget.sendLog(line);
   }
 }

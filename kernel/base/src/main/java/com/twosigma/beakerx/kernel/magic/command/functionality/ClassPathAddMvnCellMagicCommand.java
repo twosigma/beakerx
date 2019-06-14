@@ -17,7 +17,6 @@ package com.twosigma.beakerx.kernel.magic.command.functionality;
 
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
-import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfigurationImpl;
 import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver;
 import com.twosigma.beakerx.kernel.magic.command.PomFactory;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
@@ -87,8 +86,7 @@ public class ClassPathAddMvnCellMagicCommand extends ClasspathMagicCommand {
     List<MavenJarResolver.Dependency> dependencies =
             getDepsFromCommand(Arrays.copyOfRange(commandLines, 1, commandLines.length));
     MavenJarResolver mavenJarResolver = new MavenJarResolver(commandParams, pomFactory);
-    MvnLoggerWidget mvnLoggerWidget = new MvnLoggerWidget(message);
-    MavenJarResolver.AddMvnCommandResult result = mavenJarResolver.retrieve(dependencies, mvnLoggerWidget);
+    MavenJarResolver.AddMvnCommandResult result = mavenJarResolver.retrieve(dependencies, message);
 
     if (result.isJarRetrieved()) {
       return handleAddedJars(result.getAddedJarPaths());

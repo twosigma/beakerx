@@ -52,6 +52,11 @@ public class Output extends DOMWidget {
     openComm();
   }
 
+  public Output(Message parentMessage) {
+    super(parentMessage);
+    openComm(parentMessage);
+  }
+
   @Override
   public String getModelNameValue() {
     return MODEL_NAME_VALUE;

@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 import static java.util.Arrays.asList;
 import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 
-public class MvnLoggerWidget {
+public class MvnDownloadLoggerWidget {
 
   static final int PERIOD = 250;
   public static final String DOWNLOADED = "Downloaded";
@@ -38,7 +38,7 @@ public class MvnLoggerWidget {
   private volatile String speed;
   private volatile String currentLine;
 
-  public MvnLoggerWidget(Message parentMessage) {
+  public MvnDownloadLoggerWidget(Message parentMessage) {
     this.widget = new BxHTML(parentMessage);
     this.timer = new Timer();
     this.timer.scheduleAtFixedRate(new TimerTask() {

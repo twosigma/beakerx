@@ -17,7 +17,7 @@
 import * as d3 from 'd3';
 import * as $ from 'jquery';
 import sanitize from './plotSanitize';
-import PlotUtils from "./PlotUtils";
+import PlotUtils from "./utils/PlotUtils";
 
 const DEFAULT_MARGIN = 30;
 

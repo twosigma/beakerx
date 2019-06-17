@@ -29,7 +29,7 @@ import PointsLimitModal from "./plotModal/pointsLimitModal";
 import PlotModelFactory from "./models/PlotModelFactory";
 import ContextMenu from "./contextMenu/plotContextMenu";
 import zoomHelpers from './zoom/helpers';
-import plotTip from './plotTip';
+import plotTip from './PlotTip';
 import saveAsContextMenu from './contextMenu/SaveAsContextMenu';
 import { GistPublisherUtils } from '../GistPublisherUtils';
 import bkHelper from "beakerx_shared/src/bk/bkHelper";

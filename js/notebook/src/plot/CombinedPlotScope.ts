@@ -26,7 +26,7 @@ import { GistPublisherUtils } from "../GistPublisherUtils";
 
 import "jquery-ui/ui/widgets/resizable";
 import CommonUtils from "beakerx_shared/lib/utils/CommonUtils";
-import PlotUtils from "./PlotUtils";
+import PlotUtils from "./utils/PlotUtils";
 import PlotStyleUtils from "beakerx_shared/lib/utils/PlotStyleUtils";
 
 const combinedPlotFormatter = require('./combinedPlotFormatter');

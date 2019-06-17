@@ -14,17 +14,16 @@
  *  limitations under the License.
  */
 
+import BigNumberUtils from "beakerx_shared/lib/utils/BigNumberUtils";s
+
 define([
   'underscore',
-  './../plotUtils',
   'd3-scale'
 ], function(
   _,
-  plotUtils,
   d3scale
 ) {
 
-  var plotTip = require('./../plotTip').default;
   var HeatMap = function(data) {
     _.extend(this, data); // copy properties to itself
     this.format();
@@ -76,8 +75,8 @@ define([
     };
     for (var i = 0; i < eles.length; i++) {
       var ele = eles[i];
-      range.xl = plotUtils.min(range.xl, ele.x);
-      range.xr = plotUtils.max(range.xr, ele.x2);
+      range.xl = BigNumberUtils.min(range.xl, ele.x);
+      range.xr = BigNumberUtils.max(range.xr, ele.x2);
       range.yl = Math.min(range.yl, ele.y);
       range.yr = Math.max(range.yr, ele.y2);
     }

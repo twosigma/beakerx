@@ -13,17 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+import CommonUtils from "beakerx_shared/lib/utils/CommonUtils";
 
 define([
   'underscore',
-  './../plotUtils',
   './../std/plotpoint',
   './../plotSampler',
   './../lod/plotLodPoint',
   './../lod/plotLodBox'
 ], function(
   _,
-  plotUtils,
   PlotPoint,
   PlotSampler,
   PlotLodPoint,
@@ -47,7 +46,7 @@ define([
     this.lodType = this.lodTypes[this.lodTypeIndex]; // line, box
 
     // create the plotters
-    this.zoomHash = plotUtils.randomString(3);
+    this.zoomHash = CommonUtils.randomString(3);
     this.plotter = new PlotPoint(this.datacopy);
     this.createLodPlotter();
 

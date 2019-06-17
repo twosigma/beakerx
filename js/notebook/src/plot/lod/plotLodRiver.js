@@ -14,15 +14,15 @@
  *  limitations under the License.
  */
 
+import PlotColorUtils from "../utils/PlotColorUtils";
+import PlotTip from "../PlotTip";
+
 define([
   'underscore',
-  './../plotUtils'
 ], function(
-  _,
-  plotUtils
+  _
 ) {
 
-  var plotTip = require('./../plotTip').default;
   var PlotLodRiver = function(data){
     _.extend(this, data); // copy properties to itself
     this.format();
@@ -36,7 +36,7 @@ define([
 
   PlotLodRiver.prototype.format = function() {
     if (this.color != null) {
-      this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
+      this.tip_color = PlotColorUtils.createColor(this.color, this.color_opacity);
     } else {
       this.tip_color = "gray";
     }
@@ -217,7 +217,7 @@ define([
   };
 
   PlotLodRiver.prototype.hideTips = function(scope, hidden) {
-    plotTip.hideTips(scope, this.id, hidden);
+    PlotTip.hideTips(scope, this.id, hidden);
   };
 
   return PlotLodRiver;

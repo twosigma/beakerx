@@ -16,9 +16,9 @@
 
 import * as _ from 'underscore';
 import * as d3 from 'd3';
-import plotTip from './plotTip';
+import plotTip from './PlotTip';
 import zoomHelpers from './zoom/helpers';
-import PlotUtils from "./PlotUtils";
+import PlotUtils from "./utils/PlotUtils";
 import PlotKeyboardUtils from "beakerx_shared/lib/utils/PlotKeyboardUtils";
 
 export default class PlotInteraction {
@@ -258,7 +258,7 @@ export default class PlotInteraction {
       return this.scope.model.onKey(key, plotIndex, data, item);
     }
 
-    const params = plotUtils.getActionObject(this.scope.model.getCellModel().type, item);
+    const params = PlotUtils.getActionObject(this.scope.model.getCellModel().type, item);
     params.key = key;
 
     this.scope.plotDisplayModel.send(

@@ -15,12 +15,13 @@
  */
 
 define([
-  'underscore',
-  './../plotUtils'
+  'underscore'
 ], function(
   _,
   plotUtils
 ) {
+
+  const PlotUtils = require('../utils/PlotUtils').default;
 
   var PlotAuxRiver = function(data){
     _.extend(this, data); // copy properties to itself
@@ -63,7 +64,7 @@ define([
       var ele = eles[i];
       var x = mapX(ele.x), y = mapY(ele.y), y2 = mapY(ele.y2);
 
-      if (plotUtils.rangeAssert([x, y, y2])) {
+      if (PlotUtils.rangeAssert([x, y, y2])) {
         eleprops.length = 0;
         return;
       }
@@ -89,8 +90,8 @@ define([
     var groupsvg = itemsvg.select("#" + groupid);
     groupsvg.selectAll("polygon")
       .transition()
-      .duration(plotUtils.getHighlightDuration())
-      .style("stroke-width", function(d) { return plotUtils.getHighlightedSize(d.st_w, highlighted); });
+      .duration(PlotUtils.getHighlightDuration())
+      .style("stroke-width", function(d) { return PlotUtils.getHighlightedSize(d.st_w, highlighted); });
   };
 
 

@@ -14,12 +14,12 @@
  *  limitations under the License.
  */
 
+import PlotStyleUtils from "beakerx_shared/lib/utils/PlotStyleUtils";
+
 define([
   'underscore',
-  './../plotUtils'
 ], function(
   _,
-  plotUtils
 ) {
 
   var PlotConstband = function(data){
@@ -135,8 +135,8 @@ define([
       bMargin = scope.layout.bottomLayoutMargin,
       tMargin = scope.layout.topLayoutMargin,
       rMargin = scope.layout.rightLayoutMargin;
-    var W = plotUtils.safeWidth(scope.jqsvg),
-      H = plotUtils.safeHeight(scope.jqsvg);
+    var W = PlotStyleUtils.safeWidth(scope.jqsvg),
+      H = PlotStyleUtils.safeHeight(scope.jqsvg);
 
     eleprops.length = 0;
 

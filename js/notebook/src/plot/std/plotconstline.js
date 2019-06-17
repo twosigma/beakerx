@@ -13,13 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+import PlotStyleUtils from "beakerx_shared/lib/utils/PlotStyleUtils";
 
 define([
   'underscore',
-  './../plotUtils'
 ], function(
-  _,
-  plotUtils
+  _
 ) {
 
   var PlotConstline = function(data){
@@ -117,8 +116,8 @@ define([
       mapY = this.getYMapper(scope);
     var lMargin = scope.layout.leftLayoutMargin,
       bMargin = scope.layout.bottomLayoutMargin;
-    var W = plotUtils.safeWidth(scope.jqsvg),
-      H = plotUtils.safeHeight(scope.jqsvg);
+    var W = PlotStyleUtils.safeWidth(scope.jqsvg),
+      H = PlotStyleUtils.safeHeight(scope.jqsvg);
 
     eleprops.length = 0;
     this.labelpipe.length = 0;

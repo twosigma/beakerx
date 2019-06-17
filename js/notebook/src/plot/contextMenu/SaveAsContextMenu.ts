@@ -16,8 +16,8 @@
 
 import * as d3 from 'd3';
 import * as _ from 'underscore';
-import plotTip from '../plotTip';
-import PlotUtils from "../PlotUtils";
+import plotTip from '../PlotTip';
+import PlotUtils from "../utils/PlotUtils";
 import PlotStyleUtils from "beakerx_shared/lib/utils/PlotStyleUtils";
 
 namespace SaveAsContextMenu {

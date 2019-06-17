@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-import bkHelper from "../bk/bkHelper";
-import CommonUtils from "./CommonUtils";
+import bkHelper from "../../../../beakerx_shared/src/bk/bkHelper";
+import CommonUtils from "../../../../beakerx_shared/src/utils/CommonUtils";
 
 enum ColorHexes {
   aliceblue            = "#f0f8ff",

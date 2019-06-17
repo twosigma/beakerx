@@ -16,7 +16,7 @@
 
 import * as _ from 'underscore';
 import * as d3 from 'd3';
-import PlotUtils from "./PlotUtils";
+import PlotUtils from "./utils/PlotUtils";
 import PlotStyleUtils from "beakerx_shared/lib/utils/PlotStyleUtils";
 
 namespace PlotTip {

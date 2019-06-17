@@ -15,8 +15,7 @@
  */
 
 import * as _ from 'underscore';
-
-const plotUtils = require('../plotUtils');
+import PlotUtils from "../utils/PlotUtils";
 
 export default class CombinedPlotModel {
   model: any;
@@ -102,7 +101,7 @@ export default class CombinedPlotModel {
           'onclick',
           plotIndex,
           item.uid,
-          plotUtils.getActionObject(this.parentScope.model.getCellModel().type, e, i)
+          PlotUtils.getActionObject(this.parentScope.model.getCellModel().type, e, i)
         );
 
         break;
@@ -116,7 +115,7 @@ export default class CombinedPlotModel {
 
       if (plotIndex !== subplot.plotIndex) { continue; }
 
-      let params = plotUtils.getActionObject(
+      let params = PlotUtils.getActionObject(
         this.parentScope.model.getCellModel().type, e, i
       );
 
@@ -135,7 +134,7 @@ export default class CombinedPlotModel {
         continue;
       }
 
-      let params = plotUtils.getActionObject(
+      let params = PlotUtils.getActionObject(
         this.parentScope.model.getCellModel().type, e, i
       );
       params.actionType = 'onclick';

@@ -15,12 +15,12 @@
  */
 
 define([
-  'underscore',
-  './../plotUtils'
+  'underscore'
 ], function(
-  _,
-  plotUtils
+  _
 ) {
+
+  const PlotUtils = require('../utils/PlotUtils').default;
 
   var PlotAuxBox = function(data){
     _.extend(this, data); // copy properties to itself
@@ -68,7 +68,7 @@ define([
       var x = mapX(ele.x), x2 = mapX(ele.x2),
         y = mapY(ele.y), y2 = mapY(ele.y2);
 
-      if (plotUtils.rangeAssert([x, x2, y, y2])) {
+      if (PlotUtils.rangeAssert([x, x2, y, y2])) {
         eleprops.length = 0;
         return;
       }

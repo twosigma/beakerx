@@ -15,7 +15,7 @@
  */
 
 import PlotStyleUtils from "beakerx_shared/lib/utils/PlotStyleUtils";
-import PlotUtils from "./PlotUtils";
+import PlotUtils from "./utils/PlotUtils";
 
 export default class PlotCursor {
   scope: any;

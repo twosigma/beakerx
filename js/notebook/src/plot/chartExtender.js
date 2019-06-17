@@ -14,8 +14,9 @@
  *  limitations under the License.
  */
 
-var PlotLayout = require('./PlotLayout.ts').default;
-var plotUtils = require('./plotUtils');
+
+import PlotLayout from "./PlotLayout";
+import PlotStyleUtils from "beakerx_shared/lib/utils/PlotStyleUtils";
 
 define([
     'underscore'
@@ -100,8 +101,8 @@ define([
         scope.svg.select('#clipPath_' + scope.wrapperId + ' rect')
           .attr("x", 0)
           .attr("y", 0)
-          .attr("height", plotUtils.safeHeight(scope.jqsvg))
-          .attr("width", plotUtils.safeWidth(scope.jqsvg));
+          .attr("height", PlotStyleUtils.safeHeight(scope.jqsvg))
+          .attr("width", PlotStyleUtils.safeWidth(scope.jqsvg));
       };
 
       scope.initLayout = function () {

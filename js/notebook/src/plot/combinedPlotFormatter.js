@@ -14,15 +14,13 @@
  *  limitations under the License.
  */
 
-define([
-  './plotConverter',
-  './plotUtils'
-],function(
-  plotConverter,
-  plotUtils
-) {
+import PlotModelFactory from "./models/PlotModelFactory";
+import PlotUtils from "./utils/PlotUtils";
 
-  var PlotModelFactory = require("./models/PlotModelFactory").default;
+define([
+],function(
+
+) {
 
   return {
     standardizeModel : function(model, prefs) {
@@ -77,7 +75,7 @@ define([
           vmargins[i] = layout.bottomLayoutMargin;
           sumvmargins += vmargins[i];
         } else {
-          vmargins[i] = layout.bottomLayoutMargin + plotUtils.fonts.labelHeight * 2;
+          vmargins[i] = layout.bottomLayoutMargin + PlotUtils.fonts.labelHeight * 2;
           sumvmargins += vmargins[i];
         }
       }

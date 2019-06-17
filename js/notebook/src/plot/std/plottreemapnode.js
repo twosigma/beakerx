@@ -14,11 +14,12 @@
  *  limitations under the License.
  */
 
+import PlotUtils from "../utils/PlotUtils";
+import PlotStyleUtils from "beakerx_shared/lib/utils/PlotStyleUtils";
+
 define([
-  './../plotUtils',
   'd3'
 ], function(
-  plotUtils,
   d3
 ) {
 
@@ -44,7 +45,7 @@ define([
     }
     itemsvg
       .transition()
-      .duration(plotUtils.getHighlightDuration())
+      .duration(PlotUtils.getHighlightDuration())
       .select("rect")
       .style("stroke", highlighted ? "#000000" : "#FFFFFF")
       .style("stroke-width", highlighted ? 2 : 0.2)
@@ -58,8 +59,8 @@ define([
       return;
 
     var margin = {top: 0, right: 0, bottom: 0, left: 0},
-      width = (scope ? plotUtils.safeWidth(scope.jqsvg) : 300) - margin.left - margin.right,
-      height = (scope ? plotUtils.safeHeight(scope.jqsvg) : 200) - margin.top - margin.bottom;
+      width = (scope ? PlotStyleUtils.safeWidth(scope.jqsvg) : 300) - margin.left - margin.right,
+      height = (scope ? PlotStyleUtils.safeHeight(scope.jqsvg) : 200) - margin.top - margin.bottom;
 
     // assign ratio
     this.ratio = scope.stdmodel.ratio === undefined ? 1 : scope.stdmodel.ratio;

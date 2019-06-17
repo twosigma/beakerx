@@ -16,12 +16,10 @@
 
 define([
   'underscore',
-  'big.js',
-  './plotUtils'
+  'big.js'
 ], function(
   _,
-  Big,
-  plotUtils
+  Big
 ) {
 
   var dataTypeMap = {

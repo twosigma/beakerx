@@ -348,7 +348,7 @@ export default class PlotUtils {
     fontFace += this.getFontToInject({
       fontFamily: 'Lato',
       urlformats: [{
-        base64: require('./../shared/fonts/lato/Lato-Regular.woff'),
+        base64: require('../../shared/fonts/lato/Lato-Regular.woff'),
         format: 'woff'
       }],
       fontWeight: 'normal',
@@ -357,7 +357,7 @@ export default class PlotUtils {
     fontFace += this.getFontToInject({
       fontFamily: 'Lato',
       urlformats: [{
-        base64: require('./../shared/fonts/lato/Lato-Black.woff'),
+        base64: require('../../shared/fonts/lato/Lato-Black.woff'),
         format: 'woff'
       }],
       fontWeight: 'bold',

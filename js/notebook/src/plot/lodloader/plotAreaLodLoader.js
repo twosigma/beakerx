@@ -14,15 +14,15 @@
  *  limitations under the License.
  */
 
+import CommonUtils from "beakerx_shared/lib/utils/CommonUtils";
+
 define([
   'underscore',
-  './../plotUtils',
   './../std/plotarea',
   './../plotSampler',
   './../lod/plotLodRiver'
 ], function(
   _,
-  plotUtils,
   PlotArea,
   PlotSampler,
   PlotLodRiver
@@ -45,7 +45,7 @@ define([
     this.lodType = this.lodTypes[this.lodTypeIndex]; // line, box
 
     // create the plotters
-    this.zoomHash = plotUtils.randomString(3);
+    this.zoomHash = CommonUtils.randomString(3);
     this.plotter = new PlotArea(this.datacopy);
     this.createLodPlotter();
 

@@ -16,7 +16,7 @@
 
 import * as moment from 'moment-timezone/builds/moment-timezone-with-data';
 import * as _ from 'underscore';
-import {getDoublePrecisionByType, isDoubleWithPrecision} from './dataTypes';
+import {ALL_TYPES, getDoublePrecisionByType, isDoubleWithPrecision} from './dataTypes';
 import {DataGridHelpers} from './dataGridHelpers';
 import {TIME_UNIT_FORMATS} from './consts';
 import {CellRenderer} from "@phosphor/datagrid";
@@ -54,6 +54,7 @@ export class DataFormatter {
     this.boolean = this.boolean.bind(this);
     this.html = this.html.bind(this);
     this.rawValue = this.rawValue.bind(this);
+    this.percentage = this.percentage.bind(this);
   }
 
   destroy(): void {
@@ -108,7 +109,8 @@ export class DataFormatter {
         return this.html;
       case 11:
         return this.rawValue;
-
+      case ALL_TYPES.percentage:
+        return this.percentage;
       default:
         return this.string;
     }
@@ -277,5 +279,23 @@ export class DataFormatter {
 
   private html(config: CellRenderer.ICellConfig): string {
     return config.value;
+  }
+
+  /**
+   * Format numbers as percentage
+   * @param config
+   */
+  private percentage(config: CellRenderer.ICellConfig): string {
+    if (this.isNull(config.value)) {
+      return config.value;
+    }
+
+    const value = parseFloat(config.value);
+
+    if (isNaN(value)) {
+      return 'NaN';
+    }
+
+    return value.toLocaleString(undefined, {style: 'percent', minimumFractionDigits: 2});
   }
 }

@@ -30,6 +30,7 @@ export enum ALL_TYPES {
   'int64',
   'time',
   'image',
+  'percentage',
 }
 
 const DEFAULT_DOUBLE_WITH_PRECISION_TYPE = '4.3';

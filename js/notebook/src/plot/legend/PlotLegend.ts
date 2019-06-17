@@ -486,16 +486,16 @@ export default class PlotLegend {
     lodTypeMenuItems.forEach((item) => {
       const liElem = $(`<li class=""><a>${item.name}</a></li>`);
 
-      liElem.children('a').on('click', () => {
+      liElem.children('a').on('click', (e) => {
         item.action();
-        $(this).parents('.lod-dropdown-menu').removeClass('open');
+        $(e.target).parents('.lod-dropdown-menu').removeClass('open');
       });
 
       dropdownMenuElement.append(liElem);
     });
 
-    lodhint.find('a.dropdown-toggle').on('click', () => {
-      const parent: any = $(this).parent();
+    lodhint.find('a.dropdown-toggle').on('click', (e) => {
+      const parent: any = $(e.target).parent();
 
       $('.lod-dropdown-menu').not(parent).removeClass('open');
       parent.toggleClass('open');

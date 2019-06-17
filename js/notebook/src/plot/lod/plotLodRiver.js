@@ -75,7 +75,6 @@ define([
 
     this.avgOn = true;
 
-    var eles = this.elements;
     for (var i = 0; i < eles.length; i++) {
       var ele = eles[i];
       var x = mapX(ele.x), y = mapY(ele.min), y2 = mapY(ele.max);

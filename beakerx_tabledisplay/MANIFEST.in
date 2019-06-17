@@ -1,0 +1,5 @@
+recursive-include beakerx_tabledisplay/static *
+
+include LICENSE
+include NOTICE
+include setupbase.py

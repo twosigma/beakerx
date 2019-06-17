@@ -18,8 +18,8 @@ import unittest
 
 import pandas as pd
 
+from beakerx_base import Color
 from ..chart import SimpleTimePlot
-from ...utils import Color
 
 
 class TestPlot(unittest.TestCase):

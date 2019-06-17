@@ -14,9 +14,10 @@
 
 import copy
 from beakerx.plot.legend import LegendPosition, LegendLayout
-from beakerx.plot.plotitem import *
-from beakerx.plot.plotitem_treemap import *
-from beakerx.utils import *
+from beakerx.plot.plotitem import YAxis, Text, ConstantLine, ConstantBand, Graphics
+from beakerx.plot.plotitem_treemap import RandomColorProvider, ValueAccessor, Mode
+from beakerx_base import BaseObject, getValue, Color
+
 from .tree_map_reducer import TreeMapReducer
 
 

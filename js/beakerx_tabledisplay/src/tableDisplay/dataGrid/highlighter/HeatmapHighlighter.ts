@@ -38,11 +38,6 @@ export default class HeatmapHighlighter extends Highlighter {
 
   getBackgroundColor(config: CellRenderer.ICellConfig) {
     const value = this.getValueToHighlight(config);
-
-    if (isNaN(value)) {
-      return BeakerXThemeHelper.DEFAULT_CELL_BACKGROUND;
-    }
-
-    return this.colorScale(value);
+    return config.metadata.dataType === 'string' ? BeakerXThemeHelper.DEFAULT_CELL_BACKGROUND : this.colorScale(value);
   }
 }

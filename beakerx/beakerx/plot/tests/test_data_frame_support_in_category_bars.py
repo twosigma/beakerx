@@ -17,7 +17,8 @@ import unittest
 
 import pandas as pd
 
-from ..chart import CategoryBars, CategoryPlot
+from beakerx import CategoryPlot
+from beakerx.plot.plotitem import CategoryBars
 
 
 class TestSupportDataFrameInCategoryBars(unittest.TestCase):

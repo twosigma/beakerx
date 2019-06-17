@@ -11,12 +11,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from enum import Enum
 
-from beakerx.beakerx_widgets import BeakerxDOMWidget
+from beakerx.plot.plotitem import GradientColor, Points, Line
 from ipykernel.comm import Comm
 from pandas import DataFrame
-from traitlets import Unicode, Dict
-from beakerx.plot.chart_models import *
+from traitlets import Dict, Unicode
+import pandas as pd
+
+from beakerx_base import getValue, Color, date_time_2_millis, BeakerxDOMWidget
+from .chart_models import XYChart, CategoryChart, HeatMapChart, \
+    HistogramChart, TreeMapChart, CombinedChart, LegendLayout, LegendPosition
+import json
 
 
 class Plot(BeakerxDOMWidget):
@@ -75,18 +81,19 @@ class Plot(BeakerxDOMWidget):
         super(Plot, self)._ipython_display_(**kwargs)
 
     def _handle_msg(self, msg):
-        params = msg['content']['data']['content']
-        graphics_object = None
-        for item in self.chart.graphics_list:
-            if item.uid == params['itemId']:
-                graphics_object = item
-        self.details = GraphicsActionObject(graphics_object, params['params'])
-        if params['event'] == 'onclick':
-            self._on_click_action(msg)
-        elif params['event'] == 'onkey':
-            self._on_key_action(msg)
-        elif params['event'] == 'actiondetails':
-            self._on_action_details(msg)
+        if 'content' in msg['content']['data']:
+            params = msg['content']['data']['content']
+            graphics_object = None
+            for item in self.chart.graphics_list:
+                if item.uid == params['itemId']:
+                    graphics_object = item
+            self.details = GraphicsActionObject(graphics_object, params['params'])
+            if params['event'] == 'onclick':
+                self._on_click_action(msg)
+            elif params['event'] == 'onkey':
+                self._on_key_action(msg)
+            elif params['event'] == 'actiondetails':
+                self._on_action_details(msg)
 
     def _on_click_action(self, msg):
         params = msg['content']['data']['content']

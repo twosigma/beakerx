@@ -15,8 +15,9 @@
 
 import unittest
 
-from ..chart import Plot, Area
-from ..plotitem import XYStacker
+from beakerx import Plot
+
+from ..plotitem import XYStacker, Area
 
 
 class TestStacking(unittest.TestCase):

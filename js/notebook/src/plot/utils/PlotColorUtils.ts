@@ -176,11 +176,11 @@ export default class PlotColorUtils {
     if (hexstr === "none") {
       return "none";
     }
+    if (hexstr === null || hexstr === undefined) {
+      out = "#000000";
+    }
     if (out[0] !== '#') {
       out = this.colorToHex(hexstr) || "#000000";
-    }
-    if (hexstr === null) {
-      out = "#000000";
     }
 
     let r = parseInt(out.substr(1, 2), 16);

@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-import { BigSource } from 'big.js';
 import BigNumberUtils from "beakerx_shared/lib/utils/BigNumberUtils";
 
 const NANOTIME_TYPE = 'nanotime';
@@ -36,8 +35,8 @@ export default class DefaultAxis {
   axisGridlineLabels: any[];
   axisStep: number;
   axisFixed: number;
-  axisMarginValL: BigSource;
-  axisMarginValR: BigSource;
+  axisMarginValL: BigJs.BigSource;
+  axisMarginValR: BigJs.BigSource;
   fixedLines: any[];
   axisFixedLabels: any;
   numFixs: number[];

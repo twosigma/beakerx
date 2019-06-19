@@ -16,11 +16,11 @@
 
 import * as d3 from "d3";
 import * as _ from "underscore";
-import * as Big from 'big.js';
 import {Focus} from "./interface";
 import PlotUtils from "../utils/PlotUtils";
 import BigNumberUtils from "beakerx_shared/lib/utils/BigNumberUtils";
 import PlotStyleUtils from "beakerx_shared/lib/utils/PlotStyleUtils";
+import { Big } from 'big.js';
 
 export default class PlotFocus {
   defaultFocus: Focus;

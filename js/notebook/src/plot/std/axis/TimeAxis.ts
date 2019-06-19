@@ -14,12 +14,12 @@
  *  limitations under the License.
  */
 
-import * as Big from 'big.js';
 import * as _ from 'underscore';
 import * as moment from 'moment-timezone/builds/moment-timezone-with-data.min';
 import DefaultAxis from "./DefaultAxis";
 import CommonUtils from "beakerx_shared/lib/utils/CommonUtils";
 import BigNumberUtils from "beakerx_shared/lib/utils/BigNumberUtils";
+import { Big } from "big.js";
 
 const NANOTIME_TYPE = 'nanotime';
 
@@ -166,7 +166,7 @@ export default class TimeAxis extends DefaultAxis {
     );
   }
 
-  getTimeAxisLabels(lines: any[], span: number) {
+  getTimeAxisLabels(lines: any[], span: number|Big) {
     if (this.axisType === "nanotime" && BigNumberUtils.lte(span, this.SECOND)){
       span = this.UNIT;
     } else if (BigNumberUtils.lte(span, this.MINUTE)) {

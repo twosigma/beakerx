@@ -558,18 +558,18 @@ export default class DefaultPlotModel extends AbstractPlotModel {
     }
 
     const result = {
-      xl: BigNumberUtils.minus(range.xl, range.xspan * 10.0),
-      xr: BigNumberUtils.plus(range.xr, range.xspan * 10.0),
-      yl: range.yl - range.yspan * 10.0,
-      yr: range.yr + range.yspan * 10.0
+      xl: BigNumberUtils.minus(range.xl, range.xSpan * 10.0),
+      xr: BigNumberUtils.plus(range.xr, range.xSpan * 10.0),
+      yl: range.yl - range.ySpan * 10.0,
+      yr: range.yr + range.ySpan * 10.0
     };
 
     if (logx) {
-      result.xl = BigNumberUtils.max(result.xl, BigNumberUtils.minus(range.xl, newmodel.margin.left * range.xspan));
+      result.xl = BigNumberUtils.max(result.xl, BigNumberUtils.minus(range.xl, newmodel.margin.left * range.xSpan));
     }
 
     if (logy) {
-      result.yl = Math.max(result.yl, range.yl - newmodel.margin.left * range.yspan);
+      result.yl = Math.max(result.yl, range.yl - newmodel.margin.left * range.ySpan);
     }
 
     return result;
@@ -614,7 +614,7 @@ export default class DefaultPlotModel extends AbstractPlotModel {
       return;
     }
 
-    range.xspan = BigNumberUtils.minus(range.xr, range.xl);
-    range.yspan = range.yr - range.yl;
+    range.xSpan = BigNumberUtils.minus(range.xr, range.xl);
+    range.ySpan = range.yr - range.yl;
   }
 }

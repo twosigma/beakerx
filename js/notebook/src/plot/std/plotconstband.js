@@ -14,13 +14,12 @@
  *  limitations under the License.
  */
 
-import PlotStyleUtils from "beakerx_shared/lib/utils/PlotStyleUtils";
-
 define([
   'underscore',
 ], function(
   _,
 ) {
+  const PlotStyleUtils = require("beakerx_shared/lib/utils/PlotStyleUtils").default;
 
   var PlotConstband = function(data){
     _.extend(this, data); // copy properties to itself

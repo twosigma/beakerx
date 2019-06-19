@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-import BigNumberUtils from "beakerx_shared/lib/utils/BigNumberUtils";s
 
 define([
   'underscore',
@@ -23,6 +22,8 @@ define([
   _,
   d3scale
 ) {
+  const PlotUtils = require("../utils/PlotUtils").default;
+  const BigNumberUtils = require("beakerx_shared/lib/utils/BigNumberUtils").default;
 
   var HeatMap = function(data) {
     _.extend(this, data); // copy properties to itself
@@ -97,8 +98,8 @@ define([
 
   HeatMap.prototype.filter = function(scope) {
     var eles = this.elements;
-    var l = plotUtils.upper_bound(eles, "x2", scope.plotFocus.focus.xl) + 1,
-      r = plotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xr);
+    var l = PlotUtils.upper_bound(eles, "x2", scope.plotFocus.focus.xl) + 1,
+      r = PlotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xr);
 
     l = Math.max(l, 0);
     r = Math.min(r, eles.length - 1);
@@ -133,7 +134,7 @@ define([
       if (y < y2) { continue; } // prevent negative height
 
 
-      if (plotUtils.rangeAssert([x, x2, y, y2])) {
+      if (PlotUtils.rangeAssert([x, x2, y, y2])) {
         eleprops.length = 0;
         return;
       }

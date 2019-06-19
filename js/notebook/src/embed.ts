@@ -29,6 +29,6 @@ export * from './GistPublisher'
 export * from './GistPublisherUtils'
 
 export const PlotApi = require('./plot/plotApi');
-export const bkCoreManager = require('./shared/bkCoreManager').default;
+export const bkCoreManager = require('beakerx_shared/lib/bk/bkCoreManager').default;
 
 export const version = require('../package.json').version;

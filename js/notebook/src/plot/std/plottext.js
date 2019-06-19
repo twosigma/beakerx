@@ -14,14 +14,15 @@
  *  limitations under the License.
  */
 
-import PlotUtils from "../utils/PlotUtils";
-import PlotColorUtils from "../utils/PlotColorUtils";
-
 define([
   'underscore'
 ], function(
   _
 ) {
+  const PlotUtils = require("../utils/PlotUtils").default;
+  const PlotColorUtils = require("../utils/PlotColorUtils").default;
+  const PlotTip = require("../PlotTip").default;
+  const BigNumberUtils = require("beakerx_shared/lib/utils/BigNumberUtils").default;
 
   var PlotText = function(data){
     _.extend(this, data);
@@ -314,7 +315,7 @@ define([
   };
 
   PlotText.prototype.hideTips = function(scope, hidden) {
-    plotTip.hideTips(scope, this.id, hidden);
+    PlotTip.hideTips(scope, this.id, hidden);
   };
 
   PlotText.prototype.createTip = function(ele) {

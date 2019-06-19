@@ -13,7 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import CommonUtils from "beakerx_shared/lib/utils/CommonUtils";
 
 define([
   'underscore',
@@ -32,6 +31,9 @@ define([
   PlotAuxBox,
   PlotAuxStem
 ) {
+  const PlotUtils = require("../utils/PlotUtils").default;
+  const PlotColorUtils = require("../utils/PlotColorUtils").default;
+  const CommonUtils = require("beakerx_shared/lib/utils/CommonUtils").default;
 
   var PlotStemLodLoader = function(data, lodthresh){
     this.datacopy = {};
@@ -60,7 +62,7 @@ define([
     this.lodAuto = true;
     this.sampleStep = -1;
     if (this.color != null) {
-      this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
+      this.tip_color = PlotColorUtils.createColor(this.color, this.color_opacity);
     } else {
       this.tip_color = "gray";
     }
@@ -78,7 +80,7 @@ define([
 
   PlotStemLodLoader.prototype.zoomLevelChanged = function(scope) {
     this.sampleStep = -1;
-    this.zoomHash = plotUtils.randomString(3);
+    this.zoomHash = CommonUtils.randomString(3);
     if (this.lodOn === false) { return; }
     if (this.lodType === "stem") {
       this.lodplotter.setZoomHash(this.zoomHash);
@@ -337,18 +339,18 @@ define([
     if (this.legend != null) {
       tip.title = this.legend + " (" + sub + ")";
     }
-    tip.xl = plotUtils.getTipStringPercent(ele.xl, xAxis, 6);
-    tip.xr = plotUtils.getTipStringPercent(ele.xr, xAxis, 6);
-    tip.count = plotUtils.getTipString(ele.count, yAxis, true);
+    tip.xl = PlotUtils.getTipStringPercent(ele.xl, xAxis, 6);
+    tip.xr = PlotUtils.getTipStringPercent(ele.xr, xAxis, 6);
+    tip.count = PlotUtils.getTipString(ele.count, yAxis, true);
     if (this.lodType === "stem") {
-      tip.avg_yTop = plotUtils.getTipStringPercent(ele.max, yAxis, 6);
-      tip.avg_yBtm = plotUtils.getTipStringPercent(ele.min, yAxis, 6);
+      tip.avg_yTop = PlotUtils.getTipStringPercent(ele.max, yAxis, 6);
+      tip.avg_yBtm = PlotUtils.getTipStringPercent(ele.min, yAxis, 6);
     } else if (this.lodType === "stem+" || this.lodType === "box") {
-      tip.max = plotUtils.getTipString(ele._max, yAxis, true);
-      tip.min = plotUtils.getTipString(ele._min, yAxis, true);
-      tip.avg = plotUtils.getTipStringPercent(ele.avg, yAxis, 6);
+      tip.max = PlotUtils.getTipString(ele._max, yAxis, true);
+      tip.min = PlotUtils.getTipString(ele._min, yAxis, true);
+      tip.avg = PlotUtils.getTipStringPercent(ele.avg, yAxis, 6);
     }
-    return plotUtils.createTipString(tip);
+    return PlotUtils.createTipString(tip);
   };
 
   return PlotStemLodLoader;

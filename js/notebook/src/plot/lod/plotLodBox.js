@@ -13,15 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import PlotColorUtils from "../utils/PlotColorUtils";
-import PlotTip from "../PlotTip";
-import PlotUtils from "../utils/PlotUtils";
 
 define([
   'underscore'
 ], function(
     _
 ) {
+  const PlotColorUtils = require("../utils/PlotColorUtils").default;
+  const PlotTip = require("../PlotTip").default;
+  const PlotUtils = require("../utils/PlotUtils").default;
 
   var PlotLodBox = function(data){
     _.extend(this, data); // copy properties to itself

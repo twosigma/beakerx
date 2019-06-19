@@ -89,7 +89,7 @@ define([
     itemsvg.select("#" + groupid)
       .transition()
       .duration(PlotUtils.getHighlightDuration())
-      .style("stroke-width", plotUtils.getHighlightedSize(props.st_w, highlighted));
+      .style("stroke-width", PlotUtils.getHighlightedSize(props.st_w, highlighted));
   };
 
   PlotAuxStem.prototype.draw = function(scope, gid) {

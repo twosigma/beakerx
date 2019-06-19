@@ -17,8 +17,7 @@
 define([
   'underscore'
 ], function(
-  _,
-  plotUtils
+  _
 ) {
 
   const PlotUtils = require('../utils/PlotUtils').default;

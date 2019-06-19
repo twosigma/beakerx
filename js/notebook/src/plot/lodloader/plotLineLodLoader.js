@@ -14,9 +14,6 @@
  *  limitations under the License.
  */
 
-import PlotColorUtils from "../utils/PlotColorUtils";
-import ComonUtils from "beakerx_shared/lib/utils/CommonUtils";
-import PlotUtils from "../utils/PlotUtils";
 
 define([
   'underscore',
@@ -33,6 +30,9 @@ define([
   PlotLodBox,
   PlotLodRiver
 ) {
+  const PlotColorUtils = require("../utils/PlotColorUtils").default;
+  const CommonUtils = require("beakerx_shared/lib/utils/CommonUtils").default;
+  const PlotUtils = require("../utils/PlotUtils").default;
 
   var PlotLineLodLoader = function(data, lodthresh){
     this.datacopy = {};
@@ -79,7 +79,7 @@ define([
 
   PlotLineLodLoader.prototype.zoomLevelChanged = function(scope) {
     this.sampleStep = -1;
-    this.zoomHash = ComonUtils.randomString(3);
+    this.zoomHash = CommonUtils.randomString(3);
     if (this.lodOn === false) { return; }
     this.lodplotter.setZoomHash(this.zoomHash);
     this.lodplotter.hideTips(scope);

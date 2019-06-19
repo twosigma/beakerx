@@ -14,8 +14,6 @@
  *  limitations under the License.
  */
 
-import TimeAxis from "./std/axis/TimeAxis";
-import BigNumberUtils from "beakerx_shared/lib/utils/BigNumberUtils";
 
 define([
   './std/plotline',
@@ -52,6 +50,8 @@ define([
   PlotAreaLodLoader,
   PlotPointLodLoader
 ) {
+  const TimeAxis = require("./std/axis/TimeAxis").default;
+  const BigNumberUtils = require("beakerx_shared/lib/utils/BigNumberUtils").default;
 
   var plotFactory = {
     createPlotItem : function(item, lodthresh) {

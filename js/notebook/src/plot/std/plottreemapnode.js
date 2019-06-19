@@ -14,14 +14,14 @@
  *  limitations under the License.
  */
 
-import PlotUtils from "../utils/PlotUtils";
-import PlotStyleUtils from "beakerx_shared/lib/utils/PlotStyleUtils";
-
 define([
   'd3'
 ], function(
   d3
 ) {
+
+  const PlotUtils = require("../utils/PlotUtils").default;
+  const PlotStyleUtils = require("beakerx_shared/lib/utils/PlotStyleUtils").default;
 
   var PlotTreeMapNode = function (data) {
     _(this).extend(data); // copy properties to itself

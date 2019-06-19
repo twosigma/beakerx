@@ -13,13 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import PlotStyleUtils from "beakerx_shared/lib/utils/PlotStyleUtils";
 
 define([
   'underscore',
 ], function(
   _
 ) {
+  const PlotUtils = require("../utils/PlotUtils").default;
+  const PlotStyleUtils = require("beakerx_shared/lib/utils/PlotStyleUtils").default;
 
   var PlotConstline = function(data){
     _.extend(this, data); // copy properties to itself
@@ -153,7 +154,7 @@ define([
           } else {
             this.labelpipe.push(eleprops[i]);
           }
-          var text = plotUtils.getTipString(ele._x, scope.stdmodel.xAxis);
+          var text = PlotUtils.getTipString(ele._x, scope.stdmodel.xAxis);
           _.extend(prop, {
             "left" : function(w, h, x) { return x - w / 2; },
             "top" : function(w, h, y) { return H - bMargin - h - scope.labelPadding.y; },
@@ -175,7 +176,7 @@ define([
           } else {
             this.labelpipe.push(eleprops[i]);
           }
-          var text = plotUtils.getTipString(ele._y, scope.stdmodel.yAxis);
+          var text = PlotUtils.getTipString(ele._y, scope.stdmodel.yAxis);
 
           _.extend(prop, {
             "left" : function(w, h, x) { return lMargin + scope.labelPadding.x; },

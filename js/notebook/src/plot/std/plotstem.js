@@ -14,15 +14,14 @@
  *  limitations under the License.
  */
 
-import PlotUtils from "../utils/PlotUtils";
-import PlotColorUtils from "../utils/PlotColorUtils";
-import BigNumberUtils from "beakerx_shared/lib/utils/BigNumberUtils";
-
 define([
   'underscore'
 ], function(
   _
 ) {
+  const PlotUtils = require("../utils/PlotUtils").default;
+  const PlotColorUtils = require("../utils/PlotColorUtils").default;
+  const BigNumberUtils = require("beakerx_shared/lib/utils/BigNumberUtils").default;
 
   var PlotStem = function(data) {
     _.extend(this, data);
@@ -39,7 +38,7 @@ define([
 
     svg.select("#" + this.id)
       .transition()
-      .duration(plotUtils.getHighlightDuration())
+      .duration(PlotUtils.getHighlightDuration())
       .style("stroke-width", PlotUtils.getHighlightedSize(props.st_w, highlighted));
   };
 

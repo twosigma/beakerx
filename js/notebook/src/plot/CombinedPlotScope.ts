@@ -28,8 +28,8 @@ import "jquery-ui/ui/widgets/resizable";
 import CommonUtils from "beakerx_shared/lib/utils/CommonUtils";
 import PlotUtils from "./utils/PlotUtils";
 import PlotStyleUtils from "beakerx_shared/lib/utils/PlotStyleUtils";
+import CombinedPlotFormatter from "./CombinedPlotFormatter";
 
-const combinedPlotFormatter = require('./combinedPlotFormatter');
 const bkoChartExtender = require('./chartExtender');
 
 
@@ -86,7 +86,7 @@ export default class CombinedPlotScope {
   standardizeData() {
     const model = this.model.getCellModel();
 
-    this.stdmodel = combinedPlotFormatter.standardizeModel(model, this.prefs);
+    this.stdmodel = CombinedPlotFormatter.standardizeModel(model, this.prefs);
 
     model.saveAsSvg = () => this.saveAsSvg();
     model.saveAsPng = () => this.saveAsPng();

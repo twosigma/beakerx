@@ -14,14 +14,15 @@
  *  limitations under the License.
  */
 
-import PlotColorUtils from "../utils/PlotColorUtils";
-import PlotTip from "../PlotTip";
 
 define([
   'underscore'
 ], function(
   _
 ) {
+  const PlotUtils = require("../utils/PlotUtils").default;
+  const PlotColorUtils = require("../utils/PlotColorUtils").default;
+  const PlotTip = require("../PlotTip").default;
 
   var PlotLodStem = function(data){
     _.extend(this, data); // copy properties to itself
@@ -89,7 +90,7 @@ define([
         this.avgOn = false;
       }
 
-      if (plotUtils.rangeAssert([x, y, y2])) {
+      if (PlotUtils.rangeAssert([x, y, y2])) {
         eleprops.length = 0;
         return false;
       }
@@ -122,8 +123,8 @@ define([
 
     itemsvg.select("#" + groupid)
       .transition()
-      .duration(plotUtils.getHighlightDuration())
-      .style("stroke-width", plotUtils.getHighlightedSize(props.st_w, highlighted));
+      .duration(PlotUtils.getHighlightDuration())
+      .style("stroke-width", PlotUtils.getHighlightedSize(props.st_w, highlighted));
   };
 
   PlotLodStem.prototype.draw = function(scope, gid) {

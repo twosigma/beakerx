@@ -14,14 +14,14 @@
  *  limitations under the License.
  */
 
-import PlotColorUtils from "../utils/PlotColorUtils";
-import PlotTip from "../PlotTip";
-
 define([
   'underscore',
 ], function(
   _
 ) {
+  const PlotUtils = require("../utils/PlotUtils").default;
+  const PlotColorUtils = require("../utils/PlotColorUtils").default;
+  const PlotTip = require("../PlotTip").default;
 
   var PlotLodRiver = function(data){
     _.extend(this, data); // copy properties to itself
@@ -87,7 +87,7 @@ define([
         var ym = mapY(ele.avg);
       }
 
-      if (plotUtils.rangeAssert([x, y, y2])) {  // no need to put ym here
+      if (PlotUtils.rangeAssert([x, y, y2])) {  // no need to put ym here
         eleprops.length = 0;
         return;
       }
@@ -143,8 +143,8 @@ define([
 
     groupsvg.select("polygon")
       .transition()
-      .duration(plotUtils.getHighlightDuration())
-      .style("stroke-width", plotUtils.getHighlightedSize(props.st_w || 1, highlighted));
+      .duration(PlotUtils.getHighlightDuration())
+      .style("stroke-width", PlotUtils.getHighlightedSize(props.st_w || 1, highlighted));
   };
 
   PlotLodRiver.prototype.draw = function(scope, gid) {

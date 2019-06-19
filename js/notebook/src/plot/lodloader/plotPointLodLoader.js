@@ -13,7 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import CommonUtils from "beakerx_shared/lib/utils/CommonUtils";
 
 define([
   'underscore',
@@ -28,6 +27,9 @@ define([
   PlotLodPoint,
   PlotLodBox
 ) {
+  const PlotUtils = require("../utils/PlotUtils").default;
+  const PlotColorUtils = require("../utils/PlotColorUtils").default;
+  const CommonUtils = require("beakerx_shared/lib/utils/CommonUtils").default;
 
   var PlotPointLodLoader = function(data, lodthresh){
     this.datacopy = {};
@@ -56,7 +58,7 @@ define([
     this.lodAuto = true;
     this.sampleStep = -1;
     if (this.color != null) {
-      this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
+      this.tip_color = PlotColorUtils.createColor(this.color, this.color_opacity);
     } else {
       this.tip_color = "gray";
     }
@@ -74,7 +76,7 @@ define([
 
   PlotPointLodLoader.prototype.zoomLevelChanged = function(scope) {
     this.sampleStep = -1;
-    this.zoomHash = plotUtils.randomString(3);
+    this.zoomHash = CommonUtils.randomString(3);
     if (this.lodOn === false) { return; }
     this.lodplotter.setZoomHash(this.zoomHash);
     this.lodplotter.hideTips(scope);
@@ -254,17 +256,17 @@ define([
       tip.title = this.legend + " (" + sub + ")";
     }
     if (ele.count > 1) {
-      tip.xl = plotUtils.getTipStringPercent(ele.xl, xAxis, 6);
-      tip.xr = plotUtils.getTipStringPercent(ele.xr, xAxis, 6);
-      tip.max = plotUtils.getTipString(ele._max, yAxis, true);
-      tip.min = plotUtils.getTipString(ele._min, yAxis, true);
-      tip.avg = plotUtils.getTipStringPercent(ele.avg, yAxis, 6);
-      tip.count = plotUtils.getTipString(ele.count, yAxis, true);
+      tip.xl = PlotUtils.getTipStringPercent(ele.xl, xAxis, 6);
+      tip.xr = PlotUtils.getTipStringPercent(ele.xr, xAxis, 6);
+      tip.max = PlotUtils.getTipString(ele._max, yAxis, true);
+      tip.min = PlotUtils.getTipString(ele._min, yAxis, true);
+      tip.avg = PlotUtils.getTipStringPercent(ele.avg, yAxis, 6);
+      tip.count = PlotUtils.getTipString(ele.count, yAxis, true);
     } else {
-      tip.x = plotUtils.getTipStringPercent(ele.x, xAxis, 6);
-      tip.y = plotUtils.getTipString(ele._max, yAxis, true);
+      tip.x = PlotUtils.getTipStringPercent(ele.x, xAxis, 6);
+      tip.y = PlotUtils.getTipString(ele._max, yAxis, true);
     }
-    return plotUtils.createTipString(tip);
+    return PlotUtils.createTipString(tip);
   };
 
   return PlotPointLodLoader;

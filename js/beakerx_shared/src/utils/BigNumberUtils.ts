@@ -13,32 +13,57 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-import {Big, BigSource} from "big.js";
+import Big from 'big.js';
 
 export default class BigNumberUtils {
 
-  public static lt(n1: BigSource, n2: BigSource): boolean {
+  public static lt(n1: BigJs.BigSource, n2: BigJs.BigSource): boolean {
+    if (n1 === Infinity) { return false; }
+    if (n2 === -Infinity) { return false; }
+    if (n2 === Infinity) { return true; }
+    if (n1 === -Infinity) { return true; }
+
     return n1 instanceof Big ? n1.lt(n2) : Big(n1).lt(n2);
   }
 
-  public static lte(n1: BigSource, n2: BigSource): boolean {
+  public static lte(n1: BigJs.BigSource, n2: BigJs.BigSource): boolean {
+    if (n1 === -Infinity) { return true; }
+    if (n2 === -Infinity) { return false; }
+    if (n2 === Infinity)  { return true; }
+    if (n1 === Infinity) { return false; }
+
     return n1 instanceof Big ? n1.lte(n2) : Big(n1).lte(n2);
   }
 
-  public static gt(n1: BigSource, n2: BigSource): boolean {
+  public static gt(n1: BigJs.BigSource, n2: BigJs.BigSource): boolean {
+    if (n1 === -Infinity) { return false; }
+    if (n2 === -Infinity) { return true; }
+    if (n2 === Infinity) { return false; }
+    if (n1 === Infinity) { return true; }
+
     return n1 instanceof Big ? n1.gt(n2) : Big(n1).gt(n2);
   }
 
-  public static gte(n1: BigSource, n2: BigSource): boolean {
+  public static gte(n1: BigJs.BigSource, n2: BigJs.BigSource): boolean {
+    if (n2 === -Infinity) { return true; }
+    if (n1 === Infinity) { return true; }
+    if (n1 === -Infinity) { return false; }
+    if (n2 === Infinity) { return false; }
+
     return n1 instanceof Big ? n1.gte(n2) : Big(n1).gte(n2);
   }
 
-  public static eq(n1: BigSource, n2: BigSource): boolean {
+  public static eq(n1: BigJs.BigSource, n2: BigJs.BigSource): boolean {
+    if (n1 === -Infinity && n2 === -Infinity) { return true; }
+    if (n1 === Infinity && n2 === Infinity) { return true; }
+    if (n1 === Infinity) { return false; }
+    if (n1 === -Infinity) { return false; }
+    if (n2 === Infinity) { return false; }
+    if (n2 === -Infinity) { return false; }
     return n1 instanceof Big ? n1.eq(n2) : Big(n1).eq(n2);
   }
 
-  public static plus(n1: BigSource, n2: BigSource): BigSource {
+  public static plus(n1: BigJs.BigSource, n2: BigJs.BigSource): BigJs.BigSource {
     if (n1 instanceof Big) {
       return n1.plus(n2);
     }
@@ -54,7 +79,7 @@ export default class BigNumberUtils {
     return n1 + n2; // number
   }
 
-  public static minus(n1: BigSource, n2: BigSource): BigSource {
+  public static minus(n1: BigJs.BigSource, n2: BigJs.BigSource): BigJs.BigSource {
     if (n1 instanceof Big) {
       return n1.minus(n2);
     }
@@ -70,7 +95,7 @@ export default class BigNumberUtils {
     return n1 - n2;
   }
 
-  public static mult(n1: BigSource, n2: BigSource): BigSource {
+  public static mult(n1: BigJs.BigSource, n2: BigJs.BigSource): BigJs.BigSource {
     if (n1 instanceof Big) {
       return n1.times(n2);
     }
@@ -86,7 +111,7 @@ export default class BigNumberUtils {
     return n1 * n2;
   }
 
-  public static div(n1: BigSource, n2: BigSource): BigSource {
+  public static div(n1: BigJs.BigSource, n2: BigJs.BigSource): BigJs.BigSource {
     if (n1 instanceof Big) {
       return n1.div(n2);
     }
@@ -103,26 +128,12 @@ export default class BigNumberUtils {
     return n1 / n2;
   }
 
-  public static max(n1: BigSource, n2: BigSource): BigSource {
-    if (n1 === -Infinity) {
-      return n2;
-    }
-    if (n2 === -Infinity) {
-      return n1;
-    }
-
+  public static max(n1: BigJs.BigSource, n2: BigJs.BigSource): BigJs.BigSource {
     return this.gt(n1, n2) ? n1 : n2;
   }
 
-  public static min(n1: BigSource, n2: BigSource): BigSource {
-    if (n1 === -Infinity) {
-      return n2;
-    }
-    if (n2 === -Infinity) {
-      return n1;
-    }
-
-    return this.gt(n1, n2) ? n1 : n2;
+  public static min(n1: BigJs.BigSource, n2: BigJs.BigSource): BigJs.BigSource {
+    return this.lt(n1, n2) ? n1 : n2;
   }
 
 }

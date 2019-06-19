@@ -20,7 +20,7 @@ const path = require('path');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const tsConfigPath = path.resolve(__dirname, './src/tsconfig.json');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+// const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 // Custom webpack loaders are generally the same for all webpack bundles, hence
 // stored in a separate local variable.
@@ -182,16 +182,16 @@ module.exports = [
       '@jupyter-widgets/jupyterlab-manager',
       '@jupyterlab'
     ]),
-    plugins: plugins.concat([
-      new CopyWebpackPlugin([{
-        from: path.resolve(__dirname, './src/types'),
-        to: path.resolve(__dirname, '../lab/lib/types')
-      },
-      {
-        from: path.resolve(__dirname, './src/index.d.ts'),
-        to: path.resolve(__dirname, '../lab/lib/index.d.ts')
-      }])
-    ])
+    // plugins: plugins.concat([
+    //   new CopyWebpackPlugin([{
+    //     from: path.resolve(__dirname, './src/types'),
+    //     to: path.resolve(__dirname, '../lab/lib/types')
+    //   },
+    //   {
+    //     from: path.resolve(__dirname, './src/index.d.ts'),
+    //     to: path.resolve(__dirname, '../lab/lib/index.d.ts')
+    //   }])
+    // ])
   },
   {
     // tree - notebook
@@ -254,22 +254,5 @@ module.exports = [
       ignored: /node_modules/
     },
     plugins: plugins
-  },
-    {// Bundle of tabledisplay
-        entry: './src/tdextension.ts',
-        output: {
-            filename: 'index.js',
-            path: path.resolve(__dirname, '../../beakerx_tabledisplay/beakerx_tabledisplay/static'),
-            libraryTarget: 'amd'
-        },
-        module: {
-            rules: rules
-        },
-        resolve: resolve,
-        externals: externals,
-        watchOptions: {
-            ignored: /node_modules/
-        },
-        plugins: plugins
-    }
+  }
 ];

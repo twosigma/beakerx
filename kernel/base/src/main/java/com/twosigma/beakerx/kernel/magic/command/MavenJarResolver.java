@@ -73,15 +73,26 @@ public class MavenJarResolver {
     this.pomFactory = pomFactory;
   }
 
+
+  public AddMvnCommandResult retrieve(PomStyleDependencies dependencies, Message parent) {
+    String pomAsString = pomFactory.createPom(new PomFactory.Params(pathToMavenRepo, commandParams.getRepos(), GOAL, MAVEN_BUILT_CLASSPATH_FILE_NAME), dependencies);
+    return retrieveDeps(dependencies.asString(), parent, pomAsString);
+  }
+
   public AddMvnCommandResult retrieve(Dependency dependency, Message parent) {
     List<Dependency> dependencies = singletonList(dependency);
     return retrieve(dependencies, parent);
   }
 
   public AddMvnCommandResult retrieve(List<Dependency> dependencies, Message parent) {
+    String pomAsString = pomFactory.createPom(new PomFactory.Params(pathToMavenRepo, commandParams.getRepos(), GOAL, MAVEN_BUILT_CLASSPATH_FILE_NAME), dependencies);
+    String deps = dependencies.stream().map(Dependency::toString).collect(Collectors.joining());
+    return retrieveDeps(deps, parent, pomAsString);
+  }
+
+  private AddMvnCommandResult retrieveDeps(String dependencies, Message parent, String pomAsString) {
     File finalPom = null;
     try {
-      String pomAsString = pomFactory.createPom(new PomFactory.Params(pathToMavenRepo, dependencies, commandParams.getRepos(), GOAL, MAVEN_BUILT_CLASSPATH_FILE_NAME));
       finalPom = saveToFile(commandParams.getPathToNotebookJars(), pomAsString);
       InvocationRequest request = createInvocationRequest(finalPom);
       MvnDownloadLoggerWidget progress = new MvnDownloadLoggerWidget(parent);
@@ -149,19 +160,15 @@ public class MavenJarResolver {
     return mavenLocation;
   }
 
-  private AddMvnCommandResult getResult(InvocationResult invocationResult, List<Dependency> dependencies) {
+  private AddMvnCommandResult getResult(InvocationResult invocationResult, String dependencies) {
     if (invocationResult.getExitCode() != 0) {
       if (invocationResult.getExecutionException() != null) {
         return AddMvnCommandResult.error(invocationResult.getExecutionException().getMessage());
       }
       StringBuilder errorMsgBuilder = new StringBuilder("Could not resolve dependencies for:");
-      for (Dependency dependency : dependencies) {
-        errorMsgBuilder
-                .append("\n").append(dependency.groupId).append(" : ")
-                .append(dependency.artifactId).append(" : ")
-                .append(dependency.version).append(" : ")
-                .append(dependency.type);
-      }
+      errorMsgBuilder
+              .append("\n")
+              .append(dependencies);
       return AddMvnCommandResult.error(errorMsgBuilder.toString());
     }
 
@@ -269,7 +276,16 @@ public class MavenJarResolver {
     public Optional<String> getClassifier() {
       return classifier;
     }
+
+    @Override
+    public String toString() {
+      return groupId + " : "
+              + artifactId + " : "
+              + version + " : "
+              + type;
+    }
   }
+
 
   public static class AddMvnCommandResult {
 
@@ -340,6 +356,7 @@ public class MavenJarResolver {
     public void setRepos(Map<String, String> repos) {
       this.repos = repos;
     }
+
   }
 
   private File getOrCreateFile(String pathToMavenRepo) {
@@ -352,5 +369,9 @@ public class MavenJarResolver {
       }
     }
     return theDir;
+  }
+
+  public interface RetriveDeps {
+    AddMvnCommandResult getDeps(MavenJarResolver mavenJarResolver);
   }
 }

@@ -15,6 +15,7 @@
  */
 
 import BigNumberUtils from "beakerx_shared/lib/utils/BigNumberUtils";
+import { Big } from "big.js"
 
 const NANOTIME_TYPE = 'nanotime';
 

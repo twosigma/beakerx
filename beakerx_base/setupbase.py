@@ -1,4 +1,7 @@
-# Copyright 2019 TWO SIGMA OPEN SOURCE, LLC
+#!/usr/bin/env python
+# coding: utf-8
+
+# Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,21 +15,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
+import sys
 import os
-import pandas as pd
-import unittest
 
-from ..tabledisplay import TableDisplay
+here = os.path.abspath(os.path.dirname(sys.argv[0]))
 
-
-class TestTableDisplayAPI_date_format(unittest.TestCase):
-
-    def test_date_format(self):
-        # given
-        df = pd.read_csv(os.path.dirname(__file__) + "/resources/" + 'interest-rates.csv')
-        df['time'] = pd.to_datetime(df['time'], utc=True)
-        # when
-        table = TableDisplay(df)
-        # then
-        self.assertEqual(table.model['values'][0][7]['timestamp'], 633744000000.0)
+def get_version(path):
+    version = {}
+    with open(os.path.join(here, path)) as f:
+        exec (f.read(), {}, version)
+    return version['__version__']

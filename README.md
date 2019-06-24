@@ -56,7 +56,7 @@ how to install and run BeakerX.
 ```
 conda env create -n beakerx -f configuration.yml
 source activate beakerx
-(cd beakerx; pip install -e . --verbose)
+(cd beakerx; pip install -r requirements.txt --verbose)
 beakerx install
 beakerx_databrowser install
 ```
@@ -66,7 +66,7 @@ beakerx_databrowser install
 conda env create -n beakerx -f configuration.yml
 activate beakerx
 cd beakerx
-pip install -e . --verbose
+pip install -r requirements.txt --verbose
 cd ..
 beakerx install
 beakerx_databrowser install
@@ -78,7 +78,7 @@ beakerx_databrowser install
 conda env create -n labx -f configuration.yml
 source activate labx
 conda install -y -c conda-forge jupyterlab
-(cd beakerx; pip install -e . --verbose)
+(cd beakerx; pip install -r requirements.txt --verbose)
 beakerx install
 jupyter labextension install @jupyter-widgets/jupyterlab-manager
 (cd js/lab; jupyter labextension install .)
@@ -127,6 +127,23 @@ The Java and TypeScript unit tests are run with every build. See [test/README.md
 ## Interactive Tables
 
 <img width="900" alt="screen shot" src="https://user-images.githubusercontent.com/963093/38704584-d1fc16d8-3e74-11e8-95d5-c916bd44d10b.png">
+
+## Table Display from conda package
+### notebook
+```
+conda create --name beakerx_td
+source activate beakerx_td
+conda install beakerx_tabledisplay
+```
+
+### lab
+```
+conda create --name labx_td
+source activate labx_td
+conda install -y -c conda-forge jupyterlab
+conda install beakerx_tabledisplay
+beakerx_tabledisplay install --lab
+```
 
 ## Architecture and Code Overview
 

@@ -18,8 +18,7 @@ import unittest
 
 import pandas as pd
 
-from ..tabledisplay import TableDisplay
-from ..tableitems import ColumnType, TableDisplayStringFormat, TimeUnit
+from beakerx_tabledisplay import TableDisplay, ColumnType, TableDisplayStringFormat, TimeUnit
 
 STRING_FORMAT_FOR_TYPE = 'stringFormatForType'
 

@@ -15,8 +15,8 @@
 
 import unittest
 
-from ..chart import Plot, YAxis, Text, ConstantLine, ConstantBand
-from ..plotitem import StrokeType, Color, Crosshair, Points, ShapeType
+from ..chart import Plot
+from ..plotitem import StrokeType, Color, Crosshair, Points, ShapeType,  YAxis, Text, ConstantLine, ConstantBand
 
 
 class TestPlot(unittest.TestCase):

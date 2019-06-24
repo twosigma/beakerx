@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numpy as np
-from beakerx.beakerx_widgets import *
-from beakerx.tabledisplay.tableitems import *
-from beakerx.utils import *
+from beakerx_base import BaseObject, BeakerxDOMWidget
+from .tableitems import DateType, ColumnType, TableDisplayAlignmentProvider, TableDisplayStringFormat, Highlighter
 from ipykernel.comm import Comm
 from pandas import DataFrame, RangeIndex, MultiIndex, DatetimeIndex
 from traitlets import Unicode, Dict
+import numpy as np
+import types
 
 
 class Table(BaseObject):
@@ -199,8 +199,8 @@ class Table(BaseObject):
 class TableDisplay(BeakerxDOMWidget):
     _view_name = Unicode('TableDisplayView').tag(sync=True)
     _model_name = Unicode('TableDisplayModel').tag(sync=True)
-    _view_module = Unicode('beakerx').tag(sync=True)
-    _model_module = Unicode('beakerx').tag(sync=True)
+    _view_module = Unicode('beakerx_tabledisplay').tag(sync=True)
+    _model_module = Unicode('beakerx_tabledisplay').tag(sync=True)
     _model_module_version = Unicode('*').tag(sync=True)
     _view_module_version = Unicode('*').tag(sync=True)
 

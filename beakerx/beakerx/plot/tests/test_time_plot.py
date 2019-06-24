@@ -15,8 +15,9 @@
 
 import unittest
 import pandas as pd
+from beakerx import ConstantLine
 
-from ..chart import TimePlot, Line, ConstantLine
+from ..chart import TimePlot, Line
 
 
 class TestTimePlot(unittest.TestCase):

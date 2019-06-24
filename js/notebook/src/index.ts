@@ -36,7 +36,6 @@ export * from './SparkUI';
 export * from './SparkStateProgress';
 export * from './SparkConfiguration';
 export * from './SparkFoldout';
-export * from './TableDisplay';
 export * from './TabView';
 export * from './GridView';
 export * from './CyclingDisplayBox';

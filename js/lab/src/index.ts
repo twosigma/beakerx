@@ -34,6 +34,11 @@ export const beakerx_ext: JupyterLabPlugin<void>|IPlugin<JupyterLab, void> = {
       version: beakerx.version,
       exports: beakerx
     });
+    widgets.registerWidget({
+         name: 'beakerx_tabledisplay',
+         version: beakerx.version,
+         exports: beakerx
+    });
 
     app.docRegistry.addWidgetExtension('Notebook', new BeakerxExtension(app, settings));
   },

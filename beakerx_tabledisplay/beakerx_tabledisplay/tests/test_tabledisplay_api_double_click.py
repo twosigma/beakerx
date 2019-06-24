@@ -15,12 +15,12 @@
 
 import unittest
 
-from ..tabledisplay import TableDisplay
+from beakerx_tabledisplay import TableDisplay
 
 
-class TestTableDisplayAPI_add_context_menu_item(unittest.TestCase):
+class TestTableDisplayAPI_double_click(unittest.TestCase):
 
-    def test_negate_when_context_menu_item_event(self):
+    def test_sum_rows_when_double_click(self):
         # given
         mapList4 = [
             {"a": 1, "b": 2, "c": 3},
@@ -29,19 +29,17 @@ class TestTableDisplayAPI_add_context_menu_item(unittest.TestCase):
         ]
         tabledisplay = TableDisplay(mapList4)
 
-        def negate(row, column, table):
-            table.values[row][column] = -1 * int(table.values[row][column])
+        def dclick(row, column, table):
+            table.values[row][column] = sum(map(int, table.values[row]))
 
-        tabledisplay.addContextMenuItem("negate", negate)
-
+        tabledisplay.setDoubleClickAction(dclick)
         param = {
-            'event': 'CONTEXT_MENU_CLICK',
-            'itemKey': 'negate',
-            'row': 1,
-            'column': 1
+            'event': 'DOUBLE_CLICK',
+            'row': 0,
+            'column': 0
         }
         # when
         tabledisplay.handle_msg(tabledisplay, param, [])
         # then
         values = tabledisplay.chart.values
-        self.assertEqual(values[1][1], -5)
+        self.assertEqual(values[0][0], 6)

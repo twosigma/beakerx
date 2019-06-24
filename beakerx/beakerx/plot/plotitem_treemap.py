@@ -12,8 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from beakerx.utils import *
 from enum import Enum
+
+from beakerx_base import Color, ColorUtils
+
 
 class TreeMapNode:
     def __init__(self, *args):

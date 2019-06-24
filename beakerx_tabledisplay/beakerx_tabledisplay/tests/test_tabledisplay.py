@@ -12,28 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 import unittest
 
-from ..tabledisplay import TableDisplay
+from beakerx_tabledisplay import TableDisplay, Table
+import numpy as np
+import pandas as pd
 
 
-class TestTableDisplayAPI_tooltip(unittest.TestCase):
+class TestTableDisplay(unittest.TestCase):
 
-    def test_should_set_tooltip(self):
+    def test_NaT_support(self):
         # given
-        mapList4 = [
-            {"a": 1, "b": 2, "c": 3},
-            {"a": 4, "b": 5, "c": 6},
-            {"a": 7, "b": 8, "c": 5}
-        ]
-        tabledisplay = TableDisplay(mapList4)
-
-        def config_tooltip(row, column, table):
-            return "The value is: " + str(table.values[row][column])
-
+        df = pd.DataFrame(np.random.randn(5, 3), index=['a', 'c', 'e', 'f', 'h'], columns=['one', 'two', 'three'])
+        df['timestamp'] = pd.Timestamp('20120101')
+        df.loc[['a', 'c', 'h'], ['one', 'timestamp']] = np.nan
         # when
-        tabledisplay.setToolTip(config_tooltip)
+        display = TableDisplay(df)
         # then
-        tooltips = tabledisplay.chart.tooltips
-        self.assertEqual(tooltips[2][2], "The value is: 5")
+        self.assertTrue(display.values[0][4] == Table.NAT_VALUE)

@@ -11,12 +11,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from enum import Enum
 
-from beakerx.beakerx_widgets import BeakerxDOMWidget
+from beakerx.plot.plotitem import GradientColor, Points, Line
 from ipykernel.comm import Comm
 from pandas import DataFrame
-from traitlets import Unicode, Dict
-from beakerx.plot.chart_models import *
+from traitlets import Dict, Unicode
+import pandas as pd
+
+from beakerx_base import getValue, Color, date_time_2_millis, BeakerxDOMWidget
+from .chart_models import XYChart, CategoryChart, HeatMapChart, \
+    HistogramChart, TreeMapChart, CombinedChart, LegendLayout, LegendPosition
+import json
 
 
 class Plot(BeakerxDOMWidget):

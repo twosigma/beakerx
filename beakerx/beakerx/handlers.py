@@ -23,8 +23,8 @@ from tornado import web, gen
 from tornado.simple_httpclient import HTTPStreamClosedError
 
 from .beakerx_autotranslation_server import start_autotranslation_server
-from .environment import *
-
+from .environment import EnvironmentSettings
+import json
 
 class BeakerxRestHandler(APIHandler):
 

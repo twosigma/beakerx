@@ -126,6 +126,16 @@ public class TableDisplay extends BeakerxWidget {
     return VIEW_NAME_VALUE;
   }
 
+  @Override
+  public String getModelModuleValue() {
+    return "beakerx_tabledisplay";
+  }
+
+  @Override
+  public String getViewModuleValue() {
+    return "beakerx_tabledisplay";
+  }
+
   public TableDisplay(List<List<?>> v, List<String> co, List<String> cl) {
     super();
     if (!v.isEmpty() && v.get(0) != null && !v.get(0).isEmpty()) {

@@ -338,4 +338,30 @@ describe('DataFormatter', () => {
     });
 
   });
+
+  describe('dataFormatter.percentage', () => {
+    const percentageFormatFn = dataFormatter.getFormatFnByDisplayType(ALL_TYPES.percentage);
+
+    it('should return formatted percentage', () => {
+      expect(percentageFormatFn({ ...cellConfig, value: '1' })).to.equal('100.00%');
+      expect(percentageFormatFn({ ...cellConfig, value: 1 })).to.equal('100.00%');
+      expect(percentageFormatFn({ ...cellConfig, value: 1234 })).to.equal('123,400.00%');
+      expect(percentageFormatFn({ ...cellConfig, value: 0 })).to.equal('0.00%');
+      expect(percentageFormatFn({ ...cellConfig, value: 0.1 })).to.equal('10.00%');
+      expect(percentageFormatFn({ ...cellConfig, value: 0.123 })).to.equal('12.30%');
+    });
+
+    it('should return empty value', () => {
+      expect(percentageFormatFn({ ...cellConfig, value: undefined })).to.equal(undefined);
+      expect(percentageFormatFn({ ...cellConfig, value: null })).to.equal(null);
+      expect(percentageFormatFn({ ...cellConfig, value: '' })).to.equal('');
+    });
+
+    it('should return NaN', () => {
+      expect(percentageFormatFn({ ...cellConfig, value: false }).toString()).to.equal('NaN');
+      expect(percentageFormatFn({ ...cellConfig, value: true }).toString()).to.equal('NaN');
+      expect(percentageFormatFn({ ...cellConfig, value: NaN }).toString()).to.equal('NaN');
+      expect(percentageFormatFn({ ...cellConfig, value: 'something' }).toString()).to.equal('NaN');
+    });
+  });
 });

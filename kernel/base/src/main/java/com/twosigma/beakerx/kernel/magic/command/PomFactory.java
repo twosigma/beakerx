@@ -29,14 +29,35 @@ import java.util.Optional;
 
 public class PomFactory {
 
-  public String createPom(Params params) throws IOException {
+  public String createPom(Params params, List<Dependency> dependencies) {
+    String pomAsString = createPom(params);
+    pomAsString = configureDependencies(dependencies, pomAsString);
+    return pomAsString;
+  }
+
+  public String createPom(Params params, PomStyleDependencies dependencies) {
+    String pomAsString = createPom(params);
+    pomAsString = configureDependencies(dependencies, pomAsString);
+    return pomAsString;
+  }
+
+  private String createPom(Params params) {
     InputStream pom = getClass().getClassLoader().getResourceAsStream(MavenJarResolver.POM_XML);
-    String pomAsString = IOUtils.toString(pom, StandardCharsets.UTF_8);
+    String pomAsString = getPomAsString(pom);
     pomAsString = configureOutputDir(params.pathToMavenRepo, pomAsString);
-    pomAsString = configureDependencies(params.dependencies, pomAsString);
     pomAsString = configureRepos(params.repos, pomAsString);
     pomAsString = configureGoal(params.goal, pomAsString);
     pomAsString = configureBuildClasspathPlugin(params.pathToMavenRepo, params.mavenBuiltClasspathFileName, pomAsString);
+    return pomAsString;
+  }
+
+  private String getPomAsString(InputStream pom) {
+    String pomAsString;
+    try {
+      pomAsString = IOUtils.toString(pom, StandardCharsets.UTF_8);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
     return pomAsString;
   }
 
@@ -49,6 +70,12 @@ public class PomFactory {
 
   private String configureGoal(String goal, String pomAsString) {
     return pomAsString.replaceAll("<phase>goal</phase>", "<phase>" + goal + "</phase>");
+  }
+
+  private String configureDependencies(PomStyleDependencies dependencies, String pomAsString) {
+    return pomAsString.replace(
+            "<dependencies></dependencies>",
+            dependencies.asString());
   }
 
   private String configureDependencies(List<Dependency> dependencies, String pomAsString) {
@@ -103,14 +130,12 @@ public class PomFactory {
 
   static class Params {
     String pathToMavenRepo;
-    List<Dependency> dependencies;
     Map<String, String> repos;
     String goal;
     private String mavenBuiltClasspathFileName;
 
-    public Params(String pathToMavenRepo, List<Dependency> dependencies, Map<String, String> repos, String goal, String mavenBuiltClasspathFileName) {
+    public Params(String pathToMavenRepo, Map<String, String> repos, String goal, String mavenBuiltClasspathFileName) {
       this.pathToMavenRepo = pathToMavenRepo;
-      this.dependencies = dependencies;
       this.repos = repos;
       this.goal = goal;
       this.mavenBuiltClasspathFileName = mavenBuiltClasspathFileName;

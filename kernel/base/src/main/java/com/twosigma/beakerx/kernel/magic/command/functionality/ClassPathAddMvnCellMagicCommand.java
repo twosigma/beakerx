@@ -19,6 +19,7 @@ import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver;
 import com.twosigma.beakerx.kernel.magic.command.PomFactory;
+import com.twosigma.beakerx.kernel.magic.command.PomStyleDependencies;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 import com.twosigma.beakerx.message.Message;
@@ -71,6 +72,18 @@ public class ClassPathAddMvnCellMagicCommand extends ClasspathMagicCommand {
   }
 
   public MagicCommandOutcomeItem execute(String command, String commandCodeBlock, Message message) {
+    if (isPomXmlStyle(commandCodeBlock)) {
+      return pomXmlStyle(commandCodeBlock, message);
+    } else {
+      return simpleStyle(command, commandCodeBlock, message);
+    }
+  }
+
+  private MagicCommandOutcomeItem pomXmlStyle(String commandCodeBlock, Message message) {
+    return retrieve(mavenJarResolver -> mavenJarResolver.retrieve(new PomStyleDependencies(commandCodeBlock), message));
+  }
+
+  private MagicCommandOutcomeItem simpleStyle(String command, String commandCodeBlock, Message message) {
     if (commandCodeBlock != null) {
       command += "\n" + commandCodeBlock;
     }
@@ -79,15 +92,17 @@ public class ClassPathAddMvnCellMagicCommand extends ClasspathMagicCommand {
     if (!validateCommandLines(commandLines)) {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, MVN_CELL_FORMAT_ERROR_MESSAGE);
     }
-
-    ClasspathAddMvnMagicCommand mvnMagicCommand = kernel.magicCommandConfiguration().getClasspathAddMvnMagicCommand(kernel);
-    commandParams.setRepos(mvnMagicCommand.getRepos().get());
-
     List<MavenJarResolver.Dependency> dependencies =
             getDepsFromCommand(Arrays.copyOfRange(commandLines, 1, commandLines.length));
-    MavenJarResolver mavenJarResolver = new MavenJarResolver(commandParams, pomFactory);
-    MavenJarResolver.AddMvnCommandResult result = mavenJarResolver.retrieve(dependencies, message);
 
+    return retrieve(mavenJarResolver -> mavenJarResolver.retrieve(dependencies, message));
+  }
+
+  private MagicCommandOutcomeItem retrieve(MavenJarResolver.RetriveDeps retriveDeps) {
+    ClasspathAddMvnMagicCommand mvnMagicCommand = kernel.magicCommandConfiguration().getClasspathAddMvnMagicCommand(kernel);
+    commandParams.setRepos(mvnMagicCommand.getRepos().get());
+    MavenJarResolver mavenJarResolver = new MavenJarResolver(commandParams, pomFactory);
+    MavenJarResolver.AddMvnCommandResult result = retriveDeps.getDeps(mavenJarResolver);
     if (result.isJarRetrieved()) {
       return handleAddedJars(result.getAddedJarPaths());
     }
@@ -121,5 +136,9 @@ public class ClassPathAddMvnCellMagicCommand extends ClasspathMagicCommand {
     for (int i = 0; i < mvnLines.length; i++) {
       mvnLines[i] = mvnLines[i].replace(":", " ");
     }
+  }
+
+  private boolean isPomXmlStyle(String commandCodeBlock) {
+    return commandCodeBlock != null && commandCodeBlock.startsWith("<dependencies>");
   }
 }

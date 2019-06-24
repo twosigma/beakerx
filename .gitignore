@@ -8,10 +8,10 @@ VERSION
 beakerx/static/
 beakerx/beakerx/static/
 beakerx/beakerx_databrowser/static/
-beakerx/beakerx_tabledisplay/static/
 beakerx/beakerx/kernel/
 beakerx/beakerx/javadoc/
 beakerx/record.txt
+beakerx_tabledisplay/beakerx_tabledisplay/static/
 
 # Jupyter / iPython
 /.project

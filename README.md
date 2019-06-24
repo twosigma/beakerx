@@ -131,15 +131,15 @@ The Java and TypeScript unit tests are run with every build. See [test/README.md
 ## Table Display from conda package
 ### notebook
 ```
-conda create --name beakerx
+conda create --name beakerx_td
 source activate beakerx_td
 conda install beakerx_tabledisplay
 ```
 
 ### lab
 ```
-conda create --name labx
-source activate beakerx_labx
+conda create --name labx_td
+source activate labx_td
 conda install -y -c conda-forge jupyterlab
 conda install beakerx_tabledisplay
 beakerx_tabledisplay install --lab

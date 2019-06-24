@@ -41,6 +41,7 @@ describe('(Groovy) Testing Map Like Tables', function () {
       cellIndex = 0;
       var fileName = 'cell1_case1.png';
       var width = 130, height = 67;
+      beakerxPO.runCodeCellByIndex(cellIndex);
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, fileName);

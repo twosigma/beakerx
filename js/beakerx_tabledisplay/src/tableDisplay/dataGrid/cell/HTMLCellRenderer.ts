@@ -79,7 +79,7 @@ export default class HTMLCellRenderer extends BeakerXCellRenderer {
     img.src = "data:image/svg+xml," + data;
 
     if (!img.complete) {
-      img.onload = () => { this.dataGrid.repaint(config.x, config.y, config.width, config.height); };
+      img.onload = this.repaintCellCallback(config.x, config.y, config.width, config.height);
     } else {
       gc.drawImage(img, x, y, width, height);
     }
@@ -129,5 +129,9 @@ export default class HTMLCellRenderer extends BeakerXCellRenderer {
 
   getCacheKey(config, vAlign, hAlign) {
     return `${JSON.stringify(config)}|${vAlign}|${hAlign}`;
+  }
+
+  private repaintCellCallback(x: number, y: number, width: number, height: number) {
+    return () => this.dataGrid.repaint(x, y, width, height);
   }
 }

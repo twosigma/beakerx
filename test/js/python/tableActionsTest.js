@@ -43,6 +43,7 @@ describe('Testing of table Actions ', function () {
 
     it('Create table with Context Menu ', function () {
       cellIndex = 0;
+      beakerxPO.runCodeCellByIndex(cellIndex);
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell1_case1.png');

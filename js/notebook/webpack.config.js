@@ -254,5 +254,22 @@ module.exports = [
       ignored: /node_modules/
     },
     plugins: plugins
-  }
+  },
+    {// Bundle of tabledisplay
+        entry: './src/tdextension.ts',
+        output: {
+            filename: 'index.js',
+            path: path.resolve(__dirname, '../../beakerx_tabledisplay/beakerx_tabledisplay/static'),
+            libraryTarget: 'amd'
+        },
+        module: {
+            rules: rules
+        },
+        resolve: resolve,
+        externals: externals,
+        watchOptions: {
+            ignored: /node_modules/
+        },
+        plugins: plugins
+    }
 ];

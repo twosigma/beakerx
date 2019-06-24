@@ -32,9 +32,10 @@ describe('Testing of table (groovy) ', function () {
   var imageDir = 'groovy/tableAPI';
 
   describe('Set alignment provider for column ', function () {
-    it('Should display formatted table ', function() {
+    it('Should display formatted table ', function () {
       cellIndex = 0;
       var width = 410, height = 92;
+      beakerxPO.runCodeCellByIndex(cellIndex);
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell1_case1.png');
@@ -42,7 +43,7 @@ describe('Testing of table (groovy) ', function () {
   });
 
   describe('Set alignment provider for type ', function () {
-    it('Should display formatted table ', function() {
+    it('Should display formatted table ', function () {
       cellIndex += 2;
       var width = 404, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
@@ -52,7 +53,7 @@ describe('Testing of table (groovy) ', function () {
   });
 
   describe('Set bar render for type ', function () {
-    it('Should display formatted table ', function() {
+    it('Should display formatted table ', function () {
       cellIndex += 2;
       var width = 650, height = 190;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
@@ -62,7 +63,7 @@ describe('Testing of table (groovy) ', function () {
   });
 
   describe('Set string format for times, type and column ', function () {
-    it('Should display formatted table ', function() {
+    it('Should display formatted table ', function () {
       cellIndex += 2;
       var width = 500, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
@@ -72,7 +73,7 @@ describe('Testing of table (groovy) ', function () {
   });
 
   describe('Set HTML format for column ', function () {
-    it('Should display formatted table ', function() {
+    it('Should display formatted table ', function () {
       cellIndex += 2;
       var width = 180, height = 116;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
@@ -82,7 +83,7 @@ describe('Testing of table (groovy) ', function () {
   });
 
   describe('Set column visible ', function () {
-    it('Should display formatted table ', function() {
+    it('Should display formatted table ', function () {
       cellIndex += 2;
       var width = 642, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
@@ -92,7 +93,7 @@ describe('Testing of table (groovy) ', function () {
   });
 
   describe('Set column order ', function () {
-    it('Should display formatted table ', function() {
+    it('Should display formatted table ', function () {
       cellIndex += 2;
       var width = 412, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
@@ -102,7 +103,7 @@ describe('Testing of table (groovy) ', function () {
   });
 
   describe('Add HeatmapHighlighter for row ', function () {
-    it('Should display formatted table ', function() {
+    it('Should display formatted table ', function () {
       cellIndex += 2;
       var width = 440, height = 150;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
@@ -112,7 +113,7 @@ describe('Testing of table (groovy) ', function () {
   });
 
   describe('Add HeatmapHighlighter for column ', function () {
-    it('Should display formatted table ', function() {
+    it('Should display formatted table ', function () {
       cellIndex += 2;
       var width = 440, height = 150;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
@@ -124,13 +125,13 @@ describe('Testing of table (groovy) ', function () {
   describe('Remove all CellHighlighters ', function () {
     var width9 = 440, height9 = 150;
 
-    it('Should display formatted table ', function() {
+    it('Should display formatted table ', function () {
       cellIndex += 2;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width9, height9);
       beakerxPO.checkImageData(imageData.value, imageDir, 'cell9_case2.png');
     });
-    it('Should remove all CellHighlighters ', function() {
+    it('Should remove all CellHighlighters ', function () {
       var codeCell = beakerxPO.getCodeCellByIndex(cellIndex - 2);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width9, height9);
@@ -138,9 +139,28 @@ describe('Testing of table (groovy) ', function () {
     });
   });
 
+  describe('Add HeatmapHighlighter for type ', function () {
+    it('Should display formatted table ', function () {
+      cellIndex += 2;
+      var width = 410, height = 92;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData.value, imageDir, 'cell9_case3.png');
+    });
+  });
+
+  describe('Count of types more then number of columns ', function () {
+    it('should display java.lang.IllegalStateException', function () {
+      cellIndex += 2;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var errorOutput = beakerxPO.getAllOutputsStderr(codeCell)[0];
+      expect(errorOutput.getText()).toMatch('java.lang.IllegalStateException: The length of types should be same');
+    });
+  });
+
   describe('Add UniqueEntriesHighlighter for row ', function () {
     it('Should display formatted table ', function() {
-      cellIndex += 2;
+      cellIndex += 1;
       var width = 480, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);

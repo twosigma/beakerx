@@ -128,6 +128,7 @@ describe('Spark UI', function () {
       output.$$('button.icon-close')[1].click();
       clickAddProperty(output);
       output.click('button.p-Widget.bx-spark-connect');
+      browser.pause(1000);
       checkProfileError(output, "Property 'name' can not be empty");
     });
     it("Can't save when 'value' property is empty ", function () {

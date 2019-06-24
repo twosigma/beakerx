@@ -82,7 +82,7 @@ module.exports = [
         entry: './src/index.ts',
         output: {
             filename: 'index.js',
-            path: path.resolve(__dirname, '../../beakerx/beakerx_tabledisplay/static'),
+            path: path.resolve(__dirname, '../../beakerx_tabledisplay/beakerx_tabledisplay/static'),
             libraryTarget: 'amd'
         },
         module: {

@@ -24,6 +24,7 @@ import BeakerxTreeJupyterLabPlugin from "./tree";
 import RequirejsLoader from "./plugin/requirejs";
 import { themeLightPlugin, themeDarkPlugin } from './theme';
 import beakerx from "./beakerx";
+import beakerx_tabledisplay from "./beakerx_tabledisplay";
 
 export const beakerx_ext: JupyterLabPlugin<void>|IPlugin<JupyterLab, void> = {
   id: 'beakerx',
@@ -37,7 +38,7 @@ export const beakerx_ext: JupyterLabPlugin<void>|IPlugin<JupyterLab, void> = {
     widgets.registerWidget({
          name: 'beakerx_tabledisplay',
          version: beakerx.version,
-         exports: beakerx
+         exports: beakerx_tabledisplay
     });
 
     app.docRegistry.addWidgetExtension('Notebook', new BeakerxExtension(app, settings));

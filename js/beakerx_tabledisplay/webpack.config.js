@@ -102,7 +102,6 @@ module.exports = [
             '@phosphor/algorithm',
             '@phosphor/commands',
             '@phosphor/datagrid',
-            '@phosphor/datastore',
             '@phosphor/messaging',
             '@phosphor/signaling',
             '@phosphor/widgets',

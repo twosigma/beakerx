@@ -13,16 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 import {CellRenderer, GraphicsContext, TextRenderer} from "@phosphor/datagrid";
 import BeakerXCellRenderer from "./BeakerXCellRenderer";
 
-// import LatoRegular from '../../../shared/fonts/lato/Lato-Regular.woff';
-// import LatoBlack from '../../../shared/fonts/lato/Lato-Black.woff';
-
-// TODO
-const LatoRegular = '';
-const LatoBlack = '';
+const LatoRegular = require('../../../shared/fonts/lato/Lato-Regular.woff');
+const LatoBlack = require('../../../shared/fonts/lato/Lato-Black.woff');
 
 export default class HTMLCellRenderer extends BeakerXCellRenderer {
   dataCache = new Map<string, string>();

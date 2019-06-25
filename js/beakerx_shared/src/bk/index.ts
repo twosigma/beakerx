@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-//TODO refactor
 export * from "./bkCoreManager";
 export * from "./bkGlobals";
 export * from "./bkHelper";

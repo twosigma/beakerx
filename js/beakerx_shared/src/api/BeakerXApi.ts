@@ -17,7 +17,6 @@
 import IApiSettingsResponse from "./IApiSettingsResponse";
 import * as $ from "jquery";
 
-// TODO replace $.ajax with fetch api and remove jquery
 function getCookie(name: string) {
   // from tornado docs: http://www.tornadoweb.org/en/stable/guide/security.html
   let r = document.cookie.match('\\b' + name + '=([^;]*)\\b');

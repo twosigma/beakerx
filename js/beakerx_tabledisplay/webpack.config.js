@@ -16,9 +16,6 @@
 
 const webpack = require('webpack');
 const path = require('path');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-// const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-// const tsConfigPath = path.resolve(__dirname, './src/tsconfig.json');
 
 // Custom webpack loaders are generally the same for all webpack bundles, hence
 // stored in a separate local variable.
@@ -54,11 +51,6 @@ const plugins = [
     "window.jQuery":"jquery",
     "d3": "d3"
   }),
-  // new ForkTsCheckerWebpackPlugin({
-  //   tsconfig: tsConfigPath,
-  //   watch: 'src',
-  //   workers: ForkTsCheckerWebpackPlugin.ONE_CPU
-  // }),
   new webpack.DefinePlugin({
     BEAKERX_MODULE_VERSION: JSON.stringify("*") // The latest version
   })
@@ -73,7 +65,7 @@ const resolve = {
   modules: ['web_modules', 'node_modules'],
   extensions: ['.ts', '.jsx','.js','.less','.css'],
   plugins: [
-      // new TsconfigPathsPlugin({ configFile: tsConfigPath })
+
   ]
 };
 
@@ -94,5 +86,29 @@ module.exports = [
             ignored: /node_modules/
         },
         plugins: plugins
-    }
+    },
+    {
+        entry: './src/embed.ts',
+        output: {
+            filename: 'td_index.js',
+            path: path.resolve(__dirname, '../lab/lib/'),
+            libraryTarget: 'amd'
+        },
+        module: {
+            rules: rules
+        },
+        resolve: resolve,
+        externals: externals.concat([
+            '@phosphor/algorithm',
+            '@phosphor/commands',
+            '@phosphor/datagrid',
+            '@phosphor/datastore',
+            '@phosphor/messaging',
+            '@phosphor/signaling',
+            '@phosphor/widgets',
+            '@jupyter-widgets/jupyterlab-manager',
+            '@jupyterlab'
+        ]),
+        plugins: plugins
+    },
 ];

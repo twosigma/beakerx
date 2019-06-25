@@ -7,6 +7,5 @@
       "@beakerx/*": ["../../src/*"]
     },
     "types": ["mocha", "chai", "node"]
-  },
-  "include": ["../../src/types/*.d.ts"]
+  }
 }

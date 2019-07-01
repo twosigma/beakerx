@@ -15,17 +15,17 @@
  */
 
 import {
-  JupyterLab, JupyterLabPlugin
+  JupyterFrontEnd, JupyterFrontEndPlugin
 } from "@jupyterlab/application";
 
 import {
   IThemeManager
 } from "@jupyterlab/apputils";
 
-export const themeLightPlugin: JupyterLabPlugin<void> = {
+export const themeLightPlugin: JupyterFrontEndPlugin<void> = {
   id: 'beakerx:theme-light:plugin',
   requires: [IThemeManager],
-  activate: function(app: JupyterLab, manager: IThemeManager) {
+  activate: function(app: JupyterFrontEnd, manager: IThemeManager) {
     manager.register({
       name: 'BeakerX Light',
       load: (): Promise<void> => {
@@ -42,20 +42,21 @@ export const themeLightPlugin: JupyterLabPlugin<void> = {
       },
       unload: (): Promise<void> => {
         return Promise.resolve(void 0);
-      }
+      },
+      isLight: true
     });
   },
   autoStart: true
 };
 
-export const themeDarkPlugin: JupyterLabPlugin<void> = {
+export const themeDarkPlugin: JupyterFrontEndPlugin<void> = {
   id: 'beakerx:theme-dark:plugin',
   requires: [IThemeManager],
-  activate: function(app: JupyterLab, manager: IThemeManager) {
+  activate: function(app: JupyterFrontEnd, manager: IThemeManager) {
     manager.register({
       name: 'BeakerX Dark',
       load: (): Promise<void> => {
-        document.body.classList.add('bx-dark-theme')
+        document.body.classList.add('bx-dark-theme');
         return new Promise<void>((resolve, reject) => {
           Promise.all([
             manager.loadCSS('@jupyterlab/theme-dark-extension/index.css'),
@@ -70,7 +71,8 @@ export const themeDarkPlugin: JupyterLabPlugin<void> = {
       unload: (): Promise<void> => {
         document.body.classList.remove('bx-dark-theme')
         return Promise.resolve(void 0);
-      }
+      },
+      isLight: false
     });
   },
   autoStart: true

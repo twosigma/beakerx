@@ -16,10 +16,13 @@
     "ipywidgets"
   ],
   "scripts": {
-    "clean": "rimraf node_modules/beakerx_shared && yarn install --force",
     "build": "yarn run build:dev",
-    "build:prod": "yarn run clean && webpack --config webpack.prod.js && yarn run build-lab-extension",
-    "build:dev": "yarn run clean && webpack --config webpack.dev.js && yarn run build-lab-extension",
+    "build:clean": "rimraf node_modules/beakerx_shared && yarn upgrade beakerx_shared --force",
+    "build:subpackages": "yarn run build:subpackages:shaded && yarn run build:subpackages:table_display",
+    "build:subpackages:shaded": "cd ../beakerx_shared && yarn install",
+    "build:subpackages:table_display": "cd ../beakerx_tabledisplay && yarn run build",
+    "build:prod": "yarn run build:subpackages && webpack --config webpack.prod.js && yarn run build-lab-extension",
+    "build:dev": "yarn run build:subpackages && webpack --config webpack.dev.js && yarn run build-lab-extension",
     "build-lab-extension": "cd ../lab && npm install",
     "prepublishOnly": "yarn run build:prod"
   },

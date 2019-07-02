@@ -24,7 +24,7 @@
     ]
   },
   "scripts": {
-    "clean": "rimraf node_modules/beakerx_shared && yarn install --force",
+    "clean": "rimraf node_modules/beakerx_shared && yarn upgrade beakerx_shared --force",
     "build": "yarn run clean && yarn run build:dev",
     "build:prod": "yarn run test && webpack --config webpack.prod.js",
     "build:dev": "yarn run test && webpack --config webpack.dev.js",

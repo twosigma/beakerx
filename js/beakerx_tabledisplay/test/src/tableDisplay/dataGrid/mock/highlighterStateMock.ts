@@ -17,7 +17,7 @@
 import IHihglighterState, {
   HIGHLIGHTER_STYLE,
   HIGHLIGHTER_TYPE
-} from "@beakerx/tableDisplay/dataGrid/interface/IHighlighterState";
+} from "../../../../../src/tableDisplay/dataGrid/interface/IHighlighterState";
 
 let highlighterStateMock: IHihglighterState = {
   colName: 'test',

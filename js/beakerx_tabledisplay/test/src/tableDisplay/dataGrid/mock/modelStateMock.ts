@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import IDataGridModelState from "@beakerx/tableDisplay/dataGrid/interface/IDataGridModelState";
+import IDataGridModelState from "../../../../../src/tableDisplay/dataGrid/interface/IDataGridModelState";
 import highlighterStateMock from "./highlighterStateMock";
 
 let modelStateMock: IDataGridModelState = {

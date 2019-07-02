@@ -4,7 +4,6 @@
     "baseUrl": "src",
     "paths": {
       "*.woff": ["./mock/assets.ts"],
-      "@beakerx/*": ["../../src/*"]
     },
     "types": ["mocha", "chai", "node"]
   }

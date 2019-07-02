@@ -17,11 +17,11 @@
 import * as sinon from 'sinon';
 import { expect } from 'chai';
 import { Widget } from "@phosphor/widgets";
-import { BeakerXDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerXDataGrid";
-import { BeakerXDataGridModel } from "@beakerx/tableDisplay/dataGrid/model/BeakerXDataGridModel";
+import { BeakerXDataGrid } from "../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
+import { BeakerXDataGridModel } from "../../../../src/tableDisplay/dataGrid/model/BeakerXDataGridModel";
 import modelStateMock from "./mock/modelStateMock";
-import ColumnManager from "@beakerx/tableDisplay/dataGrid/column/ColumnManager";
-import createStore from "@beakerx/tableDisplay/dataGrid/store/BeakerXDataStore";
+import ColumnManager from "../../../../src/tableDisplay/dataGrid/column/ColumnManager";
+import createStore from "../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
 
 describe('BeakerXDataGrid', () => {
   let dataGrid;

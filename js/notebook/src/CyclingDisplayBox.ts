@@ -33,6 +33,8 @@ export class CyclingDisplayBoxModel extends widgets.BoxModel {
 }
 
 export class CyclingDisplayBoxView extends widgets.BoxView {
+  private interval: any;
+  private period: number;
   initialize() {
     super.initialize.apply(this, arguments);
     this.interval = undefined;

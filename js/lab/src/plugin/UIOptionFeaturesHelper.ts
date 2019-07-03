@@ -138,6 +138,7 @@ class AutoCloseBracketsFeature implements IUIOptionsFeature {
   }
 
   private getCodeCells(): CodeCell[] {
+    if (this.panel.isDisposed) { return []; }
     const cells = this.panel.content.widgets || [];
     return <CodeCell[]>cells.filter((cell) => {
       return (cell instanceof CodeCell);

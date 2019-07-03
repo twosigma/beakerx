@@ -31,6 +31,7 @@ export function registerFeature(panel: NotebookPanel, showPublication: boolean) 
 }
 
 function addActionButton(panel: NotebookPanel): void {
+  if (panel.toolbar.isDisposed) { return; }
   const action = {
     className: 'fa fa-share-alt',
     tooltip: 'Publish...',

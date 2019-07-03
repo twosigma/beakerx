@@ -24,6 +24,7 @@ import createStore, { BeakerXDataStore } from "./store/BeakerXDataStore";
 import { selectModel } from "./model/selectors";
 import BeakerXThemeHelper from "../../BeakerXThemeHelper";
 import IDataModelState from "./interface/IDataGridModelState";
+import {TableDisplayView} from "../../TableDisplay";
 
 export class DataGridScope {
   contextMenu: DataGridContextMenu;
@@ -32,7 +33,7 @@ export class DataGridScope {
   private store: BeakerXDataStore;
   public readonly dataGrid: BeakerXDataGrid;
   private tableDisplayModel: any;
-  private tableDisplayView: any;
+  public tableDisplayView: TableDisplayView;
 
   constructor(options: IDataGridScopeOptions) {
     this.store = createStore(options.data);
@@ -44,7 +45,8 @@ export class DataGridScope {
         style: BeakerXThemeHelper.getStyle(),
         cellRenderers: new RendererMap({ priority: ['body|{dataType: html}','body|'] })
       },
-      this.store
+      this.store,
+      this.tableDisplayView
     );
     this.element.id = `wrap_${this.tableDisplayModel.model_id}`;
 

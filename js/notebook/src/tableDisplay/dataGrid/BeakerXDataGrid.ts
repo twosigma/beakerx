@@ -47,6 +47,7 @@ import ColumnRegion = DataModel.ColumnRegion;
 import {DataGridResize} from "./DataGridResize";
 import {ALL_TYPES} from "./dataTypes";
 import BeakerXThemeHelper from "../../BeakerXThemeHelper";
+import {TableDisplayView} from "../../TableDisplay";
 
 export class BeakerXDataGrid extends DataGrid {
   id: string;
@@ -70,13 +71,14 @@ export class BeakerXDataGrid extends DataGrid {
   canvasGC: GraphicsContext;
   focused: boolean;
   wrapperId: string;
+  tableDisplayView: TableDisplayView;
 
   cellHovered = new Signal<this, { data: ICellData|null, event: MouseEvent }>(this);
   commSignal = new Signal<this, {}>(this);
 
   static FOCUS_CSS_CLASS = 'bko-focused';
 
-  constructor(options: DataGrid.IOptions, dataStore: BeakerXDataStore) {
+  constructor(options: DataGrid.IOptions, dataStore: BeakerXDataStore, tableDisplayView: TableDisplayView) {
     super(options);
 
     //this is hack to use private DataGrid properties
@@ -86,7 +88,7 @@ export class BeakerXDataGrid extends DataGrid {
     this.rowSections = this['_rowSections'];
     this.columnSections = this['_columnSections'];
     this.canvasGC = this['_canvasGC'];
-
+    this.tableDisplayView = tableDisplayView;
     this.resize = throttle(this.resize, 150, this);
     this.init(dataStore);
   }
@@ -115,6 +117,13 @@ export class BeakerXDataGrid extends DataGrid {
     this.addCellRenderers();
 
     this.columnManager.createColumnMenus();
+  }
+
+  scrollTo(x: number, y: number): void {
+    if(this.tableDisplayView.canLoadMore() && this.maxScrollY<=y ){
+      this.tableDisplayView.loadMoreRows();
+    }
+    super.scrollTo(x, y);
   }
 
   getColumn(config: CellRenderer.ICellConfig): DataGridColumn {

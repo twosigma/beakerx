@@ -15,12 +15,14 @@
  */
 package com.twosigma.beakerx.table.serializer;
 
-import com.twosigma.beakerx.table.TableDisplay;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import java.util.List;
+import com.twosigma.beakerx.table.TableDisplay;
+import com.twosigma.beakerx.table.TableDisplayToJson;
+
 import java.io.IOException;
+import java.util.List;
 
 public class TableDisplaySerializer extends ObservableTableDisplaySerializer<TableDisplay> {
 
@@ -48,50 +50,47 @@ public class TableDisplaySerializer extends ObservableTableDisplaySerializer<Tab
   public static final String TOOLTIPS = "tooltips";
 
   @Override
-  public void serialize(TableDisplay value,
+  public void serialize(TableDisplay tableDisplay,
                         JsonGenerator jgen,
                         SerializerProvider provider)
-    throws IOException, JsonProcessingException {
+          throws IOException, JsonProcessingException {
 
-    synchronized (value) {
+    synchronized (tableDisplay) {
       jgen.writeStartObject();
-      super.serialize(value, jgen);
+      super.serialize(tableDisplay, jgen);
       jgen.writeObjectField(TYPE, TABLE_DISPLAY);
-      jgen.writeObjectField("columnNames", value.getColumnNames());
-      jgen.writeObjectField("types", value.getTypes());
-      jgen.writeObjectField("subtype", value.getSubtype());
-      jgen.writeObjectField(STRING_FORMAT_FOR_TYPE, value.getStringFormatForType());
-      jgen.writeObjectField(STRING_FORMAT_FOR_COLUMN, value.getStringFormatForColumn());
-      jgen.writeObjectField(RENDERER_FOR_TYPE, value.getRendererForType());
-      jgen.writeObjectField(RENDERER_FOR_COLUMN, value.getRendererForColumn());
-      jgen.writeObjectField(ALIGNMENT_FOR_TYPE, value.getAlignmentForType());
-      jgen.writeObjectField(ALIGNMENT_FOR_COLUMN, value.getAlignmentForColumn());
-      jgen.writeObjectField(COLUMNS_FROZEN, value.getColumnsFrozen());
-      jgen.writeObjectField(COLUMNS_FROZEN_RIGHT, value.getColumnsFrozenRight());
-      jgen.writeObjectField(COLUMNS_VISIBLE, value.getColumnsVisible());
-      jgen.writeObjectField(COLUMN_ORDER, value.getColumnOrder());
-      jgen.writeObjectField(CELL_HIGHLIGHTERS, value.getCellHighlighters());
-      jgen.writeObjectField(TOOLTIPS, value.getTooltips());
-      jgen.writeObjectField(DATA_FONT_SIZE, value.getDataFontSize());
-      jgen.writeObjectField(HEADER_FONT_SIZE, value.getHeaderFontSize());
-      jgen.writeObjectField(FONT_COLOR, value.getFontColor());
-      if (value.getFilteredValues() != null) {
-        jgen.writeObjectField(FILTERED_VALUES, value.getFilteredValues());
+      jgen.writeObjectField("columnNames", tableDisplay.getColumnNames());
+      jgen.writeObjectField("types", tableDisplay.getTypes());
+      jgen.writeObjectField("subtype", tableDisplay.getSubtype());
+      jgen.writeObjectField(STRING_FORMAT_FOR_TYPE, tableDisplay.getStringFormatForType());
+      jgen.writeObjectField(STRING_FORMAT_FOR_COLUMN, tableDisplay.getStringFormatForColumn());
+      jgen.writeObjectField(RENDERER_FOR_TYPE, tableDisplay.getRendererForType());
+      jgen.writeObjectField(RENDERER_FOR_COLUMN, tableDisplay.getRendererForColumn());
+      jgen.writeObjectField(ALIGNMENT_FOR_TYPE, tableDisplay.getAlignmentForType());
+      jgen.writeObjectField(ALIGNMENT_FOR_COLUMN, tableDisplay.getAlignmentForColumn());
+      jgen.writeObjectField(COLUMNS_FROZEN, tableDisplay.getColumnsFrozen());
+      jgen.writeObjectField(COLUMNS_FROZEN_RIGHT, tableDisplay.getColumnsFrozenRight());
+      jgen.writeObjectField(COLUMNS_VISIBLE, tableDisplay.getColumnsVisible());
+      jgen.writeObjectField(COLUMN_ORDER, tableDisplay.getColumnOrder());
+      jgen.writeObjectField(CELL_HIGHLIGHTERS, tableDisplay.getCellHighlighters());
+      jgen.writeObjectField(TOOLTIPS, tableDisplay.getTooltips());
+      jgen.writeObjectField(DATA_FONT_SIZE, tableDisplay.getDataFontSize());
+      jgen.writeObjectField(HEADER_FONT_SIZE, tableDisplay.getHeaderFontSize());
+      jgen.writeObjectField(FONT_COLOR, tableDisplay.getFontColor());
+      if (tableDisplay.getFilteredValues() != null) {
+        jgen.writeObjectField(FILTERED_VALUES, tableDisplay.getFilteredValues());
       }
-      jgen.writeBooleanField(HEADERS_VERTICAL, value.getHeadersVertical());
-      jgen.writeObjectField(HAS_INDEX, value.getHasIndex());
-      jgen.writeObjectField(TIME_ZONE, value.getTimeZone());
-      List<List<?>> values = value.getValues();
-      if (values.size() > value.ROWS_LIMIT) {
-        jgen.writeObjectField(VALUES, values.subList(0, value.ROW_LIMIT_TO_INDEX));
-        jgen.writeBooleanField("tooManyRows", true);
-        jgen.writeObjectField("rowLength", values.size());
-        jgen.writeObjectField("rowLimit", value.ROWS_LIMIT);
-        jgen.writeObjectField("rowLimitMsg", value.getRowLimitMsg());
-      } else {
-        jgen.writeObjectField("values", values);
-        jgen.writeBooleanField("tooManyRows", false);
-      }
+      jgen.writeBooleanField(HEADERS_VERTICAL, tableDisplay.getHeadersVertical());
+      jgen.writeObjectField(HAS_INDEX, tableDisplay.getHasIndex());
+      jgen.writeObjectField(TIME_ZONE, tableDisplay.getTimeZone());
+      List<List<?>> values = tableDisplay.getValues();
+      List list = TableDisplayToJson.tableDisplayValues(tableDisplay);
+      jgen.writeObjectField(VALUES, list);
+      jgen.writeBooleanField("tooManyRows", false);
+      jgen.writeObjectField("rowLength", values.size());
+      jgen.writeObjectField("rowLimit", tableDisplay.ROWS_LIMIT);
+      jgen.writeObjectField("rowLimitMsg", tableDisplay.getRowLimitMsg());
+      jgen.writeBooleanField("loadMoreRows", tableDisplay.getLoadMoreRows());
       jgen.writeEndObject();
     }
   }

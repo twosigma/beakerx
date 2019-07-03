@@ -15,7 +15,7 @@
  */
 
 import widgets from './widgets';
-import { DataGridScope } from './tableDisplay/dataGrid';
+import {DataGridScope} from './tableDisplay/dataGrid';
 
 export class TableDisplayModel extends widgets.DOMWidgetModel {
   defaults() {
@@ -57,6 +57,15 @@ export class TableDisplayView extends widgets.DOMWidgetView {
     });
   }
 
+  public canLoadMore(): boolean{
+    return this.model.get('loadMoreRows') == undefined || this.model.get('loadMoreRows') == false;
+  }
+
+  public loadMoreRows():void{
+    this.model.set('loadMoreRows', true, {updated_view: this});
+    this.touch();
+  }
+
   handleModelUpdate(): void {
     this._currentScope.doResetAll();
     this._currentScope.updateModelData(this.model.get('model'));
@@ -65,8 +74,7 @@ export class TableDisplayView extends widgets.DOMWidgetView {
   handleUpdateData(): void {
     const change = this.model.get('updateData');
     const currentModel = this.model.get('model');
-
-    this.model.set('model', { ...currentModel, ...change }, { updated_view: this });
+    this.model.set('model', {...currentModel, ...change, values: currentModel.values.concat(change.values||[])});
     this.handleModelUpdate();
   }
 

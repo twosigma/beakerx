@@ -65,6 +65,10 @@ public abstract class BeakerxWidget extends Widget {
     this.updateModel.update(MODEL_UPDATE, serializeToJsonObject(item));
   }
 
+  protected void sendPropertyUpdate(String key, Object value) {
+    this.updateModel.update(key, value);
+  }
+
   protected void sendModelUpdate() {
     this.updateModel.update(MODEL_UPDATE, serializeToJsonObject());
   }

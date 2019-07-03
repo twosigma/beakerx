@@ -31,6 +31,7 @@ import com.twosigma.beakerx.table.renderer.TableDisplayCellRenderer;
 import com.twosigma.beakerx.widget.BeakerxWidget;
 import com.twosigma.beakerx.widget.RunWidgetClosure;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,6 +41,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -109,6 +111,55 @@ public class TableDisplay extends BeakerxWidget {
   private Map<String, String> contextMenuTags = new HashMap<>();
   private TableActionDetails details;
   private TableDisplayActions displayActions = new TableDisplayActions(this);
+
+
+  private boolean loadMoreRows = false;
+
+  public int valuePageSize = 1000;
+  public int pageStartIndex = 0;
+
+  public void setLoadMoreRows(boolean loadMoreRows) {
+    this.pageStartIndex += valuePageSize;
+    sendModelUpdate(TableDisplayToJson.serializeValues(this));
+    sendPropertyUpdate("loadMoreRows", false);
+  }
+
+  @Override
+  protected void addValueChangeMsgCallback() {
+    getComm().addMsgCallbackList(new ValueChangeMsgCallbackHandler());
+  }
+
+  public class ValueChangeMsgCallbackHandler implements Handler<Message> {
+
+    public Optional<Property> getSyncDataValue(Message msg) {
+      Optional<Property> ret = Optional.empty();
+      if (msg != null && msg.getContent() != null && msg.getContent().containsKey("data")) {
+        Map<String, Serializable> data = (Map<String, Serializable>) msg.getContent().get("data");
+        if (data.containsKey("state")) {
+          Map<String, Serializable> sync_data = (Map<String, Serializable>) data.get("state");
+          if (sync_data.containsKey("loadMoreRows")) {
+            ret = Optional.of(new Property("loadMoreRows", sync_data.get("loadMoreRows")));
+          }
+        }
+      }
+      return ret;
+    }
+
+    public void handle(Message message) {
+      Optional<Property> value = getSyncDataValue(message);
+      value.ifPresent(o -> updateValue(o, message));
+    }
+
+    public void updateValue(Property value, Message message) {
+      if (value.getKey().equals("loadMoreRows")) {
+        setLoadMoreRows(false);
+      }
+    }
+  }
+
+  public boolean getLoadMoreRows() {
+    return loadMoreRows;
+  }
 
   public int ROWS_LIMIT = 100000;
   public int ROW_LIMIT_TO_INDEX = 10000;

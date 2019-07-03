@@ -66,26 +66,26 @@ public abstract class DOMWidget extends Widget {
 
   }
 
-  public abstract class ValueChangeMsgCallbackHandler implements Handler<Message> {
-
-    @SuppressWarnings("unchecked")
-    public Optional<Object> getSyncDataValue(Message msg) {
-      Optional<Object> ret = Optional.empty();
-      if (msg != null && msg.getContent() != null && msg.getContent().containsKey(DATA)) {
-        Map<String, Serializable> data = (Map<String, Serializable>) msg.getContent().get(DATA);
-        if (data.containsKey(SYNC_DATA)) {
-          Map<String, Serializable> sync_data = (Map<String, Serializable>) data.get(SYNC_DATA);
-          if (sync_data.containsKey(VALUE)) {
-            ret = Optional.of(sync_data.get(VALUE));
-          } else if (sync_data.containsKey(INDEX)) {
-            ret = Optional.of(sync_data.get(INDEX));
-          } else if (sync_data.containsKey("outputs")) {
-            ret = Optional.of(sync_data.get("outputs"));
-          }
+  @SuppressWarnings("unchecked")
+  public static Optional<Object> getSyncDataValue(Message msg) {
+    Optional<Object> ret = Optional.empty();
+    if (msg != null && msg.getContent() != null && msg.getContent().containsKey(DATA)) {
+      Map<String, Serializable> data = (Map<String, Serializable>) msg.getContent().get(DATA);
+      if (data.containsKey(SYNC_DATA)) {
+        Map<String, Serializable> sync_data = (Map<String, Serializable>) data.get(SYNC_DATA);
+        if (sync_data.containsKey(VALUE)) {
+          ret = Optional.of(sync_data.get(VALUE));
+        } else if (sync_data.containsKey(INDEX)) {
+          ret = Optional.of(sync_data.get(INDEX));
+        } else if (sync_data.containsKey("outputs")) {
+          ret = Optional.of(sync_data.get("outputs"));
         }
       }
-      return ret;
     }
+    return ret;
+  }
+
+  public abstract class ValueChangeMsgCallbackHandler implements Handler<Message> {
 
     public void handle(Message message) {
       Optional<Object> value = getSyncDataValue(message);

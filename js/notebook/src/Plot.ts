@@ -37,6 +37,7 @@ export class PlotModel extends widgets.DOMWidgetModel {
 }
 
 export class PlotView extends widgets.DOMWidgetView {
+  private _currentScope: any;
   render() {
     this._currentScope = null;
 

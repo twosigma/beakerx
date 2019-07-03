@@ -14,8 +14,6 @@
  *  limitations under the License.
  */
 
-import {DOMWidgetModel} from "@jupyter-widgets/base";
-
 const ENTER_KEY_CODE = 13;
 import widgets from './widgets';
 
@@ -34,6 +32,8 @@ import 'jquery-ui/themes/base/all.css';
 import 'jquery-ui/ui/widgets/button';
 import 'jquery-ui/ui/widgets/autocomplete';
 
+import * as $ from 'jquery';
+
 export class EasyFormModel extends widgets.DOMWidgetModel {
   defaults() {
     return {
@@ -49,12 +49,13 @@ export class EasyFormModel extends widgets.DOMWidgetModel {
   }
 
   static serializers = {
-    ...DOMWidgetModel.serializers,
+    ...widgets.DOMWidgetModel.serializers,
     children: { deserialize: widgets.unpack_models },
   }
 }
 
 export class EasyFormView extends widgets.BoxView {
+  private $legend: JQuery<HTMLLegendElement>;
   public static get isDark(): boolean {
     return document.body.classList.contains('bx-dark-theme');
   }

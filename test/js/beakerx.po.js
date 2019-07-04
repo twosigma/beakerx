@@ -54,14 +54,14 @@ function BeakerXPageObject() {
 
   this.getSvgElementByIndex = function (index) {
     var codeCell = this.getCodeCellByIndex(index);
-    codeCell.scroll();
+    codeCell.scrollIntoView();
     codeCell.click();
     return codeCell.$('#svgg');
   };
 
   this.getSvgElementsByIndex = function (index) {
     var codeCell = this.getCodeCellByIndex(index);
-    codeCell.scroll();
+    codeCell.scrollIntoView();
     return codeCell.$$('#svgg');
   };
 
@@ -76,7 +76,7 @@ function BeakerXPageObject() {
 
   this.runCodeCellByIndex = function (index) {
     var codeCell = this.getCodeCellByIndex(index);
-    codeCell.scroll();
+    codeCell.scrollIntoView();
     codeCell.click();
     this.clickRunCell();
     this.kernelIdleIcon.waitForEnabled();
@@ -168,7 +168,7 @@ function BeakerXPageObject() {
       outputIndex = 0;
     }
     var codeCell = this.getCodeCellByIndex(index);
-    codeCell.scroll();
+    codeCell.scrollIntoView();
     browser.waitUntil(function () {
       var output = getTextElements(codeCell)[outputIndex];
       return output != null && output.isEnabled() && expectedText.test(output.getText());
@@ -273,7 +273,7 @@ function BeakerXPageObject() {
       return codeCell.$$('div.dtcontainer').length > 0;
     }, 30000);
     var dtContainer = this.getDtContainerByIndex(cellIndex);
-    expect(dtContainer.$('path.plot-line').isVisible()).toBeTruthy();
+    expect(dtContainer.$('path.plot-line').isDisplayed()).toBeTruthy();
   };
 
   this.setHeapSize = function (value) {

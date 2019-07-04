@@ -31,7 +31,6 @@ function chartingBase() {
     it('Widget area has dtcontainer', function () {
       cellIndex = 0;
       beakerxPO.runCodeCellByIndex(cellIndex);
-      browser.pause(1000);
       cellIndex += 1;
       var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
       expect(dtContainer.$('#maing > g.plot-bar').isEnabled()).toBeTruthy();
@@ -50,10 +49,10 @@ function chartingBase() {
       var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
       var g0 = svgElement.$('#maing > g#i0');
       var g1 = svgElement.$('#maing > g#i1');
-      expect(g0.getCssProperty('fill').value).toEqual('rgb(0,154,166)');
-      expect(g0.getCssProperty('fill-opacity').value).toEqual(1);
-      expect(g1.getCssProperty('fill').value).toEqual('rgb(230,50,50)');
-      expect(g1.getCssProperty('fill-opacity').value).toBeLessThan(1);
+      expect(g0.getCSSProperty('fill').value).toEqual('rgb(0,154,166)');
+      expect(g0.getCSSProperty('fill-opacity').value).toEqual(1);
+      expect(g1.getCSSProperty('fill').value).toEqual('rgb(230,50,50)');
+      expect(g1.getCSSProperty('fill-opacity').value).toBeLessThan(1);
       expect(g0.$$('rect').length).toEqual(25);
       expect(g1.$$('rect').length).toEqual(25);
     });
@@ -134,14 +133,14 @@ function chartingBase() {
       cellIndex += 1;
       var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
       var rect0 = svgElement.$('rect#i0_0');
-      expect(rect0.getCssProperty('fill').value).toEqual('rgb(45,185,0)');
+      expect(rect0.getProperty('fill')).toEqual('rgb(45,185,0)');
     });
 
     it('Heatmap has custom gradient color', function () {
       cellIndex += 1;
       var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
       var rect0 = svgElement.$('rect#i0_0');
-      expect(rect0.getCssProperty('fill').value).toEqual('rgb(93,93,0)');
+      expect(rect0.getProperty('fill')).toEqual('rgb(93,93,0)');
     });
 
     it('Heatmap without legend', function () {
@@ -171,14 +170,14 @@ function chartingBase() {
       svgElement1 = beakerxPO.runCellToGetSvgElement(cellIndex);
       var rect2 = svgElement1.$('g#i2.cell > rect');
       var rect3 = svgElement1.$('g#i3.cell > rect');
-      expect(rect2.getCssProperty('fill').value).toEqual(rect3.getCssProperty('fill').value);
+      expect(rect2.getProperty('fill')).toEqual(rect3.getProperty('fill').value);
       expect(calculateSquare(rect2)).toEqual(calculateSquare(rect3));
     });
 
     it('(Mode.SQUARIFY) 1st and 13th elements have the differents colors and squares', function () {
       var rect2 = svgElement1.$('g#i2.cell > rect');
       var rect16 = svgElement1.$('g#i16.cell > rect');
-      expect(rect2.getCssProperty('fill').value).not.toEqual(rect16.getCssProperty('fill').value);
+      expect(rect2.getProperty('fill')).not.toEqual(rect16.getProperty('fill').value);
       expect(calculateSquare(rect2)).not.toEqual(calculateSquare(rect16));
     });
 

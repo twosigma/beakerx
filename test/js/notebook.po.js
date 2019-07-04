@@ -26,23 +26,19 @@ var NotebookPageObject = function () {
   };
 
   this.increaseWindowWidth = function (addWidth) {
-    var curSize = browser.windowHandleSize();
-    browser.setViewportSize({
-      width: curSize.value.width + addWidth,
-      height: curSize.value.height
-    });
+    var curSize = browser.getWindowSize();
+    browser.setWindowSize(curSize.width + addWidth, curSize.height);
   };
 
   this.clickSaveNotebook = function () {
-    browser.click('button[data-jupyter-action="jupyter-notebook:save-notebook"]');
+    browser.$('button[data-jupyter-action="jupyter-notebook:save-notebook"]').click();
   };
 
   this.closeAndHaltNotebook = function () {
     this.clickCellAllOutputClear();
-    browser.click('=File');
-    browser.waitForEnabled('=Close and Halt');
-    browser.click('=Close and Halt');
-    browser.endAll();
+    browser.$('=File').click();
+    browser.$('=Close and Halt').waitForEnabled();
+    browser.$('=Close and Halt').click();
   };
 
   this.saveAndCloseNotebook = function () {
@@ -50,21 +46,20 @@ var NotebookPageObject = function () {
     this.clickSaveNotebook();
     browser.waitUntil(function () {
       var autosaveStatus = $('span.autosave_status').getText();
-
       return autosaveStatus === '(autosaved)';
     }, 4000);
-    browser.click('=File');
+    browser.$('=File').click();
     browser.waitForEnabled('=Close and Halt');
-    browser.click('=Close and Halt');
+    browser.$('=Close and Halt').click();
   };
 
   this.clickCellAllOutputClear = function () {
-    browser.click('=Cell');
-    browser.waitForEnabled('=All Output');
-    browser.moveToObject('=All Output');
-    browser.moveToObject('=Toggle');
-    browser.moveToObject('=Clear');
-    browser.click('=Clear')
+    browser.$('=Cell').click();
+    browser.$('=All Output').waitForEnabled();
+    browser.$('=All Output').moveTo();
+    browser.$('=Toggle').moveTo();
+    browser.$('=Clear').moveTo();
+    browser.$('=Clear').click();
   };
 
   this.getCodeCellByIndex = function (index) {
@@ -121,26 +116,25 @@ var NotebookPageObject = function () {
   };
 
   this.callAutocompleteAndGetItsList = function (codeCell, codeStr) {
-    codeCell.scroll();
+    codeCell.scrollIntoView();
     codeCell.click('div.CodeMirror-code[role="presentation"]');
     codeCell.keys(codeStr);
     browser.keys("Tab");
     browser.keys('\uE000');
     browser.waitUntil(function () {
-      return browser.isVisible('#complete');
+      return browser.$('#complete').isDisplayed();
     }, 10000, 'autocomplete list is not visible');
     return $$('#complete > select > option');
   };
 
   this.callDocAndGetItsTooltip = function (codeCell, codeStr) {
-    codeCell.scroll();
+    codeCell.scrollIntoView();
     codeCell.click('div.CodeMirror-code[role="presentation"]');
     codeCell.keys(codeStr);
-    browser.keys('Shift');
-    browser.keys('Tab');
+    browser.keys(["Shift", "Tab"]);
     browser.keys('\uE000');
     browser.waitUntil(function () {
-      return browser.isVisible('#tooltip');
+      return browser.$('#tooltip').isDisplayed();
     }, 10000, 'doc tooltip is not visible');
     return $('div#tooltip div.tooltiptext.smalltooltip');
   };

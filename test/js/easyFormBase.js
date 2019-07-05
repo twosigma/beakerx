@@ -32,6 +32,7 @@ function easyFormBase() {
       cellIndex = 0;
       beakerxPO.runCodeCellByIndex(cellIndex);
       cellIndex += 1;
+      beakerxPO.runCellToGetEasyForm(cellIndex);
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       expect(codeCell.$('legend').getText()).toBe('form0');
       expect(codeCell.$('div.beaker-easyform-container').isEnabled()).toBeTruthy();
@@ -53,7 +54,7 @@ function easyFormBase() {
       var tstText = 'test';
       cellIndex += 1;
       easyForm.$('input[type="text"]').click();
-      browser.keys('t').keys('e').keys('s').keys('t');
+      browser.keys(['t', 'e', 's', 't']);
       expect(easyForm.$('input[type="text"]').getValue()).toBe(tstText);
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, tstText);
     });
@@ -88,7 +89,7 @@ function easyFormBase() {
       var tstText = 'test';
       cellIndex += 1;
       easyForm.$('textarea').click();
-      browser.keys('t').keys('e').keys('s').keys('t');
+      browser.keys(['t', 'e', 's', 't']);
       expect(easyForm.$('textarea').getValue()).toBe(tstText);
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, tstText);
     });
@@ -265,7 +266,7 @@ function easyFormBase() {
     it('CheckBoxes has vertical orientation ', function () {
       expect(easyForm.$('div.widget-hbox > div.widget-vbox').isEnabled()).toBeTruthy();
       expect(easyForm.$('div.widget-hbox > div.widget-vbox')
-        .getCssProperty('flex-direction').value).toBe('column');
+        .getCSSProperty('flex-direction').value).toBe('column');
     });
 
     it('Should select "two" value ', function () {
@@ -301,7 +302,7 @@ function easyFormBase() {
       expect(easyForm7b.$('div.widget-label').getText()).toBe('field name');
       expect(easyForm7b.$('div.widget-hbox > div.widget-hbox').isEnabled()).toBeTruthy();
       expect(easyForm7b.$('div.widget-hbox > div.widget-hbox')
-        .getCssProperty('flex-direction').value).toBe('row');
+        .getCSSProperty('flex-direction').value).toBe('row');
     });
   });
 
@@ -319,7 +320,7 @@ function easyFormBase() {
     it('RadioButtons has vertical orientation ', function () {
       expect(easyForm.$('div.widget-radio-box').isEnabled()).toBeTruthy();
       expect(easyForm.$('div.widget-radio-box')
-        .getCssProperty('flex-direction').value).toBe('column');
+        .getCSSProperty('flex-direction').value).toBe('column');
     });
 
     it('RadioButtons does not have default selected button ', function () {
@@ -351,7 +352,7 @@ function easyFormBase() {
       expect(easyForm8b.$('label.widget-label').getText()).toBe('field name');
       expect(easyForm8b.$('div.widget-radio-box').isEnabled()).toBeTruthy();
       expect(easyForm8b.$('div.widget-radio-box')
-        .getCssProperty('flex-direction').value).toBe('row');
+        .getCSSProperty('flex-direction').value).toBe('row');
     });
   });
 

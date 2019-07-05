@@ -16,7 +16,7 @@
 
 var NotebookPageObject = function () {
 
-  this.kernelIdleIcon = $('i.kernel_idle_icon');
+  this.kernelIdleIcon = browser.$('i.kernel_idle_icon');
 
   this.runNotebookByUrl = function (url) {
     console.log('jupyter notebook application')

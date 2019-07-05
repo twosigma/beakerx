@@ -32,8 +32,9 @@ function chartingBase() {
       cellIndex = 0;
       beakerxPO.runCodeCellByIndex(cellIndex);
       cellIndex += 1;
-      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
-      expect(dtContainer.$('#maing > g.plot-bar').isEnabled()).toBeTruthy();
+      beakerxPO.runCellToGetDtContainer(cellIndex);
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      expect(codeCell.$('div.dtcontainer').isEnabled()).toBeTruthy();
     });
 
     it('Histogram has Title and Axes Labels', function () {
@@ -101,8 +102,8 @@ function chartingBase() {
     it('Plot has two polygon elements', function () {
       cellIndex += 1;
       var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
-      expect(svgElement.$('#i0 polygon').isVisible()).toBeTruthy();
-      expect(svgElement.$('#i1 polygon').isVisible()).toBeTruthy();
+      expect(svgElement.$('#i0 polygon').isDisplayed()).toBeTruthy();
+      expect(svgElement.$('#i1 polygon').isDisplayed()).toBeTruthy();
     });
   });
 
@@ -126,21 +127,23 @@ function chartingBase() {
     });
 
     it('Top position for legend', function(){
-      expect(dtContainerLg.getLocation('svg#svgg', 'y')).toBeGreaterThan(dtContainerLg.getLocation('svg#legends', 'y'));
+      var cntY = dtContainerLg.$('div.plot-plotcontainer').getLocation('y');
+      var legendY = dtContainerLg.$('div#plotLegend').getLocation('y');
+      expect(cntY).toBeGreaterThan(legendY);
     });
 
     it('Heatmap has gradient color', function () {
       cellIndex += 1;
       var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
       var rect0 = svgElement.$('rect#i0_0');
-      expect(rect0.getProperty('fill')).toEqual('rgb(45,185,0)');
+      expect(rect0.getCSSProperty('fill').value).toEqual('rgb(45,185,0)');
     });
 
     it('Heatmap has custom gradient color', function () {
       cellIndex += 1;
       var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
       var rect0 = svgElement.$('rect#i0_0');
-      expect(rect0.getProperty('fill')).toEqual('rgb(93,93,0)');
+      expect(rect0.getCSSProperty('fill').value).toEqual('rgb(93,93,0)');
     });
 
     it('Heatmap without legend', function () {
@@ -170,14 +173,14 @@ function chartingBase() {
       svgElement1 = beakerxPO.runCellToGetSvgElement(cellIndex);
       var rect2 = svgElement1.$('g#i2.cell > rect');
       var rect3 = svgElement1.$('g#i3.cell > rect');
-      expect(rect2.getProperty('fill')).toEqual(rect3.getProperty('fill').value);
+      expect(rect2.getCSSProperty('fill').value).toEqual(rect3.getCSSProperty('fill').value);
       expect(calculateSquare(rect2)).toEqual(calculateSquare(rect3));
     });
 
     it('(Mode.SQUARIFY) 1st and 13th elements have the differents colors and squares', function () {
       var rect2 = svgElement1.$('g#i2.cell > rect');
       var rect16 = svgElement1.$('g#i16.cell > rect');
-      expect(rect2.getProperty('fill')).not.toEqual(rect16.getProperty('fill').value);
+      expect(rect2.getCSSProperty('fill').value).not.toEqual(rect16.getCSSProperty('fill').value);
       expect(calculateSquare(rect2)).not.toEqual(calculateSquare(rect16));
     });
 
@@ -203,7 +206,7 @@ function chartingBase() {
       var rect2 = svgElement.$('g#i2.cell > rect');
       var rect16 = svgElement.$('g#i16.cell > rect');
       var maing = svgElement.$('g#maing');
-      expect(Math.round(maing.getElementSize('height'))).toEqual(Math.round(rect16.getElementSize('height')));
+      expect(Math.round(maing.getSize('height'))).toEqual(Math.round(rect16.getSize('height')));
       expect(Math.round(rect2.getAttribute('height'))).not.toEqual(Math.round(rect16.getAttribute('height')));
     });
   });

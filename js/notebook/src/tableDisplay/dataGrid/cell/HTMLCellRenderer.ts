@@ -16,6 +16,7 @@
 
 import {CellRenderer, GraphicsContext, TextRenderer} from "@phosphor/datagrid";
 import BeakerXCellRenderer from "./BeakerXCellRenderer";
+import LatexRenderer, {katexCss} from './LatexRenderer';
 
 import LatoRegular from '../../../shared/fonts/lato/Lato-Regular.woff';
 import LatoBlack from '../../../shared/fonts/lato/Lato-Black.woff';
@@ -36,8 +37,7 @@ export default class HTMLCellRenderer extends BeakerXCellRenderer {
       return;
     }
 
-    const format = this.format;
-    const text = format(config);
+    let text = this.format(config);
 
     let vAlign = CellRenderer.resolveOption(this.verticalAlignment, config);
     let hAlign = CellRenderer.resolveOption(this.horizontalAlignment, config);
@@ -102,16 +102,23 @@ export default class HTMLCellRenderer extends BeakerXCellRenderer {
       return this.dataCache.get(cacheKey);
     }
 
+    const isLatexFormula = LatexRenderer.isLatexFormula(text);
+    if (isLatexFormula) {
+      text = LatexRenderer.latexToHtml(text);
+    }
+
     const font = CellRenderer.resolveOption(this.font, config);
     const color = CellRenderer.resolveOption(this.textColor, config);
-
     const html = `<svg xmlns="http://www.w3.org/2000/svg" width="${config.width}px" height="${config.height}px">
       <foreignObject width="${config.width}px" height="${config.height}px">
         <div
           xmlns="http://www.w3.org/1999/xhtml"
           style="display: table-cell; font: ${font}; width: ${config.width}px; height: ${config.height}px; color: ${color}; vertical-align: ${vAlign === 'center' ? 'middle' : vAlign}; text-align: ${hAlign}"
         >
-          <style type="text/css">${this.getFontFaceStyle()}</style>
+          <style type="text/css">
+            ${this.getFontFaceStyle()}
+            ${isLatexFormula ? katexCss: ''}
+          </style>
           <div style="display: inline-block; padding: 0 2px">${text}</div>
         </div>
       </foreignObject>

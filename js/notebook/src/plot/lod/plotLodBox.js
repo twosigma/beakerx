@@ -89,7 +89,7 @@ define([
         this.avgOn = false;
       }
 
-      if (pPlotUtils.rangeAssert([x, x2, y, y2])) {
+      if (PlotUtils.rangeAssert([x, x2, y, y2])) {
         eleprops.length = 0;
         return false;
       }

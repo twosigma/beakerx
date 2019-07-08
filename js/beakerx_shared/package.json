@@ -1,13 +1,15 @@
 {
   "name": "beakerx_shared",
+  "private": true,
   "version": "1.0.0",
   "description": "BeakerX - shared files",
   "author": "Two Sigma Open Source, LLC",
   "license": "Apache-2.0",
   "scripts": {
-    "clean": "yarn run clean:lib",
-    "clean:lib": "rimraf lib",
-    "build": "yarn run clean && yarn run build:ts",
+    "build": "yarn run build:clean && yarn run build:ts && yarn run build:link",
+    "build:clean": "yarn run build:clean:lib",
+    "build:clean:lib": "rimraf lib",
+    "build:link": "yarn link",
     "build:ts": "tsc -b",
     "prepublish": "yarn run build"
   },

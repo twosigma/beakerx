@@ -139,7 +139,7 @@
   dependencies:
     "@phosphor/algorithm" "^1.1.3"
 
-"@phosphor/commands@^1.5.0", "@phosphor/commands@^1.6.1", "@phosphor/commands@^1.6.3":
+"@phosphor/commands@^1.5.0", "@phosphor/commands@^1.6.3":
   version "1.6.3"
   resolved "https://registry.yarnpkg.com/@phosphor/commands/-/commands-1.6.3.tgz#d5481cc35dab34d0e60b3e04a64df00e1bbaffbd"
   integrity sha512-PYNHWv6tbXAfAtKiqXuT0OBJvwbJ+RRTV60MBykMF7Vqz9UaZ9n2e/eB2EAGEFccF0PnjTCvBEZgarwwMVi8Hg==
@@ -174,20 +174,6 @@
     "@phosphor/messaging" "^1.2.2"
     "@phosphor/signaling" "^1.2.2"
     "@phosphor/widgets" "^1.6.0"
-
-"@phosphor/datagrid@^0.1.6":
-  version "0.1.10"
-  resolved "https://registry.yarnpkg.com/@phosphor/datagrid/-/datagrid-0.1.10.tgz#aca9376fe287f6c2507402e808bb4ddd4d0aac7b"
-  integrity sha512-GLV3EEHzyzgX+Pg3Ugm0y4+aSN+zVocuO9x7BEHrdO60oGSq5X8fECbLEeLDgHiVYFm9o6twfmHU8rEcjzPr2w==
-  dependencies:
-    "@phosphor/algorithm" "^1.1.3"
-    "@phosphor/coreutils" "^1.3.1"
-    "@phosphor/disposable" "^1.2.0"
-    "@phosphor/domutils" "^1.1.3"
-    "@phosphor/dragdrop" "^1.3.3"
-    "@phosphor/messaging" "^1.2.3"
-    "@phosphor/signaling" "^1.2.3"
-    "@phosphor/widgets" "^1.8.1"
 
 "@phosphor/datastore@^0.7.0":
   version "0.7.0"
@@ -286,7 +272,7 @@
     "@phosphor/signaling" "^1.2.2"
     "@phosphor/virtualdom" "^1.1.2"
 
-"@phosphor/widgets@^1.6.0", "@phosphor/widgets@^1.8.1":
+"@phosphor/widgets@^1.6.0":
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/@phosphor/widgets/-/widgets-1.8.1.tgz#e6398984a37b17b0a55417eab5e3f3517af88186"
   integrity sha512-OY5T0nAioYTitPks/lCHm7a6QpjRB/XviIT2j6WtYm5J1U8MluIPpClqZ/NQbZfm23BYpmJeiQQyZA+5YphsDA==
@@ -1110,16 +1096,6 @@ bcrypt-pbkdf@^1.0.0:
   integrity sha1-pDAdOJtqQ/m2f/PKEaP2Y342Dp4=
   dependencies:
     tweetnacl "^0.14.3"
-
-beakerx_shared@./../beakerx_shared:
-  version "1.0.0"
-  dependencies:
-    "@phosphor/commands" "^1.6.1"
-    "@phosphor/datagrid" "^0.1.6"
-    "@phosphor/widgets" "^1.6.0"
-    big.js "^5.2.2"
-    jquery "^3.3.1"
-    moment-timezone "^0.5.13"
 
 big.js@^5.2.2:
   version "5.2.2"

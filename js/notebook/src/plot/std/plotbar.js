@@ -21,6 +21,7 @@ define([
 ) {
   const PlotUtils = require("../utils/PlotUtils").default;
   const PlotColorUtils = require("../utils/PlotColorUtils").default;
+  const PlotTip = require("../PlotTip").default;
   const BigNumberUtils = require("beakerx_shared/lib/utils/BigNumberUtils").default;
 
   var PlotBar = function(data) {
@@ -274,7 +275,7 @@ define([
   };
 
   PlotBar.prototype.hideTips = function(scope, hidden) {
-    plotTip.hideTips(scope, this.id,  hidden);
+    PlotTip.hideTips(scope, this.id,  hidden);
   };
 
   PlotBar.prototype.createTip = function(ele, g, model) {

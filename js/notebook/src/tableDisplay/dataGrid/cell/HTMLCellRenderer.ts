@@ -16,7 +16,7 @@
 
 import {CellRenderer, GraphicsContext, TextRenderer} from "@phosphor/datagrid";
 import BeakerXCellRenderer from "./BeakerXCellRenderer";
-import LatexRenderer, {katexCss} from './LatexRenderer';
+import LatexRenderer from './LatexRenderer';
 
 import LatoRegular from '../../../shared/fonts/lato/Lato-Regular.woff';
 import LatoBlack from '../../../shared/fonts/lato/Lato-Black.woff';
@@ -72,7 +72,7 @@ export default class HTMLCellRenderer extends BeakerXCellRenderer {
 
     img.width = width;
     img.height = height;
-    img.src = "data:image/svg+xml," + data;
+    img.src = data;
 
     if (!img.complete) {
       img.onload = this.repaintCellCallback(config.x, config.y, config.width, config.height);
@@ -102,31 +102,22 @@ export default class HTMLCellRenderer extends BeakerXCellRenderer {
       return this.dataCache.get(cacheKey);
     }
 
-    const isLatexFormula = LatexRenderer.isLatexFormula(text);
-    if (isLatexFormula) {
-      text = LatexRenderer.latexToHtml(text);
-    }
-
     const font = CellRenderer.resolveOption(this.font, config);
     const color = CellRenderer.resolveOption(this.textColor, config);
-    const html = `<svg xmlns="http://www.w3.org/2000/svg" width="${config.width}px" height="${config.height}px">
-      <foreignObject width="${config.width}px" height="${config.height}px">
-        <div
-          xmlns="http://www.w3.org/1999/xhtml"
-          style="display: table-cell; font: ${font}; width: ${config.width}px; height: ${config.height}px; color: ${color}; vertical-align: ${vAlign === 'center' ? 'middle' : vAlign}; text-align: ${hAlign}"
-        >
-          <style type="text/css">
-            ${this.getFontFaceStyle()}
-            ${isLatexFormula ? katexCss: ''}
-          </style>
-          <div style="display: inline-block; padding: 0 2px">${text}</div>
-        </div>
-      </foreignObject>
-    </svg>`;
+    const width = String(config.width);
+    const height = String(config.height);
 
-    const data = encodeURIComponent(html);
+    const isLatexFormula = LatexRenderer.isLatexFormula(text);
+    let data: string;
+
+    if (isLatexFormula) {
+      const latexHTML = LatexRenderer.latexToHtml(text);
+      data = LatexRenderer.getLatexImageData(latexHTML, width, height, color, vAlign, hAlign);
+    } else {
+      data = this.getHTMLImageData(text, width, height, font, color, vAlign, hAlign);
+    }
+
     this.dataCache.set(cacheKey, data);
-
     return data;
   }
 
@@ -136,5 +127,22 @@ export default class HTMLCellRenderer extends BeakerXCellRenderer {
 
   private repaintCellCallback(x: number, y: number, width: number, height: number) {
     return () => this.dataGrid.repaint(x, y, width, height);
+  }
+
+  private getHTMLImageData(text: string, width: string, height: string, font: string, color: string, vAlign: string,
+                              hAlign: string) {
+    const html = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}px" height="${height}px">
+      <foreignObject width="${width}px" height="${height}px">
+        <div
+          xmlns="http://www.w3.org/1999/xhtml"
+          style="display: table-cell; font: ${font}; width: ${width}px; height: ${height}px; color: ${color}; vertical-align: ${vAlign === 'center' ? 'middle' : vAlign}; text-align: ${hAlign}"
+        >
+          <style type="text/css">${this.getFontFaceStyle()}</style>
+          <div style="display: inline-block; padding: 0 2px">${text}</div>
+        </div>
+      </foreignObject>
+    </svg>`;
+
+    return "data:image/svg+xml," + encodeURIComponent(html);
   }
 }

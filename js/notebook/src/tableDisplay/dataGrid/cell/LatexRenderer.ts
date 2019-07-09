@@ -24,7 +24,7 @@ const latexCache = {};
 export default class LatexRenderer {
 
     /**
-     * Convers given LaTeX formula into HTML represantation.
+     * Convert given LaTeX formula into HTML representation.
      * @param text - ex. '$e^{i\pi} + 1 = 0$'
      */
     static latexToHtml(text: string): string {
@@ -46,5 +46,66 @@ export default class LatexRenderer {
      */
     static isLatexFormula(text: string) {
         return latexFormulaRegex.test(text);
+    }
+
+    /**
+     * Get base64 encoded SVG element
+     * @param latexHTML
+     * @param width
+     * @param height
+     * @param color
+     * @param vAlign
+     * @param hAlign
+     */
+    static getLatexImageData(latexHTML: string, width: string, height: string, color: string, vAlign: string,
+                             hAlign: string): string {
+        const svgEl = LatexRenderer.getSVGElement(latexHTML, width, height, color, vAlign, hAlign);
+        return LatexRenderer.getBase64EncodedImage(svgEl);
+    }
+
+    /**
+     * Get SVG element with LaTeX html included.
+     * @param latexHTML
+     * @param width
+     * @param height
+     * @param color
+     * @param vAlign
+     * @param hAlign
+     */
+    private static getSVGElement(latexHTML: string, width: string, height: string, color: string, vAlign: string,
+                          hAlign: string): SVGSVGElement {
+        const ns = 'http://www.w3.org/2000/svg';
+        const svgEl = document.createElementNS(ns, 'svg');
+        svgEl.setAttribute('width', width);
+        svgEl.setAttribute('height', height);
+
+
+        const foreignObject = document.createElementNS(ns, 'foreignObject');
+        foreignObject.setAttribute('width', width);
+        foreignObject.setAttribute('height', height);
+
+        const div = document.createElement('div');
+        div.setAttribute('style', `display: table-cell; width: ${width}px; height: ${height}px; color: ${color}; vertical-align: ${vAlign === 'center' ? 'middle' : vAlign}; text-align: ${hAlign}`);
+        div.innerHTML = `<style>${katexCss}</style>${latexHTML}`;
+
+        foreignObject.appendChild(div);
+        svgEl.appendChild(foreignObject);
+        return svgEl;
+    }
+
+    /**
+     * Encode SVG element into base64
+     * @param svgEl
+     */
+    private static getBase64EncodedImage(svgEl: SVGSVGElement): string {
+        const xml = new XMLSerializer().serializeToString(svgEl);
+        // make it base64
+        const svg64 = btoa(unescape(encodeURIComponent(xml)));
+        const b64Start = 'data:image/svg+xml;base64,';
+
+        // prepend a "header"
+        const image64 = b64Start + svg64;
+
+        return image64;
     }
 }

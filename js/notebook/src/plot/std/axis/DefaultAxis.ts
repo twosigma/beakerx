@@ -15,7 +15,7 @@
  */
 
 import BigNumberUtils from "beakerx_shared/lib/utils/BigNumberUtils";
-import { Big } from "big.js"
+import {Big, BigSource} from "big.js"
 
 const NANOTIME_TYPE = 'nanotime';
 
@@ -264,20 +264,16 @@ export default class DefaultAxis {
 
   getDefaultAxisLines(pointLeft, pointRight, axisStep) {
     let lines: number[] = [];
-    let valueRight = this.getValue(pointRight);
-    let value = this.getValue(pointLeft);
+    let valueRight: BigSource = this.getValue(pointRight);
+    let value: BigSource = this.getValue(pointLeft);
 
     if (value instanceof Big) {
-      if(value.gte(0)){
-        value = value.div(axisStep).round(0, 3).times(axisStep);
-      } else {
-        value = value.div(axisStep).round(0, 0).times(axisStep);
-      }
+      value = value.gte(0) ? value.div(axisStep).round(0, 3).times(axisStep) : value.div(axisStep).round(0, 0).times(axisStep);
     } else {
-      value = Math.ceil(value / axisStep) * axisStep;
+      value = Math.ceil(value as number / axisStep) * axisStep;
     }
     
-    while (BigNumberUtils.lte(value, valueRight) || BigNumberUtils.lte(value, valueRight+1e-12)) {
+    while (BigNumberUtils.lte(value, valueRight) || BigNumberUtils.lte(value, BigNumberUtils.plus(valueRight, 1e-12))) {
       let pointCoords = this.getPercent(value);
       
       lines.push(pointCoords);
@@ -353,7 +349,7 @@ export default class DefaultAxis {
     return (val - this.axisValL) / this.axisValSpan;
   }
 
-  getValue(pointCoords): any {
+  getValue(pointCoords): BigSource {
     if (pointCoords < 0) { pointCoords = 0; }
     if (pointCoords > 1) { pointCoords = 1; }
 
@@ -364,13 +360,14 @@ export default class DefaultAxis {
     return this.getDefaultAxisStringValue(pointCoords);
   };
 
-  getDefaultAxisStringValue(pointCoords: number) {
+  getDefaultAxisStringValue(pointCoords: number): string {
     let standardResult = 0;
+    let value: number = parseFloat(this.getValue(pointCoords).toString());
 
     if (this.axisType === "log") {
-      standardResult = Math.pow(this.axisBase, this.getValue(pointCoords));
+      standardResult = Math.pow(this.axisBase, value);
     } else {
-      standardResult = this.getValue(pointCoords);
+      standardResult = value;
     }
 
     return standardResult.toLocaleString(undefined, {

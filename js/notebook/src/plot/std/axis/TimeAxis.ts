@@ -250,16 +250,14 @@ export default class TimeAxis extends DefaultAxis {
     let value = this.getValue(pointLeft);
 
     if (value instanceof Big) {
-      if(value.gte(0)){
-        value = value.div(axisStep).round(0, 3).times(axisStep);
-      } else {
-        value = value.div(axisStep).round(0, 0).times(axisStep);
-      }
+      value = value.gte(0) ?
+        value.div(axisStep).round(0, 3).times(axisStep) :
+        value.div(axisStep).round(0, 0).times(axisStep);
     } else {
-      value = this.normalizeValue(Math.ceil(value / axisStep) * axisStep, axisStep);
+      value = this.normalizeValue(Math.ceil(value as number / axisStep) * axisStep, axisStep);
     }
 
-    while (BigNumberUtils.lte(value, valueRight) || BigNumberUtils.lte(value, valueRight+1e-12)) {
+    while (BigNumberUtils.lte(value, valueRight) || BigNumberUtils.lte(value, BigNumberUtils.plus(valueRight, 1e-12))) {
       let pointCoords = this.getPercent(value);
 
       lines.push(pointCoords);
@@ -296,18 +294,19 @@ export default class TimeAxis extends DefaultAxis {
     return this.getTimeAxisStringValue(pointCoords, span);
   };
 
-  getTimeAxisStringValue(pointCoords: number, span: number) {
+  getTimeAxisStringValue(pointCoords: number, span: number): string {
     let value = this.getValue(pointCoords);
-    let timestamp;
-    let nanosec;
+    let timestamp: number;
+    let nanosec : number;
 
     if (this.axisType === "time") {
-      timestamp = Math.ceil(value * 1000) / 1000;
+      timestamp = Math.ceil(value as number * 1000) / 1000;
     }
 
     else if (this.axisType === "nanotime") {
-      timestamp = parseFloat(value.div(1000000).toFixed(0));
-      nanosec = value.mod(1000000000).toFixed(0);
+      let v: Big = new Big(value);
+      timestamp = parseFloat(v.div(1000000).toFixed(0));
+      nanosec = parseFloat(v.mod(1000000000).toFixed(0));
     }
 
     if (BigNumberUtils.lte(span, this.SECOND) && this.axisType === "time") {

@@ -50,12 +50,6 @@ export default class LatexRenderer {
 
     /**
      * Get base64 encoded SVG element
-     * @param latexHTML
-     * @param width
-     * @param height
-     * @param color
-     * @param vAlign
-     * @param hAlign
      */
     static getLatexImageData(latexHTML: string, width: string, height: string, color: string, vAlign: string,
                              hAlign: string): string {
@@ -65,12 +59,6 @@ export default class LatexRenderer {
 
     /**
      * Get SVG element with LaTeX html included.
-     * @param latexHTML
-     * @param width
-     * @param height
-     * @param color
-     * @param vAlign
-     * @param hAlign
      */
     private static getSVGElement(latexHTML: string, width: string, height: string, color: string, vAlign: string,
                           hAlign: string): SVGSVGElement {
@@ -95,7 +83,6 @@ export default class LatexRenderer {
 
     /**
      * Encode SVG element into base64
-     * @param svgEl
      */
     private static getBase64EncodedImage(svgEl: SVGSVGElement): string {
         const xml = new XMLSerializer().serializeToString(svgEl);

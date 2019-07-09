@@ -32,8 +32,8 @@ function easyFormBase() {
       cellIndex = 0;
       beakerxPO.runCodeCellByIndex(cellIndex);
       cellIndex += 1;
-      beakerxPO.runCellToGetEasyForm(cellIndex);
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      browser.pause(1000);
       expect(codeCell.$('legend').getText()).toBe('form0');
       expect(codeCell.$('div.beaker-easyform-container').isEnabled()).toBeTruthy();
     });
@@ -54,7 +54,10 @@ function easyFormBase() {
       var tstText = 'test';
       cellIndex += 1;
       easyForm.$('input[type="text"]').click();
-      browser.keys(['t', 'e', 's', 't']);
+      browser.keys('t'); browser.pause(100);
+      browser.keys('e'); browser.pause(100);
+      browser.keys('s'); browser.pause(100);
+      browser.keys('t'); browser.pause(100);
       expect(easyForm.$('input[type="text"]').getValue()).toBe(tstText);
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, tstText);
     });
@@ -89,7 +92,10 @@ function easyFormBase() {
       var tstText = 'test';
       cellIndex += 1;
       easyForm.$('textarea').click();
-      browser.keys(['t', 'e', 's', 't']);
+      browser.keys('t'); browser.pause(100);
+      browser.keys('e'); browser.pause(100);
+      browser.keys('s'); browser.pause(100);
+      browser.keys('t'); browser.pause(100);
       expect(easyForm.$('textarea').getValue()).toBe(tstText);
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, tstText);
     });

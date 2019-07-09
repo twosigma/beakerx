@@ -60,9 +60,9 @@ describe('Plot groovy js', function () {
       cellIndex += 1;
       var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
       var plotLine = plotHelper.getLineByGIndex(svgElement, 3);
-      expect(plotLine.getCssProperty('stroke').value).toEqual('rgb(212,57,59)');
-      expect(plotLine.getCssProperty('stroke-width').value).toEqual('2px');
-      expect(plotLine.getCssProperty('stroke-dasharray').value).toEqual('2px, 2px');
+      expect(plotLine.getCSSProperty('stroke').value).toEqual('rgb(212,57,59)');
+      expect(plotLine.getCSSProperty('stroke-width').value).toEqual('2px');
+      expect(plotLine.getCSSProperty('stroke-dasharray').value).toEqual('2px, 2px');
     });
   });
 
@@ -100,8 +100,8 @@ describe('Plot groovy js', function () {
     it('Should sets point colors using lists', function(){
       cellIndex += 1;
       var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
-      expect(svgElement.$('rect#i0_0').getCssProperty('fill').value).toEqual('rgb(0,0,0)');
-      expect(svgElement.$('rect#i0_1').getCssProperty('fill').value).toEqual('rgb(255,0,0)');
+      expect(svgElement.$('rect#i0_0').getCSSProperty('fill').value).toEqual('rgb(0,0,0)');
+      expect(svgElement.$('rect#i0_1').getCSSProperty('fill').value).toEqual('rgb(255,0,0)');
     });
   });
 
@@ -145,7 +145,7 @@ describe('Plot groovy js', function () {
     it('Should sets constant band color', function(){
       cellIndex += 1;
       var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
-      expect(svgElement.$('#i1.plot-constband').getCssProperty('fill').value).toEqual('rgb(128,128,128)');
+      expect(svgElement.$('#i1.plot-constband').getCSSProperty('fill').value).toEqual('rgb(128,128,128)');
     });
   });
 
@@ -230,7 +230,7 @@ describe('Plot groovy js', function () {
     it("Plot has advanced styling", function(){
       cellIndex += 1;
       var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
-      expect(svgElement.$$('g#labelg > text.plot-label')[0].getCssProperty('fill').value).toEqual('rgb(0,128,0)');
+      expect(svgElement.$$('g#labelg > text.plot-label')[0].getCSSProperty('fill').value).toEqual('rgb(0,128,0)');
     });
   });
 

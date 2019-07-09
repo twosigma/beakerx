@@ -39,9 +39,10 @@ describe('Autotranslation Pandas', function () {
       browser.pause(1000);
       cellIndex += 1;
       var width = 600, height = 90;
+      beakerxPO.runCodeCellByIndex(cellIndex);
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell1_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell1_case1.png');
     });
 
     it("Display pandas DataFrame on groovy ", function () {
@@ -49,7 +50,7 @@ describe('Autotranslation Pandas', function () {
       var width = 600, height = 90;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell1_case2.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell1_case2.png');
     });
   });
 
@@ -63,7 +64,7 @@ describe('Autotranslation Pandas', function () {
       var width = 220, height = 100;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell3_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell3_case1.png');
     });
 
     it("Display pandas DataFrame on groovy ", function () {
@@ -71,7 +72,7 @@ describe('Autotranslation Pandas', function () {
       var width = 220, height = 100;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell3_case2.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell3_case2.png');
     });
   });
 

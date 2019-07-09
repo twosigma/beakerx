@@ -71,7 +71,7 @@ function BeakerXPageObject() {
 
   this.getDataGridCssPropertyByIndex = function (index, cssProperty) {
     var tblDisplay = this.getTableDisplayByIndex(index);
-    return tblDisplay.$('div.p-DataGrid-viewport').getCssProperty(cssProperty).value;
+    return tblDisplay.$('div.p-DataGrid-viewport').getCSSProperty(cssProperty).value;
   };
 
   this.runCodeCellByIndex = function (index) {
@@ -134,6 +134,7 @@ function BeakerXPageObject() {
       try {
         codeCell = this.runCodeCellByIndex(cellIndex);
         this.kernelIdleIcon.waitForEnabled();
+        browser.pause(1000);
         resultTest = getTextElements(codeCell)[0].getText();
         attempt = 0;
       } catch (e) {
@@ -237,7 +238,8 @@ function BeakerXPageObject() {
   };
 
   this.getCanvasImageData = function (canvas, width, height, x, y) {
-    if (canvas == null || canvas.value == null) {
+    // if (canvas == null || canvas.value == null) {
+    if (canvas == null) {
       return {
         value: 'null'
       };
@@ -253,7 +255,7 @@ function BeakerXPageObject() {
       bufferCanvas.height = height;
       bufferCanvas.getContext('2d').putImageData(imgData, 0, 0);
       return bufferCanvas.toDataURL('image/png').replace(/data:image\/png;base64,/, "");
-    }, canvas.value, sx, sy, width, height);
+    }, canvas, sx, sy, width, height);
     return result;
   };
 
@@ -264,6 +266,12 @@ function BeakerXPageObject() {
     var file2 = new Buffer(imageData, 'base64');
     resemble(file1).compareTo(file2).onComplete(function (data) {
       console.log(fileName + ': misMatch=' + data.misMatchPercentage);
+      if(data.misMatchPercentage > mismatchPercentage){
+        var stream = fs.createWriteStream(absFileName.replace('.png', 'dif.png'));
+        stream.write(data.getBuffer());
+        stream.end();
+        console.log('file with differences are ' + absFileName.replace('.png', 'dif.png'));
+      }
       expect(data.misMatchPercentage).toBeLessThan(mismatchPercentage);
     });
   };

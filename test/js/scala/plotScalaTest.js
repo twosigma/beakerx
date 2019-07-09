@@ -53,8 +53,8 @@ describe('Scala notebook', function () {
   describe('Run cell with points', function(){
     it('Should sets point colors using lists', function(){
       var svgElement = beakerxPO.runCellToGetSvgElement(3);
-      expect(svgElement.$('rect#i0_0').getCssProperty('fill').value).toEqual('rgb(0,0,0)');
-      expect(svgElement.$('rect#i0_1').getCssProperty('fill').value).toEqual('rgb(255,0,0)');
+      expect(svgElement.$('rect#i0_0').getCSSProperty('fill').value).toEqual('rgb(0,0,0)');
+      expect(svgElement.$('rect#i0_1').getCSSProperty('fill').value).toEqual('rgb(255,0,0)');
     });
   });
 
@@ -91,7 +91,7 @@ describe('Scala notebook', function () {
   describe('Run cell with constant bands', function(){
     it('Should sets constant band color', function(){
       var svgElement = beakerxPO.runCellToGetSvgElement(9);
-      expect(svgElement.$('#i1.plot-constband').getCssProperty('fill').value).toEqual('rgb(128,128,128)');
+      expect(svgElement.$('#i1.plot-constband').getCSSProperty('fill').value).toEqual('rgb(128,128,128)');
     });
   });
 
@@ -150,7 +150,7 @@ describe('Scala notebook', function () {
   describe('Run cell with advanced styling', function(){
     it("Plot has advanced styling", function(){
       var svgElement = beakerxPO.runCellToGetSvgElement(17);
-      expect(svgElement.$$('g#labelg > text.plot-label')[0].getCssProperty('fill').value).toEqual('rgb(0,128,0)');
+      expect(svgElement.$$('g#labelg > text.plot-label')[0].getCSSProperty('fill').value).toEqual('rgb(0,128,0)');
     });
   });
 

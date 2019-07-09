@@ -90,7 +90,6 @@ public class TableDisplaySerializer extends ObservableTableDisplaySerializer<Tab
       jgen.writeObjectField("rowLength", values.size());
       jgen.writeObjectField("rowLimit", tableDisplay.ROWS_LIMIT);
       jgen.writeObjectField("rowLimitMsg", tableDisplay.getRowLimitMsg());
-      jgen.writeBooleanField("loadMoreRows", tableDisplay.getLoadMoreRows());
       jgen.writeEndObject();
     }
   }

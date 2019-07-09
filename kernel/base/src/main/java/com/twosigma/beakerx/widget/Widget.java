@@ -67,13 +67,13 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget, Wi
   }
 
   private void openComm(Comm.Buffer buffer) {
-    comm.setData(createContent());
+    comm.setData(createState());
     addValueChangeMsgCallback();
     comm.open(buffer);
   }
 
   protected void openComm(Message parentMessage) {
-    comm.setData(createContent());
+    comm.setData(createState());
     addValueChangeMsgCallback();
     comm.open(parentMessage);
   }
@@ -104,8 +104,8 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget, Wi
     getComm().send(DISPLAY_DATA, new Comm.Data(content));
   }
 
-  private HashMap<String, Serializable> createContent() {
-    HashMap<String, Serializable> result = new HashMap<>();
+  protected HashMap<String, Object> createState() {
+    HashMap<String, Object> result = new HashMap<>();
     result.put(MODEL_MODULE, getModelModuleValue());
     result.put(VIEW_MODULE, getViewModuleValue());
     result.put(VIEW_MODULE_VERSION, getViewModuleVersion());
@@ -144,7 +144,7 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget, Wi
 
   protected abstract void addValueChangeMsgCallback();
 
-  protected abstract HashMap<String, Serializable> content(HashMap<String, Serializable> content);
+  protected abstract HashMap<String, Object> content(HashMap<String, Object> content);
 
   @Override
   public Comm getComm() {
@@ -152,7 +152,8 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget, Wi
   }
 
   public void sendUpdate(String propertyName, Object value) {
-    this.comm.sendUpdate(propertyName, value);
+    HashMap<String, Object> state = createState();
+    this.comm.sendUpdate(propertyName, value, state);
   }
 
   public void sendUpdate(String propertyName, Object value, Message parent) {

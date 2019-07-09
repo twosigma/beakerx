@@ -62,7 +62,7 @@ export class TableDisplayView extends widgets.DOMWidgetView {
   }
 
   public loadMoreRows():void{
-    this.model.set('loadMoreRows', true, {updated_view: this});
+    this.model.set('loadMoreRows', true);
     this.touch();
   }
 
@@ -74,8 +74,14 @@ export class TableDisplayView extends widgets.DOMWidgetView {
   handleUpdateData(): void {
     const change = this.model.get('updateData');
     const currentModel = this.model.get('model');
-    this.model.set('model', {...currentModel, ...change, values: currentModel.values.concat(change.values||[])});
-    this.handleModelUpdate();
+    if (change.hasOwnProperty('values')){
+        this.model.set('model', {...currentModel, ...change, values: currentModel.values.concat(change.values||[])});
+        this._currentScope.updateModelData(this.model.get('model'));
+        this.model.set('loadMoreRows', false);
+    }else {
+        this.model.set('model', {...currentModel, ...change});
+        this.handleModelUpdate();
+    }
   }
 
   showWarning(data): void {

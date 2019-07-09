@@ -118,7 +118,7 @@ public abstract class DOMWidget extends Widget {
   }
 
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+  protected HashMap<String, Object> content(HashMap<String, Object> content) {
     content.put(Layout.LAYOUT, Layout.IPY_MODEL + getLayout().getComm().getCommId());
     if (style != null) {
       content.put(Style.STYLE, Layout.IPY_MODEL + getStyle().getComm().getCommId());

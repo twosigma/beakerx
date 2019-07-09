@@ -112,21 +112,33 @@ public class TableDisplay extends BeakerxWidget {
   private TableActionDetails details;
   private TableDisplayActions displayActions = new TableDisplayActions(this);
 
-
-  private boolean loadMoreRows = false;
-
   public int valuePageSize = 1000;
   public int pageStartIndex = 0;
 
   public void setLoadMoreRows(boolean loadMoreRows) {
     this.pageStartIndex += valuePageSize;
     sendModelUpdate(TableDisplayToJson.serializeValues(this));
-    sendPropertyUpdate("loadMoreRows", false);
   }
 
   @Override
   protected void addValueChangeMsgCallback() {
     getComm().addMsgCallbackList(new ValueChangeMsgCallbackHandler());
+    getComm().addMsgCallbackList(new StateRequestMsgCallbackHandler());
+  }
+
+  public class StateRequestMsgCallbackHandler implements Handler<Message> {
+    @Override
+    public void handle(Message message) {
+      if (message.getContent().containsKey("data")) {
+        Map data = (Map) message.getContent().get("data");
+        if (data.containsKey("method")) {
+          String method = (String) data.get("method");
+          if (method.equals("request_state")) {
+            sendModel();
+          }
+        }
+      }
+    }
   }
 
   public class ValueChangeMsgCallbackHandler implements Handler<Message> {
@@ -155,10 +167,6 @@ public class TableDisplay extends BeakerxWidget {
         setLoadMoreRows(false);
       }
     }
-  }
-
-  public boolean getLoadMoreRows() {
-    return loadMoreRows;
   }
 
   public int ROWS_LIMIT = 100000;

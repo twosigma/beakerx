@@ -30,7 +30,7 @@ public abstract class MultipleSelectionWidget extends SelectionWidget<String[]> 
   private static final ArrayList<String> DEFAULT = new ArrayList<>(singletonList("0"));
 
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+  protected HashMap<String, Object> content(HashMap<String, Object> content) {
     super.content(content);
     content.put(Widget.VALUE, this.value);
     return content;

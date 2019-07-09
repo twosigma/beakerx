@@ -269,8 +269,8 @@ public class Comm {
     return this.create(JupyterMessages.STREAM, Buffer.EMPTY, content);
   }
 
-  public void sendUpdate(final String propertyName, final Object value) {
-    Message message = createUpdateMessage(propertyName, value);
+  public void sendUpdate(final String propertyName, final Object value, HashMap<String, Object> state) {
+    Message message = createUpdateMessage(propertyName, value, state);
     kernel.publish(singletonList(message));
   }
 
@@ -289,10 +289,9 @@ public class Comm {
     return this.createMessage(COMM_MSG, Buffer.EMPTY, new Comm.Data(content), parent);
   }
 
-  public Message createUpdateMessage(String propertyName, Object value) {
+  public Message createUpdateMessage(String propertyName, Object value, HashMap<String, Object> state) {
     HashMap<String, Serializable> content = new HashMap<>();
     content.put(METHOD, UPDATE);
-    HashMap<Object, Object> state = new HashMap<>();
     state.put(propertyName, value);
     content.put(STATE, state);
     content.put(BUFFER_PATHS, new HashMap<>());

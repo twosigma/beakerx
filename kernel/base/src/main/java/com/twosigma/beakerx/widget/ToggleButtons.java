@@ -45,7 +45,7 @@ public class ToggleButtons  extends SingleSelectionWidget{
   
 
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+  protected HashMap<String, Object> content(HashMap<String, Object> content) {
     super.content(content);
     content.put("button_style", button_style);
     return content;

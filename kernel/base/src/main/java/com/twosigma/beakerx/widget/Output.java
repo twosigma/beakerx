@@ -78,7 +78,7 @@ public class Output extends DOMWidget {
   }
 
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+  protected HashMap<String, Object> content(HashMap<String, Object> content) {
     super.content(content);
     content.put(MSG_ID, "");
     content.put(OUTPUTS, new ArrayList<>().toArray());
@@ -107,10 +107,11 @@ public class Output extends DOMWidget {
 
   private synchronized void send(boolean isError, String text) {
     List<Message> list = new ArrayList<>();
-    list.add(getComm().createUpdateMessage(MSG_ID, getComm().getParentMessage().getHeader().getId()));
+    HashMap<String, Object> state = createState();
+    list.add(getComm().createUpdateMessage(MSG_ID, getComm().getParentMessage().getHeader().getId(), state));
     Map<String, Serializable> asMap = addOutput(isError, text);
     list.add(getComm().createOutputContent(asMap));
-    list.add(getComm().createUpdateMessage(MSG_ID, ""));
+    list.add(getComm().createUpdateMessage(MSG_ID, "", state));
     getComm().publish(list);
   }
 
@@ -154,9 +155,10 @@ public class Output extends DOMWidget {
 
   private void display(HashMap<String, Serializable> content) {
     List<Message> list = new ArrayList<>();
-    list.add(getComm().createUpdateMessage(MSG_ID, getComm().getParentMessage().getHeader().getId()));
+    HashMap<String, Object> state = createState();
+    list.add(getComm().createUpdateMessage(MSG_ID, getComm().getParentMessage().getHeader().getId(), state));
     list.add(getComm().createMessage(DISPLAY_DATA, Comm.Buffer.EMPTY, new Comm.Data(content)));
-    list.add(getComm().createUpdateMessage(MSG_ID, ""));
+    list.add(getComm().createUpdateMessage(MSG_ID, "",state));
     getComm().publish(list);
   }
 

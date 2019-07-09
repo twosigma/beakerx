@@ -120,10 +120,10 @@ export class BeakerXDataGrid extends DataGrid {
   }
 
   scrollTo(x: number, y: number): void {
+    super.scrollTo(x, y);
     if(this.tableDisplayView.canLoadMore() && this.maxScrollY<=y ){
       this.tableDisplayView.loadMoreRows();
     }
-    super.scrollTo(x, y);
   }
 
   getColumn(config: CellRenderer.ICellConfig): DataGridColumn {

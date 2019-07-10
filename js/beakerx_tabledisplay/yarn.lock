@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@jupyter-widgets/base@^2.0.0-rc.2", "@jupyter-widgets/base@^2.0.1":
+"@jupyter-widgets/base@^1.2.5 || ^2.0.1", "@jupyter-widgets/base@^2.0.0-rc.2":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@jupyter-widgets/base/-/base-2.0.1.tgz#b31b5c8b2206bb008216f32abd488e5414bce3b7"
   integrity sha512-jRNeQzvEf6MMGUaEPfBzgZ+IT4XOInpw8Ef+CunNUmUCiQZ8WfNpFR671S0Vu3xO6yGKMTU2QPdk8/aCsJRw9w==

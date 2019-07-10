@@ -31,6 +31,7 @@
   "devDependencies": {
     "@jupyter-widgets/base": "^2.0.1",
     "@jupyter-widgets/controls": "^2.0.0-rc.2",
+    "@types/big.js": "^4.0.5",
     "@types/chai": "^4.1.1",
     "@types/d3": "^5.0.0",
     "@types/jquery": "^3.3.0",

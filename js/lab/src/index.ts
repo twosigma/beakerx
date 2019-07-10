@@ -15,20 +15,19 @@
  */
 
 import './global.env';
-import { IJupyterWidgetRegistry } from '@jupyter-widgets/base';
-import { IPlugin } from '@phosphor/application';
-import { JupyterLab, JupyterLabPlugin } from '@jupyterlab/application';
+import {ILabShell, JupyterFrontEnd, JupyterFrontEndPlugin} from '@jupyterlab/application';
 import { ISettingRegistry } from "@jupyterlab/coreutils";
 import BeakerxExtension from './plugin';
 import BeakerxTreeJupyterLabPlugin from "./tree";
 import RequirejsLoader from "./plugin/requirejs";
 import { themeLightPlugin, themeDarkPlugin } from './theme';
+import {IJupyterWidgetRegistry} from "@jupyter-widgets/base";
 import beakerx from "./beakerx";
 
-export const beakerx_ext: JupyterLabPlugin<void>|IPlugin<JupyterLab, void> = {
+export const beakerx_ext: JupyterFrontEndPlugin<void> = {
   id: 'beakerx',
-  requires: [IJupyterWidgetRegistry, ISettingRegistry],
-  activate: (app: JupyterLab, widgets: IJupyterWidgetRegistry, settings: ISettingRegistry): void => {
+  requires: [IJupyterWidgetRegistry, ISettingRegistry, ILabShell],
+  activate: (app: JupyterFrontEnd, widgets: IJupyterWidgetRegistry, settings: ISettingRegistry, labShell: ILabShell): void => {
     widgets.registerWidget({
       name: 'beakerx',
       version: beakerx.version,
@@ -40,24 +39,24 @@ export const beakerx_ext: JupyterLabPlugin<void>|IPlugin<JupyterLab, void> = {
          exports: beakerx
     });
 
-    app.docRegistry.addWidgetExtension('Notebook', new BeakerxExtension(app, settings));
+    app.docRegistry.addWidgetExtension('Notebook', new BeakerxExtension(app, settings, labShell));
   },
   autoStart: true
 };
 
-export const tree_ext: JupyterLabPlugin<void> = BeakerxTreeJupyterLabPlugin;
+export const tree_ext: JupyterFrontEndPlugin<void> = BeakerxTreeJupyterLabPlugin;
 
-export const requirejs_ext: JupyterLabPlugin<void> = {
+export const requirejs_ext: JupyterFrontEndPlugin<void> = {
   id: 'beakerx:requirejs',
   autoStart: true,
   requires: [],
-  activate: (app: JupyterLab): Promise<void> => {
+  activate: (app: JupyterFrontEnd): Promise<void> => {
     return RequirejsLoader.load();
   }
 };
 
-export const beakerx_theme_light_ext: JupyterLabPlugin<void> = themeLightPlugin;
-export const beakerx_theme_dark_ext: JupyterLabPlugin<void> = themeDarkPlugin;
+export const beakerx_theme_light_ext: JupyterFrontEndPlugin<void> = themeLightPlugin;
+export const beakerx_theme_dark_ext: JupyterFrontEndPlugin<void> = themeDarkPlugin;
 
 export default [
   requirejs_ext,

@@ -19,7 +19,7 @@ import { ISettingRegistry, PageConfig } from "@jupyterlab/coreutils";
 import { ServerConnection } from "@jupyterlab/services";
 import { NotebookPanel } from "@jupyterlab/notebook";
 import { CodeCell } from "@jupyterlab/cells";
-import { JupyterLab } from "@jupyterlab/application";
+import {ILabShell, JupyterFrontEnd} from "@jupyterlab/application";
 
 export default class UIOptionFeaturesHelper {
 
@@ -29,9 +29,10 @@ export default class UIOptionFeaturesHelper {
   private improveFontsFeature: ImproveFontsFeature;
 
   constructor(
-    private app: JupyterLab,
+    private app: JupyterFrontEnd,
     private settings: ISettingRegistry,
-    private panel: NotebookPanel
+    private panel: NotebookPanel,
+    private labShell: ILabShell
   ) {
   }
 
@@ -42,7 +43,7 @@ export default class UIOptionFeaturesHelper {
     this.autoSaveFeature = new AutoSaveFeature(this.settings, this.app.commands);
     this.improveFontsFeature = new ImproveFontsFeature();
 
-    this.app.shell.activeChanged.connect((sender, args) => {
+    this.labShell.activeChanged.connect((sender, args) => {
       if (args.newValue !== this.panel) {
         return;
       }

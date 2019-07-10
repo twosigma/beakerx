@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit
 
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter
 import com.twosigma.beakerx.table._
+import com.twosigma.beakerx.table.action.TableActionDetails
 import com.twosigma.beakerx.table.format.TableDisplayStringFormat
 import com.twosigma.beakerx.table.highlight.TableDisplayCellHighlighter
 import com.twosigma.beakerx.table.renderer.TableDisplayCellRenderer
@@ -106,6 +107,8 @@ class TableDisplay private(tableDisplay: com.twosigma.beakerx.table.TableDisplay
 
   def display() = tableDisplay.display()
 
+
+  def details: TableActionDetails = tableDisplay.getDetails
 
   def setStringFormatForTimes(timeUnit: TimeUnit) = tableDisplay.setStringFormatForTimes(timeUnit)
 

@@ -98,10 +98,13 @@ export class BeakerXDataGridModel extends DataModel {
   }
 
   rowCount(region: DataModel.RowRegion): number {
-    return region === 'body' ? this.rowManager.rows.length : this.headerRowsCount;
+    if (region !== 'body') { return this.headerRowsCount; }
+    if (this.rowManager === null) { return 0; }
+    return this.rowManager.rows.length;
   }
 
   columnCount(region: DataModel.ColumnRegion): number {
+    if (this.store === null) { return 0; }
     const frozenColumnsCount = selectVisibleColumnsFrozenCount(this.store.state);
 
     if (region === 'row-header') {

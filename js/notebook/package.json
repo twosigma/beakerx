@@ -46,14 +46,14 @@
     }
   },
   "devDependencies": {
-    "@jupyter-widgets/base": "^1.2.4",
-    "@jupyter-widgets/controls": "^1.2.1",
+    "@jupyter-widgets/base": "^2.0.1",
+    "@jupyter-widgets/controls": "^2.0.0-rc.2",
     "@types/chai": "^4.1.1",
     "@types/d3": "^5.0.0",
     "@types/jquery": "^3.3.0",
     "@types/jqueryui": "^1.12.2",
     "@types/mocha": "^2.2.46",
-    "@types/node": "^11.13.7",
+    "@types/node": "^11.13.15",
     "base64-inline-loader": "^1.1.1",
     "chai": "^4.1.2",
     "copy-webpack-plugin": "^5.0.3",
@@ -77,7 +77,7 @@
     "ts-node": "^4.1.0",
     "tsconfig-paths": "^3.8.0",
     "tsconfig-paths-webpack-plugin": "^3.2.0",
-    "typescript": "^3.4.5",
+    "typescript": "^3.5.2",
     "uglifyjs-webpack-plugin": "^2.1.2",
     "url-loader": "^1.1.2",
     "webpack": "^4.30.0",
@@ -85,7 +85,7 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
-    "@jupyterlab/coreutils": "^1.0.10",
+    "@jupyterlab/coreutils": "^3.0.0",
     "@phosphor/datagrid": "^0.1.5",
     "@phosphor/datastore": "^0.7.0",
     "@phosphor/widgets": "^1.5.0",
@@ -95,6 +95,7 @@
     "hard-source-webpack-plugin": "^0.5.1",
     "jquery": "^3.3.1",
     "jquery-ui": "^1.12.1",
+    "katex": "^0.10.2",
     "moment": "^2.17.1",
     "moment-timezone": "^0.5.13",
     "reselect": "^3.0.1",

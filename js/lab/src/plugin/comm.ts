@@ -78,7 +78,7 @@ const getMsgHandlers = (
   }
 });
 
-export const registerCommTargets = (panel: NotebookPanel, context: DocumentRegistry.IContext<INotebookModel>): void => {
+export const registerCommTargets = async (panel: NotebookPanel, context: DocumentRegistry.IContext<INotebookModel>): Promise<void> => {
   const session = context.session;
   const kernelInstance = session.kernel;
   const notebook = panel.content;
@@ -96,9 +96,10 @@ export const registerCommTargets = (panel: NotebookPanel, context: DocumentRegis
     comm.onMsg = msgHandlers[BEAKER_TAG_RUN]
   });
 
-  kernelInstance.requestCommInfo({}).then((msg): void => {
+  let msg = await kernelInstance.requestCommInfo({});
+  if (msg.content.status === 'ok') {
     assignMsgHandlersToExistingComms(msg.content.comms, kernelInstance, msgHandlers);
-  });
+  }
 };
 
 const assignMsgHandlersToExistingComms = (

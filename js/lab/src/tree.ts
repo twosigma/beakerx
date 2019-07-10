@@ -16,15 +16,15 @@
 
 declare function require(moduleName: string): any;
 
-import { JupyterLabPlugin, JupyterLab, ILayoutRestorer } from "@jupyterlab/application";
-import { ICommandPalette, InstanceTracker } from "@jupyterlab/apputils";
+import { JupyterFrontEndPlugin, ILayoutRestorer, JupyterFrontEnd} from "@jupyterlab/application";
+import { ICommandPalette, WidgetTracker } from "@jupyterlab/apputils";
 import { JSONExt } from "@phosphor/coreutils";
 import { PageConfig } from "@jupyterlab/coreutils";
 
 const BeakerXTreeLib = require("../lib/tree.js").default;
 const TreeWidget = BeakerXTreeLib.TreeWidget;
 
-function activate(app: JupyterLab, palette: ICommandPalette, restorer: ILayoutRestorer) {
+function activate(app: JupyterFrontEnd, palette: ICommandPalette, restorer: ILayoutRestorer) {
   let widget:any;
 
   const command: string = 'beakerx:tree';
@@ -45,7 +45,7 @@ function activate(app: JupyterLab, palette: ICommandPalette, restorer: ILayoutRe
       }
 
       if (!widget.isAttached) {
-        app.shell.addToMainArea(widget);
+        app.shell.add(widget, "main");
       } else {
         widget.update();
       }
@@ -55,7 +55,7 @@ function activate(app: JupyterLab, palette: ICommandPalette, restorer: ILayoutRe
   });
 
   palette.addItem({ command, category: 'BeakerX' });
-  let tracker = new InstanceTracker<any>({ namespace: 'beakerx' });
+  let tracker = new WidgetTracker({ namespace: 'beakerx' });
   restorer.restore(tracker, {
     command,
     args: () => JSONExt.emptyObject,
@@ -63,7 +63,7 @@ function activate(app: JupyterLab, palette: ICommandPalette, restorer: ILayoutRe
   });
 }
 
-const tree: JupyterLabPlugin<void> = {
+const tree: JupyterFrontEndPlugin<void> = {
   id: 'beakerx_tree',
   autoStart: true,
   requires: [ICommandPalette, ILayoutRestorer],

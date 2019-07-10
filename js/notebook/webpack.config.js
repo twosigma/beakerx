@@ -24,23 +24,34 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 // Custom webpack loaders are generally the same for all webpack bundles, hence
 // stored in a separate local variable.
-const rules = [
-  { test: /\.ts$/, loader: 'ts-loader', options: {
+const rules = [{
+  test: /\.ts$/, loader: 'ts-loader', options: {
     transpileOnly: true
-  }},
-  { test: /\.css$/, use: [
+  }
+}, {
+  test: /\.css$/,
+  exclude: [
+    path.resolve(__dirname, './node_modules/katex')
+  ],
+  use: [
     "style-loader",
     "css-loader"
-  ] },
-  { test: /\.scss$/, use: [
+  ]
+}, {
+  test: /katex(.)*\.css/, use: [
+    "css-loader"
+  ]
+}, {
+  test: /\.scss$/, use: [
     "style-loader",
     "css-loader",
     "sass-loader"
-  ] },
+  ]
+},
   { test: /\.(jpg|png|gif)$/, loader: "url-loader?limit=10000" },
   { test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, loader: "base64-inline-loader?limit=10000&name=[name].[ext]" },
   { test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: "base64-inline-loader?limit=10000&name=[name].[ext]" },
-  { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&mimetype=application/octet-stream" },
+  { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=100000&mimetype=application/octet-stream" },
   { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader" },
   { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&mimetype=image/svg+xml" },
   { test: /\.html$/, use: 'html-loader' }

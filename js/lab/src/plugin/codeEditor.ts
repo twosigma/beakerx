@@ -16,59 +16,39 @@
 
 import { CodeMirrorEditor } from "@jupyterlab/codemirror";
 import { Cell, CodeCell } from '@jupyterlab/cells';
-
-import 'codemirror/mode/groovy/groovy';
-import {NotebookPanel} from "@jupyterlab/notebook";
+import { NotebookPanel } from "@jupyterlab/notebook";
+import CodeMirror = require("codemirror");
 
 const LINE_COMMENT_CHAR = '//';
 const LINE_MAGIC_MODE = 'line_magic';
-const CodeMirror = require("codemirror");
 
-export const registerCommentOutCmd = (panel: NotebookPanel) => {
-  const cells = panel.content.widgets || [];
+const getCodeCellsWithCodeMirrorEditor = (panel: NotebookPanel): CodeCell[] => (
+  ((panel.content.widgets || []) as Cell[])
+    .filter(cell => (cell instanceof CodeCell)) as CodeCell[])
+    .filter(cell => (cell.editor instanceof CodeMirrorEditor));
 
-  cells
-    .filter((cell) => (cell.editor instanceof CodeMirrorEditor))
-    .forEach(setCodeMirrorLineComment);
+export const registerCommentOutCmd = (panel: NotebookPanel): void => {
+  getCodeCellsWithCodeMirrorEditor(panel).forEach(setCodeMirrorLineComment);
 };
 
-const setCodeMirrorLineComment = (cell: Cell) => {
-  if (!(cell instanceof CodeCell)) {
+const setCodeMirrorLineComment = (cell: CodeCell): void => {
+  const cmEditor: CodeMirror.Editor = (cell.editor as CodeMirrorEditor).editor;
+  const doc: CodeMirror.Doc = cmEditor.getDoc();
+  const mode = doc.getMode();
+  if(mode.lineComment) {
     return;
   }
-
-  const editor = <CodeMirrorEditor>cell.editor;
-  const cmEditor = editor.editor;
-  const mode = cmEditor.getMode();
-
-  if (mode.lineComment) {
-    return;
-  }
-
-  const CodeMiror = cmEditor.constructor;
-  const doc = editor.doc;
-
-  CodeMiror.extendMode(mode.name, { 'lineComment': LINE_COMMENT_CHAR });
-
+  CodeMirror.extendMode(mode.name, { 'lineComment': LINE_COMMENT_CHAR });
   mode.lineComment = LINE_COMMENT_CHAR;
-  doc.mode = mode;
+  doc['mode'] = mode;
 };
 
 export function extendHighlightModes(panel: NotebookPanel) {
-  const cells = panel.content.widgets || [];
-
-  cells
-    .filter((cell) => (cell.editor instanceof CodeMirrorEditor))
-    .forEach(setLineMagicForCell);
-
+  getCodeCellsWithCodeMirrorEditor(panel).forEach(setLineMagicForCell);
   CodeMirror.defineInitHook(addLineMagicsOverlay);
 }
 
-function setLineMagicForCell(cell: Cell) {
-  if (!(cell instanceof CodeCell)) {
-    return;
-  }
-
+function setLineMagicForCell(cell: CodeCell) {
   addLineMagicsOverlay((<CodeMirrorEditor>cell.editor).editor);
 }
 
@@ -98,31 +78,31 @@ const lineMagicOverlay = {
   }
 };
 
-export function autoHighlightLineMagics(code_mirror) {
-  const current_mode = code_mirror.getOption('mode');
+export function autoHighlightLineMagics(editor: CodeMirror.Editor) {
+  const mode = editor.getOption('mode');
 
-  if (current_mode === LINE_MAGIC_MODE) {
+  if (mode === LINE_MAGIC_MODE) {
     return;
   }
 
   const re = /^%(%classpath|%spark|\w+)/;
 
-  code_mirror.eachLine((line) => {
+  editor.getDoc().eachLine(line => {
     if (line && line.text.match(re) !== null) {
       // Add an overlay mode to recognize the first line as "line magic" instead
       // of the mode used for the rest of the cell.
       CodeMirror.defineMode(LINE_MAGIC_MODE, (config) => {
-        return CodeMirror.overlayMode(CodeMirror.getMode(config, current_mode), lineMagicOverlay);
+        return CodeMirror.overlayMode(CodeMirror.getMode(config, mode), lineMagicOverlay);
       });
 
-      code_mirror.setOption('mode', LINE_MAGIC_MODE);
+      editor.setOption('mode', LINE_MAGIC_MODE);
 
       return false;
     }
   });
 }
 
-export function addLineMagicsOverlay(editor: any) {
+export function addLineMagicsOverlay(editor: CodeMirror.Editor) {
   autoHighlightLineMagics(editor);
 
   editor.off("focus", autoHighlightLineMagics);

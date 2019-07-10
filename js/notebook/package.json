@@ -73,7 +73,6 @@
     "flatpickr": "^4.5.0",
     "jquery": "^3.3.1",
     "jquery-ui": "^1.12.1",
-    "katex": "^0.10.2",
     "moment": "^2.17.1",
     "moment-timezone": "^0.5.13",
     "reselect": "^3.0.1",

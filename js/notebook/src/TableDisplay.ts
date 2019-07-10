@@ -58,7 +58,11 @@ export class TableDisplayView extends widgets.DOMWidgetView {
   }
 
   public canLoadMore(): boolean{
-    return this.model.get('loadMoreRows') == undefined || this.model.get('loadMoreRows') == false;
+    return this.isEndlessLoadingMode() && (this.model.get('loadMoreRows') == undefined || this.model.get('loadMoreRows') == false);
+  }
+
+  private isEndlessLoadingMode():boolean {
+    return this.model.get('model').loadingMode == 'ENDLESS';
   }
 
   public loadMoreRows():void{

@@ -48,6 +48,7 @@ public class TableDisplaySerializer extends ObservableTableDisplaySerializer<Tab
   public static final String TABLE_DISPLAY = "TableDisplay";
   public static final String CELL_HIGHLIGHTERS = "cellHighlighters";
   public static final String TOOLTIPS = "tooltips";
+  public static final String LOADING_MODE = "loadingMode";
 
   @Override
   public void serialize(TableDisplay tableDisplay,
@@ -84,13 +85,31 @@ public class TableDisplaySerializer extends ObservableTableDisplaySerializer<Tab
       jgen.writeObjectField(HAS_INDEX, tableDisplay.getHasIndex());
       jgen.writeObjectField(TIME_ZONE, tableDisplay.getTimeZone());
       List<List<?>> values = tableDisplay.getValues();
-      List list = TableDisplayToJson.tableDisplayValues(tableDisplay);
-      jgen.writeObjectField(VALUES, list);
-      jgen.writeBooleanField("tooManyRows", false);
+      jgen.writeObjectField(LOADING_MODE, TableDisplay.getLoadingMode());
+      if (TableDisplay.getLoadingMode().equals(TableDisplay.LoadingMode.ALL)) {
+        loadingAllMode(tableDisplay, jgen, values);
+      } else {
+        loadingPageMode(tableDisplay, jgen);
+      }
+      jgen.writeEndObject();
+    }
+  }
+
+  private void loadingPageMode(TableDisplay tableDisplay, JsonGenerator jgen) throws IOException {
+    List list = TableDisplayToJson.tableDisplayValues(tableDisplay);
+    jgen.writeObjectField(VALUES, list);
+  }
+
+  private void loadingAllMode(TableDisplay tableDisplay, JsonGenerator jgen, List<List<?>> values) throws IOException {
+    if (values.size() > tableDisplay.ROWS_LIMIT) {
+      jgen.writeObjectField(VALUES, values.subList(0, tableDisplay.ROW_LIMIT_TO_INDEX));
+      jgen.writeBooleanField("tooManyRows", true);
       jgen.writeObjectField("rowLength", values.size());
       jgen.writeObjectField("rowLimit", tableDisplay.ROWS_LIMIT);
       jgen.writeObjectField("rowLimitMsg", tableDisplay.getRowLimitMsg());
-      jgen.writeEndObject();
+    } else {
+      jgen.writeObjectField("values", values);
+      jgen.writeBooleanField("tooManyRows", false);
     }
   }
 }

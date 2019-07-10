@@ -303,15 +303,15 @@ public class TableDisplayToJson {
     List list = Collections.EMPTY_LIST;
     List<List<?>> values = tableDisplay.getValues();
     int endIndex = valueEndIndex(tableDisplay, values);
-    if (tableDisplay.pageStartIndex < endIndex) {
-      list = values.subList(tableDisplay.pageStartIndex, endIndex);
+    if (tableDisplay.getPageIndex() < endIndex) {
+      list = values.subList(tableDisplay.getPageIndex(), endIndex);
     }
     return list;
   }
 
   private static int valueEndIndex(TableDisplay tableDisplay, List<List<?>> values) {
-    return (tableDisplay.pageStartIndex + tableDisplay.valuePageSize > values.size())
+    return (tableDisplay.getPageIndex() + tableDisplay.PAGE_SIZE > values.size())
             ? values.size()
-            : tableDisplay.pageStartIndex + tableDisplay.valuePageSize;
+            : tableDisplay.getPageIndex() + tableDisplay.PAGE_SIZE;
   }
 }

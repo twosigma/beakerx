@@ -112,11 +112,31 @@ public class TableDisplay extends BeakerxWidget {
   private TableActionDetails details;
   private TableDisplayActions displayActions = new TableDisplayActions(this);
 
-  public int valuePageSize = 1000;
-  public int pageStartIndex = 0;
+  public enum LoadingMode {
+    ENDLESS,
+    ALL
+  }
+
+  private static LoadingMode loadingMode = LoadingMode.ALL;
+
+  public static LoadingMode getLoadingMode() {
+    return loadingMode;
+  }
+
+  public static void setLoadingMode(LoadingMode lm) {
+    loadingMode = lm;
+  }
+
+  public static int PAGE_SIZE = 1000;
+  private int pageIndex = 0;
+
+
+  public int getPageIndex() {
+    return pageIndex;
+  }
 
   public void setLoadMoreRows(boolean loadMoreRows) {
-    this.pageStartIndex += valuePageSize;
+    this.pageIndex += PAGE_SIZE;
     sendModelUpdate(TableDisplayToJson.serializeValues(this));
   }
 

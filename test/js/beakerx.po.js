@@ -289,12 +289,12 @@ function BeakerXPageObject() {
     heapSizeInput.setValue(value);
     browser.waitUntil(function () {
       var indicator = browser.$('span.saved');
-      return indicator.isVisible();
+      return indicator.isDisplayed();
     });
   };
 
   this.addPropertyPair = function () {
-    var addPropertyButton = $('button#add_property_jvm_sett');
+    var addPropertyButton = browser.$('button#add_property_jvm_sett');
     addPropertyButton.click();
   };
 
@@ -303,7 +303,7 @@ function BeakerXPageObject() {
     browser.$('div#properties_property input[placeholder="value"]').setValue(value);
     browser.waitUntil(function () {
       var indicator = browser.$('span.saved');
-      return indicator.isVisible();
+      return indicator.isDisplayed();
     });
   };
 

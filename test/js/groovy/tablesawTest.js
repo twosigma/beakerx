@@ -58,7 +58,7 @@ describe('Tests for combination of code and magics. ', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell3_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell3_case1.png');
     });
   });
 
@@ -69,7 +69,7 @@ describe('Tests for combination of code and magics. ', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell4_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell4_case1.png');
     });
   });
 
@@ -97,7 +97,7 @@ describe('Tests for combination of code and magics. ', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell7_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell7_case1.png');
     });
   });
 
@@ -108,7 +108,7 @@ describe('Tests for combination of code and magics. ', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell8_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell8_case1.png');
     });
   });
 
@@ -138,7 +138,7 @@ describe('Tests for combination of code and magics. ', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell11_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell11_case1.png');
     });
   });
 
@@ -149,7 +149,7 @@ describe('Tests for combination of code and magics. ', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell12_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell12_case1.png');
     });
   });
 
@@ -160,7 +160,7 @@ describe('Tests for combination of code and magics. ', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell13_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell13_case1.png');
     });
   });
 
@@ -171,7 +171,7 @@ describe('Tests for combination of code and magics. ', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell14_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell14_case1.png');
     });
   });
 
@@ -182,7 +182,7 @@ describe('Tests for combination of code and magics. ', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell15_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell15_case1.png');
     });
 
     it('Print claster formation. ', function () {
@@ -191,7 +191,7 @@ describe('Tests for combination of code and magics. ', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell16_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell16_case1.png');
     });
 
     it('Print centroids for each claster. ', function () {
@@ -200,7 +200,7 @@ describe('Tests for combination of code and magics. ', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell17_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell17_case1.png');
     });
 
     it('Gets the distortion for our model. ', function () {
@@ -258,7 +258,7 @@ describe('Tests for combination of code and magics. ', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell34_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell34_case1.png');
     });
 
     it('Should display Plot with stems and line. ', function () {

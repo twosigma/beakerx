@@ -185,7 +185,7 @@ describe('Spark UI', function () {
       });
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, 630, 46);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell4_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell4_case1.png');
     });
 
     it('Should display table', function () {
@@ -196,7 +196,7 @@ describe('Spark UI', function () {
       });
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, 630, 46);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell5_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell5_case1.png');
     });
   });
 

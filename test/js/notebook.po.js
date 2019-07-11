@@ -49,7 +49,7 @@ var NotebookPageObject = function () {
       return autosaveStatus === '(autosaved)';
     }, 4000);
     browser.$('=File').click();
-    browser.waitForEnabled('=Close and Halt');
+    browser.$('=Close and Halt').waitForEnabled();
     browser.$('=Close and Halt').click();
   };
 
@@ -96,6 +96,7 @@ var NotebookPageObject = function () {
   };
 
   this.getAllOutputsExecuteResult = function (codeCell) {
+    codeCell.$('div.output_subarea.output_result').waitForEnabled();
     return codeCell.$$('div.output_subarea.output_result');
   };
 
@@ -117,8 +118,8 @@ var NotebookPageObject = function () {
 
   this.callAutocompleteAndGetItsList = function (codeCell, codeStr) {
     codeCell.scrollIntoView();
-    codeCell.click('div.CodeMirror-code[role="presentation"]');
-    codeCell.keys(codeStr);
+    codeCell.$('div.CodeMirror-code[role="presentation"]').click();
+    browser.keys(codeStr);
     browser.keys("Tab");
     browser.keys('\uE000');
     browser.waitUntil(function () {
@@ -129,8 +130,8 @@ var NotebookPageObject = function () {
 
   this.callDocAndGetItsTooltip = function (codeCell, codeStr) {
     codeCell.scrollIntoView();
-    codeCell.click('div.CodeMirror-code[role="presentation"]');
-    codeCell.keys(codeStr);
+    codeCell.$('div.CodeMirror-code[role="presentation"]').click();
+    browser.keys(codeStr);
     browser.keys(["Shift", "Tab"]);
     browser.keys('\uE000');
     browser.waitUntil(function () {
@@ -141,16 +142,15 @@ var NotebookPageObject = function () {
 
   this.openUIWindow = function(){
     browser.newWindow('http://127.0.0.1:8888/tree');
+    browser.newWindow('http://127.0.0.1:8888/tree');
     browser.pause(1000);
-    browser.window(browser.windowHandles().value[0]);
+    browser.switchWindow('http://127.0.0.1:8888/tree');
   };
 
   this.setJVMProperties = function (heapSize, key, value, url) {
     this.openUIWindow();
-    browser.window(browser.windowHandles().value[1]);
-    browser.pause(1000);
-    browser.waitForEnabled('a#beakerx_tab');
-    browser.click('a#beakerx_tab');
+    browser.$('a#beakerx_tab').waitForEnabled();
+    browser.$('a#beakerx_tab').click();
     browser.$$('li.p-TabBar-tab')[0].click();
 
     browser.$('input#heap_GB').waitForEnabled();
@@ -162,10 +162,7 @@ var NotebookPageObject = function () {
       this.addPropertyPair();
       this.setProperty(key, value);
     }
-
     browser.pause(2000);
-    browser.window();
-    browser.window(browser.windowHandles().value[0]);
   }
 
 };

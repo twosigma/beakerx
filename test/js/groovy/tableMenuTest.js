@@ -56,7 +56,7 @@ describe('Testing of table Actions ', function () {
 
     var canvas = codeCell.$('canvas');
     var imageData = beakerxPO.getCanvasImageData(canvas, 250, 150);
-    beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+    beakerxPO.checkImageData(imageData, imageDir, fileName);
   };
 
   function createColumnMenu(cellIndex, codeCell, menuName, fileName){
@@ -65,7 +65,7 @@ describe('Testing of table Actions ', function () {
 
     var canvas = codeCell.$('canvas');
     var imageData = beakerxPO.getCanvasImageData(canvas, 250, 150);
-    beakerxPO.createTableImage(imageData.value, imageDir, fileName);
+    beakerxPO.createTableImage(imageData, imageDir, fileName);
   };
 
   var cellIndex;
@@ -82,7 +82,7 @@ describe('Testing of table Actions ', function () {
       browser.pause(500);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell1_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell1_case1.png');
     });
 
     it('Hide All Columns', function () {
@@ -147,7 +147,7 @@ describe('Testing of table Actions ', function () {
       var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell2_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell2_case1.png');
     });
 
     it('Should format index column to "formatted integer"', function () {
@@ -157,7 +157,7 @@ describe('Testing of table Actions ', function () {
       var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell2_case2.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell2_case2.png');
     });
   });
 
@@ -196,7 +196,7 @@ describe('Testing of table Actions ', function () {
 
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell3_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell3_case1.png');
     });
 
     it('Should clear selection', function () {
@@ -207,7 +207,7 @@ describe('Testing of table Actions ', function () {
       var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell3_case2.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell3_case2.png');
     });
   });
 
@@ -304,7 +304,7 @@ describe('Testing of table Actions ', function () {
 
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, 250, 150);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell4_case13.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell4_case13.png');
     });
   });
 
@@ -326,7 +326,7 @@ describe('Testing of table Actions ', function () {
 
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, 250, 150);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell5_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell5_case1.png');
     });
   });
 
@@ -341,7 +341,7 @@ describe('Testing of table Actions ', function () {
       browser.keys('9');
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, 250, 115);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell5_case2.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell5_case2.png');
     });
   });
 
@@ -357,7 +357,7 @@ describe('Testing of table Actions ', function () {
       browser.keys('9');
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, 250, 65);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell5_case3.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell5_case3.png');
     });
   });
 

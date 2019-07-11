@@ -44,7 +44,7 @@ describe('(Groovy) Testing Map Like Tables', function () {
       beakerxPO.runCodeCellByIndex(cellIndex);
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
 
     it('An ArrayList is rendered correctly ', function () {
@@ -53,7 +53,7 @@ describe('(Groovy) Testing Map Like Tables', function () {
       var width = 122, height = 67;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
 
     it('A Map is rendered correctly ', function () {
@@ -62,7 +62,7 @@ describe('(Groovy) Testing Map Like Tables', function () {
       var width = 122, height = 67;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
 
     it('A Map is rendered correctly ', function () {
@@ -71,7 +71,7 @@ describe('(Groovy) Testing Map Like Tables', function () {
       var width = 130, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
 
     it('A List inside a List is rendered correctly ', function () {
@@ -80,7 +80,7 @@ describe('(Groovy) Testing Map Like Tables', function () {
       var width = 178, height = 44;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
 
     it('A Map inside a List is rendered correctly ', function () {
@@ -89,7 +89,7 @@ describe('(Groovy) Testing Map Like Tables', function () {
       var width = 208, height = 44;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
 
     it('Table with "&", "/", ">" values ', function () {
@@ -98,7 +98,7 @@ describe('(Groovy) Testing Map Like Tables', function () {
       var width = 254, height = 44;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
 
     it('Display object is rendered correctly ', function () {
@@ -107,7 +107,7 @@ describe('(Groovy) Testing Map Like Tables', function () {
       var width = 158, height = 44;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
 
     it('HTML table format ', function () {
@@ -116,7 +116,7 @@ describe('(Groovy) Testing Map Like Tables', function () {
       var width = 184, height = 122;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
 
     it('Links are rendered correctly ', function () {
@@ -125,7 +125,7 @@ describe('(Groovy) Testing Map Like Tables', function () {
       var width = 390, height = 67;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
 
     it('Links work correctly', function () {

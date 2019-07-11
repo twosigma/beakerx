@@ -41,10 +41,8 @@ describe('General Autotranslation ', function () {
   describe('%%javascript ', function(){
     it("Js console contains beakerx.bar value ", function(){
       cellIndex += 1;
-      browser.log('browser'); // reset log
-      beakerxPO.runCodeCellByIndex(cellIndex);
-      var logMsgs = browser.log('browser').value;
-      expect(logMsgs[0].message).toMatch(/a groovy value/);
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      expect(beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText().length).toBe(0);
     });
   });
 

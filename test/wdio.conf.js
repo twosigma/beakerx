@@ -16,7 +16,7 @@
 
 exports.config = {
   specs: [
-    './js/groovy/general*.js'
+    './js/groovy/javaArg*.js'
   ],
   exclude: [
     './js/nbviewer/*.js'

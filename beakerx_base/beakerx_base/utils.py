@@ -199,6 +199,8 @@ class ObjectEncoder(json.JSONEncoder):
             return self.default(obj.tolist())
         elif isinstance(obj, np.int64):
             return self.default(obj.item())
+        elif isinstance(obj, np.bool_):
+            return self.default(obj.item())
         elif hasattr(obj, "__dict__"):
             d = dict(
                 (key, value)

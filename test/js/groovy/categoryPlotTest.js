@@ -98,9 +98,9 @@ describe('Category Plot ', function () {
       var svgg = beakerxPO.getSvgElementByIndex(cellIndex);
       expect(svgg.$$('g#i0 > rect').length).toEqual(3);
       var legendLines = dtConteainer.$$('div.plot-legenditeminrow.plot-legendline');
-      legendLines[0].click('input');
+      legendLines[0].$('input').click();
       expect(svgg.$$('g#i0 > rect').length).toEqual(0);
-      legendLines[0].click('input');
+      legendLines[0].$('input').click();
       expect(svgg.$$('g#i0 > rect').length).toEqual(3);
     });
   });

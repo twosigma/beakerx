@@ -120,7 +120,7 @@ describe('Java widgets test ', function () {
       cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /150/);
       expect(widget.$('input').getValue()).toBe('100');
-      widget.click('input');
+      widget.$('input').click();
       browser.keys('ArrowDown');
       expect(widget.$('input').getValue()).toBe('99');
     });
@@ -129,7 +129,7 @@ describe('Java widgets test ', function () {
       cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /10/);
       expect(widget.$('input').getValue()).toBe('30');
-      widget.click('input');
+      widget.$('input').click();
       browser.keys('ArrowUp');
       expect(widget.$('input').getValue()).toBe('31');
     });
@@ -143,7 +143,7 @@ describe('Java widgets test ', function () {
     it('Set step value by code ', function () {
       cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /37/);
-      widget.click('input');
+      widget.$('input').click();
       browser.keys('ArrowUp');
       expect(widget.$('input').getValue()).toBe('40');
     });
@@ -176,7 +176,7 @@ describe('Java widgets test ', function () {
       cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /15/);
       expect(widget.$('input').getValue()).toBe('10.5');
-      widget.click('input');
+      widget.$('input').click();
       browser.keys('ArrowDown');
       expect(widget.$('input').getValue()).toBe('10.4');
     });
@@ -185,7 +185,7 @@ describe('Java widgets test ', function () {
       cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /1/);
       expect(widget.$('input').getValue()).toBe('3.5');
-      widget.click('input');
+      widget.$('input').click();
       browser.keys('ArrowUp');
       expect(widget.$('input').getValue()).toBe('3.6');
     });
@@ -199,7 +199,7 @@ describe('Java widgets test ', function () {
     it('Set step value by code ', function () {
       cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /4.123/);
-      widget.click('input');
+      widget.$('input').click();
       browser.keys('ArrowUp');
       expect(widget.$('input').getValue()).toBe('4.5');
     });
@@ -238,9 +238,8 @@ describe('Java widgets test ', function () {
 
     it('Set icon by code ', function () {
       cellIndex += 1;
-      expect(widget.isExisting('i.fa-check')).toBeFalsy();
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /check/);
-      expect(widget.isExisting('i.fa-check')).toBeTruthy();
+      expect(widget.$('i.fa-check').isExisting()).toBeTruthy();
     });
 
     it('Set style to "success" ', function () {

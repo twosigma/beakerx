@@ -184,6 +184,9 @@ function BeakerXPageObject() {
   this.runCellToGetWidgetElement = function (index) {
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
+    browser.waitUntil(function () {
+      return codeCell.$$('div.jupyter-widgets').length > 0;
+    });
     return codeCell.$('div.jupyter-widgets');
   };
 
@@ -194,10 +197,10 @@ function BeakerXPageObject() {
   };
 
   this.getTableIndexMenu = function (dtContainer) {
-    dtContainer.click('span.bko-column-header-menu');
+    dtContainer.$('span.bko-column-header-menu').click();
     browser.waitUntil(function () {
       var menu = browser.$('div.bko-header-menu.bko-table-menu');
-      return menu != null && menu.isVisible();
+      return menu != null && menu.isDisplayed();
     }, 10000, 'index menu is not visible');
     return browser.$('div.bko-header-menu.bko-table-menu');
   };
@@ -206,7 +209,7 @@ function BeakerXPageObject() {
     tblMenu.$$('[data-type="submenu"]')[index].click();
     browser.waitUntil(function () {
       var menu = browser.$('div.dropdown-submenu.bko-table-menu');
-      return menu != null && menu.isVisible();
+      return menu != null && menu.isDisplayed();
     }, 10000, 'index sub menu is not visible');
     return browser.$$('div.dropdown-submenu.bko-table-menu');
   };
@@ -314,7 +317,7 @@ function BeakerXPageObject() {
 
   this.getDataGridTooltip = function(){
     browser.waitUntil(function () {
-      return browser.isVisible('div.p-DataGrid-tooltip');
+      return browser.$('div.p-DataGrid-tooltip').isDisplayed();
     }, 10000, 'doc tooltip is not visible');
     return $('div.p-DataGrid-tooltip');
   };

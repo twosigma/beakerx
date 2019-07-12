@@ -29,7 +29,7 @@ describe('(Groovy) Testing Map Like Tables', function () {
   });
 
   function clickOnTable(codeCell, x, y) {
-    codeCell.click('div.p-DataGrid-viewport', x, y);
+    codeCell.$('div.p-DataGrid-viewport', x, y).click();
     beakerxPO.kernelIdleIcon.waitForEnabled();
   };
 
@@ -117,6 +117,7 @@ describe('(Groovy) Testing Map Like Tables', function () {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, fileName);
+      // beakerxPO.createTableImage(imageData, imageDir, fileName);
     });
 
     it('Links are rendered correctly ', function () {
@@ -132,10 +133,11 @@ describe('(Groovy) Testing Map Like Tables', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       browser.pause(1000);
       clickOnTable(codeCell, 200, 40);
+      browser.pause(3000);
+      browser.switchWindow('https://www.twosigma.com/');
       browser.pause(1000);
-      browser.switchTab(browser.getTabIds()[1]);
-      browser.pause(1000);
-      expect(browser.title().value).toBe('Two Sigma');
+      expect(browser.getTitle()).toBe('Two Sigma');
+      browser.switchWindow('/test/ipynb/groovy/MapLikeTableTest');
     });
   });
 });

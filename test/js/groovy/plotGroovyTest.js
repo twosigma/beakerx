@@ -162,12 +162,12 @@ describe('Plot groovy js', function () {
       cellIndex += 1;
       var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
       var pointElement = svgElement.$('rect#i2_0');
-      pointElement.scroll();
       pointElement.click();
-      svgElement.moveToObject('rect#i2_1');
-      var divPlot = beakerxPO.getCodeCellByIndex(cellIndex).$('#svgg');
-      expect(divPlot.$('#cursor_xlabel').isVisible()).toBeTruthy();
-      expect(divPlot.$('#cursor_ylabel').isVisible()).toBeTruthy();
+      svgElement.moveTo();
+      browser.pause(1000);
+      var dtcontainer = beakerxPO.getDtContainerByIndex(cellIndex);
+      expect(dtcontainer.$('div#cursor_xlabel').isDisplayed()).toBeTruthy();
+      expect(dtcontainer.$('div#cursor_ylabel').isDisplayed()).toBeTruthy();
     });
   });
 
@@ -178,8 +178,8 @@ describe('Plot groovy js', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
       cellIndex += 1;
       var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
-      expect(svgElement.$('#i0.plot-point').isVisible()).toBeTruthy();
-      expect(svgElement.$('#i1.plot-point').isVisible()).toBeTruthy();
+      expect(svgElement.$('#i0.plot-point').isDisplayed()).toBeTruthy();
+      expect(svgElement.$('#i1.plot-point').isDisplayed()).toBeTruthy();
     });
   });
 
@@ -187,8 +187,8 @@ describe('Plot groovy js', function () {
     it('Plot has second Y Axis', function(){
       cellIndex += 1;
       var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
-      expect(svgElement.$('#yrlabel').isVisible()).toBeTruthy();
-      expect(svgElement.$('#label_yr_1').isVisible()).toBeTruthy();
+      expect(svgElement.$('#yrlabel').isDisplayed()).toBeTruthy();
+      expect(svgElement.$('#label_yr_1').isDisplayed()).toBeTruthy();
     });
   });
 
@@ -207,8 +207,8 @@ describe('Plot groovy js', function () {
     it('Plot has points elements', function(){
       cellIndex += 1;
       var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
-      expect(svgElement.$('#i0.plot-point').isVisible()).toBeTruthy();
-      expect(svgElement.$('#i1.plot-point').isVisible()).toBeTruthy();
+      expect(svgElement.$('#i0.plot-point').isDisplayed()).toBeTruthy();
+      expect(svgElement.$('#i1.plot-point').isDisplayed()).toBeTruthy();
     });
   });
 
@@ -216,7 +216,7 @@ describe('Plot groovy js', function () {
     it('Plot has points elements', function(){
       cellIndex += 1;
       var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
-      expect(svgElement.$('#i0.plot-point').isVisible()).toBeTruthy();
+      expect(svgElement.$('#i0.plot-point').isDisplayed()).toBeTruthy();
     });
   });
 

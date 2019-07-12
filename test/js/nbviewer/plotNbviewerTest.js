@@ -97,8 +97,8 @@ describe('Publish plot groovy notebook js', function () {
       pointElement.click();
       svgElement.moveToObject('rect#i2_1');
       var divPlot = beakerxPO.getCodeCellByIndex(cellIndex).$('#svgg');
-      expect(divPlot.$('#cursor_xlabel').isVisible()).toBeTruthy();
-      expect(divPlot.$('#cursor_ylabel').isVisible()).toBeTruthy();
+      expect(divPlot.$('#cursor_xlabel').isDisplayed()).toBeTruthy();
+      expect(divPlot.$('#cursor_ylabel').isDisplayed()).toBeTruthy();
     });
   });
 
@@ -106,8 +106,8 @@ describe('Publish plot groovy notebook js', function () {
     it('Time Plot has points elements', function(){
       cellIndex +=2;
       var svgElement = beakerxPO.getSvgElementByIndex(cellIndex);
-      expect(svgElement.$('#i0.plot-point').isVisible()).toBeTruthy();
-      expect(svgElement.$('#i1.plot-point').isVisible()).toBeTruthy();
+      expect(svgElement.$('#i0.plot-point').isDisplayed()).toBeTruthy();
+      expect(svgElement.$('#i1.plot-point').isDisplayed()).toBeTruthy();
     });
   });
 
@@ -115,8 +115,8 @@ describe('Publish plot groovy notebook js', function () {
     it('Plot has points elements', function(){
       cellIndex +=1;
       var svgElement = beakerxPO.getSvgElementByIndex(cellIndex);
-      expect(svgElement.$('#i0.plot-point').isVisible()).toBeTruthy();
-      expect(svgElement.$('#i1.plot-point').isVisible()).toBeTruthy();
+      expect(svgElement.$('#i0.plot-point').isDisplayed()).toBeTruthy();
+      expect(svgElement.$('#i1.plot-point').isDisplayed()).toBeTruthy();
     });
   });
 
@@ -147,8 +147,8 @@ describe('Publish plot groovy notebook js', function () {
     it('Plot has two polygon elements', function () {
       cellIndex +=2;
       var svgElement = beakerxPO.getSvgElementByIndex(cellIndex);
-      expect(svgElement.$('#i0 polygon').isVisible()).toBeTruthy();
-      expect(svgElement.$('#i1 polygon').isVisible()).toBeTruthy();
+      expect(svgElement.$('#i0 polygon').isDisplayed()).toBeTruthy();
+      expect(svgElement.$('#i1 polygon').isDisplayed()).toBeTruthy();
     });
   });
 

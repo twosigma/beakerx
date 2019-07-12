@@ -110,16 +110,16 @@ describe('Scala notebook', function () {
       pointElement.click();
       svgElement.moveToObject('rect#i2_1');
       var divPlot = beakerxPO.getCodeCellByIndex(11).$('#svgg');
-      expect(divPlot.$('#cursor_xlabel').isVisible()).toBeTruthy();
-      expect(divPlot.$('#cursor_ylabel').isVisible()).toBeTruthy();
+      expect(divPlot.$('#cursor_xlabel').isDisplayed()).toBeTruthy();
+      expect(divPlot.$('#cursor_ylabel').isDisplayed()).toBeTruthy();
     });
   });
 
   describe('Run "Simple Time Plot" cell', function(){
     it('Time Plot has points elements', function(){
       var svgElement = beakerxPO.runCellToGetSvgElement(12);
-      expect(svgElement.$('#i0.plot-point').isVisible()).toBeTruthy();
-      expect(svgElement.$('#i1.plot-point').isVisible()).toBeTruthy();
+      expect(svgElement.$('#i0.plot-point').isDisplayed()).toBeTruthy();
+      expect(svgElement.$('#i1.plot-point').isDisplayed()).toBeTruthy();
     });
   });
 
@@ -135,15 +135,15 @@ describe('Scala notebook', function () {
   describe('Run "Date Objects for the Time Coordinate" cell', function(){
     it('Plot has points elements', function(){
       var svgElement = beakerxPO.runCellToGetSvgElement(15);
-      expect(svgElement.$('#i0.plot-point').isVisible()).toBeTruthy();
-      expect(svgElement.$('#i1.plot-point').isVisible()).toBeTruthy();
+      expect(svgElement.$('#i0.plot-point').isDisplayed()).toBeTruthy();
+      expect(svgElement.$('#i1.plot-point').isDisplayed()).toBeTruthy();
     });
   });
 
   describe('Run "Nanosecond Resolution" cell', function(){
     it('Plot has points elements', function(){
       var svgElement = beakerxPO.runCellToGetSvgElement(16);
-      expect(svgElement.$('#i0.plot-point').isVisible()).toBeTruthy();
+      expect(svgElement.$('#i0.plot-point').isDisplayed()).toBeTruthy();
     });
   });
 

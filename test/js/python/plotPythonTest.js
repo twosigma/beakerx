@@ -38,31 +38,31 @@ describe('Testing of Plot (python)', function () {
 
     it('Plot has 3 Bars', function () {
       var svgElement = beakerxPO.runCellToGetSvgElement(1);
-      expect(svgElement.$('g.plot-bar').isVisible()).toBeTruthy();
+      expect(svgElement.$('g.plot-bar').isDisplayed()).toBeTruthy();
       expect(svgElement.$$('rect.plot-resp').length).toEqual(3);
     });
 
     it('Plot has Line', function () {
       var svgElement = beakerxPO.runCellToGetSvgElement(2);
       expect(svgElement.$$('circle.plot-resp').length).toEqual(3);
-      expect(svgElement.$('path.plot-line').isVisible()).toBeTruthy();
+      expect(svgElement.$('path.plot-line').isDisplayed()).toBeTruthy();
     });
 
     it('Plot has 5 Points', function () {
       var svgElement = beakerxPO.runCellToGetSvgElement(3);
-      expect(svgElement.$('g.plot-point').isVisible()).toBeTruthy();
+      expect(svgElement.$('g.plot-point').isDisplayed()).toBeTruthy();
       expect(svgElement.$$('polygon.plot-resp').length).toEqual(5);
     });
 
     it('Plot has 4 Stems', function(){
       var svgElement = beakerxPO.runCellToGetSvgElement(4);
-      expect(svgElement.$('g.plot-stem').isVisible()).toBeTruthy();
+      expect(svgElement.$('g.plot-stem').isDisplayed()).toBeTruthy();
       expect(svgElement.$$('line.plot-resp.normal').length).toEqual(4);
     });
 
     it('Plot has Area', function(){
       var svgElement = beakerxPO.runCellToGetSvgElement(5);
-      expect(svgElement.$('polygon.plot-area').isVisible()).toBeTruthy();
+      expect(svgElement.$('polygon.plot-area').isDisplayed()).toBeTruthy();
     });
 
     it('Plot has Crosshair', function(){
@@ -72,8 +72,8 @@ describe('Testing of Plot (python)', function () {
       rectElement.click();
       svgElement.moveToObject('rect#i2_1');
       var divPlot = beakerxPO.getCodeCellByIndex(5).$('#svgg');
-      expect(divPlot.$('#cursor_xlabel').isVisible()).toBeTruthy();
-      expect(divPlot.$('#cursor_ylabel').isVisible()).toBeTruthy();
+      expect(divPlot.$('#cursor_xlabel').isDisplayed()).toBeTruthy();
+      expect(divPlot.$('#cursor_ylabel').isDisplayed()).toBeTruthy();
     });
 
     it('Plot has 3 ConstantLines', function(){
@@ -84,7 +84,7 @@ describe('Testing of Plot (python)', function () {
 
     it('Plot has 2 ConstantBands', function(){
       var svgElement = beakerxPO.runCellToGetSvgElement(7);
-      expect(svgElement.$('g.plot-constband').isVisible()).toBeTruthy();
+      expect(svgElement.$('g.plot-constband').isDisplayed()).toBeTruthy();
       expect(svgElement.$$('g.plot-constband > rect').length).toEqual(2);
     });
 
@@ -99,14 +99,14 @@ describe('Testing of Plot (python)', function () {
   describe('Pandas library', function () {
     it('Plot has Bars', function () {
       var svgElement = beakerxPO.runCellToGetSvgElement(9);
-      expect(svgElement.$('g.plot-bar').isVisible()).toBeTruthy();
+      expect(svgElement.$('g.plot-bar').isDisplayed()).toBeTruthy();
       expect(svgElement.$$('rect.plot-resp').length).toBeGreaterThan(0);
     });
 
     it('Plot has Line', function () {
       var svgElement = beakerxPO.runCellToGetSvgElement(10);
       expect(svgElement.$$('circle.plot-resp').length).toEqual(7);
-      expect(svgElement.$('path.plot-line').isVisible()).toBeTruthy();
+      expect(svgElement.$('path.plot-line').isDisplayed()).toBeTruthy();
     });
   });
 
@@ -125,8 +125,8 @@ describe('Testing of Plot (python)', function () {
       var svgElement = beakerxPO.runCellToGetSvgElement(12);
       expect(svgElement.$$('g#i0 > circle').length).toBeGreaterThan(0);
       expect(svgElement.$$('g#i1 > circle').length).toBeGreaterThan(0);
-      expect(svgElement.$('g#i0 > path.plot-line').isVisible()).toBeTruthy();
-      expect(svgElement.$('g#i1 > path.plot-line').isVisible()).toBeTruthy();
+      expect(svgElement.$('g#i0 > path.plot-line').isDisplayed()).toBeTruthy();
+      expect(svgElement.$('g#i1 > path.plot-line').isDisplayed()).toBeTruthy();
       expect(svgElement.$('text#label_x_0').getText()).toEqual('1990');
     });
 
@@ -171,7 +171,7 @@ describe('Testing of Plot (python)', function () {
 
     it('Combined plot has 3 plots', function(){
       combPlot = beakerxPO.runCodeCellByIndex(16).$('div.combplot-plotcontainer');
-      expect(combPlot.isVisible()).toBeTruthy();
+      expect(combPlot.isDisplayed()).toBeTruthy();
       expect(combPlot.$$('div.dtcontainer').length).toEqual(3);
     });
 

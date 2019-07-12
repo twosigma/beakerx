@@ -36,7 +36,7 @@ var LabPageObject = function () {
         i+=1;
         continue;
       }
-      browser.doubleClick('span=' + dirName);
+      browser.$('span=' + dirName).doubleClick();
       browser.$('span=' + dirName).waitForEnabled();
       i+=1;
     }
@@ -52,7 +52,7 @@ var LabPageObject = function () {
   };
 
   this.clickSaveNotebook = function () {
-    browser.click('div=File');
+    browser.$('div=File').click();
     var saveMenuItem = browser.$$('li[data-command="docmanager:save"]')[1];
     saveMenuItem.waitForEnabled();
     saveMenuItem.click();
@@ -62,7 +62,7 @@ var LabPageObject = function () {
   /* Close and Shutdown Notebook */
   this.closeAndHaltNotebook = function () {
     this.clearAllOutputs();
-    browser.click('div=File');
+    browser.$('div=File').click();
     var closeAndCleanupMenuItem = browser.$('li[data-command="filemenu:close-and-cleanup"]');
     closeAndCleanupMenuItem.waitForEnabled();
     closeAndCleanupMenuItem.click();
@@ -78,7 +78,7 @@ var LabPageObject = function () {
   this.saveAndCloseNotebook = function () {
     this.clearAllOutputs();
     this.clickSaveNotebook();
-    browser.click('div=File');
+    browser.$('div=File').click();
     var closeAndCleanupMenuItem = browser.$('li[data-command="filemenu:close-and-cleanup"]');
     closeAndCleanupMenuItem.waitForEnabled();
     closeAndCleanupMenuItem.click();
@@ -88,7 +88,7 @@ var LabPageObject = function () {
   };
 
   this.clearAllOutputs = function() {
-    browser.click('div=Edit');
+    browser.$('div=Edit').click();
     var clearAllOutputsMenuItem = browser.$('li[data-command="editmenu:clear-all"]');
     clearAllOutputsMenuItem.waitForEnabled();
     clearAllOutputsMenuItem.click();
@@ -110,7 +110,7 @@ var LabPageObject = function () {
   };
 
   this.clickRunAllCells = function() {
-    browser.click('div=Run');
+    browser.$('div=Run').click();
     var runAllCellsMenuItem = browser.$('li[data-command="runmenu:run-all"]');
     runAllCellsMenuItem.waitForEnabled();
     runAllCellsMenuItem.click();
@@ -150,32 +150,32 @@ var LabPageObject = function () {
 
   this.callAutocompleteAndGetItsList = function(codeCell, codeStr){
     codeCell.scroll();
-    codeCell.click('div.CodeMirror.cm-s-jupyter');
+    codeCell.$('div.CodeMirror.cm-s-jupyter').click();
     codeCell.keys(codeStr);
     browser.keys("Tab");
     browser.keys('\uE000');
     browser.waitUntil(function() {
-      return browser.isVisible('ul.jp-Completer')
+      return browser.$('ul.jp-Completer').isDisplayed()
     }, 10000, 'autocomplete list is not visible');
     return $$('li.jp-Completer-item');
   };
 
   this.callDocAndGetItsTooltip = function(codeCell, codeStr){
     codeCell.scroll();
-    codeCell.click('div.CodeMirror.cm-s-jupyter');
+    codeCell.$('div.CodeMirror.cm-s-jupyter').click();
     codeCell.keys(codeStr);
     browser.keys('Shift');
     browser.keys('Tab');
     browser.keys('\uE000');
     browser.waitUntil(function() {
-      return browser.isVisible('div.jp-Tooltip');
+      return browser.$('div.jp-Tooltip').isDisplayed();
     }, 10000, 'doc tooltip is not visible');
     return $('div.jp-Tooltip-content');
   };
 
   this.openUIWindow = function(){
     browser.$$('li.p-TabBar-tab')[2].click();
-    browser.click('div.p-CommandPalette-itemLabel=BeakerX Options');
+    browser.$('div.p-CommandPalette-itemLabel=BeakerX Options').click();
     browser.$$('li.p-TabBar-tab')[9].click();
   };
 
@@ -184,7 +184,7 @@ var LabPageObject = function () {
       this.runNotebookByUrl(url);
     }
     this.openUIWindow();
-    browser.click('div.p-CommandPalette-itemLabel=BeakerX Options');
+    browser.$('div.p-CommandPalette-itemLabel=BeakerX Options').click();
     var uiPanel = browser.$('div#beakerx-tree-widget');
     uiPanel.$$('li.p-TabBar-tab')[0].click();
 
@@ -201,9 +201,9 @@ var LabPageObject = function () {
     browser.$$('li.p-TabBar-tab')[0].click();
     browser.pause(2000);
     if(url != null) {
-      browser.$('div.p-DockPanel-tabBar').click('li[data-type="document-title"]');
+      browser.$('div.p-DockPanel-tabBar').$('li[data-type="document-title"]').click();
 
-      browser.click('div=File');
+      browser.$('div=File').click();
       var closeAndCleanupMenuItem = browser.$('li[data-command="filemenu:close-and-cleanup"]');
       closeAndCleanupMenuItem.waitForEnabled();
       closeAndCleanupMenuItem.click();

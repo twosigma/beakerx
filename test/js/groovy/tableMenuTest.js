@@ -45,14 +45,14 @@ describe('Testing of table Actions ', function () {
     tblDisplay.leftClick('canvas', x, y);
     browser.waitUntil(function(){
       var menu = browser.$('ul.dropdown-menu.bko-table-menu-content');
-      return menu != null && menu.isVisible();
+      return menu != null && menu.isDisplayed();
     }, 10000, 'column menu is not visible');
     return browser.$('ul.dropdown-menu.bko-table-menu-content');
   };
 
   function checkColumnMenu(cellIndex, codeCell, menuName, fileName){
     var colMenu = getTableColumnMenu(cellIndex);
-    colMenu.click('[data-command="' + menuName + '"]');
+    colMenu.$('[data-command="' + menuName + '"]').click();
 
     var canvas = codeCell.$('canvas');
     var imageData = beakerxPO.getCanvasImageData(canvas, 250, 150);
@@ -61,7 +61,7 @@ describe('Testing of table Actions ', function () {
 
   function createColumnMenu(cellIndex, codeCell, menuName, fileName){
     var colMenu = getTableColumnMenu(cellIndex);
-    colMenu.click('[data-command="' + menuName + '"]');
+    colMenu.$('[data-command="' + menuName + '"]').click();
 
     var canvas = codeCell.$('canvas');
     var imageData = beakerxPO.getCanvasImageData(canvas, 250, 150);
@@ -88,11 +88,11 @@ describe('Testing of table Actions ', function () {
     it('Hide All Columns', function () {
       var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
       var tableMenu = beakerxPO.getTableIndexMenu(tblDisplay);
-      tableMenu.click('[data-command="Show All Columns"]');
+      tableMenu.$('[data-command="Show All Columns"]').click();
       browser.pause(1000);
       maxWidth = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
       tableMenu = beakerxPO.getTableIndexMenu(tblDisplay);
-      tableMenu.click('[data-command="Hide All Columns"]');
+      tableMenu.$('[data-command="Hide All Columns"]').click();
       browser.pause(1000);
       var minWidth = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
       expect(maxWidth).toBeGreaterThan(minWidth);
@@ -101,11 +101,11 @@ describe('Testing of table Actions ', function () {
     it('Show All Columns', function () {
       var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
       tableMenu = beakerxPO.getTableIndexMenu(tblDisplay);
-      tableMenu.click('[data-command="Hide All Columns"]');
+      tableMenu.$('[data-command="Hide All Columns"]').click();
       browser.pause(1000);
       var width_1 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
       var tableMenu = beakerxPO.getTableIndexMenu(tblDisplay);
-      tableMenu.click('[data-command="Show All Columns"]');
+      tableMenu.$('[data-command="Show All Columns"]').click();
       browser.pause(1000);
       var width_2 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
       expect(width_2).toBeGreaterThan(width_1);
@@ -119,7 +119,7 @@ describe('Testing of table Actions ', function () {
       subMenu = getSubMenu(cellIndex, 0).$$('li');
       expect(subMenu.length).toEqual(11);
       expect(subMenu[0].getText()).toEqual('m3');
-      subMenu[0].click('div.fa.fa-check');
+      subMenu[0].$('div.fa.fa-check').click();
       var width_2 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
       expect(width_1).toBeGreaterThan(width_2);
     });
@@ -127,7 +127,7 @@ describe('Testing of table Actions ', function () {
     it('Hide all columns by checking submenu items', function () {
       var width_1 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
       for(var i = 1; i < subMenu.length; i += 1){
-        subMenu[i].click('div.fa.fa-check');
+        subMenu[i].$('div.fa.fa-check').click();
       }
       var width_2 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
       expect(width_1).toBeGreaterThan(width_2);
@@ -202,7 +202,7 @@ describe('Testing of table Actions ', function () {
     it('Should clear selection', function () {
       var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
       var tableMenu = beakerxPO.getTableIndexMenu(tblDisplay);
-      tableMenu.click('[data-command="Clear selection"]');
+      tableMenu.$('[data-command="Clear selection"]').click();
 
       var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
       var canvas = codeCell.$('canvas');
@@ -300,7 +300,7 @@ describe('Testing of table Actions ', function () {
     it('Should move column to front', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var colMenu = getTableColumnMenu(cellIndex, 230, 10);
-      colMenu.click('[data-command="Move column to front"]');
+      colMenu.$('[data-command="Move column to front"]').click();
 
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, 250, 150);
@@ -322,7 +322,7 @@ describe('Testing of table Actions ', function () {
       var colMenu = getTableColumnMenu(cellIndex);
       var subMenu1 = beakerxPO.getTableIndexSubMenu(colMenu, 0)[0];
       var subMenu2 = beakerxPO.getTableIndexSubMenu(subMenu1, 0)[1];
-      subMenu2.click('li[data-command="precision_2"]');
+      subMenu2.$('li[data-command="precision_2"]').click();
 
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, 250, 150);
@@ -334,7 +334,7 @@ describe('Testing of table Actions ', function () {
     it('Should select values with "9"', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var colMenu = getTableColumnMenu(cellIndex);
-      colMenu.click('[data-command="Search for Substring"]');
+      colMenu.$('[data-command="Search for Substring"]').click();
 
       var input = codeCell.$$('div.p-Widget.input-clear-growing')[0].$('input');
       input.click();
@@ -350,7 +350,7 @@ describe('Testing of table Actions ', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
       var tableMenu = beakerxPO.getTableIndexMenu(tblDisplay);
-      tableMenu.click('[data-command="Search for Substring"]');
+      tableMenu.$('[data-command="Search for Substring"]').click();
 
       var input = codeCell.$$('div.p-Widget.input-clear-growing')[11].$('input');
       input.click();

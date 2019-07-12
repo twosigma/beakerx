@@ -31,11 +31,11 @@ describe('(Groovy) Output Containers ', function () {
   var cellIndex;
 
   function widgetPlotIsVisible(widget){
-    return widget.isVisible('div#plotLegendContainer');
+    return widget.$('div#plotLegendContainer').isDisplayed();
   }
 
   function widgetTableIsVisible(widget){
-    return widget.isVisible('div.p-Widget.p-DataGrid-viewport');
+    return widget.$('div.p-Widget.p-DataGrid-viewport').isDisplayed();
   }
 
   describe('(Python) Without output. ', function() {
@@ -60,7 +60,7 @@ describe('(Groovy) Output Containers ', function () {
   });
 
   function clickOnTabByName(output, name){
-    output.click('div.p-TabBar-tabLabel=' + name);
+    output.$('div.p-TabBar-tabLabel=' + name).click();
   }
 
   function getTabLabelText(output, tabIndex){
@@ -147,7 +147,7 @@ describe('(Groovy) Output Containers ', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       output = beakerxPO.getAllOutputsWidget(codeCell)[0];
-      expect(output.$('div.widget-container.widget-box').isVisible()).toBeTruthy();
+      expect(output.$('div.widget-container.widget-box').isDisplayed()).toBeTruthy();
     });
 
     it('Cycling Output contains 3 plots and 1 table ', function () {

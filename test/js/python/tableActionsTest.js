@@ -29,8 +29,8 @@ describe('Testing of table Actions ', function () {
   });
 
   function doubleClickOnTable(codeCell, x, y){
-    codeCell.click('div.p-DataGrid-viewport', x, y);
-    codeCell.doubleClick('div.p-DataGrid-viewport');
+    codeCell.$('div.p-DataGrid-viewport', x, y).click();
+    codeCell.$('div.p-DataGrid-viewport').doubleClick();
     beakerxPO.kernelIdleIcon.waitForEnabled();
   };
 
@@ -52,7 +52,7 @@ describe('Testing of table Actions ', function () {
     it('ContextMenuItem should change table cell value ', function () {
       codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
       codeCell.rightClick('canvas', 40, 40);
-      browser.click('div.p-Menu-itemLabel=plusOne');
+      browser.$('div.p-Menu-itemLabel=plusOne').click();
       beakerxPO.kernelIdleIcon.waitForEnabled();
       browser.pause(1000);
       var canvas = codeCell.$('canvas');
@@ -62,7 +62,7 @@ describe('Testing of table Actions ', function () {
 
     it('ContextMenuItem should run tag (by string) ', function () {
       codeCell.rightClick('canvas', 40, 55);
-      browser.click('div.p-Menu-itemLabel=tag1ByStr');
+      browser.$('div.p-Menu-itemLabel=tag1ByStr').click();
       beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex + 1, /1:0=4/);
     });
@@ -71,7 +71,7 @@ describe('Testing of table Actions ', function () {
       cellIndex += 4;
       codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       codeCell.rightClick('canvas', 40, 55);
-      browser.click('div.p-Menu-itemLabel=runTagFunc');
+      browser.$('div.p-Menu-itemLabel=runTagFunc').click();
       beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex + 1, /1:0=4/);
     });

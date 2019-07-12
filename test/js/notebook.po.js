@@ -78,9 +78,9 @@ var NotebookPageObject = function () {
   };
 
   this.clickRunAllCells = function () {
-    browser.click('=Cell');
-    browser.waitForEnabled('=Run All');
-    browser.click('=Run All')
+    browser.$('=Cell').click();
+    browser.$('=Run All').waitForEnabled();
+    browser.$('=Run All').click()
   };
 
   this.clickDialogPublishButton = function () {
@@ -91,12 +91,20 @@ var NotebookPageObject = function () {
     browser.$('button[data-jupyter-action="jupyter-notebook:interrupt-kernel"]').click();
   };
 
-  this.getAllOutputAreaChildren = function (codeCell) {
+  this.getAllOutputAreaChildren = function (codeCell, isWait) {
+    if(isWait){
+      browser.waitUntil(function () {
+        return (codeCell.$$('div.output_area').length > 0);
+      });
+    }
     return codeCell.$$('div.output_area');
   };
 
   this.getAllOutputsExecuteResult = function (codeCell) {
-    codeCell.$('div.output_subarea.output_result').waitForEnabled();
+    browser.waitUntil(function () {
+      return codeCell.$$('div.output_subarea.output_result').length > 0;
+    });
+    browser.pause(1000);
     return codeCell.$$('div.output_subarea.output_result');
   };
 
@@ -109,10 +117,17 @@ var NotebookPageObject = function () {
   };
 
   this.getAllOutputsWidget = function (codeCell) {
+    browser.waitUntil(function () {
+      return (codeCell.$$('div.output_subarea.jupyter-widgets-view').length > 0);
+    });
     return codeCell.$$('div.output_subarea.jupyter-widgets-view');
   };
 
   this.getAllOutputsHtmlType = function (codeCell) {
+    browser.waitUntil(function () {
+      return codeCell.$$('div.output_subarea.output_html').length > 0;
+    });
+    browser.pause(1000);
     return codeCell.$$('div.output_subarea.output_html');
   };
 

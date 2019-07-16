@@ -55,7 +55,7 @@ how to install and run BeakerX.
 
 ```
 conda env create -n beakerx -f configuration.yml
-source activate beakerx
+conda activate beakerx # For conda versions prior to 4.6, run: source activate beakerx
 (cd beakerx; pip install -r requirements.txt --verbose)
 beakerx install
 beakerx_databrowser install
@@ -76,7 +76,7 @@ beakerx_databrowser install
 
 ```
 conda env create -n labx -f configuration.yml
-source activate labx
+conda activate labx # For conda versions prior to 4.6, run: source activate labx
 conda install -y -c conda-forge jupyterlab
 (cd beakerx; pip install -r requirements.txt --verbose)
 beakerx install

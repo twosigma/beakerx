@@ -61,7 +61,6 @@ import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.ALIGN
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.ALIGNMENT_FOR_TYPE;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.CELL_HIGHLIGHTERS;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.COLUMNS_FROZEN;
-import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.COLUMNS_FROZEN_RIGHT;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.COLUMNS_VISIBLE;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.COLUMN_ORDER;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.DATA_FONT_SIZE;
@@ -151,19 +150,6 @@ public class TableDisplayTest {
     LinkedHashMap model = getModelUpdate();
     assertThat(model.size()).isEqualTo(1);
     Map actual = (Map) model.get(COLUMNS_FROZEN);
-    assertThat(actual.get(COL_1)).isEqualTo(true);
-  }
-
-  @Test
-  public void shouldSendCommMsgWhenColumnFrozenRightChange() throws Exception {
-    //given
-    //when
-    tableDisplay.setColumnFrozenRight(COL_1, true);
-    //then
-    assertThat(tableDisplay.getColumnsFrozenRight().get(COL_1)).isEqualTo(true);
-    LinkedHashMap model = getModelUpdate();
-    assertThat(model.size()).isEqualTo(1);
-    Map actual = (Map) model.get(COLUMNS_FROZEN_RIGHT);
     assertThat(actual.get(COL_1)).isEqualTo(true);
   }
 

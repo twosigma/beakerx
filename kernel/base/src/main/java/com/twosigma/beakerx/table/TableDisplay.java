@@ -49,7 +49,6 @@ import static com.twosigma.beakerx.table.TableDisplayToJson.serializeAlignmentFo
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeCellHighlighters;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeColumnOrder;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeColumnsFrozen;
-import static com.twosigma.beakerx.table.TableDisplayToJson.serializeColumnsFrozenRight;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeColumnsVisible;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeDataFontSize;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeDoubleClickAction;
@@ -92,7 +91,6 @@ public class TableDisplay extends BeakerxWidget {
   private Map<ColumnType, TableDisplayAlignmentProvider> alignmentForType = new HashMap<>();
   private Map<String, TableDisplayAlignmentProvider> alignmentForColumn = new HashMap<>();
   private Map<String, Boolean> columnsFrozen = new HashMap<>();
-  private Map<String, Boolean> columnsFrozenRight = new HashMap<>();
   private Map<String, Boolean> columnsVisible = new HashMap<>();
   private List<String> columnOrder = new ArrayList<>();
   private List<TableDisplayCellHighlighter> cellHighlighters = new ArrayList<>();
@@ -312,15 +310,6 @@ public class TableDisplay extends BeakerxWidget {
   public void setColumnFrozen(String column, boolean frozen) {
     this.columnsFrozen.put(column, frozen);
     sendModelUpdate(serializeColumnsFrozen(this.columnsFrozen));
-  }
-
-  public Map<String, Boolean> getColumnsFrozenRight() {
-    return columnsFrozenRight;
-  }
-
-  public void setColumnFrozenRight(String column, boolean frozen) {
-    this.columnsFrozenRight.put(column, frozen);
-    sendModelUpdate(serializeColumnsFrozenRight(this.columnsFrozenRight));
   }
 
   public Map<String, Boolean> getColumnsVisible() {

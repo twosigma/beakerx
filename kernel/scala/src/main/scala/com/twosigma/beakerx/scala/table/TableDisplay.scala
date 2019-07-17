@@ -145,8 +145,6 @@ class TableDisplay private(tableDisplay: com.twosigma.beakerx.table.TableDisplay
 
   def setColumnFrozen(column: String, frozen: Boolean) = tableDisplay.setColumnFrozen(column, frozen)
 
-  def setColumnFrozenRight(column: String, frozen: Boolean) = tableDisplay.setColumnFrozenRight(column, frozen)
-
   def setColumnVisible(column: String, visible: Boolean) = tableDisplay.setColumnVisible(column, visible)
 
   def setColumnOrder(columnOrder: Seq[String]) = tableDisplay.setColumnOrder(columnOrder.asJava)

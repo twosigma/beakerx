@@ -32,8 +32,8 @@ function chartingBase() {
       cellIndex = 0;
       beakerxPO.runCodeCellByIndex(cellIndex);
       cellIndex += 1;
-      beakerxPO.runCodeCellByIndex(cellIndex);
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      browser.pause(1000);
       expect(codeCell.$('div.dtcontainer').isEnabled()).toBeTruthy();
     });
 

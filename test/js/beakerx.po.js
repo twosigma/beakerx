@@ -79,7 +79,7 @@ function BeakerXPageObject() {
     codeCell.scrollIntoView();
     codeCell.click();
     this.clickRunCell();
-    this.kernelIdleIcon.waitForEnabled();
+    this.kernelIdleIcon.waitForEnabled(120000);
     return codeCell;
   };
 
@@ -320,6 +320,38 @@ function BeakerXPageObject() {
       return browser.$('div.p-DataGrid-tooltip').isDisplayed();
     }, 10000, 'doc tooltip is not visible');
     return $('div.p-DataGrid-tooltip');
+  };
+
+  this.performRightClick = function (elem, x, y) {
+    var result = browser.execute(function (webElem, offsetX, offsetY) {
+      var datePosition = webElem.getBoundingClientRect();
+      var clickEvent = new MouseEvent("contextmenu", {
+        "view": window,
+        "bubbles": true,
+        "cancelable": false,
+        'clientX': datePosition.left + offsetX,
+        'clientY': datePosition.top + offsetY
+      });
+      webElem.dispatchEvent(clickEvent);
+    }, elem, x, y);
+    browser.pause(1000);
+    return result;
+  };
+
+  this.performMouseMove = function (elem, x, y) {
+    var result = browser.execute(function (webElem, offsetX, offsetY) {
+      var datePosition = webElem.getBoundingClientRect();
+      var clickEvent = new MouseEvent("mousemove", {
+        "view": window,
+        "bubbles": true,
+        "cancelable": false,
+        'clientX': datePosition.left + offsetX,
+        'clientY': datePosition.top + offsetY
+      });
+      webElem.dispatchEvent(clickEvent);
+    }, elem, x, y);
+    browser.pause(1000);
+    return result;
   };
 
 };

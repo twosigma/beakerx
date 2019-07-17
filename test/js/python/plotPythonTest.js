@@ -60,20 +60,17 @@ describe('Testing of Plot (python)', function () {
       expect(svgElement.$$('line.plot-resp.normal').length).toEqual(4);
     });
 
+    it('Plot has Crosshair', function(){
+      var svgElement = beakerxPO.runCellToGetSvgElement(5);
+      beakerxPO.performMouseMove(svgElement.$('g#maing'), 100, 100);
+      var dtcontainer = beakerxPO.getDtContainerByIndex(5);
+      expect(dtcontainer.$('div#cursor_xlabel').isDisplayed()).toBeTruthy();
+      expect(dtcontainer.$('div#cursor_ylabel').isDisplayed()).toBeTruthy();
+    });
+
     it('Plot has Area', function(){
       var svgElement = beakerxPO.runCellToGetSvgElement(5);
       expect(svgElement.$('polygon.plot-area').isDisplayed()).toBeTruthy();
-    });
-
-    it('Plot has Crosshair', function(){
-      var svgElement = beakerxPO.getCodeCellByIndex(5).$('#svgg');
-      var rectElement = svgElement.$('rect#i0_0');
-      rectElement.scroll();
-      rectElement.click();
-      svgElement.moveToObject('rect#i2_1');
-      var divPlot = beakerxPO.getCodeCellByIndex(5).$('#svgg');
-      expect(divPlot.$('#cursor_xlabel').isDisplayed()).toBeTruthy();
-      expect(divPlot.$('#cursor_ylabel').isDisplayed()).toBeTruthy();
     });
 
     it('Plot has 3 ConstantLines', function(){
@@ -114,8 +111,8 @@ describe('Testing of Plot (python)', function () {
     it('Plot has 2 Areas', function(){
       var svgElement = beakerxPO.runCellToGetSvgElement(11);
       expect(svgElement.$$('g > polygon.plot-area').length).toEqual(2);
-      expect(svgElement.getLocation('rect#i0_0', 'y')).toBeGreaterThan(svgElement.getLocation('rect#i1_0', 'y'));
-      expect(svgElement.getLocation('rect#i0_0', 'x')).toBe(svgElement.getLocation('rect#i1_0', 'x'));
+      expect(svgElement.$('rect#i0_0').getLocation('y')).toBeGreaterThan(svgElement.$('rect#i1_0').getLocation('y'));
+      expect(svgElement.$('rect#i0_0').getLocation('x')).toBe(svgElement.$('rect#i1_0').getLocation('x'));
     });
   });
 

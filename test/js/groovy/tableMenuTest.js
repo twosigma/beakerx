@@ -41,8 +41,8 @@ describe('Testing of table Actions ', function () {
       y = 10;
     }
     var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
-    tblDisplay.moveToObject('canvas', x, y);
-    tblDisplay.leftClick('canvas', x, y);
+    beakerxPO.performMouseMove(tblDisplay.$('canvas'), x, y);
+    tblDisplay.$$('span.bko-column-header-menu.bko-menu')[1].click();
     browser.waitUntil(function(){
       var menu = browser.$('ul.dropdown-menu.bko-table-menu-content');
       return menu != null && menu.isDisplayed();
@@ -78,8 +78,8 @@ describe('Testing of table Actions ', function () {
       cellIndex = 0;
       var width = 200, height = 100;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      codeCell.moveToObject('canvas', 40, 40);
-      browser.pause(500);
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      browser.pause(2000);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell1_case1.png');
@@ -141,7 +141,7 @@ describe('Testing of table Actions ', function () {
       cellIndex += 2;
       beakerxPO.runCodeCellByIndex(cellIndex);
       var subMenu = getSubMenu(cellIndex, 1).$$('li');
-      expect(subMenu.length).toEqual(13);
+      expect(subMenu.length).toEqual(14);
       subMenu[8].click();
 
       var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
@@ -180,34 +180,6 @@ describe('Testing of table Actions ', function () {
 
       var hight_2 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'height'));
       expect(hight_2).toBeGreaterThan(hight_1);
-    });
-  });
-
-  describe('Menu option "Clear selection"', function () {
-    var width = 250, height = 150;
-
-    it('Should select values', function () {
-      cellIndex += 3;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      codeCell.leftClick('canvas', 60, 60);
-      browser.keys('Shift');
-      codeCell.leftClick('canvas', 120, 120);
-      browser.keys('\uE000');
-
-      var canvas = codeCell.$('canvas');
-      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData, imageDir, 'cell3_case1.png');
-    });
-
-    it('Should clear selection', function () {
-      var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
-      var tableMenu = beakerxPO.getTableIndexMenu(tblDisplay);
-      tableMenu.$('[data-command="Clear selection"]').click();
-
-      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
-      var canvas = codeCell.$('canvas');
-      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData, imageDir, 'cell3_case2.png');
     });
   });
 

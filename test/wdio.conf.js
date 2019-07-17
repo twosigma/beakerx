@@ -16,7 +16,7 @@
 
 exports.config = {
   specs: [
-    './js/groovy/plot*.js'
+    './js/python/tableAPI*.js'
   ],
   exclude: [
     './js/nbviewer/*.js'
@@ -31,7 +31,7 @@ exports.config = {
   coloredLogs: true,
   bail: 0,
   baseUrl: 'http://localhost',
-  waitforTimeout: 60000,
+  waitforTimeout: 70000,
   connectionRetryTimeout: 90000,
   connectionRetryCount: 3,
   deprecationWarnings: false,

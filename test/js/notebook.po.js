@@ -104,15 +104,23 @@ var NotebookPageObject = function () {
     browser.waitUntil(function () {
       return codeCell.$$('div.output_subarea.output_result').length > 0;
     });
-    browser.pause(1000);
+    browser.pause(500);
     return codeCell.$$('div.output_subarea.output_result');
   };
 
   this.getAllOutputsStdout = function (codeCell) {
+    browser.waitUntil(function () {
+      return codeCell.$$('div.output_subarea.output_stdout').length > 0;
+    });
+    browser.pause(500);
     return codeCell.$$('div.output_subarea.output_stdout');
   };
 
   this.getAllOutputsStderr = function (codeCell) {
+    browser.waitUntil(function(){
+      return codeCell.$$('div.output_subarea.output_error').length > 0;
+    });
+    browser.pause(500);
     return codeCell.$$('div.output_subarea.output_error');
   };
 

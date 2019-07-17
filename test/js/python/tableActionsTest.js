@@ -51,7 +51,9 @@ describe('Testing of table Actions ', function () {
 
     it('ContextMenuItem should change table cell value ', function () {
       codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
-      codeCell.rightClick('canvas', 40, 40);
+      var canvas = codeCell.$('canvas');
+      canvas.waitForDisplayed();
+      beakerxPO.performRightClick(canvas, 40, 40);
       browser.$('div.p-Menu-itemLabel=plusOne').click();
       beakerxPO.kernelIdleIcon.waitForEnabled();
       browser.pause(1000);
@@ -61,7 +63,9 @@ describe('Testing of table Actions ', function () {
     });
 
     it('ContextMenuItem should run tag (by string) ', function () {
-      codeCell.rightClick('canvas', 40, 55);
+      var canvas = codeCell.$('canvas');
+      canvas.waitForDisplayed();
+      beakerxPO.performRightClick(canvas, 40, 55);
       browser.$('div.p-Menu-itemLabel=tag1ByStr').click();
       beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex + 1, /1:0=4/);
@@ -70,7 +74,9 @@ describe('Testing of table Actions ', function () {
     it('ContextMenuItem should run tag (by closure) ', function () {
       cellIndex += 4;
       codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      codeCell.rightClick('canvas', 40, 55);
+      var canvas = codeCell.$('canvas');
+      canvas.waitForDisplayed();
+      beakerxPO.performRightClick(canvas, 40, 55);
       browser.$('div.p-Menu-itemLabel=runTagFunc').click();
       beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex + 1, /1:0=4/);

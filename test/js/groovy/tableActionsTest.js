@@ -29,7 +29,6 @@ describe('Testing of table Actions ', function () {
   });
 
   function doubleClickOnTable(codeCell, x, y){
-    codeCell.$('div.p-DataGrid-viewport', x, y).click();
     codeCell.$('div.p-DataGrid-viewport').doubleClick();
     beakerxPO.kernelIdleIcon.waitForEnabled();
   };
@@ -46,27 +45,28 @@ describe('Testing of table Actions ', function () {
       codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       browser.pause(1000);
       var canvas = codeCell.$('canvas');
-      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData, imageDir, 'cell1_case1.png');
+      canvas.waitForDisplayed();
 
-      codeCell.rightClick('canvas', 40, 40);
+      beakerxPO.performRightClick(canvas, 40, 40);
       browser.$('div.p-Menu-itemLabel=plusOne').click();
       beakerxPO.kernelIdleIcon.waitForEnabled();
       browser.pause(1000);
       canvas = codeCell.$('canvas');
-      imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell1_case2.png');
     });
 
     it('ContextMenuItem should run tag (by string) ', function () {
-      codeCell.rightClick('canvas', 40, 55);
+      var canvas = codeCell.$('canvas');
+      beakerxPO.performRightClick(canvas, 40, 55);
       browser.$('div.p-Menu-itemLabel=tag1ByStr').click();
       beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex + 1, /1:0=4/);
     });
 
     it('ContextMenuItem should run tag (by closure) ', function () {
-      codeCell.rightClick('canvas', 100, 55);
+      var canvas = codeCell.$('canvas');
+      beakerxPO.performRightClick(canvas, 100, 55);
       browser.$('div.p-Menu-itemLabel=tag1ByClosure').click();
       beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.waitAndCheckOutputTextOfStdout(cellIndex + 1, /1:1=5/);

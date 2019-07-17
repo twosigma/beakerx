@@ -146,7 +146,6 @@ describe('Testing of table (python)', function () {
   describe("TableDisplay(pandas DataFrame)", function() {
     it('TableDisplay should display table from pandas dataFrame', function () {
       cellIndex += 2;
-      browser.log('browser'); // reset log
       var width = 100, height = 67;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
@@ -158,9 +157,6 @@ describe('Testing of table (python)', function () {
       expect(beakerxPO.getTableIndexMenu(tblDisplay)).not.toBe(null);
     });
 
-    it("Log doesn't have 'SEVERE' level errors. ", function () {
-      beakerxPO.checkBrowserLogError('SEVERE');
-    });
   });
 
   describe("Use index in pandas DataFrame. ", function() {
@@ -175,15 +171,10 @@ describe('Testing of table (python)', function () {
   describe("Pandas read csv with index_col parameter. ", function() {
     it('Should display table. ', function () {
       cellIndex += 1;
-      browser.log('browser'); // reset log
       var width = 70, height = 44;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell15_case1.png');
-    });
-
-    it("Log doesn't have 'SEVERE' level errors. ", function () {
-      beakerxPO.checkBrowserLogError('SEVERE');
     });
   });
 
@@ -348,8 +339,9 @@ describe('Testing of table (python)', function () {
     it('Should display tooltip ', function() {
       cellIndex += 2;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      codeCell.leftClick('canvas', 0, 0);
-      codeCell.moveToObject('canvas', 55, 55);
+      browser.pause(1000);
+      codeCell.$('canvas').moveTo(55, 55);
+      browser.pause(1000);
       var tooltip = beakerxPO.getDataGridTooltip();
       expect(tooltip.getText()).toMatch(/The value is: 8.0021/);
     });

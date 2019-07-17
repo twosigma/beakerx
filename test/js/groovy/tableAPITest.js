@@ -212,8 +212,9 @@ describe('Testing of table (groovy) ', function () {
     it('Should display tooltip ', function() {
       cellIndex += 2;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      codeCell.leftClick('canvas', 0, 0);
-      codeCell.moveToObject('canvas', 55, 55);
+      browser.pause(1000);
+      codeCell.$('canvas').moveTo(55, 55);
+      browser.pause(1000);
       var tooltip = beakerxPO.getDataGridTooltip();
       expect(tooltip.getText()).toMatch(/The value is: 8.0021/);
     });

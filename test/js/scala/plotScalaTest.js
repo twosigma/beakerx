@@ -105,21 +105,22 @@ describe('Scala notebook', function () {
   describe('Run cell with crosshair', function(){
     it('Plot has crosshair', function(){
       var svgElement = beakerxPO.runCellToGetSvgElement(11);
-      var pointElement = svgElement.$('rect#i2_0');
-      pointElement.scroll();
-      pointElement.click();
-      svgElement.moveToObject('rect#i2_1');
-      var divPlot = beakerxPO.getCodeCellByIndex(11).$('#svgg');
-      expect(divPlot.$('#cursor_xlabel').isDisplayed()).toBeTruthy();
-      expect(divPlot.$('#cursor_ylabel').isDisplayed()).toBeTruthy();
+      beakerxPO.performMouseMove(svgElement.$('g#maing'), 100, 100);
+      var dtcontainer = beakerxPO.getDtContainerByIndex(11);
+      expect(dtcontainer.$('div#cursor_xlabel').isDisplayed()).toBeTruthy();
+      expect(dtcontainer.$('div#cursor_ylabel').isDisplayed()).toBeTruthy();
     });
   });
 
   describe('Run "Simple Time Plot" cell', function(){
-    it('Time Plot has points elements', function(){
+    it('Time Plot has 2 lines and time axis', function(){
+      beakerxPO.kernelIdleIcon.waitForEnabled();
       var svgElement = beakerxPO.runCellToGetSvgElement(12);
-      expect(svgElement.$('#i0.plot-point').isDisplayed()).toBeTruthy();
-      expect(svgElement.$('#i1.plot-point').isDisplayed()).toBeTruthy();
+      expect(svgElement.$$('g#i0 > circle').length).toBeGreaterThan(0);
+      expect(svgElement.$$('g#i1 > circle').length).toBeGreaterThan(0);
+      expect(svgElement.$('g#i0 > path.plot-line').isDisplayed()).toBeTruthy();
+      expect(svgElement.$('g#i1 > path.plot-line').isDisplayed()).toBeTruthy();
+      expect(svgElement.$('text#label_x_0').getText()).toEqual('1990');
     });
   });
 

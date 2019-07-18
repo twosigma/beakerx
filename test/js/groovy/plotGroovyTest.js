@@ -161,10 +161,7 @@ describe('Plot groovy js', function () {
     it('Plot has crosshair', function(){
       cellIndex += 1;
       var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
-      var pointElement = svgElement.$('rect#i2_0');
-      pointElement.click();
-      svgElement.moveTo();
-      browser.pause(1000);
+      beakerxPO.performMouseMove(svgElement.$('g#maing'), 100, 100);
       var dtcontainer = beakerxPO.getDtContainerByIndex(cellIndex);
       expect(dtcontainer.$('div#cursor_xlabel').isDisplayed()).toBeTruthy();
       expect(dtcontainer.$('div#cursor_ylabel').isDisplayed()).toBeTruthy();

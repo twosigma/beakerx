@@ -103,6 +103,7 @@ function easyFormBase() {
     it('Should setup text value by code ', function () {
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
+      browser.pause(1000);
       expect(easyForm.$('textarea').getValue()).toBe('3text from code3');
     });
 
@@ -297,6 +298,7 @@ function easyFormBase() {
     it('Should select CheckBoxes value by code ', function () {
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
+      browser.pause(1000);
       expect(easyForm.$$('input[type="checkbox"]')[0].isSelected()).toBeTruthy();
     });
 
@@ -347,6 +349,7 @@ function easyFormBase() {
     it('Should select RadioButtons value by code ', function () {
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
+      browser.pause(1000);
       expect(easyForm.$$('input[type="radio"]')[2].isSelected()).toBeTruthy();
     });
 

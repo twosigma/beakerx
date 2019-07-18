@@ -16,7 +16,7 @@
 
 exports.config = {
   specs: [
-    './js/python/tableAPI*.js'
+    './js/**/*.js'
   ],
   exclude: [
     './js/nbviewer/*.js'

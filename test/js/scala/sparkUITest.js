@@ -32,7 +32,7 @@ describe('Spark UI', function () {
     var output = beakerxPO.getAllOutputsWidget(codeCell)[0];
     output.$('button.p-Widget.bx-spark-connect').click();
     browser.waitUntil(function(){
-      return output.$('div.p-Widget.bx-status-panel').isDisplayed();
+      return output.$$('div.p-Widget.bx-status-panel').length > 0;
     });
   }
 
@@ -208,9 +208,7 @@ describe('Spark UI', function () {
       cellIndex += 2;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var output = beakerxPO.getAllOutputsWidget(codeCell)[0];
-      browser.waitUntil(function(){
-        return output.$('div.p-Widget.bx-status-panel').isDisplayed();
-      });
+      startSparkSession(codeCell);
       expect(output.$('div.p-Widget.bx-status-panel').isEnabled()).toBeTruthy();
       stopSparkSession(codeCell);
     });

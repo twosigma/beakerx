@@ -48,7 +48,6 @@ import com.twosigma.beakerx.table.serializer.ValueHighlighterSerializer;
 import com.twosigma.beakerx.table.serializer.ValueStringFormatSerializer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -293,25 +292,10 @@ public class TableDisplayToJson {
   }
 
   static Map<Object, Object> serializeValues(TableDisplay tableDisplay) {
-    List list = tableDisplayValues(tableDisplay);
+    List list = tableDisplay.takeNextPage();
     Map<Object, Object> result = new LinkedHashMap<>();
     result.put(VALUES, list);
     return result;
   }
 
-  public static List tableDisplayValues(TableDisplay tableDisplay) {
-    List list = Collections.EMPTY_LIST;
-    List<List<?>> values = tableDisplay.getValues();
-    int endIndex = valueEndIndex(tableDisplay, values);
-    if (tableDisplay.getPageIndex() < endIndex) {
-      list = values.subList(tableDisplay.getPageIndex(), endIndex);
-    }
-    return list;
-  }
-
-  private static int valueEndIndex(TableDisplay tableDisplay, List<List<?>> values) {
-    return (tableDisplay.getPageIndex() + tableDisplay.PAGE_SIZE > values.size())
-            ? values.size()
-            : tableDisplay.getPageIndex() + tableDisplay.PAGE_SIZE;
-  }
 }

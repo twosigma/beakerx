@@ -19,7 +19,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.twosigma.beakerx.table.TableDisplay;
-import com.twosigma.beakerx.table.TableDisplayToJson;
+import com.twosigma.beakerx.table.TableDisplayLoadingMode;
 
 import java.io.IOException;
 import java.util.List;
@@ -84,20 +84,18 @@ public class TableDisplaySerializer extends ObservableTableDisplaySerializer<Tab
       jgen.writeBooleanField(HEADERS_VERTICAL, tableDisplay.getHeadersVertical());
       jgen.writeObjectField(HAS_INDEX, tableDisplay.getHasIndex());
       jgen.writeObjectField(TIME_ZONE, tableDisplay.getTimeZone());
-      List<List<?>> values = tableDisplay.getValues();
       jgen.writeObjectField(LOADING_MODE, TableDisplay.getLoadingMode());
-      if (TableDisplay.getLoadingMode().equals(TableDisplay.LoadingMode.ALL)) {
-        loadingAllMode(tableDisplay, jgen, values);
+      if (TableDisplay.getLoadingMode().equals(TableDisplayLoadingMode.ALL)) {
+        loadingAllMode(tableDisplay, jgen, tableDisplay.takeAllData());
       } else {
-        loadingPageMode(tableDisplay, jgen);
+        loadingPageMode(jgen, tableDisplay.getValues());
       }
       jgen.writeEndObject();
     }
   }
 
-  private void loadingPageMode(TableDisplay tableDisplay, JsonGenerator jgen) throws IOException {
-    List list = TableDisplayToJson.tableDisplayValues(tableDisplay);
-    jgen.writeObjectField(VALUES, list);
+  private void loadingPageMode(JsonGenerator jgen, List<List<?>> values) throws IOException {
+    jgen.writeObjectField(VALUES, values);
   }
 
   private void loadingAllMode(TableDisplay tableDisplay, JsonGenerator jgen, List<List<?>> values) throws IOException {

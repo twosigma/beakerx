@@ -38,6 +38,13 @@ describe('(Groovy) Testing of MIME types', function () {
     return beakerxPO.getAllOutputsHtmlType(codeCell)[index];
   }
 
+  function cleanCellOutput(index){
+    var codeCell = beakerxPO.getCodeCellByIndex(index + 1);
+    codeCell.scrollIntoView();
+    codeCell.click();
+    beakerxPO.clickCellAllOutputClear();
+  }
+
   describe('(Groovy) Display MIME types ', function () {
     var testValues = {
       headerText: /Hello, world!/,
@@ -48,10 +55,41 @@ describe('(Groovy) Testing of MIME types', function () {
       groovyFileName: /GroovyTest.ipynb/
     };
 
-    it('(Latex) Cell outputs mathematical symbols ', function () {
+    it('(IFrame) Cell displays an iFrame ', function () {
       cellIndex = 0;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      browser.pause(1000);
+      var result = getAndWaitHtmlType(codeCell, 0);
+      expect(result.$('iframe[src="http://jupyter.org/"]').isEnabled()).toBeTruthy();
+      cleanCellOutput(cellIndex);
+    });
+
+    it('(VimeoVideo) Cell displays a Vimeo video ', function () {
+      cellIndex += 1;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var result = getAndWaitHtmlType(codeCell, 0);
+      expect(result.$('iframe[src="https://player.vimeo.com/video/139304565"]').isEnabled()).toBeTruthy();
+      cleanCellOutput(cellIndex);
+    });
+
+    it('(YoutubeVideo) Cell displays a YouTube video ', function () {
+      cellIndex += 1;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var result = getAndWaitHtmlType(codeCell, 0);
+      expect(result.$('iframe[src="https://www.youtube.com/embed/gSVvxOchT8Y"]').isEnabled()).toBeTruthy();
+      cleanCellOutput(cellIndex);
+    });
+
+    it('(Video) Cell displays video ', function () {
+      cellIndex += 1;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var result = getAndWaitHtmlType(codeCell, 0);
+      expect(result.$('video[src="https://archive.org/download/Sita_Sings_the_Blues/Sita_Sings_the_Blues_small.mp4"]').isEnabled()).toBeTruthy();
+      cleanCellOutput(cellIndex);
+    });
+
+    it('(Latex) Cell outputs mathematical symbols ', function () {
+      cellIndex += 1;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText();
       expect(result.charCodeAt(1).toString(16)).toEqual('defc');
       expect(result.charCodeAt(2).toString(16)).toEqual('2b');
@@ -70,7 +108,8 @@ describe('(Groovy) Testing of MIME types', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var result = beakerxPO.getAllOutputsHtmlType(codeCell)[0];
-      expect(result.$('h2').isExisting()).toBeTruthy();
+      result.$('h2').waitForEnabled();
+      expect(result.$('h2').isEnabled()).toBeTruthy();
       expect(result.getText()).toMatch(testValues.headerText);
     });
 
@@ -118,35 +157,6 @@ describe('(Groovy) Testing of MIME types', function () {
     it('(Math) Cell displays mathematical formula ', function () {
       cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, testValues.mathematicalFormula);
-    });
-
-    it('(IFrame) Cell displays an iFrame ', function () {
-      cellIndex += 1;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var result = getAndWaitHtmlType(codeCell, 0);
-      expect(result.$('iframe[src="http://jupyter.org/"]').isEnabled()).toBeTruthy();
-      beakerxPO.clickCellAllOutputClear();
-    });
-
-    it('(VimeoVideo) Cell displays a Vimeo video ', function () {
-      cellIndex += 1;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var result = getAndWaitHtmlType(codeCell, 0);
-      expect(result.$('iframe[src="https://player.vimeo.com/video/139304565"]').isEnabled()).toBeTruthy();
-    });
-
-    it('(YoutubeVideo) Cell displays a YouTube video ', function () {
-      cellIndex += 1;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var result = getAndWaitHtmlType(codeCell, 0);
-      expect(result.$('iframe[src="https://www.youtube.com/embed/gSVvxOchT8Y"]').isEnabled()).toBeTruthy();
-    });
-
-    it('(Video) Cell displays video ', function () {
-      cellIndex += 1;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var result = getAndWaitHtmlType(codeCell, 0);
-      expect(result.$('video[src="https://archive.org/download/Sita_Sings_the_Blues/Sita_Sings_the_Blues_small.mp4"]').isEnabled()).toBeTruthy();
     });
 
     it('(SVG) Cell displays an SVG element ', function () {

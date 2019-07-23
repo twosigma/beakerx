@@ -38,7 +38,7 @@ describe('Testing of table (groovy) ', function () {
       beakerxPO.runCodeCellByIndex(cellIndex);
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell1_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell1_case1.png');
     });
   });
 
@@ -48,7 +48,7 @@ describe('Testing of table (groovy) ', function () {
       var width = 404, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell2_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell2_case1.png');
     });
   });
 
@@ -58,7 +58,7 @@ describe('Testing of table (groovy) ', function () {
       var width = 650, height = 190;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell3_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell3_case1.png');
     });
   });
 
@@ -68,7 +68,7 @@ describe('Testing of table (groovy) ', function () {
       var width = 500, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell4_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell4_case1.png');
     });
   });
 
@@ -78,7 +78,7 @@ describe('Testing of table (groovy) ', function () {
       var width = 180, height = 116;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell5_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell5_case1.png');
     });
   });
 
@@ -88,7 +88,7 @@ describe('Testing of table (groovy) ', function () {
       var width = 642, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell6_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell6_case1.png');
     });
   });
 
@@ -98,7 +98,7 @@ describe('Testing of table (groovy) ', function () {
       var width = 412, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell7_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell7_case1.png');
     });
   });
 
@@ -108,7 +108,7 @@ describe('Testing of table (groovy) ', function () {
       var width = 440, height = 150;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell8_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell8_case1.png');
     });
   });
 
@@ -118,7 +118,7 @@ describe('Testing of table (groovy) ', function () {
       var width = 440, height = 150;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell9_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell9_case1.png');
     });
   });
 
@@ -129,13 +129,13 @@ describe('Testing of table (groovy) ', function () {
       cellIndex += 2;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width9, height9);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell9_case2.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell9_case2.png');
     });
     it('Should remove all CellHighlighters ', function () {
       var codeCell = beakerxPO.getCodeCellByIndex(cellIndex - 2);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width9, height9);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell9_case2.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell9_case2.png');
     });
   });
 
@@ -145,7 +145,7 @@ describe('Testing of table (groovy) ', function () {
       var width = 410, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell9_case3.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell9_case3.png');
     });
   });
 
@@ -164,7 +164,7 @@ describe('Testing of table (groovy) ', function () {
       var width = 480, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell10_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell10_case1.png');
     });
   });
 
@@ -174,7 +174,7 @@ describe('Testing of table (groovy) ', function () {
       var width = 250, height = 192;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell11_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell11_case1.png');
     });
   });
 
@@ -184,7 +184,7 @@ describe('Testing of table (groovy) ', function () {
       var width = 450, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell12_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell12_case1.png');
     });
   });
 
@@ -194,7 +194,7 @@ describe('Testing of table (groovy) ', function () {
       var width = 500, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell13_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell13_case1.png');
     });
   });
 
@@ -204,7 +204,7 @@ describe('Testing of table (groovy) ', function () {
       var width = 232, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell14_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell14_case1.png');
     });
   });
 
@@ -212,8 +212,9 @@ describe('Testing of table (groovy) ', function () {
     it('Should display tooltip ', function() {
       cellIndex += 2;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      codeCell.leftClick('canvas', 0, 0);
-      codeCell.moveToObject('canvas', 55, 55);
+      browser.pause(1000);
+      codeCell.$('canvas').moveTo(55, 55);
+      browser.pause(1000);
       var tooltip = beakerxPO.getDataGridTooltip();
       expect(tooltip.getText()).toMatch(/The value is: 8.0021/);
     });

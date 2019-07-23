@@ -41,31 +41,31 @@ describe('Testing of table Actions ', function () {
       y = 10;
     }
     var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
-    tblDisplay.moveToObject('canvas', x, y);
-    tblDisplay.leftClick('canvas', x, y);
+    beakerxPO.performMouseMove(tblDisplay.$('canvas'), x, y);
+    tblDisplay.$$('span.bko-column-header-menu.bko-menu')[1].click();
     browser.waitUntil(function(){
       var menu = browser.$('ul.dropdown-menu.bko-table-menu-content');
-      return menu != null && menu.isVisible();
+      return menu != null && menu.isDisplayed();
     }, 10000, 'column menu is not visible');
     return browser.$('ul.dropdown-menu.bko-table-menu-content');
   };
 
   function checkColumnMenu(cellIndex, codeCell, menuName, fileName){
     var colMenu = getTableColumnMenu(cellIndex);
-    colMenu.click('[data-command="' + menuName + '"]');
+    colMenu.$('[data-command="' + menuName + '"]').click();
 
     var canvas = codeCell.$('canvas');
     var imageData = beakerxPO.getCanvasImageData(canvas, 250, 150);
-    beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+    beakerxPO.checkImageData(imageData, imageDir, fileName);
   };
 
   function createColumnMenu(cellIndex, codeCell, menuName, fileName){
     var colMenu = getTableColumnMenu(cellIndex);
-    colMenu.click('[data-command="' + menuName + '"]');
+    colMenu.$('[data-command="' + menuName + '"]').click();
 
     var canvas = codeCell.$('canvas');
     var imageData = beakerxPO.getCanvasImageData(canvas, 250, 150);
-    beakerxPO.createTableImage(imageData.value, imageDir, fileName);
+    beakerxPO.createTableImage(imageData, imageDir, fileName);
   };
 
   var cellIndex;
@@ -78,21 +78,21 @@ describe('Testing of table Actions ', function () {
       cellIndex = 0;
       var width = 200, height = 100;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      codeCell.moveToObject('canvas', 40, 40);
-      browser.pause(500);
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      browser.pause(2000);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell1_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell1_case1.png');
     });
 
     it('Hide All Columns', function () {
       var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
       var tableMenu = beakerxPO.getTableIndexMenu(tblDisplay);
-      tableMenu.click('[data-command="Show All Columns"]');
+      tableMenu.$('[data-command="Show All Columns"]').click();
       browser.pause(1000);
       maxWidth = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
       tableMenu = beakerxPO.getTableIndexMenu(tblDisplay);
-      tableMenu.click('[data-command="Hide All Columns"]');
+      tableMenu.$('[data-command="Hide All Columns"]').click();
       browser.pause(1000);
       var minWidth = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
       expect(maxWidth).toBeGreaterThan(minWidth);
@@ -101,11 +101,11 @@ describe('Testing of table Actions ', function () {
     it('Show All Columns', function () {
       var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
       tableMenu = beakerxPO.getTableIndexMenu(tblDisplay);
-      tableMenu.click('[data-command="Hide All Columns"]');
+      tableMenu.$('[data-command="Hide All Columns"]').click();
       browser.pause(1000);
       var width_1 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
       var tableMenu = beakerxPO.getTableIndexMenu(tblDisplay);
-      tableMenu.click('[data-command="Show All Columns"]');
+      tableMenu.$('[data-command="Show All Columns"]').click();
       browser.pause(1000);
       var width_2 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
       expect(width_2).toBeGreaterThan(width_1);
@@ -119,7 +119,7 @@ describe('Testing of table Actions ', function () {
       subMenu = getSubMenu(cellIndex, 0).$$('li');
       expect(subMenu.length).toEqual(11);
       expect(subMenu[0].getText()).toEqual('m3');
-      subMenu[0].click('div.fa.fa-check');
+      subMenu[0].$('div.fa.fa-check').click();
       var width_2 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
       expect(width_1).toBeGreaterThan(width_2);
     });
@@ -127,7 +127,7 @@ describe('Testing of table Actions ', function () {
     it('Hide all columns by checking submenu items', function () {
       var width_1 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
       for(var i = 1; i < subMenu.length; i += 1){
-        subMenu[i].click('div.fa.fa-check');
+        subMenu[i].$('div.fa.fa-check').click();
       }
       var width_2 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'width'));
       expect(width_1).toBeGreaterThan(width_2);
@@ -141,13 +141,13 @@ describe('Testing of table Actions ', function () {
       cellIndex += 2;
       beakerxPO.runCodeCellByIndex(cellIndex);
       var subMenu = getSubMenu(cellIndex, 1).$$('li');
-      expect(subMenu.length).toEqual(13);
+      expect(subMenu.length).toEqual(14);
       subMenu[8].click();
 
       var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell2_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell2_case1.png');
     });
 
     it('Should format index column to "formatted integer"', function () {
@@ -157,7 +157,7 @@ describe('Testing of table Actions ', function () {
       var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell2_case2.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell2_case2.png');
     });
   });
 
@@ -180,34 +180,6 @@ describe('Testing of table Actions ', function () {
 
       var hight_2 = parseInt(beakerxPO.getDataGridCssPropertyByIndex(cellIndex, 'height'));
       expect(hight_2).toBeGreaterThan(hight_1);
-    });
-  });
-
-  describe('Menu option "Clear selection"', function () {
-    var width = 250, height = 150;
-
-    it('Should select values', function () {
-      cellIndex += 3;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      codeCell.leftClick('canvas', 60, 60);
-      browser.keys('Shift');
-      codeCell.leftClick('canvas', 120, 120);
-      browser.keys('\uE000');
-
-      var canvas = codeCell.$('canvas');
-      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell3_case1.png');
-    });
-
-    it('Should clear selection', function () {
-      var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
-      var tableMenu = beakerxPO.getTableIndexMenu(tblDisplay);
-      tableMenu.click('[data-command="Clear selection"]');
-
-      var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
-      var canvas = codeCell.$('canvas');
-      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell3_case2.png');
     });
   });
 
@@ -300,11 +272,11 @@ describe('Testing of table Actions ', function () {
     it('Should move column to front', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var colMenu = getTableColumnMenu(cellIndex, 230, 10);
-      colMenu.click('[data-command="Move column to front"]');
+      colMenu.$('[data-command="Move column to front"]').click();
 
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, 250, 150);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell4_case13.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell4_case13.png');
     });
   });
 
@@ -322,11 +294,11 @@ describe('Testing of table Actions ', function () {
       var colMenu = getTableColumnMenu(cellIndex);
       var subMenu1 = beakerxPO.getTableIndexSubMenu(colMenu, 0)[0];
       var subMenu2 = beakerxPO.getTableIndexSubMenu(subMenu1, 0)[1];
-      subMenu2.click('li[data-command="precision_2"]');
+      subMenu2.$('li[data-command="precision_2"]').click();
 
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, 250, 150);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell5_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell5_case1.png');
     });
   });
 
@@ -334,14 +306,14 @@ describe('Testing of table Actions ', function () {
     it('Should select values with "9"', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var colMenu = getTableColumnMenu(cellIndex);
-      colMenu.click('[data-command="Search for Substring"]');
+      colMenu.$('[data-command="Search for Substring"]').click();
 
       var input = codeCell.$$('div.p-Widget.input-clear-growing')[0].$('input');
       input.click();
       browser.keys('9');
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, 250, 115);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell5_case2.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell5_case2.png');
     });
   });
 
@@ -350,14 +322,14 @@ describe('Testing of table Actions ', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var tblDisplay = beakerxPO.getTableDisplayByIndex(cellIndex);
       var tableMenu = beakerxPO.getTableIndexMenu(tblDisplay);
-      tableMenu.click('[data-command="Search for Substring"]');
+      tableMenu.$('[data-command="Search for Substring"]').click();
 
       var input = codeCell.$$('div.p-Widget.input-clear-growing')[11].$('input');
       input.click();
       browser.keys('9');
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, 250, 65);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell5_case3.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell5_case3.png');
     });
   });
 

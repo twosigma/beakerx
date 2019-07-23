@@ -82,9 +82,9 @@ describe('Publish plot groovy notebook js', function () {
     it('Should specify color, width and style of line', function(){
       var svgElement = beakerxPO.getSvgElementByIndex(cellIndex);
       var plotLine = plotHelper.getLineByGIndex(svgElement, 3);
-      expect(plotLine.getCssProperty('stroke').value).toEqual('rgb(212,57,59)');
-      expect(plotLine.getCssProperty('stroke-width').value).toEqual('2px');
-      expect(plotLine.getCssProperty('stroke-dasharray').value).toEqual('2px, 2px');
+      expect(plotLine.getCSSProperty('stroke').value).toEqual('rgb(212,57,59)');
+      expect(plotLine.getCSSProperty('stroke-width').value).toEqual('2px');
+      expect(plotLine.getCSSProperty('stroke-dasharray').value).toEqual('2px, 2px');
     });
   });
 
@@ -97,8 +97,8 @@ describe('Publish plot groovy notebook js', function () {
       pointElement.click();
       svgElement.moveToObject('rect#i2_1');
       var divPlot = beakerxPO.getCodeCellByIndex(cellIndex).$('#svgg');
-      expect(divPlot.$('#cursor_xlabel').isVisible()).toBeTruthy();
-      expect(divPlot.$('#cursor_ylabel').isVisible()).toBeTruthy();
+      expect(divPlot.$('#cursor_xlabel').isDisplayed()).toBeTruthy();
+      expect(divPlot.$('#cursor_ylabel').isDisplayed()).toBeTruthy();
     });
   });
 
@@ -106,8 +106,8 @@ describe('Publish plot groovy notebook js', function () {
     it('Time Plot has points elements', function(){
       cellIndex +=2;
       var svgElement = beakerxPO.getSvgElementByIndex(cellIndex);
-      expect(svgElement.$('#i0.plot-point').isVisible()).toBeTruthy();
-      expect(svgElement.$('#i1.plot-point').isVisible()).toBeTruthy();
+      expect(svgElement.$('#i0.plot-point').isDisplayed()).toBeTruthy();
+      expect(svgElement.$('#i1.plot-point').isDisplayed()).toBeTruthy();
     });
   });
 
@@ -115,8 +115,8 @@ describe('Publish plot groovy notebook js', function () {
     it('Plot has points elements', function(){
       cellIndex +=1;
       var svgElement = beakerxPO.getSvgElementByIndex(cellIndex);
-      expect(svgElement.$('#i0.plot-point').isVisible()).toBeTruthy();
-      expect(svgElement.$('#i1.plot-point').isVisible()).toBeTruthy();
+      expect(svgElement.$('#i0.plot-point').isDisplayed()).toBeTruthy();
+      expect(svgElement.$('#i1.plot-point').isDisplayed()).toBeTruthy();
     });
   });
 
@@ -147,8 +147,8 @@ describe('Publish plot groovy notebook js', function () {
     it('Plot has two polygon elements', function () {
       cellIndex +=2;
       var svgElement = beakerxPO.getSvgElementByIndex(cellIndex);
-      expect(svgElement.$('#i0 polygon').isVisible()).toBeTruthy();
-      expect(svgElement.$('#i1 polygon').isVisible()).toBeTruthy();
+      expect(svgElement.$('#i0 polygon').isDisplayed()).toBeTruthy();
+      expect(svgElement.$('#i1 polygon').isDisplayed()).toBeTruthy();
     });
   });
 
@@ -188,9 +188,9 @@ describe('Publish plot groovy notebook js', function () {
       expect(cell1_2.getText()).toMatch(/2.000/);
       expect(cell2_2.getText()).toMatch(/4.000/);
       expect(cell3_2.getText()).toMatch(/2.000/);
-      var color1_2 = cell1_2.getCssProperty('background-color').value;
-      expect(color1_2).not.toEqual(cell2_2.getCssProperty('background-color').value);
-      expect(color1_2).toEqual(cell3_2.getCssProperty('background-color').value);
+      var color1_2 = cell1_2.getCSSProperty('background-color').value;
+      expect(color1_2).not.toEqual(cell2_2.getCSSProperty('background-color').value);
+      expect(color1_2).toEqual(cell3_2.getCSSProperty('background-color').value);
     });
   });
 

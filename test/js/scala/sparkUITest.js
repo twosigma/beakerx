@@ -30,17 +30,17 @@ describe('Spark UI', function () {
 
   function startSparkSession(codeCell){
     var output = beakerxPO.getAllOutputsWidget(codeCell)[0];
-    output.click('button.p-Widget.bx-spark-connect');
+    output.$('button.p-Widget.bx-spark-connect').click();
     browser.waitUntil(function(){
-      return output.$('div.p-Widget.bx-status-panel').isVisible();
+      return output.$$('div.p-Widget.bx-status-panel').length > 0;
     });
   }
 
   function stopSparkSession(codeCell){
     var output = beakerxPO.getAllOutputsWidget(codeCell)[0];
-    output.click('button.bx-button.icon-close');
+    output.$('button.bx-button.icon-close').click();
     browser.waitUntil(function(){
-      return !output.isExisting('div.p-Widget.bx-status-panel');
+      return !output.$('div.p-Widget.bx-status-panel').isExisting();
     });
   }
 
@@ -88,17 +88,17 @@ describe('Spark UI', function () {
 
     it('Should stop spark session', function () {
       stopSparkSession(codeCell);
-      expect(output.isExisting('div.p-Widget.bx-status-panel')).toBeFalsy();
+      expect(output.$('div.p-Widget.bx-status-panel').isExisting()).toBeFalsy();
     });
   });
 
   function clickSaveProfile(output) {
-    output.click('button[title="Save profile"]');
+    output.$('button[title="Save profile"]').click();
   }
 
   function clickAddProperty(output) {
     cleanProfileProperties(output);
-    output.click('button.bx-properties-add-button');
+    output.$('button.bx-properties-add-button').click();
   }
   
   function checkProfileError(output, msg) {
@@ -127,7 +127,7 @@ describe('Spark UI', function () {
     it("Can't start when 'name' property is empty ", function () {
       output.$$('button.icon-close')[1].click();
       clickAddProperty(output);
-      output.click('button.p-Widget.bx-spark-connect');
+      output.$('button.p-Widget.bx-spark-connect').click();
       browser.pause(1000);
       checkProfileError(output, "Property 'name' can not be empty");
     });
@@ -144,7 +144,7 @@ describe('Spark UI', function () {
       clickAddProperty(output);
       output.$('div.bx-spark-configuration').$$('input')[0].click();
       browser.keys('g');
-      output.click('button.p-Widget.bx-spark-connect');
+      output.$('button.p-Widget.bx-spark-connect').click();
       checkProfileError(output, "Property 'value' can not be empty");
     });
     it("Should save not empty property ", function () {
@@ -185,7 +185,7 @@ describe('Spark UI', function () {
       });
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, 630, 46);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell4_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell4_case1.png');
     });
 
     it('Should display table', function () {
@@ -196,7 +196,7 @@ describe('Spark UI', function () {
       });
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, 630, 46);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell5_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell5_case1.png');
     });
   });
 
@@ -208,9 +208,7 @@ describe('Spark UI', function () {
       cellIndex += 2;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var output = beakerxPO.getAllOutputsWidget(codeCell)[0];
-      browser.waitUntil(function(){
-        return output.$('div.p-Widget.bx-status-panel').isVisible();
-      });
+      startSparkSession(codeCell);
       expect(output.$('div.p-Widget.bx-status-panel').isEnabled()).toBeTruthy();
       stopSparkSession(codeCell);
     });

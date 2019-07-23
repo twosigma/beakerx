@@ -31,11 +31,11 @@ describe('(Groovy) Output Containers ', function () {
   var cellIndex;
 
   function widgetPlotIsVisible(widget){
-    return widget.isVisible('div#plotLegendContainer');
+    return widget.$('div#plotLegendContainer').isDisplayed();
   }
 
-  function widgetTableIsVisible(widget){
-    return widget.isVisible('div.p-Widget.p-DataGrid-viewport');
+  function widgetTableIsVisible(output){
+    return output.$('div.p-Widget.beaker-table-display').$('div.p-Widget.p-DataGrid-viewport').isDisplayed();
   }
 
   describe('(Groovy) OutputCell.HIDDEN ', function() {
@@ -50,7 +50,7 @@ describe('(Groovy) Output Containers ', function () {
     it('Cell output contains 4 output containers ', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var outputs = beakerxPO.getAllOutputAreaChildren(codeCell);
+      var outputs = beakerxPO.getAllOutputAreaChildren(codeCell, true);
       expect(outputs.length).toBe(4);
       expect(outputs[0].getText()).toMatch(/simplest example/);
       expect(outputs[1].getText()).toMatch(/2, 3, 5, 7/);
@@ -60,7 +60,7 @@ describe('(Groovy) Output Containers ', function () {
   });
 
   function clickOnTabByName(output, name){
-    output.click('div.p-TabBar-tabLabel=' + name);
+    output.$('div.p-TabBar-tabLabel=' + name).click();
   }
 
   function getTabLabelText(output, tabIndex){
@@ -69,14 +69,18 @@ describe('(Groovy) Output Containers ', function () {
 
   describe('(Groovy) Tabbed Output Containers ', function() {
     var output;
-    var widgets;
+    var plotWidgets;
 
     it('Cell contains Tabbed Output with 4 tabs ', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       output = beakerxPO.getAllOutputsWidget(codeCell)[0];
-      widgets =  output.$$('div.widget-tab-contents > div.p-Widget > div');
-      expect(widgets.length).toBe(4);
+      browser.waitUntil(function(){
+        return (output.$$('div.widget-tab-contents').length > 0);
+      });
+      plotWidgets =  output.$('div.widget-tab-contents').$$('div.dtcontainer');
+      expect(plotWidgets.length).toBe(3);
+      expect(output.$$('div.p-Widget.beaker-table-display').length).toBe(1);
       expect(getTabLabelText(output, 0)).toMatch(/Scatter with History/);
       expect(getTabLabelText(output, 1)).toMatch(/Short Term/);
       expect(getTabLabelText(output, 2)).toMatch(/Long Term/);
@@ -85,44 +89,49 @@ describe('(Groovy) Output Containers ', function () {
 
     it('Tabbed Output contains 3 plots and 1 table ', function () {
       clickOnTabByName(output, 'Scatter with History');
-      expect(widgetPlotIsVisible(widgets[0])).toBeTruthy();
+      expect(widgetPlotIsVisible(plotWidgets[0])).toBeTruthy();
 
       clickOnTabByName(output, 'Short Term');
-      expect(widgetPlotIsVisible(widgets[1])).toBeTruthy();
+      expect(widgetPlotIsVisible(plotWidgets[1])).toBeTruthy();
 
       clickOnTabByName(output, 'Long Term');
-      expect(widgetPlotIsVisible(widgets[2])).toBeTruthy();
+      expect(widgetPlotIsVisible(plotWidgets[2])).toBeTruthy();
 
       clickOnTabByName(output, '1990/01');
-      expect(widgetTableIsVisible(widgets[3])).toBeTruthy();
+      expect(widgetTableIsVisible(output)).toBeTruthy();
     });
   });
 
   describe('(Groovy) Grid Output Containers ', function() {
-    var widgets;
+    var plotWidgets;
+    var output;
 
     it('Cell contains Grid Output with 6 items ', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var output = beakerxPO.getAllOutputsWidget(codeCell)[0];
-      widgets =  output.$$('div.widget-hbox > div.p-Widget > div');
-      expect(widgets.length).toBe(6);
+      output = beakerxPO.getAllOutputsWidget(codeCell)[0];
+      plotWidgets =  output.$('div.beaker-grid-view').$$('div.dtcontainer');
+      expect(plotWidgets.length).toBe(5);
+      expect(output.$$('div.p-Widget.beaker-table-display').length).toBe(1);
     });
 
     it('Grid Output contains 5 plots and 1 table ', function () {
-      expect(widgetPlotIsVisible(widgets[0])).toBeTruthy();
-      expect(widgetPlotIsVisible(widgets[1])).toBeTruthy();
-      expect(widgetPlotIsVisible(widgets[2])).toBeTruthy();
-      expect(widgetPlotIsVisible(widgets[3])).toBeTruthy();
-      expect(widgetTableIsVisible(widgets[4])).toBeTruthy();
-      expect(widgetPlotIsVisible(widgets[5])).toBeTruthy();
+      expect(widgetPlotIsVisible(plotWidgets[0])).toBeTruthy();
+      expect(widgetPlotIsVisible(plotWidgets[1])).toBeTruthy();
+      expect(widgetPlotIsVisible(plotWidgets[2])).toBeTruthy();
+      expect(widgetPlotIsVisible(plotWidgets[3])).toBeTruthy();
+      expect(widgetPlotIsVisible(plotWidgets[4])).toBeTruthy();
+      expect(widgetTableIsVisible(output)).toBeTruthy();
     });
   });
 
   function waitWidgetPlotIsVisible(output, lastId){
     var widgetId;
     browser.waitUntil(function() {
-      var widget = output.$('div.widget-box > div.p-Widget > div');
+      return output.$$('div#plotLegendContainer').length > 0;
+    });
+    browser.waitUntil(function() {
+      var widget = output.$('div.widget-container.widget-box > div.p-Widget > div');
       widgetId = widget.getAttribute('id');
       return (lastId != widgetId) && widgetPlotIsVisible(widget);
     });
@@ -130,13 +139,10 @@ describe('(Groovy) Output Containers ', function () {
   };
 
   function waitWidgetTableIsVisible(output, lastId){
-    var widgetId;
     browser.waitUntil(function() {
-      var widget = output.$('div.widget-box > div.p-Widget');
-      widgetId = widget.getAttribute('id');
-      return (lastId != widgetId) && widgetTableIsVisible(widget);
+      return output.$$('div.beaker-table-display').length > 0;
     });
-    return widgetId;
+    return output.$('div.beaker-table-display').getAttribute("id");
   };
 
   describe('(Groovy) Cycling Output Container ', function() {
@@ -147,7 +153,7 @@ describe('(Groovy) Output Containers ', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       output = beakerxPO.getAllOutputsWidget(codeCell)[0];
-      expect(output.$('div.widget-container.widget-box').isVisible()).toBeTruthy();
+      expect(output.$('div.widget-container.widget-box').isDisplayed()).toBeTruthy();
     });
 
     it('Cycling Output contains 3 plots and 1 table ', function () {

@@ -58,7 +58,7 @@ export class TableDisplayView extends widgets.DOMWidgetView {
   }
 
   public canLoadMore(): boolean{
-    return this.isEndlessLoadingMode() && (this.model.get('loadMoreRows') == undefined || this.model.get('loadMoreRows') == false);
+    return this.isEndlessLoadingMode() && (this.model.get('loadMoreRows') == "loadMoreServerInit" || this.model.get('loadMoreRows') == "loadMoreJSDone");
   }
 
   private isEndlessLoadingMode():boolean {
@@ -66,7 +66,7 @@ export class TableDisplayView extends widgets.DOMWidgetView {
   }
 
   public loadMoreRows():void{
-    this.model.set('loadMoreRows', true);
+    this.model.set('loadMoreRows', "loadMoreRequestJS");
     this.touch();
   }
 
@@ -81,7 +81,7 @@ export class TableDisplayView extends widgets.DOMWidgetView {
     if (change.hasOwnProperty('values')){
         this.model.set('model', {...currentModel, ...change, values: currentModel.values.concat(change.values||[])});
         this._currentScope.updateModelData(this.model.get('model'));
-        this.model.set('loadMoreRows', false);
+        this.model.set('loadMoreRows', "loadMoreJSDone");
     }else {
         this.model.set('model', {...currentModel, ...change});
         this.handleModelUpdate();

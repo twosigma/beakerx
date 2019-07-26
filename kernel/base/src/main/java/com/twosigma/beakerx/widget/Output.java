@@ -28,6 +28,7 @@ import java.util.Map;
 
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.DISPLAY_DATA;
 import static com.twosigma.beakerx.message.Header.MSG_ID;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 
 public class Output extends DOMWidget {
@@ -108,10 +109,10 @@ public class Output extends DOMWidget {
   private synchronized void send(boolean isError, String text) {
     List<Message> list = new ArrayList<>();
     HashMap<String, Object> state = createState();
-    list.add(getComm().createUpdateMessage(MSG_ID, getComm().getParentMessage().getHeader().getId(), state));
+    list.add(getComm().createUpdateMessage(asList(new ChangeItem(MSG_ID, getComm().getParentMessage().getHeader().getId())), state));
     Map<String, Serializable> asMap = addOutput(isError, text);
     list.add(getComm().createOutputContent(asMap));
-    list.add(getComm().createUpdateMessage(MSG_ID, "", state));
+    list.add(getComm().createUpdateMessage(asList(new ChangeItem(MSG_ID, "")), state));
     getComm().publish(list);
   }
 
@@ -156,9 +157,9 @@ public class Output extends DOMWidget {
   private void display(HashMap<String, Serializable> content) {
     List<Message> list = new ArrayList<>();
     HashMap<String, Object> state = createState();
-    list.add(getComm().createUpdateMessage(MSG_ID, getComm().getParentMessage().getHeader().getId(), state));
+    list.add(getComm().createUpdateMessage(asList(new ChangeItem(MSG_ID, getComm().getParentMessage().getHeader().getId())), state));
     list.add(getComm().createMessage(DISPLAY_DATA, Comm.Buffer.EMPTY, new Comm.Data(content)));
-    list.add(getComm().createUpdateMessage(MSG_ID, "",state));
+    list.add(getComm().createUpdateMessage(asList(new ChangeItem(MSG_ID, "")),state));
     getComm().publish(list);
   }
 

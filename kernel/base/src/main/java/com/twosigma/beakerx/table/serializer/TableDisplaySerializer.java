@@ -50,6 +50,7 @@ public class TableDisplaySerializer extends ObservableTableDisplaySerializer<Tab
   public static final String TOOLTIPS = "tooltips";
   public static final String LOADING_MODE = "loadingMode";
 
+
   @Override
   public void serialize(TableDisplay tableDisplay,
                         JsonGenerator jgen,

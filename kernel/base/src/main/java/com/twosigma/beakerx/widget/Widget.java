@@ -22,9 +22,11 @@ import com.twosigma.beakerx.message.Message;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 
 import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.DISPLAY_DATA;
+import static java.util.Arrays.asList;
 
 public abstract class Widget implements CommFunctionality, DisplayableWidget, WidgetItem {
 
@@ -152,12 +154,24 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget, Wi
   }
 
   public void sendUpdate(String propertyName, Object value) {
-    HashMap<String, Object> state = createState();
-    this.comm.sendUpdate(propertyName, value, state);
+    this.sendUpdate(asList(new ChangeItem(propertyName, value)));
   }
 
   public void sendUpdate(String propertyName, Object value, Message parent) {
-    this.comm.sendUpdate(propertyName, value, parent);
+    this.sendUpdate(asList(new ChangeItem(propertyName, value)),parent);
+  }
+
+  public void sendUpdate(ChangeItem change) {
+    this.sendUpdate(asList(change));
+  }
+
+  public void sendUpdate(List<ChangeItem> changes) {
+    HashMap<String, Object> state = createState();
+    this.comm.sendUpdate(changes, state);
+  }
+
+  public void sendUpdate(List<ChangeItem> changes, Message parent) {
+    this.comm.sendUpdate(changes, parent);
   }
 
   public void sendUpdate(Comm.Buffer buffer) {

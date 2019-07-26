@@ -31,6 +31,7 @@ import com.twosigma.beakerx.table.highlight.TableDisplayCellHighlighter;
 import com.twosigma.beakerx.table.highlight.ValueHighlighter;
 import com.twosigma.beakerx.table.renderer.TableDisplayCellRenderer;
 import com.twosigma.beakerx.widget.BeakerxWidget;
+import com.twosigma.beakerx.widget.ChangeItem;
 import com.twosigma.beakerx.widget.RunWidgetClosure;
 
 import java.util.ArrayList;
@@ -76,6 +77,7 @@ public class TableDisplay extends BeakerxWidget {
   public static final String MATRIX_SUBTYPE = "Matrix";
   public static final String DICTIONARY_SUBTYPE = "Dictionary";
   public static final String THE_LENGTH_OF_TYPES_SHOULD_BE_SAME_AS_NUMBER_OF_ROWS = "The length of types should be same as number of rows.";
+  public static final String LOAD_MORE_ROWS = "loadMoreRows";
 
   public int ROWS_LIMIT = 100000;
   public int ROW_LIMIT_TO_INDEX = 10000;
@@ -112,6 +114,7 @@ public class TableDisplay extends BeakerxWidget {
   private static TableDisplayLoadingMode loadingMode = TableDisplayLoadingMode.ALL;
   public static int PAGE_SIZE = 1000;
   private TableDisplayModel model;
+  private String loadMoreRows = "loadMoreServerInit";
 
   @Override
   public String getModelNameValue() {
@@ -179,7 +182,7 @@ public class TableDisplay extends BeakerxWidget {
 
   @Override
   protected void addValueChangeMsgCallback() {
-    getComm().addMsgCallbackList(new ValueChangeMsgCallbackHandler(() -> setLoadMoreRows(false)));
+    getComm().addMsgCallbackList(new ValueChangeMsgCallbackHandler(() -> setLoadMoreRows("loadMoreServerDone")));
     getComm().addMsgCallbackList(new StateRequestMsgCallbackHandler(this::sendModel));
   }
 
@@ -199,7 +202,12 @@ public class TableDisplay extends BeakerxWidget {
     loadingMode = lm;
   }
 
-  void setLoadMoreRows(boolean loadMoreRows) {
+  public String getLoadMoreRows() {
+    return loadMoreRows;
+  }
+
+  void setLoadMoreRows(String loadMoreRows) {
+    this.loadMoreRows = loadMoreRows;
     sendModelUpdate(TableDisplayToJson.serializeValues(this));
   }
 
@@ -726,5 +734,12 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setRowLimitMsg(String rowLimitMsg) {
     this.rowLimitMsg = rowLimitMsg;
+  }
+
+  @Override
+  protected List<ChangeItem> doSendModel() {
+    List<ChangeItem> changeItems = super.doSendModel();
+    changeItems.add(new ChangeItem(LOAD_MORE_ROWS, this.getLoadMoreRows()));
+    return changeItems;
   }
 }

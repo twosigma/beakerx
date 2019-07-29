@@ -19,7 +19,7 @@ import com.twosigma.beakerx.jvm.classloader.BeakerXUrlClassLoader;
 import com.twosigma.beakerx.kernel.ImportPath;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.kotlin.cli.common.repl.ReplClassLoader;
-import org.jetbrains.kotlin.cli.jvm.repl.ConsoleReplConfiguration;
+import org.jetbrains.kotlin.cli.jvm.repl.configuration.ConsoleReplConfiguration;
 import org.jetbrains.kotlin.cli.jvm.repl.ReplInterpreter;
 import org.jetbrains.kotlin.config.CommonConfigurationKeys;
 import org.jetbrains.kotlin.config.CompilerConfiguration;

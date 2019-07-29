@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
+import modelStateMock from "./mock/modelStateMock";
 import * as sinon from 'sinon';
 import { expect } from 'chai';
 import { Widget } from "@phosphor/widgets";
@@ -43,6 +43,19 @@ describe('BeakerXDataGrid', () => {
   it('should have the viewport set', () => {
     expect(dataGrid).to.have.property('viewport');
     expect(dataGrid.viewport).to.be.an.instanceof(Widget);
+  });
+
+  it('should implement "updateModelData" method', () => {
+    expect(dataGrid).to.have.property("updateModelData");
+    expect(dataGrid.updateModelData).to.be.a("function");
+  });
+
+  it('should call "addHighlighterManager" method when calling "updateModelData"', () => {
+    const dataGridMock = sinon.mock(dataGrid);
+    dataGridMock.expects("addHighlighterManager");
+    dataGrid.updateModelData(modelStateMock);
+    dataGridMock.verify();
+    dataGridMock.restore();
   });
 
   it('should implement destroy method', () => {

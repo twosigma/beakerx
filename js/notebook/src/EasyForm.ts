@@ -34,7 +34,7 @@ import 'jquery-ui/ui/widgets/autocomplete';
 
 import * as $ from 'jquery';
 
-export class EasyFormModel extends widgets.DOMWidgetModel {
+export class EasyFormModel extends widgets.BoxModel {
   defaults() {
     return {
       ...super.defaults(),
@@ -44,13 +44,7 @@ export class EasyFormModel extends widgets.DOMWidgetModel {
       _view_module: 'beakerx',
       _model_module_version: BEAKERX_MODULE_VERSION,
       _view_module_version: BEAKERX_MODULE_VERSION,
-      children: []
     }
-  }
-
-  static serializers = {
-    ...widgets.DOMWidgetModel.serializers,
-    children: { deserialize: widgets.unpack_models },
   }
 }
 

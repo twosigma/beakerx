@@ -38,7 +38,7 @@ describe('Large Integers in Tables ', function () {
       var width = 360, height = 90;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
   });
 
@@ -49,7 +49,7 @@ describe('Large Integers in Tables ', function () {
       var width = 360, height = 90;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
   });
 

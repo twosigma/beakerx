@@ -33,6 +33,7 @@ function easyFormBase() {
       beakerxPO.runCodeCellByIndex(cellIndex);
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      browser.pause(1000);
       expect(codeCell.$('legend').getText()).toBe('form0');
       expect(codeCell.$('div.beaker-easyform-container').isEnabled()).toBeTruthy();
     });
@@ -53,7 +54,10 @@ function easyFormBase() {
       var tstText = 'test';
       cellIndex += 1;
       easyForm.$('input[type="text"]').click();
-      browser.keys('t').keys('e').keys('s').keys('t');
+      browser.keys('t'); browser.pause(100);
+      browser.keys('e'); browser.pause(100);
+      browser.keys('s'); browser.pause(100);
+      browser.keys('t'); browser.pause(100);
       expect(easyForm.$('input[type="text"]').getValue()).toBe(tstText);
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, tstText);
     });
@@ -88,7 +92,10 @@ function easyFormBase() {
       var tstText = 'test';
       cellIndex += 1;
       easyForm.$('textarea').click();
-      browser.keys('t').keys('e').keys('s').keys('t');
+      browser.keys('t'); browser.pause(100);
+      browser.keys('e'); browser.pause(100);
+      browser.keys('s'); browser.pause(100);
+      browser.keys('t'); browser.pause(100);
       expect(easyForm.$('textarea').getValue()).toBe(tstText);
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, tstText);
     });
@@ -96,6 +103,7 @@ function easyFormBase() {
     it('Should setup text value by code ', function () {
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
+      browser.pause(1000);
       expect(easyForm.$('textarea').getValue()).toBe('3text from code3');
     });
 
@@ -265,7 +273,7 @@ function easyFormBase() {
     it('CheckBoxes has vertical orientation ', function () {
       expect(easyForm.$('div.widget-hbox > div.widget-vbox').isEnabled()).toBeTruthy();
       expect(easyForm.$('div.widget-hbox > div.widget-vbox')
-        .getCssProperty('flex-direction').value).toBe('column');
+        .getCSSProperty('flex-direction').value).toBe('column');
     });
 
     it('Should select "two" value ', function () {
@@ -290,6 +298,7 @@ function easyFormBase() {
     it('Should select CheckBoxes value by code ', function () {
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
+      browser.pause(1000);
       expect(easyForm.$$('input[type="checkbox"]')[0].isSelected()).toBeTruthy();
     });
 
@@ -301,7 +310,7 @@ function easyFormBase() {
       expect(easyForm7b.$('div.widget-label').getText()).toBe('field name');
       expect(easyForm7b.$('div.widget-hbox > div.widget-hbox').isEnabled()).toBeTruthy();
       expect(easyForm7b.$('div.widget-hbox > div.widget-hbox')
-        .getCssProperty('flex-direction').value).toBe('row');
+        .getCSSProperty('flex-direction').value).toBe('row');
     });
   });
 
@@ -319,7 +328,7 @@ function easyFormBase() {
     it('RadioButtons has vertical orientation ', function () {
       expect(easyForm.$('div.widget-radio-box').isEnabled()).toBeTruthy();
       expect(easyForm.$('div.widget-radio-box')
-        .getCssProperty('flex-direction').value).toBe('column');
+        .getCSSProperty('flex-direction').value).toBe('column');
     });
 
     it('RadioButtons does not have default selected button ', function () {
@@ -340,6 +349,7 @@ function easyFormBase() {
     it('Should select RadioButtons value by code ', function () {
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
+      browser.pause(1000);
       expect(easyForm.$$('input[type="radio"]')[2].isSelected()).toBeTruthy();
     });
 
@@ -351,7 +361,7 @@ function easyFormBase() {
       expect(easyForm8b.$('label.widget-label').getText()).toBe('field name');
       expect(easyForm8b.$('div.widget-radio-box').isEnabled()).toBeTruthy();
       expect(easyForm8b.$('div.widget-radio-box')
-        .getCssProperty('flex-direction').value).toBe('row');
+        .getCSSProperty('flex-direction').value).toBe('row');
     });
   });
 

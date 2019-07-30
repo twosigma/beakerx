@@ -104,7 +104,7 @@ describe('Java widgets test ', function () {
     it('Set "concise" property to true ', function () {
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
-      expect(widget.$('input').isVisible()).toBeFalsy();
+      expect(widget.$('input').isDisplayed()).toBeFalsy();
     });
 
     it('Set description to "happy color" ', function () {

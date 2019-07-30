@@ -124,7 +124,7 @@ describe('Groovy base tests. ', function () {
       var width = 410, height = 43;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
   });
 
@@ -135,7 +135,7 @@ describe('Groovy base tests. ', function () {
       var width = 90, height = 43;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
   });
 
@@ -146,7 +146,7 @@ describe('Groovy base tests. ', function () {
       var width = 130, height = 65;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
   });
 

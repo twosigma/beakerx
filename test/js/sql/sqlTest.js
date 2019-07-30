@@ -39,7 +39,7 @@ describe('SQL base tests ', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(2);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, 210, 120);
-      beakerxPO.checkImageData(imageData.value, imageDir, 'cell3_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell3_case1.png');
     });
   });
 

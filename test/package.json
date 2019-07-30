@@ -4,18 +4,21 @@
   "author": "Two Sigma Open Source, LLC",
   "license": "Apache-2.0",
   "dependencies": {
-    "webdriverio": "4.12.0",
-    "selenium-standalone": "6.14.1",
-    "wdio-jasmine-framework": "0.3.1",
-    "wdio-spec-reporter": "0.1.0",
-    "copyfiles": "1.2.0",
-    "resemblejs": "2.10.1"
+    "selenium-standalone": "6.16.0",
+	"resemblejs": "3.1.0",
+	"@wdio/cli": "5.10.9",
+    "@wdio/jasmine-framework": "5.10.8",
+	"@wdio/local-runner": "5.10.9",
+    "@wdio/spec-reporter": "5.9.3",
+	"@wdio/sync": "5.10.8",
+    "chromedriver": "75.0.1",
+    "wdio-chromedriver-service": "5.0.2"
   },
   "scripts": {
     "wdio-config": "copyfiles wdio.conf.js ./node_modules/.bin",
-    "setup-server": "./node_modules/.bin/selenium-standalone install --drivers.chrome.version=2.38 --drivers.chrome.baseURL=https://chromedriver.storage.googleapis.com",
-    "start-server": "./node_modules/.bin/selenium-standalone start --drivers.chrome.version=2.38 --drivers.chrome.baseURL=https://chromedriver.storage.googleapis.com",
-    "test": "./node_modules/.bin/wdio ./node_modules/.bin/wdio.conf.js"
+    "setup-server": "./node_modules/.bin/selenium-standalone install --drivers.chrome.version=75.0.3770.90 --drivers.chrome.baseURL=https://chromedriver.storage.googleapis.com",
+    "start-server": "./node_modules/.bin/selenium-standalone start --drivers.chrome.version=75.0.3770.90 --drivers.chrome.baseURL=https://chromedriver.storage.googleapis.com",
+    "test": "./node_modules/.bin/wdio wdio.conf.js"
   }
 
 }

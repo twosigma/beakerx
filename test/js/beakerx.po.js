@@ -54,14 +54,14 @@ function BeakerXPageObject() {
 
   this.getSvgElementByIndex = function (index) {
     var codeCell = this.getCodeCellByIndex(index);
-    codeCell.scroll();
+    codeCell.scrollIntoView();
     codeCell.click();
     return codeCell.$('#svgg');
   };
 
   this.getSvgElementsByIndex = function (index) {
     var codeCell = this.getCodeCellByIndex(index);
-    codeCell.scroll();
+    codeCell.scrollIntoView();
     return codeCell.$$('#svgg');
   };
 
@@ -71,15 +71,15 @@ function BeakerXPageObject() {
 
   this.getDataGridCssPropertyByIndex = function (index, cssProperty) {
     var tblDisplay = this.getTableDisplayByIndex(index);
-    return tblDisplay.$('div.p-DataGrid-viewport').getCssProperty(cssProperty).value;
+    return tblDisplay.$('div.p-DataGrid-viewport').getCSSProperty(cssProperty).value;
   };
 
   this.runCodeCellByIndex = function (index) {
     var codeCell = this.getCodeCellByIndex(index);
-    codeCell.scroll();
+    codeCell.scrollIntoView();
     codeCell.click();
     this.clickRunCell();
-    this.kernelIdleIcon.waitForEnabled();
+    this.kernelIdleIcon.waitForEnabled(120000);
     return codeCell;
   };
 
@@ -134,6 +134,7 @@ function BeakerXPageObject() {
       try {
         codeCell = this.runCodeCellByIndex(cellIndex);
         this.kernelIdleIcon.waitForEnabled();
+        browser.pause(1000);
         resultTest = getTextElements(codeCell)[0].getText();
         attempt = 0;
       } catch (e) {
@@ -168,7 +169,7 @@ function BeakerXPageObject() {
       outputIndex = 0;
     }
     var codeCell = this.getCodeCellByIndex(index);
-    codeCell.scroll();
+    codeCell.scrollIntoView();
     browser.waitUntil(function () {
       var output = getTextElements(codeCell)[outputIndex];
       return output != null && output.isEnabled() && expectedText.test(output.getText());
@@ -183,6 +184,9 @@ function BeakerXPageObject() {
   this.runCellToGetWidgetElement = function (index) {
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
+    browser.waitUntil(function () {
+      return codeCell.$$('div.jupyter-widgets').length > 0;
+    });
     return codeCell.$('div.jupyter-widgets');
   };
 
@@ -193,10 +197,10 @@ function BeakerXPageObject() {
   };
 
   this.getTableIndexMenu = function (dtContainer) {
-    dtContainer.click('span.bko-column-header-menu');
+    dtContainer.$('span.bko-column-header-menu').click();
     browser.waitUntil(function () {
       var menu = browser.$('div.bko-header-menu.bko-table-menu');
-      return menu != null && menu.isVisible();
+      return menu != null && menu.isDisplayed();
     }, 10000, 'index menu is not visible');
     return browser.$('div.bko-header-menu.bko-table-menu');
   };
@@ -205,7 +209,7 @@ function BeakerXPageObject() {
     tblMenu.$$('[data-type="submenu"]')[index].click();
     browser.waitUntil(function () {
       var menu = browser.$('div.dropdown-submenu.bko-table-menu');
-      return menu != null && menu.isVisible();
+      return menu != null && menu.isDisplayed();
     }, 10000, 'index sub menu is not visible');
     return browser.$$('div.dropdown-submenu.bko-table-menu');
   };
@@ -237,7 +241,8 @@ function BeakerXPageObject() {
   };
 
   this.getCanvasImageData = function (canvas, width, height, x, y) {
-    if (canvas == null || canvas.value == null) {
+    // if (canvas == null || canvas.value == null) {
+    if (canvas == null) {
       return {
         value: 'null'
       };
@@ -253,7 +258,7 @@ function BeakerXPageObject() {
       bufferCanvas.height = height;
       bufferCanvas.getContext('2d').putImageData(imgData, 0, 0);
       return bufferCanvas.toDataURL('image/png').replace(/data:image\/png;base64,/, "");
-    }, canvas.value, sx, sy, width, height);
+    }, canvas, sx, sy, width, height);
     return result;
   };
 
@@ -264,6 +269,12 @@ function BeakerXPageObject() {
     var file2 = new Buffer(imageData, 'base64');
     resemble(file1).compareTo(file2).onComplete(function (data) {
       console.log(fileName + ': misMatch=' + data.misMatchPercentage);
+      if(data.misMatchPercentage > mismatchPercentage){
+        var stream = fs.createWriteStream(absFileName.replace('.png', 'dif.png'));
+        stream.write(data.getBuffer());
+        stream.end();
+        console.log('file with differences are ' + absFileName.replace('.png', 'dif.png'));
+      }
       expect(data.misMatchPercentage).toBeLessThan(mismatchPercentage);
     });
   };
@@ -273,7 +284,7 @@ function BeakerXPageObject() {
       return codeCell.$$('div.dtcontainer').length > 0;
     }, 30000);
     var dtContainer = this.getDtContainerByIndex(cellIndex);
-    expect(dtContainer.$('path.plot-line').isVisible()).toBeTruthy();
+    expect(dtContainer.$('path.plot-line').isDisplayed()).toBeTruthy();
   };
 
   this.setHeapSize = function (value) {
@@ -281,12 +292,12 @@ function BeakerXPageObject() {
     heapSizeInput.setValue(value);
     browser.waitUntil(function () {
       var indicator = browser.$('span.saved');
-      return indicator.isVisible();
+      return indicator.isDisplayed();
     });
   };
 
   this.addPropertyPair = function () {
-    var addPropertyButton = $('button#add_property_jvm_sett');
+    var addPropertyButton = browser.$('button#add_property_jvm_sett');
     addPropertyButton.click();
   };
 
@@ -295,7 +306,7 @@ function BeakerXPageObject() {
     browser.$('div#properties_property input[placeholder="value"]').setValue(value);
     browser.waitUntil(function () {
       var indicator = browser.$('span.saved');
-      return indicator.isVisible();
+      return indicator.isDisplayed();
     });
   };
 
@@ -306,9 +317,41 @@ function BeakerXPageObject() {
 
   this.getDataGridTooltip = function(){
     browser.waitUntil(function () {
-      return browser.isVisible('div.p-DataGrid-tooltip');
+      return browser.$('div.p-DataGrid-tooltip').isDisplayed();
     }, 10000, 'doc tooltip is not visible');
     return $('div.p-DataGrid-tooltip');
+  };
+
+  this.performRightClick = function (elem, x, y) {
+    var result = browser.execute(function (webElem, offsetX, offsetY) {
+      var datePosition = webElem.getBoundingClientRect();
+      var clickEvent = new MouseEvent("contextmenu", {
+        "view": window,
+        "bubbles": true,
+        "cancelable": false,
+        'clientX': datePosition.left + offsetX,
+        'clientY': datePosition.top + offsetY
+      });
+      webElem.dispatchEvent(clickEvent);
+    }, elem, x, y);
+    browser.pause(1000);
+    return result;
+  };
+
+  this.performMouseMove = function (elem, x, y) {
+    var result = browser.execute(function (webElem, offsetX, offsetY) {
+      var datePosition = webElem.getBoundingClientRect();
+      var clickEvent = new MouseEvent("mousemove", {
+        "view": window,
+        "bubbles": true,
+        "cancelable": false,
+        'clientX': datePosition.left + offsetX,
+        'clientY': datePosition.top + offsetY
+      });
+      webElem.dispatchEvent(clickEvent);
+    }, elem, x, y);
+    browser.pause(1000);
+    return result;
   };
 
 };

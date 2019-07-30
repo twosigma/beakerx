@@ -94,6 +94,7 @@ export class BeakerXDataGridModel extends DataModel {
     this.store.dispatch(new DataGridAction(UPDATE_MODEL_DATA, state));
     this._data = selectValues(this.store.state);
     this.rowManager.createRows(this._data, selectHasIndex(this.store.state));
+    this.rowManager.keepSorting();
     this.reset();
   }
 

@@ -70,21 +70,24 @@ export class TableDisplayView extends widgets.DOMWidgetView {
     this.touch();
   }
 
-  handleModelUpdate(): void {
-    this._currentScope.doResetAll();
-    this._currentScope.updateModelData(this.model.get('model'));
+  handleModelUpdate(model, value, options): void {
+    let shouldReset = options.shouldResetModel==undefined || options.shouldResetModel;
+    if (shouldReset){
+        this._currentScope.doResetAll();
+        this._currentScope.updateModelData(this.model.get('model'));
+    }
   }
 
-  handleUpdateData(): void {
+  handleUpdateData(model, value, options): void {
     const change = this.model.get('updateData');
     const currentModel = this.model.get('model');
     if (change.hasOwnProperty('values')){
-        this.model.set('model', {...currentModel, ...change, values: currentModel.values.concat(change.values||[])});
+        this.model.set('model', {...currentModel, ...change, values: currentModel.values.concat(change.values||[])},{"shouldResetModel":false});
         this._currentScope.updateModelData(this.model.get('model'));
         this.model.set('loadMoreRows', "loadMoreJSDone");
     }else {
         this.model.set('model', {...currentModel, ...change});
-        this.handleModelUpdate();
+        this.handleModelUpdate(model,value, options);
     }
   }
 

@@ -35,7 +35,7 @@ describe('dataGridScope', () => {
     assert.throws(
       () => { new DataGridScope({ ...scopeOptions, data: {} }); },
       Error,
-      "columnOrder is not iterable"
+      "undefined is not iterable (cannot read property Symbol(Symbol.iterator))"
     );
   });
 

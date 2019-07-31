@@ -47,7 +47,7 @@
     "ignore-styles": "^5.0.1",
     "jsdom": "^11.5.1",
     "json-loader": "^0.5.7",
-    "node-sass": "^4.11.0",
+    "node-sass": "^4.12.0",
     "require-hacker": "^3.0.1",
     "sass-loader": "^7.1.0",
     "sinon": "^4.2.0",

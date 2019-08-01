@@ -1,0 +1,7 @@
+--require esm
+--require tsconfig-paths/register
+--require ts-node/register/transpile-only
+--require ignore-styles
+--require ./test/setup.js
+--watch-extensions ts,tsx
+./test/**/*.spec.ts

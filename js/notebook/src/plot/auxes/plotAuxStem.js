@@ -15,12 +15,12 @@
  */
 
 define([
-  'underscore',
-  './../plotUtils'
+  'underscore'
 ], function(
-  _,
-  plotUtils
+  _
 ) {
+
+  const PlotUtils = require('../utils/PlotUtils').default;
 
   var PlotAuxStem = function(data){
     _.extend(this, data); // copy properties to itself
@@ -62,7 +62,7 @@ define([
       var x = mapX(ele.x),
         y = mapY(ele.y), y2 = mapY(ele.y2);
 
-      if (plotUtils.rangeAssert([x, y, y2])) {
+      if (PlotUtils.rangeAssert([x, y, y2])) {
         eleprops.length = 0;
         return;
       }
@@ -88,8 +88,8 @@ define([
 
     itemsvg.select("#" + groupid)
       .transition()
-      .duration(plotUtils.getHighlightDuration())
-      .style("stroke-width", plotUtils.getHighlightedSize(props.st_w, highlighted));
+      .duration(PlotUtils.getHighlightDuration())
+      .style("stroke-width", PlotUtils.getHighlightedSize(props.st_w, highlighted));
   };
 
   PlotAuxStem.prototype.draw = function(scope, gid) {

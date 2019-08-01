@@ -21,8 +21,8 @@ import { Widget } from "@phosphor/widgets";
 import { MessageLoop, Message } from "@phosphor/messaging";
 
 import OtherOptionsWidgetInterface from "./OtherOptionsWidgetInterface";
-import { IOtherJVMOptions } from "../../Types/IJVMOptions";
 import { Messages } from "../../Messages";
+import {IOtherJVMOptions} from "beakerx_shared/lib/api/IJVMOptions";
 
 export default class OtherOptionsWidget extends Widget implements OtherOptionsWidgetInterface {
 

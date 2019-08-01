@@ -14,15 +14,16 @@
  *  limitations under the License.
  */
 
-define([
-  'underscore',
-  './../plotUtils'
-], function(
-  _,
-  plotUtils
-) {
 
-  var plotTip = require('./../plotTip').default;
+define([
+  'underscore'
+], function(
+  _
+) {
+  const PlotUtils = require("../utils/PlotUtils").default;
+  const PlotColorUtils = require("../utils/PlotColorUtils").default;
+  const PlotTip = require("../PlotTip").default;
+
   var PlotLodStem = function(data){
     _.extend(this, data); // copy properties to itself
     this.format();
@@ -36,7 +37,7 @@ define([
 
   PlotLodStem.prototype.format = function() {
     if (this.color != null) {
-      this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
+      this.tip_color = PlotColorUtils.createColor(this.color, this.color_opacity);
     } else {
       this.tip_color = "gray";
     }
@@ -89,7 +90,7 @@ define([
         this.avgOn = false;
       }
 
-      if (plotUtils.rangeAssert([x, y, y2])) {
+      if (PlotUtils.rangeAssert([x, y, y2])) {
         eleprops.length = 0;
         return false;
       }
@@ -122,8 +123,8 @@ define([
 
     itemsvg.select("#" + groupid)
       .transition()
-      .duration(plotUtils.getHighlightDuration())
-      .style("stroke-width", plotUtils.getHighlightedSize(props.st_w, highlighted));
+      .duration(PlotUtils.getHighlightDuration())
+      .style("stroke-width", PlotUtils.getHighlightedSize(props.st_w, highlighted));
   };
 
   PlotLodStem.prototype.draw = function(scope, gid) {
@@ -188,7 +189,7 @@ define([
   };
 
   PlotLodStem.prototype.hideTips = function(scope, hidden) {
-    plotTip.hideTips(scope, this.id, hidden);
+    PlotTip.hideTips(scope, this.id, hidden);
   };
 
   return PlotLodStem;

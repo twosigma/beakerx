@@ -316,7 +316,7 @@ class SimpleTimePlot(TimePlot):
                 time_column_default = tableData.index.name
             if not isinstance(tableData.index, pd.RangeIndex):
                 parse_x = False
-                xs = tableData.index.get_values()
+                xs = tableData.index.to_numpy()
             tableData = tableData.to_dict(orient='rows')
 
         timeColumn = getValue(kwargs, 'timeColumn', time_column_default)

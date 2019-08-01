@@ -15,8 +15,12 @@
  */
 
 import { Message } from "@phosphor/messaging";
-import IJVMOptions, { IDefaultJVMOptions, IOtherJVMOptions, IPropertiesJVMOptions } from "./Types/IJVMOptions";
-import IUIOptions from "./Types/IUIOptions";
+import IJVMOptions, {
+  IDefaultJVMOptions,
+  IOtherJVMOptions,
+  IPropertiesJVMOptions
+} from "beakerx_shared/lib/api/IJVMOptions";
+import IUIOptions from "beakerx_shared/lib/api/IUIOptions";
 
 export namespace Messages {
 

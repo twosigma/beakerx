@@ -23,6 +23,7 @@ import RequirejsLoader from "./plugin/requirejs";
 import { themeLightPlugin, themeDarkPlugin } from './theme';
 import {IJupyterWidgetRegistry} from "@jupyter-widgets/base";
 import beakerx from "./beakerx";
+import beakerx_tabledisplay from "./beakerx_tabledisplay";
 
 export const beakerx_ext: JupyterFrontEndPlugin<void> = {
   id: 'beakerx',
@@ -36,7 +37,7 @@ export const beakerx_ext: JupyterFrontEndPlugin<void> = {
     widgets.registerWidget({
          name: 'beakerx_tabledisplay',
          version: beakerx.version,
-         exports: beakerx
+         exports: beakerx_tabledisplay
     });
 
     app.docRegistry.addWidgetExtension('Notebook', new BeakerxExtension(app, settings, labShell));

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { IPropertiesJVMOptions } from "../../Types/IJVMOptions";
+import {IPropertiesJVMOptions} from "beakerx_shared/lib/api/IJVMOptions";
 
 export default interface PropertiesWidgetInterface {
   onLoad: (properties: IPropertiesJVMOptions) => void;

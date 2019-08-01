@@ -21,8 +21,10 @@ import * as _ from 'underscore';
 import PointShapeHelper from '../std/PointShapeHelper';
 import LegendPosition from "./LegendPosition";
 import PlotMessage from "../PlotMessage";
+import PlotStyleUtils from "beakerx_shared/lib/utils/PlotStyleUtils";
+import CommonUtils from "beakerx_shared/lib/utils/CommonUtils";
+import PlotColorUtils from "../utils/PlotColorUtils";
 
-const plotUtils = require('../plotUtils');
 const GradientLegend = require('../gradientlegend');
 
 export default class PlotLegend {
@@ -71,13 +73,13 @@ export default class PlotLegend {
     });
 
     const getPositive = (value) => value > 0 ? value : 0;
-    const position = plotUtils.getActualCss(legend, 'position');
+    const position = PlotStyleUtils.getActualCss(legend, 'position');
     const x = getPositive(position.left);
     const y = position.top != null ? getPositive(position.top) : getPositive(position.bottom);
 
     svg.append("foreignObject")
-      .attr("width", plotUtils.getActualCss(legend, 'outerWidth', true) + 1)//add 1 because jQuery round size
-      .attr("height", plotUtils.getActualCss(legend, 'outerHeight', true) + 1)
+      .attr("width", PlotStyleUtils.getActualCss(legend, 'outerWidth', true) + 1)//add 1 because jQuery round size
+      .attr("height", PlotStyleUtils.getActualCss(legend, 'outerHeight', true) + 1)
       .attr("x", x)
       .attr("y", y)
       .append("xhtml:body")
@@ -173,7 +175,7 @@ export default class PlotLegend {
       .attr("class", "plot-legend")
       .draggable(draggable)
       .css(
-        "max-height", plotUtils.safeHeight(this.scope.jqsvg) - layout.bottomLayoutMargin - layout.topLayoutMargin
+        "max-height", PlotStyleUtils.safeHeight(this.scope.jqsvg) - layout.bottomLayoutMargin - layout.topLayoutMargin
       );
 
     if (className != null) {
@@ -228,8 +230,8 @@ export default class PlotLegend {
   }
 
   getColorInfoUid(item) {
-    const color = plotUtils.createColor(item.color, item.color_opacity);
-    const border = plotUtils.createColor(item.stroke, item.stroke_opacity);
+    const color = PlotColorUtils.createColor(item.color, item.color_opacity);
+    const border = PlotColorUtils.createColor(item.stroke, item.stroke_opacity);
 
     return color + border;
   }
@@ -251,7 +253,7 @@ export default class PlotLegend {
       line['lodDataIds'] = [i];
     }
 
-    const lineId = plotUtils.randomString(32);
+    const lineId = CommonUtils.randomString(32);
 
     mergedLines[lineId] = line;
     lineUniqueAttributesSet[lineUniqueIndex] = lineId;
@@ -288,7 +290,7 @@ export default class PlotLegend {
       return;
     }
 
-    const allLegendId = plotUtils.randomString(32);
+    const allLegendId = CommonUtils.randomString(32);
     const unit = $(legendLineUnit)
       .appendTo(legend)
       .attr("id", "legend_all")

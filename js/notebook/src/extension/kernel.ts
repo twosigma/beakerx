@@ -14,10 +14,8 @@
  *  limitations under the License.
  */
 
-/// <reference path='../types/index.d.ts'/>
-
 import {registerCommTargets} from './comm';
-import BeakerXApi from "../tree/Utils/BeakerXApi";
+import BeakerXApi from "beakerx_shared/lib/api/BeakerXApi";
 
 export namespace BeakerXKernel {
   const utils = require('base/js/utils');

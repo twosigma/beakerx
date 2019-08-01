@@ -18,7 +18,7 @@ import * as $ from 'jquery';
 
 import { Widget } from "@phosphor/widgets";
 
-import BeakerXApi from "../Utils/BeakerXApi";
+import BeakerXApi from "beakerx_shared/lib/api/BeakerXApi";
 
 export default class BannerWidget extends Widget {
 

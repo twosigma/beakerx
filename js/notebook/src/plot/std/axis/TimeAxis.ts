@@ -14,14 +14,14 @@
  *  limitations under the License.
  */
 
-import * as Big from 'big.js';
 import * as _ from 'underscore';
 import * as moment from 'moment-timezone/builds/moment-timezone-with-data.min';
-import bkUtils from "../../../shared/bkUtils";
 import DefaultAxis from "./DefaultAxis";
+import CommonUtils from "beakerx_shared/lib/utils/CommonUtils";
+import BigNumberUtils from "beakerx_shared/lib/utils/BigNumberUtils";
+import { Big } from "big.js";
 
 const NANOTIME_TYPE = 'nanotime';
-const plotUtils = require('../../plotUtils');
 
 export default class TimeAxis extends DefaultAxis {
   UNIT: number;
@@ -65,7 +65,7 @@ export default class TimeAxis extends DefaultAxis {
 
     this.setTimeAxisRange(axisTimezone);
 
-    this.axisValSpan = plotUtils.minus(this.axisValR, this.axisValL);
+    this.axisValSpan = BigNumberUtils.minus(this.axisValR, this.axisValL);
   }
 
   setTimeAxisRange(axisTimezone) {
@@ -95,8 +95,8 @@ export default class TimeAxis extends DefaultAxis {
     }
 
     this.setAxisPct(pointLeft, pointRight);
-    this.axisMarginValL = plotUtils.mult(this.axisValSpan, marginLeft);
-    this.axisMarginValR = plotUtils.mult(this.axisValSpan, marginRight);
+    this.axisMarginValL = BigNumberUtils.mult(this.axisValSpan, marginLeft);
+    this.axisMarginValR = BigNumberUtils.mult(this.axisValSpan, marginRight);
 
     let span = this.getSpan();
 
@@ -160,24 +160,24 @@ export default class TimeAxis extends DefaultAxis {
     return (
       (
         span > this.SECOND && this.axisType === "time"
-        || this.axisType === "nanotime" && plotUtils.gt(span, this.UNIT)
+        || this.axisType === "nanotime" && BigNumberUtils.gt(span, this.UNIT)
       )
       && labels.length != _.uniq(labels).length
     );
   }
 
-  getTimeAxisLabels(lines: any[], span: number) {
-    if (this.axisType === "nanotime" && plotUtils.lte(span, this.SECOND)){
+  getTimeAxisLabels(lines: any[], span: number|Big) {
+    if (this.axisType === "nanotime" && BigNumberUtils.lte(span, this.SECOND)){
       span = this.UNIT;
-    } else if (plotUtils.lte(span, this.MINUTE)) {
+    } else if (BigNumberUtils.lte(span, this.MINUTE)) {
       span = this.SECOND;
-    } else if (plotUtils.lte(span, this.HOUR)) {
+    } else if (BigNumberUtils.lte(span, this.HOUR)) {
       span = this.MINUTE;
-    } else if (plotUtils.lte(span, this.DAY)) {
+    } else if (BigNumberUtils.lte(span, this.DAY)) {
       span = this.HOUR;
-    } else if (plotUtils.lte(span, this.MONTH)) {
+    } else if (BigNumberUtils.lte(span, this.MONTH)) {
       span = this.DAY;
-    } else if (plotUtils.lte(span, this.YEAR)) {
+    } else if (BigNumberUtils.lte(span, this.YEAR)) {
       span = this.MONTH;
     } else {
       span = this.YEAR;
@@ -197,7 +197,7 @@ export default class TimeAxis extends DefaultAxis {
 
     if (
       (this.axisType !== "time" && this.axisType !== "nanotime")
-      || !plotUtils.gte(span, this.HOUR)
+      || !BigNumberUtils.gte(span, this.HOUR)
       || labels.length <= 1
     ) {
       return common;
@@ -250,33 +250,31 @@ export default class TimeAxis extends DefaultAxis {
     let value = this.getValue(pointLeft);
 
     if (value instanceof Big) {
-      if(value.gte(0)){
-        value = value.div(axisStep).round(0, 3).times(axisStep);
-      } else {
-        value = value.div(axisStep).round(0, 0).times(axisStep);
-      }
+      value = value.gte(0) ?
+        value.div(axisStep).round(0, 3).times(axisStep) :
+        value.div(axisStep).round(0, 0).times(axisStep);
     } else {
-      value = this.normalizeValue(Math.ceil(value / axisStep) * axisStep, axisStep);
+      value = this.normalizeValue(Math.ceil(value as number / axisStep) * axisStep, axisStep);
     }
 
-    while (plotUtils.lte(value, valueRight) || plotUtils.lte(value, valueRight+1e-12)) {
+    while (BigNumberUtils.lte(value, valueRight) || BigNumberUtils.lte(value, BigNumberUtils.plus(valueRight, 1e-12))) {
       let pointCoords = this.getPercent(value);
 
       lines.push(pointCoords);
-      value = this.normalizeValue(plotUtils.plus(value, axisStep), axisStep);
+      value = this.normalizeValue(BigNumberUtils.plus(value, axisStep), axisStep);
     }
 
     return lines;
   }
 
   normalizeValue(value, axisStep) {
-    if (this.axisType !== "time" || !plotUtils.gt(axisStep, this.DAY)) {
+    if (this.axisType !== "time" || !BigNumberUtils.gt(axisStep, this.DAY)) {
       return value;
     }
 
-    if (plotUtils.lte(axisStep, this.MONTH)) {
+    if (BigNumberUtils.lte(axisStep, this.MONTH)) {
       value = this.selectStartOrEndInterval(value, "day");
-    } else if (plotUtils.lte(axisStep, this.YEAR)) {
+    } else if (BigNumberUtils.lte(axisStep, this.YEAR)) {
       value = this.selectStartOrEndInterval(value, "month");
     } else {
       value = this.selectStartOrEndInterval(value, "year");
@@ -286,8 +284,8 @@ export default class TimeAxis extends DefaultAxis {
   }
 
   selectStartOrEndInterval(value, interval) {
-    const nextIntervalStart = bkUtils.applyTimezone(value, this.axisTimezone).endOf(interval).add(1, "ms");
-    const intervalStart = bkUtils.applyTimezone(value, this.axisTimezone).startOf(interval);
+    const nextIntervalStart = CommonUtils.applyTimezone(value, this.axisTimezone).endOf(interval).add(1, "ms");
+    const intervalStart = CommonUtils.applyTimezone(value, this.axisTimezone).startOf(interval);
 
     return  ((nextIntervalStart - value) > (value - intervalStart)) ? intervalStart : nextIntervalStart;
   }
@@ -296,54 +294,55 @@ export default class TimeAxis extends DefaultAxis {
     return this.getTimeAxisStringValue(pointCoords, span);
   };
 
-  getTimeAxisStringValue(pointCoords: number, span: number) {
+  getTimeAxisStringValue(pointCoords: number, span: number): string {
     let value = this.getValue(pointCoords);
-    let timestamp;
-    let nanosec;
+    let timestamp: number;
+    let nanosec : number;
 
     if (this.axisType === "time") {
-      timestamp = Math.ceil(value * 1000) / 1000;
+      timestamp = Math.ceil(value as number * 1000) / 1000;
     }
 
     else if (this.axisType === "nanotime") {
-      timestamp = parseFloat(value.div(1000000).toFixed(0));
-      nanosec = value.mod(1000000000).toFixed(0);
+      let v: Big = new Big(value);
+      timestamp = parseFloat(v.div(1000000).toFixed(0));
+      nanosec = parseFloat(v.mod(1000000000).toFixed(0));
     }
 
-    if (plotUtils.lte(span, this.SECOND) && this.axisType === "time") {
-      return bkUtils.formatTimestamp(
+    if (BigNumberUtils.lte(span, this.SECOND) && this.axisType === "time") {
+      return CommonUtils.formatTimestamp(
         timestamp, this.axisTimezone, ".SSS"
       ) + ( (timestamp - Math.floor(timestamp)).toFixed(this.axisFixed));
     }
 
-    if (plotUtils.lte(span, this.MINUTE) && this.axisType === "time") {
-      return bkUtils.formatTimestamp(timestamp, this.axisTimezone, "mm:ss.SSS");
+    if (BigNumberUtils.lte(span, this.MINUTE) && this.axisType === "time") {
+      return CommonUtils.formatTimestamp(timestamp, this.axisTimezone, "mm:ss.SSS");
     }
 
-    if (plotUtils.lte(span, this.HOUR)) {
+    if (BigNumberUtils.lte(span, this.HOUR)) {
       if (this.axisType !== "nanotime") {
-        return bkUtils.formatTimestamp(timestamp, this.axisTimezone, "HH:mm:ss");
+        return CommonUtils.formatTimestamp(timestamp, this.axisTimezone, "HH:mm:ss");
       }
 
       if (moment(timestamp) < this.SECOND) {
-        return "." + plotUtils.padStr(nanosec, 9);
+        return "." + CommonUtils.padStr(nanosec, 9);
       }
 
-      return bkUtils.formatTimestamp(timestamp, this.axisTimezone, "HH:mm:ss") + "." + plotUtils.padStr(nanosec, 9);
+      return CommonUtils.formatTimestamp(timestamp, this.axisTimezone, "HH:mm:ss") + "." + CommonUtils.padStr(nanosec, 9);
     }
 
-    if (plotUtils.lte(span, this.DAY)) {
-      return bkUtils.formatTimestamp(timestamp, this.axisTimezone, "YYYY MMM DD, HH:mm");
+    if (BigNumberUtils.lte(span, this.DAY)) {
+      return CommonUtils.formatTimestamp(timestamp, this.axisTimezone, "YYYY MMM DD, HH:mm");
     }
 
-    if (plotUtils.lte(span, this.MONTH)) {
-      return bkUtils.formatTimestamp(timestamp, this.axisTimezone, "YYYY MMM DD");
+    if (BigNumberUtils.lte(span, this.MONTH)) {
+      return CommonUtils.formatTimestamp(timestamp, this.axisTimezone, "YYYY MMM DD");
     }
 
-    if (plotUtils.lte(span, this.YEAR)) {
-      return bkUtils.formatTimestamp(timestamp, this.axisTimezone, "YYYY MMM");
+    if (BigNumberUtils.lte(span, this.YEAR)) {
+      return CommonUtils.formatTimestamp(timestamp, this.axisTimezone, "YYYY MMM");
     }
 
-    return bkUtils.formatTimestamp(timestamp, this.axisTimezone, "YYYY");
+    return CommonUtils.formatTimestamp(timestamp, this.axisTimezone, "YYYY");
   }
 }

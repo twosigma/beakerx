@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "composite": false,
+    "declaration": true,
+    "declarationDir": "lib",
+    "declarationMap": true,
+    "esModuleInterop": true,
+    "incremental": false,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noEmitOnError": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "preserveWatchOutput": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "target": "es2017",
+    "outDir": "lib",
+    "lib": ["dom", "es2017"],
+    "types": [],
+    "rootDir": "src"
+  },
+  "include": [
+    "src/*.ts"
+  ]
+}

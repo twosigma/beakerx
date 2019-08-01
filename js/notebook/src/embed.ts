@@ -4,8 +4,6 @@
 // dynamic baseURL for the static assets and may load some css that would
 // already be loaded by the notebook otherwise.
 
-/// <reference path='./types/index.d.ts'/>
-
 // Export widget models and views, and the npm package version number.
 import './shared/style/beakerx.scss';
 import './shared/style/tree.scss';
@@ -21,7 +19,6 @@ export * from './RESTButton';
 export * from './SparkStateProgress';
 export * from './SparkConfiguration';
 export * from './SparkFoldout';
-export * from './TableDisplay';
 export * from './TabView';
 export * from './GridView';
 export * from './CyclingDisplayBox';
@@ -32,6 +29,6 @@ export * from './GistPublisher'
 export * from './GistPublisherUtils'
 
 export const PlotApi = require('./plot/plotApi');
-export const bkCoreManager = require('./shared/bkCoreManager').default;
+export const bkCoreManager = require('beakerx_shared/lib/bk/bkCoreManager').default;
 
 export const version = require('../package.json').version;

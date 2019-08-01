@@ -29,17 +29,17 @@ import PointsLimitModal from "./plotModal/pointsLimitModal";
 import PlotModelFactory from "./models/PlotModelFactory";
 import ContextMenu from "./contextMenu/plotContextMenu";
 import zoomHelpers from './zoom/helpers';
-import plotTip from './plotTip';
+import plotTip from './PlotTip';
 import saveAsContextMenu from './contextMenu/SaveAsContextMenu';
 import { GistPublisherUtils } from '../GistPublisherUtils';
+import bkHelper from "beakerx_shared/src/bk/bkHelper";
+import CommonUtils from "beakerx_shared/lib/utils/CommonUtils";
 
 import 'jquery-ui/ui/widgets/draggable';
 import 'jquery-ui/ui/widgets/resizable';
+import PlotStyleUtils from "beakerx_shared/lib/utils/PlotStyleUtils";
 
-const plotUtils = require('./plotUtils');
 const bkoChartExtender = require('./chartExtender');
-const bkUtils = require('../shared/bkUtils');
-const bkHelper = require('../shared/bkHelper');
 
 export default class PlotScope {
   id: string;
@@ -124,7 +124,7 @@ export default class PlotScope {
   }
 
   init() {
-    this.id = `bko-plot-${bkUtils.generateId(6)}`;
+    this.id = `bko-plot-${CommonUtils.generateId(6)}`;
     this.element.find('.plot-plotcontainer').attr('id', this.id);
     this.element.find('.plot-title').attr('class', `plot-title plot-title-${this.id}`);
 
@@ -275,8 +275,8 @@ export default class PlotScope {
   }
 
   updateClipPath() {
-    const W = plotUtils.safeWidth(this.jqsvg);
-    const H = plotUtils.safeHeight(this.jqsvg);
+    const W = PlotStyleUtils.safeWidth(this.jqsvg);
+    const H = PlotStyleUtils.safeHeight(this.jqsvg);
 
     this.svg.select('#clipPath_' + this.wrapperId + ' rect')
       .attr("x", this.layout.leftLayoutMargin)
@@ -373,7 +373,7 @@ export default class PlotScope {
     if (this.model.setDumpState !== undefined) {
       this.model.setDumpState(state);
 
-      bkUtils.refreshRootScope();
+      // bkUtils.refreshRootScope();
     }
   }
 

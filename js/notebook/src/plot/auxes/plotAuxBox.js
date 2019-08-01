@@ -15,12 +15,12 @@
  */
 
 define([
-  'underscore',
-  './../plotUtils'
+  'underscore'
 ], function(
-  _,
-  plotUtils
+  _
 ) {
+
+  const PlotUtils = require('../utils/PlotUtils').default;
 
   var PlotAuxBox = function(data){
     _.extend(this, data); // copy properties to itself
@@ -68,7 +68,7 @@ define([
       var x = mapX(ele.x), x2 = mapX(ele.x2),
         y = mapY(ele.y), y2 = mapY(ele.y2);
 
-      if (plotUtils.rangeAssert([x, x2, y, y2])) {
+      if (PlotUtils.rangeAssert([x, x2, y, y2])) {
         eleprops.length = 0;
         return;
       }
@@ -91,14 +91,14 @@ define([
     var groupid = this.id + "_" + gid;
     var itemsvg = svg.select("#" + this.id);
     var groupsvg = itemsvg.select("#" + groupid);
-    var diff = plotUtils.getHighlightedDiff(highlighted) / 2;
+    var diff = PlotUtils.getHighlightedDiff(highlighted) / 2;
     groupsvg.selectAll("rect")
       .transition()
-      .duration(plotUtils.getHighlightDuration())
+      .duration(PlotUtils.getHighlightDuration())
       .attr("x", function(d) { return d.x - diff; })
       .attr("y", function(d) { return d.y - diff; })
-      .attr("width", function(d) { return plotUtils.getHighlightedSize(d.w, highlighted); })
-      .attr("height", function(d) { return plotUtils.getHighlightedSize(d.h, highlighted); });
+      .attr("width", function(d) { return PlotUtils.getHighlightedSize(d.w, highlighted); })
+      .attr("height", function(d) { return PlotUtils.getHighlightedSize(d.h, highlighted); });
   };
 
   PlotAuxBox.prototype.draw = function(scope, gid) {

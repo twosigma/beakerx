@@ -18,8 +18,8 @@ import * as $ from "jquery";
 import PlotRange from "../range/PlotRange";
 import PlotFocus from "../zoom/PlotFocus";
 import {LabelData} from "./interfaces";
-
-const plotUtils = require('../plotUtils');
+import PlotStyleUtils from "beakerx_shared/lib/utils/PlotStyleUtils";
+import PlotUtils from "../utils/PlotUtils";
 
 export default class GridLabels {
   scope: any;
@@ -158,14 +158,14 @@ export default class GridLabels {
         "id" : "xlabel",
         "class" : "plot-xylabel",
         "text" : model.xAxis.axisLabelWithCommon,
-        "x" : lMargin + (plotUtils.safeWidth(this.scope.jqsvg) - lMargin) / 2,
-        "y" : plotUtils.safeHeight(this.scope.jqsvg) - plotUtils.fonts.labelHeight
+        "x" : lMargin + (PlotStyleUtils.safeWidth(this.scope.jqsvg) - lMargin) / 2,
+        "y" : PlotStyleUtils.safeHeight(this.scope.jqsvg) - PlotUtils.fonts.labelHeight
       });
     }
 
     if (model.yAxis.label != null) {
-      const x = plotUtils.fonts.labelHeight * 2;
-      const y = (plotUtils.safeHeight(this.scope.jqsvg) - bMargin) / 2;
+      const x = PlotUtils.fonts.labelHeight * 2;
+      const y = (PlotStyleUtils.safeHeight(this.scope.jqsvg) - bMargin) / 2;
 
       this.rpipeTexts.push({
         "id" : "ylabel",
@@ -178,8 +178,8 @@ export default class GridLabels {
     }
 
     if (model.yAxisR && model.yAxisR.label != null) {
-      const x = plotUtils.safeWidth(this.scope.jqsvg) - plotUtils.fonts.labelHeight;
-      const y = (plotUtils.safeHeight(this.scope.jqsvg) - bMargin) / 2;
+      const x = PlotStyleUtils.safeWidth(this.scope.jqsvg) - PlotUtils.fonts.labelHeight;
+      const y = (PlotStyleUtils.safeHeight(this.scope.jqsvg) - bMargin) / 2;
 
       this.rpipeTexts.push({
         "id" : "yrlabel",

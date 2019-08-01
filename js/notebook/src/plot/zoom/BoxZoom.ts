@@ -16,8 +16,8 @@
 
 import * as d3 from 'd3';
 import * as moment from 'moment-timezone/builds/moment-timezone-with-data';
+import PlotStyleUtils from "beakerx_shared/lib/utils/PlotStyleUtils";
 
-const plotUtils = require('../plotUtils');
 const QUICK_ZOOM_DEBOUNCE_TIME = 50;
 
 export default class BoxZoom {
@@ -104,8 +104,8 @@ export default class BoxZoom {
     focus.yspan_r = focus.yr_r - focus.yl_r;
 
     // Calculate zoom level
-    const W = plotUtils.safeWidth(this.scope.jqsvg);
-    const H = plotUtils.safeHeight(this.scope.jqsvg);
+    const W = PlotStyleUtils.safeWidth(this.scope.jqsvg);
+    const H = PlotStyleUtils.safeHeight(this.scope.jqsvg);
     const zoomLevel: number = (this.scope.plotZoom.lastTransform.k || 1) + ((W / box.w + H / box.h) / 2); // Calculate average zoom level
     const transform: any = d3.zoomTransform(this.scope.svg.node());
 

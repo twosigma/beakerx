@@ -22,9 +22,6 @@
 // url for the notebook is not known at build time and is therefore computed
 // dynamically.
 
-/// <reference path='./types/index.d.ts'/>
-
-
 __webpack_public_path__ = document.querySelector('body').getAttribute('data-base-url') + 'nbextensions/beakerx/';
 
 // Export widget models and views, and the npm package version number.

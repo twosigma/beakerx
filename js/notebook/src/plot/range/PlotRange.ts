@@ -18,8 +18,7 @@ import * as d3 from 'd3';
 import {ScaleLinear} from "d3";
 import PlotFocus from "../zoom/PlotFocus";
 import PlotAxisFactory from "../std/axis/PlotAxisFactory";
-
-const plotUtils = require('../plotUtils');
+import PlotStyleUtils from "beakerx_shared/lib/utils/PlotStyleUtils";
 
 export default class PlotRange {
   scope: any;
@@ -109,8 +108,8 @@ export default class PlotRange {
     const bottomMargin = this.scope.layout.bottomLayoutMargin;
     const topMargin = this.scope.layout.topLayoutMargin;
     const rightMargin = this.scope.layout.rightLayoutMargin;
-    const W = plotUtils.safeWidth(this.scope.jqsvg);
-    const H = plotUtils.safeHeight(this.scope.jqsvg);
+    const W = PlotStyleUtils.safeWidth(this.scope.jqsvg);
+    const H = PlotStyleUtils.safeHeight(this.scope.jqsvg);
 
     if (emitFocusUpdate && this.scope.model.updateFocus != null) {
       this.scope.model.updateFocus({

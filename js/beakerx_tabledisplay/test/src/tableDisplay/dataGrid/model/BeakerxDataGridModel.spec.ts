@@ -67,7 +67,8 @@ describe('BeakerXDataGridModel', () => {
       ...modelStateMock,
       hasIndex: true
     });
-    const tableDisplay = new TableDisplayView();     const dataGrid = new BeakerXDataGrid({}, dataStore,tableDisplay);;
+    const tableDisplay = new TableDisplayView();
+    const dataGrid = new BeakerXDataGrid({}, dataStore,tableDisplay);
     const beakerxDataGridModel = dataGrid.model;
 
     it('should return proper data', () => {

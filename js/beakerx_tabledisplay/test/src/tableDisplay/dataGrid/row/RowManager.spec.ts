@@ -78,7 +78,8 @@ describe('RowManager', () => {
 
   describe('hasIndex = true', () => {
     const dataStore = createStore({ ...modelState, hasIndex: true });
-    const tableDisplay = new TableDisplayView();     const dataGrid = new BeakerXDataGrid({}, dataStore,tableDisplay);;
+    const tableDisplay = new TableDisplayView();
+    const dataGrid = new BeakerXDataGrid({}, dataStore,tableDisplay);
     const rowManager = dataGrid.rowManager;
 
     it('should have rows property', () => {

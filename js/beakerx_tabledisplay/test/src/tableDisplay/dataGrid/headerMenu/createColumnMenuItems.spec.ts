@@ -21,6 +21,7 @@ import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXD
 import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
 import {COLUMN_TYPES} from "../../../../../src/tableDisplay/dataGrid/column/enums";
 import {createColumnMenuItems} from "../../../../../src/tableDisplay/dataGrid/headerMenu/createColumnMenuItems";
+import {TableDisplayView} from "../../../../../src";
 
 describe('createColumnMenuItems', () => {
   let dataGrid;
@@ -30,7 +31,8 @@ describe('createColumnMenuItems', () => {
 
   before(() => {
     dataStore = createStore(modelStateMock);
-    let  tableDisplay = new TableDisplayView();     dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplay);
+    let  tableDisplay = new TableDisplayView();
+    dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplay);
     column = dataGrid.columnManager.columns[COLUMN_TYPES.index][0];
     columnMenuItems = createColumnMenuItems(column);
   });

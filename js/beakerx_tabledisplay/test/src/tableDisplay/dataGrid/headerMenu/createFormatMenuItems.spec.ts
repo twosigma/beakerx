@@ -24,6 +24,7 @@ import {
   createFormatMenuItems,
   createPrecisionSubitems, createTimeSubitems
 } from "../../../../../src/tableDisplay/dataGrid/headerMenu/createFormatMenuItems";
+import {TableDisplayView} from "../../../../../src";
 
 describe('createFormatMenuItems', () => {
   let dataGrid;
@@ -32,7 +33,8 @@ describe('createFormatMenuItems', () => {
 
   before(() => {
     dataStore = createStore(modelStateMock);
-    let  tableDisplay = new TableDisplayView();     dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplay);
+    let  tableDisplay = new TableDisplayView();
+    dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplay);
     column = dataGrid.columnManager.columns[COLUMN_TYPES.index][0];
   });
 

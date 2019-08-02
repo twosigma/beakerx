@@ -22,14 +22,17 @@ import { BeakerXDataGridModel } from "../../../../src/tableDisplay/dataGrid/mode
 import modelStateMock from "./mock/modelStateMock";
 import ColumnManager from "../../../../src/tableDisplay/dataGrid/column/ColumnManager";
 import createStore from "../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
+import {TableDisplayView} from "../../../../src";
 
 describe('BeakerXDataGrid', () => {
   let dataGrid;
   let dataStore;
+  let tableDisplay;
 
   before(() => {
     dataStore = createStore(modelStateMock);
-    dataGrid = new BeakerXDataGrid({}, dataStore);
+    tableDisplay = new TableDisplayView();
+    dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplay);
   });
 
   it('should create the columnManager', () => {

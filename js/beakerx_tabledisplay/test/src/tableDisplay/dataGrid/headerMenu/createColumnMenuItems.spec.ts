@@ -30,7 +30,7 @@ describe('createColumnMenuItems', () => {
 
   before(() => {
     dataStore = createStore(modelStateMock);
-    dataGrid = new BeakerXDataGrid({}, dataStore);
+    let  tableDisplay = new TableDisplayView();     dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplay);
     column = dataGrid.columnManager.columns[COLUMN_TYPES.index][0];
     columnMenuItems = createColumnMenuItems(column);
   });

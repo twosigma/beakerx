@@ -30,7 +30,7 @@ describe('ColumnPosition', () => {
     values: [[1,2,3],[1,3,2]],
     columnsFrozen: { column: true }
   });
-  const dataGrid = new BeakerXDataGrid({}, dataStore);
+  const tableDisplay = new TableDisplayView();     const dataGrid = new BeakerXDataGrid({}, dataStore,tableDisplay);;
   const columnPosition = dataGrid.columnPosition;
 
   it('should be an instance of ColumnFilter', () => {

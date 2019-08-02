@@ -32,7 +32,7 @@ describe('DataGridColumn', () => {
     values: [[null, 1, 3], [2, null, NaN]],
     columnNames: ['test', 'column', 'columnNan']
   });
-  const dataGrid = new BeakerXDataGrid({}, dataStore);
+  const tableDisplay = new TableDisplayView();     const dataGrid = new BeakerXDataGrid({}, dataStore,tableDisplay);;
   const columnManager = dataGrid.columnManager;
 
   describe('DataGridColumn.type === "body"', () => {

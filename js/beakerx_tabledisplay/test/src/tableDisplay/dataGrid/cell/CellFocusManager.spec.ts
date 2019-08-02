@@ -25,6 +25,7 @@ import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
 import {KEYBOARD_KEYS} from "../../../../../src/tableDisplay/dataGrid/event/enums";
 import {COLUMN_TYPES} from "../../../../../src/tableDisplay/dataGrid/column/enums";
 import {BeakerXDataGrid} from '../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid';
+import {TableDisplayView} from "../../../../../src";
 
 describe('CellFocusManager', () => {
   let dataGrid;
@@ -34,7 +35,8 @@ describe('CellFocusManager', () => {
 
   before(() => {
     dataStore = createStore(modelStateMock);
-    dataGrid = new BeakerXDataGrid({}, dataStore);
+    let  tableDisplay = new TableDisplayView();
+    dataGrid = new BeakerXDataGrid({}, dataStore,tableDisplay);
     cellFocusManager = dataGrid.cellFocusManager;
   });
 

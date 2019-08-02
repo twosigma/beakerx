@@ -83,7 +83,7 @@ export class BeakerXDataGrid extends DataGrid {
 
   static FOCUS_CSS_CLASS = 'bko-focused';
 
-  constructor(options: DataGrid.IOptions, dataStore: BeakerXDataStore) {
+  constructor(options: DataGrid.IOptions, dataStore: BeakerXDataStore, tableDisplayView: TableDisplayView) {
     super(options);
 
     //this is hack to use private DataGrid properties
@@ -93,7 +93,7 @@ export class BeakerXDataGrid extends DataGrid {
     this.rowSections = this['_rowSections'];
     this.columnSections = this['_columnSections'];
     this.canvasGC = this['_canvasGC'];
-
+    this.tableDisplayView = tableDisplayView;
     this.resize = throttle(this.resize, 150, this);
     this.init(dataStore);
   }

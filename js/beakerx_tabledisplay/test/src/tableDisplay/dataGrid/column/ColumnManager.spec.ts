@@ -30,7 +30,7 @@ describe('ColumnManager', () => {
 
   before(() => {
     dataStore = createStore(modelStateMock);
-    dataGrid = new BeakerXDataGrid({}, dataStore);
+    let  tableDisplay = new TableDisplayView();     dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplay);
     columnManager = dataGrid.columnManager;
   });
 

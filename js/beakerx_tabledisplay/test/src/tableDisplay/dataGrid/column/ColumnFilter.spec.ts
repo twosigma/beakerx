@@ -26,7 +26,7 @@ import ColumnFilter, {
 
 describe('ColumnFilter', () => {
   const dataStore = createStore(modelStateMock);
-  const dataGrid = new BeakerXDataGrid({}, dataStore);
+  const tableDisplay = new TableDisplayView();     const dataGrid = new BeakerXDataGrid({}, dataStore,tableDisplay);;
   const columnManager = dataGrid.columnManager;
   const bodyDataGridColumn = columnManager.bodyColumns[0];
   const columnFilter = bodyDataGridColumn.columnFilter;

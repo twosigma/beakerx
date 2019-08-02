@@ -88,7 +88,8 @@ export class SparkConfigurationView extends widgets.VBoxView {
   }
 
   private resolveChildren(view) {
-    return new Promise((resolve, reject) => {
+    // TODO better typing
+    return new Promise<any[]>((resolve, reject) => {
       if (!view || !view.children_views) {
         reject();
       }

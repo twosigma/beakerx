@@ -14,19 +14,21 @@
  *  limitations under the License.
  */
 
+
 define([
   'underscore',
-  './../plotUtils',
   './../std/plotarea',
   './../plotSampler',
   './../lod/plotLodRiver'
 ], function(
   _,
-  plotUtils,
   PlotArea,
   PlotSampler,
   PlotLodRiver
 ) {
+  const PlotUtils = require("../utils/PlotUtils").default;
+  const PlotColorUtils = require("../utils/PlotColorUtils").default;
+  const CommonUtils = require("beakerx_shared/lib/utils/CommonUtils").default;
 
   var PlotAreaLodLoader = function(data, lodthresh){
     this.datacopy = {};
@@ -45,7 +47,7 @@ define([
     this.lodType = this.lodTypes[this.lodTypeIndex]; // line, box
 
     // create the plotters
-    this.zoomHash = plotUtils.randomString(3);
+    this.zoomHash = CommonUtils.randomString(3);
     this.plotter = new PlotArea(this.datacopy);
     this.createLodPlotter();
 
@@ -55,7 +57,7 @@ define([
     this.lodAuto = true;
     this.sampleStep = -1;
     if (this.color != null) {
-      this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
+      this.tip_color = PlotColorUtils.createColor(this.color, this.color_opacity);
     } else {
       this.tip_color = "gray";
     }
@@ -73,7 +75,7 @@ define([
 
   PlotAreaLodLoader.prototype.zoomLevelChanged = function(scope) {
     this.sampleStep = -1;
-    this.zoomHash = plotUtils.randomString(3);
+    this.zoomHash = CommonUtils.randomString(3);
     if (this.lodOn === false) { return; }
     if (this.lodType === "area") {
       this.lodplotter.setZoomHash(this.zoomHash);
@@ -310,18 +312,18 @@ define([
       tip.title = this.legend + " (" + sub + ")";
     }
     var eles = this.elements;
-    tip.xl = plotUtils.getTipStringPercent(ele.xl, xAxis, 6);
-    tip.xr = plotUtils.getTipStringPercent(ele.xr, xAxis, 6);
+    tip.xl = PlotUtils.getTipStringPercent(ele.xl, xAxis, 6);
+    tip.xr = PlotUtils.getTipStringPercent(ele.xr, xAxis, 6);
     if (this.lodType === "area") {
-      tip.avg_yTop = plotUtils.getTipStringPercent(ele.max, yAxis, 6);
-      tip.avg_yBtm = plotUtils.getTipStringPercent(ele.min, yAxis, 6);
+      tip.avg_yTop = PlotUtils.getTipStringPercent(ele.max, yAxis, 6);
+      tip.avg_yBtm = PlotUtils.getTipStringPercent(ele.min, yAxis, 6);
     } else if (this.lodType === "river") {
-      tip.max = plotUtils.getTipString(ele._max, yAxis, true);
-      tip.min = plotUtils.getTipString(ele._min, yAxis, true);
-      tip.avg = plotUtils.getTipStringPercent(ele.avg, yAxis, 6);
-      tip.count = plotUtils.getTipString(ele.count, yAxis, true);
+      tip.max = PlotUtils.getTipString(ele._max, yAxis, true);
+      tip.min = PlotUtils.getTipString(ele._min, yAxis, true);
+      tip.avg = PlotUtils.getTipStringPercent(ele.avg, yAxis, 6);
+      tip.count = PlotUtils.getTipString(ele.count, yAxis, true);
     }
-    return plotUtils.createTipString(tip);
+    return PlotUtils.createTipString(tip);
   };
 
   return PlotAreaLodLoader;

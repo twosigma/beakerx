@@ -1,0 +1,10 @@
+{
+  "extends": "./../tsconfig.base",
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "*.woff": ["./mock/assets.ts"],
+    },
+    "types": ["mocha", "chai", "node"]
+  }
+}

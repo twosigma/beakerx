@@ -17,7 +17,7 @@
 ## Dependencies
 
 Running the e2e tests from its GitHub source code requires: 
-* chrome browser version v65-67.
+* chrome browser version v75.
 * [conda](https://www.anaconda.com/download/)
 * [yarn](https://yarnpkg.com/lang/en/docs/install/)
 * [jupyter console](https://github.com/jupyter/jupyter_console)

@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
-import * as Big from 'big.js';
+import BigNumberUtils from "beakerx_shared/lib/utils/BigNumberUtils";
+import {Big, BigSource} from "big.js"
 
 const NANOTIME_TYPE = 'nanotime';
-const plotUtils = require('../../plotUtils');
 
 export default class DefaultAxis {
   type: string = 'axis';
@@ -36,8 +36,8 @@ export default class DefaultAxis {
   axisGridlineLabels: any[];
   axisStep: number;
   axisFixed: number;
-  axisMarginValL: number;
-  axisMarginValR: number;
+  axisMarginValL: BigJs.BigSource;
+  axisMarginValR: BigJs.BigSource;
   fixedLines: any[];
   axisFixedLabels: any;
   numFixs: number[];
@@ -102,7 +102,7 @@ export default class DefaultAxis {
       this.setLogAxisBase(axisBase);
     }
 
-    this.axisValSpan = plotUtils.minus(this.axisValR, this.axisValL);
+    this.axisValSpan = BigNumberUtils.minus(this.axisValR, this.axisValL);
   }
 
   setLogAxisBase(axisBase) {
@@ -191,9 +191,9 @@ export default class DefaultAxis {
 
     lines = this.calcLines(pointLeft, pointRight, this.axisStep);
 
-    let margins = plotUtils.plus(this.axisMarginValL, this.axisMarginValR);
+    let margins = BigNumberUtils.plus(this.axisMarginValL, this.axisMarginValR);
 
-    span = plotUtils.mult(this.axisPctSpan, plotUtils.minus(this.axisValSpan, margins));
+    span = BigNumberUtils.mult(this.axisPctSpan, BigNumberUtils.minus(this.axisValSpan, margins));
     labels = this.calcLabels(lines, span);
 
     this.axisGridlines = lines;
@@ -264,24 +264,20 @@ export default class DefaultAxis {
 
   getDefaultAxisLines(pointLeft, pointRight, axisStep) {
     let lines: number[] = [];
-    let valueRight = this.getValue(pointRight);
-    let value = this.getValue(pointLeft);
+    let valueRight: BigSource = this.getValue(pointRight);
+    let value: BigSource = this.getValue(pointLeft);
 
     if (value instanceof Big) {
-      if(value.gte(0)){
-        value = value.div(axisStep).round(0, 3).times(axisStep);
-      } else {
-        value = value.div(axisStep).round(0, 0).times(axisStep);
-      }
+      value = value.gte(0) ? value.div(axisStep).round(0, 3).times(axisStep) : value.div(axisStep).round(0, 0).times(axisStep);
     } else {
-      value = Math.ceil(value / axisStep) * axisStep;
+      value = Math.ceil(value as number / axisStep) * axisStep;
     }
     
-    while (plotUtils.lte(value, valueRight) || plotUtils.lte(value, valueRight+1e-12)) {
+    while (BigNumberUtils.lte(value, valueRight) || BigNumberUtils.lte(value, BigNumberUtils.plus(valueRight, 1e-12))) {
       let pointCoords = this.getPercent(value);
       
       lines.push(pointCoords);
-      value = plotUtils.plus(value, axisStep);
+      value = BigNumberUtils.plus(value, axisStep);
     }
     
     return lines;
@@ -343,8 +339,8 @@ export default class DefaultAxis {
   }
 
   getPercent(val: any): any {
-    if (plotUtils.lt(val, this.axisValL)) { val = this.axisValL; }
-    if (plotUtils.gt(val, this.axisValR)) { val = this.axisValR; }
+    if (BigNumberUtils.lt(val, this.axisValL)) { val = this.axisValL; }
+    if (BigNumberUtils.gt(val, this.axisValR)) { val = this.axisValR; }
 
     if (val instanceof Big) {
       return parseFloat(val.minus(this.axisValL).div(this.axisValSpan).toString());
@@ -353,24 +349,25 @@ export default class DefaultAxis {
     return (val - this.axisValL) / this.axisValSpan;
   }
 
-  getValue(pointCoords): any {
+  getValue(pointCoords): BigSource {
     if (pointCoords < 0) { pointCoords = 0; }
     if (pointCoords > 1) { pointCoords = 1; }
 
-    return plotUtils.plus(plotUtils.mult(this.axisValSpan, pointCoords), this.axisValL);
+    return BigNumberUtils.plus(BigNumberUtils.mult(this.axisValSpan, pointCoords), this.axisValL);
   }
 
   getString(pointCoords: number, span: number): string {
     return this.getDefaultAxisStringValue(pointCoords);
   };
 
-  getDefaultAxisStringValue(pointCoords: number) {
+  getDefaultAxisStringValue(pointCoords: number): string {
     let standardResult = 0;
+    let value: number = parseFloat(this.getValue(pointCoords).toString());
 
     if (this.axisType === "log") {
-      standardResult = Math.pow(this.axisBase, this.getValue(pointCoords));
+      standardResult = Math.pow(this.axisBase, value);
     } else {
-      standardResult = this.getValue(pointCoords);
+      standardResult = value;
     }
 
     return standardResult.toLocaleString(undefined, {

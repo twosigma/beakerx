@@ -14,9 +14,6 @@
  *  limitations under the License.
  */
 
-/// <reference types='d3'/>
-/// <reference path='../../types/index.d.ts'/>
-
 export function disableZoomWheel(scope: any): void {
   scope.svg.on('wheel.zoom', null);
   scope.jqcontainer.off('wheel.zoom');

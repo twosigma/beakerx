@@ -15,14 +15,15 @@
  */
 
 define([
-  'underscore',
-  './../plotUtils'
+  'underscore'
 ], function(
-  _,
-  plotUtils
+  _
 ) {
+  const PlotUtils = require("../utils/PlotUtils").default;
+  const PlotColorUtils = require("../utils/PlotColorUtils").default;
+  const PlotTip = require("../PlotTip").default;
+  const BigNumberUtils = require("beakerx_shared/lib/utils/BigNumberUtils").default;
 
-  var plotTip = require('./../plotTip').default;
   var PointShapeHelper = require('./PointShapeHelper.ts').default;
 
   var PlotPoint = function(data){
@@ -52,123 +53,123 @@ define([
         case "circle":
           shapesvg.selectAll(tag)
             .transition()
-            .duration(plotUtils.getHighlightDuration())
+            .duration(PlotUtils.getHighlightDuration())
             .attr("r", function(d) {
-              return plotUtils.getHighlightedSize(d.r, highlighted);
+              return PlotUtils.getHighlightedSize(d.r, highlighted);
             });
           break;
         case "diamond":
           shapesvg.selectAll(tag)
             .transition()
-            .duration(plotUtils.getHighlightDuration())
+            .duration(PlotUtils.getHighlightDuration())
             .attr("points", function(d) {
               var
                 mapX = scope.plotRange.data2scrXi, mapY = scope.plotRange.data2scrYi,
                 x = mapX(d.ele.x), y = mapY(d.ele.y),
-                size = plotUtils.getHighlightedSize(d.ele.size, highlighted);
+                size = PlotUtils.getHighlightedSize(d.ele.size, highlighted);
               return PointShapeHelper.getDiamondPoints(x, y, size);
             });
           break;
         case "triangle":
           shapesvg.selectAll(tag)
             .transition()
-            .duration(plotUtils.getHighlightDuration())
+            .duration(PlotUtils.getHighlightDuration())
             .attr("points", function(d) {
               var
                 mapX = scope.plotRange.data2scrXi, mapY = scope.plotRange.data2scrYi,
                 x = mapX(d.ele.x), y = mapY(d.ele.y),
-                size = plotUtils.getHighlightedSize(d.ele.size, highlighted);
+                size = PlotUtils.getHighlightedSize(d.ele.size, highlighted);
               return PointShapeHelper.getTrianglePoints(x, y, size);
             });
           break;
         case "downtriangle":
           shapesvg.selectAll(tag)
             .transition()
-            .duration(plotUtils.getHighlightDuration())
+            .duration(PlotUtils.getHighlightDuration())
             .attr("points", function(d) {
               var
                 mapX = scope.plotRange.data2scrXi, mapY = scope.plotRange.data2scrYi,
                 x = mapX(d.ele.x), y = mapY(d.ele.y),
-                size = plotUtils.getHighlightedSize(d.ele.size, highlighted);
+                size = PlotUtils.getHighlightedSize(d.ele.size, highlighted);
               return PointShapeHelper.getDownTrianglePoints(x, y, size);
             });
           break;
         case "level":
           shapesvg.selectAll(tag)
             .transition()
-            .duration(plotUtils.getHighlightDuration())
+            .duration(PlotUtils.getHighlightDuration())
             .attr("points", function(d) {
               var
                 mapX = scope.plotRange.data2scrXi, mapY = scope.plotRange.data2scrYi,
                 x = mapX(d.ele.x), y = mapY(d.ele.y),
-                size = plotUtils.getHighlightedSize(d.ele.size, highlighted);
+                size = PlotUtils.getHighlightedSize(d.ele.size, highlighted);
               return PointShapeHelper.getLevelPoints(x, y, size);
             });
           break;
         case "vlevel":
           shapesvg.selectAll(tag)
             .transition()
-            .duration(plotUtils.getHighlightDuration())
+            .duration(PlotUtils.getHighlightDuration())
             .attr("points", function(d) {
               var
                 mapX = scope.plotRange.data2scrXi, mapY = scope.plotRange.data2scrYi,
                 x = mapX(d.ele.x), y = mapY(d.ele.y),
-                size = plotUtils.getHighlightedSize(d.ele.size, highlighted);
+                size = PlotUtils.getHighlightedSize(d.ele.size, highlighted);
               return PointShapeHelper.getVLevelPoints(x, y, size);
             });
           break;
         case "linecross":
           shapesvg.selectAll(tag)
             .transition()
-            .duration(plotUtils.getHighlightDuration())
+            .duration(PlotUtils.getHighlightDuration())
             .attr("points", function(d) {
               var
                 mapX = scope.plotRange.data2scrXi, mapY = scope.plotRange.data2scrYi,
                 x = mapX(d.ele.x), y = mapY(d.ele.y),
-                size = plotUtils.getHighlightedSize(d.ele.size, highlighted);
+                size = PlotUtils.getHighlightedSize(d.ele.size, highlighted);
               return PointShapeHelper.getLineCrossPoints(x, y, size);
             });
           break;
         case "cross":
           shapesvg.selectAll(tag)
             .transition()
-            .duration(plotUtils.getHighlightDuration())
+            .duration(PlotUtils.getHighlightDuration())
             .attr("points", function(d) {
               var
                 mapX = scope.plotRange.data2scrXi, mapY = scope.plotRange.data2scrYi,
                 x = mapX(d.ele.x), y = mapY(d.ele.y),
-                size = plotUtils.getHighlightedSize(d.ele.size, highlighted);
+                size = PlotUtils.getHighlightedSize(d.ele.size, highlighted);
               return PointShapeHelper.getCrossPoints(x, y, size);
             });
           break;
         case "dcross":
           shapesvg.selectAll(tag)
             .transition()
-            .duration(plotUtils.getHighlightDuration())
+            .duration(PlotUtils.getHighlightDuration())
             .attr("points", function(d) {
               var
                 mapX = scope.plotRange.data2scrXi, mapY = scope.plotRange.data2scrYi,
                 x = mapX(d.ele.x), y = mapY(d.ele.y),
-                size = plotUtils.getHighlightedSize(d.ele.size, highlighted);
+                size = PlotUtils.getHighlightedSize(d.ele.size, highlighted);
               return PointShapeHelper.getDCrossPoints(x, y, size);
             });
           break;
         default:  // rect
-          var diff = plotUtils.getHighlightedDiff(highlighted) / 2;
+          var diff = PlotUtils.getHighlightedDiff(highlighted) / 2;
           shapesvg.selectAll(tag)
             .transition()
-            .duration(plotUtils.getHighlightDuration())
+            .duration(PlotUtils.getHighlightDuration())
             .attr("x", function(d) { return d.x - diff; })
             .attr("y", function(d) { return d.y - diff; })
-            .attr("width", function(d) { return plotUtils.getHighlightedSize(d.w, highlighted); })
-            .attr("height", function(d) { return plotUtils.getHighlightedSize(d.h, highlighted); });
+            .attr("width", function(d) { return PlotUtils.getHighlightedSize(d.w, highlighted); })
+            .attr("height", function(d) { return PlotUtils.getHighlightedSize(d.h, highlighted); });
       }
     }
   };
 
   PlotPoint.prototype.format = function() {
     if (this.color != null) {
-      this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
+      this.tip_color = PlotColorUtils.createColor(this.color, this.color_opacity);
     } else {
       this.tip_color = "gray";
     }
@@ -231,8 +232,8 @@ define([
     };
     for (var i = 0; i < eles.length; i++) {
       var ele = eles[i];
-      range.xl = plotUtils.min(range.xl, ele.x);
-      range.xr = plotUtils.max(range.xr, ele.x);
+      range.xl = BigNumberUtils.min(range.xl, ele.x);
+      range.xr = BigNumberUtils.max(range.xr, ele.x);
       range.yl = Math.min(range.yl, ele.y);
       range.yr = Math.max(range.yr, ele.y);
     }
@@ -251,8 +252,8 @@ define([
 
   PlotPoint.prototype.filter = function(scope) {
     var eles = this.elements;
-    var l = plotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xl) + 1,
-      r = plotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xr);
+    var l = PlotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xl) + 1,
+      r = PlotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xr);
 
     l = Math.max(l, 0);
     r = Math.min(r, eles.length - 1);
@@ -296,7 +297,7 @@ define([
       var x = mapX(ele.x), y = mapY(ele.y), s = ele.size, r = s / 2;
       var labely;
 
-      if (plotUtils.rangeAssert([x, y])) {
+      if (PlotUtils.rangeAssert([x, y])) {
         _.each(this.elementProps, function(val) {
           val.length = 0;
         });
@@ -503,7 +504,7 @@ define([
   };
 
   PlotPoint.prototype.hideTips = function(scope, hidden) {
-    plotTip.hideTips(scope, this.id,  hidden);
+    PlotTip.hideTips(scope, this.id,  hidden);
   };
 
   PlotPoint.prototype.createTip = function(ele) {
@@ -517,9 +518,9 @@ define([
     if (this.legend != null) {
       tip.title = this.legend;
     }
-    tip.x = plotUtils.getTipString(ele._x, xAxis, true);
-    tip.y = plotUtils.getTipString(ele._y, yAxis, true);
-    return plotUtils.createTipString(tip);
+    tip.x = PlotUtils.getTipString(ele._x, xAxis, true);
+    tip.y = PlotUtils.getTipString(ele._y, yAxis, true);
+    return PlotUtils.createTipString(tip);
   };
 
   return PlotPoint;

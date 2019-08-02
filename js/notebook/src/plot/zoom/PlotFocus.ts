@@ -16,10 +16,11 @@
 
 import * as d3 from "d3";
 import * as _ from "underscore";
-import * as Big from 'big.js';
 import {Focus} from "./interface";
-
-const plotUtils = require('../plotUtils');
+import PlotUtils from "../utils/PlotUtils";
+import BigNumberUtils from "beakerx_shared/lib/utils/BigNumberUtils";
+import PlotStyleUtils from "beakerx_shared/lib/utils/PlotStyleUtils";
+import { Big } from 'big.js';
 
 export default class PlotFocus {
   defaultFocus: Focus;
@@ -88,20 +89,20 @@ export default class PlotFocus {
     for (let i = 0; i < model.data.length; i++) {
       const item = model.data[i];
 
-      if(plotUtils.useYAxisR(model, item)){
+      if(PlotUtils.useYAxisR(model, item)){
         yAxisRData.push(item);
       } else {
         yAxisData.push(item);
       }
     }
 
-    const ret = plotUtils.getDataRange(yAxisData);
-    const retR = plotUtils.getDataRange(yAxisRData);
-    const range = ret.datarange;
-    const rangeR = retR.datarange;
+    const ret = PlotUtils.getDataRange(yAxisData);
+    const retR = PlotUtils.getDataRange(yAxisRData);
+    const range = ret.dataRange;
+    const rangeR = retR.dataRange;
     const margin = model.margin;
 
-    if(ret.visibleItem === 0) { // for empty plot, focus needs to be adjusted
+    if(ret.visibleItems === 0) { // for empty plot, focus needs to be adjusted
       range.xl = model.xAxis.getPercent(range.xl);
       range.xr = model.xAxis.getPercent(range.xr);
       range.yl = model.yAxis.getPercent(range.yl);
@@ -123,11 +124,11 @@ export default class PlotFocus {
     };
 
     if (focus.xl == null) {
-      focus.xl = plotUtils.minus(range.xl, plotUtils.mult(range.xspan, margin.left));
+      focus.xl = BigNumberUtils.minus(range.xl, BigNumberUtils.mult(range.xSpan, margin.left));
     }
 
     if (focus.xr == null) {
-      focus.xr = plotUtils.plus(range.xr, plotUtils.mult(range.xspan, margin.right));
+      focus.xr = BigNumberUtils.plus(range.xr, BigNumberUtils.mult(range.xSpan, margin.right));
     }
 
     if (focus.xl instanceof Big) {
@@ -144,15 +145,15 @@ export default class PlotFocus {
 
         if(yl > 0){
           range.yl = (0 - model.vrange.yl) / model.vrange.yspan;
-          range.yspan = range.yr - range.yl;
+          range.ySpan = range.yr - range.yl;
         }
       }
 
-      focus.yl = range.yl - range.yspan * margin.bottom;
+      focus.yl = range.yl - range.ySpan * margin.bottom;
     }
 
     if (focus.yr == null) {
-      focus.yr = range.yr + range.yspan * margin.top;
+      focus.yr = range.yr + range.ySpan * margin.top;
     }
 
     if (focus.yl_r == null) {
@@ -161,15 +162,15 @@ export default class PlotFocus {
 
         if(yl_r > 0){
           rangeR.yl = (0 - model.vrangeR.yl) / model.vrangeR.yspan;
-          rangeR.yspan = rangeR.yr - rangeR.yl;
+          rangeR.ySpan = rangeR.yr - rangeR.yl;
         }
       }
 
-      focus.yl_r = rangeR.yl - rangeR.yspan * (_.isNumber(margin.bottom_r) ? margin.bottom_r : 0);
+      focus.yl_r = rangeR.yl - rangeR.ySpan * (_.isNumber(margin.bottom_r) ? margin.bottom_r : 0);
     }
 
     if (focus.yr_r == null) {
-      focus.yr_r = rangeR.yr + rangeR.yspan * (_.isNumber(margin.top_r) ? margin.top_r : 0);
+      focus.yr_r = rangeR.yr + rangeR.ySpan * (_.isNumber(margin.top_r) ? margin.top_r : 0);
     }
 
     focus.xspan = focus.xr - focus.xl;
@@ -193,7 +194,7 @@ export default class PlotFocus {
 
     const lMargin = this.scope.layout.leftLayoutMargin;
     const bMargin = this.scope.layout.bottomLayoutMargin;
-    const H = plotUtils.safeHeight(this.scope.jqsvg);
+    const H = PlotStyleUtils.safeHeight(this.scope.jqsvg);
 
     if (mx < lMargin && my < H - bMargin) {
       _.extend(this.focus, _.pick(this.defaultFocus, "yl", "yr", "yspan", "yl_r", "yr_r", "yspan_r"));

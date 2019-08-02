@@ -15,8 +15,8 @@
  */
 
 import { createPublishMenuItems, createSaveAsMenuItems } from "./createMenuItems";
-import BkoContextMenu from '../../contextMenu/BkoContextMenu';
-import BeakerXApi from "../../tree/Utils/BeakerXApi";
+import BeakerXApi from "beakerx_shared/lib/api/BeakerXApi";
+import BkoContextMenu from "beakerx_shared/lib/contextMenu/BkoContextMenu";
 
 export default class PlotContextMenu extends BkoContextMenu {
   constructor(scope: any) {
@@ -33,6 +33,7 @@ export default class PlotContextMenu extends BkoContextMenu {
     let baseUrl;
 
     try {
+      // @ts-ignore
       baseUrl = `${(Jupyter.notebook_list || Jupyter.notebook).base_url}`;
     } catch (e) {
       baseUrl = `${window.location.origin}/`;

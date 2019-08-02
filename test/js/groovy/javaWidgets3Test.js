@@ -151,12 +151,11 @@ describe('Java widgets test ', function () {
 
     it('Set icon by code ', function () {
       cellIndex += 1;
-      expect(widget.$$('button')[1].isExisting('i.fa-check')).toBeFalsy();
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /check/);
       expect(widget.$$('button')[1].getAttribute('class')).toMatch(/mod-info/);
       expect(widget.$$('button')[2].getAttribute('class')).toMatch(/mod-info/);
-      expect(widget.$$('button')[1].isExisting('i.fa-check')).toBeTruthy();
-      expect(widget.$$('button')[2].isExisting('i.fa-check')).toBeTruthy();
+      expect(widget.$$('button')[1].$('i.fa-check').isExisting()).toBeTruthy();
+      expect(widget.$$('button')[2].$('i.fa-check').isExisting()).toBeTruthy();
     });
 
     it('Disable widget ', function () {
@@ -370,9 +369,8 @@ describe('Java widgets test ', function () {
 
     it('Set icon by code ', function () {
       cellIndex += 1;
-      expect(widget.isExisting('i.fa-check')).toBeFalsy();
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /check/);
-      expect(widget.isExisting('i.fa-check')).toBeTruthy();
+      expect(widget.$('i.fa-check').isExisting()).toBeTruthy();
     });
 
     it('Set style to "success" ', function () {

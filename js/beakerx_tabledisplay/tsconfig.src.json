@@ -1,0 +1,17 @@
+{
+  "extends":  "./tsconfig.base",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "sourceMap": true,
+    "strictNullChecks": false,
+    "noEmit": true,
+
+    "paths": {
+      "jquery": ["jquery/dist/jquery.js"]
+    },
+    "rootDir": "src"
+  },
+  "include": [
+    "src/*.ts"
+  ]
+}

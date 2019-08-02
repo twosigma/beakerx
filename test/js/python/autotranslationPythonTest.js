@@ -83,11 +83,11 @@ describe('Autotranslation Python to JavaScript and D3 ', function () {
     });
 
     it('First circle has color rgb(100,100,0) ', function(){
-      expect(svgElement.$$('circle')[0].getCssProperty('fill').value).toEqual('rgb(100,100,0)');
+      expect(svgElement.$$('circle')[0].getCSSProperty('fill').value).toEqual('rgb(100,100,0)');
     });
 
     it('Last circle has color rgb(100,100,180) ', function(){
-      expect(svgElement.$$('circle')[9].getCssProperty('fill').value).toEqual('rgb(100,100,180)');
+      expect(svgElement.$$('circle')[9].getCSSProperty('fill').value).toEqual('rgb(100,100,180)');
     });
   });
 

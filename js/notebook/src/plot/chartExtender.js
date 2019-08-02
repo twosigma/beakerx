@@ -14,135 +14,136 @@
  *  limitations under the License.
  */
 
-var PlotLayout = require('./PlotLayout.ts').default;
-var plotUtils = require('./plotUtils');
 
 define([
-    'underscore'
+    'underscore',
   ],
   function(
     _
   ) {
-  return {
-    extend: function (scope, element, attrs) {
+    const PlotLayout = require("./PlotLayout").default;
+    const PlotStyleUtils = require("beakerx_shared/lib/utils/PlotStyleUtils").default;
 
-      // rendering code
-      element.find(".plot-plotcontainer").resizable({
-        maxWidth: element.parent().width(), // no wider than the width of the cell
-        minWidth: 450,
-        minHeight: 150,
-        handles: "e, s, se",
-        resize: function (event, ui) {
-          scope.width = ui.size.width;
-          scope.height = ui.size.height;
-          _(scope.layout.plotSize).extend(ui.size);
+    return {
+      extend: function (scope, element, attrs) {
 
-          scope.jqsvg.css({"width": scope.width, "height": scope.height});
-          scope.jqplottitle.css({"width": scope.width});
-          scope.emitSizeChange();
-          scope.legendDone = false;
-          scope.legendResetPosition = true;
+        // rendering code
+        element.find(".plot-plotcontainer").resizable({
+          maxWidth: element.parent().width(), // no wider than the width of the cell
+          minWidth: 450,
+          minHeight: 150,
+          handles: "e, s, se",
+          resize: function (event, ui) {
+            scope.width = ui.size.width;
+            scope.height = ui.size.height;
+            _(scope.layout.plotSize).extend(ui.size);
+
+            scope.jqsvg.css({"width": scope.width, "height": scope.height});
+            scope.jqplottitle.css({"width": scope.width});
+            scope.emitSizeChange();
+            scope.legendDone = false;
+            scope.legendResetPosition = true;
+
+            scope.update();
+          }
+        });
+
+        scope.plotRange.calcMapping = function() {
+        };
+
+        scope.plotRange.calcRange = function() {
+        };
+
+        scope.calcLegendableItem = function() {
+          scope.legendableItem = 0;
+          var visitor = {
+            i: 0,
+            visit: function (node) {
+              if (node.legend){
+                scope.legendableItem++;
+              }
+            }
+          };
+          scope.stdmodel.process(visitor);
+        };
+
+        scope.init = function () {
+
+          // first standardize data
+          scope.standardizeData();
+          // init flags
+          scope.initFlags();
+
+          // create layout elements
+          scope.initLayout();
+
+          scope.resetSvg();
 
           scope.update();
-        }
-      });
-
-      scope.plotRange.calcMapping = function() {
-      };
-
-      scope.plotRange.calcRange = function() {
-      };
-
-      scope.calcLegendableItem = function() {
-        scope.legendableItem = 0;
-        var visitor = {
-          i: 0,
-          visit: function (node) {
-            if (node.legend){
-              scope.legendableItem++;
-            }
-          }
+          scope.adjustModelWidth();
+          scope.emitSizeChange(true);
+          this.pointsLimitModal.init();
         };
-        scope.stdmodel.process(visitor);
-      };
 
-      scope.init = function () {
+        scope.update = function (first) {
+          if (scope.model.isShowOutput !== undefined && scope.model.isShowOutput() === false) {
+            return;
+          }
+          scope.resetSvg();
+          scope.renderData();
+          scope.updateClipPath();
+          scope.plotLegend.render(); // redraw
+          scope.updateMargin(); //update plot margins
+          scope.calcLegendableItem();
+        };
 
-        // first standardize data
-        scope.standardizeData();
-        // init flags
-        scope.initFlags();
+        scope.updateClipPath = function() {
+          scope.svg.select('#clipPath_' + scope.wrapperId + ' rect')
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("height", PlotStyleUtils.safeHeight(scope.jqsvg))
+            .attr("width", PlotStyleUtils.safeWidth(scope.jqsvg));
+        };
 
-        // create layout elements
-        scope.initLayout();
+        scope.initLayout = function () {
+          scope.layout = new PlotLayout(scope);
 
-        scope.resetSvg();
+          $("<div></div>").appendTo(scope.jqlegendcontainer)
+            .attr("id", "tooltip")
+            .attr("class", "plot-tooltip")
+            .attr("style", "visibility: hidden");
+          scope.tooltip = d3.select(element[0]).select("#tooltip");
+        };
 
-        scope.update();
-        scope.adjustModelWidth();
-        scope.emitSizeChange(true);
-        this.pointsLimitModal.init();
-      };
+        scope.dumpState = function () {
+          var state = {};
 
-      scope.update = function (first) {
-        if (scope.model.isShowOutput !== undefined && scope.model.isShowOutput() === false) {
-          return;
-        }
-        scope.resetSvg();
-        scope.renderData();
-        scope.updateClipPath();
-        scope.plotLegend.render(); // redraw
-        scope.updateMargin(); //update plot margins
-        scope.calcLegendableItem();
-      };
+          state.showAllItems = scope.showAllItems;
+          state.plotSize = scope.layout.plotSize;
+          state.showItem = [];
+          var data = scope.stdmodel.data;
+          for (var i = 0; i < data.length; i++) {
+            state.showItem[i] = data[i].showItem;
+          }
+          state.visibleItem = scope.visibleItem;
+          state.legendableItem = scope.legendableItem;
+          return state;
+        };
 
-      scope.updateClipPath = function() {
-        scope.svg.select('#clipPath_' + scope.wrapperId + ' rect')
-          .attr("x", 0)
-          .attr("y", 0)
-          .attr("height", plotUtils.safeHeight(scope.jqsvg))
-          .attr("width", plotUtils.safeWidth(scope.jqsvg));
-      };
+        scope.loadState = function (state) {
+          scope.showAllItems = state.showAllItems;
+          scope.plotSize = state.plotSize;
+          var data = scope.stdmodel.data;
+          for (var i = 0; i < data.length; i++) {
+            data[i].showItem = state.showItem[i];
+          }
+          scope.visibleItem = state.visibleItem;
+          scope.legendableItem = state.legendableItem;
+        };
 
-      scope.initLayout = function () {
-        scope.layout = new PlotLayout(scope);
-
-        $("<div></div>").appendTo(scope.jqlegendcontainer)
-          .attr("id", "tooltip")
-          .attr("class", "plot-tooltip")
-          .attr("style", "visibility: hidden");
-        scope.tooltip = d3.select(element[0]).select("#tooltip");
-      };
-
-      scope.dumpState = function () {
-        var state = {};
-
-        state.showAllItems = scope.showAllItems;
-        state.plotSize = scope.layout.plotSize;
-        state.showItem = [];
-        var data = scope.stdmodel.data;
-        for (var i = 0; i < data.length; i++) {
-          state.showItem[i] = data[i].showItem;
-        }
-        state.visibleItem = scope.visibleItem;
-        state.legendableItem = scope.legendableItem;
-        return state;
-      };
-
-      scope.loadState = function (state) {
-        scope.showAllItems = state.showAllItems;
-        scope.plotSize = state.plotSize;
-        var data = scope.stdmodel.data;
-        for (var i = 0; i < data.length; i++) {
-          data[i].showItem = state.showItem[i];
-        }
-        scope.visibleItem = state.visibleItem;
-        scope.legendableItem = state.legendableItem;
-      };
-
-      scope.initFlags = function () {
-        scope.showAllItems = true;
-      };
+        scope.initFlags = function () {
+          scope.showAllItems = true;
+        };
+      }
     }
-  }
 });

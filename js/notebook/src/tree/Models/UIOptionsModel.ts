@@ -15,7 +15,7 @@
  */
 
 import UIOptionsWidgetInterface from "../Widgets/UIOptions/UIOptionsWidgetInterface";
-import IUIOptions from "../Types/IUIOptions";
+import IUIOptions from "beakerx_shared/lib/api/IUIOptions";
 
 export default class UIOptionsModel {
 

@@ -15,14 +15,14 @@
  */
 
 define([
-  'underscore',
-  './../plotUtils'
+  'underscore'
 ], function(
-  _,
-  plotUtils
+    _
 ) {
+  const PlotColorUtils = require("../utils/PlotColorUtils").default;
+  const PlotTip = require("../PlotTip").default;
+  const PlotUtils = require("../utils/PlotUtils").default;
 
-  var plotTip = require('./../plotTip').default;
   var PlotLodBox = function(data){
     _.extend(this, data); // copy properties to itself
     this.format();
@@ -35,7 +35,7 @@ define([
 
   PlotLodBox.prototype.format = function() {
     if (this.color != null) {
-      this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
+      this.tip_color = PlotColorUtils.createColor(this.color, this.color_opacity);
     } else {
       this.tip_color = "gray";
     }
@@ -89,7 +89,7 @@ define([
         this.avgOn = false;
       }
 
-      if (plotUtils.rangeAssert([x, x2, y, y2])) {
+      if (PlotUtils.rangeAssert([x, x2, y, y2])) {
         eleprops.length = 0;
         return false;
       }
@@ -122,14 +122,14 @@ define([
     var groupid = this.id + "_" + gid;
     var itemsvg = svg.select("#" + this.id);
     var groupsvg = itemsvg.select("#" + groupid);
-    var diff = plotUtils.getHighlightedDiff(highlighted) / 2;
+    var diff = PlotUtils.getHighlightedDiff(highlighted) / 2;
     groupsvg.selectAll("rect")
       .transition()
-      .duration(plotUtils.getHighlightDuration())
+      .duration(PlotUtils.getHighlightDuration())
       .attr("x", function(d) { return d.x - diff; })
       .attr("y", function(d) { return d.y - diff; })
-      .attr("width", function(d) { return plotUtils.getHighlightedSize(d.w, highlighted); })
-      .attr("height", function(d) { return plotUtils.getHighlightedSize(d.h, highlighted); });
+      .attr("width", function(d) { return PlotUtils.getHighlightedSize(d.w, highlighted); })
+      .attr("height", function(d) { return PlotUtils.getHighlightedSize(d.h, highlighted); });
   };
 
   PlotLodBox.prototype.draw = function(scope, gid) {
@@ -198,7 +198,7 @@ define([
   };
 
   PlotLodBox.prototype.hideTips = function(scope, hidden) {
-    plotTip.hideTips(scope, this.id, hidden);
+    PlotTip.hideTips(scope, this.id, hidden);
   };
 
   return PlotLodBox;

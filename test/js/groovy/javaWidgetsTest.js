@@ -90,7 +90,7 @@ describe('Java widgets notebook test ', function () {
     it('Change widget color ', function () {
       cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /#F04080/);
-      expect(widget.$('span').getCssProperty('background-color').value).toEqual('rgba(240,64,128,1)');
+      expect(widget.$('span').getCSSProperty('background-color').value).toEqual('rgba(240,64,128,1)');
     });
   });
 
@@ -154,7 +154,7 @@ describe('Java widgets notebook test ', function () {
     it('Change widget color ', function () {
       cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /#F04080/);
-      expect(widget.$('span').getCssProperty('background-color').value).toEqual('rgba(240,64,128,1)');
+      expect(widget.$('span').getCSSProperty('background-color').value).toEqual('rgba(240,64,128,1)');
     });
   });
 
@@ -308,8 +308,8 @@ describe('Java widgets notebook test ', function () {
     it('Change widget color ', function () {
       cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /#F04080/);
-      expect(widget.$$('span')[0].getCssProperty('background-color').value).toEqual('rgba(240,64,128,1)');
-      expect(widget.$$('span')[1].getCssProperty('background-color').value).toEqual('rgba(240,64,128,1)');
+      expect(widget.$$('span')[0].getCSSProperty('background-color').value).toEqual('rgba(240,64,128,1)');
+      expect(widget.$$('span')[1].getCSSProperty('background-color').value).toEqual('rgba(240,64,128,1)');
     });
   });
 
@@ -378,8 +378,8 @@ describe('Java widgets notebook test ', function () {
     it('Change widget color ', function () {
       cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /#F04080/);
-      expect(widget.$$('span')[0].getCssProperty('background-color').value).toEqual('rgba(240,64,128,1)');
-      expect(widget.$$('span')[1].getCssProperty('background-color').value).toEqual('rgba(240,64,128,1)');
+      expect(widget.$$('span')[0].getCSSProperty('background-color').value).toEqual('rgba(240,64,128,1)');
+      expect(widget.$$('span')[1].getCSSProperty('background-color').value).toEqual('rgba(240,64,128,1)');
     });
   });
 

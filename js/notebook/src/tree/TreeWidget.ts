@@ -17,7 +17,7 @@
 import { Panel } from "@phosphor/widgets";
 import { Message } from "@phosphor/messaging";
 
-import BeakerXApi from "./Utils/BeakerXApi";
+import BeakerXApi from "beakerx_shared/lib/api/BeakerXApi";
 import BannerWidget from "./Widgets/BannerWidget";
 import { Messages } from "./Messages";
 import ITreeWidgetOptions from "./Types/ITreeWidgetOptions";

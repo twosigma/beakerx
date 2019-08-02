@@ -11,6 +11,7 @@ beakerx/beakerx_databrowser/static/
 beakerx/beakerx/kernel/
 beakerx/beakerx/javadoc/
 beakerx/record.txt
+beakerx_tabledisplay/beakerx_tabledisplay/static/
 
 # Jupyter / iPython
 /.project

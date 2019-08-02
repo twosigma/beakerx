@@ -16,13 +16,13 @@
 
 define([
   'underscore',
-  './../plotUtils'
 ], function(
-  _,
-  plotUtils
+  _
 ) {
+  const PlotColorUtils = require("../utils/PlotColorUtils").default;
+  const PlotTip = require("../PlotTip").default;
+  const PlotUtils = require("../utils/PlotUtils").default;
 
-  var plotTip = require('./../plotTip').default;
   var PlotLodPoint = function(data){
     _.extend(this, data); // copy properties to itself
     this.format();
@@ -36,7 +36,7 @@ define([
 
   PlotLodPoint.prototype.format = function() {
     if (this.color != null) {
-      this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
+      this.tip_color = PlotColorUtils.createColor(this.color, this.color_opacity);
     } else {
       this.tip_color = "gray";
     }
@@ -81,7 +81,7 @@ define([
       var x = mapX(ele.x), y = mapY(ele.avg);
       var s = this.sizeSamples[i].avg;
 
-      if (plotUtils.rangeAssert([x, y])) {
+      if (PlotUtils.rangeAssert([x, y])) {
         eleprops.length = 0;
         return;
       }
@@ -145,17 +145,17 @@ define([
       case "circle":
         groupsvg.selectAll(tag)
           .transition()
-          .duration(plotUtils.getHighlightDuration())
-          .attr("r", function(d) { return plotUtils.getHighlightedSize(d.r, highlighted); });
+          .duration(PlotUtils.getHighlightDuration())
+          .attr("r", function(d) { return PlotUtils.getHighlightedSize(d.r, highlighted); });
         break;
       case "diamond":
         groupsvg.selectAll(tag)
           .transition()
-          .duration(plotUtils.getHighlightDuration())
+          .duration(PlotUtils.getHighlightDuration())
           .attr("points", function(d) {
             var mapX = scope.plotRange.data2scrXi, mapY = scope.plotRange.data2scrYi;
             var ele = d.ele, x = mapX(ele.x), y = mapY(ele.y),
-              s = plotUtils.getHighlightedSize(ele.size, highlighted);
+              s = PlotUtils.getHighlightedSize(ele.size, highlighted);
             var pstr = "";
             pstr += (x - s) + "," + (y    ) + " ";
             pstr += (x    ) + "," + (y - s) + " ";
@@ -165,14 +165,14 @@ define([
           });
         break;
       default:  // rect
-        var diff = plotUtils.getHighlightedDiff(highlighted) / 2;
+        var diff = PlotUtils.getHighlightedDiff(highlighted) / 2;
         groupsvg.selectAll(tag)
           .transition()
-          .duration(plotUtils.getHighlightDuration())
+          .duration(PlotUtils.getHighlightDuration())
           .attr("x", function(d) { return d.x - diff; })
           .attr("y", function(d) { return d.y - diff; })
-          .attr("width", function(d) { return plotUtils.getHighlightedSize(d.w, highlighted); })
-          .attr("height", function(d) { return plotUtils.getHighlightedSize(d.h, highlighted); });
+          .attr("width", function(d) { return PlotUtils.getHighlightedSize(d.w, highlighted); })
+          .attr("height", function(d) { return PlotUtils.getHighlightedSize(d.h, highlighted); });
     }
   };
 
@@ -245,7 +245,7 @@ define([
   };
 
   PlotLodPoint.prototype.hideTips = function(scope, hidden) {
-    plotTip.hideTips(scope, this.id, hidden);
+    PlotTip.hideTips(scope, this.id, hidden);
   };
 
   return PlotLodPoint;

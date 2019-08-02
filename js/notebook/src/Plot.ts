@@ -20,8 +20,6 @@ import PlotLayout from "./plot/PlotLayout";
 import PlotScope from "./plot/PlotScope";
 import CombinedPlotScope from "./plot/CombinedPlotScope";
 
-const d3 = require('d3');
-
 const OUTUPT_POINTS_LIMIT = 1000000;
 const OUTUPT_POINTS_PREVIEW_NUMBER = 10000;
 
@@ -39,6 +37,7 @@ export class PlotModel extends widgets.DOMWidgetModel {
 }
 
 export class PlotView extends widgets.DOMWidgetView {
+  private _currentScope: any;
   render() {
     this._currentScope = null;
 

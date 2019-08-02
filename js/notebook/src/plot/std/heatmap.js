@@ -14,17 +14,17 @@
  *  limitations under the License.
  */
 
+
 define([
   'underscore',
-  './../plotUtils',
   'd3-scale'
 ], function(
   _,
-  plotUtils,
   d3scale
 ) {
+  const PlotUtils = require("../utils/PlotUtils").default;
+  const BigNumberUtils = require("beakerx_shared/lib/utils/BigNumberUtils").default;
 
-  var plotTip = require('./../plotTip').default;
   var HeatMap = function(data) {
     _.extend(this, data); // copy properties to itself
     this.format();
@@ -76,8 +76,8 @@ define([
     };
     for (var i = 0; i < eles.length; i++) {
       var ele = eles[i];
-      range.xl = plotUtils.min(range.xl, ele.x);
-      range.xr = plotUtils.max(range.xr, ele.x2);
+      range.xl = BigNumberUtils.min(range.xl, ele.x);
+      range.xr = BigNumberUtils.max(range.xr, ele.x2);
       range.yl = Math.min(range.yl, ele.y);
       range.yr = Math.max(range.yr, ele.y2);
     }
@@ -98,8 +98,8 @@ define([
 
   HeatMap.prototype.filter = function(scope) {
     var eles = this.elements;
-    var l = plotUtils.upper_bound(eles, "x2", scope.plotFocus.focus.xl) + 1,
-      r = plotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xr);
+    var l = PlotUtils.upper_bound(eles, "x2", scope.plotFocus.focus.xl) + 1,
+      r = PlotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xr);
 
     l = Math.max(l, 0);
     r = Math.min(r, eles.length - 1);
@@ -134,7 +134,7 @@ define([
       if (y < y2) { continue; } // prevent negative height
 
 
-      if (plotUtils.rangeAssert([x, x2, y, y2])) {
+      if (PlotUtils.rangeAssert([x, x2, y, y2])) {
         eleprops.length = 0;
         return;
       }

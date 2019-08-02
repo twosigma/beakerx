@@ -15,8 +15,7 @@
  */
 
 import {INITIAL_ZOOM_LEVEL} from "./consts";
-
-const plotUtils = require('../plotUtils');
+import PlotStyleUtils from "beakerx_shared/lib/utils/PlotStyleUtils";
 
 export namespace PlotScale {
   export function scaleBothAxes(scope, mouseX, mouseY): boolean {
@@ -24,7 +23,7 @@ export namespace PlotScale {
     const data = scope.stdmodel.data;
 
     if (
-      mouseY > plotUtils.safeHeight(scope.jqsvg) - scope.layout.bottomLayoutMargin
+      mouseY > PlotStyleUtils.safeHeight(scope.jqsvg) - scope.layout.bottomLayoutMargin
       || mouseX < scope.layout.leftLayoutMargin
       || !scope.model.model.auto_zoom
       || !data.map(item => item.getRange ? true : false).every(b => b)
@@ -54,7 +53,7 @@ export namespace PlotScale {
   }
 
   export function scaleY(scope, mouseY, zoomRate) {
-    if (mouseY > plotUtils.safeHeight(scope.jqsvg) - scope.layout.bottomLayoutMargin) {
+    if (mouseY > PlotStyleUtils.safeHeight(scope.jqsvg) - scope.layout.bottomLayoutMargin) {
       return;
     }
 

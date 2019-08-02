@@ -83,11 +83,11 @@ describe('Autotranslation Groovy to JavaScript and D3 ', function () {
     });
 
     it('First circle has color rgb(100,100,0) ', function(){
-      expect(svgElement.$$('circle')[0].getCssProperty('fill').value).toEqual('rgb(100,100,0)');
+      expect(svgElement.$$('circle')[0].getCSSProperty('fill').value).toEqual('rgb(100,100,0)');
     });
 
     it('Last circle has color rgb(100,100,200) ', function(){
-      expect(svgElement.$$('circle')[10].getCssProperty('fill').value).toEqual('rgb(100,100,200)');
+      expect(svgElement.$$('circle')[10].getCSSProperty('fill').value).toEqual('rgb(100,100,200)');
     });
   });
 

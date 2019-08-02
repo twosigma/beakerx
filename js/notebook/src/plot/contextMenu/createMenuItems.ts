@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-import MenuItem from '../../shared/interfaces/contextMenuItemInterface';
+import IContextMenuItem from "beakerx_shared/lib/contextMenu/IContextMenuItem";
 
-export function createSaveAsMenuItems(scope: any): MenuItem[] {
+export function createSaveAsMenuItems(scope: any): IContextMenuItem[] {
   const selector = `#${scope.id}`;
 
   return [
@@ -45,7 +45,7 @@ export function createSaveAsMenuItems(scope: any): MenuItem[] {
   ];
 }
 
-export function createPublishMenuItems(scope: any): MenuItem[] {
+export function createPublishMenuItems(scope: any): IContextMenuItem[] {
   const selector = `#${scope.id}`;
 
   return [

@@ -21,8 +21,7 @@ import {enableZoomWheel} from "./helpers";
 import BoxZoom from "./BoxZoom";
 import EventDispatcher from "./EventDispatcher";
 import {PlotScale} from "./scale";
-
-const plotUtils = require('../plotUtils');
+import PlotStyleUtils from "beakerx_shared/lib/utils/PlotStyleUtils";
 
 export default class PlotZoom {
   scope: any;
@@ -207,8 +206,8 @@ export default class PlotZoom {
   private moveGraph(focus, d3trans) {
     const lMargin = this.scope.layout.leftLayoutMargin;
     const bMargin = this.scope.layout.bottomLayoutMargin;
-    const W = plotUtils.safeWidth(this.scope.jqsvg) - lMargin;
-    const H = plotUtils.safeHeight(this.scope.jqsvg) - bMargin;
+    const W = PlotStyleUtils.safeWidth(this.scope.jqsvg) - lMargin;
+    const H = PlotStyleUtils.safeHeight(this.scope.jqsvg) - bMargin;
     const deltaX = d3trans.x - this.lastTransform.x;
     const deltaY = d3trans.y - this.lastTransform.y;
     const transformX = -deltaX / W * focus.xspan;

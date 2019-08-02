@@ -15,14 +15,15 @@
  */
 
 define([
-  'underscore',
-  './../plotUtils'
+  'underscore'
 ], function(
-  _,
-  plotUtils
+  _
 ) {
+  const PlotUtils = require("../utils/PlotUtils").default;
+  const PlotColorUtils = require("../utils/PlotColorUtils").default;
+  const PlotTip = require("../PlotTip").default;
+  const BigNumberUtils = require("beakerx_shared/lib/utils/BigNumberUtils").default;
 
-  var plotTip = require('./../plotTip').default;
   var PlotText = function(data){
     _.extend(this, data);
     this.format();
@@ -33,7 +34,7 @@ define([
 
   PlotText.prototype.format = function() {
     if (this.color != null) {
-      this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
+      this.tip_color = PlotColorUtils.createColor(this.color, this.color_opacity);
     } else {
       this.tip_color = "gray";
     }
@@ -72,8 +73,8 @@ define([
     };
     for (var i = 0; i < eles.length; i++) {
       var ele = eles[i];
-      range.xl = plotUtils.min(range.xl, ele.x);
-      range.xr = plotUtils.max(range.xr, ele.x);
+      range.xl = BigNumberUtils.min(range.xl, ele.x);
+      range.xr = BigNumberUtils.max(range.xr, ele.x);
       range.yl = Math.min(range.yl, ele.y);
       range.yr = Math.max(range.yr, ele.y);
     }
@@ -92,8 +93,8 @@ define([
 
   PlotText.prototype.filter = function(scope) {
     var eles = this.elements;
-    var l = plotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xl) + 1,
-      r = plotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xr);
+    var l = PlotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xl) + 1,
+      r = PlotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xr);
 
     l = Math.max(l, 0);
     r = Math.min(r, eles.length - 1);
@@ -148,7 +149,7 @@ define([
       if (ele.y < focus.yl || ele.y > focus.yr ) { continue; }
       var x = mapX(ele.x), y = mapY(ele.y);
 
-      if (plotUtils.rangeAssert([x, y])) {
+      if (PlotUtils.rangeAssert([x, y])) {
         eleprops.length = 0;
         return;
       }
@@ -314,7 +315,7 @@ define([
   };
 
   PlotText.prototype.hideTips = function(scope, hidden) {
-    plotTip.hideTips(scope, this.id, hidden);
+    PlotTip.hideTips(scope, this.id, hidden);
   };
 
   PlotText.prototype.createTip = function(ele) {
@@ -326,9 +327,9 @@ define([
     if (this.legend != null) {
       tip.title = this.legend;
     }
-    tip.x = plotUtils.getTipString(ele._x, xAxis, true);
-    tip.y = plotUtils.getTipString(ele._y, yAxis, true);
-    return plotUtils.createTipString(tip);
+    tip.x = PlotUtils.getTipString(ele._x, xAxis, true);
+    tip.y = PlotUtils.getTipString(ele._y, yAxis, true);
+    return PlotUtils.createTipString(tip);
   };
 
   return PlotText;

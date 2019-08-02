@@ -14,13 +14,13 @@
  *  limitations under the License.
  */
 
+const CommonUtils = require("beakerx_shared/lib/utils/CommonUtils").default;
 const PlotLayout = require("./PlotLayout").default;
 const CombinedPlotScope = require("./CombinedPlotScope").default;
 
 define([ 'underscore' ], function(_) {
 
    var PlotScope = require('./PlotScope').default;
-   var bkUtils = require('./../shared/bkUtils').default;
    var getValue = function (obj, value, defaultValue) {
      return obj.hasOwnProperty(value) ? obj[value] : defaultValue;
    };
@@ -109,7 +109,7 @@ define([ 'underscore' ], function(_) {
    Filter.RIVER = new Filter('river');
 
    var Color = function (r, g, b, a) {
-     this.value = bkUtils.rgbaToHex(r, g, b, a);
+     this.value = CommonUtils.rgbaToHex(r, g, b, a);
    };
    Color.white = new Color(255, 255, 255);
    Color.WHITE = Color.white;
@@ -495,7 +495,7 @@ define([ 'underscore' ], function(_) {
    Plot.prototype.display = function(output_area) {
      var cell = getCellFromOutputArea(output_area);
 
-     var currentScope = new PlotScope('wrap_'+cell.cell_id || bkUtils.generateId(6));
+     var currentScope = new PlotScope('wrap_'+cell.cell_id || CommonUtils.generateId(6));
      var tmpl = PlotLayout.buildTemplate(currentScope.wrapperId);
      var tmplElement = $(tmpl);
 
@@ -685,7 +685,7 @@ define([ 'underscore' ], function(_) {
    CombinedPlot.prototype.display = function(output_area) {
      var cell = getCellFromOutputArea(output_area);
 
-     var currentScope = new CombinedPlotScope('wrap_'+cell.cell_id || bkUtils.generateId(6));
+     var currentScope = new CombinedPlotScope('wrap_'+cell.cell_id || CommonUtils.generateId(6));
      var tmpl = currentScope.buildTemplate();
      var tmplElement = $(tmpl);
 

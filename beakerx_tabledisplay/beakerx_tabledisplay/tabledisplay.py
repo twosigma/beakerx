@@ -112,12 +112,12 @@ class Table(BaseObject):
         for index in range(len(args[0])):
             row = []
             for columnName in self.columnNames:
-                value = args[0][columnName].get_values()[index]
+                value = args[0][columnName].to_numpy()[index]
                 value_type = types_map.get(columnName)
                 row.append(self.convert_value(value, value_type))
             if not isinstance(args[0].index, RangeIndex):
                 index_type = self.convert_type(args[0].index.dtype)
-                index_values = args[0].index.get_values()[index]
+                index_values = args[0].index.to_numpy()[index]
                 tz = self.get_tz(args[0].index)
                 row[:0] = [self.convert_value(index_values, index_type, tz)]
             self.values.append(row)

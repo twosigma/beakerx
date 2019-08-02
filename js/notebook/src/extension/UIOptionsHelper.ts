@@ -14,9 +14,7 @@
  *  limitations under the License.
  */
 
-/// <reference path='../types/index.d.ts'/>
-
-import BeakerXApi from "../tree/Utils/BeakerXApi";
+import BeakerXApi from "beakerx_shared/lib/api/BeakerXApi";
 import * as GistPublish from "./gistPublish/index";
 
 export function registerFeature(baseUrl: string): void {

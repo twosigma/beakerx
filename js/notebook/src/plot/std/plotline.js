@@ -16,13 +16,14 @@
 
 define([
   'underscore',
-  './../plotUtils'
 ], function(
-  _,
-  plotUtils
+  _
 ) {
+  const PlotUtils = require("../utils/PlotUtils").default;
+  const PlotTip = require("../PlotTip").default;
+  const PlotColorUtils = require("../utils/PlotColorUtils").default;
+  const BigNumberUtils = require("beakerx_shared/lib/utils/BigNumberUtils").default;
 
-  var plotTip = require('./../plotTip').default;
   var PlotLine = function(data){
     _.extend(this, data); // copy properties to itself
     this.format();
@@ -39,15 +40,15 @@ define([
     var itemsvg = svg.select("#" + this.id);
     itemsvg.selectAll("path")
       .transition()
-      .duration(plotUtils.getHighlightDuration())
+      .duration(PlotUtils.getHighlightDuration())
       .style("stroke-width", function(d) {
-        return plotUtils.getHighlightedSize(d.st_w, highlighted);
+        return PlotUtils.getHighlightedSize(d.st_w, highlighted);
       })
   };
 
   PlotLine.prototype.format = function() {
     if (this.color != null) {
-      this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
+      this.tip_color = PlotColorUtils.createColor(this.color, this.color_opacity);
     } else {
       this.tip_color = "gray";
     }
@@ -86,8 +87,8 @@ define([
     };
     for (var i = 0; i < eles.length; i++) {
       var ele = eles[i];
-      range.xl = plotUtils.min(range.xl, ele.x);
-      range.xr = plotUtils.max(range.xr, ele.x);
+      range.xl = BigNumberUtils.min(range.xl, ele.x);
+      range.xr = BigNumberUtils.max(range.xr, ele.x);
       range.yl = Math.min(range.yl, ele.y);
       range.yr = Math.max(range.yr, ele.y);
     }
@@ -114,8 +115,8 @@ define([
       this.vlength = eles.length;
       return;
     }
-    var l = plotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xl),
-      r = plotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xr) + 1;
+    var l = PlotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xl),
+      r = PlotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xr) + 1;
 
     l = Math.max(l, 0);
     r = Math.min(r, eles.length - 1);
@@ -163,7 +164,7 @@ define([
       }
       var x = mapX(ele.x), y = mapY(ele.y);
 
-      if (plotUtils.rangeAssert([x, y])) {
+      if (PlotUtils.rangeAssert([x, y])) {
         eleprops.length = 0;
         return;
       }
@@ -192,7 +193,7 @@ define([
           var ele2 = eles[i + 1];
           var x2 = mapX(ele2.x);
 
-          if (plotUtils.rangeAssert([x2])) {
+          if (PlotUtils.rangeAssert([x2])) {
             eleprops.length = 0;
             return;
           }
@@ -284,7 +285,7 @@ define([
   };
 
   PlotLine.prototype.hideTips = function(scope, hidden) {
-    plotTip.hideTips(scope, this.id, hidden);
+    PlotTip.hideTips(scope, this.id, hidden);
   };
 
   PlotLine.prototype.createTip = function(ele) {
@@ -292,15 +293,15 @@ define([
       return ele.tooltip;
     var xAxis = this.xAxis,
       yAxis = this.yAxis;
-    var valx = plotUtils.getTipString(ele._x, xAxis, true),
-      valy = plotUtils.getTipString(ele._y, yAxis, true);
+    var valx = PlotUtils.getTipString(ele._x, xAxis, true),
+      valy = PlotUtils.getTipString(ele._y, yAxis, true);
     var tip = {};
     if (this.legend != null) {
       tip.title = this.legend;
     }
     tip.x = valx;
     tip.y = valy;
-    return plotUtils.createTipString(tip);
+    return PlotUtils.createTipString(tip);
   };
 
   return PlotLine;

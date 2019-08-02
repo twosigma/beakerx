@@ -287,6 +287,10 @@ export default class DataGridColumn {
     this.dataGrid.highlighterManager.removeColumnHighlighter(this);
   }
 
+  restoreHighlighters(){
+    this.dataGrid.highlighterManager.restoreHighlighters(this);
+  }
+
   sort(sortOrder: SORT_ORDER) {
     this.columnManager.sortByColumn(this, sortOrder);
   }
@@ -362,6 +366,12 @@ export default class DataGridColumn {
     const position = this.getPosition();
     this.dataGrid.dataGridResize.setInitialSectionWidth(this, position.region);
     this.dataGrid.dataGridResize.updateWidgetWidth();
+  }
+
+  restoreState() {
+    this.addMinMaxValues();
+    this.restoreHighlighters();
+    this.dataGrid.repaint();
   }
 
   destroy() {

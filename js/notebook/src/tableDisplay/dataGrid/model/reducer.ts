@@ -27,6 +27,7 @@ import IHihglighterState from "../interface/IHighlighterState";
 import {selectColumnHighlighters} from "./selectors/column";
 
 export const UPDATE_MODEL_DATA = 'UPDATE_MODEL_DATA';
+export const UPDATE_MODEL_VALUES = 'UPDATE_MODEL_VALUES';
 export const UPDATE_COLUMN_RENDERER = 'UPDATE_COLUMN_RENDERER';
 export const UPDATE_COLUMN_ORDER = 'UPDATE_COLUMN_ORDER';
 export const UPDATE_COLUMN_FROZEN = 'UPDATE_COLUMN_FROZEN';
@@ -42,7 +43,10 @@ const dataGridModelReducer: Reducer<IDataModelState> = (
 ): IDataModelState => {
   switch(action.type) {
     case UPDATE_MODEL_DATA:
-      return { ...state, ...action.payload };
+      return {...state, ...action.payload};
+
+    case UPDATE_MODEL_VALUES:
+          return {...state, values: action.payload.values};
 
     case UPDATE_COLUMN_RENDERER:
       return {

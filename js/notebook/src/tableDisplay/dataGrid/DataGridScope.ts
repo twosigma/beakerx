@@ -78,6 +78,10 @@ export class DataGridScope {
     this.dataGrid.updateModelData(newData);
   }
 
+  updateModelValues(newData) {
+    this.dataGrid.updateModelValues(newData);
+  }
+
   doResetAll() {
     this.dataGrid.highlighterManager.removeHighlighters();
     this.dataGrid.cellSelectionManager.clear();

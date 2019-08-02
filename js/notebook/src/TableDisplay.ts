@@ -83,7 +83,7 @@ export class TableDisplayView extends widgets.DOMWidgetView {
     const currentModel = this.model.get('model');
     if (change.hasOwnProperty('values')){
         this.model.set('model', {...currentModel, ...change, values: currentModel.values.concat(change.values||[])},{"shouldResetModel":false});
-        this._currentScope.updateModelData(this.model.get('model'));
+        this._currentScope.updateModelValues(this.model.get('model'));
         this.model.set('loadMoreRows', "loadMoreJSDone");
     }else {
         this.model.set('model', {...currentModel, ...change});

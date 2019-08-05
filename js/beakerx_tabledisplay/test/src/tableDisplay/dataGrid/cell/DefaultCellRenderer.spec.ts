@@ -24,7 +24,7 @@ import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXD
 import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
 import DefaultCellRenderer from "../../../../../src/tableDisplay/dataGrid/cell/DefaultCellRenderer";
 import BeakerXCellRenderer from "../../../../../src/tableDisplay/dataGrid/cell/BeakerXCellRenderer";
-import {TableDisplayView} from "../../../../../src";
+import tableDisplayWidgetMock from "../mock/tableDisplayMock";
 
 
 describe('DefaultCellRenderer', () => {
@@ -35,9 +35,7 @@ describe('DefaultCellRenderer', () => {
 
   before(() => {
     dataStore = createStore(modelStateMock);
-    let  tableDisplay = new TableDisplayView();
-    dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplay);
-
+    dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplayWidgetMock);
     gc = new GraphicsContext(dataGrid['_canvasGC']);
 
     gc['_context'].fillText = () => {};

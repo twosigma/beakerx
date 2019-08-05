@@ -22,7 +22,7 @@ import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXD
 import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
 import HeaderMenu from "../../../../../src/tableDisplay/dataGrid/headerMenu/HeaderMenu";
 import {createColumnMenuItems} from "../../../../../src/tableDisplay/dataGrid/headerMenu/createColumnMenuItems";
-import {TableDisplayView} from "../../../../../src";
+import tableDisplayWidgetMock from "../mock/tableDisplayMock";
 
 describe('ColumnMenu', () => {
   let columnMenu;
@@ -32,8 +32,7 @@ describe('ColumnMenu', () => {
 
   before(() => {
     dataStore = createStore(modelStateMock);
-    let  tableDisplay = new TableDisplayView();
-    dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplay);
+    dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplayWidgetMock);
     column = dataGrid.columnManager.bodyColumns[0];
 
     columnMenu = column.menu;

@@ -202,19 +202,22 @@ class Table(BaseObject):
                 self.filteredValues.append(self.values[row_ind])
 
     def transform(self):
-        self_copy = copy.copy(self)
-        i = 0
-        result = []
-        has_next = len(self.values) > self.endlessIndex
-        while i < Table.PAGE_SIZE and has_next:
-            tmp = self.values[self.endlessIndex]
-            result.append(tmp)
-            i = i + 1
-            self.endlessIndex = self.endlessIndex + 1
+        if TableDisplay.loadingMode == "ALL":
+            return super(Table, self).transform()
+        else:
+            self_copy = copy.copy(self)
+            i = 0
+            result = []
             has_next = len(self.values) > self.endlessIndex
-        self_copy.values = result
-        self_copy.loadingMode = TableDisplay.loadingMode
-        return super(Table, self_copy).transform()
+            while i < Table.PAGE_SIZE and has_next:
+                tmp = self.values[self.endlessIndex]
+                result.append(tmp)
+                i = i + 1
+                self.endlessIndex = self.endlessIndex + 1
+                has_next = len(self.values) > self.endlessIndex
+            self_copy.values = result
+            self_copy.loadingMode = TableDisplay.loadingMode
+            return super(Table, self_copy).transform()
 
 
 class TableDisplay(BeakerxDOMWidget):

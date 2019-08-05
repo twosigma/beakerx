@@ -19,13 +19,12 @@ import { DataModel } from "@phosphor/datagrid";
 import modelStateMock from "../mock/modelStateMock";
 import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
 import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
-import {TableDisplayView} from "../../../../../src";
+import tableDisplayWidgetMock from "../mock/tableDisplayMock";
 
 describe('BeakerXDataGridModel', () => {
   describe('BeakerXDataGridModel.hasIndex === false', () => {
     const dataStore = createStore(modelStateMock);
-    const tableDisplay = new TableDisplayView();
-    const dataGrid = new BeakerXDataGrid({}, dataStore,tableDisplay);
+    const dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplayWidgetMock);
     const beakerxDataGridModel = dataGrid.model;
 
     it('should be instance of DataModel', () => {
@@ -67,8 +66,7 @@ describe('BeakerXDataGridModel', () => {
       ...modelStateMock,
       hasIndex: true
     });
-    const tableDisplay = new TableDisplayView();
-    const dataGrid = new BeakerXDataGrid({}, dataStore,tableDisplay);
+    const dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplayWidgetMock);
     const beakerxDataGridModel = dataGrid.model;
 
     it('should return proper data', () => {

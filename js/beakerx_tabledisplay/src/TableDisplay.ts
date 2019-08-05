@@ -17,6 +17,11 @@ import './global.env';
 import widgets from './widgets';
 import {DataGridScope} from './tableDisplay/dataGrid';
 
+export interface TableDisplayWidget {
+    loadMoreRows():void;
+    canLoadMore():boolean;
+}
+
 export class TableDisplayModel extends widgets.DOMWidgetModel {
   defaults() {
     return {
@@ -32,7 +37,7 @@ export class TableDisplayModel extends widgets.DOMWidgetModel {
 }
 
 // Custom View. Renders the widget model.
-export class TableDisplayView extends widgets.DOMWidgetView {
+export class TableDisplayView extends widgets.DOMWidgetView implements TableDisplayWidget{
   private _currentScope: DataGridScope;
 
   render(): void {
@@ -57,17 +62,8 @@ export class TableDisplayView extends widgets.DOMWidgetView {
     });
   }
 
-  public canLoadMore(): boolean{
-    return this.isEndlessLoadingMode() && (this.model.get('loadMoreRows') == "loadMoreServerInit" || this.model.get('loadMoreRows') == "loadMoreJSDone");
-  }
-
   private isEndlessLoadingMode():boolean {
     return this.model.get('model').loadingMode == 'ENDLESS';
-  }
-
-  public loadMoreRows():void{
-    this.model.set('loadMoreRows', "loadMoreRequestJS");
-    this.touch();
   }
 
   handleModelUpdate(model, value, options): void {
@@ -121,6 +117,15 @@ export class TableDisplayView extends widgets.DOMWidgetView {
     setTimeout(() => { this._currentScope = null; });
 
     return super.remove.call(this);
+  }
+
+  canLoadMore(): boolean {
+    return this.isEndlessLoadingMode() && (this.model.get('loadMoreRows') == "loadMoreServerInit" || this.model.get('loadMoreRows') == "loadMoreJSDone");
+  }
+
+  loadMoreRows(): void {
+      this.model.set('loadMoreRows', "loadMoreRequestJS");
+      this.touch();
   }
 }
 

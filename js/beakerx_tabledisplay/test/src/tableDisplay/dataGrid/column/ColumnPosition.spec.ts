@@ -21,7 +21,7 @@ import cellDataMock from "../mock/cellDataMock";
 import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
 import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
 import ColumnPosition from "../../../../../src/tableDisplay/dataGrid/column/ColumnPosition";
-import {TableDisplayView} from "../../../../../src";
+import tableDisplayWidgetMock from "../mock/tableDisplayMock";
 
 describe('ColumnPosition', () => {
   const dataStore = createStore({
@@ -31,8 +31,7 @@ describe('ColumnPosition', () => {
     values: [[1,2,3],[1,3,2]],
     columnsFrozen: { column: true }
   });
-  const tableDisplay = new TableDisplayView();
-  const dataGrid = new BeakerXDataGrid({}, dataStore,tableDisplay);
+  const dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplayWidgetMock);
   const columnPosition = dataGrid.columnPosition;
 
   it('should be an instance of ColumnFilter', () => {

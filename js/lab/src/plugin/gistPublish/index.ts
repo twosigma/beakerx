@@ -81,7 +81,13 @@ function setupPublisher(panel: NotebookPanel) {
 
 function openPublishDialog(panel: NotebookPanel) {
   new GistPublishModal()
-    .show(personalAccessToken => doPublish(panel, personalAccessToken));
+      .show(personalAccessToken => {
+        saveWidgetsState(panel)
+            .then(() => {
+              doPublish(panel, personalAccessToken);
+            })
+            .catch((reason => console.log(reason)))
+      });
 }
 
 function showErrorDialog(errorMsg) {

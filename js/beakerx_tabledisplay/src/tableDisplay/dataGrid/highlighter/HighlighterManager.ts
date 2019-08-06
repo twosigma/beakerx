@@ -113,25 +113,38 @@ export default class HighlighterManager {
   }
 
   addColumnHighlighter(column, highlighterType: HIGHLIGHTER_TYPE) {
-    const highlighterState: IHihglighterState = {
-      ...HighlighterFactory.defaultHighlighterState,
-      type: highlighterType,
-      minVal: column.minValue,
-      maxVal: column.maxValue,
-      colName: column.name
-    };
-
-    this.removeColumnHighlighter(column, highlighterType);
-    this.dataGrid.store.dispatch(new DataGridColumnAction(ADD_COLUMN_HIGHLIGHTER, {
-      columnIndex: column.index,
-      columnName: column.name,
-      value: highlighterState
-    }));
-
-    this.registerHighlighter(
+      const highlighterState = this.createColumnHighlighterState(highlighterType, column);
+      this.registerHighlighter(
       this.cachedHighlighters.get(this.getHighlighterKey(column, highlighterType))
       || HighlighterFactory.getHighlighter(highlighterState, column)
     );
+  }
+
+  updatedColumnHighlighter(column, highlighterType: HIGHLIGHTER_TYPE) {
+    const highlighterState = this.createColumnHighlighterState(highlighterType, column);
+    this.registerHighlighter(HighlighterFactory.getHighlighter(highlighterState, column));
+  }
+
+  private createColumnHighlighterState(highlighterType: HIGHLIGHTER_TYPE, column) {
+    const highlighterState: IHihglighterState = {
+         ...HighlighterFactory.defaultHighlighterState,
+         type: highlighterType,
+         minVal: column.minValue,
+         maxVal: column.maxValue,
+         colName: column.name
+    };
+    this.removeColumnHighlighter(column, highlighterType);
+    this.dataGrid.store.dispatch(new DataGridColumnAction(ADD_COLUMN_HIGHLIGHTER, {
+         columnIndex: column.index,
+         columnName: column.name,
+        value: highlighterState
+     }));
+     return highlighterState;
+  }
+
+  restoreHighlighters(column, highlighterType?: HIGHLIGHTER_TYPE) {
+    const highlighters = this.getColumnHighlighters(column, highlighterType);
+    highlighters.forEach(value => this.updatedColumnHighlighter(column, value.state.type));
   }
 
   removeColumnHighlighter(column, highlighterType?: HIGHLIGHTER_TYPE) {

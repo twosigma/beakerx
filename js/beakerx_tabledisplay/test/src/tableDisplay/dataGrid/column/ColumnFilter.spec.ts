@@ -23,10 +23,11 @@ import ColumnFilter, {
   FILTER_INPUT_TOOLTIP,
   SEARCH_INPUT_TOOLTIP
 } from "../../../../../src/tableDisplay/dataGrid/column/ColumnFilter";
+import tableDisplayWidgetMock from "../mock/tableDisplayMock";
 
 describe('ColumnFilter', () => {
   const dataStore = createStore(modelStateMock);
-  const dataGrid = new BeakerXDataGrid({}, dataStore);
+  const  dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplayWidgetMock);
   const columnManager = dataGrid.columnManager;
   const bodyDataGridColumn = columnManager.bodyColumns[0];
   const columnFilter = bodyDataGridColumn.columnFilter;

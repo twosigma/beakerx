@@ -20,22 +20,24 @@ import beakerx from "../../beakerx";
 import GistPublishModal from './gistPublishModal';
 import AccessTokenProvider from "../../AccessTokenProvider";
 import { CodeCell, Cell } from "@jupyterlab/cells";
+import {CommandRegistry} from "@phosphor/commands";
+import {IRenderMime} from "@jupyterlab/rendermime-interfaces";
 
-export function registerFeature(panel: NotebookPanel, showPublication: boolean) {
+export function registerFeature(panel: NotebookPanel, commands: CommandRegistry, showPublication: boolean) {
   if (showPublication) {
-    addActionButton(panel);
-    setupPublisher(panel);
+    addActionButton(panel, commands);
+    setupPublisher(panel, commands);
   } else {
     removeActionButton(panel);
   }
 }
 
-function addActionButton(panel: NotebookPanel): void {
+function addActionButton(panel: NotebookPanel, commands: CommandRegistry): void {
   if (panel.toolbar.isDisposed) { return; }
   const action = {
     className: 'fa fa-share-alt',
     tooltip: 'Publish...',
-    onClick: () => openPublishDialog(panel)
+    onClick: () => openPublishDialog(panel, commands)
   };
 
   let button = new ToolbarButton(action);
@@ -55,11 +57,11 @@ function removeActionButton(panel: NotebookPanel): void {
   }
 }
 
-function setupPublisher(panel: NotebookPanel) {
+function setupPublisher(panel: NotebookPanel, commands: CommandRegistry) {
 
   let options = {
     accessTokenProvider: new AccessTokenProvider(),
-    saveWidgetsStateHandler: saveWidgetsState.bind(undefined, panel),
+    saveWidgetsStateHandler: saveWidgetsState.bind(undefined, panel, commands),
     prepareContentToPublish: (scope) => {
       let el = scope.node || scope.element[0];
       let cell: CodeCell;
@@ -79,15 +81,12 @@ function setupPublisher(panel: NotebookPanel) {
   beakerx.GistPublisherUtils.setup(options);
 }
 
-function openPublishDialog(panel: NotebookPanel) {
+function openPublishDialog(panel: NotebookPanel, commands: CommandRegistry) {
   new GistPublishModal()
-      .show(personalAccessToken => {
-        saveWidgetsState(panel)
-            .then(() => {
-              doPublish(panel, personalAccessToken);
-            })
-            .catch((reason => console.log(reason)))
-      });
+    .show(async (personalAccessToken) => {
+      await saveWidgetsState(panel, commands);
+      return doPublish(panel, personalAccessToken)
+    });
 }
 
 function showErrorDialog(errorMsg) {
@@ -98,18 +97,41 @@ function showErrorDialog(errorMsg) {
   });
 }
 
-export function saveWidgetsState(panel): Promise<string> {
-  return new Promise((resolve, reject) => {
-    panel.context.save().then(() => {
-      console.log("widgets state has been saved");
+export async function saveWidgetsState (panel: NotebookPanel, commands: CommandRegistry): Promise<string> {
+  const factory: IRenderMime.IRendererFactory | undefined = panel.content.rendermime.getFactory('application/vnd.jupyter.widget-view+json');
+  const renderer: IRenderMime.IRenderer = factory.createRenderer({ mimeType: 'dontcare'} as any);
+  const manager = await renderer['_manager'].promise;
+  const state = await manager.get_state();
+  console.log({state: state});
+  // console.log(panel.context.save);
+  console.log(panel.context['_model']);
+  console.log(panel.model);
+  // let toJSON = panel.model.toJSON;
+  //
+  // let toJSONWithoutOutput = function() {
+  //   let json = toJSON.call(panel.model);
+  //   json.metadata.widgets = {"application/vnd.jupyter.widget-state+json": state};
+  //   return json;
+  // };
+  //
+  // panel.model.toJSON = toJSONWithoutOutput;
+  await commands.execute('docmanager:save');
+  console.log("widgets state has been saved");
 
-      if (!panel.isDisposed) {
-        resolve(panel.context.contentsModel.name);
-      } else {
-        reject();
-      }
-    }, reject);
-  })
+  // panel.model.toJSON = toJSON;
+
+  return panel.context.contentsModel.name;
+  // return new Promise((resolve, reject) => {
+  //   panel.context.save().then(() => {
+  //     console.log("widgets state has been saved");
+  //
+  //     if (!panel.isDisposed) {
+  //       resolve(panel.context.contentsModel.name);
+  //     } else {
+  //       reject();
+  //     }
+  //   }, reject);
+  // })
 }
 
 function doPublish(panel: NotebookPanel, personalAccessToken: string|null): void {

@@ -46,7 +46,7 @@ public class Foldout extends Box {
   }
 
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+  protected HashMap<String, Object> content(HashMap<String, Object> content) {
     content.put("hidePreview", foldoutOption.hidePreview);
     content.put("headerLabel", foldoutOption.headerLabel);
     super.content(content);

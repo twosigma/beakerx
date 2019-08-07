@@ -19,6 +19,7 @@ import {ContextMenu, Widget} from '@phosphor/widgets';
 import modelStateMock from "../mock/modelStateMock";
 import {DataGridScope} from "../../../../../src/tableDisplay/dataGrid";
 import DataGridContextMenu from "../../../../../src/tableDisplay/dataGrid/contextMenu/DataGridContextMenu";
+import tableDisplayWidgetMock from "../mock/tableDisplayMock";
 
 describe('DataGridContextMenu', () => {
   let dataGridScope;
@@ -27,7 +28,7 @@ describe('DataGridContextMenu', () => {
   before(() => {
     const scopeOptions = {
       element: document.createElement('div'),
-      widgetView: new Widget({}),
+      widgetView: tableDisplayWidgetMock,
       widgetModel: new Widget({}),
       data: modelStateMock
     };

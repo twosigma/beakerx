@@ -51,7 +51,7 @@ public abstract class Box extends ValueWidget<String> {
   }
 
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+  protected HashMap<String, Object> content(HashMap<String, Object> content) {
     List<String> commIds = comIds();
     content.put(CHILDREN, commIds.toArray());
     super.content(content);

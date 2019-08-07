@@ -20,6 +20,7 @@ import {BEAKER_AUTOTRANSLATION} from "./comm";
 
 export namespace Autotranslation {
   export const LOCK_PROXY = 'LOCK_PROXY';
+  export const TABLE_FOCUSED = 'tableFocused';
 
   export function proxify(beakerxInstance: any): Proxy<any> {
     const utils = require('base/js/utils');
@@ -42,7 +43,7 @@ export namespace Autotranslation {
 
       set(obj, prop, value) {
         obj[prop] = value;
-        if (prop !== LOCK_PROXY && !window.beakerx[LOCK_PROXY]) {
+        if (prop !== LOCK_PROXY && prop !== TABLE_FOCUSED && !window.beakerx[LOCK_PROXY]) {
           if (!atComm){
               atComm = createCommForAT();
           }

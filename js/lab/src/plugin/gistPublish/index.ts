@@ -21,7 +21,6 @@ import GistPublishModal from './gistPublishModal';
 import AccessTokenProvider from "../../AccessTokenProvider";
 import { CodeCell, Cell } from "@jupyterlab/cells";
 import {CommandRegistry} from "@phosphor/commands";
-import {IRenderMime} from "@jupyterlab/rendermime-interfaces";
 
 export function registerFeature(panel: NotebookPanel, commands: CommandRegistry, showPublication: boolean) {
   if (showPublication) {
@@ -98,40 +97,10 @@ function showErrorDialog(errorMsg) {
 }
 
 export async function saveWidgetsState (panel: NotebookPanel, commands: CommandRegistry): Promise<string> {
-  const factory: IRenderMime.IRendererFactory | undefined = panel.content.rendermime.getFactory('application/vnd.jupyter.widget-view+json');
-  const renderer: IRenderMime.IRenderer = factory.createRenderer({ mimeType: 'dontcare'} as any);
-  const manager = await renderer['_manager'].promise;
-  const state = await manager.get_state();
-  console.log({state: state});
-  // console.log(panel.context.save);
-  console.log(panel.context['_model']);
-  console.log(panel.model);
-  // let toJSON = panel.model.toJSON;
-  //
-  // let toJSONWithoutOutput = function() {
-  //   let json = toJSON.call(panel.model);
-  //   json.metadata.widgets = {"application/vnd.jupyter.widget-state+json": state};
-  //   return json;
-  // };
-  //
-  // panel.model.toJSON = toJSONWithoutOutput;
   await commands.execute('docmanager:save');
   console.log("widgets state has been saved");
-
-  // panel.model.toJSON = toJSON;
-
   return panel.context.contentsModel.name;
-  // return new Promise((resolve, reject) => {
-  //   panel.context.save().then(() => {
-  //     console.log("widgets state has been saved");
-  //
-  //     if (!panel.isDisposed) {
-  //       resolve(panel.context.contentsModel.name);
-  //     } else {
-  //       reject();
-  //     }
-  //   }, reject);
-  // })
+
 }
 
 function doPublish(panel: NotebookPanel, personalAccessToken: string|null): void {

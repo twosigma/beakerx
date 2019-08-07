@@ -34,7 +34,7 @@ export function registerFeature(panel: NotebookPanel, commands: CommandRegistry,
 function addActionButton(panel: NotebookPanel, commands: CommandRegistry): void {
   if (panel.toolbar.isDisposed) { return; }
   const action = {
-    className: 'fa fa-share-alt',
+    iconClassName: 'bx-PublishIcon fa fa-share-alt',
     tooltip: 'Publish...',
     onClick: () => openPublishDialog(panel, commands)
   };

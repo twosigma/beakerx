@@ -18,9 +18,12 @@ package com.twosigma.beakerx.widget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static java.util.Arrays.asList;
 
 public abstract class BeakerxWidget extends Widget {
 
@@ -30,7 +33,7 @@ public abstract class BeakerxWidget extends Widget {
   public static final String VIEW_MODULE_VALUE = "beakerx";
   public static final String MODEL = "model";
   public static final String MODEL_UPDATE = "updateData";
-  private UpdateModel updateModel = (action, item) -> {
+  private UpdateModel updateModel = (List<ChangeItem> changes) -> {
     //empty function
   };
 
@@ -43,7 +46,7 @@ public abstract class BeakerxWidget extends Widget {
   }
 
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+  protected HashMap<String, Object> content(HashMap<String, Object> content) {
     return content;
   }
 
@@ -58,23 +61,31 @@ public abstract class BeakerxWidget extends Widget {
   }
 
   protected void sendModel() {
-    this.updateModel.update(MODEL, serializeToJsonObject());
+    this.updateModel.update(doSendModel());
+  }
+
+  protected List<ChangeItem> doSendModel(){
+    return new ArrayList<ChangeItem>(){
+      {
+        add(new ChangeItem(MODEL, serializeToJsonObject()));
+      }
+    };
   }
 
   protected void sendModelUpdate(Object item) {
-    this.updateModel.update(MODEL_UPDATE, serializeToJsonObject(item));
+    this.updateModel.update(asList(new ChangeItem(MODEL_UPDATE, serializeToJsonObject(item))));
   }
 
   protected void sendModelUpdate() {
-    this.updateModel.update(MODEL_UPDATE, serializeToJsonObject());
+    this.updateModel.update(asList(new ChangeItem(MODEL_UPDATE, serializeToJsonObject())));
   }
 
   private void enableModelUpdate() {
-    updateModel = (action, item) -> sendUpdate(action, item);
+    updateModel = (changeItems) -> sendUpdate(changeItems);
   }
 
   interface UpdateModel {
-    void update(String action, Object item);
+    void update(List<ChangeItem> changes);
   }
 
   @Override

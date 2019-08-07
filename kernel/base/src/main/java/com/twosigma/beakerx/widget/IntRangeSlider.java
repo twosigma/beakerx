@@ -44,7 +44,7 @@ public class IntRangeSlider extends BoundedIntRangeWidget{
   }
   
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+  protected HashMap<String, Object> content(HashMap<String, Object> content) {
     super.content(content);
     content.put(ORIENTATION, orientation);
     content.put(_RANGE, true);

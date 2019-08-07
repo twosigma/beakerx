@@ -30,7 +30,7 @@ public abstract class IntWidget<T extends Serializable> extends ValueWidget<T> {
   }
   
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+  protected HashMap<String, Object> content(HashMap<String, Object> content) {
     super.content(content);
     content.put(VALUE, this.value);
     return content;

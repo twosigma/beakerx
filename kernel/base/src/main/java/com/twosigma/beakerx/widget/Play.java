@@ -40,7 +40,7 @@ public class Play extends BoundedIntWidget{
   }
   
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+  protected HashMap<String, Object> content(HashMap<String, Object> content) {
     super.content(content);
     content.put(_PLAYING, false);
     return content;

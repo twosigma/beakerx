@@ -52,7 +52,7 @@ public class Button extends ValueWidget<Boolean> {
   }
 
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+  protected HashMap<String, Object> content(HashMap<String, Object> content) {
     super.content(content);
     content.put(TOOLTIP, tooltip);
     content.put(ICON, icon);

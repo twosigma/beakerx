@@ -74,7 +74,8 @@ public class DefaultJVMVariables {
             "com.twosigma.beakerx.table.highlight.ThreeColorHeatmapHighlighter",
             "static com.twosigma.beakerx.Display.display",
             "com.twosigma.beakerx.kernel.KernelInfo",
-            "com.twosigma.beakerx.kernel.magic.command.BxMavenManager"
+            "com.twosigma.beakerx.kernel.magic.command.BxMavenManager",
+            "com.twosigma.beakerx.table.TableDisplayLoadingMode"
 
     );
   }

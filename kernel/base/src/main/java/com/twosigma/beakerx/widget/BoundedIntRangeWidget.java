@@ -36,7 +36,7 @@ public abstract class BoundedIntRangeWidget extends IntRangeWidget{
   }
 
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+  protected HashMap<String, Object> content(HashMap<String, Object> content) {
     super.content(content);
     content.put(MAX, this.getMax());
     content.put(MIN, this.getMin());

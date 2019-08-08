@@ -1,0 +1,78 @@
+/*
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+@font-face {
+  font-family: 'Roboto Mono';
+  src: url('fonts/robotomono/robotomono.woff') format('woff'),
+  url('fonts/robotomono/robotomono.ttf') format('truetype');
+
+  font-style: normal;
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  src: url('fonts/robotomono/robotomono-bold.woff') format('woff'),
+  url('fonts/robotomono/robotomono-bold.ttf') format('truetype');
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url('fonts/lato/Lato-Regular.woff') format('woff'),
+  url('fonts/lato/Lato-Regular.ttf') format('truetype');
+
+  font-style: normal;
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url('fonts/lato/Lato-Black.woff') format('woff'),
+  url('fonts/lato/Lato-Black.ttf') format('truetype');
+  font-weight: bold;
+}
+
+.improveFonts .CodeMirror pre,
+.improveFonts .rendered_html pre,
+.improveFonts .rendered_html code,
+.improveFonts .output_area pre {
+  font-family: "Roboto Mono", monospace, sans-serif;
+}
+
+div.output_text {
+  line-height: 1.3em;
+}
+
+.improveFonts .widget-html-content,
+.improveFonts .rendered_html,
+.improveFonts .cm-header-1,
+.improveFonts .cm-header-2,
+.improveFonts .cm-header-3,
+.improveFonts .cm-header-4,
+.improveFonts .cm-header-5,
+.improveFonts .cm-header-6 {
+  font-family: "Lato", Helvetica, sans-serif;
+}
+
+.improveFonts .jp-RenderedText pre {
+  font-family: "Roboto Mono", monospace, sans-serif;
+}
+
+.improveFonts .jp-RenderedMarkdown,
+.improveFonts .jp-RenderedHTML {
+  font-family: "Lato", Helvetica, sans-serif;
+}

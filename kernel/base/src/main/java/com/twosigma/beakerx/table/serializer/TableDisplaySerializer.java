@@ -29,7 +29,6 @@ public class TableDisplaySerializer extends ObservableTableDisplaySerializer<Tab
   public static final String ALIGNMENT_FOR_COLUMN = "alignmentForColumn";
   public static final String ALIGNMENT_FOR_TYPE = "alignmentForType";
   public static final String COLUMNS_FROZEN = "columnsFrozen";
-  public static final String COLUMNS_FROZEN_RIGHT = "columnsFrozenRight";
   public static final String COLUMN_ORDER = "columnOrder";
   public static final String COLUMNS_VISIBLE = "columnsVisible";
   public static final String DATA_FONT_SIZE = "dataFontSize";
@@ -71,7 +70,6 @@ public class TableDisplaySerializer extends ObservableTableDisplaySerializer<Tab
       jgen.writeObjectField(ALIGNMENT_FOR_TYPE, tableDisplay.getAlignmentForType());
       jgen.writeObjectField(ALIGNMENT_FOR_COLUMN, tableDisplay.getAlignmentForColumn());
       jgen.writeObjectField(COLUMNS_FROZEN, tableDisplay.getColumnsFrozen());
-      jgen.writeObjectField(COLUMNS_FROZEN_RIGHT, tableDisplay.getColumnsFrozenRight());
       jgen.writeObjectField(COLUMNS_VISIBLE, tableDisplay.getColumnsVisible());
       jgen.writeObjectField(COLUMN_ORDER, tableDisplay.getColumnOrder());
       jgen.writeObjectField(CELL_HIGHLIGHTERS, tableDisplay.getCellHighlighters());

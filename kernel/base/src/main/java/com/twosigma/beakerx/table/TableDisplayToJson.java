@@ -60,7 +60,6 @@ import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.ALIGN
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.ALIGNMENT_FOR_TYPE;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.CELL_HIGHLIGHTERS;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.COLUMNS_FROZEN;
-import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.COLUMNS_FROZEN_RIGHT;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.COLUMNS_VISIBLE;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.COLUMN_ORDER;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.DATA_FONT_SIZE;
@@ -181,16 +180,6 @@ public class TableDisplayToJson {
     }
     Map<Object, Object> value = new LinkedHashMap<>();
     value.put(COLUMNS_FROZEN, result);
-    return value;
-  }
-
-  static Map<Object, Object> serializeColumnsFrozenRight(Map<String, Boolean> map) {
-    Map<String, Object> result = new LinkedHashMap<>();
-    for (Map.Entry<String, Boolean> pair : map.entrySet()) {
-      result.put(pair.getKey(), pair.getValue());
-    }
-    Map<Object, Object> value = new LinkedHashMap<>();
-    value.put(COLUMNS_FROZEN_RIGHT, result);
     return value;
   }
 

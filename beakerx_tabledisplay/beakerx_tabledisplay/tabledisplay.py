@@ -63,7 +63,6 @@ class Table(BaseObject):
         self.columnOrder = []
         self.rendererForColumn = {}
         self.dataFontSize = None
-        self.columnsFrozenRight = {}
         self.columnsVisible = {}
         self.hasDoubleClickAction = False
         self.filteredValues = None
@@ -287,11 +286,6 @@ class TableDisplay(BeakerxDOMWidget):
 
     def setColumnFrozen(self, column, visible):
         self.chart.columnsFrozen[column] = visible
-        self.model = self.chart.transform()
-        return self
-
-    def setColumnFrozenRight(self, column, visible):
-        self.chart.columnsFrozenRight[column] = visible
         self.model = self.chart.transform()
         return self
 

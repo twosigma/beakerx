@@ -1,0 +1,106 @@
+/*
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+.widget-text input[type="password"] {
+  box-sizing: border-box;
+  border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
+  background-color: var(--jp-widgets-input-background-color);
+  color: var(--jp-widgets-input-color);
+  font-size: var(--jp-widgets-font-size);
+  padding: var(--jp-widgets-input-padding) calc( var(--jp-widgets-input-padding) * 2 );
+  flex-grow: 1;
+  min-width: 0;
+  flex-shrink: 1;
+  outline: none !important;
+  height: var(--jp-widgets-inline-height);
+  line-height: var(--jp-widgets-inline-height);
+}
+
+.widget-text input[type="password"]:focus {
+  border-color: var(--jp-widgets-input-focus-border-color);
+}
+
+
+.widget-select-multiple select {
+  border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
+  background-color: var(--jp-widgets-input-background-color);
+  color: var(--jp-widgets-input-color);
+  font-size: var(--jp-widgets-font-size);
+}
+
+.widget-select select:focus,
+.widget-select-multiple select:focus {
+  border-color: var(--jp-widgets-input-focus-border-color);
+}
+
+.easyform-combobox-input {
+  box-sizing: border-box;
+  border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color) !important;
+  background-color: var(--jp-widgets-input-background-color);
+  color: var(--jp-widgets-input-color);
+  font-size: var(--jp-widgets-font-size);
+  padding: var(--jp-widgets-input-padding) calc( var(--jp-widgets-input-padding) * 2 );
+  outline: none !important;
+  height: calc(var(--jp-widgets-inline-height) + 2px);
+  line-height: var(--jp-widgets-inline-height);
+}
+
+.easyform-combobox-toggle {
+  border-color: var(--jp-widgets-input-border-color);
+  background-color: var(--jp-widgets-input-background-color);
+}
+.easyform-combobox-toggle:focus,
+.easyform-combobox-toggle:active,
+.easyform-combobox-toggle:hover {
+  border-color: var(--jp-widgets-input-focus-border-color);
+  background-color: var(--jp-widgets-input-background-color);
+}
+
+.beaker-easyform-container .datepicker-container.flatpickr input[type="text"] {
+  box-sizing: border-box;
+  border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
+  background-color: var(--jp-widgets-input-background-color);
+  color: var(--jp-widgets-input-color);
+  font-size: var(--jp-widgets-font-size);
+  padding: var(--jp-widgets-input-padding) calc( var(--jp-widgets-input-padding) * 2 );
+  outline: none !important;
+  height: var(--jp-widgets-inline-height);
+  line-height: var(--jp-widgets-inline-height);
+  border-right-width: 0;
+}
+
+.beaker-easyform-container .datepicker-container.flatpickr .date-picker-button {
+  border-color: var(--jp-widgets-input-border-color);
+  background-color: var(--jp-widgets-input-background-color);
+}
+.beaker-easyform-container .datepicker-container.flatpickr .date-picker-button:focus,
+.beaker-easyform-container .datepicker-container.flatpickr .date-picker-button:active,
+.beaker-easyform-container .datepicker-container.flatpickr .date-picker-button:hover {
+  border-color: var(--jp-widgets-input-focus-border-color);
+  outline: none !important;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.bx-stats .bx-label, .bx-spark-stageProgressLabels .bx-label {
+  line-height: 1.3;
+}
+
+.bx-stats .label {
+  box-sizing: border-box;
+}

@@ -23,9 +23,12 @@
     "build:subpackages": "yarn run build:subpackages:shaded && yarn run build:subpackages:table_display && yarn run build:clean && yarn run build:link",
     "build:subpackages:shaded": "cd ../beakerx_shared && yarn install",
     "build:subpackages:table_display": "cd ../beakerx_tabledisplay && yarn install && yarn run build",
-    "build:prod": "yarn run build:subpackages && webpack --config webpack.prod.js && yarn run build-lab-extension",
-    "build:dev": "yarn run build:subpackages && webpack --config webpack.dev.js && yarn run build-lab-extension",
-    "build-lab-extension": "cd ../lab && npm install",
+    "build:prod": "yarn run build:subpackages && webpack --config webpack.prod.js && yarn run build:lab",
+    "build:dev": "yarn run build:subpackages && webpack --config webpack.dev.js && yarn run build:lab",
+    "build:lab": "yarn run build:lab:extension && yarn run build:lab:theme-dark-extension && yarn run build:lab:theme-light-extension",
+    "build:lab:extension": "cd ../lab && npm install",
+    "build:lab:theme-dark-extension": "cd ../lab-theme-dark && npm install",
+    "build:lab:theme-light-extension": "cd ../lab-theme-light && npm install",
     "prepublishOnly": "yarn run build:prod"
   },
   "devDependencies": {

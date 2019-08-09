@@ -20,7 +20,6 @@ import { ISettingRegistry } from "@jupyterlab/coreutils";
 import BeakerxExtension from './plugin';
 import BeakerxTreeJupyterLabPlugin from "./tree";
 import RequirejsLoader from "./plugin/requirejs";
-import { themeLightPlugin, themeDarkPlugin } from './theme';
 import {IJupyterWidgetRegistry} from "@jupyter-widgets/base";
 import beakerx from "./beakerx";
 import beakerx_tabledisplay from "./beakerx_tabledisplay";
@@ -56,13 +55,8 @@ export const requirejs_ext: JupyterFrontEndPlugin<void> = {
   }
 };
 
-export const beakerx_theme_light_ext: JupyterFrontEndPlugin<void> = themeLightPlugin;
-export const beakerx_theme_dark_ext: JupyterFrontEndPlugin<void> = themeDarkPlugin;
-
 export default [
   requirejs_ext,
   beakerx_ext,
   tree_ext,
-  beakerx_theme_light_ext,
-  beakerx_theme_dark_ext,
 ];

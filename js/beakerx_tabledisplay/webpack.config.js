@@ -15,6 +15,7 @@
  */
 
 const webpack = require('webpack');
+const pkg = require('./package.json');
 const path = require('path');
 
 // Custom webpack loaders are generally the same for all webpack bundles, hence
@@ -90,6 +91,21 @@ module.exports = [
         watchOptions: {
             ignored: /node_modules/
         },
+        plugins: plugins
+    },
+    {
+        entry: './src/embed.ts',
+        output: {
+            filename: 'index.js',
+            path: path.resolve(__dirname, './dist/'),
+            libraryTarget: 'amd',
+            publicPath: 'https://unpkg.com/' + pkg.name + '@' + pkg.version + '/dist/'
+        },
+        module: {
+            rules: rules
+        },
+        resolve: resolve,
+        externals: externals,
         plugins: plugins
     },
     {

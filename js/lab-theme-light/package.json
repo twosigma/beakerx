@@ -13,7 +13,7 @@
     "lib/*.d.ts",
     "lib/*.js.map",
     "lib/*.js",
-    "style/**.{css,ttf,woff,woff2}"
+    "style/**/*.{css,ttf,woff,woff2}"
   ],
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

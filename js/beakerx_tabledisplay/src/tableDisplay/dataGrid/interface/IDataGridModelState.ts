@@ -23,7 +23,6 @@ export default interface IDataModelState {
   columnNames: string[],
   columnOrder: string[],
   columnsFrozen?: {},
-  columnsFrozenRight?: {}, //feature is dropped
   columnsVisible: {},
   contextMenuItems?: string[],
   contextMenuTags?: {},

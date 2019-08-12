@@ -84,7 +84,7 @@ export function registerNotebookInitCellsAction(
   options: IInitCellsOptions
 ): void {
   const action = {
-    className: 'fa fa-calculator',
+    iconClassName: 'bx-RunInitializationCellsIcon fa fa-calculator',
     tooltip: 'Run all initialization cells',
     onClick: () => runInitCells(panel,{ ...options, run_untrusted: true })
   };

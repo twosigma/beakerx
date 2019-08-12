@@ -37,8 +37,12 @@ public class AutotranslationHandler extends BaseHandler<Boolean> {
   }
 
   private void handleMsg(Message message, KernelFunctionality kernel) {
-    Map<String, Object> data = (Map) message.getContent().get("data");
-    BeakerXClientManager.get().update((String) data.get("name"), data.get("value"));
+    if (message.getContent().containsKey("data")) {
+      Map<String, Object> data = (Map) message.getContent().get("data");
+      if (data.containsKey("name") && data.containsKey("value")) {
+        BeakerXClientManager.get().update((String) data.get("name"), data.get("value"));
+      }
+    }
   }
 
   @Override

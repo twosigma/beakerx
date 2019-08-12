@@ -43,7 +43,7 @@ public class Image extends ValueWidget<byte[]> {
   }
 
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+  protected HashMap<String, Object> content(HashMap<String, Object> content) {
     super.content(content);
     content.put(FORMAT, this.format);
     content.put(WIDTH, this.width);

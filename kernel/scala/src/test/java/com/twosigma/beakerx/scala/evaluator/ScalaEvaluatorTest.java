@@ -39,7 +39,6 @@ import java.util.Map;
 
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.KernelExecutionTest.DEMO_JAR;
-import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -36,7 +36,6 @@ let modelStateMock: IDataGridModelState = {
   alignmentForColumn: { 'test': 'C' },
   alignmentForType: { 'integer': 'L' },
   columnsFrozen: {},
-  columnsFrozenRight: {},
   contextMenuItems: [],
   contextMenuTags: {},
   doubleClickTag: null,

@@ -30,7 +30,8 @@
     "build:prod": "yarn run test && webpack --config webpack.prod.js",
     "test": "cross-os test",
     "coverage": "cross-os coverage",
-    "stats": "webpack --env production --profile --json > stats.json"
+    "stats": "webpack --env production --profile --json > stats.json",
+    "prepublishOnly": "yarn run build:prod"
   },
   "cross-os": {
     "test": {

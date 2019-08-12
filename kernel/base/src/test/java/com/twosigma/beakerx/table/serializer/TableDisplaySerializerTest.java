@@ -253,17 +253,6 @@ public class TableDisplaySerializerTest {
   }
 
   @Test
-  public void serializeColumnFrozenRight_resultJsonHasColumnFrozenRight() throws IOException {
-    //given
-    tableDisplay.setColumnFrozenRight("a", true);
-    //when
-    Map actualObj = serializeTableDisplay();
-    //then
-    Map rendererForType = getValueAsMap(actualObj, "columnsFrozenRight");
-    assertThat(rendererForType.get("a")).isEqualTo(true);
-  }
-
-  @Test
   public void serializeColumnsVisible_resultJsonHasColumnsVisible() throws IOException {
     //given
     tableDisplay.setColumnVisible("a", true);

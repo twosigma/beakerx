@@ -46,13 +46,10 @@
   },
   "jupyterlab": {
     "extension": "dist/index.js",
-    "mimeExtension": "dist/javascriptRendererExtension.js",
-    "themeDir": "src/theme/static"
+    "mimeExtension": "dist/javascriptRendererExtension.js"
   },
   "files": [
     "dist/**/*.js",
-    "lib/*",
-    "src/theme/static/*.css",
-    "src/theme/static/fonts/**/*"
+    "lib/*"
   ]
 }

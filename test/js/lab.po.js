@@ -83,6 +83,9 @@ var LabPageObject = function () {
     var acceptDialogButton = browser.$('button.jp-Dialog-button.jp-mod-accept.jp-mod-warn.jp-mod-styled');
     acceptDialogButton.waitForEnabled();
     acceptDialogButton.click();
+    browser.waitUntil(function(){
+      return browser.$$('li[data-type="document-title"]').length < 2;
+    });
   };
 
   this.clearAllOutputs = function() {
@@ -173,9 +176,9 @@ var LabPageObject = function () {
   };
 
   this.openUIWindow = function(){
-    browser.$$('li.p-TabBar-tab')[2].click();
+    browser.$$('li[data-id="command-palette"]')[0].click();
     browser.$('div.p-CommandPalette-itemLabel=BeakerX Options').click();
-    browser.$$('li.p-TabBar-tab')[9].click();
+    browser.$$('ul.p-TabBar-content')[2].click('li[data-id="beakerx-tree-widget"]');
   };
 
   this.setJVMProperties = function (heapSize, key, value, url) {
@@ -210,7 +213,15 @@ var LabPageObject = function () {
       acceptDialogButton.waitForEnabled();
       acceptDialogButton.click();
     }
-  }
+  };
+
+  this.getJupyterWidget = function(codeCell){
+    return codeCell.$('div.jupyter-widgets > div.jupyter-widgets');
+  };
+
+  this.switchToNotebookWindow = function(){
+    browser.switchWindow('JupyterLab');
+  };
 
 };
 module.exports = LabPageObject;

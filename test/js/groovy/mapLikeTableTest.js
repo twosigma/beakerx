@@ -137,7 +137,7 @@ describe('(Groovy) Testing Map Like Tables', function () {
       browser.switchWindow('https://www.twosigma.com/');
       browser.pause(1000);
       expect(browser.getTitle()).toBe('Two Sigma');
-      browser.switchWindow('/test/ipynb/groovy/MapLikeTableTest');
+      beakerxPO.switchToNotebookWindow();
     });
   });
 });

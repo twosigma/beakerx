@@ -81,7 +81,10 @@ conda install -y -c conda-forge jupyterlab
 (cd beakerx; pip install -r requirements.txt --verbose)
 beakerx install
 jupyter labextension install @jupyter-widgets/jupyterlab-manager
-(cd js/lab; jupyter labextension install .)
+(cd js/lab; jupyter labextension install . --no-build)
+(cd js/lab-theme-dark; jupyter labextension install . --no-build)
+(cd js/lab-theme-light; jupyter labextension install . --no-build)
+jupyter lab build
 ```
 
 ### Running with Docker

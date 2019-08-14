@@ -163,14 +163,14 @@ describe('(Groovy) Testing of MIME types', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0];
-      expect(result.$('svg').isEnabled()).toBeTruthy();
+      expect(beakerxPO.getSvgResult(result).isEnabled()).toBeTruthy();
     });
 
     it('(SVG) Cell displays an SVG element from a file', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0];
-      expect(result.$('svg').isEnabled()).toBeTruthy();
+      expect(beakerxPO.getSvgResult(result).isEnabled()).toBeTruthy();
     });
 
     it('(Image) Cell displays an image element', function () {

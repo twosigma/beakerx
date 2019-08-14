@@ -37,6 +37,7 @@ var LabPageObject = function () {
         i+=1;
         continue;
       }
+      browser.$('span=' + dirName).scrollIntoView();
       browser.$('span=' + dirName).doubleClick();
       browser.pause(500);
       i+=1;
@@ -59,7 +60,7 @@ var LabPageObject = function () {
 
   /* Close and Shutdown Notebook */
   this.closeAndHaltNotebook = function () {
-    this.clearAllOutputs();
+    this.clickCellAllOutputClear;
     browser.$('div=File').click();
     var closeAndCleanupMenuItem = browser.$('li[data-command="filemenu:close-and-cleanup"]');
     closeAndCleanupMenuItem.waitForEnabled();
@@ -74,7 +75,7 @@ var LabPageObject = function () {
   };
 
   this.saveAndCloseNotebook = function () {
-    this.clearAllOutputs();
+    this.clickCellAllOutputClear;
     this.clickSaveNotebook();
     browser.$('div=File').click();
     var closeAndCleanupMenuItem = browser.$('li[data-command="filemenu:close-and-cleanup"]');
@@ -88,7 +89,7 @@ var LabPageObject = function () {
     });
   };
 
-  this.clearAllOutputs = function() {
+  this.clickCellAllOutputClear = function() {
     browser.$('div=Edit').click();
     var clearAllOutputsMenuItem = browser.$('li[data-command="editmenu:clear-all"]');
     clearAllOutputsMenuItem.waitForEnabled();
@@ -132,18 +133,30 @@ var LabPageObject = function () {
   };
 
   this.getAllOutputsExecuteResult = function (codeCell) {
+    browser.waitUntil(function(){
+      return codeCell.$$('div.jp-OutputArea-child.jp-OutputArea-executeResult > div.jp-OutputArea-output').length > 0;
+    });
     return codeCell.$$('div.jp-OutputArea-child.jp-OutputArea-executeResult > div.jp-OutputArea-output');
   };
 
   this.getAllOutputsStdout = function (codeCell) {
+    browser.waitUntil(function(){
+      return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output[data-mime-type="application/vnd.jupyter.stdout"]').length > 0;
+    });
     return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output[data-mime-type="application/vnd.jupyter.stdout"]');
   };
 
   this.getAllOutputsStderr = function (codeCell) {
+    browser.waitUntil(function(){
+      return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output[data-mime-type="application/vnd.jupyter.stderr"]').length > 0;
+    });
     return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output[data-mime-type="application/vnd.jupyter.stderr"]');
   };
 
   this.getAllOutputsHtmlType = function (codeCell) {
+    browser.waitUntil(function(){
+      return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output[data-mime-type="text/html"]').length > 0;
+    });
     return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output[data-mime-type="text/html"]');
   };
 
@@ -221,6 +234,10 @@ var LabPageObject = function () {
 
   this.switchToNotebookWindow = function(){
     browser.switchWindow('JupyterLab');
+  };
+
+  this.getSvgResult = function(container){
+    return container.$('img');
   };
 
 };

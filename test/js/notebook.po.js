@@ -196,5 +196,9 @@ var NotebookPageObject = function () {
     browser.switchWindow('/test/ipynb/groovy/MapLikeTableTest');
   };
 
+  this.getSvgResult = function(container){
+    return container.$('svg');
+  };
+
 };
 module.exports = NotebookPageObject;

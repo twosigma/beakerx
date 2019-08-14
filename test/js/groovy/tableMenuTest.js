@@ -289,7 +289,7 @@ describe('Testing of table Actions ', function () {
 
   describe('Column menu option "Format double with precision is 2"', function () {
     it('Should format double with precision is 2', function () {
-      cellIndex += 5;
+      cellIndex += 3;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var colMenu = getTableColumnMenu(cellIndex);
       var subMenu1 = beakerxPO.getTableIndexSubMenu(colMenu, 0)[0];

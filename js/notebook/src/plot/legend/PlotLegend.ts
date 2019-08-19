@@ -86,7 +86,20 @@ export default class PlotLegend {
       .attr('style', 'position: relative;')
       .attr("xmlns", "http://www.w3.org/1999/xhtml")
       .html(legendCopy[0].outerHTML);
+
+    this.adjustSvgWithLegendDimensions(svg);
   };
+
+  private adjustSvgWithLegendDimensions(svg: d3.Selection<SVGElement, any, HTMLElement, any>) {
+      let svgWithLegendWidth = this.scope.plotSize.getPlotWithLegendWidth();
+      let svgWithLegendHeight = this.scope.plotSize.getPlotWithLegendHeight();
+
+      svg.attr('width', svgWithLegendWidth + 10);
+      svg.style('width', svgWithLegendWidth + 10);
+
+      svg.attr('height', svgWithLegendHeight + 10);
+      svg.style('height', svgWithLegendHeight + 10);
+  }
 
   render() {
     // legend redraw is controlled by legendDone

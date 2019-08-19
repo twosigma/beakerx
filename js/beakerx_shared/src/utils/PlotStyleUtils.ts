@@ -84,7 +84,7 @@ export default class PlotStyleUtils {
     let value;
     let getValue = () => {
       let fn = (jqElement[jqFunction]) as Function;
-      return jqFunctionParams !== null ? fn(jqFunctionParams) : fn();
+      return jqFunctionParams !== undefined ? fn.call(jqElement, jqFunctionParams) : fn.call(jqElement);
     };
     if (jqElement.is(":visible")) {
       value = getValue();

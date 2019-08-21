@@ -256,7 +256,7 @@ export default class PlotUtils {
     let a = document.createElement('a');
     a.href = url;
     a.download = fileName;
-    this.fireClickEvent(a);
+    PlotUtils.fireClickEvent(a);
     a.remove();
   }
 

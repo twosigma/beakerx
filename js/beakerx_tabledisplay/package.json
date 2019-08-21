@@ -1,6 +1,6 @@
 {
   "name": "beakerx_tabledisplay",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "BeakerX: Beaker TableDisplay Extensions for Jupyter",
   "author": "Two Sigma Open Source, LLC",
   "main": "src/index.ts",

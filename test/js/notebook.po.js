@@ -186,7 +186,19 @@ var NotebookPageObject = function () {
       this.setProperty(key, value);
     }
     browser.pause(2000);
-  }
+  };
+
+  this.getJupyterWidget = function(codeCell){
+    return codeCell.$('div.jupyter-widgets');
+  };
+
+  this.switchToNotebookWindow = function(){
+    browser.switchWindow('/test/ipynb/groovy/MapLikeTableTest');
+  };
+
+  this.getSvgResult = function(container){
+    return container.$('svg');
+  };
 
 };
 module.exports = NotebookPageObject;

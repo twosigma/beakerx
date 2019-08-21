@@ -34,6 +34,9 @@ function easyFormBase() {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       browser.pause(1000);
+      browser.waitUntil(function(){
+        return codeCell.$$('div.beaker-easyform-container').length > 0;
+      });
       expect(codeCell.$('legend').getText()).toBe('form0');
       expect(codeCell.$('div.beaker-easyform-container').isEnabled()).toBeTruthy();
     });
@@ -52,13 +55,13 @@ function easyFormBase() {
 
     it('Should input text ', function () {
       var tstText = 'test';
-      cellIndex += 1;
       easyForm.$('input[type="text"]').click();
       browser.keys('t'); browser.pause(100);
       browser.keys('e'); browser.pause(100);
       browser.keys('s'); browser.pause(100);
       browser.keys('t'); browser.pause(100);
       expect(easyForm.$('input[type="text"]').getValue()).toBe(tstText);
+      cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, tstText);
     });
 
@@ -90,13 +93,13 @@ function easyFormBase() {
 
     it('Should input text ', function () {
       var tstText = 'test';
-      cellIndex += 1;
       easyForm.$('textarea').click();
       browser.keys('t'); browser.pause(100);
       browser.keys('e'); browser.pause(100);
       browser.keys('s'); browser.pause(100);
       browser.keys('t'); browser.pause(100);
       expect(easyForm.$('textarea').getValue()).toBe(tstText);
+      cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, tstText);
     });
 
@@ -137,9 +140,9 @@ function easyFormBase() {
     });
 
     it('Checkbox should be checked ', function () {
-      cellIndex += 1;
       easyForm.$('input[type="checkbox"]').click();
       expect(easyForm.$('input[type="checkbox"]').isSelected()).toBeTruthy();
+      cellIndex += 1;
       beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /(T|t)rue/);
     });
 

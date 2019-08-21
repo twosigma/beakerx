@@ -187,7 +187,7 @@ function BeakerXPageObject() {
     browser.waitUntil(function () {
       return codeCell.$$('div.jupyter-widgets').length > 0;
     });
-    return codeCell.$('div.jupyter-widgets');
+    return this.getJupyterWidget(codeCell);
   };
 
   this.runCellToGetEasyForm = function (index) {

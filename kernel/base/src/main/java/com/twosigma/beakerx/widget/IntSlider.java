@@ -41,7 +41,7 @@ public class IntSlider extends BoundedIntWidget {
   }
 
   @Override
-  protected HashMap<String, Object> content(HashMap<String, Object> content) {
+  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
     content.put(CONTINUOUS_UPDATE, this.continuous_update);
     content.put(ORIENTATION, orientation);

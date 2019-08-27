@@ -19,14 +19,13 @@ import { expect, assert } from 'chai';
 import * as sinon from 'sinon';
 import { Widget } from "@phosphor/widgets";
 import {DataGridScope} from "../../../../src/tableDisplay/dataGrid";
-import tableDisplayWidgetMock from "./mock/tableDisplayMock";
 
 const element = document.createElement('div');
 
 describe('dataGridScope', () => {
   const scopeOptions = {
     element,
-    widgetView: tableDisplayWidgetMock,
+    widgetView: new Widget({}),
     widgetModel: new Widget({}),
     data: modelStateMock
   };

@@ -20,7 +20,6 @@ import modelStateMock from "../mock/modelStateMock";
 import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
 import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
 import {CellRendererFactory} from "../../../../../src/tableDisplay/dataGrid/cell/CellRendererFactory";
-import tableDisplayWidgetMock from "../mock/tableDisplayMock";
 
 describe('CellRendererFactory', () => {
   let dataGrid;
@@ -28,7 +27,7 @@ describe('CellRendererFactory', () => {
 
   before(() => {
     dataStore = createStore(modelStateMock);
-    dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplayWidgetMock);
+    dataGrid = new BeakerXDataGrid({}, dataStore);
   });
 
   after(() => {

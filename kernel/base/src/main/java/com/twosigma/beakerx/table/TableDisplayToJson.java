@@ -52,6 +52,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_ENUMS_USING_TO_STRING;
 import static com.twosigma.beakerx.table.serializer.ObservableTableDisplaySerializer.DOUBLE_CLICK_TAG;
@@ -74,7 +75,6 @@ import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.STRIN
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_TYPE;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.TIME_ZONE;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.TOOLTIPS;
-import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.VALUES;
 
 public class TableDisplayToJson {
 
@@ -280,11 +280,5 @@ public class TableDisplayToJson {
     return value;
   }
 
-  static Map<Object, Object> serializeValues(TableDisplay tableDisplay) {
-    List list = tableDisplay.takeNextPage();
-    Map<Object, Object> result = new LinkedHashMap<>();
-    result.put(VALUES, list);
-    return result;
-  }
 
 }

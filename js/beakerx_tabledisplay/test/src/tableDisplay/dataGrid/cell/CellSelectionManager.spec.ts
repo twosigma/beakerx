@@ -23,7 +23,6 @@ import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXD
 import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
 import CellSelectionManager from "../../../../../src/tableDisplay/dataGrid/cell/CellSelectionManager";
 import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
-import tableDisplayWidgetMock from "../mock/tableDisplayMock";
 
 describe('CellSelectionManager', () => {
   let dataGrid;
@@ -34,7 +33,7 @@ describe('CellSelectionManager', () => {
 
   before(() => {
     dataStore = createStore(modelStateMock);
-    dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplayWidgetMock);
+    dataGrid = new BeakerXDataGrid({}, dataStore);
     cellSelectionManager = dataGrid.cellSelectionManager;
   });
 

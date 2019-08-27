@@ -26,7 +26,6 @@ import java.util.Map;
 
 import static com.twosigma.beakerx.kernel.Utils.timestamp;
 import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
-import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 @JsonPropertyOrder({"identities", "header", "parentHeader", "metadata", "content"})
 public class Message {
@@ -91,7 +90,7 @@ public class Message {
 
   @Override
   public String toString() {
-    return reflectionToString(this);
+    return "Type = " + header.getType();
   }
 
   public void setBuffers(List<byte[]> buffers) {

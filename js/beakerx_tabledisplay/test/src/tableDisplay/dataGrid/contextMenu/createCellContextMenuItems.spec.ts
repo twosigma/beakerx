@@ -20,7 +20,6 @@ import modelStateMock from "../mock/modelStateMock";
 import {DataGridScope} from "../../../../../src/tableDisplay/dataGrid";
 import createCellContextMenuItems
   from "../../../../../src/tableDisplay/dataGrid/contextMenu/createCellContextMenuItems";
-import tableDisplayWidgetMock from "../mock/tableDisplayMock";
 
 describe('createCellContextMenuItems', () => {
   let dataGridScope;
@@ -29,7 +28,7 @@ describe('createCellContextMenuItems', () => {
   before(() => {
     const scopeOptions = {
       element: document.createElement('div'),
-      widgetView: tableDisplayWidgetMock,
+      widgetView: new Widget({}),
       widgetModel: { model_id: '123-123-123' },
       data: {
         ...modelStateMock,

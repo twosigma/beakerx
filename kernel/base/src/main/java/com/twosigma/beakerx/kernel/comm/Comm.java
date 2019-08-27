@@ -24,7 +24,6 @@ import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.util.Preconditions;
-import com.twosigma.beakerx.widget.ChangeItem;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -270,30 +269,31 @@ public class Comm {
     return this.create(JupyterMessages.STREAM, Buffer.EMPTY, content);
   }
 
-  public void sendUpdate(List<ChangeItem> changes, HashMap<String, Object> state) {
-    Message message = createUpdateMessage(changes, state);
+  public void sendUpdate(final String propertyName, final Object value) {
+    Message message = createUpdateMessage(propertyName, value);
     kernel.publish(singletonList(message));
   }
 
-  public void sendUpdate(List<ChangeItem> changes, Message parent) {
-    Message message = createUpdateMessage(changes, parent);
+  public void sendUpdate(final String propertyName, final Object value, Message parent) {
+    Message message = createUpdateMessage(propertyName, value, parent);
     kernel.publish(singletonList(message));
   }
 
-  public Message createUpdateMessage(List<ChangeItem> changes, Message parent) {
+  public Message createUpdateMessage(String propertyName, Object value, Message parent) {
     HashMap<String, Serializable> content = new HashMap<>();
     content.put(METHOD, UPDATE);
     HashMap<Object, Object> state = new HashMap<>();
-    changes.forEach( x-> state.put(x.getPropertyName(), x.getValue()));
+    state.put(propertyName, value);
     content.put(STATE, state);
     content.put(BUFFER_PATHS, new HashMap<>());
     return this.createMessage(COMM_MSG, Buffer.EMPTY, new Comm.Data(content), parent);
   }
 
-  public Message createUpdateMessage(List<ChangeItem> changes, HashMap<String, Object> state) {
+  public Message createUpdateMessage(String propertyName, Object value) {
     HashMap<String, Serializable> content = new HashMap<>();
     content.put(METHOD, UPDATE);
-    changes.forEach( x-> state.put(x.getPropertyName(), x.getValue()));
+    HashMap<Object, Object> state = new HashMap<>();
+    state.put(propertyName, value);
     content.put(STATE, state);
     content.put(BUFFER_PATHS, new HashMap<>());
     return this.createMessage(COMM_MSG, Buffer.EMPTY, new Comm.Data(content));

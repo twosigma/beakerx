@@ -68,12 +68,6 @@ export default class RowManager {
     this.rows = toArray(this.rowsIterator.clone());
   }
 
-  keepSorting() {
-    if(this.sortedBy!=undefined) {
-      this.sortByColumn(this.sortedBy)
-    }
-  }
-
   getRow(index): DataGridRow {
     return this.rows[index];
   }

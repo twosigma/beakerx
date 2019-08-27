@@ -16,9 +16,7 @@
 package com.twosigma.beakerx.scala.table
 
 import java.util
-import java.util.{Spliterator, Spliterators}
 import java.util.concurrent.TimeUnit
-import java.util.stream.StreamSupport
 
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter
 import com.twosigma.beakerx.table._
@@ -31,25 +29,8 @@ import com.twosigma.beakerx.widget.DisplayableWidget
 import scala.collection.JavaConverters._
 import scala.collection.immutable.ListMap
 
+
 object TableDisplay {
-
-  def create(v: Seq[Map[String, Any]]): com.twosigma.beakerx.table.TableDisplay = {
-    val value: java.util.stream.Stream[util.Map[String, Object]] = stream2javaStream(v.toStream)
-    new com.twosigma.beakerx.table.TableDisplay(value)
-  }
-
-  def stream2javaStream(scalaStream: Stream[Map[String, Any]]): java.util.stream.Stream[util.Map[String, Object]] = {
-    val iter: Iterator[Map[String, Any]] = scalaStream.toIterator
-    val newIter = new util.Iterator[util.Map[String, Object]] {
-      override def hasNext: Boolean = iter.hasNext
-      override def next(): util.Map[String, Object] ={
-        val m: Map[String, Any] = iter.next()
-        m.map { case (k, v) => k -> v.asInstanceOf[Object] }.asJava
-      }
-    }
-    val value = Spliterators.spliteratorUnknownSize(newIter,Spliterator.NONNULL)
-    StreamSupport.stream(value,false)
-  }
 
   private def create(v: Map[_, _]) = {
     new com.twosigma.beakerx.table.TableDisplay(v.asJava)
@@ -77,6 +58,11 @@ object TableDisplay {
     javaStandardized
   }
 
+  def create(v: Seq[Map[String, Any]]): com.twosigma.beakerx.table.TableDisplay = {
+    val javaCollection: util.Collection[util.Map[String, Object]] = toJavaCollection(v)
+    new com.twosigma.beakerx.table.TableDisplay(javaCollection)
+  }
+
   def toJavaCollection(v: Seq[Map[String, Any]]): util.Collection[util.Map[String, Object]] = {
     val javaMaps: Seq[util.Map[String, Object]] = v.map(m => m.mapValues(_.asInstanceOf[Object]).asJava)
     val javaCollection: util.Collection[util.Map[String, Object]] = javaMaps.asJava
@@ -96,14 +82,9 @@ object TableDisplay {
     new com.twosigma.beakerx.table.TableDisplay(javaCollection, serializer)
   }
 
-  def setLoadingMode(m:TableDisplayLoadingMode): Unit ={
-    com.twosigma.beakerx.table.TableDisplay.setLoadingMode(m)
-  }
-
 }
 
 class TableDisplay private(tableDisplay: com.twosigma.beakerx.table.TableDisplay) extends DisplayableWidget {
-
   def this(v: Map[_, _]) = {
     this(TableDisplay.create(v))
   }

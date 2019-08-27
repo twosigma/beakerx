@@ -72,7 +72,7 @@ public class ComboBox extends SingleSelectionWidget {
   }
 
   @Override
-  protected HashMap<String, Object> content(HashMap<String, Object> content) {
+  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
     content.put(EDITABLE, editable);
     return content;

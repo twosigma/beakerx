@@ -55,7 +55,7 @@ public class RESTButton extends ValueWidget<Boolean> {
   }
 
   @Override
-  protected HashMap<String, Object> content(HashMap<String, Object> content) {
+  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
     content.put(TOOLTIP, tooltip);
     content.put(ICON, icon);

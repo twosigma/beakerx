@@ -121,7 +121,7 @@ public abstract class ValueWidget<T extends Serializable> extends DOMWidget {
   }
 
   @Override
-  protected HashMap<String, Object> content(HashMap<String, Object> content) {
+  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
     content.put(DESCRIPTION, this.description);
     content.put(DISABLED, this.disabled);

@@ -12,21 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import copy
-import types
-
-import numpy as np
 from beakerx_base import BaseObject, BeakerxDOMWidget
+from .tableitems import DateType, ColumnType, TableDisplayAlignmentProvider, TableDisplayStringFormat, Highlighter
 from ipykernel.comm import Comm
 from pandas import DataFrame, RangeIndex, MultiIndex, DatetimeIndex
 from traitlets import Unicode, Dict
-
-from .tableitems import DateType, ColumnType, TableDisplayAlignmentProvider, TableDisplayStringFormat, Highlighter
+import numpy as np
+import types
 
 
 class Table(BaseObject):
     NAT_VALUE = "NaT"
-    PAGE_SIZE = 1000
 
     def __init__(self, *args, **kwargs):
 
@@ -66,8 +62,6 @@ class Table(BaseObject):
         self.columnsVisible = {}
         self.hasDoubleClickAction = False
         self.filteredValues = None
-        self.endlessIndex = 0
-        self.loadingMode = 'ALL'
 
     def convert_from_dict(self, args):
         self.columnNames.append("Key")
@@ -200,24 +194,6 @@ class Table(BaseObject):
             if filter_row(row_ind, self.values):
                 self.filteredValues.append(self.values[row_ind])
 
-    def transform(self):
-        if TableDisplay.loadingMode == "ALL":
-            return super(Table, self).transform()
-        else:
-            self_copy = copy.copy(self)
-            i = 0
-            result = []
-            has_next = len(self.values) > self.endlessIndex
-            while i < Table.PAGE_SIZE and has_next:
-                tmp = self.values[self.endlessIndex]
-                result.append(tmp)
-                i = i + 1
-                self.endlessIndex = self.endlessIndex + 1
-                has_next = len(self.values) > self.endlessIndex
-            self_copy.values = result
-            self_copy.loadingMode = TableDisplay.loadingMode
-            return super(Table, self_copy).transform()
-
 
 class TableDisplay(BeakerxDOMWidget):
     _view_name = Unicode('TableDisplayView').tag(sync=True)
@@ -227,16 +203,8 @@ class TableDisplay(BeakerxDOMWidget):
     _model_module_version = Unicode('*').tag(sync=True)
     _view_module_version = Unicode('*').tag(sync=True)
 
-    loadingMode = 'ALL'
     model = Dict().tag(sync=True)
     contextMenuListeners = dict()
-    updateData = Dict().tag(sync=True)
-    loadMoreRows = Unicode("loadMoreServerInit").tag(sync=True)
-
-    def on_load_more_rows_change(self, change):
-        if change.new == "loadMoreRequestJS":
-            self.loadMoreRows = "loadMoreServerDone"
-            self.updateData = self.chart.transform()
 
     def __init__(self, *args, **kwargs):
         super(TableDisplay, self).__init__(**kwargs)
@@ -244,7 +212,6 @@ class TableDisplay(BeakerxDOMWidget):
         self.model = self.chart.transform()
         self.on_msg(self.handle_msg)
         self.details = None
-        self.observe(self.on_load_more_rows_change, names='loadMoreRows')
 
     def setAlignmentProviderForType(self, type, alignmentProvider):
         if isinstance(type, ColumnType):

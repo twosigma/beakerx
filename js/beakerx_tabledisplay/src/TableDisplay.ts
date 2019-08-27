@@ -15,12 +15,7 @@
  */
 import './global.env';
 import widgets from './widgets';
-import {DataGridScope} from './tableDisplay/dataGrid';
-
-export interface TableDisplayWidget {
-    loadMoreRows():void;
-    canLoadMore():boolean;
-}
+import { DataGridScope } from './tableDisplay/dataGrid';
 
 export class TableDisplayModel extends widgets.DOMWidgetModel {
   defaults() {
@@ -37,7 +32,7 @@ export class TableDisplayModel extends widgets.DOMWidgetModel {
 }
 
 // Custom View. Renders the widget model.
-export class TableDisplayView extends widgets.DOMWidgetView implements TableDisplayWidget{
+export class TableDisplayView extends widgets.DOMWidgetView {
   private _currentScope: DataGridScope;
 
   render(): void {
@@ -62,29 +57,17 @@ export class TableDisplayView extends widgets.DOMWidgetView implements TableDisp
     });
   }
 
-  private isEndlessLoadingMode():boolean {
-    return this.model.get('model').loadingMode == 'ENDLESS';
+  handleModelUpdate(): void {
+    this._currentScope.doResetAll();
+    this._currentScope.updateModelData(this.model.get('model'));
   }
 
-  handleModelUpdate(model, value, options): void {
-    let shouldReset = options.shouldResetModel==undefined || options.shouldResetModel;
-    if (shouldReset){
-        this._currentScope.doResetAll();
-        this._currentScope.updateModelData(this.model.get('model'));
-    }
-  }
-
-  handleUpdateData(model, value, options): void {
+  handleUpdateData(): void {
     const change = this.model.get('updateData');
     const currentModel = this.model.get('model');
-    if (change.hasOwnProperty('values')){
-        this.model.set('model', {...currentModel, ...change, values: currentModel.values.concat(change.values||[])},{"shouldResetModel":false});
-        this._currentScope.updateModelValues(this.model.get('model'));
-        this.model.set('loadMoreRows', "loadMoreJSDone");
-    }else {
-        this.model.set('model', {...currentModel, ...change});
-        this.handleModelUpdate(model,value, options);
-    }
+
+    this.model.set('model', { ...currentModel, ...change }, { updated_view: this });
+    this.handleModelUpdate();
   }
 
   showWarning(data): void {
@@ -117,15 +100,6 @@ export class TableDisplayView extends widgets.DOMWidgetView implements TableDisp
     setTimeout(() => { this._currentScope = null; });
 
     return super.remove.call(this);
-  }
-
-  canLoadMore(): boolean {
-    return this.isEndlessLoadingMode() && (this.model.get('loadMoreRows') == "loadMoreServerInit" || this.model.get('loadMoreRows') == "loadMoreJSDone");
-  }
-
-  loadMoreRows(): void {
-      this.model.set('loadMoreRows', "loadMoreRequestJS");
-      this.touch();
   }
 }
 

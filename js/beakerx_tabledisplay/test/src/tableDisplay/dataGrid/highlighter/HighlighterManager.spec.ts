@@ -21,11 +21,10 @@ import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXD
 import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
 import HeatmapHighlighter from "../../../../../src/tableDisplay/dataGrid/highlighter/HeatmapHighlighter";
 import {HIGHLIGHTER_TYPE} from "../../../../../src/tableDisplay/dataGrid/interface/IHighlighterState";
-import tableDisplayWidgetMock from "../mock/tableDisplayMock";
 
 describe('HighlighterManager', () => {
   const dataStore = createStore(modelStateMock);
-  const dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplayWidgetMock);
+  const dataGrid = new BeakerXDataGrid({}, dataStore);
   const highlighterManager = dataGrid.highlighterManager;
   const highlighter = highlighterManager.highlighters[0];
 

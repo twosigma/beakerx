@@ -16,21 +16,14 @@
 package com.twosigma.beakerx.widget.integers;
 
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.jupyter.SearchMessages;
 import com.twosigma.beakerx.kernel.KernelManager;
-import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widget.BoundedIntText;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static com.twosigma.beakerx.widget.TestWidgetUtils.findValueForProperty;
-import static com.twosigma.beakerx.widget.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyMsgForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsg;
 
@@ -115,12 +108,8 @@ public class BoundedIntTextTest {
     //when
     boundedIntText.setMin(min);
     //then
-    List<Message> messages = SearchMessages
-            .getListByDataAttr(groovyKernel.getPublishedMessages(), Comm.METHOD, Comm.UPDATE);
-    List<Message> collect = messages.stream()
-            .filter(x -> getValueForProperty(x, boundedIntText.VALUE, Integer.class).equals(min))
-            .collect(Collectors.toList());
-    Assertions.assertThat(collect.size()).isEqualTo(1);
+    Integer valueForProperty = findValueForProperty(groovyKernel, boundedIntText.VALUE, Integer.class);
+    Assertions.assertThat(valueForProperty).isEqualTo(min);
   }
 
   @Test
@@ -133,11 +122,7 @@ public class BoundedIntTextTest {
     //when
     boundedIntText.setMax(max);
     //then
-    List<Message> messages = SearchMessages
-            .getListByDataAttr(groovyKernel.getPublishedMessages(), Comm.METHOD, Comm.UPDATE);
-    List<Message> collect = messages.stream()
-            .filter(x -> getValueForProperty(x, boundedIntText.VALUE, Integer.class).equals(max))
-            .collect(Collectors.toList());
-    Assertions.assertThat(collect.size()).isEqualTo(1);
+    Integer valueForProperty = findValueForProperty(groovyKernel, boundedIntText.VALUE, Integer.class);
+    Assertions.assertThat(valueForProperty).isEqualTo(max);
   }
 }

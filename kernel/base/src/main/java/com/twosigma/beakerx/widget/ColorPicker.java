@@ -37,7 +37,7 @@ public class ColorPicker extends ValueWidget<String> {
   }
 
   @Override
-  protected HashMap<String, Object> content(HashMap<String, Object> content) {
+  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
     content.put(VALUE, this.value);
     content.put(CONCISE, this.concise);

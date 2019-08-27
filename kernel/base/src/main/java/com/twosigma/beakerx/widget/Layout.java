@@ -55,7 +55,7 @@ public class Layout extends Widget {
   }
 
   @Override
-  protected HashMap<String, Object> content(HashMap<String, Object> content) {
+  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     content.put("align_content", "");
     content.put(ALIGN_ITEMS, getAlign_items());
     content.put("align_self", "");

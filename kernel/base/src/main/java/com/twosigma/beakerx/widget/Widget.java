@@ -22,11 +22,9 @@ import com.twosigma.beakerx.message.Message;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.List;
 
 import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.DISPLAY_DATA;
-import static java.util.Arrays.asList;
 
 public abstract class Widget implements CommFunctionality, DisplayableWidget, WidgetItem {
 
@@ -69,13 +67,13 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget, Wi
   }
 
   private void openComm(Comm.Buffer buffer) {
-    comm.setData(createState());
+    comm.setData(createContent());
     addValueChangeMsgCallback();
     comm.open(buffer);
   }
 
   protected void openComm(Message parentMessage) {
-    comm.setData(createState());
+    comm.setData(createContent());
     addValueChangeMsgCallback();
     comm.open(parentMessage);
   }
@@ -106,8 +104,8 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget, Wi
     getComm().send(DISPLAY_DATA, new Comm.Data(content));
   }
 
-  protected HashMap<String, Object> createState() {
-    HashMap<String, Object> result = new HashMap<>();
+  private HashMap<String, Serializable> createContent() {
+    HashMap<String, Serializable> result = new HashMap<>();
     result.put(MODEL_MODULE, getModelModuleValue());
     result.put(VIEW_MODULE, getViewModuleValue());
     result.put(VIEW_MODULE_VERSION, getViewModuleVersion());
@@ -146,7 +144,7 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget, Wi
 
   protected abstract void addValueChangeMsgCallback();
 
-  protected abstract HashMap<String, Object> content(HashMap<String, Object> content);
+  protected abstract HashMap<String, Serializable> content(HashMap<String, Serializable> content);
 
   @Override
   public Comm getComm() {
@@ -154,24 +152,11 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget, Wi
   }
 
   public void sendUpdate(String propertyName, Object value) {
-    this.sendUpdate(asList(new ChangeItem(propertyName, value)));
+    this.comm.sendUpdate(propertyName, value);
   }
 
   public void sendUpdate(String propertyName, Object value, Message parent) {
-    this.sendUpdate(asList(new ChangeItem(propertyName, value)),parent);
-  }
-
-  public void sendUpdate(ChangeItem change) {
-    this.sendUpdate(asList(change));
-  }
-
-  public void sendUpdate(List<ChangeItem> changes) {
-    HashMap<String, Object> state = createState();
-    this.comm.sendUpdate(changes, state);
-  }
-
-  public void sendUpdate(List<ChangeItem> changes, Message parent) {
-    this.comm.sendUpdate(changes, parent);
+    this.comm.sendUpdate(propertyName, value, parent);
   }
 
   public void sendUpdate(Comm.Buffer buffer) {

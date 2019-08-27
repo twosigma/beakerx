@@ -20,7 +20,6 @@ import cellDataMock from "../mock/cellDataMock";
 import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
 import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
 import CellManager from "../../../../../src/tableDisplay/dataGrid/cell/CellManager";
-import tableDisplayWidgetMock from "../mock/tableDisplayMock";
 
 describe('CellManager', () => {
   let dataGrid;
@@ -30,7 +29,7 @@ describe('CellManager', () => {
 
   before(() => {
     dataStore = createStore(modelStateMock);
-    dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplayWidgetMock);
+    dataGrid = new BeakerXDataGrid({}, dataStore);
     cellManager = dataGrid.cellManager;
     cellSelectionManager = dataGrid.cellSelectionManager;
     cellSelectionManager.setStartCell(cellDataMock);

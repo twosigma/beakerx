@@ -66,7 +66,7 @@ public class Link extends Widget {
   }
 
   @Override
-  protected HashMap<String, Object> content(HashMap<String, Object> content) {
+  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     String [] target = { IPY_MODEL + this.target.getComm().getCommId(), target_key};
     content.put(TARGET, target);
     String [] source = { IPY_MODEL + this.source.getComm().getCommId(), source_key};

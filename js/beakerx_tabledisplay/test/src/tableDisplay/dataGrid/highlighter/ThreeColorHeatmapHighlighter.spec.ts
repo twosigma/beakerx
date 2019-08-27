@@ -26,11 +26,10 @@ import ThreeColorHeatmapHighlighter
   from "../../../../../src/tableDisplay/dataGrid/highlighter/ThreeColorHeatmapHighlighter";
 import {HIGHLIGHTER_TYPE} from "../../../../../src/tableDisplay/dataGrid/interface/IHighlighterState";
 import HeatmapHighlighter from "../../../../../src/tableDisplay/dataGrid/highlighter/HeatmapHighlighter";
-import tableDisplayWidgetMock from "../mock/tableDisplayMock";
 
 describe('ThreeColorHeatmapHighlighter', () => {
   const dataStore = createStore({ ...modelStateMock, types: ['double', 'double']});
-  const dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplayWidgetMock);
+  const dataGrid = new BeakerXDataGrid({}, dataStore);
   const column = new DataGridColumn(
     columnOptionsMock,
     dataGrid,

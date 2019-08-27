@@ -24,7 +24,6 @@ import {
   DEFAULT_GRID_BORDER_WIDTH,
   DEFAULT_GRID_PADDING, DEFAULT_ROW_HEIGHT
 } from "../../../../src/tableDisplay/dataGrid/style/dataGridStyle";
-import tableDisplayWidgetMock from "./mock/tableDisplayMock";
 
 describe('DataGridResize', () => {
   let dataGrid;
@@ -33,7 +32,7 @@ describe('DataGridResize', () => {
 
   before(() => {
     dataStore = createStore(modelStateMock);
-    dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplayWidgetMock);
+    dataGrid = new BeakerXDataGrid({}, dataStore);
     dataGridResize = dataGrid.dataGridResize;
   });
 
@@ -122,7 +121,7 @@ describe('DataGridResize', () => {
       headerFontSize: NaN,
       dataFontSize: null
     });
-    const dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplayWidgetMock);
+    const dataGrid = new BeakerXDataGrid({}, dataStore);
 
     expect(dataGrid.baseRowSize).to.equal(DEFAULT_ROW_HEIGHT);
     expect(dataGrid.baseColumnHeaderSize).to.equal(DEFAULT_ROW_HEIGHT);

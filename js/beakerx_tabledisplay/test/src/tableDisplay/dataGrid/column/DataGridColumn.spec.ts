@@ -24,7 +24,6 @@ import ColumnMenu from "../../../../../src/tableDisplay/dataGrid/headerMenu/Colu
 import {ALIGNMENTS_BY_CHAR} from "../../../../../src/tableDisplay/dataGrid/column/columnAlignment";
 import {ALL_TYPES} from "../../../../../src/tableDisplay/dataGrid/dataTypes";
 import IndexMenu from "../../../../../src/tableDisplay/dataGrid/headerMenu/IndexMenu";
-import tableDisplayWidgetMock from "../mock/tableDisplayMock";
 
 describe('DataGridColumn', () => {
   const dataStore = createStore({
@@ -33,7 +32,7 @@ describe('DataGridColumn', () => {
     values: [[null, 1, 3], [2, null, NaN]],
     columnNames: ['test', 'column', 'columnNan']
   });
-  const dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplayWidgetMock);
+  const dataGrid = new BeakerXDataGrid({}, dataStore);
   const columnManager = dataGrid.columnManager;
 
   describe('DataGridColumn.type === "body"', () => {

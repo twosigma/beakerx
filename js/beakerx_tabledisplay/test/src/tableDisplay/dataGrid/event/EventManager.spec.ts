@@ -21,7 +21,6 @@ import modelStateMock from "../mock/modelStateMock";
 import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
 import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
 import EventManager from "../../../../../src/tableDisplay/dataGrid/event/EventManager";
-import tableDisplayWidgetMock from "../mock/tableDisplayMock";
 
 describe('EventManager', () => {
   let dataGrid;
@@ -30,7 +29,7 @@ describe('EventManager', () => {
 
   before(() => {
     dataStore = createStore(modelStateMock);
-    dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplayWidgetMock);
+    dataGrid = new BeakerXDataGrid({}, dataStore);
     eventManager = dataGrid.eventManager;
   });
 

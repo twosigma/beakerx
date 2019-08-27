@@ -37,7 +37,7 @@ public class ToggleButton extends BoolWidget {
   }
 
   @Override
-  protected HashMap<String, Object> content(HashMap<String, Object> content) {
+  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
     content.put(TOOLTIP, this.tooltip);
     content.put(BUTTON_STYLE, button_style);

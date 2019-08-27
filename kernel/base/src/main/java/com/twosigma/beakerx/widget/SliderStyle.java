@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.widget;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 public class SliderStyle extends DescriptionStyle {
@@ -38,7 +39,7 @@ public class SliderStyle extends DescriptionStyle {
   }
 
   @Override
-  protected HashMap<String, Object> content(HashMap<String, Object> content) {
+  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     content.put("handle_color", handle_color);
     return content;
   }

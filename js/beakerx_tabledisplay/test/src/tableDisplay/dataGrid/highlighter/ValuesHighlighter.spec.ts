@@ -24,11 +24,10 @@ import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXD
 import DataGridColumn from "../../../../../src/tableDisplay/dataGrid/column/DataGridColumn";
 import ValueHighlighter from "../../../../../src/tableDisplay/dataGrid/highlighter/ValueHighlighter";
 import {HIGHLIGHTER_TYPE} from "../../../../../src/tableDisplay/dataGrid/interface/IHighlighterState";
-import tableDisplayWidgetMock from "../mock/tableDisplayMock";
 
 describe('ValueHighlighter', () => {
   const dataStore = createStore(modelStateMock);
-  const dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplayWidgetMock);
+  const dataGrid = new BeakerXDataGrid({}, dataStore);
   const column = new DataGridColumn(
     columnOptionsMock,
     dataGrid,

@@ -42,7 +42,7 @@ public class IntProgress extends BoundedIntWidget{
   }
 
   @Override
-  protected HashMap<String, Object> content(HashMap<String, Object> content) {
+  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
     content.put(ORIENTATION, this.orientation);
     content.put(BAR_STYLE, this.barStyle.getValue());

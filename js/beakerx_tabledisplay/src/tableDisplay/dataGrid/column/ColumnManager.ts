@@ -241,11 +241,6 @@ export default class ColumnManager {
     this.bodyColumns.forEach(column => column.resetState());
   }
 
-  restoreColumnStates() {
-    this.indexColumns.forEach(column => column.restoreState());
-    this.bodyColumns.forEach(column => column.restoreState());
-  }
-
   setColumnsDataTypePrecission(precission: number) {
     this.indexColumns.forEach(column => column.setDataTypePrecission(precission));
     this.bodyColumns.forEach(column => column.setDataTypePrecission(precission));

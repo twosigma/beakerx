@@ -47,7 +47,6 @@ import {DataGridResize} from "./DataGridResize";
 import {ALL_TYPES} from "./dataTypes";
 import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
 import CommonUtils from "beakerx_shared/lib/utils/CommonUtils";
-import {TableDisplayWidget} from "../../TableDisplay";
 
 declare global {
   interface Window {
@@ -76,14 +75,13 @@ export class BeakerXDataGrid extends DataGrid {
   canvasGC: GraphicsContext;
   focused: boolean;
   wrapperId: string;
-  tableDisplayView: TableDisplayWidget;
 
   cellHovered = new Signal<this, { data: ICellData|null, event: MouseEvent }>(this);
   commSignal = new Signal<this, {}>(this);
 
   static FOCUS_CSS_CLASS = 'bko-focused';
 
-  constructor(options: DataGrid.IOptions, dataStore: BeakerXDataStore, tableDisplayView: TableDisplayWidget) {
+  constructor(options: DataGrid.IOptions, dataStore: BeakerXDataStore) {
     super(options);
 
     //this is hack to use private DataGrid properties
@@ -93,7 +91,7 @@ export class BeakerXDataGrid extends DataGrid {
     this.rowSections = this['_rowSections'];
     this.columnSections = this['_columnSections'];
     this.canvasGC = this['_canvasGC'];
-    this.tableDisplayView = tableDisplayView;
+
     this.resize = throttle(this.resize, 150, this);
     this.init(dataStore);
   }
@@ -122,13 +120,6 @@ export class BeakerXDataGrid extends DataGrid {
     this.addCellRenderers();
 
     this.columnManager.createColumnMenus();
-  }
-
-  scrollTo(x: number, y: number): void {
-    super.scrollTo(x, y);
-    if(this.tableDisplayView.canLoadMore() && this.maxScrollY<=y ){
-      this.tableDisplayView.loadMoreRows();
-    }
   }
 
   getColumn(config: CellRenderer.ICellConfig): DataGridColumn {
@@ -160,12 +151,6 @@ export class BeakerXDataGrid extends DataGrid {
     this.columnManager.recalculateMinMaxValues();
     this.dataGridResize.setInitialSize();
     this.addHighlighterManager();
-  }
-
-  updateModelValues(state: IDataModelState) {
-    this.model.updateValues(state);
-    this.columnManager.recalculateMinMaxValues();
-    this.dataGridResize.setInitialSize();
   }
 
   setWrapperId(id: string) {

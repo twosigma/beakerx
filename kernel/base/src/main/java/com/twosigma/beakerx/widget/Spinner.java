@@ -41,7 +41,7 @@ public class Spinner extends DOMWidget {
   }
 
   @Override
-  protected HashMap<String, Object> content(HashMap<String, Object> content) {
+  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
     if (title != null) {
       content.put("title", title);

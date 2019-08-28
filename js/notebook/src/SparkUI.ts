@@ -233,6 +233,7 @@ export class SparkUIView extends widgets.VBoxView {
     return new Promise<any[]>((resolve, reject) => {
       if (!view || !view.children_views) {
         reject();
+        return;
       }
 
       view.children_views.update(view.model.get('children'))

@@ -77,10 +77,7 @@ describe('Testing of table Actions ', function () {
     it('Should display table ', function () {
       cellIndex = 0;
       var width = 200, height = 100;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      beakerxPO.runCodeCellByIndex(cellIndex);
-      browser.pause(2000);
-      var canvas = codeCell.$('canvas');
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell1_case1.png');
     });

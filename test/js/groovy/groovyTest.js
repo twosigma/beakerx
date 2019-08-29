@@ -130,7 +130,7 @@ describe('Groovy base tests. ', function () {
 
   describe('Display array as table. ', function () {
     it('Output contains table. ', function () {
-      cellIndex += 2;
+      cellIndex += 4;
       var fileName = 'cell11_case1.png';
       var width = 90, height = 43;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);

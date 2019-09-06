@@ -76,7 +76,8 @@ describe('(Groovy) Output Containers ', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       output = beakerxPO.getAllOutputsWidget(codeCell)[0];
       browser.waitUntil(function(){
-        return (output.$$('div.widget-tab-contents').length > 0);
+        return (output.$$('div.widget-tab-contents').length > 0)
+          && (output.$$('div.p-TabBar-tabLabel').length > 0);
       });
       plotWidgets =  output.$('div.widget-tab-contents').$$('div.dtcontainer');
       expect(plotWidgets.length).toBe(3);

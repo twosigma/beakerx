@@ -39,7 +39,7 @@ describe('Autotranslation Pandas', function () {
       browser.pause(1000);
       cellIndex += 1;
       var width = 600, height = 90;
-      beakerxPO.runCodeCellByIndex(cellIndex);
+
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell1_case1.png');

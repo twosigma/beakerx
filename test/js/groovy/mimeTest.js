@@ -45,16 +45,16 @@ describe('(Groovy) Testing of MIME types', function () {
     beakerxPO.clickCellAllOutputClear();
   }
 
-  describe('(Groovy) Display MIME types ', function () {
-    var testValues = {
-      headerText: /Hello, world!/,
-      markdownTestValue: /It's very easy to do bold and italics:/,
-      markdownBoldValue: /bold/,
-      markdownItalicsValue: /italics/,
-      mathematicalFormula: /F\(k\)=∫f\(x\)2eπikdx/,
-      groovyFileName: /GroovyTest.ipynb/
-    };
+  var testValues = {
+    headerText: /Hello, world!/,
+    markdownTestValue: /It's very easy to do bold and italics:/,
+    markdownBoldValue: /bold/,
+    markdownItalicsValue: /italics/,
+    mathematicalFormula: /F\(k\)=∫f\(x\)2eπikdx/,
+    groovyFileName: /GroovyTest.ipynb/
+  };
 
+  describe('(Groovy) Display MIME types ', function () {
     it('(IFrame) Cell displays an iFrame ', function () {
       cellIndex = 0;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
@@ -90,6 +90,9 @@ describe('(Groovy) Testing of MIME types', function () {
     it('(Latex) Cell outputs mathematical symbols ', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      browser.waitUntil(function(){
+        return codeCell.$$('span.mrow').length > 0;
+      });
       var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText();
       expect(result.charCodeAt(1).toString(16)).toEqual('defc');
       expect(result.charCodeAt(2).toString(16)).toEqual('2b');
@@ -124,7 +127,9 @@ describe('(Groovy) Testing of MIME types', function () {
     it('(MIMEContainer) Cell outputs mathematical symbols ', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      browser.pause(1000);
+      browser.waitUntil(function(){
+        return codeCell.$$('span.mrow').length > 0;
+      });
       var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText();
       expect(result.charCodeAt(1).toString(16)).toEqual('defc');
       expect(result.charCodeAt(2).toString(16)).toEqual('2b');
@@ -199,6 +204,7 @@ describe('(Groovy) Testing of MIME types', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var result = getAndWaitHtmlType(codeCell, 0);
       expect(result.$('iframe[src="https://www.scribd.com/embeds/71048089/content?start_page=5&view_mode=slideshow"]').isEnabled()).toBeTruthy();
+      cleanCellOutput(cellIndex);
     });
   });
 

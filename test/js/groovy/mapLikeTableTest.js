@@ -117,7 +117,6 @@ describe('(Groovy) Testing Map Like Tables', function () {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, fileName);
-      // beakerxPO.createTableImage(imageData, imageDir, fileName);
     });
 
     it('Links are rendered correctly ', function () {

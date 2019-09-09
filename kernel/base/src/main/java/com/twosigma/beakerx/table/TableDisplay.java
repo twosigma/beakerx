@@ -157,6 +157,12 @@ public class TableDisplay extends BeakerxWidget {
     openComm();
     this.model.initValues();
   }
+  public TableDisplay(Stream<Map<String, Object>> v, BeakerObjectConverter serializer, Message message) {
+    super();
+    this.model = new TableDisplayMapModel(v, serializer);
+    openComm(message);
+    this.model.initValues();
+  }
 
   public TableDisplay(Stream<Map<String, Object>> v) {
     this(v, new BasicObjectSerializer());
@@ -170,8 +176,16 @@ public class TableDisplay extends BeakerxWidget {
     this(new ArrayList<>(Arrays.asList(v)), new BasicObjectSerializer());
   }
 
+  public TableDisplay(Map<String, Object>[] v, Message message) {
+    this(new ArrayList<>(Arrays.asList(v)), new BasicObjectSerializer(), message);
+  }
+
   public TableDisplay(Collection<Map<String, Object>> v, BeakerObjectConverter serializer) {
     this(v.stream(), serializer);
+  }
+
+  public TableDisplay(Collection<Map<String, Object>> v, BeakerObjectConverter serializer, Message message) {
+    this(v.stream(), serializer, message);
   }
 
   public TableDisplay(int rowCount, int columnCount, List<String> columnNames, Element element) {
@@ -181,7 +195,12 @@ public class TableDisplay extends BeakerxWidget {
   @Override
   protected void addValueChangeMsgCallback() {
     getComm().addMsgCallbackList(new ValueChangeMsgCallbackHandler(() -> setLoadMoreRows("loadMoreServerDone")));
-    getComm().addMsgCallbackList(new StateRequestMsgCallbackHandler(this::sendModel));
+  }
+
+  @Override
+  public void stateRequestHandler() {
+    super.stateRequestHandler();
+    sendModel();
   }
 
   @Override

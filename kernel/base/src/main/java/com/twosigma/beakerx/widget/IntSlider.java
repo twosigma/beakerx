@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.widget;
 
-import java.io.Serializable;
 import java.util.HashMap;
 
 /**

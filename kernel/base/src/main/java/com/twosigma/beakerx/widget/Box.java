@@ -35,6 +35,7 @@ public abstract class Box extends ValueWidget<String> {
   public static final String MODEL_NAME_VALUE = "BoxModel";
 
   private List<Widget> children;
+  private String boxStyle="";
 
   public Box(List<Widget> children) {
     super();
@@ -54,6 +55,7 @@ public abstract class Box extends ValueWidget<String> {
   protected HashMap<String, Object> content(HashMap<String, Object> content) {
     List<String> commIds = comIds();
     content.put(CHILDREN, commIds.toArray());
+    content.put("box_style",boxStyle);
     super.content(content);
     return content;
   }

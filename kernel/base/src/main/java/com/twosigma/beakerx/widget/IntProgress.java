@@ -33,11 +33,13 @@ public class IntProgress extends BoundedIntWidget{
 
   public IntProgress(Integer min, Integer max, Integer step) {
     super(min, max, step);
+    this.style = new ProgressStyle();
     openComm();
   }
 
   public IntProgress() {
     super();
+    this.style = new ProgressStyle();
     openComm();
   }
 

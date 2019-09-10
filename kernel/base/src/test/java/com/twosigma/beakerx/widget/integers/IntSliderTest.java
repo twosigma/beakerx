@@ -15,8 +15,12 @@
  */
 package com.twosigma.beakerx.widget.integers;
 
+import com.twosigma.beakerx.jupyter.SearchMessages;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.BoundedFloatText;
 import com.twosigma.beakerx.widget.BoundedIntWidget;
 import com.twosigma.beakerx.widget.IntSlider;
 import com.twosigma.beakerx.widget.Layout;
@@ -27,9 +31,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
+import static com.twosigma.beakerx.widget.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyMsgForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsg;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class IntSliderTest {
 
@@ -132,7 +139,10 @@ public class IntSliderTest {
     //when
     intSlider.setMin(10);
     //then
-    verifyMsgForProperty(groovyKernel, BoundedIntWidget.MIN, 10);
+    List<Message> messages = SearchMessages
+            .getListByDataAttr(groovyKernel.getPublishedMessages(), Comm.METHOD, Comm.UPDATE);
+    assertThat(getValueForProperty(messages.get(0), BoundedFloatText.VALUE, Integer.class).equals(10));
+    assertThat(getValueForProperty(messages.get(1), BoundedFloatText.MIN, Integer.class).equals(10));
   }
 
   @Test

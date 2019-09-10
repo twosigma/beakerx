@@ -270,8 +270,8 @@ public class Comm {
     return this.create(JupyterMessages.STREAM, Buffer.EMPTY, content);
   }
 
-  public void sendUpdate(List<ChangeItem> changes, HashMap<String, Object> state) {
-    Message message = createUpdateMessage(changes, state);
+  public void sendUpdate(List<ChangeItem> changes) {
+    Message message = createUpdateMessage(changes, new HashMap<>());
     kernel.publish(singletonList(message));
   }
 

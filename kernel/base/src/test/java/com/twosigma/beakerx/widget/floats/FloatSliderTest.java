@@ -15,8 +15,8 @@
  */
 package com.twosigma.beakerx.widget.floats;
 
-import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.widget.BoundedFloatWidget;
 import com.twosigma.beakerx.widget.FloatSlider;
 import org.assertj.core.api.Assertions;
@@ -26,6 +26,7 @@ import org.junit.Test;
 
 import java.security.NoSuchAlgorithmException;
 
+import static com.twosigma.beakerx.widget.TestWidgetUtils.findValueForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyMsgForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsg;
 
@@ -90,7 +91,8 @@ public class FloatSliderTest {
     //when
     floatSlider.setMin(10.2);
     //then
-    verifyMsgForProperty(groovyKernel, BoundedFloatWidget.MIN, 10.2);
+    Double valueMin = findValueForProperty(groovyKernel, BoundedFloatWidget.MIN, Double.class);
+    Assertions.assertThat(valueMin).isEqualTo(10.2);
   }
 
   @Test

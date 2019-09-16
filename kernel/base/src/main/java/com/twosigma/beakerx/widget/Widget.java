@@ -166,8 +166,7 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget, Wi
   }
 
   public void sendUpdate(List<ChangeItem> changes) {
-    HashMap<String, Object> state = createState();
-    this.comm.sendUpdate(changes, state);
+    this.comm.sendUpdate(changes);
   }
 
   public void sendUpdate(List<ChangeItem> changes, Message parent) {

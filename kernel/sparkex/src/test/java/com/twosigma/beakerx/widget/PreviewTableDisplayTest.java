@@ -51,7 +51,7 @@ public class PreviewTableDisplayTest {
   }
 
   @Test
-  public void previewShouldHaveParentHeaderFromParentMessage() throws Exception {
+  public void previewShouldNotHaveParentHeaderFromParentMessage() throws Exception {
     //given
     Message parentMessage = commMsg();
     kernel.clearMessages();
@@ -59,6 +59,6 @@ public class PreviewTableDisplayTest {
     button.onClick(new HashMap(), parentMessage);
     //then
     Optional<Message> message = EvaluatorResultTestWatcher.waitForDisplayDataMessage(kernel);
-    assertThat(message.get().getParentHeader()).isEqualTo(parentMessage.getHeader());
+    assertThat(message.get().getParentHeader()).isNotEqualTo(parentMessage.getHeader());
   }
 }

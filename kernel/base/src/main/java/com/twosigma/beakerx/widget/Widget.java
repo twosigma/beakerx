@@ -19,6 +19,7 @@ import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.table.handlers.StateRequestMsgCallbackHandler;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -57,11 +58,13 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget, Wi
   public static final String INDEX = "index";
 
   private Comm comm;
-  private WidgetDisplayMethodManager displayMethodManager;
 
   public Widget() {
     comm = new Comm(TargetNamesEnum.JUPYTER_WIDGET);
-    displayMethodManager = WidgetDisplayMethodManager.getInstance();
+    getComm().addMsgCallbackList(new StateRequestMsgCallbackHandler(this::stateRequestHandler));
+  }
+
+  public void stateRequestHandler(){
   }
 
   protected void openComm() {
@@ -88,7 +91,8 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget, Wi
 
   @Override
   public void display() {
-    displayMethodManager.display(this);
+    beforeDisplay();
+    sendDisplay();
   }
 
   protected void beforeDisplay() {

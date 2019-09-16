@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2019 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,20 +17,20 @@ package com.twosigma.beakerx.widget;
 
 import java.util.HashMap;
 
-public class DescriptionStyle extends Style {
+public class ButtonStyle extends DescriptionStyle {
 
-  public static final String MODEL_NAME_VALUE = "DescriptionStyleModel";
-  public static final String MODEL_MODULE_VALUE = "@jupyter-widgets/controls";
+  public static final String MODEL_NAME_VALUE = "ButtonStyleModel";
+  private String buttonColor=null;
+  private String fontWeight="";
 
-  private String descriptionWidth = "";
+  public ButtonStyle() {
+    super();
+    openComm();
+  }
 
   @Override
   public String getModelNameValue() {
     return MODEL_NAME_VALUE;
-  }
-  @Override
-  public String getModelModuleValue(){
-    return MODEL_MODULE_VALUE;
   }
 
   @Override
@@ -39,8 +39,8 @@ public class DescriptionStyle extends Style {
 
   @Override
   protected HashMap<String, Object> content(HashMap<String, Object> content) {
-    content.put("description_width", descriptionWidth);
+    content.put("font_weight", fontWeight);
+    content.put("button_color", buttonColor);
     return content;
   }
-
 }

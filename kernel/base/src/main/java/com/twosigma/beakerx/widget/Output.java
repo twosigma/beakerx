@@ -87,7 +87,16 @@ public class Output extends DOMWidget {
   }
 
   @Override
+  public void stateRequestHandler() {
+    super.stateRequestHandler();
+    clearOutput();
+  }
+
+  @Override
   public void updateValue(Object value) {
+    List<Message> list = new ArrayList<>();
+    list.add(getComm().createUpdateMessage(asList(new ChangeItem(MSG_ID, "")),new HashMap<>()));
+    getComm().publish(list);
   }
 
   public void sendStdout(String text) {
@@ -108,11 +117,16 @@ public class Output extends DOMWidget {
 
   private synchronized void send(boolean isError, String text) {
     List<Message> list = new ArrayList<>();
-    HashMap<String, Object> state = createState();
-    list.add(getComm().createUpdateMessage(asList(new ChangeItem(MSG_ID, getComm().getParentMessage().getHeader().getId())), state));
+    list.add(getComm().createUpdateMessage(asList(new ChangeItem(MSG_ID, getComm().getParentMessage().getHeader().getId())), new HashMap<>()));
     Map<String, Serializable> asMap = addOutput(isError, text);
     list.add(getComm().createOutputContent(asMap));
-    list.add(getComm().createUpdateMessage(asList(new ChangeItem(MSG_ID, "")), state));
+    getComm().publish(list);
+  }
+
+  private void display(HashMap<String, Serializable> content) {
+    List<Message> list = new ArrayList<>();
+    list.add(getComm().createUpdateMessage(asList(new ChangeItem(MSG_ID, getComm().getParentMessage().getHeader().getId())), new HashMap<>()));
+    list.add(getComm().createMessage(DISPLAY_DATA, Comm.Buffer.EMPTY, new Comm.Data(content)));
     getComm().publish(list);
   }
 
@@ -145,6 +159,10 @@ public class Output extends DOMWidget {
     mimeContainers.forEach(this::display);
   }
 
+  public void displayWidgets(List<Widget> widgets) {
+    widgets.forEach(this::display);
+  }
+
   public void display(Widget widget) {
     widget.beforeDisplay();
     HashMap<String, Serializable> content = new HashMap<>();
@@ -152,15 +170,6 @@ public class Output extends DOMWidget {
     vendor.put(MODEL_ID, widget.getComm().getCommId());
     content.put(APPLICATION_VND_JUPYTER_WIDGET_VIEW_JSON, vendor);
     display(content);
-  }
-
-  private void display(HashMap<String, Serializable> content) {
-    List<Message> list = new ArrayList<>();
-    HashMap<String, Object> state = createState();
-    list.add(getComm().createUpdateMessage(asList(new ChangeItem(MSG_ID, getComm().getParentMessage().getHeader().getId())), state));
-    list.add(getComm().createMessage(DISPLAY_DATA, Comm.Buffer.EMPTY, new Comm.Data(content)));
-    list.add(getComm().createUpdateMessage(asList(new ChangeItem(MSG_ID, "")),state));
-    getComm().publish(list);
   }
 
   @Override

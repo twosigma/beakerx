@@ -17,7 +17,6 @@ package com.twosigma.beakerx.table.handlers;
 
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.table.TableDisplay;
 
 import java.util.Map;
 
@@ -30,7 +29,7 @@ public class StateRequestMsgCallbackHandler implements Handler<Message> {
 
   @Override
   public void handle(Message message) {
-    if (message.getContent().containsKey("data")) {
+    if (message.getContent()!= null && message.getContent().containsKey("data")) {
       Map data = (Map) message.getContent().get("data");
       if (data.containsKey("method")) {
         String method = (String) data.get("method");

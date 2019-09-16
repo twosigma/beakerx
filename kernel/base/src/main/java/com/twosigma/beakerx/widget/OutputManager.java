@@ -127,14 +127,6 @@ public final class OutputManager {
     return null;
   }
 
-  static void changeWidgetDisplayMethodStrategy(Widget.WidgetDisplayMethodStrategy displayMethodStrategy) {
-    instance.widgetDisplayMethodManager.defineDisplayMethod(displayMethodStrategy);
-  }
-
-  static void changeMIMEDisplayMethodStrategy(Display.MIMEContainerDisplayMethodStrategy displayMethodStrategy) {
-    instance.mimeDisplayMethodManager.defineDisplayMethod(displayMethodStrategy);
-  }
-
   static class WidgetDisplayMethodStrategy implements Widget.WidgetDisplayMethodStrategy {
     @Override
     public void display(Widget widget) {

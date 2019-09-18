@@ -78,20 +78,20 @@ public class GroovyEvaluatorProgressReportingTest {
   }
 
   private void verifyProgressReporting(List<Message> messages) {
-    assertThat(messages.size()).isEqualTo(14);
+    assertThat(messages.size()).isEqualTo(15);
     Message layout = messages.get(0);
-    Message intProgress = messages.get(1);
+    Message intProgress = messages.get(2);
     verifyOpenCommMsg(asList(layout, intProgress), IntProgress.MODEL_NAME_VALUE, IntProgress.VIEW_NAME_VALUE);
 
-    verifyDisplayMsg(messages.get(2));
+    verifyDisplayMsg(messages.get(3));
 
-    verifyUpdate(messages.get(3), messages.get(4), 0);
-    verifyUpdate(messages.get(5), messages.get(6), 1);
-    verifyUpdate(messages.get(7), messages.get(8), 2);
-    verifyUpdate(messages.get(9), messages.get(10), 3);
-    verifyUpdate(messages.get(11), messages.get(12), 4);
+    verifyUpdate(messages.get(4), messages.get(5), 0);
+    verifyUpdate(messages.get(6), messages.get(7), 1);
+    verifyUpdate(messages.get(8), messages.get(9), 2);
+    verifyUpdate(messages.get(10), messages.get(11), 3);
+    verifyUpdate(messages.get(12), messages.get(13), 4);
 
-    Message closeMessage = messages.get(13);
+    Message closeMessage = messages.get(14);
     verifyTypeMsg(closeMessage, COMM_CLOSE);
   }
 

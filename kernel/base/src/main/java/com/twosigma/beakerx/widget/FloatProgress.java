@@ -52,6 +52,7 @@ public class FloatProgress extends BoundedFloatWidget {
 
   public FloatProgress() {
     super();
+    this.style = new ProgressStyle();
     openComm();
   }
 

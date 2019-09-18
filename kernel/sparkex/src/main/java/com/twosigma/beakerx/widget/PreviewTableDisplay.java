@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.widget;
 
-import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.table.TableDisplay;
 
 import java.util.Collection;
@@ -28,17 +27,17 @@ public class PreviewTableDisplay {
 
   public static final String PREVIEW = "Preview";
   public static int ROWS = 10;
-  private VBox panel;
+  private final List<Widget> previewContent;
+  private Output panel;
   private Collection<Map<String, Object>> preview;
   private Rows allRows;
-  private List<Widget> previewContent;
-  private List<Widget> rowsContent;
 
   public PreviewTableDisplay(Collection<Map<String, Object>> previewRows, Rows allRows, Button button) {
     this.allRows = allRows;
     this.preview = previewRows;
     this.previewContent = asList(configureShowRowsButton(button), new TableDisplay(this.preview));
-    this.panel = new VBox(previewContent);
+    this.panel = new Output();
+    this.panel.display();
   }
 
   public PreviewTableDisplay(Collection<Map<String, Object>> previewRows, Rows allRows) {
@@ -48,27 +47,18 @@ public class PreviewTableDisplay {
   private Button configureShowRowsButton(Button button) {
     button.setDescription(PREVIEW + " " + ROWS + " Rows");
     button.registerOnClick((content, message) -> {
-      if (this.rowsContent == null) {
-        TableDisplay tableDisplay = new TableDisplay(allRows.get(ROWS + 1));
-        tableDisplay.ROWS_LIMIT = ROWS;
-        tableDisplay.ROW_LIMIT_TO_INDEX = ROWS;
-        tableDisplay.setRowLimitMsg(String.format("Note: materializing a %s row preview of a Spark RDD", ROWS));
-        this.rowsContent = asList(tableDisplay);
-      }
-      changeContent(this.rowsContent, message);
+      TableDisplay tableDisplay = new TableDisplay(allRows.get(ROWS + 1));
+      tableDisplay.ROWS_LIMIT = ROWS;
+      tableDisplay.ROW_LIMIT_TO_INDEX = ROWS;
+      tableDisplay.setRowLimitMsg(String.format("Note: materializing a %s row preview of a Spark RDD", ROWS));
+      panel.clearOutput();
+      panel.display(tableDisplay);
     });
     return button;
   }
 
-  private void changeContent(List<Widget> content, Message message) {
-    panel.getLayout().setDisplayNone();
-    panel.close();
-    panel = new VBox(content, message);
-    panel.display();
-  }
-
   public void display() {
-    this.panel.display();
+    this.panel.displayWidgets(previewContent);
   }
 
   public interface Rows {

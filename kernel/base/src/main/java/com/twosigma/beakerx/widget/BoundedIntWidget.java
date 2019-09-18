@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.widget;
 
-import java.io.Serializable;
 import java.util.HashMap;
 
 /**
@@ -79,10 +78,10 @@ public abstract class BoundedIntWidget extends IntWidget<Integer> {
 
   public void setMax(Object max) {
     this.max = getInteger(max);
-    sendUpdate(MAX, max);
     if (value > getMax()) {
       setValue(getMax());
     }
+    sendUpdate(MAX, max);
   }
 
   public Integer getMin() {
@@ -91,10 +90,10 @@ public abstract class BoundedIntWidget extends IntWidget<Integer> {
 
   public void setMin(Object min) {
     this.min = getInteger(min);
-    sendUpdate(MIN, min);
     if (value < getMin()) {
       setValue(getMin());
     }
+    sendUpdate(MIN, min);
   }
 
 }

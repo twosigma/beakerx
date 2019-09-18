@@ -15,8 +15,6 @@
  */
 package com.twosigma.beakerx.widget;
 
-import com.twosigma.beakerx.widget.Widget;
-
 public abstract class Style extends Widget {
 
   public static final String VIEW_NAME_VALUE = "StyleView";

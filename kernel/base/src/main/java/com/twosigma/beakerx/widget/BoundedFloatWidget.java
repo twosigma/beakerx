@@ -67,10 +67,10 @@ public abstract class BoundedFloatWidget extends FloatWidget<Double> {
 
   public void setMax(Object max) {
     this.max = getDouble(max);
-    sendUpdate(MAX, max);
     if (value > getMax()) {
       setValue(getMax());
     }
+    sendUpdate(MAX, max);
   }
 
   public Double getMin() {
@@ -79,10 +79,10 @@ public abstract class BoundedFloatWidget extends FloatWidget<Double> {
 
   public void setMin(Object min) {
     this.min = getDouble(min);
-    sendUpdate(MIN, min);
     if (value < getMin()) {
       setValue(getMin());
     }
+    sendUpdate(MIN, min);
   }
 
 }

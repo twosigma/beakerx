@@ -40,6 +40,7 @@ public class RESTButton extends ValueWidget<Boolean> {
   public RESTButton(String url) {
     super();
     this.url = url;
+    this.style = new ButtonStyle();
     openComm();
   }
 

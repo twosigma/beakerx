@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.scala.table
 
 import java.util
-import java.util.{Spliterator, Spliterators}
+import java.util.{List, Spliterator, Spliterators}
 import java.util.concurrent.TimeUnit
 import java.util.stream.StreamSupport
 
@@ -170,4 +170,9 @@ class TableDisplay private(tableDisplay: com.twosigma.beakerx.table.TableDisplay
   def setRowFilter(rowFilter: RowFilter) = tableDisplay.setRowFilter(rowFilter)
 
   def addContextMenuItem(itemName: String, contextMenuAction: ContextMenuAction) = tableDisplay.addContextMenuItem(itemName, contextMenuAction)
+
+  def removeAllCellHighlighters()= tableDisplay.removeAllCellHighlighters()
+
+  def getCellHighlighters() = tableDisplay.getCellHighlighters()
+
 }

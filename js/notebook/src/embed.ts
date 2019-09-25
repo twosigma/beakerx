@@ -32,3 +32,5 @@ export const PlotApi = require('./plot/plotApi');
 export const bkCoreManager = require('beakerx_shared/lib/bk/bkCoreManager').default;
 
 export const version = require('../package.json').version;
+
+export const BeakerXApi = require('beakerx_shared/lib/api/BeakerXApi').default;

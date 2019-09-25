@@ -22,10 +22,9 @@ import com.twosigma.beakerx.util.BeakerXSystem;
 
 public class QueryParser {
   // Defaults to true -- deletes the LineComment
-  static String rd = BeakerXSystem.getenv("REMOVE_DASH_LINECOMMENT"); 
-  // Defaults to true -- deletes the LineComment
+  String rd = BeakerXSystem.getenv("REMOVE_DASH_LINECOMMENT"); 
   // In case the ENV var was not set
-  static private boolean REMOVE_DASH_LINECOMMENT = (rd==null) || (rd.equals("true"));
+  private boolean REMOVE_DASH_LINECOMMENT = (rd==null) || (rd.equals("true"));
 
   private static final List<ParsingState> PARSING_STATES = Arrays.asList(
       new ParsingState("'", "'", false), // string literal

@@ -65,6 +65,7 @@ RUN conda install -y -n beakerx -c conda-forge jupyterhub jupyterlab pyzmq pytes
 ENV LANG=en_US.UTF-8
 ENV LC_CTYPE=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
+ENV REMOVE_DASH_LINECOMMENT="true"
 ENV SHELL /bin/bash
 ENV NB_UID 1000
 ENV HOME /home/$NB_USER

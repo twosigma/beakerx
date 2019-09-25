@@ -20,6 +20,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class QueryParser {
+
+  private static String rd = beakerXSystem.getenv("REMOVE_DASH_LINECOMMENT");
+  private static boolean REMOVE_DASH_LINECOMMENT = (rd==null) || (rd.equals("true"));
+
   private static final List<ParsingState> PARSING_STATES = Arrays.asList(
       new ParsingState("'", "'", false), // string literal
       new ParsingState("/*", "*/", true),
@@ -84,7 +88,7 @@ public class QueryParser {
   private static class LineCommentParsingState extends ParsingState {
 
     public LineCommentParsingState(String start) {
-      super(start, "\n", true);
+      super(start, "\n", REMOVE_DASH_LINECOMMENT);
     }
   }
 

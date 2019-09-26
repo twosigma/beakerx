@@ -15,17 +15,16 @@
  */
 
 import { Notebook } from "@jupyterlab/notebook";
-import { Kernel } from "@jupyterlab/services";
 import { JSONArray } from '@phosphor/coreutils';
 import { Cell, CodeCell, CodeCellModel } from '@jupyterlab/cells';
-import {BEAKER_GETCODECELLS} from "./comm";
+import beakerx from "./../beakerx";
+import {PageConfig} from "@jupyterlab/coreutils";
 
 export function sendJupyterCodeCells(
-  kernelInstance: Kernel.IKernelConnection,
   notebook: Notebook,
-  filter: string
+  filter: string,
+  url:string
 ): void {
-  let comm = kernelInstance.connectToComm(BEAKER_GETCODECELLS);
 
   const codeCells = <JSONArray>getCodeCellsByTag(notebook, filter)
     .map((cell: CodeCell): object => ({
@@ -34,9 +33,14 @@ export function sendJupyterCodeCells(
       })
     );
 
-  comm.open();
-  comm.send({ code_cells: codeCells });
-  comm.dispose();
+  const data: { code_cells: any , url: string } =
+  {
+     code_cells: codeCells,
+     url : url
+  };
+
+  let service = new BeakerxRestHandler();
+  service.post(data)
 }
 
 export function getCodeCellsByTag(notebook: Notebook, tag: string): Cell[] {
@@ -50,4 +54,37 @@ export function getCodeCellsByTag(notebook: Notebook, tag: string): Cell[] {
       tags && tags.length && tags.includes(tag)
     );
   });
+}
+
+export class BeakerxRestHandler {
+
+    private api: any;
+
+    constructor() {
+        this.setApi()
+    }
+
+    private setApi() {
+        let baseUrl;
+
+        if (this.api) {
+            return;
+        }
+
+        try {
+            PageConfig.getOption('pageUrl');
+            baseUrl = PageConfig.getBaseUrl();
+        } catch (e) {
+            baseUrl = `${window.location.origin}/`;
+        }
+
+        this.api = new beakerx.BeakerXApi(baseUrl);
+    }
+
+    public post(data) {
+        this.api
+            .restService(data)
+            .catch((err) => { console.log(err) });
+    }
+
 }

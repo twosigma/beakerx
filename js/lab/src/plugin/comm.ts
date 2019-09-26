@@ -41,7 +41,7 @@ const getMsgHandlers = (
     }
 
     if(state.name == "CodeCells") {
-      sendJupyterCodeCells(kernelInstance, notebook, JSON.parse(state.value));
+      sendJupyterCodeCells(notebook, JSON.parse(state.value), msg.content.data.url);
     }
 
     window.beakerx[state.name] = JSON.parse(state.value);

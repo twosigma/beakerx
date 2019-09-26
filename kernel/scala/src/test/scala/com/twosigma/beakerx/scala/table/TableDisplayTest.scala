@@ -1,4 +1,5 @@
 /*
+<<<<<<< HEAD
  * Copyright 2019 TWO SIGMA OPEN SOURCE, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +19,7 @@ package com.twosigma.beakerx.scala.table
 import com.twosigma.beakerx.KernelTest
 import com.twosigma.beakerx.chart.Color
 import com.twosigma.beakerx.scala.TestScalaEvaluator
+import com.twosigma.beakerx.scala.fileloader.CSV
 import com.twosigma.beakerx.table.highlight.{HighlightStyle, ThreeColorHeatmapHighlighter}
 import org.junit.{Before, Test}
 import org.scalatest.Matchers._
@@ -51,5 +53,14 @@ class TableDisplayTest {
 
   def generateKeyValueMap(): Map[String, Integer] = {
     Map("str1" -> 1, "str2" -> 2, "str3" -> 2)
+  }
+
+  @Test
+  def creatingTableDisplayFromCSVShouldPreserveOrder(): Unit = {
+    val tableDisplay = new TableDisplay(new CSV().readFile("src/test/resources/interest-rates-small.csv"))
+    val list = tableDisplay.getValues()
+    list.head(0) shouldEqual 8.17
+    list.head(1) shouldEqual 8.5632
+    list.head(10) shouldEqual 0.4186
   }
 }

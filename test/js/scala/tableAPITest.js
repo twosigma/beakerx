@@ -216,7 +216,7 @@ describe('Testing of table (scala) ', function () {
       codeCell.$('canvas').moveTo(55, 55);
       browser.pause(1000);
       var tooltip = beakerxPO.getDataGridTooltip();
-      expect(tooltip.getText()).toMatch(/The value is: 0.4711/);
+      expect(tooltip.getText()).toMatch(/The value is: 8.0021/);
     });
   });
 

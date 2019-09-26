@@ -22,4 +22,5 @@ export default interface IUIOptions {
   show_catalog: boolean;
   auto_save: boolean;
   use_data_grid: boolean;
+  auto_link_table_links: boolean;
 }

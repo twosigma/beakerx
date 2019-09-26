@@ -39,6 +39,7 @@ export default class BeakerXApi {
       show_catalog: false,
       auto_save: true,
       use_data_grid: true,
+      auto_link_table_links: false,
     },
     version: 2
   };

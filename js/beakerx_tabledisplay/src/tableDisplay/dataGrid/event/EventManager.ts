@@ -38,7 +38,7 @@ const COLUMN_RESIZE_AREA_WIDTH = 4;
 export default class EventManager {
   dataGrid: BeakerXDataGrid;
   store: BeakerXDataStore;
-  cellHoverControll = { timerId: undefined };
+  cellHoverControl = { timerId: undefined };
 
   constructor(dataGrid: BeakerXDataGrid) {
     this.store = dataGrid.store;
@@ -53,7 +53,7 @@ export default class EventManager {
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleScrollBarMouseUp = this.handleScrollBarMouseUp.bind(this);
-    this.handleCellHover = throttle<MouseEvent, void>(this.handleCellHover, 100, this, this.cellHoverControll);
+    this.handleCellHover = throttle<MouseEvent, void>(this.handleCellHover, 100, this, this.cellHoverControl);
     this.handleMouseMoveOutsideArea = throttle<MouseEvent, void>(this.handleMouseMoveOutsideArea, 100, this);
     this.handleWindowResize = throttle<Event, void>(this.handleWindowResize, 200, this);
 
@@ -101,7 +101,7 @@ export default class EventManager {
 
   handleMouseMoveOutsideArea(event: MouseEvent) {
     if (this.isOutsideViewport(event)) {
-      clearTimeout(this.cellHoverControll.timerId);
+      clearTimeout(this.cellHoverControl.timerId);
       this.dataGrid.cellTooltipManager.hideTooltips();
     }
 
@@ -425,7 +425,7 @@ export default class EventManager {
     setTimeout(() => {
       this.dataGrid = null;
       this.store = null;
-      this.cellHoverControll = null
+      this.cellHoverControl = null
     });
   }
 

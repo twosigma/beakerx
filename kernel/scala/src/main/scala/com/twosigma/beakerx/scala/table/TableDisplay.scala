@@ -44,7 +44,9 @@ object TableDisplay {
       override def hasNext: Boolean = iter.hasNext
       override def next(): util.Map[String, Object] ={
         val m: Map[String, Any] = iter.next()
-        m.map { case (k, v) => k -> v.asInstanceOf[Object] }.asJava
+        val stringToObject = new util.LinkedHashMap[String,Object]()
+        m.foreach{ case (k, v) => stringToObject.put(k,v.asInstanceOf[Object])}
+        stringToObject
       }
     }
     val value = Spliterators.spliteratorUnknownSize(newIter,Spliterator.NONNULL)
@@ -170,4 +172,9 @@ class TableDisplay private(tableDisplay: com.twosigma.beakerx.table.TableDisplay
   def setRowFilter(rowFilter: RowFilter) = tableDisplay.setRowFilter(rowFilter)
 
   def addContextMenuItem(itemName: String, contextMenuAction: ContextMenuAction) = tableDisplay.addContextMenuItem(itemName, contextMenuAction)
+
+  def getValues():List[List[_]] = {
+    tableDisplay.getValues.asScala.toList.map(y => y.asScala.toList)
+  }
+
 }

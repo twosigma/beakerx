@@ -148,7 +148,7 @@ export default class EventManager {
     this.dataGrid.columnPosition.dropColumn();
   }
 
-  private handleBodyClick(event: MouseEvent) {
+  private async handleBodyClick(event: MouseEvent) {
     if (this.isOverHeader(event) || this.dataGrid.columnPosition.isDragging()) {
       return;
     }
@@ -157,6 +157,12 @@ export default class EventManager {
     const hoveredCellData = this.dataGrid.cellManager.hoveredCellData;
 
     if (!cellData || !hoveredCellData || !CellManager.cellsEqual(cellData, hoveredCellData)) {
+      return;
+    }
+
+    const settings = await this.dataGrid.api.loadSettings();
+
+    if (!settings.ui_options.auto_link_table_links) {
       return;
     }
 

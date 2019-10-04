@@ -50,7 +50,7 @@ export class DataGridResize {
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.fillEmptySpaceResizeFn = this.fillEmptySpaceResizeFn.bind(this);
-    this.fitVieport = this.fitVieport.bind(this);
+    this.fitViewport = this.fitViewport.bind(this);
 
     this.installMessageHook();
   }
@@ -78,7 +78,7 @@ export class DataGridResize {
 
   updateWidgetHeight(): void {
     this.dataGrid.node.style.minHeight = `${this.getWidgetHeight()}px`;
-    this.fitVieport();
+    this.fitViewport();
   }
 
   updateWidgetWidth(): void {
@@ -90,13 +90,13 @@ export class DataGridResize {
     const width = this.dataGrid.totalWidth + spacing + vScrollWidth;
 
     if (this.resizedHorizontally && width >= this.dataGrid.node.clientWidth) {
-      this.fitVieport();
+      this.fitViewport();
 
       return;
     }
 
     this.dataGrid.node.style.width = `${width}px`;
-    this.fitVieport();
+    this.fitViewport();
   }
 
   setInitialSectionWidths(): void {
@@ -123,7 +123,7 @@ export class DataGridResize {
     this.dataGrid.columnSections['_sections'].forEach(this.fillEmptySpaceResizeFn('body', value));
     this.dataGrid.rowHeaderSections['_sections'].forEach(this.fillEmptySpaceResizeFn('row-header', value));
 
-    this.fitVieport();
+    this.fitViewport();
   }
 
   updateColumnWidth(region: ColumnRegion): Function {
@@ -205,7 +205,7 @@ export class DataGridResize {
     column.setWidth(value);
   }
 
-  fitVieport() {
+  fitViewport() {
     this.dataGrid && this.dataGrid.fit();
   }
 

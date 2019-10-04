@@ -47,7 +47,7 @@ import {DataGridResize} from "./DataGridResize";
 import {ALL_TYPES} from "./dataTypes";
 import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
 import CommonUtils from "beakerx_shared/lib/utils/CommonUtils";
-import {TableDisplayWidget} from "../../TableDisplay";
+import {TableDisplayView, TableDisplayWidget} from "../../TableDisplay";
 
 declare global {
   interface Window {
@@ -76,14 +76,14 @@ export class BeakerXDataGrid extends DataGrid {
   canvasGC: GraphicsContext;
   focused: boolean;
   wrapperId: string;
-  tableDisplayView: TableDisplayWidget;
+  tableDisplayView: TableDisplayWidget & TableDisplayView;
 
   cellHovered = new Signal<this, { data: ICellData|null, event: MouseEvent }>(this);
   commSignal = new Signal<this, {}>(this);
 
   static FOCUS_CSS_CLASS = 'bko-focused';
 
-  constructor(options: DataGrid.IOptions, dataStore: BeakerXDataStore, tableDisplayView: TableDisplayWidget) {
+  constructor(options: DataGrid.IOptions, dataStore: BeakerXDataStore, tableDisplayView: TableDisplayWidget & TableDisplayView) {
     super(options);
 
     //this is hack to use private DataGrid properties

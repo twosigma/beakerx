@@ -19,8 +19,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import com.twosigma.beakerx.util.BeakerXSystem;
+import com.twosigma.beakerx.util.BeakerXSystemImpl;
 
 public class QueryParser {
+
+  private static BeakerXSystem beakerXSystem = BeakerXSystemImpl.getINSTANCE();
 
   private static String rd = beakerXSystem.getenv("REMOVE_DASH_LINECOMMENT");
   private static boolean REMOVE_DASH_LINECOMMENT = (rd==null) || (rd.equals("true"));

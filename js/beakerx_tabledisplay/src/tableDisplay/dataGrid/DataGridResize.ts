@@ -403,7 +403,7 @@ export class DataGridResize {
         this.maxWidth = this.calculateMaxWidth(entries[0].contentRect.width);
         this.updateWidgetWidth();
       });
-      robs.observe(this.dataGrid.tableDisplayView.$el.parents('.jp-OutputArea-child')[0]);
+      robs.observe(this.dataGrid.tableDisplayView.$el.parents('.jp-OutputArea-child, .output_area')[0]);
 
     }
 
@@ -428,8 +428,8 @@ export class DataGridResize {
   }
 
   private calculateMaxWidth(width: number): number {
-    let outputEl = this.dataGrid.tableDisplayView.$el.parents('.jp-OutputArea-child');
-    let maxWidth = outputEl.width() - outputEl.find('.jp-OutputArea-prompt').width();
+    let outputEl = this.dataGrid.tableDisplayView.$el.parents('.jp-OutputArea-child, .output_area');
+    let maxWidth = outputEl.width() - outputEl.find('.jp-OutputArea-prompt, .prompt').width();
     return Math.min(width, maxWidth);
   }
 }

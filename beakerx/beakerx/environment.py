@@ -33,7 +33,8 @@ default_config = """
             "show_publication": true,
             "auto_save": true,
             "use_data_grid": true,
-            "show_catalog": false
+            "show_catalog": false,
+            "auto_link_table_links": false
         },
         "spark_options":{}
     }

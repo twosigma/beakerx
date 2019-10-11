@@ -32,13 +32,10 @@ describe('dataGridScope', () => {
   };
   const dataGridScope = new DataGridScope(scopeOptions);
 
-  // it('should fail initialization', () => {
-  //   assert.throws(
-  //     () => { new DataGridScope({ ...scopeOptions, data: {} }); },
-  //     Error,
-  //     "undefined is not iterable (cannot read property Symbol(Symbol.iterator))"
-  //   );
-  // });
+  it('should fail initialization when data empty', () => {
+    assert.throws(
+      () => { new DataGridScope({ ...scopeOptions, data: {} }); }, Error, "options.data can not be empty"  );
+  });
 
   it('should implement "render" method', () => {
     expect(dataGridScope).to.have.property('render');

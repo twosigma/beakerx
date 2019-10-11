@@ -31,9 +31,9 @@ trait ConstantBandProperties extends GraphicsProperties {
   def color_=(color: Color): Unit = setColor(color)
   def color_=(color: java.awt.Color): Unit = setColor(color)
 
-  def x: Seq[Number] = getNullableList(getX)
+  def x: Seq[Number] = getNullableList(()=> getX)
   def x_=[T : BeakerXAxis](xs: Seq[T]): Unit = setX(xs.map(BeakerXAxis[T].toObject).asJava)
 
-  def y: Seq[Number] = getNullableList(getY)
+  def y: Seq[Number] = getNullableList(()=> getY)
   def y_=[T : NumberView](ys: Seq[T]): Unit = setY((ys map (y => y: Number)).asJava)
 }

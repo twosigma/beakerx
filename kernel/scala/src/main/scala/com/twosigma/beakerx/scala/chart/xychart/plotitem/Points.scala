@@ -29,23 +29,23 @@ trait PointsProperties extends XYGraphicsProperties {
   this: com.twosigma.beakerx.chart.xychart.plotitem.Points =>
 
   def fill: Option[Boolean] = safeOption(getFill)
-  def fills = getNullableList(getFills)
+  def fills = getNullableList(()=> getFills)
   def fill_=(fill: Boolean) = setFill(fill)
   def fill_=(fills: Seq[Boolean]) = setFill(fills.map(Boolean.box).asJava)
 
   def outlineColor = Option(getOutlineColor)
-  def outlineColors = getNullableList(getOutlineColors)
+  def outlineColors = getNullableList(()=> getOutlineColors)
   def outlineColor_=(c: Color) = setOutlineColor(c)
   def outlineColor_=(c: java.awt.Color) = setOutlineColor(c)
   def outlineColor_=[T <: AnyRef : BeakerColor](cs: Seq[T]) = setOutlineColor(cs.toObjects.asJava)
 
   def shape = getShape
-  def shapes: Seq[ShapeType] = getNullableList(getShapes)
+  def shapes: Seq[ShapeType] = getNullableList(()=> getShapes)
   def shape_=(s: ShapeType) = setShape(s)
   def shape_=(ss: Seq[ShapeType]) = setShape(ss.asJava)
 
   def size = getSize
-  def sizes: Seq[Number] = getNullableList(getSizes)
+  def sizes: Seq[Number] = getNullableList(()=> getSizes)
   def size_=(s: Number) = setSize(s)
   def size_=[T : NumberView](ss: Seq[T]): Unit = setSize(ss.toNumbers.asJava)
 }

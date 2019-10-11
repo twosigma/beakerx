@@ -29,15 +29,15 @@ trait SimpleTimePlotProperties extends TimePlotProperties {
   this: com.twosigma.beakerx.chart.xychart.SimpleTimePlot =>
 
   // TODO: SimpleTimePlot has some non-trivial type for colors.  Do we care?
-  def colors: Seq[Object] = getNullableList(getColors)
+  def colors: Seq[Object] = getNullableList(()=>getColors)
   def colors_=[C <: AnyRef : BeakerColor](colors: Seq[C]): Unit = setColors(colors.toObjects.asJava)
 
-  def columns: Seq[String] = getNullableList(getColumns)
+  def columns: Seq[String] = getNullableList(()=>getColumns)
   def columns_=(columns: Seq[String]): Unit = setColumns(columns.asJava)
 
   // NOTE: in practice, the objects are actually Numbers or Dates, but
   // we would need to use something like Shapeless to express that.
-  def data: Seq[Map[String, Object]] = getNullableList(getData).map(_.asScala.toMap)
+  def data: Seq[Map[String, Object]] = getNullableList(()=>getData).map(_.asScala.toMap)
   def data_=(data: Seq[Map[String, Any]]): Unit = {
     val maps = data.map(_.mapValues(_.asInstanceOf[Object]).asJava)
     val list = maps.asJava
@@ -47,7 +47,7 @@ trait SimpleTimePlotProperties extends TimePlotProperties {
   def displayLines: Boolean = isDisplayLines
   def displayLines_=(d: Boolean): Unit = setDisplayLines(d)
 
-  def displayNames: Seq[String] = getNullableList(getDisplayNames)
+  def displayNames: Seq[String] = getNullableList(()=>getDisplayNames)
   def displayNames_=(ns: Seq[String]): Unit = setDisplayNames(ns.asJava)
 
   def displayPoints: Boolean = isDisplayPoints

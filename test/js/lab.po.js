@@ -25,9 +25,9 @@ var LabPageObject = function () {
       return browser.$$('div.p-Widget.jp-BreadCrumbs.jp-FileBrowser-crumbs').length > 0;
     });
     browser.waitUntil(function(){
-      return browser.$$('span.jp-MaterialIcon.jp-FolderIcon').length > 0;
+      return browser.$$('span[data-icon="folder"]').length > 0;
     });
-    browser.$('span.jp-MaterialIcon.jp-FolderIcon').click();
+    browser.$('span.jp-BreadCrumbs-home').click();
     browser.pause(500);
     var dirs = (shortName != null)? shortName.split('/') : url.split('/');
     var i = 0;
@@ -102,9 +102,9 @@ var LabPageObject = function () {
 
   this.clickRunCell = function () {
     browser.waitUntil(function(){
-      return browser.$('span.jp-RunIcon.jp-ToolbarButtonComponent-icon').isEnabled();
+      return browser.$$('div.jp-NotebookPanel-toolbar > div.jp-ToolbarButton').length > 1;
     });
-    var buttonRunCell = browser.$('span.jp-RunIcon.jp-ToolbarButtonComponent-icon');
+    var buttonRunCell = browser.$$('div.jp-NotebookPanel-toolbar > div.jp-ToolbarButton')[5];
     buttonRunCell.click();
     this.kernelIdleIcon.waitForEnabled();
   };

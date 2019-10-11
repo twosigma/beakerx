@@ -1,5 +1,5 @@
 /*
- *  Copyright 2019 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,24 +14,22 @@
  *  limitations under the License.
  */
 
-var BeakerXPageObject = require('../beakerx.po.js');
+var BeakerXPageObject = require('./beakerx.po.js');
 var beakerxPO;
 
-describe('Testing of table (scala) ', function () {
+function tableAPIBase() {
+
+  this.kernelName = arguments[0];
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/test/ipynb/scala/TableAPITest.ipynb');
-  }, 2);
-
-  afterAll(function () {
-    beakerxPO.closeAndHaltNotebook();
   });
 
   var cellIndex;
-  var imageDir = 'scala/tableAPI';
+  var imageDir = this.kernelName + '/tableAPI';
+  imageDir = imageDir.charAt(0).toLowerCase() + imageDir.slice(1)
 
-  describe('Set alignment provider for column ', function () {
+  describe('(' + this.kernelName + ') Set alignment provider for column ', function () {
     it('Should display formatted table ', function () {
       cellIndex = 0;
       var width = 410, height = 92;
@@ -42,7 +40,8 @@ describe('Testing of table (scala) ', function () {
     });
   });
 
-  describe('Set alignment provider for type ', function () {
+
+  describe('(' + this.kernelName + ') Set alignment provider for type ', function () {
     it('Should display formatted table ', function () {
       cellIndex += 2;
       var width = 404, height = 92;
@@ -52,7 +51,7 @@ describe('Testing of table (scala) ', function () {
     });
   });
 
-  describe('Set bar render for type ', function () {
+  describe('(' + this.kernelName + ') Set bar render for type ', function () {
     it('Should display formatted table ', function () {
       cellIndex += 2;
       var width = 650, height = 190;
@@ -62,7 +61,7 @@ describe('Testing of table (scala) ', function () {
     });
   });
 
-  describe('Set string format for times, type and column ', function () {
+  describe('(' + this.kernelName + ') Set string format for times, type and column ', function () {
     it('Should display formatted table ', function () {
       cellIndex += 2;
       var width = 500, height = 92;
@@ -72,7 +71,7 @@ describe('Testing of table (scala) ', function () {
     });
   });
 
-  describe('Set HTML format for column ', function () {
+  describe('(' + this.kernelName + ') Set HTML format for column ', function () {
     it('Should display formatted table ', function () {
       cellIndex += 2;
       var width = 180, height = 116;
@@ -82,7 +81,7 @@ describe('Testing of table (scala) ', function () {
     });
   });
 
-  describe('Set column visible ', function () {
+  describe('(' + this.kernelName + ') Set column visible ', function () {
     it('Should display formatted table ', function () {
       cellIndex += 2;
       var width = 642, height = 92;
@@ -92,7 +91,7 @@ describe('Testing of table (scala) ', function () {
     });
   });
 
-  describe('Set column order ', function () {
+  describe('(' + this.kernelName + ') Set column order ', function () {
     it('Should display formatted table ', function () {
       cellIndex += 2;
       var width = 412, height = 92;
@@ -102,7 +101,7 @@ describe('Testing of table (scala) ', function () {
     });
   });
 
-  describe('Add HeatmapHighlighter for row ', function () {
+  describe('(' + this.kernelName + ') Add HeatmapHighlighter for row ', function () {
     it('Should display formatted table ', function () {
       cellIndex += 2;
       var width = 440, height = 150;
@@ -112,7 +111,7 @@ describe('Testing of table (scala) ', function () {
     });
   });
 
-  describe('Add HeatmapHighlighter for column ', function () {
+  describe('(' + this.kernelName + ') Add HeatmapHighlighter for column ', function () {
     it('Should display formatted table ', function () {
       cellIndex += 2;
       var width = 440, height = 150;
@@ -122,7 +121,7 @@ describe('Testing of table (scala) ', function () {
     });
   });
 
-  describe('Remove all CellHighlighters ', function () {
+  describe('(' + this.kernelName + ') Remove all CellHighlighters ', function () {
     var width9 = 440, height9 = 150;
 
     it('Should display formatted table ', function () {
@@ -139,7 +138,7 @@ describe('Testing of table (scala) ', function () {
     });
   });
 
-  describe('Add HeatmapHighlighter for type ', function () {
+  describe('(' + this.kernelName + ') Add HeatmapHighlighter for type ', function () {
     it('Should display formatted table ', function () {
       cellIndex += 2;
       var width = 410, height = 92;
@@ -149,18 +148,9 @@ describe('Testing of table (scala) ', function () {
     });
   });
 
-  describe('Count of types more then number of columns ', function () {
-    it('should display java.lang.IllegalStateException', function () {
-      cellIndex += 2;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var errorOutput = beakerxPO.getAllOutputsStderr(codeCell)[0];
-      expect(errorOutput.getText()).toMatch('java.lang.IllegalStateException: The length of types should be same');
-    });
-  });
-
-  describe('Add UniqueEntriesHighlighter for row ', function () {
+  describe('(' + this.kernelName + ') Add UniqueEntriesHighlighter for row ', function () {
     it('Should display formatted table ', function() {
-      cellIndex += 1;
+      cellIndex += 2;
       var width = 480, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
@@ -168,7 +158,7 @@ describe('Testing of table (scala) ', function () {
     });
   });
 
-  describe('Add UniqueEntriesHighlighter for column ', function () {
+  describe('(' + this.kernelName + ') Add UniqueEntriesHighlighter for column ', function () {
     it('Should display formatted table ', function() {
       cellIndex += 2;
       var width = 250, height = 192;
@@ -178,7 +168,7 @@ describe('Testing of table (scala) ', function () {
     });
   });
 
-  describe('Add Font size ', function () {
+  describe('(' + this.kernelName + ') Add Font size ', function () {
     it('Should display formatted table ', function() {
       cellIndex += 2;
       var width = 450, height = 92;
@@ -188,7 +178,7 @@ describe('Testing of table (scala) ', function () {
     });
   });
 
-  describe('Set headers as vertical ', function () {
+  describe('(' + this.kernelName + ') Set headers as vertical ', function () {
     it('Should display formatted table ', function() {
       cellIndex += 2;
       var width = 500, height = 92;
@@ -198,7 +188,7 @@ describe('Testing of table (scala) ', function () {
     });
   });
 
-  describe('Add Color provider ', function () {
+  describe('(' + this.kernelName + ') Add Color provider ', function () {
     it('Should display formatted table ', function() {
       cellIndex += 2;
       var width = 232, height = 92;
@@ -208,7 +198,7 @@ describe('Testing of table (scala) ', function () {
     });
   });
 
-  describe('Add tooltip for values ', function () {
+  describe('(' + this.kernelName + ') Add tooltip for values ', function () {
     it('Should display tooltip ', function() {
       cellIndex += 2;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
@@ -220,4 +210,6 @@ describe('Testing of table (scala) ', function () {
     });
   });
 
-});
+}
+
+module.exports = tableAPIBase;

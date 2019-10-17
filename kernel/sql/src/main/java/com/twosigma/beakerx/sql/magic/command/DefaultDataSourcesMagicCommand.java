@@ -24,8 +24,8 @@ public class DefaultDataSourcesMagicCommand extends DataSourcesMagicCommand {
 
   public static final String DEFAULT_DATASOURCE = "%defaultDatasource";
 
-  public DefaultDataSourcesMagicCommand(KernelFunctionality kernel) {
-    super(kernel);
+  public DefaultDataSourcesMagicCommand(KernelFunctionality kernel, DataSourceParamResolver resolver) {
+    super(kernel,resolver);
   }
 
   @Override

@@ -56,7 +56,6 @@ dependencies {
   compile group: 'mysql', name: 'mysql-connector-java', version: '6.0.6'
   compile group: 'org.apache.derby', name: 'derby', version: '10.14.1.0'
   compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.21.0'
-  compile group: 'com.amazon.redshift', name: 'redshift-jdbc42', version: '1.2.10.1009'
   compile group: 'org.hsqldb', name: 'hsqldb', version: '2.4.0'
 
   testCompile project(':base').sourceSets.test.output

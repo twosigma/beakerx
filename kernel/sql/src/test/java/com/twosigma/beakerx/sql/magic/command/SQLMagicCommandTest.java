@@ -36,10 +36,12 @@ public class SQLMagicCommandTest {
 
   public static final ArrayList<MagicCommandOutcomeItem> NO_ERRORS = new ArrayList<>();
   private SQLKernelTest kernel;
+  private DataSourceParamResolver client;
 
   @Before
   public void setUp() throws Exception {
     this.kernel = new SQLKernelTest("id2", new EvaluatorTest());
+    this.client = new DataSourceParamResolverImpl(new EvaluatorTest.BeakexClientTestImpl());
   }
 
   @After
@@ -51,7 +53,7 @@ public class SQLMagicCommandTest {
   public void handleDefaultDatasourceMagicCommand() throws Exception {
     //given
     String codeAsString = DEFAULT_DATASOURCE + " jdbc:h2:mem:db1";
-    MagicCommand command = new MagicCommand(new DefaultDataSourcesMagicCommand(kernel), codeAsString);
+    MagicCommand command = new MagicCommand(new DefaultDataSourcesMagicCommand(kernel,client), codeAsString);
     Code code = Code.createCode(codeAsString, singletonList(command), NO_ERRORS, commMsg());
     //when
     code.execute(kernel, 1);
@@ -63,7 +65,7 @@ public class SQLMagicCommandTest {
   public void handleDatasourceMagicCommand() throws Exception {
     //given
     String codeAsString = DATASOURCES + " jdbc:h2:mem:db2";
-    MagicCommand command = new MagicCommand(new DataSourcesMagicCommand(kernel), codeAsString);
+    MagicCommand command = new MagicCommand(new DataSourcesMagicCommand(kernel,client), codeAsString);
     Code code = Code.createCode(codeAsString, singletonList(command), NO_ERRORS, commMsg());
     //when
     code.execute(kernel, 1);

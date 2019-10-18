@@ -17,6 +17,7 @@ package com.twosigma.beakerx.sql.magic.command;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.Evaluator;
+import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 
 import java.util.List;
@@ -33,8 +34,9 @@ public class SQLKernelTest extends KernelTest {
   @Override
   public List<MagicCommandType> getMagicCommandTypes() {
     List<MagicCommandType> magicCommands = super.getMagicCommandTypes();
-    magicCommands.add(new MagicCommandType(DATASOURCES, "<jdbc:[dbEngine]:[subsubprotocol:][databaseName]>", new DataSourcesMagicCommand(this)));
-    magicCommands.add(new MagicCommandType(DEFAULT_DATASOURCE, "<sourceName=jdbc:[dbEngine]:[subsubprotocol:][databaseName]>", new DefaultDataSourcesMagicCommand(this)));
+    DataSourceParamResolverImpl paramResolver = new DataSourceParamResolverImpl(new EvaluatorTest.BeakexClientTestImpl());
+    magicCommands.add(new MagicCommandType(DATASOURCES, "<jdbc:[dbEngine]:[subsubprotocol:][databaseName]>", new DataSourcesMagicCommand(this, paramResolver)));
+    magicCommands.add(new MagicCommandType(DEFAULT_DATASOURCE, "<sourceName=jdbc:[dbEngine]:[subsubprotocol:][databaseName]>", new DefaultDataSourcesMagicCommand(this, paramResolver)));
 
     return magicCommands;
   }

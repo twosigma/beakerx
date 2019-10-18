@@ -29,22 +29,22 @@ trait CategoryPointsProperties extends CategoryGraphicsProperties {
 
   def fill: Option[Boolean] = safeOption(getFill)
   def fill_=(b: Boolean): Unit = setFill(b)
-  def fills: Seq[Boolean] = getNullableList(getFills).map(_.booleanValue)
+  def fills: Seq[Boolean] = getNullableList(()=>getFills).map(_.booleanValue)
   def fill_=(fills: Seq[Boolean]) = setFill(fills.map(Boolean.box).asJava)
 
   def outlineColor: Option[Color] = Option(getOutlineColor)
-  def outlineColors: Seq[Object] = getNullableList(getOutlineColors)
+  def outlineColors: Seq[Object] = getNullableList(()=>getOutlineColors)
   def outlineColor_=(outlineColor: Color): Unit = setOutlineColor(outlineColor)
   def outlineColor_=(outlineColor: java.awt.Color): Unit = setOutlineColor(outlineColor)
   def outlineColor_=[T <: AnyRef : BeakerColor](outlineColors: Seq[T]): Unit = setOutlineColor(outlineColors.toObjects.asJava)
 
   def shape: ShapeType = getShape
-  def shapes: Seq[ShapeType] = getNullableList(getShapes)
+  def shapes: Seq[ShapeType] = getNullableList(()=> getShapes)
   def shape_=(s: ShapeType) = setShape(s)
   def shape_=(ss: Seq[ShapeType]) = setShape(ss.asJava)
 
   def size: Float = getSize
-  def sizes: Seq[Number] = getNullableList(getSizes)
+  def sizes: Seq[Number] = getNullableList(()=>getSizes)
   def size_=(s: Number): Unit = setSize(s)
   def size_=[T : NumberView](ss: Seq[T]): Unit = setSize(ss.toNumbers.asJava)
 }

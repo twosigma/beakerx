@@ -33,8 +33,8 @@ class CSV extends com.twosigma.beakerx.fileloader.CSV {
 
   private def createListMap(x: util.Map[String, AnyRef]) = {
     var mapWithOrder = new ListMap[String, AnyRef]()
-    for (a <- x) {
-      mapWithOrder =  mapWithOrder + (a._1 -> a._2)
+    for ((key,value) <- x.asScala) {
+      mapWithOrder = mapWithOrder ++ ListMap( key -> value)
     }
     mapWithOrder
   }

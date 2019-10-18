@@ -35,9 +35,11 @@ import scala.collection.Iterator;
 
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -111,6 +113,8 @@ abstract class SparkEngineBase implements SparkEngine {
       return TryResult.createResult(sparkSession);
     } catch (Exception e) {
       return TryResult.createError(errorPrinter.print(e));
+    } catch (Throwable e) {
+      return TryResult.createError(e.toString());
     } finally {
       sparkUI.stopSpinner();
     }
@@ -241,12 +245,21 @@ abstract class SparkEngineBase implements SparkEngine {
 
   private static Iterator getConfigIterator(SparkSession.Builder sparkSessionBuilder) {
     try {
-      Field options = sparkSessionBuilder.getClass().getDeclaredField("org$apache$spark$sql$SparkSession$Builder$$options");
+      Field options = getOptionsField(sparkSessionBuilder);
       options.setAccessible(true);
       return ((scala.collection.mutable.HashMap) options.get(sparkSessionBuilder)).iterator();
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private static Field getOptionsField(SparkSession.Builder sparkSessionBuilder) {
+    Field[] declaredFields = sparkSessionBuilder.getClass().getDeclaredFields();
+    Optional<Field> options = Arrays.stream(declaredFields).filter(f -> f.getName().equals("options")).findFirst();
+    if (options.isPresent()) {
+      return options.get();
+    }
+    throw new RuntimeException("SparkSession.builder does not contain 'options' field.");
   }
 
   private boolean isAdvancedSettings(String name) {

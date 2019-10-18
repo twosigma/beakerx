@@ -34,7 +34,7 @@ trait RastersProperties extends XYGraphicsProperties {
   def fileUrl: String = getFileUrl
   def fileUrl_=(url: String): Unit = setFileUrl(url)
 
-  def height: Seq[Number] = getNullableList(getHeight)
+  def height: Seq[Number] = getNullableList(()=> getHeight)
   def height_=[T : NumberView](heights: Seq[T]): Unit = setHeight(heights.toNumbers.asJava)
 
   def opacity: Seq[Number] = getOpacity.asScala
@@ -43,6 +43,6 @@ trait RastersProperties extends XYGraphicsProperties {
   def position: String = getPosition
   def postion_=(position: String): Unit = setPosition(position)
 
-  def width: Seq[Number] = getNullableList(getWidth)
+  def width: Seq[Number] = getNullableList(()=> getWidth)
   def width_=[T : NumberView](widths: Seq[T]): Unit = setWidth(widths.toNumbers.asJava)
 }

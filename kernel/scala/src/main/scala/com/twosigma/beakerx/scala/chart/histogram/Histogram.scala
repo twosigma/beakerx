@@ -33,7 +33,7 @@ trait HistogramProperties extends AbstractChartProperties {
   def binCount_=(count: Int): Unit = setBinCount(count)
 
   def color: Option[Color] = Option(getColor)
-  def colors: Seq[Color] = getNullableList(getColors)
+  def colors: Seq[Color] = getNullableList(()=> getColors)
   def color_=(color: Color): Unit = setColor(color)
   def color_=(color: java.awt.Color): Unit = setColor(color)
   def color_=[T <: Object : BeakerColor](colors: Seq[T]): Unit = setColor(colors.toObjects.asJava)
@@ -41,8 +41,8 @@ trait HistogramProperties extends AbstractChartProperties {
   def cumulative: Boolean = getCumulative
   def cumulative_=(cum: Boolean): Unit = setCumulative(cum)
 
-  def data: Seq[Number] = getNullableList(getData)
-  def listData: Seq[Seq[Number]] = getNullableList(getListData).map(_.asScala)
+  def data: Seq[Number] = getNullableList(()=>getData)
+  def listData: Seq[Seq[Number]] = getNullableList(()=>getListData).map(_.asScala)
   def data_=[T : NumberView](data: Seq[T]):Unit = setData(data.toNumbers.asJava)
   def data_=[T : NumberView, Inner[_] : HasSeq[T]#Conversion](data: Seq[Inner[T]]): Unit = {
     val javaData = data.map(_.toSeq.toNumbers.asJava).asJava
@@ -55,7 +55,7 @@ trait HistogramProperties extends AbstractChartProperties {
   def log: Boolean = getLog
   def log_=(log: Boolean): Unit = setLog(log)
 
-  def names: Seq[String] = getNullableList(getNames)
+  def names: Seq[String] = getNullableList(()=>getNames)
   def names_=(names: Seq[String]): Unit = setNames(names.asJava)
 
   def normed: Boolean = getNormed

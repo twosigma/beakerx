@@ -40,7 +40,12 @@ public class CommMsgHandler extends KernelHandler<Message> {
 
   public void handle(Message message) {
     wrapBusyIdle(kernel, message, () -> {
-      handleMsg(message);
+      try {
+        kernel.startEvaluation();
+        handleMsg(message);
+      } finally {
+        kernel.endEvaluation();
+      }
     });
   }
 

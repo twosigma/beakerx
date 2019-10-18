@@ -30,10 +30,10 @@ trait BarsProperties extends BasedXYGraphicsProperties {
   def outlineColor_=(color: Color) = setOutlineColor(color)
   def outlineColor_=(color: java.awt.Color) = setOutlineColor(color)
   def outlineColor_=[T <: AnyRef : BeakerColor](colors: Seq[T]) = setOutlineColor(colors.toObjects.asJava)
-  def outlineColors = getNullableList(getOutlineColors)
+  def outlineColors = getNullableList(()=> getOutlineColors)
 
   def width = Option(getWidth)
   def width_=(width: Number) = setWidth(width)
   def width_=[T : NumberView](widths: Seq[T]) = setWidth(widths.toNumbers.asJava)
-  def widths = getNullableList(getWidths)
+  def widths = getNullableList(()=> getWidths)
 }

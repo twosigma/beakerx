@@ -38,6 +38,9 @@ export class DataGridScope {
   public get dataGrid():BeakerXDataGrid { return this._dataGrid; }
 
   constructor(options: IDataGridScopeOptions) {
+    if (Object.keys(options.data).length === 0 && options.data.constructor === Object){
+      throw new Error("options.data can not be empty")
+    }
     this.store = createStore(options.data);
     this.element = options.element;
     this.tableDisplayModel = options.widgetModel;

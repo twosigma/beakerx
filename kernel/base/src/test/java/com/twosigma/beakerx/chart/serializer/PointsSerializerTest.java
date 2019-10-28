@@ -82,6 +82,18 @@ public class PointsSerializerTest {
   }
 
   @Test
+  public void serializeShapePoints_resultJsonHasShapeSquare() throws IOException {
+    //when
+    points.setShape(ShapeType.SQUARE);
+    pointsSerializer.serialize(points, jgen, new DefaultSerializerProvider.Impl());
+    jgen.flush();
+    //then
+    JsonNode actualObj = mapper.readTree(sw.toString());
+    Assertions.assertThat(actualObj.has("shape")).isTrue();
+    Assertions.assertThat(actualObj.get("shape").asText()).isEqualTo("rect");
+  }
+
+  @Test
   public void serializeShapePoints_resultJsonHasShape() throws IOException {
     //when
     points.setShape(ShapeType.CIRCLE);
@@ -90,7 +102,7 @@ public class PointsSerializerTest {
     //then
     JsonNode actualObj = mapper.readTree(sw.toString());
     Assertions.assertThat(actualObj.has("shape")).isTrue();
-    Assertions.assertThat(actualObj.get("shape").asText()).isEqualTo("CIRCLE");
+    Assertions.assertThat(actualObj.get("shape").asText()).isEqualTo("circle");
   }
 
   @Test
@@ -103,7 +115,7 @@ public class PointsSerializerTest {
     JsonNode actualObj = mapper.readTree(sw.toString());
     Assertions.assertThat(actualObj.has("shaps")).isTrue();
     ArrayNode arrayNode = (ArrayNode) actualObj.get("shaps");
-    Assertions.assertThat(arrayNode.get(1).asText()).isEqualTo("CROSS");
+    Assertions.assertThat(arrayNode.get(1).asText()).isEqualTo("cross");
   }
 
   @Test

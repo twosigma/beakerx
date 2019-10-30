@@ -30,3 +30,33 @@ class TestTableDisplay(unittest.TestCase):
         display = TableDisplay(df)
         # then
         self.assertTrue(display.values[0][4] == Table.NAT_VALUE)
+
+    def test_support_discovering_types(self):
+        # given
+        colNames = ["xxx column", "integer column", "double column", "number column"]
+        row1 = [6.1, 6, 0.5, 6]
+        row2 = [3.1, 3, 2.0, 3]
+        row3 = [2.2, 2, 3.0, 2]
+        row4 = [0.1, 0, 6.0, 0]
+        # when
+        table = TableDisplay(pd.DataFrame([row1, row2, row3, row4], columns=colNames), colNames)
+        # then
+        self.assertTrue(table.model["types"][0] == "double")
+        self.assertTrue(table.model["types"][1] == "integer")
+        self.assertTrue(table.model["types"][2] == "double")
+        self.assertTrue(table.model["types"][3] == "integer")
+
+    def test_support_setting_types(self):
+        # given
+        colNames = ["xxx column", "integer column", "double column", "number column"]
+        row1 = [6, 6, 0.5, 6]
+        row2 = [3, 3, 2.0, 3]
+        row3 = [2, 2, 3.0, 2]
+        row4 = [0, 0, 6.0, 0]
+        # when
+        table = TableDisplay(pd.DataFrame([row1, row2, row3, row4], columns=colNames), colNames, ['xxx type', 'integer', 'double', 'number'])
+        # then
+        self.assertTrue(table.model["types"][0] == "xxx type")
+        self.assertTrue(table.model["types"][1] == "integer")
+        self.assertTrue(table.model["types"][2] == "double")
+        self.assertTrue(table.model["types"][3] == "number")

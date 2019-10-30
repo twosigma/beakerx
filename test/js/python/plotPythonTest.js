@@ -168,33 +168,13 @@ describe('Testing of Plot (python)', function () {
     });
   });
 
-  describe('Pandas library', function () {
-    it('Plot has Bars', function () {
-      var svgElement = beakerxPO.runCellToGetSvgElement(9);
-      expect(svgElement.$('g.plot-bar').isDisplayed()).toBeTruthy();
-      expect(svgElement.$$('rect.plot-resp').length).toBeGreaterThan(0);
-    });
-
-    it('Plot has Line', function () {
-      var svgElement = beakerxPO.runCellToGetSvgElement(10);
-      expect(svgElement.$$('circle.plot-resp').length).toEqual(7);
-      expect(svgElement.$('path.plot-line').isDisplayed()).toBeTruthy();
-    });
-  });
-
-  describe('Plot Stacking', function(){
-    it('Plot has 2 Areas', function(){
-      var svgElement = beakerxPO.runCellToGetSvgElement(11);
-      expect(svgElement.$$('g > polygon.plot-area').length).toEqual(2);
-      expect(svgElement.$('rect#i0_0').getLocation('y')).toBeGreaterThan(svgElement.$('rect#i1_0').getLocation('y'));
-      expect(svgElement.$('rect#i0_0').getLocation('x')).toBe(svgElement.$('rect#i1_0').getLocation('x'));
-    });
-  });
-
   describe('Simple Time Plot', function(){
     it('Time Plot has 2 lines and time axis', function(){
+      cellIndex += 2;
+      beakerxPO.runCodeCellByIndex(cellIndex);
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      var svgElement = beakerxPO.runCellToGetSvgElement(12);
+      cellIndex += 1;
+      var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
       expect(svgElement.$$('g#i0 > circle').length).toBeGreaterThan(0);
       expect(svgElement.$$('g#i1 > circle').length).toBeGreaterThan(0);
       expect(svgElement.$('g#i0 > path.plot-line').isDisplayed()).toBeTruthy();
@@ -203,8 +183,8 @@ describe('Testing of Plot (python)', function () {
     });
 
     it('Time Plot has millisecond resolution', function(){
-      beakerxPO.kernelIdleIcon.waitForEnabled();
-      var dtContainer = beakerxPO.runCellToGetDtContainer(13);
+      cellIndex += 1;
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
       var svgElement = dtContainer.$('#svgg');
       svgElement.$('rect#i0_0').click();
       var tipElement = dtContainer.$('div#tip_i0_0');
@@ -212,8 +192,8 @@ describe('Testing of Plot (python)', function () {
     });
 
     it('Time Plot has nanosecond resolution', function(){
-      beakerxPO.kernelIdleIcon.waitForEnabled();
-      var dtContainer = beakerxPO.runCellToGetDtContainer(14);
+      cellIndex += 1;
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
       var svgElement = dtContainer.$('#svgg');
       svgElement.$('rect#i0_1').click();
       var tipElement = dtContainer.$('div#tip_i0_1');
@@ -223,7 +203,8 @@ describe('Testing of Plot (python)', function () {
 
   describe('Second Y Axis', function(){
     it('Plot has second Y Axis', function(){
-      var svgElement = beakerxPO.runCellToGetSvgElement(15);
+      cellIndex += 1;
+      var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
       expect(svgElement.$('text#yrlabel').getText()).toEqual('Test y axis');
       expect(svgElement.$('text#label_yr_0').getText()).toEqual('10');
       expect(svgElement.$('line#tick_yr_0').isEnabled()).toBeTruthy();
@@ -242,7 +223,8 @@ describe('Testing of Plot (python)', function () {
     var combPlot;
 
     it('Combined plot has 3 plots', function(){
-      combPlot = beakerxPO.runCodeCellByIndex(16).$('div.combplot-plotcontainer');
+      cellIndex += 1;
+      combPlot = beakerxPO.runCodeCellByIndex(cellIndex).$('div.combplot-plotcontainer');
       expect(combPlot.isDisplayed()).toBeTruthy();
       expect(combPlot.$$('div.dtcontainer').length).toEqual(3);
     });
@@ -260,6 +242,6 @@ describe('Testing of Plot (python)', function () {
       expect(getCircleAttr(g0, 'i0_0', 'cx')).toBe(getCircleAttr(g2, 'i0_0', 'cx'));
       expect(getCircleAttr(g0, 'i0_50', 'cx')).toBeLessThan(getCircleAttr(g2, 'i0_50', 'cx'));
     });
-  }); 
+  });
 
 });

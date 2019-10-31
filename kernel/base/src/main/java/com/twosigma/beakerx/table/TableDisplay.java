@@ -25,7 +25,6 @@ import com.twosigma.beakerx.table.action.TableActionDetails;
 import com.twosigma.beakerx.table.format.TableDisplayStringFormat;
 import com.twosigma.beakerx.table.format.TimeStringFormat;
 import com.twosigma.beakerx.table.format.ValueStringFormat;
-import com.twosigma.beakerx.table.handlers.StateRequestMsgCallbackHandler;
 import com.twosigma.beakerx.table.handlers.ValueChangeMsgCallbackHandler;
 import com.twosigma.beakerx.table.highlight.TableDisplayCellHighlighter;
 import com.twosigma.beakerx.table.highlight.ValueHighlighter;
@@ -59,6 +58,7 @@ import static com.twosigma.beakerx.table.TableDisplayToJson.serializeHeaderFontS
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeHeadersVertical;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeRendererForColumn;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeRendererForType;
+import static com.twosigma.beakerx.table.TableDisplayToJson.serializeRowsToShow;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeStringFormatForColumn;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeStringFormatForType;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeTimeZone;
@@ -113,6 +113,7 @@ public class TableDisplay extends BeakerxWidget {
   public static int PAGE_SIZE = 1000;
   private TableDisplayModel model;
   private String loadMoreRows = "loadMoreServerInit";
+  private RowsToShow rowsToShow = RowsToShow.SHOW_25;
 
   @Override
   public String getModelNameValue() {
@@ -157,6 +158,7 @@ public class TableDisplay extends BeakerxWidget {
     openComm();
     this.model.initValues();
   }
+
   public TableDisplay(Stream<Map<String, Object>> v, BeakerObjectConverter serializer, Message message) {
     super();
     this.model = new TableDisplayMapModel(v, serializer);
@@ -740,6 +742,15 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setRowLimitMsg(String rowLimitMsg) {
     this.rowLimitMsg = rowLimitMsg;
+  }
+
+  public void setRowsToShow(RowsToShow rows) {
+    this.rowsToShow = rows;
+    sendModelUpdate(serializeRowsToShow(this.rowsToShow));
+  }
+
+  public RowsToShow getRowsToShow() {
+    return rowsToShow;
   }
 
   @Override

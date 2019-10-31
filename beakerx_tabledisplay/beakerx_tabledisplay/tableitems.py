@@ -95,6 +95,14 @@ class HighlightStyle(Enum):
     SINGLE_COLUMN = "SINGLE_COLUMN"
 
 
+class RowsToShow(Enum):
+    SHOW_10 = 10
+    SHOW_25 = 25
+    SHOW_50 = 50
+    SHOW_100 = 100
+    SHOW_ALL = -1
+
+
 class Highlighter:
     pass
 

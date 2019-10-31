@@ -70,6 +70,7 @@ import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.HEADE
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.HEADER_FONT_SIZE;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.RENDERER_FOR_COLUMN;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.RENDERER_FOR_TYPE;
+import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.ROWS_TO_SHOW;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_COLUMN;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_TYPE;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.TIME_ZONE;
@@ -258,6 +259,12 @@ public class TableDisplayToJson {
   static Map<Object, Object> serializeHeadersVertical(boolean headersVertical) {
     Map<Object, Object> value = new LinkedHashMap<>();
     value.put(HEADERS_VERTICAL, headersVertical);
+    return value;
+  }
+
+  static Map<Object, Object> serializeRowsToShow(RowsToShow rowsToShow) {
+    Map<Object, Object> value = new LinkedHashMap<>();
+    value.put(ROWS_TO_SHOW, rowsToShow.getRows());
     return value;
   }
 

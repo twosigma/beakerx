@@ -46,4 +46,5 @@ export default interface IDataModelState {
   type?: string,
   types: string[],
   values: any,
+  rowsToShow:number
 }

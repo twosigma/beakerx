@@ -20,8 +20,8 @@ import com.twosigma.beakerx.message.Message;
 
 public interface EnableSparkSupportActionOptions {
   String SPARK_SQL = "spark-sql";
-  String SPARK_SQL_2_11 = " org.apache.spark " + SPARK_SQL + "_2.11 ";
-  String SPARK_MLLIB_2_11 = " org.apache.spark spark-mllib_2.11 ";
+  String SPARK_SQL_2_12 = " org.apache.spark " + SPARK_SQL + "_2.12 ";
+  String SPARK_MLLIB_2_12 = " org.apache.spark spark-mllib_2.12 ";
 
   MagicCommandOutcomeItem loadSpark(Message parent, String version);
 }

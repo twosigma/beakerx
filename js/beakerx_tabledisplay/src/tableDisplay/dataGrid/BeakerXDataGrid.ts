@@ -48,6 +48,7 @@ import {ALL_TYPES} from "./dataTypes";
 import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
 import CommonUtils from "beakerx_shared/lib/utils/CommonUtils";
 import {TableDisplayView, TableDisplayWidget} from "../../TableDisplay";
+import BeakerXApi from "beakerx_shared/lib/api/BeakerXApi";
 
 declare global {
   interface Window {
@@ -77,6 +78,7 @@ export class BeakerXDataGrid extends DataGrid {
   focused: boolean;
   wrapperId: string;
   tableDisplayView: TableDisplayWidget & TableDisplayView;
+  api: BeakerXApi;
 
   cellHovered = new Signal<this, { data: ICellData|null, event: MouseEvent }>(this);
   commSignal = new Signal<this, {}>(this);
@@ -85,6 +87,7 @@ export class BeakerXDataGrid extends DataGrid {
 
   constructor(options: DataGrid.IOptions, dataStore: BeakerXDataStore, tableDisplayView: TableDisplayWidget & TableDisplayView) {
     super(options);
+    this.initApi();
 
     //this is hack to use private DataGrid properties
     this.viewport = this['_viewport'];
@@ -96,6 +99,18 @@ export class BeakerXDataGrid extends DataGrid {
     this.tableDisplayView = tableDisplayView;
     this.resize = throttle(this.resize, 150, this);
     this.init(dataStore);
+  }
+
+  private initApi() {
+      let baseUrl;
+
+      try {
+          baseUrl = `${(Jupyter.notebook_list || Jupyter.notebook).base_url}`;
+      } catch (e) {
+          baseUrl = `${window.location.origin}/`;
+      }
+
+      this.api = new BeakerXApi(baseUrl);
   }
 
   init(store: BeakerXDataStore) {

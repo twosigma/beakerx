@@ -29,7 +29,6 @@ class Table(BaseObject):
     PAGE_SIZE = 1000
 
     def __init__(self, *args, **kwargs):
-
         self.values = []
         self.types = []
         types_map = dict()
@@ -98,16 +97,24 @@ class Table(BaseObject):
                 row.append(self.convert_value(value, value_type))
             self.values.append(row)
 
+    @staticmethod
+    def has_types(args):
+        return len(args) > 2
+
     def convert_from_pandas(self, args, types_map):
         self.columnNames = args[0].columns.tolist()
         if args[0].index.name is not None and args[0].index.name in self.columnNames:
             self.columnNames.remove(args[0].index.name)
 
-        column = None
-        for column in self.columnNames:
-            column_type = self.convert_type(args[0].dtypes[column].name)
-            self.types.append(column_type)
-            types_map[column] = column_type
+        if self.has_types(args):
+            self.types = args[2]
+            types_map = dict(zip(self.columnNames, self.types))
+        else:
+            column = None
+            for column in self.columnNames:
+                column_type = self.convert_type(args[0].dtypes[column].name)
+                self.types.append(column_type)
+                types_map[column] = column_type
         for index in range(len(args[0])):
             row = []
             for columnName in self.columnNames:
@@ -149,7 +156,7 @@ class Table(BaseObject):
     @staticmethod
     def convert_value(value, value_type, tz=None):
         if value_type == "time":
-            if np.isnat(value):
+            if isinstance(value, np.datetime64) and np.isnat(value):
                 return str(Table.NAT_VALUE)
             return DateType(value, tz)
         else:

@@ -39,6 +39,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.SynchronousQueue;
 
@@ -215,6 +216,7 @@ public class EvaluatorTest extends BaseEvaluator {
   public static class BeakexClientTestImpl implements BeakerXClient {
 
     private String lastRunByTag;
+    private HashMap<String, Object> variables = new HashMap<>();
 
     @Override
     public void showProgressUpdate(String message, int progress) {
@@ -233,12 +235,13 @@ public class EvaluatorTest extends BaseEvaluator {
 
     @Override
     public Object set(String name, Object value) {
-      return null;
+      variables.put(name, value);
+      return value;
     }
 
     @Override
     public Object get(String name) {
-      return null;
+      return variables.get(name);
     }
 
     @Override

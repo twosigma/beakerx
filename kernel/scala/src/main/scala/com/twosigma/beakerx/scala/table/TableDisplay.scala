@@ -177,4 +177,8 @@ class TableDisplay private(tableDisplay: com.twosigma.beakerx.table.TableDisplay
     tableDisplay.getValues.asScala.toList.map(y => y.asScala.toList)
   }
 
+  def removeAllCellHighlighters()= tableDisplay.removeAllCellHighlighters()
+
+  def getCellHighlighters() = tableDisplay.getCellHighlighters()
+
 }

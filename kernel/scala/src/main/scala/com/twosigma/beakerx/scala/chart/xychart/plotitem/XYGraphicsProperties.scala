@@ -27,7 +27,7 @@ trait XYGraphicsProperties extends GraphicsProperties {
   this: XYGraphics =>
 
   def color: Option[Color] = Option(getColor)
-  def colors: Seq[Color] = getNullableList(getColors)
+  def colors: Seq[Color] = getNullableList(()=> getColors)
   def color_=(c: Color): Unit = setColor(c)
   def color_=(c: java.awt.Color): Unit = setColor(c)
   def color_=[T <: AnyRef : BeakerColor](cs: Seq[T]): Unit = setColor(cs.toObjects.asJava)
@@ -35,7 +35,7 @@ trait XYGraphicsProperties extends GraphicsProperties {
   def displayName: String = getDisplayName
   def displayName_=(s: String): Unit = setDisplayName(s)
 
-  def toolTip = getNullableList(getToolTips)
+  def toolTip = getNullableList(()=> getToolTips)
   def toolTip_=(t: Seq[String]): Unit = setToolTip(t.asJava)
 
   def x: Seq[Number] = getX.asScala

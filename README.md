@@ -118,6 +118,7 @@ The Java and TypeScript unit tests are run with every build. See [test/README.md
 ### Run Python Unit Tests
 ```
 (cd beakerx; python -m unittest)
+(cd beakerx_tabledisplay; python -m unittest)
 ```
 
 ## Groovy with Interactive Plotting:

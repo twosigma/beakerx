@@ -55,7 +55,7 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
   private def scalaToJline(completion: Completion): Completer = new Completer {
     override def complete(_buf: String, cursor: Int, candidates: JList[CharSequence]): Int = {
       val buf = if (_buf == null) "" else _buf
-      val Candidates(newCursor, newCandidates) = completion.completer().complete(buf, cursor)
+      val Candidates(newCursor, newCandidates) = completion.complete(buf, cursor)
       newCandidates foreach (candidates add _)
       newCursor
     }
@@ -63,7 +63,6 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
 
   var interpreter = {
     var i = new ScalaInterpreter(settings, new java.io.PrintWriter(baos))
-    i.setContextClassLoader()
     i
   }
 

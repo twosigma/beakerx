@@ -22,7 +22,7 @@ import com.twosigma.beakerx.message.Message;
 
 class LoadLatestVersionOfSparkIfIsNotOnClasspath implements SparkInitCommandFactory.Command {
 
-  public static final String VERSION = "[2.3.1,)";
+  public static final String VERSION = "[2.4.4,)";
   private final Message message;
   private String error;
   private BeakerXClasspath classpath;

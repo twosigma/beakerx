@@ -32,7 +32,7 @@ trait StemsProperties extends BasedXYGraphicsProperties {
   def style = getStyle
   def style_=(stroke: StrokeType) = setStyle(stroke)
   def style_=(strokes: Seq[StrokeType]) = setStyle(strokes.asJava)
-  def styles = getNullableList(getStyles)
+  def styles = getNullableList(()=> getStyles)
 
   def width = getWidth
   def width_=(width: Float) = setWidth(width)

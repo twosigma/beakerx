@@ -30,9 +30,11 @@ public class DataSourcesMagicCommand implements MagicCommandFunctionality {
   public static final String DATASOURCES = "%datasources";
 
   private KernelFunctionality kernel;
+  private DataSourceParamResolver paramResolver;
 
-  public DataSourcesMagicCommand(KernelFunctionality kernel) {
+  public DataSourcesMagicCommand(KernelFunctionality kernel, DataSourceParamResolver paramResolver) {
     this.kernel = kernel;
+    this.paramResolver = paramResolver;
   }
 
   @Override
@@ -58,11 +60,11 @@ public class DataSourcesMagicCommand implements MagicCommandFunctionality {
     } else if (!parts[1].contains("jdbc:")) {
       return new MagicCommandOutput(MagicCommandOutcomeItem.Status.ERROR, "Incorrect jdbc url.");
     }
-
+    String jdbc = paramResolver.resolve(parts[1]);
     HashMap<String, Object> params = new HashMap<>();
-    params.put(source, parts[1]);
+    params.put(source, jdbc);
     kernel.updateEvaluatorParameters(new EvaluatorParameters(params));
     return new MagicCommandOutput(MagicCommandOutcomeItem.Status.OK);
-
   }
+
 }

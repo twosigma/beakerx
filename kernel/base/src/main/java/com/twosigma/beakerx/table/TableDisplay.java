@@ -354,7 +354,6 @@ public class TableDisplay extends BeakerxWidget {
   }
 
   public void addCellHighlighter(Object closure) {
-    Map<String, List<Color>> colors = new HashMap<>();
     try {
       int rowSize = this.model.values.get(0).size();
       for (int colInd = 0; colInd < rowSize; colInd++) {
@@ -378,7 +377,6 @@ public class TableDisplay extends BeakerxWidget {
   }
 
   public void addCellHighlighter(CellHighlighter cellHighlighter) {
-    Map<String, List<Color>> colors = new HashMap<>();
     try {
       int rowSize = this.model.values.get(0).size();
       for (int colInd = 0; colInd < rowSize; colInd++) {

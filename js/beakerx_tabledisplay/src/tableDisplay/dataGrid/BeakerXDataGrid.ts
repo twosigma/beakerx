@@ -47,7 +47,7 @@ import {DataGridResize} from "./DataGridResize";
 import {ALL_TYPES} from "./dataTypes";
 import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
 import CommonUtils from "beakerx_shared/lib/utils/CommonUtils";
-import {TableDisplayWidget} from "../../TableDisplay";
+import {TableDisplayView, TableDisplayWidget} from "../../TableDisplay";
 import BeakerXApi from "beakerx_shared/lib/api/BeakerXApi";
 
 declare global {
@@ -77,7 +77,7 @@ export class BeakerXDataGrid extends DataGrid {
   canvasGC: GraphicsContext;
   focused: boolean;
   wrapperId: string;
-  tableDisplayView: TableDisplayWidget;
+  tableDisplayView: TableDisplayWidget & TableDisplayView;
   api: BeakerXApi;
 
   cellHovered = new Signal<this, { data: ICellData|null, event: MouseEvent }>(this);
@@ -85,7 +85,7 @@ export class BeakerXDataGrid extends DataGrid {
 
   static FOCUS_CSS_CLASS = 'bko-focused';
 
-  constructor(options: DataGrid.IOptions, dataStore: BeakerXDataStore, tableDisplayView: TableDisplayWidget) {
+  constructor(options: DataGrid.IOptions, dataStore: BeakerXDataStore, tableDisplayView: TableDisplayWidget & TableDisplayView) {
     super(options);
     this.initApi();
 

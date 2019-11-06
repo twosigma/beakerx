@@ -39,6 +39,7 @@ export class DataGridResize {
   resizeMode: 'h'|'v'|'both'|null;
   resizing: boolean = false;
   resizedHorizontally: boolean = false;
+  private maxWidth: number = 0;
 
   constructor(dataGrid: BeakerXDataGrid) {
     this.dataGrid = dataGrid;
@@ -50,7 +51,7 @@ export class DataGridResize {
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.fillEmptySpaceResizeFn = this.fillEmptySpaceResizeFn.bind(this);
-    this.fitVieport = this.fitVieport.bind(this);
+    this.fitViewport = this.fitViewport.bind(this);
 
     this.installMessageHook();
   }
@@ -78,10 +79,13 @@ export class DataGridResize {
 
   updateWidgetHeight(): void {
     this.dataGrid.node.style.minHeight = `${this.getWidgetHeight()}px`;
-    this.fitVieport();
+    this.fitViewport();
   }
 
   updateWidgetWidth(): void {
+    if (this.maxWidth === 0) {
+      return;
+    }
     const spacing = 2 * (DEFAULT_GRID_PADDING + DEFAULT_GRID_BORDER_WIDTH) + 1;
     const hasVScroll = (
       this.dataGrid.rowManager.rowsToShow !== -1 && this.dataGrid.rowManager.rowsToShow <= this.dataGrid.model.rowCount('body')
@@ -90,13 +94,20 @@ export class DataGridResize {
     const width = this.dataGrid.totalWidth + spacing + vScrollWidth;
 
     if (this.resizedHorizontally && width >= this.dataGrid.node.clientWidth) {
-      this.fitVieport();
+      this.fitViewport();
+
+      return;
+    }
+
+    if (this.maxWidth && width >= this.maxWidth) {
+      this.dataGrid.node.style.width = `${this.maxWidth}px`;
+      this.fitViewport();
 
       return;
     }
 
     this.dataGrid.node.style.width = `${width}px`;
-    this.fitVieport();
+    this.fitViewport();
   }
 
   setInitialSectionWidths(): void {
@@ -123,7 +134,7 @@ export class DataGridResize {
     this.dataGrid.columnSections['_sections'].forEach(this.fillEmptySpaceResizeFn('body', value));
     this.dataGrid.rowHeaderSections['_sections'].forEach(this.fillEmptySpaceResizeFn('row-header', value));
 
-    this.fitVieport();
+    this.fitViewport();
   }
 
   updateColumnWidth(region: ColumnRegion): Function {
@@ -205,7 +216,7 @@ export class DataGridResize {
     column.setWidth(value);
   }
 
-  fitVieport() {
+  fitViewport() {
     this.dataGrid && this.dataGrid.fit();
   }
 
@@ -257,7 +268,7 @@ export class DataGridResize {
   private getResizedWidth(event: MouseEvent): number {
     let width = this.resizeStartRect.width + event.clientX - this.resizeStartRect.x + 2 * DEFAULT_GRID_PADDING;
 
-    return width < 2 * this.dataGrid.baseColumnSize ? 2 * this.dataGrid.baseColumnSize : width;
+    return width < 2 * this.dataGrid.baseColumnSize ? 2 * this.dataGrid.baseColumnSize : Math.min(width, this.maxWidth);
   }
 
   private getResizedHeight(event: MouseEvent): number {
@@ -382,6 +393,20 @@ export class DataGridResize {
   }
 
   private viewportResizeMessageHook(handler, msg) {
+    if (msg.type === 'before-attach') {
+      this.maxWidth = this.dataGrid.tableDisplayView.$el.width();
+      return true;
+    }
+
+    if (msg.type === 'after-attach') {
+      const robs = new ResizeObserver(entries => {
+        this.maxWidth = this.calculateMaxWidth(entries[0].contentRect.width);
+        this.updateWidgetWidth();
+      });
+      robs.observe(this.dataGrid.tableDisplayView.$el.parents('.jp-OutputArea-child, .output_area')[0]);
+
+    }
+
     if (!this.dataGrid || handler !== this.dataGrid.viewport) {
       return true;
     }
@@ -400,5 +425,11 @@ export class DataGridResize {
     }
 
     return true;
+  }
+
+  private calculateMaxWidth(width: number): number {
+    let outputEl = this.dataGrid.tableDisplayView.$el.parents('.jp-OutputArea-child, .output_area');
+    let maxWidth = outputEl.width() - outputEl.find('.jp-OutputArea-prompt, .prompt').width();
+    return Math.min(width, maxWidth);
   }
 }

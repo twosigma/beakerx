@@ -169,7 +169,7 @@ describe('Plot groovy js', function () {
   });
 
   describe('Run "Simple Time Plot" cell', function(){
-    it('Time Plot has points elements', function(){
+    it('SimpleTimePlot has points elements', function(){
       cellIndex += 2;
       beakerxPO.runCodeCellByIndex(cellIndex);
       beakerxPO.kernelIdleIcon.waitForEnabled();
@@ -189,17 +189,6 @@ describe('Plot groovy js', function () {
     });
   });
 
-  describe('Run "Logarithmic Scale" cells', function(){
-    it('Plot has 2 lines', function(){
-      cellIndex += 1;
-      var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
-      expect(plotHelper.getAllLines(svgElement).length).toEqual(2);
-      cellIndex += 1;
-      svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
-      expect(plotHelper.getAllLines(svgElement).length).toEqual(2);
-    });
-  });
-
   describe('Run "Date Objects for the Time Coordinate" cell', function(){
     it('Plot has points elements', function(){
       cellIndex += 1;
@@ -214,6 +203,17 @@ describe('Plot groovy js', function () {
       cellIndex += 1;
       var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
       expect(svgElement.$('#i0.plot-point').isDisplayed()).toBeTruthy();
+    });
+  });
+
+  describe('Run "Logarithmic Scale" cells', function(){
+    it('Plot has 2 lines', function(){
+      cellIndex += 1;
+      var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
+      expect(plotHelper.getAllLines(svgElement).length).toEqual(2);
+      cellIndex += 1;
+      svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
+      expect(plotHelper.getAllLines(svgElement).length).toEqual(2);
     });
   });
 

@@ -17,15 +17,26 @@
 package com.twosigma.beakerx.chart.xychart.plotitem;
 
 public enum ShapeType {
-  SQUARE,
-  CIRCLE,
-  TRIANGLE,
-  DIAMOND,
-  DCROSS,
-  DOWNTRIANGLE,
-  CROSS,
-  DEFAULT,
-  LEVEL,
-  VLEVEL,
-  LINECROSS;
+  SQUARE("rect"),
+  CIRCLE("circle"),
+  TRIANGLE("triangle"),
+  DIAMOND("diamond"),
+  DCROSS("dcross"),
+  DOWNTRIANGLE("downtriangle"),
+  CROSS("cross"),
+  DEFAULT("default"),
+  LEVEL("level"),
+  VLEVEL("vlevel"),
+  LINECROSS("linecross");
+
+  private String shape;
+
+  ShapeType(String shape) {
+    this.shape = shape;
+  }
+
+  public String getText() {
+    return shape;
+  }
+
 }

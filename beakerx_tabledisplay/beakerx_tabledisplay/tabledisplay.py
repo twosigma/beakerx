@@ -21,7 +21,8 @@ from ipykernel.comm import Comm
 from pandas import DataFrame, RangeIndex, MultiIndex, DatetimeIndex
 from traitlets import Unicode, Dict
 
-from .tableitems import DateType, ColumnType, TableDisplayAlignmentProvider, TableDisplayStringFormat, Highlighter
+from .tableitems import DateType, ColumnType, TableDisplayAlignmentProvider, TableDisplayStringFormat, Highlighter, \
+    RowsToShow
 
 
 class Table(BaseObject):
@@ -67,6 +68,7 @@ class Table(BaseObject):
         self.filteredValues = None
         self.endlessIndex = 0
         self.loadingMode = 'ALL'
+        self.rowsToShow = RowsToShow.SHOW_25
 
     def convert_from_dict(self, args):
         self.columnNames.append("Key")
@@ -206,6 +208,9 @@ class Table(BaseObject):
         for row_ind in range(0, len(self.values)):
             if filter_row(row_ind, self.values):
                 self.filteredValues.append(self.values[row_ind])
+
+    def setRowsToShow(self, rows):
+        self.rowsToShow = rows
 
     def transform(self):
         if TableDisplay.loadingMode == "ALL":
@@ -401,6 +406,13 @@ class TableDisplay(BeakerxDOMWidget):
     def setRowFilter(self, filter_row):
         self.chart.setRowFilter(filter_row)
         self.model = self.chart.transform()
+
+    def setRowsToShow(self, rows):
+        if isinstance(rows, RowsToShow):
+            self.chart.setRowsToShow(rows)
+            self.model = self.chart.transform()
+        return self
+
 
 
 class TableActionDetails:

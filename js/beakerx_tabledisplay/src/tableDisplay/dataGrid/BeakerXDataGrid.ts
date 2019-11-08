@@ -33,8 +33,9 @@ import CellFocusManager from "./cell/CellFocusManager";
 import CellTooltipManager from "./cell/CellTooltipManager";
 import {BeakerXDataStore} from "./store/BeakerXDataStore";
 import {
-  selectHasIndex,
-  selectValues
+    selectHasIndex,
+    selectRowsToShow,
+    selectValues
 } from "./model/selectors";
 import throttle = DataGridHelpers.throttle;
 import DataGridCell from "./cell/DataGridCell";
@@ -118,7 +119,7 @@ export class BeakerXDataGrid extends DataGrid {
     this.store = store;
     this.columnManager = new ColumnManager(this);
     this.columnPosition = new ColumnPosition(this);
-    this.rowManager = new RowManager(selectValues(store.state), selectHasIndex(store.state), this.columnManager);
+    this.rowManager = new RowManager(selectValues(store.state), selectHasIndex(store.state), this.columnManager, selectRowsToShow(store.state));
     this.cellSelectionManager = new CellSelectionManager(this);
     this.cellManager = new CellManager(this);
     this.eventManager = new EventManager(this);

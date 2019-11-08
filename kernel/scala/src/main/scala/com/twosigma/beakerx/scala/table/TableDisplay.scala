@@ -181,4 +181,6 @@ class TableDisplay private(tableDisplay: com.twosigma.beakerx.table.TableDisplay
 
   def getCellHighlighters() = tableDisplay.getCellHighlighters()
 
+  def setRowsToShow(rows: RowsToShow) = tableDisplay.setRowsToShow(rows)
+
 }

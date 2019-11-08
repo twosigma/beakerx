@@ -31,9 +31,9 @@ export default class RowManager {
   columnManager: ColumnManager;
   rowsToShow: number;
 
-  constructor(data: any[], hasIndex: boolean, columnManager: ColumnManager) {
+  constructor(data: any[], hasIndex: boolean, columnManager: ColumnManager, rowsToShow:number) {
     this.columnManager = columnManager;
-    this.rowsToShow = DEFAULT_PAGE_LENGTH;
+    this.rowsToShow = rowsToShow;
     this.createRows(data, hasIndex);
 
     this.evaluateSearchExpression = this.evaluateSearchExpression.bind(this);

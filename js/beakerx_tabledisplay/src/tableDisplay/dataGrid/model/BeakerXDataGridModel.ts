@@ -25,10 +25,10 @@ import RowManager from "../row/RowManager";
 import DataGridRow from "../row/DataGridRow";
 import {BeakerXDataStore} from "../store/BeakerXDataStore";
 import {
-  selectColumnsFrozenCount,
-  selectColumnsVisible,
-  selectHasIndex,
-  selectValues, selectVisibleColumnsFrozenCount
+    selectColumnsFrozenCount,
+    selectColumnsVisible,
+    selectHasIndex, selectRowsToShow,
+    selectValues, selectVisibleColumnsFrozenCount
 } from "./selectors";
 import DataGridAction from "../store/DataGridAction";
 import {UPDATE_MODEL_DATA, UPDATE_MODEL_VALUES} from "./reducer";
@@ -94,6 +94,7 @@ export class BeakerXDataGridModel extends DataModel {
     this.store.dispatch(new DataGridAction(UPDATE_MODEL_DATA, state));
     this._data = selectValues(this.store.state);
     this.rowManager.createRows(this._data, selectHasIndex(this.store.state));
+    this.rowManager.setRowsToShow(selectRowsToShow(this.store.state));
     this.reset();
   }
 

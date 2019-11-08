@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import {TIME_UNIT_FORMATS} from "../../consts";
+import {DEFAULT_PAGE_LENGTH, TIME_UNIT_FORMATS} from "../../consts";
 import {getAlignmentByType} from "../../column/columnAlignment";
 import {ALL_TYPES} from "../../dataTypes";
 import IDataModelState from "../../interface/IDataGridModelState";
@@ -49,3 +49,4 @@ export const selectColumnTypes = (state) => selectModel(state).types;
 export const selectColumnOrder = (state) => selectModel(state).columnOrder;
 export const selectColumnsVisible = (state) => selectModel(state).columnsVisible || {};
 export const selectColumnsFrozen = (state) => selectModel(state).columnsFrozen || {};
+export const selectRowsToShow = (state) => selectModel(state).rowsToShow || DEFAULT_PAGE_LENGTH ;

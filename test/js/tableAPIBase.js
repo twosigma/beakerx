@@ -210,6 +210,26 @@ function tableAPIBase() {
     });
   });
 
+  describe('(' + this.kernelName + ') ImageFormat for local files ', function () {
+    it('Should display formatted table ', function() {
+      cellIndex +=1 ;
+      var width = 740, height = 240;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData, imageDir, 'cell16_case1.png');
+    });
+  });
+
+  describe('(' + this.kernelName + ') ImageFormat for encoded data ', function () {
+    it('Should display formatted table ', function() {
+      cellIndex += 2;
+      var width = 150, height = 150;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData, imageDir, 'cell16_case2.png');
+    });
+  });
+
 }
 
 module.exports = tableAPIBase;

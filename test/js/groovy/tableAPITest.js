@@ -34,38 +34,9 @@ describe('(Groovy) Testing of table ', function () {
   var cellIndex;
   var imageDir = 'groovy/tableAPI';
 
-  describe('Count of types more then number of columns ', function () {
-    it('should display java.lang.IllegalStateException', function () {
-      cellIndex = 33;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var errorOutput = beakerxPO.getAllOutputsStderr(codeCell)[0];
-      expect(errorOutput.getText()).toMatch('java.lang.IllegalStateException: The length of types should be same');
-    });
-  });
-
-  describe('ImageFormat for local files ', function () {
-    it('Should display formatted table ', function() {
-      cellIndex += 2;
-      var width = 740, height = 240;
-      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
-      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData, imageDir, 'cell16_case1.png');
-    });
-  });
-
-  describe('ImageFormat for encoded data ', function () {
-    it('Should display formatted table ', function() {
-      cellIndex += 2;
-      var width = 150, height = 150;
-      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
-      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData, imageDir, 'cell18_case1.png');
-    });
-  });
-
-  describe('sendModel() method ', function () {
+  describe('(Groovy) sendModel() method ', function () {
     it('Should display table before updating ', function() {
-      cellIndex += 2;
+      cellIndex = 37;
       var width = 160, height = 90;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
@@ -81,13 +52,22 @@ describe('(Groovy) Testing of table ', function () {
     });
   });
 
-  describe('RowFilter ', function () {
+  describe('(Groovy) RowFilter ', function () {
     it('Should display formatted table ', function() {
       cellIndex += 3;
       var width = 230, height = 70;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell20_case1.png');
+    });
+  });
+
+  describe('(Groovy) Count of types more then number of columns ', function () {
+    it('should display java.lang.IllegalStateException', function () {
+      cellIndex += 2;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var errorOutput = beakerxPO.getAllOutputsStderr(codeCell)[0];
+      expect(errorOutput.getText()).toMatch('java.lang.IllegalStateException: The length of types should be same');
     });
   });
 

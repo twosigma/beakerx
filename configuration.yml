@@ -2,7 +2,7 @@ name: beakerx
 channels:
   - conda-forge
 dependencies:
-  - python>=3
+  - python =3.7.5
   - openjdk=8.0.121
   - notebook>=5.7.6
   - tornado>6
@@ -12,3 +12,5 @@ dependencies:
   - maven
   - py4j
   - requests
+  - pyspark
+  - bottle

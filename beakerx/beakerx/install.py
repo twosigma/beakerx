@@ -157,6 +157,7 @@ def _install_magics():
                              "'beakerx_magics.kernel_magic',\n"
                              "'beakerx_magics.groovy_magic',\n"
                              "'beakerx_magics.clojure_magic',\n"
+                             "'beakerx_magics.sparkex_magic',\n"
                              "'beakerx_magics.kotlin_magic',\n"
                              "'beakerx_magics.scala_magic',\n"
                              "'beakerx_magics.sql_magic',\n"

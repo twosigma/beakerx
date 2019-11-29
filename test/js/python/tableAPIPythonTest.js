@@ -37,7 +37,7 @@ describe('(Python) Testing of table ', function () {
   describe("(Python) Data types for TableDisplay", function(){
 
     it('Can use Array of Integers parameter', function () {
-      cellIndex = 37;
+      cellIndex = 41;
       var width = 120, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);

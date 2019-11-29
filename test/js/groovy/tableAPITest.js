@@ -34,27 +34,9 @@ describe('(Groovy) Testing of table ', function () {
   var cellIndex;
   var imageDir = 'groovy/tableAPI';
 
-  describe('(Groovy) sendModel() method ', function () {
-    it('Should display table before updating ', function() {
-      cellIndex = 37;
-      var width = 160, height = 90;
-      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
-      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData, imageDir, 'cell19_case1.png');
-    });
-    it('Should display table after updating ', function() {
-      cellIndex += 1;
-      var width = 160, height = 90;
-      beakerxPO.runCodeCellByIndex(cellIndex);
-      var canvas = beakerxPO.getCodeCellByIndex(cellIndex - 1).$('canvas');
-      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData, imageDir, 'cell19_case2.png');
-    });
-  });
-
   describe('(Groovy) RowFilter ', function () {
     it('Should display formatted table ', function() {
-      cellIndex += 3;
+      cellIndex = 41;
       var width = 230, height = 70;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);

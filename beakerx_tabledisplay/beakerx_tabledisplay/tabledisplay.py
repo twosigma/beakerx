@@ -30,6 +30,7 @@ class Table(BaseObject):
     PAGE_SIZE = 1000
 
     def __init__(self, *args, **kwargs):
+        self.validate_args(args)
         self.values = []
         self.types = []
         types_map = dict()
@@ -69,6 +70,10 @@ class Table(BaseObject):
         self.endlessIndex = 0
         self.loadingMode = 'ALL'
         self.rowsToShow = RowsToShow.SHOW_25
+
+    def validate_args(self, args):
+        if len(args) > 2 and len(args[1]) != len(args[2]):
+            raise Exception("The length of types should be same as number of columns.")
 
     def convert_from_dict(self, args):
         self.columnNames.append("Key")

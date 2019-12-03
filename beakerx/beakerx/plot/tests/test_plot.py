@@ -15,8 +15,10 @@
 
 import unittest
 
+from beakerx import LegendPosition
+
 from ..chart import Plot
-from ..plotitem import StrokeType, Color, Crosshair, Points, ShapeType,  YAxis, Text, ConstantLine, ConstantBand
+from ..plotitem import StrokeType, Color, Crosshair, Points, ShapeType, YAxis, Text, ConstantLine, ConstantBand
 
 
 class TestPlot(unittest.TestCase):
@@ -157,3 +159,11 @@ class TestPlot(unittest.TestCase):
         # then
         item = plot.model['graphics_list'][0]
         self.assertEqual(item['shape'], "DIAMOND")
+
+    def test_should_set_legend_position(self):
+        # given
+        # when
+        plot = Plot(legendPosition=LegendPosition.LEFT)
+        # then
+        self.assertEqual(plot.model['legend_position']['type'], "LegendPosition")
+        self.assertEqual(plot.model['legend_position']['position'], "LEFT")

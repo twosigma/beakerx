@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,30 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.twosigma.beakerx.chart.xychart.plotitem;
 
-public enum ShapeType {
-  SQUARE("rect"),
-  CIRCLE("circle"),
-  TRIANGLE("triangle"),
-  DIAMOND("diamond"),
-  DCROSS("dcross"),
-  DOWNTRIANGLE("downtriangle"),
-  CROSS("cross"),
-  DEFAULT("DEFAULT"),
-  LEVEL("level"),
-  VLEVEL("vlevel"),
-  LINECROSS("linecross");
+import org.junit.Test;
 
-  private String shape;
+import static org.assertj.core.api.Assertions.assertThat;
 
-  ShapeType(String shape) {
-    this.shape = shape;
+public class ShapeTypeTest {
+
+  @Test
+  public void defaultShouldBeUppercase() {
+    assertThat(ShapeType.DEFAULT.getText()).isEqualTo("DEFAULT");
   }
-
-  public String getText() {
-    return shape;
-  }
-
 }

@@ -34,60 +34,22 @@ describe('(Groovy) Testing of table ', function () {
   var cellIndex;
   var imageDir = 'groovy/tableAPI';
 
-  describe('Count of types more then number of columns ', function () {
-    it('should display java.lang.IllegalStateException', function () {
-      cellIndex = 33;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var errorOutput = beakerxPO.getAllOutputsStderr(codeCell)[0];
-      expect(errorOutput.getText()).toMatch('java.lang.IllegalStateException: The length of types should be same');
-    });
-  });
-
-  describe('ImageFormat for local files ', function () {
+  describe('(Groovy) RowFilter ', function () {
     it('Should display formatted table ', function() {
-      cellIndex += 2;
-      var width = 740, height = 240;
-      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
-      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData, imageDir, 'cell16_case1.png');
-    });
-  });
-
-  describe('ImageFormat for encoded data ', function () {
-    it('Should display formatted table ', function() {
-      cellIndex += 2;
-      var width = 150, height = 150;
-      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
-      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData, imageDir, 'cell18_case1.png');
-    });
-  });
-
-  describe('sendModel() method ', function () {
-    it('Should display table before updating ', function() {
-      cellIndex += 2;
-      var width = 160, height = 90;
-      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
-      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData, imageDir, 'cell19_case1.png');
-    });
-    it('Should display table after updating ', function() {
-      cellIndex += 1;
-      var width = 160, height = 90;
-      beakerxPO.runCodeCellByIndex(cellIndex);
-      var canvas = beakerxPO.getCodeCellByIndex(cellIndex - 1).$('canvas');
-      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData, imageDir, 'cell19_case2.png');
-    });
-  });
-
-  describe('RowFilter ', function () {
-    it('Should display formatted table ', function() {
-      cellIndex += 3;
+      cellIndex = 41;
       var width = 230, height = 70;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell20_case1.png');
+    });
+  });
+
+  describe('(Groovy) Count of types more then number of columns ', function () {
+    it('should display java.lang.IllegalStateException', function () {
+      cellIndex += 2;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var errorOutput = beakerxPO.getAllOutputsStderr(codeCell)[0];
+      expect(errorOutput.getText()).toMatch('java.lang.IllegalStateException: The length of types should be same');
     });
   });
 

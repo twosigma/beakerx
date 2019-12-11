@@ -55,6 +55,7 @@ public class ScalaDefaultVariables extends DefaultJVMVariables {
         "com.twosigma.beakerx.table.highlight.HighlightStyle",
         "com.twosigma.beakerx.table.TooltipAction",
         "com.twosigma.beakerx.table.RowFilter",
+        "com.twosigma.beakerx.table.RowsToShow",
         "com.twosigma.beakerx.table.FontColorProvider",
         "com.twosigma.beakerx.scala.fileloader._",
         "com.twosigma.beakerx.chart.xychart.plotitem.ShapeType",

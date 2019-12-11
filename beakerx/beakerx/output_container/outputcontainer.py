@@ -12,12 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from beakerx.beakerx_widgets import *
-from beakerx.tabledisplay import *
-from beakerx.plot.chart import *
+from beakerx_base import BeakerxHTML, BeakerxHTMLPre, CyclingDisplayBox, Tab, BeakerxHBox, GridView
+from beakerx_tabledisplay import TableDisplay
 from ipywidgets import Widget
-from abc import *
-from pandas import *
+from abc import abstractmethod
+from pandas import DataFrame
 
 
 class OutputContainerLayoutManager:

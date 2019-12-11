@@ -13,12 +13,13 @@
 # limitations under the License.
 
 from enum import Enum
-from beakerx.utils import *
+
+from beakerx_base import getValue
 
 
 class LegendLayout(Enum):
-    HORIZONTAL = 1
-    VERTICAL = 2
+    HORIZONTAL = "HORIZONTAL"
+    VERTICAL = "VERTICAL"
 
 
 class LegendPosition():
@@ -34,11 +35,11 @@ class LegendPosition():
             self.y = None
     
     class Position(Enum):
-        TOP = 1
-        LEFT = 2
-        BOTTOM = 3
-        RIGHT = 4
-        TOP_LEFT = 5
-        TOP_RIGHT = 6
-        BOTTOM_LEFT = 7
-        BOTTOM_RIGHT = 8
+        TOP = "TOP"
+        LEFT = "LEFT"
+        BOTTOM = "BOTTOM"
+        RIGHT = "RIGHT"
+        TOP_LEFT = "TOP_LEFT"
+        TOP_RIGHT = "TOP_RIGHT"
+        BOTTOM_LEFT = "BOTTOM_LEFT"
+        BOTTOM_RIGHT = "BOTTOM_RIGHT"

@@ -36,7 +36,7 @@ class EnableSparkSupportActionOptionsImpl implements EnableSparkSupportActionOpt
 
   @Override
   public MagicCommandOutcomeItem loadSpark(Message parent, String version) {
-    String sparkDeps = SPARK_SQL_2_11 + version + System.lineSeparator() + SPARK_MLLIB_2_11 + version;
+    String sparkDeps = SPARK_SQL_2_12 + version + System.lineSeparator() + SPARK_MLLIB_2_12 + version;
     Optional<MagicCommandFunctionality> magicOption = getMagicCommand(COMMAND);
     ClassPathAddMvnCellMagicCommand magic = ((ClassPathAddMvnCellMagicCommand) magicOption.get());
     return magic.execute(COMMAND, sparkDeps, parent);

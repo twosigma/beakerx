@@ -16,10 +16,13 @@
 package com.twosigma.beakerx.scala.table
 
 import java.util
+import java.util.{Spliterator, Spliterators}
 import java.util.concurrent.TimeUnit
+import java.util.stream.StreamSupport
 
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter
 import com.twosigma.beakerx.table._
+import com.twosigma.beakerx.table.action.TableActionDetails
 import com.twosigma.beakerx.table.format.TableDisplayStringFormat
 import com.twosigma.beakerx.table.highlight.TableDisplayCellHighlighter
 import com.twosigma.beakerx.table.renderer.TableDisplayCellRenderer
@@ -28,8 +31,27 @@ import com.twosigma.beakerx.widget.DisplayableWidget
 import scala.collection.JavaConverters._
 import scala.collection.immutable.ListMap
 
-
 object TableDisplay {
+
+  def create(v: Seq[Map[String, Any]]): com.twosigma.beakerx.table.TableDisplay = {
+    val value: java.util.stream.Stream[util.Map[String, Object]] = stream2javaStream(v.toStream)
+    new com.twosigma.beakerx.table.TableDisplay(value)
+  }
+
+  def stream2javaStream(scalaStream: Stream[Map[String, Any]]): java.util.stream.Stream[util.Map[String, Object]] = {
+    val iter: Iterator[Map[String, Any]] = scalaStream.toIterator
+    val newIter = new util.Iterator[util.Map[String, Object]] {
+      override def hasNext: Boolean = iter.hasNext
+      override def next(): util.Map[String, Object] ={
+        val m: Map[String, Any] = iter.next()
+        val stringToObject = new util.LinkedHashMap[String,Object]()
+        m.foreach{ case (k, v) => stringToObject.put(k,v.asInstanceOf[Object])}
+        stringToObject
+      }
+    }
+    val value = Spliterators.spliteratorUnknownSize(newIter,Spliterator.NONNULL)
+    StreamSupport.stream(value,false)
+  }
 
   private def create(v: Map[_, _]) = {
     new com.twosigma.beakerx.table.TableDisplay(v.asJava)
@@ -57,11 +79,6 @@ object TableDisplay {
     javaStandardized
   }
 
-  def create(v: Seq[Map[String, Any]]): com.twosigma.beakerx.table.TableDisplay = {
-    val javaCollection: util.Collection[util.Map[String, Object]] = toJavaCollection(v)
-    new com.twosigma.beakerx.table.TableDisplay(javaCollection)
-  }
-
   def toJavaCollection(v: Seq[Map[String, Any]]): util.Collection[util.Map[String, Object]] = {
     val javaMaps: Seq[util.Map[String, Object]] = v.map(m => m.mapValues(_.asInstanceOf[Object]).asJava)
     val javaCollection: util.Collection[util.Map[String, Object]] = javaMaps.asJava
@@ -81,9 +98,14 @@ object TableDisplay {
     new com.twosigma.beakerx.table.TableDisplay(javaCollection, serializer)
   }
 
+  def setLoadingMode(m:TableDisplayLoadingMode): Unit ={
+    com.twosigma.beakerx.table.TableDisplay.setLoadingMode(m)
+  }
+
 }
 
 class TableDisplay private(tableDisplay: com.twosigma.beakerx.table.TableDisplay) extends DisplayableWidget {
+
   def this(v: Map[_, _]) = {
     this(TableDisplay.create(v))
   }
@@ -107,6 +129,8 @@ class TableDisplay private(tableDisplay: com.twosigma.beakerx.table.TableDisplay
   def display() = tableDisplay.display()
 
 
+  def details: TableActionDetails = tableDisplay.getDetails
+
   def setStringFormatForTimes(timeUnit: TimeUnit) = tableDisplay.setStringFormatForTimes(timeUnit)
 
   def setAlignmentProviderForType(columnType: ColumnType, tableDisplayAlignmentProvider: TableDisplayAlignmentProvider) = tableDisplay.setAlignmentProviderForType(columnType, tableDisplayAlignmentProvider)
@@ -122,8 +146,6 @@ class TableDisplay private(tableDisplay: com.twosigma.beakerx.table.TableDisplay
   def setRendererForColumn(column: String, renderer: TableDisplayCellRenderer) = tableDisplay.setRendererForColumn(column, renderer)
 
   def setColumnFrozen(column: String, frozen: Boolean) = tableDisplay.setColumnFrozen(column, frozen)
-
-  def setColumnFrozenRight(column: String, frozen: Boolean) = tableDisplay.setColumnFrozenRight(column, frozen)
 
   def setColumnVisible(column: String, visible: Boolean) = tableDisplay.setColumnVisible(column, visible)
 
@@ -150,4 +172,15 @@ class TableDisplay private(tableDisplay: com.twosigma.beakerx.table.TableDisplay
   def setRowFilter(rowFilter: RowFilter) = tableDisplay.setRowFilter(rowFilter)
 
   def addContextMenuItem(itemName: String, contextMenuAction: ContextMenuAction) = tableDisplay.addContextMenuItem(itemName, contextMenuAction)
+
+  def getValues():List[List[_]] = {
+    tableDisplay.getValues.asScala.toList.map(y => y.asScala.toList)
+  }
+
+  def removeAllCellHighlighters()= tableDisplay.removeAllCellHighlighters()
+
+  def getCellHighlighters() = tableDisplay.getCellHighlighters()
+
+  def setRowsToShow(rows: RowsToShow) = tableDisplay.setRowsToShow(rows)
+
 }

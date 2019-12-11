@@ -14,6 +14,11 @@
  *  limitations under the License.
  */
 
+declare global {
+    var BEAKERX_MODULE_VERSION: any;
+    var __webpack_public_path__: any;
+    var Jupyter: any;
+}
 import widgets from './widgets';
 
 export class BxHTMLModel extends widgets.HTMLModel {

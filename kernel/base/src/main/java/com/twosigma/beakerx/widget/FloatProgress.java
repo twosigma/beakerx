@@ -52,11 +52,12 @@ public class FloatProgress extends BoundedFloatWidget {
 
   public FloatProgress() {
     super();
+    this.style = new ProgressStyle();
     openComm();
   }
 
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+  protected HashMap<String, Object> content(HashMap<String, Object> content) {
     super.content(content);
     content.put(ORIENTATION, this.orientation);
     content.put("bar_style", "");

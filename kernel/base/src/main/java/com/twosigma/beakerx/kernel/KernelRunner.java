@@ -15,15 +15,15 @@
  */
 package com.twosigma.beakerx.kernel;
 
-import com.twosigma.beakerx.jvm.threads.BeakerStdOutErrHandler;
+import com.twosigma.beakerx.jvm.threads.BeakerStdInOutErrHandler;
 
 public class KernelRunner {
 
   public static void run(KernelFactory kernelFactory) {
-    BeakerStdOutErrHandler.init();
+    BeakerStdInOutErrHandler.init();
     KernelFunctionality kernel = kernelFactory.createKernel();
     kernel.run();
-    BeakerStdOutErrHandler.fini();
+    BeakerStdInOutErrHandler.fini();
   }
 
   public interface KernelFactory {

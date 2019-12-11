@@ -16,13 +16,13 @@
 
 define([
   'underscore',
-  './../plotUtils'
 ], function(
-  _,
-  plotUtils
+  _
 ) {
 
-  var plotTip = require('./../plotTip').default;
+  const PlotUtils = require('../utils/PlotUtils').default;
+  const PlotTip = require('../PlotTip').default;
+
   var PlotLodLine = function(data){
     _.extend(this, data); // copy properties to itself
     this.format();
@@ -45,7 +45,7 @@ define([
 
   PlotLodLine.prototype.format = function() {
     if (this.color != null) {
-      this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
+      this.tip_color = PlotColorUtils.createColor(this.color, this.color_opacity);
     } else {
       this.tip_color = "gray";
     }
@@ -127,9 +127,9 @@ define([
     var itemsvg = svg.select("#" + this.id);
     itemsvg.selectAll("path")
       .transition()
-      .duration(plotUtils.getHighlightDuration())
+      .duration(PlotUtils.getHighlightDuration())
       .style("stroke-width", function(d) {
-        return plotUtils.getHighlightedSize(d.st_w, highlighted);
+        return PlotUtils.getHighlightedSize(d.st_w, highlighted);
       })
   };
 
@@ -181,7 +181,7 @@ define([
   };
 
   PlotLodLine.prototype.hideTips = function(scope, hidden) {
-    plotTip.hideTips(scope, this.id, hidden);
+    PlotTip.hideTips(scope, this.id, hidden);
   };
 
   return PlotLodLine;

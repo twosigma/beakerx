@@ -16,9 +16,8 @@
 package com.twosigma.beakerx;
 
 import com.twosigma.beakerx.evaluator.InternalVariable;
-import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.kernel.KernelManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,9 +46,7 @@ public class NamespaceClientShowProgressReportingTest {
   @Test
   public void updateProgressReporting() throws Exception {
     //given
-    SimpleEvaluationObject code = new SimpleEvaluationObject("code");
-    Message jupyterMessage = commMsg();
-    code.setJupyterMessage(jupyterMessage);
+    SimpleEvaluationObject code = new SimpleEvaluationObject("code", new KernelTest.SeoConfigurationFactoryMock(kernel, commMsg()));
     InternalVariable.setValue(code);
     //when
     namespaceClient.showProgressUpdate("msg1", 20);

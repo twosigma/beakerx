@@ -13,22 +13,18 @@
 
 from IPython import get_ipython
 from IPython.core.magic import (magics_class, cell_magic)
-from .kernel_magic import KernelMagics
+from beakerx_magics import KernelRunnerMagic
 from ipykernel.zmqshell import ZMQInteractiveShell
 
-
 @magics_class
-class ScalaMagics(KernelMagics):
+class ScalaMagics(KernelRunnerMagic):
 
     def __init__(self, shell):
         super(ScalaMagics, self).__init__(shell)
 
-    def start(self):
-        super(ScalaMagics, self).start('scala')
-
     @cell_magic
     def scala(self, line, cell):
-        return self.run_cell(line, cell)
+        return super(ScalaMagics, self).kernel("scala", cell)
 
 
 def load_ipython_extension(ipython):

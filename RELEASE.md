@@ -96,8 +96,11 @@ Publish on npmjs
 
 To update the embedded version of our widget library, and our Lab extension:
 ```
+(cd js/beakerx_tabledisplay; npm publish)
 (cd js/notebook; npm publish)
 (cd js/lab; npm publish)
+(cd js/lab-theme-dark; npm publish)
+(cd js/lab-theme-light; npm publish)
 ```
 
 Release to Docker Hub

@@ -22,10 +22,13 @@ var LabPageObject = function () {
     console.log('jupyter lab application');
     browser.url('http://127.0.0.1:8888/lab');
     browser.waitUntil(function(){
-      return browser.$('body').getAttribute('data-left-sidebar-widget') === 'filebrowser';
+      return browser.$$('div.p-Widget.jp-BreadCrumbs.jp-FileBrowser-crumbs').length > 0;
     });
-    browser.$('div.p-Widget.jp-DirListing.jp-FileBrowser-listing').waitForEnabled();
-    browser.pause(2000);
+    browser.waitUntil(function(){
+      return browser.$$('span[data-icon="folder"]').length > 0;
+    });
+    browser.$('span.jp-BreadCrumbs-home').click();
+    browser.pause(500);
     var dirs = (shortName != null)? shortName.split('/') : url.split('/');
     var i = 0;
     while(dirs.length > i){
@@ -34,23 +37,21 @@ var LabPageObject = function () {
         i+=1;
         continue;
       }
-      browser.doubleClick('span=' + dirName);
-      browser.$('span=' + dirName).waitForEnabled();
+      browser.$('span=' + dirName).scrollIntoView();
+      browser.$('span=' + dirName).doubleClick();
+      browser.pause(500);
       i+=1;
     }
     this.increaseWindowWidth(200);
   };
 
   this.increaseWindowWidth = function (addWidth) {
-    var curSize = browser.windowHandleSize();
-    browser.setViewportSize({
-      width: curSize.value.width + addWidth,
-      height: curSize.value.height
-    });
+    var curSize = browser.getWindowSize();
+    browser.setWindowSize(curSize.width + addWidth, curSize.height);
   };
 
   this.clickSaveNotebook = function () {
-    browser.click('div=File');
+    browser.$('div=File').click();
     var saveMenuItem = browser.$$('li[data-command="docmanager:save"]')[1];
     saveMenuItem.waitForEnabled();
     saveMenuItem.click();
@@ -59,52 +60,61 @@ var LabPageObject = function () {
 
   /* Close and Shutdown Notebook */
   this.closeAndHaltNotebook = function () {
-    this.clearAllOutputs();
-    browser.click('div=File');
+    this.clickCellAllOutputClear;
+    browser.$('div=File').click();
     var closeAndCleanupMenuItem = browser.$('li[data-command="filemenu:close-and-cleanup"]');
     closeAndCleanupMenuItem.waitForEnabled();
     closeAndCleanupMenuItem.click();
     var acceptDialogButton = browser.$('button.jp-Dialog-button.jp-mod-accept.jp-mod-warn.jp-mod-styled');
     acceptDialogButton.waitForEnabled();
     acceptDialogButton.click();
+    browser.waitUntil(function(){
+      return browser.$$('li[data-type="document-title"]').length < 1;
+    }, 10000);
+    browser.pause(5000);
   };
 
   this.saveAndCloseNotebook = function () {
-    this.clearAllOutputs();
+    this.clickCellAllOutputClear;
     this.clickSaveNotebook();
-    browser.click('div=File');
+    browser.$('div=File').click();
     var closeAndCleanupMenuItem = browser.$('li[data-command="filemenu:close-and-cleanup"]');
     closeAndCleanupMenuItem.waitForEnabled();
     closeAndCleanupMenuItem.click();
     var acceptDialogButton = browser.$('button.jp-Dialog-button.jp-mod-accept.jp-mod-warn.jp-mod-styled');
     acceptDialogButton.waitForEnabled();
     acceptDialogButton.click();
+    browser.waitUntil(function(){
+      return browser.$$('li[data-type="document-title"]').length < 2;
+    });
   };
 
-  this.clearAllOutputs = function() {
-    browser.click('div=Edit');
+  this.clickCellAllOutputClear = function() {
+    browser.$('div=Edit').click();
     var clearAllOutputsMenuItem = browser.$('li[data-command="editmenu:clear-all"]');
     clearAllOutputsMenuItem.waitForEnabled();
     clearAllOutputsMenuItem.click();
   };
 
   this.getCodeCellByIndex = function (index) {
-    return $$('div.p-Widget.jp-Cell.jp-CodeCell.jp-Notebook-cell')[index];
+    return $$('div.jp-Cell.jp-CodeCell.jp-Notebook-cell')[index];
   };
 
   this.clickRunCell = function () {
-    var buttonRunCell = browser.$('button.jp-Toolbar-button.jp-RunIcon.jp-Toolbar-item');
-    buttonRunCell.waitForEnabled();
+    browser.waitUntil(function(){
+      return browser.$$('div.jp-NotebookPanel-toolbar > div.jp-ToolbarButton').length > 1;
+    });
+    var buttonRunCell = browser.$$('div.jp-NotebookPanel-toolbar > div.jp-ToolbarButton')[5];
     buttonRunCell.click();
     this.kernelIdleIcon.waitForEnabled();
   };
 
   this.clickRunCellWithoutWaiting = function () {
-    browser.$('button.jp-Toolbar-button.jp-RunIcon.jp-Toolbar-item').click();
+    browser.$('button.jp-ToolbarButtonComponent > span.jp-RunIcon').click();
   };
 
   this.clickRunAllCells = function() {
-    browser.click('div=Run');
+    browser.$('div=Run').click();
     var runAllCellsMenuItem = browser.$('li[data-command="runmenu:run-all"]');
     runAllCellsMenuItem.waitForEnabled();
     runAllCellsMenuItem.click();
@@ -115,7 +125,7 @@ var LabPageObject = function () {
   };
 
   this.clickInterruptKernel = function () {
-    browser.$('button.jp-Toolbar-button.jp-StopIcon.jp-Toolbar-item]').click();
+    browser.$('button.jp-ToolbarButtonComponent > span.jp-StopIcon').click();
   };
 
   this.getAllOutputAreaChildren = function (codeCell) {
@@ -123,15 +133,31 @@ var LabPageObject = function () {
   };
 
   this.getAllOutputsExecuteResult = function (codeCell) {
+    browser.waitUntil(function(){
+      return codeCell.$$('div.jp-OutputArea-child.jp-OutputArea-executeResult > div.jp-OutputArea-output').length > 0;
+    });
     return codeCell.$$('div.jp-OutputArea-child.jp-OutputArea-executeResult > div.jp-OutputArea-output');
   };
 
   this.getAllOutputsStdout = function (codeCell) {
+    browser.waitUntil(function(){
+      return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output[data-mime-type="application/vnd.jupyter.stdout"]').length > 0;
+    });
     return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output[data-mime-type="application/vnd.jupyter.stdout"]');
   };
 
   this.getAllOutputsStderr = function (codeCell) {
+    browser.waitUntil(function(){
+      return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output[data-mime-type="application/vnd.jupyter.stderr"]').length > 0;
+    });
     return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output[data-mime-type="application/vnd.jupyter.stderr"]');
+  };
+
+  this.getAllOutputsHtmlType = function (codeCell) {
+    browser.waitUntil(function(){
+      return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output[data-mime-type="text/html"]').length > 0;
+    });
+    return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output[data-mime-type="text/html"]');
   };
 
   this.getAllOutputsWidget = function(codeCell){
@@ -139,34 +165,33 @@ var LabPageObject = function () {
   };
 
   this.callAutocompleteAndGetItsList = function(codeCell, codeStr){
-    codeCell.scroll();
-    codeCell.click('div.CodeMirror.cm-s-jupyter');
+    codeCell.scrollIntoView();
+    codeCell.$('div.CodeMirror.cm-s-jupyter').click();
     codeCell.keys(codeStr);
     browser.keys("Tab");
     browser.keys('\uE000');
     browser.waitUntil(function() {
-      return browser.isVisible('ul.jp-Completer')
+      return browser.$('ul.jp-Completer').isDisplayed()
     }, 10000, 'autocomplete list is not visible');
     return $$('li.jp-Completer-item');
   };
 
   this.callDocAndGetItsTooltip = function(codeCell, codeStr){
-    codeCell.scroll();
-    codeCell.click('div.CodeMirror.cm-s-jupyter');
+    codeCell.scrollIntoView();
+    codeCell.$('div.CodeMirror.cm-s-jupyter').click();
     codeCell.keys(codeStr);
-    browser.keys('Shift');
-    browser.keys('Tab');
+    browser.keys(["Shift", "Tab"]);
     browser.keys('\uE000');
     browser.waitUntil(function() {
-      return browser.isVisible('div.jp-Tooltip');
+      return browser.$('div.jp-Tooltip').isDisplayed();
     }, 10000, 'doc tooltip is not visible');
     return $('div.jp-Tooltip-content');
   };
 
   this.openUIWindow = function(){
-    browser.$$('li.p-TabBar-tab')[2].click();
-    browser.click('div.p-CommandPalette-itemLabel=BeakerX Options');
-    browser.$$('li.p-TabBar-tab')[9].click();
+    browser.$$('li[data-id="command-palette"]')[0].click();
+    browser.$('div.p-CommandPalette-itemLabel=BeakerX Options').click();
+    browser.$$('ul.p-TabBar-content')[2].click('li[data-id="beakerx-tree-widget"]');
   };
 
   this.setJVMProperties = function (heapSize, key, value, url) {
@@ -174,7 +199,7 @@ var LabPageObject = function () {
       this.runNotebookByUrl(url);
     }
     this.openUIWindow();
-    browser.click('div.p-CommandPalette-itemLabel=BeakerX Options');
+    browser.$('div.p-CommandPalette-itemLabel=BeakerX Options').click();
     var uiPanel = browser.$('div#beakerx-tree-widget');
     uiPanel.$$('li.p-TabBar-tab')[0].click();
 
@@ -191,9 +216,9 @@ var LabPageObject = function () {
     browser.$$('li.p-TabBar-tab')[0].click();
     browser.pause(2000);
     if(url != null) {
-      browser.$('div.p-DockPanel-tabBar').click('li[data-type="document-title"]');
+      browser.$('div.p-DockPanel-tabBar').$('li[data-type="document-title"]').click();
 
-      browser.click('div=File');
+      browser.$('div=File').click();
       var closeAndCleanupMenuItem = browser.$('li[data-command="filemenu:close-and-cleanup"]');
       closeAndCleanupMenuItem.waitForEnabled();
       closeAndCleanupMenuItem.click();
@@ -201,7 +226,19 @@ var LabPageObject = function () {
       acceptDialogButton.waitForEnabled();
       acceptDialogButton.click();
     }
-  }
+  };
+
+  this.getJupyterWidget = function(codeCell){
+    return codeCell.$('div.jupyter-widgets > div.jupyter-widgets');
+  };
+
+  this.switchToNotebookWindow = function(){
+    browser.switchWindow('JupyterLab');
+  };
+
+  this.getSvgResult = function(container){
+    return container.$('img');
+  };
 
 };
 module.exports = LabPageObject;

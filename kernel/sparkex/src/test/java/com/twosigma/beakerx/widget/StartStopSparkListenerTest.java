@@ -16,14 +16,14 @@
 package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.configuration.SparkConfiguration;
 import org.apache.spark.scheduler.SparkListenerApplicationEnd;
-import org.apache.spark.scheduler.SparkListenerApplicationStart;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
-import scala.Option;
 
 import java.util.List;
+import java.util.Map;
 
 public class StartStopSparkListenerTest {
 
@@ -57,6 +57,11 @@ public class StartStopSparkListenerTest {
     @Override
     public Text getMasterURL() {
       return null;
+    }
+
+    @Override
+    public boolean getHiveSupport() {
+      return false;
     }
 
     @Override
@@ -111,6 +116,16 @@ public class StartStopSparkListenerTest {
 
     @Override
     public void taskCancelled(int stageId, long taskId) {
+
+    }
+
+    @Override
+    public Button getConnectButton() {
+      return null;
+    }
+
+    @Override
+    public void afterDisplay(Message message) {
 
     }
   }

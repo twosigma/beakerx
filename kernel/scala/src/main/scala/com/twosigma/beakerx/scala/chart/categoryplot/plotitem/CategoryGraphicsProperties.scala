@@ -34,7 +34,7 @@ trait CategoryGraphicsProperties extends GraphicsProperties {
   def color_=(color: Color): Unit = setColor(color)
   def color_=(color: java.awt.Color): Unit = setColor(color)
   def color_=[T <: AnyRef : BeakerColor](colors: Seq[T]): Unit = setColor(colors.toObjects.asJava)
-  def colors: Seq[Color] = getNullableList(getColors) map {
+  def colors: Seq[Color] = getNullableList(()=> getColors) map {
     case color: Color => color
   }
 

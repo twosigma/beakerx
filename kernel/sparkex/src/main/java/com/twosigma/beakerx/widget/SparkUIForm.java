@@ -17,6 +17,7 @@ package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.kernel.msg.StacktraceHtmlPrinter;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.configuration.SparkConfiguration;
 import org.apache.spark.SparkConf;
 
 import java.util.ArrayList;
@@ -51,6 +52,7 @@ public class SparkUIForm extends VBox {
   private Text masterURL;
   private Text executorMemory;
   private Text executorCores;
+  private HiveSupport hiveSupport;
   private SparkConfiguration advancedOption;
   private SparkEngine sparkEngine;
   private SparkUI.OnSparkButtonAction onStartAction;
@@ -73,9 +75,10 @@ public class SparkUIForm extends VBox {
     try {
       this.profileModal = createProfileModal();
       this.profileManagement = createProfileManagement();
-      this.masterURL = createMasterURL();
-      this.executorMemory = createExecutorMemory();
-      this.executorCores = createExecutorCores();
+      this.masterURL = createMasterURL(this.sparkUiDefaults);
+      this.executorMemory = createExecutorMemory(this.sparkUiDefaults);
+      this.executorCores = createExecutorCores(this.sparkUiDefaults);
+      this.hiveSupport = createHiveSupport();
       this.errors = new HBox(new ArrayList<>());
       this.errors.setDomClasses(asList("bx-spark-connect-error"));
       this.addConnectButton(createConnectButton(), this.errors);
@@ -84,12 +87,21 @@ public class SparkUIForm extends VBox {
       this.add(masterURL);
       this.add(executorCores);
       this.add(executorMemory);
-      this.advancedOption = new SparkConfiguration(sparkEngine.getAdvanceSettings(), sparkEngine.sparkVersion());
+      this.add(hiveSupport);
+      this.advancedOption = new SparkConfiguration(
+              sparkEngine.getAdvanceSettings(this.sparkUiDefaults),
+              sparkEngine.sparkVersion(),
+              hiveSupport);
       this.add(advancedOption);
     } catch (Exception ex) {
       sendError(StacktraceHtmlPrinter.printRedBold(ex.getMessage()));
     }
+  }
 
+  private HiveSupport createHiveSupport() {
+    HiveSupport hiveSupport = new HiveSupport("Enable Hive Support");
+    hiveSupport.setDomClasses(new ArrayList<>(asList("bx-spark-hive-support")));
+    return hiveSupport;
   }
 
   private HBox createProfileModal() {
@@ -243,12 +255,16 @@ public class SparkUIForm extends VBox {
     return sparkEngine.getSparkConf();
   }
 
-  private Text createMasterURL() {
+  private Text createMasterURL(SparkUiDefaults defaults) {
     Text masterURL = new Text();
     masterURL.setDescription("Master URL");
     masterURL.setDomClasses(new ArrayList<>(asList("bx-spark-config", "bx-spark-master-url")));
     if (getSparkConf().contains(SPARK_MASTER)) {
       masterURL.setValue(getSparkConf().get(SPARK_MASTER));
+    } else if (this.sparkEngine.getSparkEngineConf().getMaster().isPresent()) {
+      masterURL.setValue(this.sparkEngine.getSparkEngineConf().getMaster().get());
+    } else if (defaults.containsKey(SPARK_MASTER)) {
+      masterURL.setValue(defaults.get(SPARK_MASTER));
     } else {
       masterURL.setValue(SPARK_MASTER_DEFAULT);
     }
@@ -263,24 +279,32 @@ public class SparkUIForm extends VBox {
     return connect;
   }
 
-  private Text createExecutorMemory() {
+  private Text createExecutorMemory(SparkUiDefaults defaults) {
     Text memory = new Text();
     memory.setDescription("Executor Memory");
     memory.setDomClasses(new ArrayList<>(asList("bx-spark-config", "bx-spark-executor-memory")));
     if (getSparkConf().contains(SPARK_EXECUTOR_MEMORY)) {
       memory.setValue(getSparkConf().get(SPARK_EXECUTOR_MEMORY));
+    } else if (this.sparkEngine.getSparkEngineConf().getExecutorMemory().isPresent()) {
+      memory.setValue(this.sparkEngine.getSparkEngineConf().getExecutorMemory().get());
+    } else if (defaults.containsKey(SPARK_EXECUTOR_MEMORY)) {
+      memory.setValue(defaults.get(SPARK_EXECUTOR_MEMORY));
     } else {
       memory.setValue(SparkUI.SPARK_EXECUTOR_MEMORY_DEFAULT);
     }
     return memory;
   }
 
-  private Text createExecutorCores() {
+  private Text createExecutorCores(SparkUiDefaults defaults) {
     Text cores = new Text();
     cores.setDescription("Executor Cores");
     cores.setDomClasses(new ArrayList<>(asList("bx-spark-config", "bx-spark-executor-cores")));
     if (getSparkConf().contains(SPARK_EXECUTOR_CORES)) {
       cores.setValue(getSparkConf().get(SPARK_EXECUTOR_CORES));
+    } else if (this.sparkEngine.getSparkEngineConf().getExecutorCores().isPresent()) {
+      cores.setValue(this.sparkEngine.getSparkEngineConf().getExecutorCores().get());
+    } else if (defaults.containsKey(SPARK_EXECUTOR_CORES)) {
+      cores.setValue(defaults.get(SPARK_EXECUTOR_CORES));
     } else {
       cores.setValue(SparkUI.SPARK_EXECUTOR_CORES_DEFAULT);
     }
@@ -289,6 +313,10 @@ public class SparkUIForm extends VBox {
 
   public Text getMasterURL() {
     return this.masterURL;
+  }
+
+  public Checkbox getHiveSupport() {
+    return this.hiveSupport;
   }
 
   public Text getExecutorMemory() {
@@ -330,6 +358,7 @@ public class SparkUIForm extends VBox {
     this.masterURL.setDisabled(true);
     this.executorMemory.setDisabled(true);
     this.executorCores.setDisabled(true);
+    this.hiveSupport.setDisabled(true);
   }
 
   public void setAllToEnabled() {
@@ -340,11 +369,11 @@ public class SparkUIForm extends VBox {
     this.masterURL.setDisabled(false);
     this.executorMemory.setDisabled(false);
     this.executorCores.setDisabled(false);
+    this.hiveSupport.setDisabled(false);
     refreshElementsAvailability();
   }
 
   public void refreshElementsAvailability() {
     removeButton.setDisabled(this.profile.getValue().equals(DEFAULT_PROFILE));
   }
-
 }

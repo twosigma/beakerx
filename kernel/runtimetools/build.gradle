@@ -1,0 +1,33 @@
+version 'unspecified'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+ext.kernelIdName = 'runtimetools'
+
+configurations {
+    provided
+}
+
+repositories {
+    mavenCentral()
+}
+dependencies {
+    provided project(':base')
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile project(':base').sourceSets.test.output
+}
+
+task copyDependencies(type: Copy) {
+    from configurations.runtime
+    from jar
+    into new File(pathToStaticContent, 'runtimetools/lib')
+}
+
+jar.finalizedBy copyDependencies
+
+staticContent {
+    ext.executeStaticContent = false
+}

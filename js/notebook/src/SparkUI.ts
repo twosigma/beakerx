@@ -15,11 +15,11 @@
  */
 
 import {Widget} from "@phosphor/widgets";
-import BeakerXApi from "./tree/Utils/BeakerXApi";
+import BeakerXApi from "beakerx_shared/lib/api/BeakerXApi";
 import widgets from './widgets';
 import Timer = NodeJS.Timer;
 import {ToolbarSparkConnectionStatus} from "./sparkUI/toolbarSparkConnectionStatus";
-import bkUtils from './shared/bkUtils';
+import CommonUtils from "beakerx_shared/lib/utils/CommonUtils";
 
 const SPARK_LOCAL_MASTER_URL_PREFIX = 'local';
 
@@ -229,9 +229,11 @@ export class SparkUIView extends widgets.VBoxView {
   }
 
   private resolveChildren(view) {
-    return new Promise<void>((resolve, reject) => {
+    // TODO better typing
+    return new Promise<any[]>((resolve, reject) => {
       if (!view || !view.children_views) {
         reject();
+        return;
       }
 
       view.children_views.update(view.model.get('children'))
@@ -348,7 +350,7 @@ export class SparkUIView extends widgets.VBoxView {
     });
 
     this.connectionLabelActive.innerText = `${activeTasks}`;
-    this.connectionLabelMemory.innerText = `${bkUtils.formatBytes(storageMemory)}`;
+    this.connectionLabelMemory.innerText = `${CommonUtils.formatBytes(storageMemory)}`;
     this.connectionLabelDead.innerText = `${deadExecutors}`;
     this.toolbarSparkConnectionStatus.propagateToolbarWidget();
   }

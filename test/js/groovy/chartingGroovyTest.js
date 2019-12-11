@@ -24,7 +24,7 @@ describe('Charting Groovy tests ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/test/ipynb/groovy/ChartingTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/ipynb/groovy/XChartingTest.ipynb');
   }, 2);
 
   afterAll(function () {
@@ -76,7 +76,7 @@ describe('Charting Groovy tests ', function () {
       dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
       var treemap = dtContainer.$('#maing > g');
       expect(treemap.isEnabled()).toBeTruthy();
-      expect(treemap.$$('g.cell').length).toEqual(999);
+      expect(treemap.$$('g.cell').length).toEqual(1000);
     });
     it('Should display warning message ', function () {
       var treemap = dtContainer.$('#maing > g');

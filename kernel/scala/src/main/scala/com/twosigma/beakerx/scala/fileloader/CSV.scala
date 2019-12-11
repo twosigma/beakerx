@@ -17,7 +17,9 @@ package com.twosigma.beakerx.scala.fileloader
 
 import java.util
 
+import scala.collection.JavaConversions.mapAsScalaMap
 import scala.collection.JavaConverters._
+import scala.collection.immutable.ListMap
 
 
 class CSV extends com.twosigma.beakerx.fileloader.CSV {
@@ -25,7 +27,16 @@ class CSV extends com.twosigma.beakerx.fileloader.CSV {
   def readFile(fileName: String): List[Map[String, AnyRef]] = {
     val javaOutput: util.List[util.Map[String, AnyRef]] = super.read(fileName)
 
-    javaOutput.asScala.map(_.asScala.toMap).toList
+    val maps = javaOutput.asScala.map(x => createListMap(x))
+    maps.toList
+  }
+
+  private def createListMap(x: util.Map[String, AnyRef]) = {
+    var mapWithOrder = new ListMap[String, AnyRef]()
+    for ((key,value) <- x.asScala) {
+      mapWithOrder = mapWithOrder ++ ListMap( key -> value)
+    }
+    mapWithOrder
   }
 
   def readFileStream(fileName: String): Stream[Map[String, AnyRef]] = {

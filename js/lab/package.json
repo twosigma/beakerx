@@ -1,6 +1,6 @@
 {
   "name": "beakerx-jupyterlab",
-  "version": "1.3.0",
+  "version": "1.5.0",
   "description": "BeakerX: Beaker Extensions for JupyterLab",
   "author": "Two Sigma Open Source, LLC",
   "main": "dist/index.js",
@@ -21,35 +21,35 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "@jupyter-widgets/base": "^1.2.1",
-    "@jupyter-widgets/controls": "^1.4.0",
-    "@jupyter-widgets/output": "^1.1.1",
-    "@jupyterlab/application": "^0.17.2",
-    "@jupyterlab/apputils": "^0.17.2",
-    "@jupyterlab/cells": "^0.17.2",
-    "@jupyterlab/codemirror": "^0.17.3",
-    "@jupyterlab/coreutils": "^2.1.4",
-    "@jupyterlab/docregistry": "^0.17.2",
-    "@jupyterlab/notebook": "^0.17.2",
-    "@jupyterlab/outputarea": "^0.17.3",
-    "@jupyterlab/rendermime": "^0.17.3",
-    "@jupyterlab/rendermime-interfaces": "^1.1.2",
-    "@jupyterlab/services": "^3.0.3",
-    "@phosphor/datagrid": "^0.1.6",
-    "@phosphor/application": "^1.6.0",
-    "@types/node": "^8.0.56",
-    "rimraf": "^2.6.2",
-    "typescript": "~2.6.2"
+    "@jupyter-widgets/base": "^1.2.5 || ^2.0.1",
+    "@jupyter-widgets/controls": "^1.5.2",
+    "@jupyter-widgets/output": "^2.0.0",
+    "@jupyterlab/application": "^1.0.0",
+    "@jupyterlab/apputils": "^1.0.0",
+    "@jupyterlab/cells": "^1.0.0",
+    "@jupyterlab/codemirror": "^1.0.0",
+    "@jupyterlab/coreutils": "^3.0.0",
+    "@jupyterlab/docregistry": "^1.0.0",
+    "@jupyterlab/notebook": "^1.0.0",
+    "@jupyterlab/outputarea": "^1.0.0",
+    "@jupyterlab/rendermime": "^1.0.0",
+    "@jupyterlab/rendermime-interfaces": "^1.3.0",
+    "@jupyterlab/services": "^4.0.0",
+    "@phosphor/application": "^1.6.4",
+    "@phosphor/coreutils": "^1.3.1",
+    "@phosphor/commands": "^1.7.0",
+    "@phosphor/datagrid": "^0.1.10",
+    "@types/node": "^12.0.10",
+    "@types/codemirror": "^0.0.76",
+    "rimraf": "^2.6.3",
+    "typescript": "^3.5.2"
   },
   "jupyterlab": {
     "extension": "dist/index.js",
-    "mimeExtension": "dist/javascriptRendererExtension.js",
-    "themeDir": "src/theme/static"
+    "mimeExtension": "dist/javascriptRendererExtension.js"
   },
   "files": [
     "dist/**/*.js",
-    "lib/*",
-    "src/theme/static/*.css",
-    "src/theme/static/fonts/**/*"
+    "lib/*"
   ]
 }

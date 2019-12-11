@@ -16,20 +16,20 @@
 
 import * as d3 from 'd3';
 import * as _ from 'underscore';
-import plotTip from '../plotTip';
-
-const plotUtils = require('../plotUtils');
+import plotTip from '../PlotTip';
+import PlotUtils from "../utils/PlotUtils";
+import PlotStyleUtils from "beakerx_shared/lib/utils/PlotStyleUtils";
 
 namespace SaveAsContextMenu {
   export function saveAsSvg(scope) {
     const svgToSave = getSvgToSave(scope);
 
-    plotUtils.addInlineFonts(svgToSave);
+    PlotUtils.addInlineFonts(svgToSave);
 
-    const html = plotUtils.convertToXHTML(svgToSave.outerHTML);
+    const html = PlotStyleUtils.convertToXHTML(svgToSave.outerHTML);
     const fileName = _.isEmpty(scope.stdmodel.title) ? 'plot' : scope.stdmodel.title;
 
-    plotUtils.download(
+    PlotUtils.download(
       `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(html)))}`,
       `${fileName}.svg`
     );
@@ -38,17 +38,17 @@ namespace SaveAsContextMenu {
   export function saveAsPng(scale, scope) {
     const svg: SVGElement = getSvgToSave(scope);
 
-    plotUtils.addInlineFonts(svg);
+    PlotUtils.addInlineFonts(svg);
     scale = scale === undefined ? 1 : scale;
 
     scope.canvas.width = Number(svg.getAttribute("width")) * scale;
     scope.canvas.height = Number(svg.getAttribute("height")) * scale;
 
-    const html = plotUtils.convertToXHTML(svg.outerHTML);
+    const html = PlotStyleUtils.convertToXHTML(svg.outerHTML);
     const imgsrc = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html)));
     const fileName = _.isEmpty(scope.stdmodel.title) ? 'plot' : scope.stdmodel.title;
 
-    plotUtils.drawPng(scope.canvas, imgsrc, fileName + ".png");
+    PlotUtils.drawPng(scope.canvas, imgsrc, fileName + ".png");
   }
 
   export function getSvgToSave(scope) {
@@ -57,7 +57,7 @@ namespace SaveAsContextMenu {
     setAttributes(svg);
 
     const plotTitle = scope.jqplottitle;
-    const titleOuterHeight = plotUtils.getActualCss(plotTitle, 'outerHeight', true);
+    const titleOuterHeight = PlotStyleUtils.getActualCss(plotTitle, 'outerHeight', true);
 
     addLegend(scope, svg, plotTitle, titleOuterHeight);
     addTooltips(scope, svg, plotTitle, titleOuterHeight);
@@ -82,10 +82,10 @@ namespace SaveAsContextMenu {
 
   function addTooltips(scope, svg, plotTitle, titleOuterHeight) {
     plotTip.appendTooltipsToSvg(scope, d3.select(svg));
-    plotUtils.translateChildren(svg, 0, titleOuterHeight);
-    plotUtils.addTitleToSvg(svg, plotTitle, {
+    PlotUtils.translateChildren(svg, 0, titleOuterHeight);
+    PlotUtils.addTitleToSvg(svg, plotTitle, {
       width: plotTitle.width(),
-      height: plotUtils.getActualCss(plotTitle, 'outerHeight')
+      height: PlotStyleUtils.getActualCss(plotTitle, 'outerHeight')
     });
   }
 
@@ -99,7 +99,7 @@ namespace SaveAsContextMenu {
         styleString = cellModel.element_styles[style];
 
         if (style === '.plot-title') {
-          styleString = plotUtils.adjustStyleForSvg(styleString);
+          styleString = PlotUtils.adjustStyleForSvg(styleString);
         }
 
         extraStyles.push(style + ' {' + styleString + '}');
@@ -110,14 +110,14 @@ namespace SaveAsContextMenu {
       extraStyles = extraStyles.concat(cellModel.custom_styles);
     }
 
-    plotUtils.addInlineStyles(svg, extraStyles);
+    PlotUtils.addInlineStyles(svg, extraStyles);
 
     return svgReplaceNbspCharacters(svg);
   }
 
   function adjustSvgPositionWithLegend(scope, svg, titleOuterHeight) {
-    let W = plotUtils.outerWidth(scope.jqlegendcontainer);
-    let H = plotUtils.outerHeight(scope.jqlegendcontainer);
+    let W = PlotStyleUtils.outerWidth(scope.jqlegendcontainer);
+    let H = PlotStyleUtils.outerHeight(scope.jqlegendcontainer);
 
     H += titleOuterHeight;
 

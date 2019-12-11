@@ -36,7 +36,7 @@ public abstract class KernelInfoHandler extends KernelHandler<Message> {
 
   private final static Logger logger = LoggerFactory.getLogger(KernelInfoHandler.class);
   public static final String PROTOCOL_VERSION = "protocol_version";
-  public static final String PROTOCOL_VERSION_NUMBER = "5.1";
+  public static final String PROTOCOL_VERSION_NUMBER = "5.3";
   public static final String INTERRUPT_KERNEL = "interrupt_kernel";
 
   public KernelInfoHandler(KernelFunctionality kernel) {

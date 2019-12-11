@@ -26,11 +26,11 @@ import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.CacheFolderFactory;
 import com.twosigma.beakerx.kernel.Classpath;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.ExecutionOptions;
 import com.twosigma.beakerx.kernel.GroupName;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
-import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.io.FileUtils;
@@ -39,6 +39,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.SynchronousQueue;
 
@@ -65,7 +66,14 @@ public class EvaluatorTest extends BaseEvaluator {
   }
 
   public EvaluatorTest(String id, String sId, CellExecutor cellExecutor, EvaluatorParameters kernelParameters, BeakerXClient beakerXClient) {
-    super(id, sId, cellExecutor, getTestTempFolderFactory(), kernelParameters, beakerXClient, new MagicCommandAutocompletePatternsMock());
+    super(id,
+            sId,
+            cellExecutor,
+            getTestTempFolderFactory(),
+            kernelParameters,
+            beakerXClient,
+            new MagicCommandAutocompletePatternsMock(),
+            new ClasspathScannerMock());
   }
 
   @Override
@@ -208,6 +216,7 @@ public class EvaluatorTest extends BaseEvaluator {
   public static class BeakexClientTestImpl implements BeakerXClient {
 
     private String lastRunByTag;
+    private HashMap<String, Object> variables = new HashMap<>();
 
     @Override
     public void showProgressUpdate(String message, int progress) {
@@ -226,12 +235,13 @@ public class EvaluatorTest extends BaseEvaluator {
 
     @Override
     public Object set(String name, Object value) {
-      return null;
+      variables.put(name, value);
+      return value;
     }
 
     @Override
     public Object get(String name) {
-      return null;
+      return variables.get(name);
     }
 
     @Override

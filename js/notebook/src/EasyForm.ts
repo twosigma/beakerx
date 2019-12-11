@@ -14,8 +14,6 @@
  *  limitations under the License.
  */
 
-import {DOMWidgetModel} from "@jupyter-widgets/base";
-
 const ENTER_KEY_CODE = 13;
 import widgets from './widgets';
 
@@ -33,9 +31,10 @@ import 'flatpickr/dist/flatpickr.css';
 import 'jquery-ui/themes/base/all.css';
 import 'jquery-ui/ui/widgets/button';
 import 'jquery-ui/ui/widgets/autocomplete';
-import BeakerXThemeHelper from "./BeakerXThemeHelper";
 
-export class EasyFormModel extends widgets.DOMWidgetModel {
+import * as $ from 'jquery';
+
+export class EasyFormModel extends widgets.BoxModel {
   defaults() {
     return {
       ...super.defaults(),
@@ -45,17 +44,16 @@ export class EasyFormModel extends widgets.DOMWidgetModel {
       _view_module: 'beakerx',
       _model_module_version: BEAKERX_MODULE_VERSION,
       _view_module_version: BEAKERX_MODULE_VERSION,
-      children: []
     }
-  }
-
-  static serializers = {
-    ...DOMWidgetModel.serializers,
-    children: { deserialize: widgets.unpack_models },
   }
 }
 
 export class EasyFormView extends widgets.BoxView {
+  private $legend: JQuery<HTMLLegendElement>;
+  public static get isDark(): boolean {
+    return document.body.classList.contains('bx-dark-theme');
+  }
+
   render() {
     super.render.apply(this);
 
@@ -68,7 +66,7 @@ export class EasyFormView extends widgets.BoxView {
 
     this.$legend = $('<legend>'+formTitle+'</legend>');
     this.displayed.then(() => {
-      if (BeakerXThemeHelper.isDark) {
+      if (EasyFormView.isDark) {
         this.$legend.css('background-color', '#636363');
       }
 

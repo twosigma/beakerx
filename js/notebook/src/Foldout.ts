@@ -59,6 +59,7 @@ export class FoldoutView extends widgets.BoxView {
   }
 
   add_child_model(model) {
+    // @ts-ignore
     return this.create_child_view(model).then((view: widgets.DOMWidgetView) => {
       this.restorePreviewContent();
 
@@ -134,7 +135,7 @@ export class FoldoutView extends widgets.BoxView {
     this.timeoutId = setTimeout(
       this.activateFoldoutCallback.bind(this),
       PREVIEW_ANIMATION_DURATION
-    );
+    ) as any;
   }
 
   deactivateFoldout() {
@@ -145,7 +146,7 @@ export class FoldoutView extends widgets.BoxView {
       this.timeoutId = setTimeout(
         this.deactivateFoldoutCallback.bind(this),
         ANIMATION_DURATION
-      );
+      ) as any;
     });
   }
 
@@ -165,7 +166,7 @@ export class FoldoutView extends widgets.BoxView {
         this.content.node.style.height = 'auto'
       },
       ANIMATION_DURATION
-    );
+    ) as any;
   }
 
   deactivateFoldoutCallback() {

@@ -52,7 +52,6 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_ENUMS_USING_TO_STRING;
 import static com.twosigma.beakerx.table.serializer.ObservableTableDisplaySerializer.DOUBLE_CLICK_TAG;
@@ -61,7 +60,6 @@ import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.ALIGN
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.ALIGNMENT_FOR_TYPE;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.CELL_HIGHLIGHTERS;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.COLUMNS_FROZEN;
-import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.COLUMNS_FROZEN_RIGHT;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.COLUMNS_VISIBLE;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.COLUMN_ORDER;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.DATA_FONT_SIZE;
@@ -72,11 +70,12 @@ import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.HEADE
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.HEADER_FONT_SIZE;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.RENDERER_FOR_COLUMN;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.RENDERER_FOR_TYPE;
+import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.ROWS_TO_SHOW;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_COLUMN;
-import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_TIMES;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_TYPE;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.TIME_ZONE;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.TOOLTIPS;
+import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.VALUES;
 
 public class TableDisplayToJson {
 
@@ -113,12 +112,6 @@ public class TableDisplayToJson {
 
   public static List toJsonList(Object item) {
     return mapper.convertValue(item, List.class);
-  }
-
-  static Map<Object, Object> serializeStringFormatForTimes(TimeUnit stringFormatForTimes) {
-    Map<Object, Object> value = new LinkedHashMap<>();
-    value.put(STRING_FORMAT_FOR_TIMES, stringFormatForTimes);
-    return value;
   }
 
   static Map<Object, Object> serializeStringFormatForType(Map<ColumnType, TableDisplayStringFormat> stringFormatForType) {
@@ -188,16 +181,6 @@ public class TableDisplayToJson {
     }
     Map<Object, Object> value = new LinkedHashMap<>();
     value.put(COLUMNS_FROZEN, result);
-    return value;
-  }
-
-  static Map<Object, Object> serializeColumnsFrozenRight(Map<String, Boolean> map) {
-    Map<String, Object> result = new LinkedHashMap<>();
-    for (Map.Entry<String, Boolean> pair : map.entrySet()) {
-      result.put(pair.getKey(), pair.getValue());
-    }
-    Map<Object, Object> value = new LinkedHashMap<>();
-    value.put(COLUMNS_FROZEN_RIGHT, result);
     return value;
   }
 
@@ -279,6 +262,12 @@ public class TableDisplayToJson {
     return value;
   }
 
+  static Map<Object, Object> serializeRowsToShow(RowsToShow rowsToShow) {
+    Map<Object, Object> value = new LinkedHashMap<>();
+    value.put(ROWS_TO_SHOW, rowsToShow.getRows());
+    return value;
+  }
+
   static Map<Object, Object> serializeHasIndex(String hasIndex) {
     Map<Object, Object> value = new LinkedHashMap<>();
     value.put(HAS_INDEX, hasIndex);
@@ -298,5 +287,11 @@ public class TableDisplayToJson {
     return value;
   }
 
+  static Map<Object, Object> serializeValues(TableDisplay tableDisplay) {
+    List list = tableDisplay.takeNextPage();
+    Map<Object, Object> result = new LinkedHashMap<>();
+    result.put(VALUES, list);
+    return result;
+  }
 
 }

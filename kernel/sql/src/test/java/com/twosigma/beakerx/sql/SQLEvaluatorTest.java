@@ -17,6 +17,7 @@ package com.twosigma.beakerx.sql;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.TryResult;
+import com.twosigma.beakerx.evaluator.ClasspathScannerMock;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.evaluator.MagicCommandAutocompletePatternsMock;
 import com.twosigma.beakerx.jvm.object.OutputCell;
@@ -32,7 +33,6 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 import static com.twosigma.beakerx.sql.magic.command.DataSourcesMagicCommand.DATASOURCES;
@@ -53,7 +53,8 @@ public class SQLEvaluatorTest {
             getTestTempFolderFactory(),
             kernelParameters(),
             new EvaluatorTest.BeakexClientTestImpl(),
-            new MagicCommandAutocompletePatternsMock());
+            new MagicCommandAutocompletePatternsMock(),
+            new ClasspathScannerMock());
     sqlEvaluator.updateEvaluatorParameters(kernelParameters());
     kernelTest = new KernelTest("1", sqlEvaluator);
     KernelManager.register(kernelTest);
@@ -68,8 +69,7 @@ public class SQLEvaluatorTest {
   @Test
   public void evaluateSql() throws Exception {
     //given
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(SQLForColorTable.CREATE_AND_SELECT_ALL);
-    seo.setJupyterMessage(commMsg());
+    SimpleEvaluationObject seo = KernelTest.createSeo(SQLForColorTable.CREATE_AND_SELECT_ALL);
     //when
     TryResult evaluate = sqlEvaluator.evaluate(seo, seo.getExpression());
     //then
@@ -85,7 +85,7 @@ public class SQLEvaluatorTest {
   @Test
   public void insertsShouldReturnOutputCellHIDDEN() throws Exception {
     //given
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(SQLForColorTable.CREATE);
+    SimpleEvaluationObject seo = KernelTest.createSeo(SQLForColorTable.CREATE);
     //when
     TryResult evaluate = sqlEvaluator.evaluate(seo, seo.getExpression());
     //then

@@ -24,6 +24,7 @@ import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.util.Preconditions;
+import com.twosigma.beakerx.widget.ChangeItem;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -269,31 +270,30 @@ public class Comm {
     return this.create(JupyterMessages.STREAM, Buffer.EMPTY, content);
   }
 
-  public void sendUpdate(final String propertyName, final Object value) {
-    Message message = createUpdateMessage(propertyName, value);
+  public void sendUpdate(List<ChangeItem> changes) {
+    Message message = createUpdateMessage(changes, new HashMap<>());
     kernel.publish(singletonList(message));
   }
 
-  public void sendUpdate(final String propertyName, final Object value, Message parent) {
-    Message message = createUpdateMessage(propertyName, value, parent);
+  public void sendUpdate(List<ChangeItem> changes, Message parent) {
+    Message message = createUpdateMessage(changes, parent);
     kernel.publish(singletonList(message));
   }
 
-  public Message createUpdateMessage(String propertyName, Object value, Message parent) {
+  public Message createUpdateMessage(List<ChangeItem> changes, Message parent) {
     HashMap<String, Serializable> content = new HashMap<>();
     content.put(METHOD, UPDATE);
     HashMap<Object, Object> state = new HashMap<>();
-    state.put(propertyName, value);
+    changes.forEach( x-> state.put(x.getPropertyName(), x.getValue()));
     content.put(STATE, state);
     content.put(BUFFER_PATHS, new HashMap<>());
     return this.createMessage(COMM_MSG, Buffer.EMPTY, new Comm.Data(content), parent);
   }
 
-  public Message createUpdateMessage(String propertyName, Object value) {
+  public Message createUpdateMessage(List<ChangeItem> changes, HashMap<String, Object> state) {
     HashMap<String, Serializable> content = new HashMap<>();
     content.put(METHOD, UPDATE);
-    HashMap<Object, Object> state = new HashMap<>();
-    state.put(propertyName, value);
+    changes.forEach( x-> state.put(x.getPropertyName(), x.getValue()));
     content.put(STATE, state);
     content.put(BUFFER_PATHS, new HashMap<>());
     return this.createMessage(COMM_MSG, Buffer.EMPTY, new Comm.Data(content));

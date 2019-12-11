@@ -20,27 +20,34 @@ import {BEAKER_AUTOTRANSLATION} from "./comm";
 
 export namespace Autotranslation {
   export const LOCK_PROXY = 'LOCK_PROXY';
+  export const TABLE_FOCUSED = 'tableFocused';
 
   export function proxify(beakerxInstance: any): Proxy<any> {
     const utils = require('base/js/utils');
-    const comm = Jupyter.notebook.kernel.comm_manager.new_comm(
-      BEAKER_AUTOTRANSLATION,
-      null,
-      null,
-      null,
-      utils.uuid()
-    );
 
-    const handler = {
+      function createCommForAT() {
+          return Jupyter.notebook.kernel.comm_manager.new_comm(
+              BEAKER_AUTOTRANSLATION,
+              null,
+              null,
+              null,
+              utils.uuid()
+          );
+      }
+
+      let atComm= undefined;
+      const handler = {
       get(obj, prop) {
         return prop in obj ? obj[prop] : undefined;
       },
 
       set(obj, prop, value) {
         obj[prop] = value;
-
-        if (prop !== LOCK_PROXY && !window.beakerx[LOCK_PROXY]) {
-          comm.send({ name: prop, value });
+        if (prop !== LOCK_PROXY && prop !== TABLE_FOCUSED && !window.beakerx[LOCK_PROXY]) {
+          if (!atComm){
+              atComm = createCommForAT();
+          }
+          atComm.send({ name: prop, value });
         }
 
         return true;

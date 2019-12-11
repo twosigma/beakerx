@@ -42,6 +42,7 @@ public class Button extends ValueWidget<Boolean> {
 
   public Button() {
     super();
+    this.style = new ButtonStyle();
     getComm().addMsgCallbackList((Handler<Message>) this::handleOnClick);
     openComm();
   }
@@ -52,7 +53,7 @@ public class Button extends ValueWidget<Boolean> {
   }
 
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+  protected HashMap<String, Object> content(HashMap<String, Object> content) {
     super.content(content);
     content.put(TOOLTIP, tooltip);
     content.put(ICON, icon);
@@ -91,7 +92,6 @@ public class Button extends ValueWidget<Boolean> {
   public void registerOnClick(ActionPerformed actionPerformed) {
     this.actionPerformed = actionPerformed;
   }
-
 
   private void handleOnClick(Message message) {
     handleCommEventSync(message, CommActions.CLICK, this::onClick);

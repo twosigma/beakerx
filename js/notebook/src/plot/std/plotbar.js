@@ -15,14 +15,15 @@
  */
 
 define([
-  'underscore',
-  './../plotUtils'
+  'underscore'
 ], function(
-  _,
-  plotUtils
+  _
 ) {
+  const PlotUtils = require("../utils/PlotUtils").default;
+  const PlotColorUtils = require("../utils/PlotColorUtils").default;
+  const PlotTip = require("../PlotTip").default;
+  const BigNumberUtils = require("beakerx_shared/lib/utils/BigNumberUtils").default;
 
-  var plotTip = require('./../plotTip').default;
   var PlotBar = function(data) {
     _.extend(this, data); // copy properties to itself
     this.format();
@@ -33,20 +34,20 @@ define([
 
   PlotBar.prototype.setHighlighted = function(scope, highlighted) {
     var itemsvg = scope.maing.select("#" + this.id);
-    var diff = plotUtils.getHighlightedDiff(highlighted) / 2;
+    var diff = PlotUtils.getHighlightedDiff(highlighted) / 2;
     itemsvg.selectAll("rect")
       .transition()
-      .duration(plotUtils.getHighlightDuration())
+      .duration(PlotUtils.getHighlightDuration())
       .attr("x", function(d) { return d.x - diff; })
       .attr("y", function(d) { return d.y - diff; })
-      .attr("width", function(d) { return plotUtils.getHighlightedSize(d.w, highlighted); })
-      .attr("height", function(d) { return plotUtils.getHighlightedSize(d.h, highlighted); });
+      .attr("width", function(d) { return PlotUtils.getHighlightedSize(d.w, highlighted); })
+      .attr("height", function(d) { return PlotUtils.getHighlightedSize(d.h, highlighted); });
 
   };
 
   PlotBar.prototype.format = function() {
     if (this.color != null) {
-      this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
+      this.tip_color = PlotColorUtils.createColor(this.color, this.color_opacity);
     } else {
       this.tip_color = "gray";
     }
@@ -85,8 +86,8 @@ define([
     };
     for (var i = 0; i < eles.length; i++) {
       var ele = eles[i];
-      range.xl = plotUtils.min(range.xl, ele.x);
-      range.xr = plotUtils.max(range.xr, ele.x2);
+      range.xl = BigNumberUtils.min(range.xl, ele.x);
+      range.xr = BigNumberUtils.max(range.xr, ele.x2);
       range.yl = Math.min(range.yl, ele.y);
       range.yr = Math.max(range.yr, ele.y2);
     }
@@ -107,8 +108,8 @@ define([
 
   PlotBar.prototype.filter = function(scope) {
     var eles = this.elements;
-    var l = plotUtils.upper_bound(eles, "x2", scope.plotFocus.focus.xl) + 1,
-      r = plotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xr);
+    var l = PlotUtils.upper_bound(eles, "x2", scope.plotFocus.focus.xl) + 1,
+      r = PlotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xr);
 
     l = Math.max(l, 0);
     r = Math.min(r, eles.length - 1);
@@ -154,7 +155,7 @@ define([
       if (y < y2) { continue; } // prevent negative height
 
 
-      if (plotUtils.rangeAssert([x, x2, y, y2])) {
+      if (PlotUtils.rangeAssert([x, x2, y, y2])) {
         eleprops.length = 0;
         return;
       }
@@ -180,7 +181,7 @@ define([
       if(ele.itemLabel || this.showItemLabel){
         var labely;
         var labelMargin = 3;
-        var labelHeight = plotUtils.fonts.labelHeight;
+        var labelHeight = PlotUtils.fonts.labelHeight;
         var isBarPositive = ele._y2 != this.base;
 
         var labelText = ele.itemLabel ? ele.itemLabel : isBarPositive ? ele._y2 : ele._y;
@@ -274,7 +275,7 @@ define([
   };
 
   PlotBar.prototype.hideTips = function(scope, hidden) {
-    plotTip.hideTips(scope, this.id,  hidden);
+    PlotTip.hideTips(scope, this.id,  hidden);
   };
 
   PlotBar.prototype.createTip = function(ele, g, model) {
@@ -288,13 +289,13 @@ define([
       tip.title = this.legend;
     }
     if (model.orientation === 'HORIZONTAL'){
-      tip.value = plotUtils.getTipString(plotUtils.minus(ele._x2, ele._x), xAxis, true);
+      tip.value = PlotUtils.getTipString(BigNumberUtils.minus(ele._x2, ele._x), xAxis, true);
     }else{
-      tip.x = plotUtils.getTipString(plotUtils.div(plotUtils.plus(ele._x, ele._x2), 2), xAxis, true);
-      tip.yTop = plotUtils.getTipString(ele._y2, yAxis, true);
-      tip.yBtm = plotUtils.getTipString(ele._y, yAxis, true);
+      tip.x = PlotUtils.getTipString(BigNumberUtils.div(BigNumberUtils.plus(ele._x, ele._x2), 2), xAxis, true);
+      tip.yTop = PlotUtils.getTipString(ele._y2, yAxis, true);
+      tip.yBtm = PlotUtils.getTipString(ele._y, yAxis, true);
     }
-    return plotUtils.createTipString(tip);
+    return PlotUtils.createTipString(tip);
   };
 
   return PlotBar;

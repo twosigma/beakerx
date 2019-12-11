@@ -17,8 +17,7 @@
 import * as d3 from 'd3';
 import * as $ from 'jquery';
 import sanitize from './plotSanitize';
-
-const plotUtils = require('./plotUtils');
+import PlotUtils from "./utils/PlotUtils";
 
 const DEFAULT_MARGIN = 30;
 
@@ -105,7 +104,7 @@ export default class PlotLayout {
   }
 
   applyElementStyles(stdmodel) {
-    if(stdmodel['elementStyles']) {
+    if(!stdmodel['elementStyles']) {
       return;
     }
 
@@ -222,18 +221,18 @@ export default class PlotLayout {
     this.bottomLayoutMargin = this.topLayoutMargin = DEFAULT_MARGIN;
 
     this.scope.plotZoom.boxZoom.resetLocateBox();
-    this.bottomLayoutMargin += plotUtils.fonts.labelHeight * factor;
+    this.bottomLayoutMargin += PlotUtils.fonts.labelHeight * factor;
 
     if (stdmodel.yAxis.showGridlineLabels !== false) {
-      this.topLayoutMargin += plotUtils.fonts.labelHeight / 2;
+      this.topLayoutMargin += PlotUtils.fonts.labelHeight / 2;
     }
 
     if (stdmodel.yAxis.label != null) {
-      this.leftLayoutMargin += plotUtils.fonts.labelHeight;
+      this.leftLayoutMargin += PlotUtils.fonts.labelHeight;
     }
 
     if(stdmodel.yAxisR != null) {
-      this.rightLayoutMargin += plotUtils.fonts.labelHeight;
+      this.rightLayoutMargin += PlotUtils.fonts.labelHeight;
     }
   }
 

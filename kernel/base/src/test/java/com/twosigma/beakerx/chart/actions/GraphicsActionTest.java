@@ -17,6 +17,7 @@
 package com.twosigma.beakerx.chart.actions;
 
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.MessageFactorTest;
 import com.twosigma.beakerx.chart.KeyboardCodes;
 import com.twosigma.beakerx.chart.categoryplot.CategoryPlot;
 import com.twosigma.beakerx.chart.xychart.Plot;
@@ -30,6 +31,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 
 public class GraphicsActionTest {
 
@@ -59,7 +62,7 @@ public class GraphicsActionTest {
     //given
     xyGraphics.onClick(actionListener);
     //when
-    xyGraphics.fireClick(new XYGraphicsActionObject(), null);
+    xyGraphics.fireClick(new XYGraphicsActionObject(), commMsg());
     //then
     Assertions.assertThat(actionListener.getActionObject()).isNotNull();
     Assertions.assertThat(actionListener.getActionObject().getGraphics())
@@ -71,7 +74,7 @@ public class GraphicsActionTest {
     //given
     xyGraphics.onKey("CTRL", actionListener);
     //when
-    xyGraphics.fireOnKey("CTRL", new XYGraphicsActionObject(), null);
+    xyGraphics.fireOnKey("CTRL", new XYGraphicsActionObject(), commMsg());
     //then
     Assertions.assertThat(actionListener.getActionObject()).isNotNull();
     Assertions.assertThat(actionListener.getActionObject().getGraphics())
@@ -83,7 +86,7 @@ public class GraphicsActionTest {
     //given
     xyGraphics.onKey(KeyboardCodes.CTRL, actionListener);
     //when
-    xyGraphics.fireOnKey(KeyboardCodes.CTRL.name(), new XYGraphicsActionObject(), null);
+    xyGraphics.fireOnKey(KeyboardCodes.CTRL.name(), new XYGraphicsActionObject(), commMsg());
     //then
     Assertions.assertThat(actionListener.getActionObject()).isNotNull();
     Assertions.assertThat(actionListener.getActionObject().getGraphics())

@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
+
 define([
   'underscore',
-  './../plotUtils',
   './../std/plotline',
   './../plotSampler',
   './../lod/plotLodLine',
@@ -24,13 +24,15 @@ define([
   './../lod/plotLodRiver'
 ], function(
   _,
-  plotUtils,
   PlotLine,
   PlotSampler,
   PlotLodLine,
   PlotLodBox,
   PlotLodRiver
 ) {
+  const PlotColorUtils = require("../utils/PlotColorUtils").default;
+  const CommonUtils = require("beakerx_shared/lib/utils/CommonUtils").default;
+  const PlotUtils = require("../utils/PlotUtils").default;
 
   var PlotLineLodLoader = function(data, lodthresh){
     this.datacopy = {};
@@ -49,7 +51,7 @@ define([
     this.lodType = this.lodTypes[this.lodTypeIndex];
 
     // create the plotters
-    this.zoomHash = plotUtils.randomString(3);
+    this.zoomHash = CommonUtils.randomString(3);
     this.plotter = new PlotLine(this.datacopy);
     this.createLodPlotter();
 
@@ -59,7 +61,7 @@ define([
     this.lodAuto = true;
     this.sampleStep = -1;
     if (this.color != null) {
-      this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
+      this.tip_color = PlotColorUtils.createColor(this.color, this.color_opacity);
     } else {
       this.tip_color = "gray";
     }
@@ -77,7 +79,7 @@ define([
 
   PlotLineLodLoader.prototype.zoomLevelChanged = function(scope) {
     this.sampleStep = -1;
-    this.zoomHash = plotUtils.randomString(3);
+    this.zoomHash = CommonUtils.randomString(3);
     if (this.lodOn === false) { return; }
     this.lodplotter.setZoomHash(this.zoomHash);
     this.lodplotter.hideTips(scope);
@@ -256,13 +258,13 @@ define([
       tip.title = this.legend + " (sample)";
     }
     var eles = this.elements;
-    tip.xl = plotUtils.getTipStringPercent(ele.xl, xAxis, 6);
-    tip.xr = plotUtils.getTipStringPercent(ele.xr, xAxis, 6);
-    tip.max = plotUtils.getTipString(ele._max, yAxis, true);
-    tip.min = plotUtils.getTipString(ele._min, yAxis, true);
-    tip.avg = plotUtils.getTipStringPercent(ele.avg, yAxis, 6);
-    tip.count = plotUtils.getTipString(ele.count, yAxis, true);
-    return plotUtils.createTipString(tip);
+    tip.xl = PlotUtils.getTipStringPercent(ele.xl, xAxis, 6);
+    tip.xr = PlotUtils.getTipStringPercent(ele.xr, xAxis, 6);
+    tip.max = PlotUtils.getTipString(ele._max, yAxis, true);
+    tip.min = PlotUtils.getTipString(ele._min, yAxis, true);
+    tip.avg = PlotUtils.getTipStringPercent(ele.avg, yAxis, 6);
+    tip.count = PlotUtils.getTipString(ele.count, yAxis, true);
+    return PlotUtils.createTipString(tip);
   };
 
   return PlotLineLodLoader;

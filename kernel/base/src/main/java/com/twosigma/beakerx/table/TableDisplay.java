@@ -15,12 +15,39 @@
  */
 package com.twosigma.beakerx.table;
 
+import com.twosigma.beakerx.chart.Color;
+import com.twosigma.beakerx.handler.Handler;
+import com.twosigma.beakerx.jvm.serialization.BasicObjectSerializer;
+import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
+import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.mimetype.MIMEContainer;
+import com.twosigma.beakerx.table.action.TableActionDetails;
+import com.twosigma.beakerx.table.format.TableDisplayStringFormat;
+import com.twosigma.beakerx.table.format.TimeStringFormat;
+import com.twosigma.beakerx.table.format.ValueStringFormat;
+import com.twosigma.beakerx.table.handlers.ValueChangeMsgCallbackHandler;
+import com.twosigma.beakerx.table.highlight.TableDisplayCellHighlighter;
+import com.twosigma.beakerx.table.highlight.ValueHighlighter;
+import com.twosigma.beakerx.table.renderer.TableDisplayCellRenderer;
+import com.twosigma.beakerx.widget.BeakerxWidget;
+import com.twosigma.beakerx.widget.ChangeItem;
+import com.twosigma.beakerx.widget.RunWidgetClosure;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
+
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeAlignmentForColumn;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeAlignmentForType;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeCellHighlighters;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeColumnOrder;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeColumnsFrozen;
-import static com.twosigma.beakerx.table.TableDisplayToJson.serializeColumnsFrozenRight;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeColumnsVisible;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeDataFontSize;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeDoubleClickAction;
@@ -31,40 +58,13 @@ import static com.twosigma.beakerx.table.TableDisplayToJson.serializeHeaderFontS
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeHeadersVertical;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeRendererForColumn;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeRendererForType;
+import static com.twosigma.beakerx.table.TableDisplayToJson.serializeRowsToShow;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeStringFormatForColumn;
-import static com.twosigma.beakerx.table.TableDisplayToJson.serializeStringFormatForTimes;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeStringFormatForType;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeTimeZone;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeTooltips;
+import static com.twosigma.beakerx.util.Preconditions.checkState;
 import static com.twosigma.beakerx.widget.CompiledCodeRunner.runCompiledCode;
-import static java.util.Arrays.asList;
-
-import com.twosigma.beakerx.chart.Color;
-import com.twosigma.beakerx.jvm.serialization.BasicObjectSerializer;
-import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
-import com.twosigma.beakerx.table.action.TableActionDetails;
-import com.twosigma.beakerx.table.format.TableDisplayStringFormat;
-import com.twosigma.beakerx.table.format.ValueStringFormat;
-import com.twosigma.beakerx.table.highlight.TableDisplayCellHighlighter;
-import com.twosigma.beakerx.table.highlight.ValueHighlighter;
-import com.twosigma.beakerx.table.renderer.TableDisplayCellRenderer;
-import com.twosigma.beakerx.widget.BeakerxWidget;
-import com.twosigma.beakerx.widget.RunWidgetClosure;
-import com.twosigma.beakerx.handler.Handler;
-import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.mimetype.MIMEContainer;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 public class TableDisplay extends BeakerxWidget {
 
@@ -75,13 +75,15 @@ public class TableDisplay extends BeakerxWidget {
   public static final String LIST_OF_MAPS_SUBTYPE = "ListOfMaps";
   public static final String MATRIX_SUBTYPE = "Matrix";
   public static final String DICTIONARY_SUBTYPE = "Dictionary";
+  public static final String THE_LENGTH_OF_TYPES_SHOULD_BE_SAME_AS_NUMBER_OF_ROWS = "The length of types should be same as number of rows.";
+  public static final String LOAD_MORE_ROWS = "loadMoreRows";
 
-  private final List<List<?>> values;
-  private List<String> columns;
-  private final List<String> classes;
-  private String subtype;
+  public int ROWS_LIMIT = 100000;
+  public int ROW_LIMIT_TO_INDEX = 10000;
+  private String rowLimitMsg = "Note: table is too big to display.\n" +
+          "      The limit is %s rows, but this table has %s rows. \n" +
+          "      The first %s rows are displayed as a preview.";
 
-  private TimeUnit stringFormatForTimes;
   private Map<ColumnType, TableDisplayStringFormat> stringFormatForType = new HashMap<>();
   private Map<String, TableDisplayStringFormat> stringFormatForColumn = new HashMap<>();
   private Map<ColumnType, TableDisplayCellRenderer> rendererForType = new HashMap<>();
@@ -89,7 +91,6 @@ public class TableDisplay extends BeakerxWidget {
   private Map<ColumnType, TableDisplayAlignmentProvider> alignmentForType = new HashMap<>();
   private Map<String, TableDisplayAlignmentProvider> alignmentForColumn = new HashMap<>();
   private Map<String, Boolean> columnsFrozen = new HashMap<>();
-  private Map<String, Boolean> columnsFrozenRight = new HashMap<>();
   private Map<String, Boolean> columnsVisible = new HashMap<>();
   private List<String> columnOrder = new ArrayList<>();
   private List<TableDisplayCellHighlighter> cellHighlighters = new ArrayList<>();
@@ -101,7 +102,6 @@ public class TableDisplay extends BeakerxWidget {
   private boolean headersVertical;
   private String hasIndex;
   private String timeZone;
-
   private Object doubleClickListener;
   private String doubleClickTag;
   private Map<String, Object> contextMenuListeners = new HashMap<>();
@@ -109,11 +109,11 @@ public class TableDisplay extends BeakerxWidget {
   private TableActionDetails details;
   private TableDisplayActions displayActions = new TableDisplayActions(this);
 
-  public int ROWS_LIMIT = 100000;
-  public int ROW_LIMIT_TO_INDEX = 10000;
-  private String rowLimitMsg = "Note: table is too big to display.\n" +
-          "      The limit is %s rows, but this table has %s rows. \n" +
-          "      The first %s rows are displayed as a preview.";
+  private static TableDisplayLoadingMode loadingMode = TableDisplayLoadingMode.ALL;
+  public static int PAGE_SIZE = 1000;
+  private TableDisplayModel model;
+  private String loadMoreRows = "loadMoreServerInit";
+  private RowsToShow rowsToShow = RowsToShow.SHOW_25;
 
   @Override
   public String getModelNameValue() {
@@ -125,14 +125,49 @@ public class TableDisplay extends BeakerxWidget {
     return VIEW_NAME_VALUE;
   }
 
+  @Override
+  public String getModelModuleValue() {
+    return "beakerx_tabledisplay";
+  }
+
+  @Override
+  public String getViewModuleValue() {
+    return "beakerx_tabledisplay";
+  }
+
+  public TableDisplay(Map<?, ?> v) {
+    super();
+    this.model = new TableDisplayKeyValueModel(v, new BasicObjectSerializer());
+    openComm();
+    model.initValues();
+  }
+
   public TableDisplay(List<List<?>> v, List<String> co, List<String> cl) {
     super();
-    values = new ArrayList<>();
-    columns = co;
-    classes = cl;
-    subtype = TABLE_DISPLAY_SUBTYPE;
+    if (!v.isEmpty() && v.get(0) != null && !v.get(0).isEmpty()) {
+      checkState(v.get(0).size() == cl.size(), THE_LENGTH_OF_TYPES_SHOULD_BE_SAME_AS_NUMBER_OF_ROWS);
+    }
+    this.model = new TableDisplayListModel(v, co, cl, new BasicObjectSerializer());
     openComm();
-    addToValues(buildValuesFromList(v, new BasicObjectSerializer()));
+    this.model.initValues();
+  }
+
+  public TableDisplay(Stream<Map<String, Object>> v, BeakerObjectConverter serializer) {
+    super();
+    this.model = new TableDisplayMapModel(v, serializer);
+    openComm();
+    this.model.initValues();
+  }
+
+  public TableDisplay(Stream<Map<String, Object>> v, BeakerObjectConverter serializer, Message message) {
+    super();
+    this.model = new TableDisplayMapModel(v, serializer);
+    openComm(message);
+    this.model.initValues();
+  }
+
+  public TableDisplay(Stream<Map<String, Object>> v) {
+    this(v, new BasicObjectSerializer());
   }
 
   public TableDisplay(Collection<Map<String, Object>> v) {
@@ -143,128 +178,31 @@ public class TableDisplay extends BeakerxWidget {
     this(new ArrayList<>(Arrays.asList(v)), new BasicObjectSerializer());
   }
 
-  public TableDisplay(Collection<Map<String, Object>> v, BeakerObjectConverter serializer) {
-    super();
-    values = new ArrayList<>();
-    columns = new ArrayList<>();
-    classes = new ArrayList<>();
-    subtype = LIST_OF_MAPS_SUBTYPE;
-
-    // create columns
-    if (v.size() > 0) {
-      // Every column gets inspected at least once, so put every column in
-      // a list with null for the initial type
-      ArrayList<String> columnOrder = new ArrayList<String>();
-      ArrayList<String> columnsToCheck = new ArrayList<String>();
-      Map<String, String> typeTracker = new LinkedHashMap<String, String>();
-
-      Map<String, Object> firstRow = v.iterator().next();
-      for (String columnName : firstRow.keySet()) {
-        columnOrder.add(columnName);
-        columnsToCheck.add(columnName);
-        typeTracker.put(columnName, null);
-      }
-
-      // Visit each row and track the row's type. If some value is found to
-      // contain a string, the column is marked as string based and is no
-      // longer typechecked
-      List<String> columnsToRemove = new ArrayList<String>();
-      for (Map<String, Object> row : v) {
-        // Remove any columns requested from prior iteration
-        for (String columnToRemove : columnsToRemove) {
-          columnsToCheck.remove(columnToRemove);
-        }
-        columnsToRemove = new ArrayList<String>();
-
-        ListIterator<String> columnCheckIterator = columnsToCheck.listIterator();
-        while (columnCheckIterator.hasNext()) {
-          String columnToCheck = columnCheckIterator.next();
-          String currentType = typeTracker.get(columnToCheck);
-
-          if (currentType == null || !currentType.equals("string")) {
-            Object rowItem = row.get(columnToCheck);
-            if (rowItem != null) {
-              String colType = rowItem.getClass().getName();
-              String beakerColType = serializer.convertType(colType);
-              typeTracker.put(columnToCheck, beakerColType);
-
-              if (beakerColType.equals("string")) {
-                columnsToRemove.add(columnToCheck);
-              }
-            }
-          }
-        }
-      }
-
-      // Put results of type checking into `columns` and `classes`
-      for (String columnName : columnOrder) {
-        String columnType = typeTracker.get(columnName);
-        columns.add(columnName);
-        classes.add(columnType);
-      }
-    }
-
-    openComm();
-    addToValues(buildValues(v, serializer));
+  public TableDisplay(Map<String, Object>[] v, Message message) {
+    this(new ArrayList<>(Arrays.asList(v)), new BasicObjectSerializer(), message);
   }
 
-  public TableDisplay(Map<?, ?> v) {
-    super();
-    this.values = new ArrayList<>();
-    this.columns = Arrays.asList("Key", "Value");
-    this.classes = new ArrayList<>();
-    this.subtype = DICTIONARY_SUBTYPE;
-    openComm();
-    addToValues(buildValuesFromMap(v));
+  public TableDisplay(Collection<Map<String, Object>> v, BeakerObjectConverter serializer) {
+    this(v.stream(), serializer);
+  }
+
+  public TableDisplay(Collection<Map<String, Object>> v, BeakerObjectConverter serializer, Message message) {
+    this(v.stream(), serializer, message);
   }
 
   public TableDisplay(int rowCount, int columnCount, List<String> columnNames, Element element) {
     this(TableDisplayConverter.convert(rowCount, columnCount, columnNames, element));
   }
 
-  private void addToValues(List<List<?>> items) {
-    values.addAll(items);
+  @Override
+  protected void addValueChangeMsgCallback() {
+    getComm().addMsgCallbackList(new ValueChangeMsgCallbackHandler(() -> setLoadMoreRows("loadMoreServerDone")));
   }
 
-  private List<List<?>> buildValuesFromList(List<List<?>> v, BasicObjectSerializer basicObjectSerializer) {
-    List<List<?>> values = new ArrayList<>();
-    for (List<?> m : v) {
-      List<Object> vals = new ArrayList<>();
-      for (Object item : m) {
-        vals.add(getValueForSerializer(item, basicObjectSerializer));
-      }
-      values.add(vals);
-    }
-    return values;
-  }
-
-  private List<List<?>> buildValues(Collection<Map<String, Object>> v, BeakerObjectConverter serializer) {
-    List<List<?>> values = new ArrayList<>();
-    for (Map<?, ?> m : v) {
-      List<Object> vals = new ArrayList<>();
-      for (String cn : columns) {
-        if (m.containsKey(cn)) {
-          vals.add(getValueForSerializer(m.get(cn), serializer));
-        } else
-          vals.add(null);
-      }
-      values.add(vals);
-    }
-    return values;
-  }
-
-  private List<List<?>> buildValuesFromMap(Map<?, ?> v) {
-    Set<?> w = v.entrySet();
-    List<List<?>> values = new ArrayList<>();
-    for (Object s : w) {
-      Entry<?, ?> e = (Entry<?, ?>) s;
-      values.add(asList(e.getKey().toString(), e.getValue()));
-    }
-    return values;
-  }
-
-  public static TableDisplay createTableDisplayForMap(Map<?, ?> v) {
-    return new TableDisplay(v);
+  @Override
+  public void stateRequestHandler() {
+    super.stateRequestHandler();
+    sendModel();
   }
 
   @Override
@@ -275,13 +213,42 @@ public class TableDisplay extends BeakerxWidget {
     getComm().addMsgCallbackList((Handler<Message>) message -> displayActions.handleDoubleClick(message));
   }
 
+  public static TableDisplayLoadingMode getLoadingMode() {
+    return loadingMode;
+  }
+
+  public static void setLoadingMode(TableDisplayLoadingMode lm) {
+    loadingMode = lm;
+  }
+
+  public String getLoadMoreRows() {
+    return loadMoreRows;
+  }
+
+  void setLoadMoreRows(String loadMoreRows) {
+    this.loadMoreRows = loadMoreRows;
+    sendModelUpdate(TableDisplayToJson.serializeValues(this));
+  }
+
+  public List<List<?>> takeNextPage() {
+    return this.model.takeNextPage();
+  }
+
+  public List<List<?>> takeAllData() {
+    return this.model.takeAllData();
+  }
+
+
   public TimeUnit getStringFormatForTimes() {
-    return stringFormatForTimes;
+    TableDisplayStringFormat tableDisplayStringFormat = this.stringFormatForType.get(ColumnType.Time);
+    if (tableDisplayStringFormat instanceof TimeStringFormat) {
+      return ((TimeStringFormat) tableDisplayStringFormat).getUnit();
+    }
+    return null;
   }
 
   public void setStringFormatForTimes(TimeUnit stringFormatForTimes) {
-    this.stringFormatForTimes = stringFormatForTimes;
-    sendModelUpdate(serializeStringFormatForTimes(this.stringFormatForTimes));
+    setStringFormatForType(ColumnType.Time, TableDisplayStringFormat.getTimeFormat(stringFormatForTimes));
   }
 
   public Map<ColumnType, TableDisplayStringFormat> getStringFormatForType() {
@@ -303,14 +270,14 @@ public class TableDisplay extends BeakerxWidget {
   }
 
   public void setStringFormatForColumn(String column, Object closure) {
-    int colIndex = this.columns.indexOf(column);
+    int colIndex = this.model.columns.indexOf(column);
     if (colIndex == -1) {
       throw new IllegalArgumentException("Column " + column + " doesn't exist");
     }
     List<String> formattedValues = new ArrayList<>();
     try {
-      for (int row = 0; row < this.values.size(); row++) {
-        Object value = this.values.get(row).get(colIndex);
+      for (int row = 0; row < this.model.values.size(); row++) {
+        Object value = this.model.values.get(row).get(colIndex);
         Object[] params = new Object[]{value, row, colIndex, this};
         formattedValues.add((String) runClosure(closure, params));
       }
@@ -366,15 +333,6 @@ public class TableDisplay extends BeakerxWidget {
     sendModelUpdate(serializeColumnsFrozen(this.columnsFrozen));
   }
 
-  public Map<String, Boolean> getColumnsFrozenRight() {
-    return columnsFrozenRight;
-  }
-
-  public void setColumnFrozenRight(String column, boolean frozen) {
-    this.columnsFrozenRight.put(column, frozen);
-    sendModelUpdate(serializeColumnsFrozenRight(this.columnsFrozenRight));
-  }
-
   public Map<String, Boolean> getColumnsVisible() {
     return columnsVisible;
   }
@@ -398,13 +356,12 @@ public class TableDisplay extends BeakerxWidget {
   }
 
   public void addCellHighlighter(Object closure) {
-    Map<String, List<Color>> colors = new HashMap<>();
     try {
-      int rowSize = this.values.get(0).size();
+      int rowSize = this.model.values.get(0).size();
       for (int colInd = 0; colInd < rowSize; colInd++) {
         boolean hasHighlightedValues = false;
         List<Color> columnColors = new ArrayList<>();
-        for (int rowInd = 0; rowInd < this.values.size(); rowInd++) {
+        for (int rowInd = 0; rowInd < this.model.values.size(); rowInd++) {
           Object[] params = new Object[]{rowInd, colInd, this};
           Color color = (Color) runClosure(closure, params);
           if (color != null) {
@@ -413,7 +370,7 @@ public class TableDisplay extends BeakerxWidget {
           columnColors.add(color);
         }
         if (hasHighlightedValues) {
-          addCellHighlighter(new ValueHighlighter(this.columns.get(colInd), columnColors));
+          addCellHighlighter(new ValueHighlighter(this.model.columns.get(colInd), columnColors));
         }
       }
     } catch (Throwable e) {
@@ -422,13 +379,12 @@ public class TableDisplay extends BeakerxWidget {
   }
 
   public void addCellHighlighter(CellHighlighter cellHighlighter) {
-    Map<String, List<Color>> colors = new HashMap<>();
     try {
-      int rowSize = this.values.get(0).size();
+      int rowSize = this.model.values.get(0).size();
       for (int colInd = 0; colInd < rowSize; colInd++) {
         boolean hasHighlightedValues = false;
         List<Color> columnColors = new ArrayList<>();
-        for (int rowInd = 0; rowInd < this.values.size(); rowInd++) {
+        for (int rowInd = 0; rowInd < this.model.values.size(); rowInd++) {
           Color color = cellHighlighter.apply(rowInd, colInd, this);
           if (color != null) {
             hasHighlightedValues = true;
@@ -436,7 +392,7 @@ public class TableDisplay extends BeakerxWidget {
           columnColors.add(color);
         }
         if (hasHighlightedValues) {
-          addCellHighlighter(new ValueHighlighter(this.columns.get(colInd), columnColors));
+          addCellHighlighter(new ValueHighlighter(this.model.columns.get(colInd), columnColors));
         }
       }
     } catch (Throwable e) {
@@ -456,8 +412,8 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setToolTip(Object closure) {
     try {
-      for (int rowInd = 0; rowInd < this.values.size(); rowInd++) {
-        List<?> row = this.values.get(rowInd);
+      for (int rowInd = 0; rowInd < this.model.values.size(); rowInd++) {
+        List<?> row = this.model.values.get(rowInd);
         List<String> rowToolTips = new ArrayList<>();
         for (int colInd = 0; colInd < row.size(); colInd++) {
           Object[] params = new Object[]{rowInd, colInd, this};
@@ -473,8 +429,8 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setTooltip(TooltipAction tooltip) {
     try {
-      for (int rowInd = 0; rowInd < this.values.size(); rowInd++) {
-        List<?> row = this.values.get(rowInd);
+      for (int rowInd = 0; rowInd < this.model.values.size(); rowInd++) {
+        List<?> row = this.model.values.get(rowInd);
         List<String> rowToolTips = new ArrayList<>();
         for (int colInd = 0; colInd < row.size(); colInd++) {
           rowToolTips.add(tooltip.apply(rowInd, colInd, this));
@@ -515,8 +471,8 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setFontColorProvider(Object closure) {
     try {
-      for (int rowInd = 0; rowInd < this.values.size(); rowInd++) {
-        List<?> row = this.values.get(rowInd);
+      for (int rowInd = 0; rowInd < this.model.values.size(); rowInd++) {
+        List<?> row = this.model.values.get(rowInd);
         List<Color> rowFontColors = new ArrayList<>();
         for (int colInd = 0; colInd < row.size(); colInd++) {
           Object[] params = new Object[]{rowInd, colInd, this};
@@ -532,8 +488,8 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setFontColorProvider(FontColorProvider fontColorProvider) {
     try {
-      for (int rowInd = 0; rowInd < this.values.size(); rowInd++) {
-        List<?> row = this.values.get(rowInd);
+      for (int rowInd = 0; rowInd < this.model.values.size(); rowInd++) {
+        List<?> row = this.model.values.get(rowInd);
         List<Color> rowFontColors = new ArrayList<>();
         for (int colInd = 0; colInd < row.size(); colInd++) {
           rowFontColors.add(fontColorProvider.apply(rowInd, colInd, this));
@@ -549,10 +505,10 @@ public class TableDisplay extends BeakerxWidget {
   public void setRowFilter(Object closure) {
     List<List<?>> filteredValues = new ArrayList<>();
     try {
-      for (int rowInd = 0; rowInd < this.values.size(); rowInd++) {
-        Object[] params = new Object[]{rowInd, this.values};
+      for (int rowInd = 0; rowInd < this.model.values.size(); rowInd++) {
+        Object[] params = new Object[]{rowInd, this.model.values};
         if ((boolean) runClosure(closure, params)) {
-          filteredValues.add(values.get(rowInd));
+          filteredValues.add(this.model.values.get(rowInd));
         }
       }
     } catch (Throwable e) {
@@ -565,9 +521,9 @@ public class TableDisplay extends BeakerxWidget {
   public void setRowFilter(RowFilter rowFilter) {
     List<List<?>> filteredValues = new ArrayList<>();
     try {
-      for (int rowInd = 0; rowInd < this.values.size(); rowInd++) {
-        if (rowFilter.apply(rowInd, this.values)) {
-          filteredValues.add(values.get(rowInd));
+      for (int rowInd = 0; rowInd < this.model.values.size(); rowInd++) {
+        if (rowFilter.apply(rowInd, this.model.values)) {
+          filteredValues.add(this.model.values.get(rowInd));
         }
       }
     } catch (Throwable e) {
@@ -639,42 +595,32 @@ public class TableDisplay extends BeakerxWidget {
   }
 
   public List<Map<String, Object>> getValuesAsRows() {
-    return getValuesAsRows(values, columns);
+    return getValuesAsRows(this.model.values, this.model.columns);
   }
 
   public List<List<?>> getValuesAsMatrix() {
-    return getValuesAsMatrix(values);
+    return getValuesAsMatrix(this.model.values);
   }
 
   public Map<String, Object> getValuesAsDictionary() {
-    return getValuesAsDictionary(values);
+    return getValuesAsDictionary(this.model.values);
   }
 
-  private Object getValueForSerializer(Object value, BeakerObjectConverter serializer) {
-    if (value != null) {
-      String clazz = serializer.convertType(value.getClass().getName());
-      if (BasicObjectSerializer.TYPE_LONG.equals(clazz) || BasicObjectSerializer.TYPE_BIGINT.equals(clazz)) {
-        return value.toString();
-      }
-      return value;
-    }
-    return null;
-  }
 
   public List<List<?>> getValues() {
-    return values;
+    return this.model.values;
   }
 
   public List<String> getColumnNames() {
-    return columns;
+    return this.model.columns;
   }
 
   public List<String> getTypes() {
-    return classes;
+    return this.model.classes;
   }
 
   public String getSubtype() {
-    return subtype;
+    return this.model.subtype;
   }
 
   public void setDoubleClickAction(String tagName) {
@@ -772,7 +718,7 @@ public class TableDisplay extends BeakerxWidget {
   }
 
   public String getRowLimitMsg() {
-    return String.format(rowLimitMsg, ROWS_LIMIT, values.size(), ROW_LIMIT_TO_INDEX);
+    return String.format(rowLimitMsg, ROWS_LIMIT, this.model.values.size(), ROW_LIMIT_TO_INDEX);
   }
 
   public interface Element {
@@ -782,12 +728,12 @@ public class TableDisplay extends BeakerxWidget {
   @SuppressWarnings("unchecked")
   public void updateCell(int row, String columnName, Object value) {
     int index = getColumnIndex(columnName);
-    List<Object> rowList = (List<Object>) values.get(row);
+    List<Object> rowList = (List<Object>) this.model.values.get(row);
     rowList.set(index, value);
   }
 
   private int getColumnIndex(String columnName) {
-    int index = columns.indexOf(columnName);
+    int index = this.model.columns.indexOf(columnName);
     if (index < 0) {
       throw new RuntimeException("There is no given column name: " + columnName);
     }
@@ -796,5 +742,21 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setRowLimitMsg(String rowLimitMsg) {
     this.rowLimitMsg = rowLimitMsg;
+  }
+
+  public void setRowsToShow(RowsToShow rows) {
+    this.rowsToShow = rows;
+    sendModelUpdate(serializeRowsToShow(this.rowsToShow));
+  }
+
+  public RowsToShow getRowsToShow() {
+    return rowsToShow;
+  }
+
+  @Override
+  protected List<ChangeItem> doSendModel() {
+    List<ChangeItem> changeItems = super.doSendModel();
+    changeItems.add(new ChangeItem(LOAD_MORE_ROWS, this.getLoadMoreRows()));
+    return changeItems;
   }
 }

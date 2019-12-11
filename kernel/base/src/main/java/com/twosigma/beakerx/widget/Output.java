@@ -28,6 +28,7 @@ import java.util.Map;
 
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.DISPLAY_DATA;
 import static com.twosigma.beakerx.message.Header.MSG_ID;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 
 public class Output extends DOMWidget {
@@ -52,6 +53,11 @@ public class Output extends DOMWidget {
     openComm();
   }
 
+  public Output(Message parentMessage) {
+    super(parentMessage);
+    openComm(parentMessage);
+  }
+
   @Override
   public String getModelNameValue() {
     return MODEL_NAME_VALUE;
@@ -73,7 +79,7 @@ public class Output extends DOMWidget {
   }
 
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+  protected HashMap<String, Object> content(HashMap<String, Object> content) {
     super.content(content);
     content.put(MSG_ID, "");
     content.put(OUTPUTS, new ArrayList<>().toArray());
@@ -81,7 +87,16 @@ public class Output extends DOMWidget {
   }
 
   @Override
+  public void stateRequestHandler() {
+    super.stateRequestHandler();
+    clearOutput();
+  }
+
+  @Override
   public void updateValue(Object value) {
+    List<Message> list = new ArrayList<>();
+    list.add(getComm().createUpdateMessage(asList(new ChangeItem(MSG_ID, "")),new HashMap<>()));
+    getComm().publish(list);
   }
 
   public void sendStdout(String text) {
@@ -102,10 +117,16 @@ public class Output extends DOMWidget {
 
   private synchronized void send(boolean isError, String text) {
     List<Message> list = new ArrayList<>();
-    list.add(getComm().createUpdateMessage(MSG_ID, getComm().getParentMessage().getHeader().getId()));
+    list.add(getComm().createUpdateMessage(asList(new ChangeItem(MSG_ID, getComm().getParentMessage().getHeader().getId())), new HashMap<>()));
     Map<String, Serializable> asMap = addOutput(isError, text);
     list.add(getComm().createOutputContent(asMap));
-    list.add(getComm().createUpdateMessage(MSG_ID, ""));
+    getComm().publish(list);
+  }
+
+  private void display(HashMap<String, Serializable> content) {
+    List<Message> list = new ArrayList<>();
+    list.add(getComm().createUpdateMessage(asList(new ChangeItem(MSG_ID, getComm().getParentMessage().getHeader().getId())), new HashMap<>()));
+    list.add(getComm().createMessage(DISPLAY_DATA, Comm.Buffer.EMPTY, new Comm.Data(content)));
     getComm().publish(list);
   }
 
@@ -138,6 +159,10 @@ public class Output extends DOMWidget {
     mimeContainers.forEach(this::display);
   }
 
+  public void displayWidgets(List<Widget> widgets) {
+    widgets.forEach(this::display);
+  }
+
   public void display(Widget widget) {
     widget.beforeDisplay();
     HashMap<String, Serializable> content = new HashMap<>();
@@ -145,14 +170,6 @@ public class Output extends DOMWidget {
     vendor.put(MODEL_ID, widget.getComm().getCommId());
     content.put(APPLICATION_VND_JUPYTER_WIDGET_VIEW_JSON, vendor);
     display(content);
-  }
-
-  private void display(HashMap<String, Serializable> content) {
-    List<Message> list = new ArrayList<>();
-    list.add(getComm().createUpdateMessage(MSG_ID, getComm().getParentMessage().getHeader().getId()));
-    list.add(getComm().createMessage(DISPLAY_DATA, Comm.Buffer.EMPTY, new Comm.Data(content)));
-    list.add(getComm().createUpdateMessage(MSG_ID, ""));
-    getComm().publish(list);
   }
 
   @Override

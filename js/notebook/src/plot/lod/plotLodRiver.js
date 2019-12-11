@@ -16,13 +16,13 @@
 
 define([
   'underscore',
-  './../plotUtils'
 ], function(
-  _,
-  plotUtils
+  _
 ) {
+  const PlotUtils = require("../utils/PlotUtils").default;
+  const PlotColorUtils = require("../utils/PlotColorUtils").default;
+  const PlotTip = require("../PlotTip").default;
 
-  var plotTip = require('./../plotTip').default;
   var PlotLodRiver = function(data){
     _.extend(this, data); // copy properties to itself
     this.format();
@@ -36,7 +36,7 @@ define([
 
   PlotLodRiver.prototype.format = function() {
     if (this.color != null) {
-      this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
+      this.tip_color = PlotColorUtils.createColor(this.color, this.color_opacity);
     } else {
       this.tip_color = "gray";
     }
@@ -75,7 +75,6 @@ define([
 
     this.avgOn = true;
 
-    var eles = this.elements;
     for (var i = 0; i < eles.length; i++) {
       var ele = eles[i];
       var x = mapX(ele.x), y = mapY(ele.min), y2 = mapY(ele.max);
@@ -88,7 +87,7 @@ define([
         var ym = mapY(ele.avg);
       }
 
-      if (plotUtils.rangeAssert([x, y, y2])) {  // no need to put ym here
+      if (PlotUtils.rangeAssert([x, y, y2])) {  // no need to put ym here
         eleprops.length = 0;
         return;
       }
@@ -144,8 +143,8 @@ define([
 
     groupsvg.select("polygon")
       .transition()
-      .duration(plotUtils.getHighlightDuration())
-      .style("stroke-width", plotUtils.getHighlightedSize(props.st_w || 1, highlighted));
+      .duration(PlotUtils.getHighlightDuration())
+      .style("stroke-width", PlotUtils.getHighlightedSize(props.st_w || 1, highlighted));
   };
 
   PlotLodRiver.prototype.draw = function(scope, gid) {
@@ -217,7 +216,7 @@ define([
   };
 
   PlotLodRiver.prototype.hideTips = function(scope, hidden) {
-    plotTip.hideTips(scope, this.id, hidden);
+    PlotTip.hideTips(scope, this.id, hidden);
   };
 
   return PlotLodRiver;

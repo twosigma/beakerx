@@ -16,13 +16,14 @@
 
 define([
   'underscore',
-  'big.js',
-  './plotUtils'
+  'big.js'
 ], function(
   _,
-  Big,
-  plotUtils
+  Big
 ) {
+  const PlotUtils = require("./utils/PlotUtils").default;
+  const PlotColorUtils = require("./utils/PlotColorUtils").default;
+  const BigNumberUtils = require("beakerx_shared/lib/utils/BigNumberUtils").default;
 
   var dataTypeMap = {
     "Line" : "line",
@@ -177,7 +178,7 @@ define([
           ele.stroke = "#" + item.outline_color.substr(3);
         } else {
           ele.stroke_opacity = 1;
-          ele.stroke = plotUtils.colorToHex("black");
+          ele.stroke = PlotColorUtils.colorToHex("black");
         }
       }
     } else if (item.outline_colors != null) {
@@ -212,8 +213,8 @@ define([
     }
 
     if (item.type === "bar" && item.widths != null) {
-      ele.x = plotUtils.minus(ele.x, item.widths[j] / 2);
-      ele.x2 = plotUtils.plus(ele.x, item.widths[j]);
+      ele.x = BigNumberUtils.minus(ele.x, item.widths[j] / 2);
+      ele.x2 = BigNumberUtils.plus(ele.x, item.widths[j]);
     }
     return true;
   };
@@ -231,7 +232,7 @@ define([
 
     if(item.color == null && item.colors == null) {
       //set default colors
-      item.color = plotUtils.getDefaultColor(index);
+      item.color = PlotColorUtils.getDefaultColor(index);
     }
 
     if (item.color != null && item.color.length === 9) {
@@ -282,7 +283,7 @@ define([
       item.shape = pointShapeMap[item.shape] || item.shape;
     }
 
-    var yAxisSettings = plotUtils.useYAxisR(newmodel, item) ? yAxisRSettings : yAxisSettings;
+    var yAxisSettings = PlotUtils.useYAxisR(newmodel, item) ? yAxisRSettings : yAxisSettings;
     if (item.base != null && yAxisSettings.logy) {
       if (item.base === 0) {
         item.base = 1;
@@ -540,7 +541,7 @@ define([
               }
             }
 
-            var histvalues = plotUtils.histogram().
+            var histvalues = PlotUtils.histogram().
             rightClose(newmodel.rightClose).
             binCount(newmodel.binCount).
             rangeMin(newmodel.rangeMin != null ? newmodel.rangeMin : rangeMin).
@@ -656,7 +657,7 @@ define([
           item.style = lineStyleMap[style];
 
           var addElement = function (line, type, log) {
-            if (line[type] == null || log && plotUtils.lte(line[type], 0)) {
+            if (line[type] == null || log && BigNumberUtils.lte(line[type], 0)) {
               return false;
             }
             var ele = {"type": type};
@@ -693,8 +694,8 @@ define([
           if (band.x != null) {
             var ele = {
               "type" : "x",
-              "x" : plotUtils.convertInfinityValue(band.x[0]),
-              "x2" : plotUtils.convertInfinityValue(band.x[1])
+              "x" : PlotUtils.convertInfinityValue(band.x[0]),
+              "x2" : PlotUtils.convertInfinityValue(band.x[1])
             };
             item.elements.push(ele);
           }
@@ -703,8 +704,8 @@ define([
               "type" : "y"
             };
             var y1 = band.y[0], y2 = band.y[1];
-            ele.y = plotUtils.convertInfinityValue(y1);
-            ele.y2 = plotUtils.convertInfinityValue(y2);
+            ele.y = PlotUtils.convertInfinityValue(y1);
+            ele.y2 = PlotUtils.convertInfinityValue(y2);
             item.elements.push(ele);
           }
           newmodel.data.push(item);

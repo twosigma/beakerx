@@ -18,8 +18,15 @@ package com.twosigma.beakerx.sql;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import com.twosigma.beakerx.util.BeakerXSystem;
+import com.twosigma.beakerx.util.BeakerXSystemImpl;
 
 public class QueryParser {
+
+  private static BeakerXSystem beakerXSystem = BeakerXSystemImpl.getINSTANCE();
+  private static String rd = beakerXSystem.getenv("REMOVE_DASH_LINECOMMENT");
+  private static boolean REMOVE_DASH_LINECOMMENT = (rd==null) || (rd.equals("true"));
+
   private static final List<ParsingState> PARSING_STATES = Arrays.asList(
       new ParsingState("'", "'", false), // string literal
       new ParsingState("/*", "*/", true),
@@ -84,7 +91,7 @@ public class QueryParser {
   private static class LineCommentParsingState extends ParsingState {
 
     public LineCommentParsingState(String start) {
-      super(start, "\n", true);
+      super(start, "\n", REMOVE_DASH_LINECOMMENT);
     }
   }
 

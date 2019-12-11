@@ -15,10 +15,10 @@
  */
 package com.twosigma.beakerx.kernel;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
-import java.util.Date;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -27,8 +27,9 @@ public class Utils {
   /**
    * The timezone to use when generating time stamps.
    */
-  public static final TimeZone UTC = TimeZone.getTimeZone("UTC");
-  public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mmZ";
+  private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
+  private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+  private static final DateTimeFormatter df = DateTimeFormatter.ofPattern(DATE_FORMAT);
   public static final String EMPTY_STRING = "";
 
   private static UUIDStrategy UUID_STRATEGY_DEFAULT = () -> UUID.randomUUID().toString();
@@ -36,12 +37,8 @@ public class Utils {
   private static UUIDStrategy commUUIDStrategy = UUID_STRATEGY_DEFAULT;
 
   public static String timestamp() {
-    // SimpleDateFormat is not thread-safe so we need to create a new one for
-    // each
-    // timestamp that is generated.
-    DateFormat df = new SimpleDateFormat(DATE_FORMAT);
-    df.setTimeZone(UTC);
-    return df.format(new Date());
+    ZonedDateTime now = ZonedDateTime.now(ZoneId.of(UTC.getID()));
+    return df.format(now);
   }
 
   public static String uuid() {

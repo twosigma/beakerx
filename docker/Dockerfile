@@ -58,18 +58,19 @@ RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
 
 RUN apt-get clean
 
-RUN conda create -y -n beakerx 'python>=3' nodejs pandas openjdk maven py4j
-RUN conda config --env --add pinned_packages 'openjdk >8.0.121'
-RUN conda install -y -n beakerx -c conda-forge ipywidgets jupyterhub jupyterlab pyzmq pytest requests
+COPY configuration.yml /home/beakerx/
+RUN conda env create -n beakerx -f /home/beakerx/configuration.yml
+RUN conda install -y -n beakerx -c conda-forge jupyterhub jupyterlab pyzmq pytest
 
 ENV LANG=en_US.UTF-8
 ENV LC_CTYPE=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
+ENV REMOVE_DASH_LINECOMMENT="true"
 ENV SHELL /bin/bash
 ENV NB_UID 1000
 ENV HOME /home/$NB_USER
 
-COPY beakerx environment.yml jitpack.yml js kernel test /home/beakerx/
+COPY beakerx jitpack.yml js kernel test /home/beakerx/
 COPY docker/setup.sh / $HOME/
 COPY docker/start.sh docker/start-notebook.sh docker/start-singleuser.sh /usr/local/bin/
 COPY docker/jupyter_notebook_config.py /etc/jupyter/

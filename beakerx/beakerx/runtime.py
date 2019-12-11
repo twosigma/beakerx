@@ -32,9 +32,10 @@ from IPython import get_ipython
 from IPython.display import display_html
 from beakerx.easyform import easyform
 from beakerx.plot import BaseObject, chart
-from beakerx.tabledisplay import *
 from ipykernel.comm import Comm
 from traitlets import Unicode
+
+from beakerx_tabledisplay import TableDisplay
 
 
 class OutputContainer:
@@ -471,7 +472,7 @@ class TableDisplayWrapper(object):
         return f
 
 
-from .beakerx_server import *
+from .beakerx_server import BeakerxZMQServer
 from queue import Queue
 
 

@@ -28,7 +28,7 @@ trait CategoryStemsProperties extends BasedCategoryGraphicsProperties {
   this: com.twosigma.beakerx.chart.categoryplot.plotitem.CategoryStems =>
 
   def style: StrokeType = getStyle
-  def styles: Seq[StrokeType] = getNullableList(getStyles)
+  def styles: Seq[StrokeType] = getNullableList(()=> getStyles)
   def style_=(s: StrokeType): Unit = setStyle(s)
   def style_=(ss: Seq[StrokeType]): Unit = setStyle(ss.asJava)
 }

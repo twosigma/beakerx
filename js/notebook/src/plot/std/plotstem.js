@@ -15,14 +15,14 @@
  */
 
 define([
-  'underscore',
-  './../plotUtils'
+  'underscore'
 ], function(
-  _,
-  plotUtils
+  _
 ) {
+  const PlotUtils = require("../utils/PlotUtils").default;
+  const PlotColorUtils = require("../utils/PlotColorUtils").default;
+  const BigNumberUtils = require("beakerx_shared/lib/utils/BigNumberUtils").default;
 
-  var plotTip = require('./../plotTip').default;
   var PlotStem = function(data) {
     _.extend(this, data);
     this.format();
@@ -38,13 +38,13 @@ define([
 
     svg.select("#" + this.id)
       .transition()
-      .duration(plotUtils.getHighlightDuration())
-      .style("stroke-width", plotUtils.getHighlightedSize(props.st_w, highlighted));
+      .duration(PlotUtils.getHighlightDuration())
+      .style("stroke-width", PlotUtils.getHighlightedSize(props.st_w, highlighted));
   };
 
   PlotStem.prototype.format = function() {
     if (this.color != null) {
-      this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
+      this.tip_color = PlotColorUtils.createColor(this.color, this.color_opacity);
     } else {
       this.tip_color = "gray";
     }
@@ -81,8 +81,8 @@ define([
     };
     for (var i = 0; i < eles.length; i++) {
       var ele = eles[i];
-      range.xl = plotUtils.min(range.xl, ele.x);
-      range.xr = plotUtils.max(range.xr, ele.x2 ? ele.x2 : ele.x);
+      range.xl = BigNumberUtils.min(range.xl, ele.x);
+      range.xr = BigNumberUtils.max(range.xr, ele.x2 ? ele.x2 : ele.x);
       range.yl = Math.min(range.yl, ele.y);
       range.yr = Math.max(range.yr, ele.y2);
     }
@@ -104,8 +104,8 @@ define([
 
   PlotStem.prototype.filter = function(scope) {
     var eles = this.elements;
-    var l = plotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xl) + 1,
-      r = plotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xr);
+    var l = PlotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xl) + 1,
+      r = PlotUtils.upper_bound(eles, "x", scope.plotFocus.focus.xr);
 
     l = Math.max(l, 0);
     r = Math.min(r, eles.length - 1);
@@ -147,7 +147,7 @@ define([
       var x = mapX(ele.x), y = mapY(ele.y), y2 = mapY(ele.y2);
       var x2 = (ele.x2) ? mapX(ele.x2) : x;
 
-      if (plotUtils.rangeAssert([x, y, y2])) {
+      if (PlotUtils.rangeAssert([x, y, y2])) {
         eleprops.length = 0;
         return;
       }
@@ -171,7 +171,7 @@ define([
 
       if(ele.itemLabel || this.showItemLabel){
         var labelMargin = 3;
-        var labelHeight = plotUtils.fonts.labelHeight;
+        var labelHeight = PlotUtils.fonts.labelHeight;
         var base = this.base != null ? this.base : 0;
         var isPositiveStem = ele._y2 != base;
 
@@ -236,7 +236,7 @@ define([
         .attr("class", respClass+" highlighted")
         .style("stroke", function(d) { return d.st; })
         .style("stroke-dasharray", function(d) { return d.st_da; })
-        .style("stroke-width", function(d) { return plotUtils.getHighlightedSize(self.itemProps.st_w, true); })
+        .style("stroke-width", function(d) { return PlotUtils.getHighlightedSize(self.itemProps.st_w, true); })
         .style("opacity", function(d) { return d.op; });
       itemsvg.selectAll("line.highlighted")
         .data(eleprops, function(d) { return d.id; })
@@ -279,13 +279,13 @@ define([
       tip.title = this.legend;
     }
     if (model.orientation === 'HORIZONTAL'){
-      tip.value = plotUtils.getTipString(plotUtils.minus(ele._x2, ele._x), xAxis, true);
+      tip.value = PlotUtils.getTipString(BigNumberUtils.minus(ele._x2, ele._x), xAxis, true);
     }else {
-      tip.x = plotUtils.getTipString(ele._x, xAxis, true);
-      tip.yTop = plotUtils.getTipString(ele._y2, yAxis, true);
-      tip.yBtm = plotUtils.getTipString(ele._y, yAxis, true);
+      tip.x = PlotUtils.getTipString(ele._x, xAxis, true);
+      tip.yTop = PlotUtils.getTipString(ele._y2, yAxis, true);
+      tip.yBtm = PlotUtils.getTipString(ele._y, yAxis, true);
     }
-    return plotUtils.createTipString(tip);
+    return PlotUtils.createTipString(tip);
   };
 
   return PlotStem;

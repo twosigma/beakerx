@@ -20,8 +20,12 @@ import com.twosigma.beakerx.BeakerXServerMock;
 import com.twosigma.beakerx.KernelExecutionTest;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.MagicCommandConfigurationMock;
+import com.twosigma.beakerx.RuntimetoolsMock;
+import com.twosigma.beakerx.evaluator.ClasspathScannerMock;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
+import com.twosigma.beakerx.kernel.Configuration;
+import com.twosigma.beakerx.kernel.CustomMagicCommandsEmptyImpl;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kotlin.evaluator.KotlinEvaluator;
@@ -42,17 +46,21 @@ public class KotlinKernelTest extends KernelExecutionTest {
             getTestTempFolderFactory(),
             KERNEL_PARAMETERS,
             new EvaluatorTest.BeakexClientTestImpl(),
-            magicCommandConfiguration.patterns()
+            magicCommandConfiguration.patterns(),
+            new ClasspathScannerMock()
     );
     return new Kotlin(sessionId,
             evaluator,
-            kernelSocketsFactory,
-            closeKernelAction,
-            getCacheFolderFactory(),
-            new BeakerXCommRepositoryMock(),
-            BeakerXServerMock.create(),
-            magicCommandConfiguration,
-            new KernelTest.BeakerXJsonMock());
+            new Configuration(
+                    kernelSocketsFactory,
+                    closeKernelAction,
+                    getCacheFolderFactory(),
+                    new CustomMagicCommandsEmptyImpl(),
+                    new BeakerXCommRepositoryMock(),
+                    BeakerXServerMock.create(),
+                    magicCommandConfiguration,
+                    new KernelTest.BeakerXJsonMock(),
+                    new RuntimetoolsMock()));
   }
 
   @Override

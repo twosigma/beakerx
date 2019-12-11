@@ -18,13 +18,14 @@ import {Widget} from '@phosphor/widgets';
 import {DisposableDelegate} from '@phosphor/disposable';
 import {DocumentRegistry} from '@jupyterlab/docregistry';
 import {INotebookModel, NotebookPanel} from '@jupyterlab/notebook';
-import {JupyterLab} from "@jupyterlab/application";
+import {ILabShell, JupyterFrontEnd} from "@jupyterlab/application";
 import {ISettingRegistry} from "@jupyterlab/coreutils";
 import {registerCommTargets} from './comm';
 import {extendHighlightModes, registerCommentOutCmd} from './codeEditor';
 import {enableInitializationCellsFeature} from './initializationCells';
 import UIOptionFeaturesHelper from "./UIOptionFeaturesHelper";
 import {Autotranslation} from "./autotranslation";
+import beakerx from "./../beakerx";
 import proxify = Autotranslation.proxify;
 
 function displayHTML(widget: Widget, html: string): void {
@@ -41,14 +42,17 @@ function displayHTML(widget: Widget, html: string): void {
 
 class BeakerxExtension implements DocumentRegistry.WidgetExtension {
   constructor(
-    private app: JupyterLab,
-    private settings: ISettingRegistry
+    private app: JupyterFrontEnd,
+    private settings: ISettingRegistry,
+    private labShell: ILabShell
+
   ) {}
 
   createNew(panel: NotebookPanel, context: DocumentRegistry.IContext<INotebookModel>) {
 
     let app = this.app;
     let settings = this.settings;
+    let labShell = this.labShell;
 
     Promise.all([panel.session.ready, context.ready]).then(function() {
       extendHighlightModes(panel);
@@ -57,15 +61,20 @@ class BeakerxExtension implements DocumentRegistry.WidgetExtension {
       registerCommTargets(panel, context);
 
       window.beakerxHolder = window.beakerxHolder || {};
+      const plotApiList = beakerx.PlotApi.list();
       const beakerxInstance = {
-            displayHTML,
-        };
+        ...plotApiList,
+        displayHTML,
+        prefs: beakerx.bkCoreManager.getBkApp().getBeakerObject().beakerObj.prefs,
+      };
       window.beakerx = proxify(beakerxInstance, context.session.kernel);
       window.beakerxHolder[context.session.kernel.id] = window.beakerx;
 
-      app.shell.activeChanged.connect((sender, args) => {
+      plotApiList.setActiveLabPanel(panel);
+      labShell.activeChanged.connect((sender, args) => {
         if (args.newValue == panel){
             window.beakerx = window.beakerxHolder[panel.context.session.kernel.id];
+            plotApiList.setActiveLabPanel(panel);
         }
       });
 
@@ -78,7 +87,7 @@ class BeakerxExtension implements DocumentRegistry.WidgetExtension {
         return originalProcessFn.call(app.commands, event);
       };
 
-      new UIOptionFeaturesHelper(app, settings, panel).registerFeatures();
+      new UIOptionFeaturesHelper(app, settings, panel, labShell).registerFeatures();
     });
 
     return new DisposableDelegate(() => { });

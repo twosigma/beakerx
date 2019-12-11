@@ -32,7 +32,7 @@ describe('(Groovy) Java Properties and Heap Size tests', function () {
 
     it('Proper max memory is displayed when setting heap size to 5GB', function () {
       beakerxPO.setJVMProperties('5', 'myproperty', 'cookies', '/test/ipynb/groovy/JavaArgsTest.ipynb');
-      beakerxPO.runNotebookByUrl('/test/ipynb/groovy/JavaArgsTest.ipynb', '/JavaArgsTest.ipynb');
+      beakerxPO.runNotebookByUrl('/test/ipynb/groovy/JavaArgsTest.ipynb');
 
       cellIndex = 0;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
@@ -50,7 +50,7 @@ describe('(Groovy) Java Properties and Heap Size tests', function () {
 
     it('Proper max memory is displayed when setting heap size to 3GB', function () {
       beakerxPO.setJVMProperties('3', 'myproperty', 'cream');
-      beakerxPO.runNotebookByUrl('/test/ipynb/groovy/JavaArgsTest.ipynb', '/JavaArgsTest.ipynb');
+      beakerxPO.runNotebookByUrl('/test/ipynb/groovy/JavaArgsTest.ipynb');
 
       cellIndex = 0;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
@@ -68,7 +68,7 @@ describe('(Groovy) Java Properties and Heap Size tests', function () {
 
     it('Correct property is displayed after clearing the form', function () {
       beakerxPO.setJVMProperties('', null, null);
-      beakerxPO.runNotebookByUrl('/test/ipynb/groovy/JavaArgsTest.ipynb', '/JavaArgsTest.ipynb');
+      beakerxPO.runNotebookByUrl('/test/ipynb/groovy/JavaArgsTest.ipynb');
 
       cellIndex = 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);

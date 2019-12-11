@@ -15,22 +15,27 @@
  */
 package com.twosigma.beakerx.scala.magic.command;
 
-import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widget.SparkUI;
+import com.twosigma.beakerx.widget.SparkEngine;
+import com.twosigma.beakerx.widget.SparkEngineConf;
+import com.twosigma.beakerx.widget.SparkUiDefaults;
+import org.apache.spark.SparkConf;
+import org.apache.spark.sql.SparkSession;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SparkMagicCommandOptionsTest {
 
   private SparkMagicCommandOptions sut;
-  private SparkMagicActionMock actions;
+  private SparkEngineMock engineMock;
 
   @Before
   public void setUp() {
-    actions = new SparkMagicActionMock();
-    sut = new SparkMagicCommandOptions(actions);
+    engineMock = new SparkEngineMock();
+    sut = new SparkMagicCommandOptions();
   }
 
   @Test
@@ -40,7 +45,7 @@ public class SparkMagicCommandOptionsTest {
     //when
     runOptions(options);
     //then
-    assertThat(actions.sparkConnected).isTrue();
+    assertThat(engineMock.sparkConnected).isTrue();
   }
 
   @Test
@@ -50,7 +55,7 @@ public class SparkMagicCommandOptionsTest {
     //when
     runOptions(options);
     //then
-    assertThat(actions.sparkConnected).isTrue();
+    assertThat(engineMock.sparkConnected).isTrue();
   }
 
   @Test
@@ -67,7 +72,7 @@ public class SparkMagicCommandOptionsTest {
     SparkMagicCommandOptions.OptionsResult optionsResult = sut.parseOptions(args(options));
     //then
     assertThat(optionsResult.hasError()).isFalse();
-    optionsResult.options().forEach(x -> x.run(null, null));
+    optionsResult.options().forEach(x -> x.run(engineMock, null));
   }
 
   private String[] args(String options) {
@@ -75,13 +80,84 @@ public class SparkMagicCommandOptionsTest {
   }
 
 
-  class SparkMagicActionMock implements SparkMagicActionOptions {
+  class SparkEngineMock implements SparkEngine {
 
-    private boolean sparkConnected;
+    boolean sparkConnected = false;
 
     @Override
-    public void connectToSparkSession(SparkUI sparkUI, Message parent) {
-      sparkConnected = true;
+    public SparkSession getOrCreate() {
+      return null;
+    }
+
+    @Override
+    public SparkConf getSparkConf() {
+      return null;
+    }
+
+    @Override
+    public String getSparkAppId() {
+      return null;
+    }
+
+    @Override
+    public Map<String, String> getAdvanceSettings(SparkUiDefaults defaults) {
+      return null;
+    }
+
+    @Override
+    public String getSparkUiWebUrl() {
+      return null;
+    }
+
+    @Override
+    public String getSparkMasterUrl() {
+      return null;
+    }
+
+    @Override
+    public String sparkVersion() {
+      return null;
+    }
+
+    @Override
+    public void additionalConf(SparkEngineConf conf) {
+
+    }
+
+    @Override
+    public SparkEngineConf getSparkEngineConf() {
+      return null;
+    }
+
+    @Override
+    public void configAutoStart() {
+      this.sparkConnected = true;
+    }
+
+    @Override
+    public String stageLink(int stageId) {
+      return null;
+    }
+
+    @Override
+    public String jobLink(int jobId) {
+      return null;
+    }
+
+    @Override
+    public void jobLinkFactory(JobLinkFactory jobLinkFactory) {
+
+    }
+
+    @Override
+    public void stageLinkFactory(StageLinkFactory stageLinkFactory) {
+
+    }
+
+    @Override
+    public void sparkUiWebUrlFactory(SparkUiWebUrlFactory factory) {
+
     }
   }
+
 }

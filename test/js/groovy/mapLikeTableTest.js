@@ -29,7 +29,7 @@ describe('(Groovy) Testing Map Like Tables', function () {
   });
 
   function clickOnTable(codeCell, x, y) {
-    codeCell.click('div.p-DataGrid-viewport', x, y);
+    codeCell.$('div.p-DataGrid-viewport', x, y).click();
     beakerxPO.kernelIdleIcon.waitForEnabled();
   };
 
@@ -40,99 +40,103 @@ describe('(Groovy) Testing Map Like Tables', function () {
     it('A basic table is rendered correctly ', function () {
       cellIndex = 0;
       var fileName = 'cell1_case1.png';
-      var width = 130, height = 65;
+      var width = 130, height = 67;
+      beakerxPO.runCodeCellByIndex(cellIndex);
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
 
     it('An ArrayList is rendered correctly ', function () {
       cellIndex += 2;
       var fileName = 'cell2_case1.png';
-      var width = 130, height = 65;
+      var width = 122, height = 67;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
 
     it('A Map is rendered correctly ', function () {
       cellIndex += 2;
       var fileName = 'cell3_case1.png';
-      var width = 130, height = 65;
+      var width = 122, height = 67;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
 
     it('A Map is rendered correctly ', function () {
       cellIndex += 2;
       var fileName = 'cell4_case1.png';
-      var width = 130, height = 90;
+      var width = 130, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
 
     it('A List inside a List is rendered correctly ', function () {
       cellIndex += 2;
       var fileName = 'cell5_case1.png';
-      var width = 180, height = 43;
+      var width = 178, height = 44;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
 
     it('A Map inside a List is rendered correctly ', function () {
       cellIndex += 2;
       var fileName = 'cell6_case1.png';
-      var width = 210, height = 43;
+      var width = 208, height = 44;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
 
     it('Table with "&", "/", ">" values ', function () {
       cellIndex += 2;
       var fileName = 'cell7_case1.png';
-      var width = 250, height = 43;
+      var width = 254, height = 44;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
 
     it('Display object is rendered correctly ', function () {
       cellIndex += 2;
       var fileName = 'cell8_case1.png';
-      var width = 155, height = 43;
+      var width = 158, height = 44;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
 
     it('HTML table format ', function () {
       cellIndex += 2;
       var fileName = 'cell9_case1.png';
-      var width = 185, height = 124;
+      var width = 184, height = 122;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
 
     it('Links are rendered correctly ', function () {
       cellIndex += 2;
       var fileName = 'cell10_case1.png';
-      var width = 446, height = 124;
+      var width = 390, height = 67;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
 
     it('Links work correctly', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       browser.pause(1000);
       clickOnTable(codeCell, 200, 40);
-      browser.switchTab(browser.getTabIds()[1]);
-      expect(browser.title().value).toBe('Two Sigma');
+      browser.pause(3000);
+      browser.switchWindow('https://www.twosigma.com/');
+      browser.pause(1000);
+      expect(browser.getTitle()).toBe('Two Sigma');
+      beakerxPO.switchToNotebookWindow();
     });
   });
 });

@@ -12,16 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from beakerx.utils import *
 from enum import Enum
+
+from beakerx_base import Color, ColorUtils
+
 
 class TreeMapNode:
     def __init__(self, *args):
-        self.type= 'TreeMapNode'
+        self.type = 'TreeMapNode'
         self.weight = 0
         self.color = '#780004'
         self.children = None
         self.label = args[0]
+        self.user_object = {}
         if len(args) > 1:
             self.doubleValue = args[2].value
             self.labelValue = args[2].label
@@ -59,8 +62,8 @@ class Mode(Enum):
     SLICE_DIC = "slice-dic" # alternating between horizontal and vertical subdivision.
 
 class ValueAccessor(Enum):
-    VALUE = 1
-    WEIGHT = 2
+    VALUE = "VALUE"
+    WEIGHT = "WEIGHT"
 
 
 class ColorProvider:

@@ -33,7 +33,7 @@ export default class GistPublishModal {
       });
   }
 
-  create(submitCallback, personalAccessToken = ''): Promise<any> {
+  create(submitCallback, personalAccessToken = ''): void {
     const modalContent = this.createModalContent();
     const personalAccessTokenInput = modalContent.querySelector('input');
     const form = modalContent.querySelector('form');

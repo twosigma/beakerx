@@ -12,51 +12,50 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from enum import Enum
-import math
-import pandas as pd
-from beakerx.utils import *
-
-from dateutil.parser import parse
-import numpy as np
 import datetime as dt
+import math
 import uuid
+from enum import Enum
+
+from beakerx_base import Color, getValue, BaseObject, getColor, datetime_to_number, datetime, pd, np, \
+    date_time_2_millis, padYs
+from dateutil.parser import parse
 
 
 class ShapeType(Enum):
-    SQUARE = 1
-    CIRCLE = 2
-    TRIANGLE = 3
-    DIAMOND = 4
-    DCROSS = 5
-    DOWNTRIANGLE = 5
-    CROSS = 6
-    DEFAULT = 7
-    LEVEL = 8
-    VLEVEL = 9
-    LINECROSS = 10
+    SQUARE = "SQUARE"
+    CIRCLE = "CIRCLE"
+    TRIANGLE = "TRIANGLE"
+    DIAMOND = "DIAMOND"
+    DCROSS = "DCROSS"
+    CROSS = "CROSS"
+    DEFAULT = "DEFAULT"
+    LEVEL = "LEVEL"
+    VLEVEL = "VLEVEL"
+    LINECROSS = "LINECROSS"
+    DOWNTRIANGLE = "DOWNTRIANGLE"
 
 
 class StrokeType(Enum):
-    NONE = 1
-    SOLID = 2
-    DASH = 3
-    DOT = 4
-    DASHDOT = 5
-    LONGDASH = 5
+    NONE = "NONE"
+    SOLID = "SOLID"
+    DASH = "DASH"
+    DOT = "DOT"
+    DASHDOT = "DASHDOT"
+    LONGDASH = "LONGDASH"
 
 
 class PlotOrientationType(Enum):
-    VERTICAL = 1
-    HORIZONTAL = 2
+    VERTICAL = "VERTICAL"
+    HORIZONTAL = "HORIZONTAL"
 
 
 class LabelPositionType(Enum):
-    VALUE_OUTSIDE = 1
-    VALUE_INSIDE = 2
-    CENTER = 3
-    BASE_OUTSIDE = 4
-    BASE_INSIDE = 5
+    VALUE_OUTSIDE = "VALUE_OUTSIDE"
+    VALUE_INSIDE = "VALUE_INSIDE"
+    CENTER = "CENTER"
+    BASE_OUTSIDE = "BASE_OUTSIDE"
+    BASE_INSIDE = "BASE_INSIDE"
 
 
 class GradientColor:
@@ -121,15 +120,22 @@ class Graphics(BaseObject):
     def fireKey(self, details, key):
         self.onKeyListeners.get(key, lambda *args: None)(details)
 
+
 class ConstantLine(Graphics):
     def __init__(self, **kwargs):
         super(ConstantLine, self).__init__(**kwargs)
-        self.x = getValue(kwargs, 'x')
+        self.x = self.transform_value_to_number(getValue(kwargs, 'x'))
         self.y = getValue(kwargs, 'y')
         self.color = getColor(getValue(kwargs, 'color'))
         self.width = getValue(kwargs, 'width', 1.5)
         self.style = getValue(kwargs, 'style')
         self.showLabel = getValue(kwargs, 'showLabel')
+
+    @staticmethod
+    def transform_value_to_number(value):
+        if isinstance(value, datetime):
+            return datetime_to_number(value)
+        return value
 
 
 class ConstantBand(Graphics):
@@ -212,7 +218,7 @@ class BasedXYGraphics(XYGraphics):
         if isinstance(base, list):
             self.bases = base
         else:
-            self.base = getValue(kwargs, 'base', 0)
+            self.bases = getValue(kwargs, 'base', 0)
 
 
 class Bars(BasedXYGraphics):

@@ -16,11 +16,11 @@
 
 define([
   'underscore',
-  './../plotUtils'
 ], function(
-  _,
-  plotUtils
+  _
 ) {
+  const PlotUtils = require("../utils/PlotUtils").default;
+  const PlotStyleUtils = require("beakerx_shared/lib/utils/PlotStyleUtils").default;
 
   var PlotConstline = function(data){
     _.extend(this, data); // copy properties to itself
@@ -117,8 +117,8 @@ define([
       mapY = this.getYMapper(scope);
     var lMargin = scope.layout.leftLayoutMargin,
       bMargin = scope.layout.bottomLayoutMargin;
-    var W = plotUtils.safeWidth(scope.jqsvg),
-      H = plotUtils.safeHeight(scope.jqsvg);
+    var W = PlotStyleUtils.safeWidth(scope.jqsvg),
+      H = PlotStyleUtils.safeHeight(scope.jqsvg);
 
     eleprops.length = 0;
     this.labelpipe.length = 0;
@@ -154,7 +154,7 @@ define([
           } else {
             this.labelpipe.push(eleprops[i]);
           }
-          var text = plotUtils.getTipString(ele._x, scope.stdmodel.xAxis);
+          var text = PlotUtils.getTipString(ele._x, scope.stdmodel.xAxis);
           _.extend(prop, {
             "left" : function(w, h, x) { return x - w / 2; },
             "top" : function(w, h, y) { return H - bMargin - h - scope.labelPadding.y; },
@@ -176,7 +176,7 @@ define([
           } else {
             this.labelpipe.push(eleprops[i]);
           }
-          var text = plotUtils.getTipString(ele._y, scope.stdmodel.yAxis);
+          var text = PlotUtils.getTipString(ele._y, scope.stdmodel.yAxis);
 
           _.extend(prop, {
             "left" : function(w, h, x) { return lMargin + scope.labelPadding.x; },

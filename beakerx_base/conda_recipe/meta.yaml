@@ -1,0 +1,26 @@
+{% set name = "beakerx_base" %}
+{% set version = "1.5.0" %}
+
+package:
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
+
+source:
+  git_url: https://github.com/twosigma/beakerx.git
+  git_tag: master
+
+source:
+  url: https://files.pythonhosted.org/packages/source/b/beakerx/{{ name }}-{{ version }}.tar.gz
+
+build:
+  number: 1
+  script: pip install --no-deps .
+
+requirements:
+  build:
+  - python
+  - pip
+  run:
+  - python
+  - pytz
+  - pandas

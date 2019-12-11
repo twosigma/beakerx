@@ -14,3 +14,5 @@
 
 from .chart import *
 from .legend import *
+from .plotitem import *
+from .plotitem_treemap import *

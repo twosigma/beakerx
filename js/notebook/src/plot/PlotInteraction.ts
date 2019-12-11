@@ -16,10 +16,10 @@
 
 import * as _ from 'underscore';
 import * as d3 from 'd3';
-import plotTip from './plotTip';
+import plotTip from './PlotTip';
 import zoomHelpers from './zoom/helpers';
-
-const plotUtils = require('./plotUtils');
+import PlotUtils from "./utils/PlotUtils";
+import PlotKeyboardUtils from "beakerx_shared/lib/utils/PlotKeyboardUtils";
 
 export default class PlotInteraction {
   scope: any;
@@ -163,7 +163,7 @@ export default class PlotInteraction {
     }
 
     const plotId = this.scope.stdmodel.plotId;
-    const params = plotUtils.getActionObject(this.scope.model.getCellModel().type, event);
+    const params = PlotUtils.getActionObject(this.scope.model.getCellModel().type, event);
 
     params.actionType = 'onclick';
     params.tag = item.clickTag;
@@ -192,12 +192,12 @@ export default class PlotInteraction {
       event: 'onclick',
       plotId: plotId,
       itemId: item.uid,
-      params: plotUtils.getActionObject(this.scope.model.getCellModel().type, event)
+      params: PlotUtils.getActionObject(this.scope.model.getCellModel().type, event)
     }, this.scope.plotDisplayView.callbacks());
   }
 
   onKeyAction(item, onKeyEvent) {
-    const key = plotUtils.getKeyCodeConstant(onKeyEvent.keyCode);
+    const key = PlotKeyboardUtils.getKeyCodeConstant(onKeyEvent.keyCode);
 
     for (let i = 0; i < this.scope.stdmodel.data.length; i++) {
       const data = this.scope.stdmodel.data[i];
@@ -219,14 +219,17 @@ export default class PlotInteraction {
 
     if (this.scope.model.setActionDetails) {
       this.scope.model.setActionDetails(plotIndex, data, item).then(
-        () => { plotUtils.evaluateTagCell(data.keyTags[key]); },
+        () => {
+          // TODO where and when did that method vanish?
+          // PlotUtils.evaluateTagCell(data.keyTags[key]);
+        },
         () => { console.error('set action details error'); } );
 
       return
     }
 
     const plotId = this.scope.stdmodel.plotId;
-    const params = plotUtils.getActionObject(this.scope.model.getCellModel().type, item);
+    const params = PlotUtils.getActionObject(this.scope.model.getCellModel().type, item);
 
     params.actionType = 'onkey';
     params.key = key;
@@ -255,7 +258,7 @@ export default class PlotInteraction {
       return this.scope.model.onKey(key, plotIndex, data, item);
     }
 
-    const params = plotUtils.getActionObject(this.scope.model.getCellModel().type, item);
+    const params = PlotUtils.getActionObject(this.scope.model.getCellModel().type, item);
     params.key = key;
 
     this.scope.plotDisplayModel.send(
@@ -405,6 +408,7 @@ export default class PlotInteraction {
     return Object.entries(this.scope.legendMergedLines)
       .reduce((total, pair) => {
         const [key, value] = pair;
+        // @ts-ignore
         return total && value.showItem;
       }, true);
   }

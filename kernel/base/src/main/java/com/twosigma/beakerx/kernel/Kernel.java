@@ -34,6 +34,7 @@ import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
+import com.twosigma.beakerx.kernel.threads.ResultSender;
 import com.twosigma.beakerx.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +60,7 @@ public abstract class Kernel implements KernelFunctionality {
   private String sessionId;
   private KernelSocketsFactory kernelSocketsFactory;
   private KernelHandlers handlers;
-  private ExecutionResultSender executionResultSender;
+  private ResultSender executionResultSender;
   private Evaluator evaluator;
   private KernelSockets kernelSockets;
   private List<MagicCommandType> magicCommandTypes;
@@ -74,54 +75,37 @@ public abstract class Kernel implements KernelFunctionality {
 
   public Kernel(final String sessionId,
                 final Evaluator evaluator,
-                final KernelSocketsFactory kernelSocketsFactory,
-                CustomMagicCommandsFactory customMagicCommands,
-                CommRepository commRepository,
-                BeakerXServer beakerXServer,
-                MagicCommandConfiguration magicCommandConfiguration,
-                BeakerXJson beakerXJson) {
-    this(
-            sessionId,
-            evaluator,
-            kernelSocketsFactory,
-            () -> System.exit(0),
-            new EnvCacheFolderFactory(),
-            customMagicCommands,
-            commRepository,
-            beakerXServer,
-            magicCommandConfiguration,
-            beakerXJson);
-  }
-
-  protected Kernel(final String sessionId,
-                   final Evaluator evaluator,
-                   final KernelSocketsFactory kernelSocketsFactory,
-                   CloseKernelAction closeKernelAction,
-                   CacheFolderFactory cacheFolderFactory,
-                   CustomMagicCommandsFactory customMagicCommands,
-                   CommRepository commRepository,
-                   BeakerXServer beakerXServer,
-                   MagicCommandConfiguration magicCommandConfiguration,
-                   BeakerXJson beakerXJson
-  ) {
+                Configuration configuration) {
+    KernelManager.register(this);
     this.sessionId = sessionId;
-    this.cacheFolderFactory = cacheFolderFactory;
-    this.kernelSocketsFactory = kernelSocketsFactory;
-    this.closeKernelAction = closeKernelAction;
-    this.customMagicCommands = customMagicCommands;
-    this.commRepository = commRepository;
-    this.beakerXServer = beakerXServer;
-    this.beakerXJson = beakerXJson;
+    this.cacheFolderFactory = configuration.getCacheFolderFactory();
+    this.kernelSocketsFactory = configuration.getKernelSocketsFactory();
+    this.closeKernelAction = configuration.getCloseKernelAction();
+    this.customMagicCommands = configuration.getCustomMagicCommands();
+    this.commRepository = configuration.getCommRepository();
+    this.beakerXServer = configuration.getBeakerXServer();
+    this.beakerXJson = configuration.getBeakerXJson();
     this.executionResultSender = new ExecutionResultSender(this);
     this.evaluator = evaluator;
     this.handlers = new KernelHandlers(this, getCommOpenHandler(this), getKernelInfoHandler(this));
     this.magicKernels = new HashMap<>();
     this.commKernelMapping = new HashMap<>();
-    this.magicCommandConfiguration = magicCommandConfiguration;
+    this.magicCommandConfiguration = configuration.getMagicCommandConfiguration();
     createMagicCommands();
     DisplayerDataMapper.init();
     configureSignalHandler();
     initJvmRepr();
+    configuration.getRuntimetools().configRuntimeJars(this);
+  }
+
+  @Override
+  public void startEvaluation() {
+    this.evaluator.startEvaluation();
+  }
+
+  @Override
+  public void endEvaluation() {
+    this.evaluator.endEvaluation();
   }
 
   @Override
@@ -135,7 +119,6 @@ public abstract class Kernel implements KernelFunctionality {
 
   @Override
   public void run() {
-    KernelManager.register(this);
     logger.debug("Jupyter kernel starting.");
     this.kernelSockets = kernelSocketsFactory.create(this, this::closeComms);
     this.kernelSockets.start();
@@ -213,6 +196,10 @@ public abstract class Kernel implements KernelFunctionality {
     this.kernelSockets.send(message);
   }
 
+  public String sendStdIn(Message message) {
+    return this.kernelSockets.sendStdIn(message);
+  }
+
   public Handler<Message> getHandler(JupyterMessages type) {
     return handlers.get(type);
   }
@@ -221,7 +208,7 @@ public abstract class Kernel implements KernelFunctionality {
     return sessionId;
   }
 
-  public ExecutionResultSender getExecutionResultSender() {
+  public ResultSender getExecutionResultSender() {
     return executionResultSender;
   }
 
@@ -377,4 +364,5 @@ public abstract class Kernel implements KernelFunctionality {
   public BeakerXJson getBeakerXJson() {
     return this.beakerXJson;
   }
+
 }

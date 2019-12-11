@@ -18,10 +18,11 @@ package com.twosigma.beakerx.sql.evaluator;
 
 import com.twosigma.beakerx.BeakerXClient;
 import com.twosigma.beakerx.TryResult;
+import com.twosigma.beakerx.autocomplete.AutocompleteClasspathScanner;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
-import com.twosigma.beakerx.autocomplete.ClasspathScanner;
 import com.twosigma.beakerx.autocomplete.MagicCommandAutocompletePatterns;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.ClasspathScanner;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
@@ -64,7 +65,7 @@ public class SQLEvaluator extends BaseEvaluator {
 
   Map<String, ConnectionStringHolder> namedConnectionString = new HashMap<>();
   ConnectionStringHolder defaultConnectionString;
-  private ClasspathScanner cps;
+  private AutocompleteClasspathScanner cps;
   private SQLAutocomplete sac;
   private QueryExecutor queryExecutor;
   private JDBCClient jdbcClient;
@@ -74,14 +75,16 @@ public class SQLEvaluator extends BaseEvaluator {
                       String sId,
                       EvaluatorParameters evaluatorParameters,
                       BeakerXClient beakerxClient,
-                      MagicCommandAutocompletePatterns autocompletePatterns) {
+                      MagicCommandAutocompletePatterns autocompletePatterns,
+                      ClasspathScanner classpathScanner) {
     this(id,
             sId,
             new BeakerCellExecutor("sql"),
             new TempFolderFactoryImpl(),
             evaluatorParameters,
             beakerxClient,
-            autocompletePatterns);
+            autocompletePatterns,
+            classpathScanner);
   }
 
   public SQLEvaluator(String id,
@@ -90,9 +93,10 @@ public class SQLEvaluator extends BaseEvaluator {
                       TempFolderFactory tempFolderFactory,
                       EvaluatorParameters evaluatorParameters,
                       BeakerXClient beakerxClient,
-                      MagicCommandAutocompletePatterns autocompletePatterns) {
-    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient, autocompletePatterns);
-    cps = new ClasspathScanner();
+                      MagicCommandAutocompletePatterns autocompletePatterns,
+                      ClasspathScanner classpathScanner) {
+    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient, autocompletePatterns, classpathScanner);
+    cps = new AutocompleteClasspathScanner();
     sac = createSqlAutocomplete(cps);
     loader = reloadClassLoader();
     executorService = Executors.newSingleThreadExecutor();
@@ -148,7 +152,7 @@ public class SQLEvaluator extends BaseEvaluator {
   protected void doResetEnvironment() {
   }
 
-  private SQLAutocomplete createSqlAutocomplete(ClasspathScanner c) {
+  private SQLAutocomplete createSqlAutocomplete(AutocompleteClasspathScanner c) {
     return new SQLAutocomplete(c, jdbcClient, sessionId, defaultConnectionString, namedConnectionString, autocompletePatterns);
   }
 

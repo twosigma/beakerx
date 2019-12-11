@@ -18,9 +18,12 @@ package com.twosigma.beakerx.chart.serializer;
 
 import com.twosigma.beakerx.chart.xychart.plotitem.Points;
 import java.io.IOException;
+import java.util.stream.Collectors;
+
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.twosigma.beakerx.chart.xychart.plotitem.ShapeType;
 
 /**
  * PointsSerializer
@@ -42,9 +45,9 @@ public class PointsSerializer extends XYGraphicsSerializer<Points> {
       jgen.writeObjectField("size", points.getSize());
     }
     if (points.getShapes() != null) {
-      jgen.writeObjectField("shaps", points.getShapes());
+      jgen.writeObjectField("shaps", points.getShapes().stream().map(ShapeType::getText).collect(Collectors.toList()));
     } else {
-      jgen.writeObjectField("shape", points.getShape());
+      jgen.writeObjectField("shape", points.getShape().getText());
     }
     if (points.getFills() != null) {
       jgen.writeObjectField("fills", points.getFills());

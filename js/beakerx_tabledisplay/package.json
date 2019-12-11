@@ -1,0 +1,93 @@
+{
+  "name": "beakerx_tabledisplay",
+  "version": "1.5.0",
+  "description": "BeakerX: Beaker TableDisplay Extensions for Jupyter",
+  "author": "Two Sigma Open Source, LLC",
+  "main": "src/index.ts",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "keywords": [
+    "jupyter",
+    "widgets",
+    "ipython",
+    "ipywidgets"
+  ],
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "include": [
+      "**/src/**/*.ts"
+    ]
+  },
+  "scripts": {
+    "build": "yarn run build:clean && yarn run build:dev",
+    "build:clean": "yarn unlink beakerx_shared && yarn link beakerx_shared",
+    "build:dev": "yarn run test && webpack --config webpack.dev.js",
+    "build:prod": "yarn run test && webpack --config webpack.prod.js",
+    "test": "cross-os test",
+    "coverage": "cross-os coverage",
+    "stats": "webpack --env production --profile --json > stats.json",
+    "prepublishOnly": "yarn run build:prod"
+  },
+  "cross-os": {
+    "test": {
+      "linux": "TZ=America/New_York TS_NODE_PROJECT=test/tsconfig.json mocha --reporter=min",
+      "darwin": "TZ=America/New_York TS_NODE_PROJECT=test/tsconfig.json mocha --reporter=min",
+      "win32": "SET TZ=America/New_York TS_NODE_PROJECT=test/tsconfig.json mocha --reporter=min"
+    },
+    "coverage": {
+      "linux": "TZ=America/New_York TS_NODE_PROJECT=test/tsconfig.json nyc mocha",
+      "darwin": "TZ=America/New_York TS_NODE_PROJECT=test/tsconfig.json nyc mocha",
+      "win32": "SET TZ=America/New_York TS_NODE_PROJECT=test/tsconfig.json nyc mocha"
+    }
+  },
+  "devDependencies": {
+    "@jupyter-widgets/base": "^1.2.5 || ^2.0.1",
+    "@jupyter-widgets/controls": "^1.5.2",
+    "@types/big.js": "^4.0.5",
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.6",
+    "@types/node": "^12.6.2",
+    "@types/sinon": "^7.0.12",
+    "base64-inline-loader": "^1.1.1",
+    "chai": "^4.1.2",
+    "cross-os": "^1.3.0",
+    "css-loader": "^2.1.1",
+    "ignore-styles": "^5.0.1",
+    "jsdom": "^11.5.1",
+    "mocha": "^5.0.0",
+    "node-sass": "^4.12.0",
+    "require-hacker": "^3.0.1",
+    "sass-loader": "^7.1.0",
+    "sinon": "^4.2.0",
+    "style-loader": "^0.23.1",
+    "ts-loader": "^6.0.1",
+    "ts-node": "^8.2.0",
+    "tsconfig-paths": "^3.8.0",
+    "typescript": "^3.5.3",
+    "uglifyjs-webpack-plugin": "^2.1.2",
+    "url-loader": "^1.1.2",
+    "webpack": "^4.30.0",
+    "webpack-cli": "^3.3.1",
+    "webpack-merge": "^4.2.1"
+  },
+  "dependencies": {
+    "@jupyterlab/coreutils": "^3.0.0",
+    "@phosphor/datagrid": "^0.1.10",
+    "@phosphor/datastore": "^0.7.0",
+    "@phosphor/widgets": "^1.8.1",
+    "big.js": "^5.2.2",
+    "d3": "^5.9.7",
+    "esm": "^3.2.25",
+    "jquery": "^3.3.1",
+    "katex": "^0.10.2",
+    "moment-timezone": "^0.5.13",
+    "reselect": "^3.0.1",
+    "rimraf": "^2.6.3",
+    "underscore": "^1.8.3"
+  }
+}

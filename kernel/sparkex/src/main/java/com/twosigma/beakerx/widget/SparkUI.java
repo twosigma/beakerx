@@ -17,12 +17,13 @@ package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.InternalVariable;
-import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.msg.StacktraceHtmlPrinter;
+import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.restserver.Context;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.configuration.SparkConfiguration;
 import org.apache.spark.sql.SparkSession;
 
 import java.util.ArrayList;
@@ -53,16 +54,15 @@ public class SparkUI extends VBox implements SparkUIApi {
   private Map<Integer, SparkStateGroupPanel> progressBarMap = new HashMap<>();
   private SparkFoldout jobPanel = null;
   private Message currentParentHeader = null;
-  private SparkEngine sparkEngine;
+  private SparkEngineWithUI sparkEngine;
   private SparkUiDefaults sparkUiDefaults;
   private SingleSparkSession singleSparkSession;
 
-  SparkUI(SparkSession.Builder builder, SparkEngine.SparkEngineFactory sparkEngineFactory, SparkUiDefaults sparkUiDefaults, SingleSparkSession singleSparkSession) {
+  SparkUI(SparkEngineWithUI sparkEngine, SparkUiDefaults sparkUiDefaults, SingleSparkSession singleSparkSession) {
     super(new ArrayList<>());
     this.sparkUiDefaults = sparkUiDefaults;
+    this.sparkEngine = sparkEngine;
     this.singleSparkSession = singleSparkSession;
-    this.sparkUiDefaults.loadDefaults(builder);
-    this.sparkEngine = sparkEngineFactory.create(builder);
     VBox sparkUIFormPanel = new VBox(new ArrayList<>());
     add(sparkUIFormPanel);
     SparkVariable.putSparkUI(this);
@@ -229,19 +229,11 @@ public class SparkUI extends VBox implements SparkUIApi {
   }
 
   private String stageLink(int stageId) {
-    if (getSparkSession().sparkContext().uiWebUrl().isDefined()) {
-      return getSparkSession().sparkContext().uiWebUrl().get() + "/stages/stage/?id=" + stageId + "&attempt=0";
-    } else {
-      return "";
-    }
+    return this.sparkEngine.stageLink(stageId);
   }
 
   private String jobLink(int jobId) {
-    if (getSparkSession().sparkContext().uiWebUrl().isDefined()) {
-      return getSparkSession().sparkContext().uiWebUrl().get() + "/jobs/job/?id=" + jobId;
-    } else {
-      return "";
-    }
+    return this.sparkEngine.jobLink(jobId);
   }
 
   public void cancelAllJobs() {
@@ -250,6 +242,10 @@ public class SparkUI extends VBox implements SparkUIApi {
 
   public Text getMasterURL() {
     return this.sparkUIForm.getMasterURL();
+  }
+
+  public boolean getHiveSupport() {
+    return this.sparkUIForm.getHiveSupport().getValue();
   }
 
   public Text getExecutorMemory() {
@@ -268,24 +264,26 @@ public class SparkUI extends VBox implements SparkUIApi {
     return this.sparkUIForm.getConnectButton();
   }
 
+  public void afterDisplay(Message parent) {
+    if (this.sparkEngine.isAutoStart()) {
+      getConnectButton().onClick(new HashMap(), parent);
+    }
+  }
+
   public interface SparkUIFactory {
-    SparkUI create(SparkSession.Builder builder);
+    SparkUIApi create(SparkSession.Builder builder, SparkEngineWithUI sparkEngineWithUI, SparkUiDefaults sparkUiDefaults);
   }
 
   public static class SparkUIFactoryImpl implements SparkUIFactory {
-    SparkEngine.SparkEngineFactory sparkEngineFactory;
-    SparkUiDefaults sparkUiDefaults;
     private SingleSparkSession singleSparkSession;
 
-    public SparkUIFactoryImpl(SparkEngine.SparkEngineFactory sparkEngineFactory, SparkUiDefaults sparkUiDefaults, SingleSparkSession singleSparkSession) {
-      this.sparkEngineFactory = sparkEngineFactory;
-      this.sparkUiDefaults = sparkUiDefaults;
+    public SparkUIFactoryImpl(SingleSparkSession singleSparkSession) {
       this.singleSparkSession = singleSparkSession;
     }
 
     @Override
-    public SparkUI create(SparkSession.Builder builder) {
-      return new SparkUI(builder, sparkEngineFactory, sparkUiDefaults, singleSparkSession);
+    public SparkUI create(SparkSession.Builder builder, SparkEngineWithUI sparkEngine, SparkUiDefaults sparkUiDefaults) {
+      return new SparkUI(sparkEngine, sparkUiDefaults, singleSparkSession);
     }
   }
 

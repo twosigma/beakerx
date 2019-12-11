@@ -12,15 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import tornado.ioloop
-import tornado.web
+import base64
 import logging
 import os
 import random
-import string
 import socket
-
-import base64
+import string
+import tornado.ioloop
+import tornado.web
 
 beakerx = {}
 
@@ -35,6 +34,10 @@ def basic_auth(f):
         handler.set_status(401)
         return handler.finish()
 
+    def _request_error(handler, exception):
+        handler.set_status(500)
+        return handler.finish(exception)
+
     def wrap(*args):
         handler = args[0]
         try:
@@ -47,8 +50,8 @@ def basic_auth(f):
                 f(*args)
             else:
                 _request_auth(handler)
-        except:
-            _request_auth(handler)
+        except Exception as e:
+            _request_error(handler, e)
 
     return wrap
 
@@ -58,6 +61,10 @@ class MainSaveHandler(tornado.web.RequestHandler):
     @basic_auth
     def post(self):
         input_json = tornado.escape.json_decode(self.request.body)
+        self.validate_autotraslation_input(input_json, "sessionId")
+        self.validate_autotraslation_input(input_json, "name")
+        self.validate_autotraslation_input(input_json, "json")
+
         session_id = input_json["sessionId"]
         name = input_json["name"]
         json = input_json["json"]
@@ -66,6 +73,11 @@ class MainSaveHandler(tornado.web.RequestHandler):
 
         beakerx[session_id][name] = json
         return self.finish("ok")
+
+    @staticmethod
+    def validate_autotraslation_input(input_json, key):
+        if key not in input_json:
+            raise Exception("Data doesn't contain attribute: "+key)
 
 
 class MainGetHandler(tornado.web.RequestHandler):

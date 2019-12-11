@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import BeakerXApi from "../tree/Utils/BeakerXApi";
+import BeakerXApi from "beakerx_shared/lib/api/BeakerXApi";
 
 declare global {
   interface Window {

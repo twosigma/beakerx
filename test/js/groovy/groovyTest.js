@@ -124,39 +124,35 @@ describe('Groovy base tests. ', function () {
       var width = 410, height = 43;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
-      cellIndex += 1;
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
   });
 
   describe('Display array as table. ', function () {
     it('Output contains table. ', function () {
-      cellIndex += 1;
+      cellIndex += 2;
       var fileName = 'cell11_case1.png';
       var width = 90, height = 43;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
-      cellIndex += 1;
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
   });
 
   describe('Display array with null value. ', function () {
     it('Output contains table. ', function () {
-      cellIndex += 1;
+      cellIndex += 2;
       var fileName = 'cell12_case1.png';
       var width = 130, height = 65;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData.value, imageDir, fileName);
-      cellIndex += 1;
+      beakerxPO.checkImageData(imageData, imageDir, fileName);
     });
   });
 
-
   describe('%%python magic', function () {
     it('Should display Plot with Line ', function () {
-      cellIndex += 1;
+      cellIndex += 2;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       beakerxPO.checkPlotWithLine(codeCell, cellIndex);
     });
@@ -179,6 +175,4 @@ describe('Groovy base tests. ', function () {
       expect(tooltip.getText()).toMatch(/com.twosigma.beakerx.easyform.EasyForm/);
     });
   });
-
-
 });

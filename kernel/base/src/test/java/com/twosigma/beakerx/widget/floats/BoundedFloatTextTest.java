@@ -16,16 +16,20 @@
 package com.twosigma.beakerx.widget.floats;
 
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.jupyter.SearchMessages;
 import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widget.BoundedFloatText;
-import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.twosigma.beakerx.widget.TestWidgetUtils.findValueForProperty;
+import java.util.List;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyMsgForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsg;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BoundedFloatTextTest {
 
@@ -106,8 +110,10 @@ public class BoundedFloatTextTest {
     //when
     boundedFloatText.setMin(min);
     //then
-    Double valueForProperty = findValueForProperty(groovyKernel, boundedFloatText.VALUE, Double.class);
-    Assertions.assertThat(valueForProperty).isEqualTo(min);
+    List<Message> messages = SearchMessages
+            .getListByDataAttr(groovyKernel.getPublishedMessages(), Comm.METHOD, Comm.UPDATE);
+    assertThat(getValueForProperty(messages.get(0), BoundedFloatText.VALUE, Double.class).equals(min));
+    assertThat(getValueForProperty(messages.get(1), BoundedFloatText.MIN, Double.class).equals(min));
   }
 
   @Test
@@ -120,7 +126,10 @@ public class BoundedFloatTextTest {
     //when
     boundedFloatText.setMax(max);
     //then
-    Double valueForProperty = findValueForProperty(groovyKernel, boundedFloatText.VALUE, Double.class);
-    Assertions.assertThat(valueForProperty).isEqualTo(max);
+
+    List<Message> messages = SearchMessages
+            .getListByDataAttr(groovyKernel.getPublishedMessages(), Comm.METHOD, Comm.UPDATE);
+    assertThat(getValueForProperty(messages.get(0), BoundedFloatText.VALUE, Double.class).equals(max));
+    assertThat(getValueForProperty(messages.get(1), BoundedFloatText.MAX, Double.class).equals(max));
   }
 }

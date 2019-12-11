@@ -24,7 +24,7 @@ describe('Charting Clojure tests ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/test/ipynb/clojure/ChartingTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/ipynb/clojure/XChartingTest.ipynb');
   }, 2);
 
   afterAll(function () {

@@ -19,30 +19,29 @@ import com.twosigma.beakerx.BeakerXCommRepository;
 import com.twosigma.beakerx.CommRepository;
 import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.NamespaceClient;
+import com.twosigma.beakerx.evaluator.ClasspathScannerImpl;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
-import com.twosigma.beakerx.kernel.BeakerXJson;
 import com.twosigma.beakerx.kernel.BeakerXJsonConfig;
-import com.twosigma.beakerx.kernel.CacheFolderFactory;
-import com.twosigma.beakerx.kernel.CloseKernelAction;
+import com.twosigma.beakerx.kernel.Configuration;
 import com.twosigma.beakerx.kernel.CustomMagicCommandsFactory;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelConfigurationFile;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelRunner;
-import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfiguration;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfigurationImpl;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
-import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.restserver.impl.GetUrlArgHandler;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.sql.evaluator.SQLEvaluator;
 import com.twosigma.beakerx.sql.handlers.SQLCommOpenHandler;
 import com.twosigma.beakerx.sql.handlers.SQLKernelInfoHandler;
+import com.twosigma.beakerx.sql.magic.command.DataSourceParamResolver;
+import com.twosigma.beakerx.sql.magic.command.DataSourceParamResolverImpl;
 import com.twosigma.beakerx.sql.magic.command.DataSourcesMagicCommand;
 import com.twosigma.beakerx.sql.magic.command.DefaultDataSourcesMagicCommand;
 import com.twosigma.beakerx.util.BeakerXSystem;
@@ -65,43 +64,8 @@ public class SQL extends Kernel {
   private final static Logger logger = Logger.getLogger(SQL.class.getName());
   public static final String BEAKERX_SQL_DEFAULT_JDBC = "BEAKERX_SQL_DEFAULT_JDBC";
 
-  private SQL(String sessionId,
-              Evaluator evaluator,
-              KernelSocketsFactory kernelSocketsFactory,
-              CommRepository commRepository,
-              BeakerXServer beakerXServer,
-              MagicCommandConfiguration magicCommandConfiguration,
-              BeakerXJson beakerXJson) {
-    super(sessionId,
-            evaluator,
-            kernelSocketsFactory,
-            new SQLCustomMagicCommandsImpl(),
-            commRepository,
-            beakerXServer,
-            magicCommandConfiguration,
-            beakerXJson
-    );
-  }
-
-  public SQL(String sessionId,
-             Evaluator evaluator,
-             KernelSocketsFactory kernelSocketsFactory,
-             CloseKernelAction closeKernelAction,
-             CacheFolderFactory cacheFolderFactory,
-             CommRepository commRepository,
-             BeakerXServer beakerXServer,
-             MagicCommandConfiguration magicCommandConfiguration,
-             BeakerXJson beakerXJson) {
-    super(sessionId,
-            evaluator,
-            kernelSocketsFactory,
-            closeKernelAction,
-            cacheFolderFactory,
-            new SQLCustomMagicCommandsImpl(),
-            commRepository,
-            beakerXServer,
-            magicCommandConfiguration,
-            beakerXJson);
+  public SQL(final String sessionId, final Evaluator evaluator, Configuration configuration) {
+    super(sessionId, evaluator, configuration);
   }
 
   @Override
@@ -123,15 +87,18 @@ public class SQL extends Kernel {
               configurationFile);
       EvaluatorParameters params = getKernelParameters(BeakerXSystemImpl.getINSTANCE());
       NamespaceClient beakerxClient = NamespaceClient.create(id, configurationFile, commRepository);
+      DataSourceParamResolverImpl paramResolver = new DataSourceParamResolverImpl(beakerxClient);
       MagicCommandConfiguration magicConfiguration = new MagicCommandConfigurationImpl();
-      SQLEvaluator evaluator = new SQLEvaluator(id, id, params, beakerxClient, magicConfiguration.patterns());
+      SQLEvaluator evaluator = new SQLEvaluator(id, id, params, beakerxClient, magicConfiguration.patterns(), new ClasspathScannerImpl());
       return new SQL(id,
               evaluator,
-              kernelSocketsFactory,
-              commRepository,
-              new SQLBeakerXServer(new GetUrlArgHandler(beakerxClient)),
-              magicConfiguration,
-              new BeakerXJsonConfig());
+              new Configuration(
+                      kernelSocketsFactory,
+                      new SQLCustomMagicCommandsImpl(paramResolver),
+                      commRepository,
+                      new SQLBeakerXServer(new GetUrlArgHandler(beakerxClient)),
+                      magicConfiguration,
+                      new BeakerXJsonConfig()));
     });
   }
 
@@ -156,17 +123,23 @@ public class SQL extends Kernel {
 
 
   static class SQLCustomMagicCommandsImpl implements CustomMagicCommandsFactory {
+    private DataSourceParamResolver paramResolver;
+
+    public SQLCustomMagicCommandsImpl(DataSourceParamResolver paramResolver) {
+      this.paramResolver = paramResolver;
+    }
+
     @Override
     public List<MagicCommandType> customMagicCommands(KernelFunctionality kernel) {
       return Arrays.asList(
               new MagicCommandType(
                       DATASOURCES,
                       "<jdbc:[dbEngine]:[subsubprotocol:][databaseName]>",
-                      new DataSourcesMagicCommand(kernel)),
+                      new DataSourcesMagicCommand(kernel, paramResolver)),
               new MagicCommandType(
                       DEFAULT_DATASOURCE,
                       "<sourceName=jdbc:[dbEngine]:[subsubprotocol:][databaseName]>",
-                      new DefaultDataSourcesMagicCommand(kernel)));
+                      new DefaultDataSourcesMagicCommand(kernel, paramResolver)));
     }
   }
 

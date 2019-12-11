@@ -36,7 +36,7 @@ describe('Java widgets test ', function () {
       cellIndex = 0;
       beakerxPO.kernelIdleIcon.waitForEnabled();
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      widget = codeCell.$('.jupyter-widgets');
+      widget = codeCell.$('img.jupyter-widgets');
       expect(widget.getTagName()).toBe('img');
       expect(widget.getAttribute('class')).toMatch(/widget-image/);
       expect(widget.getAttribute('src')).toMatch('blob:http');
@@ -52,10 +52,10 @@ describe('Java widgets test ', function () {
     });
 
     it('Should select 25th day ', function () {
-      cellIndex += 1;
       widget.$('a.date-picker-button').click();
       browser.$('span.flatpickr-day=25').click();
       expect(widget.$('input[type="text"]').getValue()).toMatch('25');
+      cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText();
       expect(result).toMatch('25');
@@ -104,7 +104,7 @@ describe('Java widgets test ', function () {
     it('Set "concise" property to true ', function () {
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
-      expect(widget.$('input').isVisible()).toBeFalsy();
+      expect(widget.$('input').isDisplayed()).toBeFalsy();
     });
 
     it('Set description to "happy color" ', function () {

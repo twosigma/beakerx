@@ -20,8 +20,8 @@ import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.chart.Color;
 import com.twosigma.beakerx.chart.xychart.XYChart;
 import com.twosigma.beakerx.fileloader.CSV;
-import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.serialization.DateSerializer;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.table.format.TableDisplayStringFormat;
@@ -43,7 +43,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -53,6 +52,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.twosigma.beakerx.fileloader.CSVTest.TABLE_ROWS_TEST_CSV;
 import static com.twosigma.beakerx.fileloader.CSVTest.getOsAppropriatePath;
+import static com.twosigma.beakerx.table.TableDisplay.THE_LENGTH_OF_TYPES_SHOULD_BE_SAME_AS_NUMBER_OF_ROWS;
 import static com.twosigma.beakerx.table.serializer.DecimalStringFormatSerializer.MAX_DECIMALS;
 import static com.twosigma.beakerx.table.serializer.DecimalStringFormatSerializer.MIN_DECIMALS;
 import static com.twosigma.beakerx.table.serializer.ObservableTableDisplaySerializer.DOUBLE_CLICK_TAG;
@@ -61,7 +61,6 @@ import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.ALIGN
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.ALIGNMENT_FOR_TYPE;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.CELL_HIGHLIGHTERS;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.COLUMNS_FROZEN;
-import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.COLUMNS_FROZEN_RIGHT;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.COLUMNS_VISIBLE;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.COLUMN_ORDER;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.DATA_FONT_SIZE;
@@ -73,7 +72,6 @@ import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.HEADE
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.RENDERER_FOR_COLUMN;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.RENDERER_FOR_TYPE;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_COLUMN;
-import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_TIMES;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_TYPE;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.TABLE_DISPLAY;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.TIME_ZONE;
@@ -85,6 +83,7 @@ import static com.twosigma.beakerx.widget.TestWidgetUtils.findValueForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.getMessageUpdate;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsgWitoutLayout;
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -151,19 +150,6 @@ public class TableDisplayTest {
     LinkedHashMap model = getModelUpdate();
     assertThat(model.size()).isEqualTo(1);
     Map actual = (Map) model.get(COLUMNS_FROZEN);
-    assertThat(actual.get(COL_1)).isEqualTo(true);
-  }
-
-  @Test
-  public void shouldSendCommMsgWhenColumnFrozenRightChange() throws Exception {
-    //given
-    //when
-    tableDisplay.setColumnFrozenRight(COL_1, true);
-    //then
-    assertThat(tableDisplay.getColumnsFrozenRight().get(COL_1)).isEqualTo(true);
-    LinkedHashMap model = getModelUpdate();
-    assertThat(model.size()).isEqualTo(1);
-    Map actual = (Map) model.get(COLUMNS_FROZEN_RIGHT);
     assertThat(actual.get(COL_1)).isEqualTo(true);
   }
 
@@ -319,7 +305,7 @@ public class TableDisplayTest {
   @Test
   public void shouldSendCommMsgWhenAddValueHighlighterForColumnChange() throws Exception {
     //given;
-    ValueHighlighter highlighter = new ValueHighlighter(COL_1, Arrays.asList(new Color(247, 106, 106)));
+    ValueHighlighter highlighter = new ValueHighlighter(COL_1, asList(new Color(247, 106, 106)));
     //when
     tableDisplay.addCellHighlighter(highlighter);
     //then
@@ -504,7 +490,8 @@ public class TableDisplayTest {
     assertThat(tableDisplay.getStringFormatForTimes()).isEqualTo(days);
     LinkedHashMap model = getModelUpdate();
     assertThat(model.size()).isEqualTo(1);
-    assertThat(model.get(STRING_FORMAT_FOR_TIMES)).isEqualTo(days.toString());
+    Map time = (Map) ((Map) model.get(STRING_FORMAT_FOR_TYPE)).get(ColumnType.Time.toString());
+    assertThat(time.get("unit")).isEqualTo(days.toString());
   }
 
   @Test
@@ -579,7 +566,7 @@ public class TableDisplayTest {
   public void createWithMultipleTypesPerColumnParam_hasSafeTypes() throws Exception {
     TableDisplay tableDisplay = new TableDisplay(getListOfMapsWithInconsistentTypes());
     assertThat(tableDisplay.getSubtype()).isEqualTo(TableDisplay.LIST_OF_MAPS_SUBTYPE);
-    List<String> expectedValues = Arrays.asList("string", "string", "string");
+    List<String> expectedValues = asList("string", "string", "string");
     assertThat(tableDisplay.getTypes()).isEqualTo(expectedValues);
   }
 
@@ -588,7 +575,7 @@ public class TableDisplayTest {
     TableDisplay tableDisplay = new TableDisplay(getListOfMapsWithMostlyInconsistentTypes());
     assertThat(tableDisplay.getSubtype()).isEqualTo(TableDisplay.LIST_OF_MAPS_SUBTYPE);
     System.out.println(tableDisplay.getTypes());
-    List<String> expectedValues = Arrays.asList("string", "string", "double");
+    List<String> expectedValues = asList("string", "string", "double");
     assertThat(tableDisplay.getTypes()).isEqualTo(expectedValues);
   }
 
@@ -597,7 +584,7 @@ public class TableDisplayTest {
     TableDisplay tableDisplay = new TableDisplay(getListOfMapsWithEmptyTypes());
     assertThat(tableDisplay.getSubtype()).isEqualTo(TableDisplay.LIST_OF_MAPS_SUBTYPE);
     System.out.println(tableDisplay.getTypes());
-    List<String> expectedValues = Arrays.asList("string", "double", "integer");
+    List<String> expectedValues = asList("string", "double", "integer");
     assertThat(tableDisplay.getTypes()).isEqualTo(expectedValues);
   }
 
@@ -616,7 +603,7 @@ public class TableDisplayTest {
   public void createWithListsParams_hasTableDisplaySubtype() throws Exception {
     //when
     TableDisplay tableDisplay =
-            new TableDisplay(Arrays.asList(getRowData(), getRowData()), getStringList(), getStringList());
+            new TableDisplay(asList(getRowData(), getRowData()), getStringList(), getStringList());
     //then
     assertThat(tableDisplay.getSubtype()).isEqualTo(TableDisplay.TABLE_DISPLAY_SUBTYPE);
     assertThat(tableDisplay.getValues().size()).isEqualTo(2);
@@ -658,7 +645,7 @@ public class TableDisplayTest {
   public void getValuesAsRowsWithTwoParams_returnedListOfMapsIsNotEmpty() throws Exception {
     //when
     List<Map<String, Object>> rows =
-            TableDisplay.getValuesAsRows(Arrays.asList(getRowData(), getRowData()), getStringList());
+            TableDisplay.getValuesAsRows(asList(getRowData(), getRowData()), getStringList());
     //then
     assertThat(rows.size()).isEqualTo(2);
     assertThat(rows.get(0).size()).isEqualTo(3);
@@ -678,7 +665,7 @@ public class TableDisplayTest {
   public void getValuesAsMatrixWithParam_returnedListOfListIsNotEmpty() throws Exception {
     //when
     List<List<?>> values =
-            TableDisplay.getValuesAsMatrix(Arrays.asList(getStringList(), getRowData()));
+            TableDisplay.getValuesAsMatrix(asList(getStringList(), getRowData()));
     //then
     assertThat(values).isNotEmpty();
   }
@@ -697,7 +684,7 @@ public class TableDisplayTest {
   public void getValuesAsDictionaryWithParam_returnedMapIsNotEmpty() throws Exception {
     //when
     Map<String, Object> dictionary =
-            TableDisplay.getValuesAsDictionary(Arrays.asList(Arrays.asList("k1", 1), Arrays.asList("k2", 2)));
+            TableDisplay.getValuesAsDictionary(asList(asList("k1", 1), asList("k2", 2)));
     //then
     assertThat(dictionary).isNotEmpty();
   }
@@ -850,11 +837,11 @@ public class TableDisplayTest {
   }
 
   private static List<String> getStringList() {
-    return Arrays.asList(COL_1, "str2", COL_3);
+    return asList(COL_1, "str2", COL_3);
   }
 
   private static List<?> getRowData() {
-    return Arrays.asList(new Float(1.0), 1490970521000L, "value1");
+    return asList(new Float(1.0), 1490970521000L, "value1");
   }
 
   protected LinkedHashMap getModel() {
@@ -900,6 +887,38 @@ public class TableDisplayTest {
       //then
       assertThat(e.getMessage()).contains("UnknownColumnName");
     }
+  }
+
+  @Test
+  public void shouldThrowExceptionWhenNumberOfRowsDifferentThanLengthOfTypes() {
+    //given
+    List<List<?>> v = new ArrayList<>();
+    v.add(asList("1", 2, 3, 4));
+    v.add(asList("1", 2, 3, 4));
+    List<String> cl = asList("string column", "integer column", "double column", "default number type");
+    List<String> co = asList("string", "integer", "double");
+    //when
+    try {
+      new TableDisplay(v, cl, co);
+      fail("Should not create TableDisplay when the length of types is not the same as number of rows.");
+    } catch (Exception e) {
+      //then
+      assertThat(e.getMessage()).contains(THE_LENGTH_OF_TYPES_SHOULD_BE_SAME_AS_NUMBER_OF_ROWS);
+    }
+  }
+
+  @Test
+  public void shouldCreateWhenTheLengthOfTypesIsTheSameAsNumberOfRows() {
+    //given
+    List<List<?>> v = new ArrayList<>();
+    v.add(asList("1", 2, 3.0, 4));
+    v.add(asList("5", 6, 7.0, 8));
+    List<String> cl = asList("string column", "integer column", "double column", "integer column");
+    List<String> co = asList("string", "integer", "double", "integer");
+    //when
+    TableDisplay tableDisplay = new TableDisplay(v, cl, co);
+    //then
+    assertThat(tableDisplay).isNotNull();
   }
 
 }

@@ -35,6 +35,7 @@ public abstract class ValueWidget<T extends Serializable> extends DOMWidget {
   protected Boolean visible = true;
   protected String description = "";
   protected Integer msg_throttle = 3;
+  private ActionOnUpdate<T> actionOnUpdate;
 
   public ValueWidget() {
     super();
@@ -46,6 +47,12 @@ public abstract class ValueWidget<T extends Serializable> extends DOMWidget {
 
   public T getValue() {
     return this.value;
+  }
+
+  @Override
+  public void stateRequestHandler() {
+    super.stateRequestHandler();
+    sendUpdate(VALUE, printValue());
   }
 
   public void setValue(Object value) {
@@ -64,6 +71,17 @@ public abstract class ValueWidget<T extends Serializable> extends DOMWidget {
   @Override
   public void updateValue(Object input) {
     this.value = updateValueFromObject(input);
+    if (actionOnUpdate != null) {
+      actionOnUpdate.executeAction(this.value);
+    }
+  }
+
+  public void registerActionOnUpdate(ActionOnUpdate<T> actionOnUpdate) {
+    this.actionOnUpdate = actionOnUpdate;
+  }
+
+  public interface ActionOnUpdate<T> {
+    void executeAction(T value);
   }
 
   public abstract T getValueFromObject(Object input);
@@ -109,7 +127,7 @@ public abstract class ValueWidget<T extends Serializable> extends DOMWidget {
   }
 
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+  protected HashMap<String, Object> content(HashMap<String, Object> content) {
     super.content(content);
     content.put(DESCRIPTION, this.description);
     content.put(DISABLED, this.disabled);

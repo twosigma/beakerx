@@ -45,14 +45,15 @@ c.InteractiveShellApp.extensions = [
 'beakerx_magics.kotlin_magic',
 'beakerx_magics.scala_magic',
 'beakerx_magics.sql_magic',
-'beakerx_magics.java_magic'
+'beakerx_magics.java_magic',
+'beakerx_magics.kernel_runner_magic'
 ]
 """.strip()
 
 def _all_kernels():
     kernels = pkg_resources.resource_listdir(
         'beakerx', 'kernel')
-    return [kernel for kernel in kernels if (kernel != 'base' and kernel !='sparkex')]
+    return [kernel for kernel in kernels if (kernel != 'base' and kernel !='sparkex' and kernel !='runtimetools')]
 
 
 def _base_classpath_for(kernel):
@@ -92,6 +93,17 @@ def _uninstall_labextensions(lab):
     if lab:
         subprocess.check_call(["jupyter", "labextension", "uninstall", "beakerx-jupyterlab"])
         subprocess.check_call(["jupyter", "labextension", "uninstall", "@jupyter-widgets/jupyterlab-manager"])
+
+
+def _install_tabledisplay(lab):
+    if lab:
+        subprocess.check_call(["beakerx_tabledisplay", "install", "--lab"])
+    else:
+        subprocess.check_call(["beakerx_tabledisplay", "install"])
+
+
+def _uninstall_tabledisplay():
+    subprocess.check_call(["beakerx_tabledisplay", "uninstall"])
 
 
 def _copy_tree(src, dst):
@@ -257,6 +269,7 @@ def _disable_beakerx(args):
     _uninstall_kernels()
     _install_kernelspec_manager(args.prefix, disable=True)
     _uninstall_magics()
+    _uninstall_tabledisplay(args.lab)
 
 
 def _install_beakerx(args):
@@ -268,6 +281,7 @@ def _install_beakerx(args):
     _install_kernelspec_manager(args.prefix)
     _install_magics()
     _set_conf_privileges()
+    _install_tabledisplay(args.lab)
 
 
 def install(args):

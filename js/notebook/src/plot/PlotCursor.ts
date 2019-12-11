@@ -14,7 +14,8 @@
  *  limitations under the License.
  */
 
-const plotUtils = require('./plotUtils');
+import PlotStyleUtils from "beakerx_shared/lib/utils/PlotStyleUtils";
+import PlotUtils from "./utils/PlotUtils";
 
 export default class PlotCursor {
   scope: any;
@@ -29,8 +30,8 @@ export default class PlotCursor {
     const x = event.offsetX;
     const y = event.offsetY;
 
-    const width = plotUtils.safeWidth(this.scope.jqsvg);
-    const height = plotUtils.safeHeight(this.scope.jqsvg);
+    const width = PlotStyleUtils.safeWidth(this.scope.jqsvg);
+    const height = PlotStyleUtils.safeHeight(this.scope.jqsvg);
 
     const leftMargin = this.scope.layout.leftLayoutMargin;
     const bottomMargin = this.scope.layout.bottomLayoutMargin;
@@ -84,7 +85,7 @@ export default class PlotCursor {
 
     const label = $(`<div id="cursor_xlabel" class="plot-cursorlabel"></div>`)
       .appendTo(this.scope.jqcontainer)
-      .text(plotUtils.getTipStringPercent(mapX(x), model.xAxis));
+      .text(PlotUtils.getTipStringPercent(mapX(x), model.xAxis));
 
     const width = label.outerWidth();
     const labelHeight = label.outerHeight();
@@ -144,7 +145,7 @@ export default class PlotCursor {
 
     const label = $(`<div id="${id}" class='plot-cursorlabel'></div>`)
       .appendTo(this.scope.jqcontainer)
-      .text(plotUtils.getTipStringPercent(mapY(y), axis));
+      .text(PlotUtils.getTipStringPercent(mapY(y), axis));
 
     const height = label.outerHeight();
     const point = { x: (alignRight ? rMargin : lMargin) + this.scope.labelPadding.x, y: y - height / 2 };

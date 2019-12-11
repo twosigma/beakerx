@@ -20,7 +20,6 @@ import { GistPublisher } from "../../GistPublisher";
 import { GistPublisherUtils } from '../../GistPublisherUtils';
 import AccessTokenProvider from '../../AccessTokenProvider';
 
-
 const dialog = require('base/js/dialog');
 
 export function registerFeature(): void {
@@ -75,7 +74,11 @@ function setupPublisher() {
 
 function openPublishDialog(): void {
   new GistPublishModal()
-    .show(personalAccessToken => doPublish(personalAccessToken));
+    .show(personalAccessToken => {
+      saveWidgetsState()
+          .then(() => { doPublish(personalAccessToken); })
+          .catch((reason => console.log(reason)))
+    });
 }
 
 function showErrorDialog(errorMsg) {

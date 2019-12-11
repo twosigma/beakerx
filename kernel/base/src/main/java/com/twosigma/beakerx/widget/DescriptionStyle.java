@@ -15,10 +15,14 @@
  */
 package com.twosigma.beakerx.widget;
 
-public abstract class DescriptionStyle extends Style {
+import java.util.HashMap;
+
+public class DescriptionStyle extends Style {
 
   public static final String MODEL_NAME_VALUE = "DescriptionStyleModel";
   public static final String MODEL_MODULE_VALUE = "@jupyter-widgets/controls";
+
+  private String descriptionWidth = "";
 
   @Override
   public String getModelNameValue() {
@@ -27,6 +31,16 @@ public abstract class DescriptionStyle extends Style {
   @Override
   public String getModelModuleValue(){
     return MODEL_MODULE_VALUE;
+  }
+
+  @Override
+  protected void addValueChangeMsgCallback() {
+  }
+
+  @Override
+  protected HashMap<String, Object> content(HashMap<String, Object> content) {
+    content.put("description_width", descriptionWidth);
+    return content;
   }
 
 }

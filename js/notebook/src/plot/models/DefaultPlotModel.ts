@@ -21,8 +21,9 @@ import {GroovyKernelMapping} from "../mapping/groovy";
 import {DefaultKernelMapping} from "../mapping/default";
 import {StandardModelData} from "../mapping/interfaces";
 import PlotRange from "../range/PlotRange";
+import BigNumberUtils from "beakerx_shared/lib/utils/BigNumberUtils";
+import PlotUtils from "../utils/PlotUtils";
 
-const plotUtils = require('../plotUtils');
 const plotFactory = require('../plotFactory');
 
 const DEFAULT_LINE_ITEM_WIDTH = 2;
@@ -87,7 +88,7 @@ export default class DefaultPlotModel extends AbstractPlotModel {
       let unordered = false;
 
       for (let i = 1; i < elements.length; i++) {
-        if (plotUtils.lt(elements[i].x, elements[i - 1].x)) {
+        if (BigNumberUtils.lt(elements[i].x, elements[i - 1].x)) {
           unordered = true;
           break;
         }
@@ -103,7 +104,7 @@ export default class DefaultPlotModel extends AbstractPlotModel {
         || item.type === "point"
         || item.type === "text"
       ) {
-        elements.sort((a, b) => { plotUtils.minus(a.x, b.x); });
+        elements.sort((a, b) => { BigNumberUtils.minus(a.x, b.x); });
       } else {
         item.isUnorderedItem = true;
       }
@@ -118,7 +119,7 @@ export default class DefaultPlotModel extends AbstractPlotModel {
         newmodel.showLegend = true;
       }
 
-      if (plotUtils.useYAxisR(newmodel, item)) {
+      if (PlotUtils.useYAxisR(newmodel, item)) {
         yAxisRData.push(item);
       } else {
         yAxisData.push(item);
@@ -127,8 +128,8 @@ export default class DefaultPlotModel extends AbstractPlotModel {
   }
 
   calculateAxisYRanges(newmodel, yAxisData, yAxisRData) {
-    let range = plotUtils.getDataRange(yAxisData).datarange;
-    let rangeR = newmodel.yAxisR ? plotUtils.getDataRange(yAxisRData).datarange : null;
+    let range = PlotUtils.getDataRange(yAxisData).dataRange;
+    let rangeR = newmodel.yAxisR ? PlotUtils.getDataRange(yAxisRData).dataRange : null;
 
     range = this.applyMargins(range, newmodel.yAxis);
 
@@ -138,12 +139,12 @@ export default class DefaultPlotModel extends AbstractPlotModel {
 
     if (newmodel.yIncludeZero === true && range.yl > 0) {
       range.yl = 0;
-      range.yspan = range.yr - range.yl;
+      range.ySpan = range.yr - range.yl;
     }
 
     if (rangeR && newmodel.yRIncludeZero === true && rangeR.yl > 0) {
       rangeR.yl = 0;
-      rangeR.yspan = rangeR.yr - rangeR.yl;
+      rangeR.ySpan = rangeR.yr - rangeR.yl;
     }
 
     this.calculateMargin(newmodel);
@@ -169,7 +170,7 @@ export default class DefaultPlotModel extends AbstractPlotModel {
 
       // map coordinates using percentage
       // tooltips are possibly generated at the same time
-      if (plotUtils.useYAxisR(model, item)) {
+      if (PlotUtils.useYAxisR(model, item)) {
         item.applyAxis(xAxis, model.yAxisR);
       } else {
         item.applyAxis(xAxis, model.yAxis);
@@ -260,7 +261,7 @@ export default class DefaultPlotModel extends AbstractPlotModel {
     let itemlogyb;
 
     if (item.type !== "treemapnode") {
-      useYAxisR = plotUtils.useYAxisR(newmodel, item);
+      useYAxisR = PlotUtils.useYAxisR(newmodel, item);
       itemlogy = useYAxisR ? logyR : logy;
       itemlogyb = useYAxisR ? logybR : logyb;
     }
@@ -378,8 +379,8 @@ export default class DefaultPlotModel extends AbstractPlotModel {
     }
 
     if (item.type === "bar" && element.x2 == null) {
-      element.x = plotUtils.minus(element.x, item.width / 2);
-      element.x2 = plotUtils.plus(element.x, item.width);
+      element.x = BigNumberUtils.minus(element.x, item.width / 2);
+      element.x2 = BigNumberUtils.plus(element.x, item.width);
     }
 
     if (
@@ -557,18 +558,18 @@ export default class DefaultPlotModel extends AbstractPlotModel {
     }
 
     const result = {
-      xl: plotUtils.minus(range.xl, range.xspan * 10.0),
-      xr: plotUtils.plus(range.xr, range.xspan * 10.0),
-      yl: range.yl - range.yspan * 10.0,
-      yr: range.yr + range.yspan * 10.0
+      xl: BigNumberUtils.minus(range.xl, range.xSpan * 10.0),
+      xr: BigNumberUtils.plus(range.xr, range.xSpan * 10.0),
+      yl: range.yl - range.ySpan * 10.0,
+      yr: range.yr + range.ySpan * 10.0
     };
 
     if (logx) {
-      result.xl = Math.max(result.xl, range.xl - newmodel.margin.left * range.xspan);
+      result.xl = BigNumberUtils.max(result.xl, BigNumberUtils.minus(range.xl, newmodel.margin.left * range.xSpan));
     }
 
     if (logy) {
-      result.yl = Math.max(result.yl, range.yl - newmodel.margin.left * range.yspan);
+      result.yl = Math.max(result.yl, range.yl - newmodel.margin.left * range.ySpan);
     }
 
     return result;
@@ -613,7 +614,7 @@ export default class DefaultPlotModel extends AbstractPlotModel {
       return;
     }
 
-    range.xspan = plotUtils.minus(range.xr, range.xl);
-    range.yspan = range.yr - range.yl;
+    range.xSpan = BigNumberUtils.minus(range.xr, range.xl);
+    range.ySpan = range.yr - range.yl;
   }
 }

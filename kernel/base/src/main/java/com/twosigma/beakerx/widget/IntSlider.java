@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.widget;
 
-import java.io.Serializable;
 import java.util.HashMap;
 
 /**
@@ -41,7 +40,7 @@ public class IntSlider extends BoundedIntWidget {
   }
 
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+  protected HashMap<String, Object> content(HashMap<String, Object> content) {
     super.content(content);
     content.put(CONTINUOUS_UPDATE, this.continuous_update);
     content.put(ORIENTATION, orientation);

@@ -80,7 +80,7 @@ class ScalaInterpreter(settings: Settings, out: JPrintWriter) extends IMain(sett
 
       override val importsWildcard: Boolean = selectors exists isWildcardImport
 
-      lazy val importableSymbolsWithRenames: List[(Symbol, Name)] = {
+      override lazy val importableSymbolsWithRenames: List[(Symbol, Name)] = {
         val selectorRenameMap =
           individualSelectors.flatMap(x => x.name.bothNames zip x.rename.bothNames).toMap
         importableTargetMembers flatMap (m => selectorRenameMap.get(m.name) map (m -> _))

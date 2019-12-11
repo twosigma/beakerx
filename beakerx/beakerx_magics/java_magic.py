@@ -13,22 +13,19 @@
 
 from IPython import get_ipython
 from IPython.core.magic import (magics_class, cell_magic)
-from .kernel_magic import KernelMagics
+from beakerx_magics import KernelRunnerMagic
 from ipykernel.zmqshell import ZMQInteractiveShell
 
 
 @magics_class
-class JavaMagics(KernelMagics):
+class JavaMagics(KernelRunnerMagic):
 
     def __init__(self, shell):
         super(JavaMagics, self).__init__(shell)
 
-    def start(self):
-        super(JavaMagics, self).start('java')
-
     @cell_magic
     def java(self, line, cell):
-        return self.run_cell(line, cell)
+        return super(JavaMagics, self).kernel("java", cell)
 
 
 def load_ipython_extension(ipython):

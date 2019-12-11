@@ -24,7 +24,7 @@ trait BasedXYGraphicsProperties extends XYGraphicsProperties {
   this: com.twosigma.beakerx.chart.xychart.plotitem.BasedXYGraphics =>
 
   def base: Number = getBase
-  def bases: Seq[Number] = getNullableList(getBases)
+  def bases: Seq[Number] = getNullableList(()=> getBases)
   def base_=(base: Number): Unit = setBase(base)
   def base_=[T : NumberView](bases: Seq[T]): Unit = setBase(bases.toNumbers.asJava)
 }

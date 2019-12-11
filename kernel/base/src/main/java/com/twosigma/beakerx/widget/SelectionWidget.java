@@ -28,7 +28,7 @@ public abstract class SelectionWidget<T extends Serializable> extends ValueWidge
   protected int defaultIndex = 0;
 
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+  protected HashMap<String, Object> content(HashMap<String, Object> content) {
     super.content(content);
     content.put(OPTIONS_LABELS, this.options);
     content.put(VALUE, this.value);

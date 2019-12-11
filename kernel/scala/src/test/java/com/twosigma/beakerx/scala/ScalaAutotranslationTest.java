@@ -24,8 +24,11 @@ import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.MagicCommandConfigurationMock;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.NamespaceClientTest;
+import com.twosigma.beakerx.RuntimetoolsMock;
+import com.twosigma.beakerx.evaluator.ClasspathScannerMock;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
+import com.twosigma.beakerx.kernel.Configuration;
 import com.twosigma.beakerx.kernel.CustomMagicCommandsEmptyImpl;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
@@ -68,17 +71,20 @@ public class ScalaAutotranslationTest extends KernelSetUpFixtureTest {
             getTestTempFolderFactory(),
             EvaluatorTest.KERNEL_PARAMETERS,
             nc,
-            magicCommandConfiguration.patterns());
+            magicCommandConfiguration.patterns(),
+            new ClasspathScannerMock());
     return new Scala(sessionId,
             evaluator,
-            kernelSocketsFactory,
-            closeKernelAction,
-            getCacheFolderFactory(),
-            new CustomMagicCommandsEmptyImpl(),
-            new BeakerXCommRepositoryMock(),
-            BeakerXServerMock.create(),
-            magicCommandConfiguration,
-            new KernelTest.BeakerXJsonMock());
+            new Configuration(
+                    kernelSocketsFactory,
+                    closeKernelAction,
+                    getCacheFolderFactory(),
+                    new CustomMagicCommandsEmptyImpl(),
+                    new BeakerXCommRepositoryMock(),
+                    BeakerXServerMock.create(),
+                    magicCommandConfiguration,
+                    new KernelTest.BeakerXJsonMock(),
+                    new RuntimetoolsMock()));
   }
 
 

@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from beakerx.utils import getValue
-from beakerx.beakerx_widgets import *
+from beakerx_base import BeakerxBox, BeakerxText, getValue, BeakerxPassword, BeakerxTextArea, SelectMultipleWithRows, \
+    SelectMultipleSingle, DatePicker, BeakerxComboBox, BeakerxCheckbox, BeakerxHBox, BeakerxVBox, BeakerxCheckboxGroup, \
+    BeakerxLabel, RadioButtons, EasyFormComponent, BeakerxButton
 from ipykernel.comm import Comm
 from traitlets import Bool, Unicode
 

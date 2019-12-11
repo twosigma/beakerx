@@ -17,6 +17,8 @@ package com.twosigma.beakerx.evaluator;
 
 import com.twosigma.beakerx.BeakerXClient;
 import com.twosigma.beakerx.BeakerXClientManager;
+import com.twosigma.beakerx.BeakerxDirvers;
+import com.twosigma.beakerx.ClassLoaderSwitcher;
 import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.MagicCommandAutocompletePatterns;
@@ -53,10 +55,11 @@ public abstract class BaseEvaluator implements Evaluator {
   public static String INTERUPTED_MSG = "interrupted";
   protected final String shellId;
   protected final String sessionId;
+  private final ClasspathScanner classpathScanner;
   protected String outDir;
   private Inspect inspect;
   protected Classpath classPath;
-  protected Imports imports;
+  protected Imports imports = new Imports(new ArrayList<>());
   private final CellExecutor executor;
   private Path tempFolder;
   private BeakerXClient beakerXClient;
@@ -67,6 +70,7 @@ public abstract class BaseEvaluator implements Evaluator {
 
   protected ExecutorService executorService;
   protected ExecutorService executorBgkService;
+  private ClassLoaderSwitcher classLoaderSwitcher;
 
   public BaseEvaluator(String id,
                        String sId,
@@ -74,11 +78,13 @@ public abstract class BaseEvaluator implements Evaluator {
                        TempFolderFactory tempFolderFactory,
                        EvaluatorParameters evaluatorParameters,
                        BeakerXClient beakerXClient,
-                       MagicCommandAutocompletePatterns autocompletePatterns) {
+                       MagicCommandAutocompletePatterns autocompletePatterns,
+                       ClasspathScanner classpathScanner) {
     shellId = id;
     sessionId = sId;
     executor = cellExecutor;
     tempFolder = tempFolderFactory.createTempFolder();
+    this.classpathScanner = classpathScanner;
     this.beakerXClient = BeakerXClientManager.register(beakerXClient);
     this.autocompletePatterns = autocompletePatterns;
     outDir = getOrCreateFile(tempFolder.toString() + File.separator + "outDir").getPath();
@@ -89,6 +95,17 @@ public abstract class BaseEvaluator implements Evaluator {
     executorBgkService = Executors.newCachedThreadPool();
     this.evaluatorParameters = evaluatorParameters;
     init(evaluatorParameters);
+  }
+
+  @Override
+  public void startEvaluation() {
+    classLoaderSwitcher = new ClassLoaderSwitcher(this);
+    classLoaderSwitcher.start();
+  }
+
+  @Override
+  public void endEvaluation() {
+    classLoaderSwitcher.end();
   }
 
   CompletableFuture<TryResult> background;
@@ -150,6 +167,7 @@ public abstract class BaseEvaluator implements Evaluator {
         addedPaths.add(Paths.get(path.getPath()));
       }
     });
+    classpathScanner.scan();
     doReloadEvaluator();
     return addedPaths;
   }

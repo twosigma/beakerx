@@ -22,7 +22,11 @@ import com.twosigma.beakerx.evaluator.Hook;
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.inspect.InspectResult;
+import com.twosigma.beakerx.jvm.object.Configuration;
+import com.twosigma.beakerx.jvm.object.ConfigurationFactory;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.jvm.threads.BeakerInputHandler;
+import com.twosigma.beakerx.jvm.threads.BeakerOutputHandler;
 import com.twosigma.beakerx.kernel.AddImportStatus;
 import com.twosigma.beakerx.kernel.BeakerXJson;
 import com.twosigma.beakerx.kernel.Classpath;
@@ -44,6 +48,7 @@ import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
+import com.twosigma.beakerx.kernel.threads.ResultSender;
 import com.twosigma.beakerx.message.Message;
 import org.apache.commons.io.FileUtils;
 
@@ -53,11 +58,12 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Observer;
 import java.util.Set;
 
+import static com.twosigma.beakerx.AutotranslationServiceImpl.BEAKERX;
 import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static java.util.Arrays.asList;
 import static java.util.Collections.synchronizedList;
@@ -68,20 +74,22 @@ public class KernelTest implements KernelFunctionality {
   private List<Message> sentMessages = synchronizedList(new ArrayList<>());
   private String id;
   private CommRepository commRepository;
-  private ExecutionResultSender executionResultSender = new ExecutionResultSender(this);
+  private ResultSender executionResultSender = new ExecutionResultSender(this);
   public EvaluatorParameters evaluatorParameters;
   private Evaluator evaluator;
   private String code;
   private Path tempFolder;
   private Map<String, MagicKernelManager> magicKernels;
   private MagicCommandConfigurationMock magicCommandConfiguration = new MagicCommandConfigurationMock();
-
   private BeakerXJson beakerXJson;
 
-//  public MavenJarResolver.ResolverParams mavenResolverParam = null;
-
   private List<MagicCommandType> magicCommandTypes = null;
+  private LinkedList<String> stdinText = new LinkedList<>();
 
+  public KernelTest(ResultSender resultSender) {
+    this("KernelTestId1", new BeakerXCommRepositoryMock());
+    this.executionResultSender = resultSender;
+  }
 
   public KernelTest() {
     this("KernelTestId1", new BeakerXCommRepositoryMock());
@@ -96,9 +104,7 @@ public class KernelTest implements KernelFunctionality {
     this.commRepository = commRepository;
     this.beakerXJson = new BeakerXJsonMock();
     initMagicCommands();
-    SimpleEvaluationObject value = new SimpleEvaluationObject("ok");
-    Message jupyterMessage = commMsg();
-    value.setJupyterMessage(jupyterMessage);
+    SimpleEvaluationObject value = new SimpleEvaluationObject("ok", new SeoConfigurationFactoryMock(this, commMsg()));
     InternalVariable.setValue(value);
     KernelManager.register(this);
 
@@ -110,9 +116,7 @@ public class KernelTest implements KernelFunctionality {
     this.commRepository = new BeakerXCommRepositoryMock();
     this.beakerXJson = new BeakerXJsonMock();
     initMagicCommands();
-    SimpleEvaluationObject value = new SimpleEvaluationObject("ok");
-    Message jupyterMessage = commMsg();
-    value.setJupyterMessage(jupyterMessage);
+    SimpleEvaluationObject value = new SimpleEvaluationObject("ok", new SeoConfigurationFactoryMock(this, commMsg()));
     InternalVariable.setValue(value);
     KernelManager.register(this);
     this.magicKernels = new HashMap<>();
@@ -132,11 +136,20 @@ public class KernelTest implements KernelFunctionality {
     this.sentMessages.add(message);
   }
 
+  @Override
+  public String sendStdIn(Message message) {
+    return this.stdinText.pop();
+  }
+
+  public void addToStdin(String s) {
+    this.stdinText.add(s);
+  }
+
   public String getSessionId() {
     return this.id;
   }
 
-  public Observer getExecutionResultSender() {
+  public ResultSender getExecutionResultSender() {
     return this.executionResultSender;
   }
 
@@ -391,21 +404,118 @@ public class KernelTest implements KernelFunctionality {
     return this.beakerXJson;
   }
 
+  @Override
+  public void startEvaluation() {
+
+  }
+
+  @Override
+  public void endEvaluation() {
+
+  }
+
   public FileServiceMock getFileService() {
     return magicCommandConfiguration.getFileService();
   }
+
 
   public static class BeakerXJsonMock implements BeakerXJson {
 
     @Override
     public Map<String, Map> beakerxJsonAsMap() {
-      return null;
+      HashMap<String, Map> stringMapHashMap = new HashMap<>();
+      stringMapHashMap.put(BEAKERX, new HashMap());
+      return stringMapHashMap;
     }
 
     @Override
     public void save(Map<String, Map> map) {
 
     }
+  }
+
+  static class SimpleOutputHandlerTest implements BeakerOutputHandler {
+
+    private String text;
+
+    @Override
+    public void write(String b) {
+      this.text = b;
+    }
+  }
+
+  static class SimpleErrHandlerTest implements BeakerOutputHandler {
+
+    private String text;
+
+    @Override
+    public void write(String b) {
+      this.text = b;
+    }
+  }
+
+
+  public static class SeoConfigurationFactoryMock implements ConfigurationFactory {
+    private KernelFunctionality kernel;
+    private Message message;
+    private int executionCount;
+
+    public SeoConfigurationFactoryMock(KernelFunctionality kernel, Message message) {
+      this.kernel = kernel;
+      this.message = message;
+    }
+
+    public SeoConfigurationFactoryMock() {
+      this(new KernelTest());
+    }
+
+    public SeoConfigurationFactoryMock(Message message) {
+      this(new KernelTest(), message);
+    }
+
+    public SeoConfigurationFactoryMock(int executionCount) {
+      this();
+      this.executionCount = executionCount;
+    }
+
+    public SeoConfigurationFactoryMock(KernelTest kernel) {
+      this(kernel, commMsg());
+    }
+
+    @Override
+    public Configuration create(SimpleEvaluationObject seo) {
+      BeakerOutputHandler stdout = new SimpleEvaluationObject.SimpleOutputHandler(false, kernel.getExecutionResultSender(), seo);
+      BeakerOutputHandler stderr = new SimpleEvaluationObject.SimpleOutputHandler(true, kernel.getExecutionResultSender(), seo);
+      BeakerInputHandler stdin = () -> 0;
+      return new Configuration(stdin, stdout, stderr, kernel.getExecutionResultSender(), message, executionCount);
+    }
+  }
+
+  public static class ExecutionResultSenderMock implements ResultSender {
+
+    private List<SimpleEvaluationObject> objectList = new LinkedList<>();
+
+    @Override
+    public void update(SimpleEvaluationObject seo) {
+      objectList.add(seo);
+    }
+
+    @Override
+    public void exit() {
+
+    }
+
+    public List<SimpleEvaluationObject> getObjectList() {
+      return objectList;
+    }
+  }
+
+  public static SimpleEvaluationObject createSeo(String code) {
+    return new SimpleEvaluationObject(code, new KernelTest.SeoConfigurationFactoryMock());
+  }
+
+  public static SimpleEvaluationObject createSeo(String code, Message message) {
+    return new SimpleEvaluationObject(code, new KernelTest.SeoConfigurationFactoryMock(message));
   }
 
 }

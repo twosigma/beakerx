@@ -15,12 +15,9 @@
  */
 package com.twosigma.beakerx.javash.autocomplete;
 
-import com.twosigma.beakerx.autocomplete.ClasspathScanner;
+import com.twosigma.beakerx.autocomplete.AutocompleteClasspathScanner;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class JavaClasspathScanner extends ClasspathScanner {
+public class JavaClasspathScanner extends AutocompleteClasspathScanner {
 
   public JavaClasspathScanner() {
     super();

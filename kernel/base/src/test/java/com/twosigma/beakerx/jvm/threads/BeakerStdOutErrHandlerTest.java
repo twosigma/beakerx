@@ -16,32 +16,35 @@
 
 package com.twosigma.beakerx.jvm.threads;
 
+import com.twosigma.beakerx.jvm.object.Configuration;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.kernel.threads.ResultSender;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BeakerStdOutErrHandlerTest {
 
   private static SimpleEvaluationObject seo;
-  private SimpleOutputHandlerTest stdout;
-  private SimpleErrHandlerTest stderr;
+  private SimpleOutputHandlerMock stdout;
+  private SimpleErrHandlerMock stderr;
 
   @Before
   public void setUp() throws Exception {
-    BeakerStdOutErrHandler.init();
-    stdout = new SimpleOutputHandlerTest();
-    stderr = new SimpleErrHandlerTest();
-    seo = new SimpleEvaluationObject("code", stdout, stderr);
+    BeakerStdInOutErrHandler.init();
+    stdout = new SimpleOutputHandlerMock();
+    stderr = new SimpleErrHandlerMock();
+    seo = new SimpleEvaluationObject("code", seo -> new Configuration(new BeakerInputHandlerMock(), stdout, stderr, new ResultSenderMock(), commMsg(), 1));
     seo.setOutputHandler();
   }
 
   @After
   public void tearDownClass() throws Exception {
     seo.clrOutputHandler();
-    BeakerStdOutErrHandler.fini();
+    BeakerStdInOutErrHandler.fini();
   }
 
   @Test
@@ -62,7 +65,7 @@ public class BeakerStdOutErrHandlerTest {
     assertThat(stderr.text).isNotEmpty();
   }
 
-  static class SimpleOutputHandlerTest implements BeakerOutputHandler {
+  static class SimpleOutputHandlerMock implements BeakerOutputHandler {
 
     private String text;
 
@@ -72,7 +75,7 @@ public class BeakerStdOutErrHandlerTest {
     }
   }
 
-  static class SimpleErrHandlerTest implements BeakerOutputHandler {
+  static class SimpleErrHandlerMock implements BeakerOutputHandler {
 
     private String text;
 
@@ -82,5 +85,23 @@ public class BeakerStdOutErrHandlerTest {
     }
   }
 
+  static class BeakerInputHandlerMock implements BeakerInputHandler {
+
+    @Override
+    public int read() {
+      return 0;
+    }
+  }
+
+  static class ResultSenderMock implements ResultSender {
+    @Override
+    public void update(SimpleEvaluationObject seo) {
+    }
+
+    @Override
+    public void exit() {
+
+    }
+  }
 
 }

@@ -16,10 +16,8 @@
 
 define([
   'underscore',
-  './../plotUtils'
 ], function(
-  _,
-  plotUtils
+  _
 ) {
 
   var PlotRaster = function(data){

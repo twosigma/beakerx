@@ -1,0 +1,42 @@
+{
+  "name": "beakerx_shared",
+  "private": true,
+  "version": "1.0.0",
+  "description": "BeakerX - shared files",
+  "author": "Two Sigma Open Source, LLC",
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "yarn run build:clean && yarn run build:ts && yarn run build:link",
+    "build:clean": "yarn run build:clean:lib",
+    "build:clean:lib": "rimraf lib",
+    "build:link": "yarn link",
+    "build:ts": "tsc -b",
+    "prepublish": "yarn run build"
+  },
+  "dependencies": {
+    "@phosphor/commands": "^1.6.1",
+    "@phosphor/datagrid": "^0.1.6",
+    "@phosphor/widgets": "^1.6.0",
+    "moment-timezone": "^0.5.13",
+    "jquery": "^3.3.1",
+    "big.js": "^5.2.2"
+  },
+  "devDependencies": {
+    "@types/moment-timezone": "^0.5.12",
+    "@types/jquery": "^3.3.29",
+    "@types/big.js": "^4.0.5",
+    "rimraf": "^2.6.3",
+    "typescript": "^3.4.5"
+  },
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib/*.d.ts",
+    "lib/*.d.ts.map",
+    "lib/*.js",
+    "lib/*.js.map"
+  ],
+  "directories": {
+    "lib": "lib/"
+  }
+}

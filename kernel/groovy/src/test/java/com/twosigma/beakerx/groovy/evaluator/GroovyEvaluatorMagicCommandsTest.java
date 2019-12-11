@@ -15,13 +15,13 @@ package com.twosigma.beakerx.groovy.evaluator;
  *  limitations under the License.
  */
 
-import com.twosigma.beakerx.MessageFactorTest;
+import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.ClasspathScanner;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.PathToJar;
-import com.twosigma.beakerx.message.Message;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -62,10 +62,30 @@ public class GroovyEvaluatorMagicCommandsTest {
     assertThat(seo2.result()).isEqualTo("Demo_test_123");
   }
 
-  private TryResult runCode(String code) throws InterruptedException {
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
-    Message message = MessageFactorTest.commMsg();
-    seo.setJupyterMessage(message);
+  private TryResult runCode(String code) {
+    SimpleEvaluationObject seo = KernelTest.createSeo(code);
     return groovyEvaluator.evaluate(seo, code);
   }
+
+  @Test
+  public void scanClasspath() throws Exception {
+    ClasspathScannerMock classpathScannerMock = new ClasspathScannerMock();
+    //given
+    BaseEvaluator evaluator = TestGroovyEvaluator.groovyEvaluator(classpathScannerMock);
+    //when
+    PathToJar path = new PathToJar(SRC_TEST_RESOURCES + "demo.jar");
+    evaluator.addJarsToClasspath(singletonList(path));
+    //then
+    assertThat(classpathScannerMock.scanned).isTrue();
+  }
+
+  static class ClasspathScannerMock implements ClasspathScanner {
+    boolean scanned = false;
+
+    @Override
+    public void scan() {
+      scanned = true;
+    }
+  }
+
 }

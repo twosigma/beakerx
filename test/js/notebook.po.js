@@ -16,24 +16,29 @@
 
 var NotebookPageObject = function () {
 
-  this.kernelIdleIcon = $('i.kernel_idle_icon');
+  this.kernelIdleIcon = browser.$('i.kernel_idle_icon');
 
   this.runNotebookByUrl = function (url) {
     console.log('jupyter notebook application')
     browser.url('http://127.0.0.1:8888/notebooks' + url);
     this.kernelIdleIcon.waitForEnabled();
+    this.increaseWindowWidth(200);
+  };
+
+  this.increaseWindowWidth = function (addWidth) {
+    var curSize = browser.getWindowSize();
+    browser.setWindowSize(curSize.width + addWidth, curSize.height);
   };
 
   this.clickSaveNotebook = function () {
-    browser.click('button[data-jupyter-action="jupyter-notebook:save-notebook"]');
+    browser.$('button[data-jupyter-action="jupyter-notebook:save-notebook"]').click();
   };
 
   this.closeAndHaltNotebook = function () {
     this.clickCellAllOutputClear();
-    browser.click('=File');
-    browser.waitForEnabled('=Close and Halt');
-    browser.click('=Close and Halt');
-    browser.endAll();
+    browser.$('=File').click();
+    browser.$('=Close and Halt').waitForEnabled();
+    browser.$('=Close and Halt').click();
   };
 
   this.saveAndCloseNotebook = function () {
@@ -41,21 +46,20 @@ var NotebookPageObject = function () {
     this.clickSaveNotebook();
     browser.waitUntil(function () {
       var autosaveStatus = $('span.autosave_status').getText();
-
       return autosaveStatus === '(autosaved)';
     }, 4000);
-    browser.click('=File');
-    browser.waitForEnabled('=Close and Halt');
-    browser.click('=Close and Halt');
+    browser.$('=File').click();
+    browser.$('=Close and Halt').waitForEnabled();
+    browser.$('=Close and Halt').click();
   };
 
   this.clickCellAllOutputClear = function () {
-    browser.click('=Cell');
-    browser.waitForEnabled('=All Output');
-    browser.moveToObject('=All Output');
-    browser.moveToObject('=Toggle');
-    browser.moveToObject('=Clear');
-    browser.click('=Clear')
+    browser.$('=Cell').click();
+    browser.$('=All Output').waitForEnabled();
+    browser.$('=All Output').moveTo();
+    browser.$('=Toggle').moveTo();
+    browser.$('=Clear').moveTo();
+    browser.$('=Clear').click();
   };
 
   this.getCodeCellByIndex = function (index) {
@@ -74,9 +78,9 @@ var NotebookPageObject = function () {
   };
 
   this.clickRunAllCells = function () {
-    browser.click('=Cell');
-    browser.waitForEnabled('=Run All');
-    browser.click('=Run All')
+    browser.$('=Cell').click();
+    browser.$('=Run All').waitForEnabled();
+    browser.$('=Run All').click()
   };
 
   this.clickDialogPublishButton = function () {
@@ -87,61 +91,89 @@ var NotebookPageObject = function () {
     browser.$('button[data-jupyter-action="jupyter-notebook:interrupt-kernel"]').click();
   };
 
-  this.getAllOutputAreaChildren = function (codeCell) {
+  this.getAllOutputAreaChildren = function (codeCell, isWait) {
+    if(isWait){
+      browser.waitUntil(function () {
+        return (codeCell.$$('div.output_area').length > 0);
+      });
+    }
     return codeCell.$$('div.output_area');
   };
 
   this.getAllOutputsExecuteResult = function (codeCell) {
+    browser.waitUntil(function () {
+      return codeCell.$$('div.output_subarea.output_result').length > 0;
+    });
+    browser.pause(500);
     return codeCell.$$('div.output_subarea.output_result');
   };
 
   this.getAllOutputsStdout = function (codeCell) {
+    browser.waitUntil(function () {
+      return codeCell.$$('div.output_subarea.output_stdout').length > 0;
+    });
+    browser.pause(500);
     return codeCell.$$('div.output_subarea.output_stdout');
   };
 
   this.getAllOutputsStderr = function (codeCell) {
+    browser.waitUntil(function(){
+      return codeCell.$$('div.output_subarea.output_error').length > 0;
+    });
+    browser.pause(500);
     return codeCell.$$('div.output_subarea.output_error');
   };
 
   this.getAllOutputsWidget = function (codeCell) {
+    browser.waitUntil(function () {
+      return (codeCell.$$('div.output_subarea.jupyter-widgets-view').length > 0);
+    });
     return codeCell.$$('div.output_subarea.jupyter-widgets-view');
   };
 
+  this.getAllOutputsHtmlType = function (codeCell) {
+    browser.waitUntil(function () {
+      return codeCell.$$('div.output_subarea.output_html').length > 0;
+    });
+    browser.pause(1000);
+    return codeCell.$$('div.output_subarea.output_html');
+  };
+
   this.callAutocompleteAndGetItsList = function (codeCell, codeStr) {
-    codeCell.scroll();
-    codeCell.click('div.CodeMirror-code[role="presentation"]');
-    codeCell.keys(codeStr);
+    codeCell.scrollIntoView();
+    codeCell.$('div.CodeMirror-code[role="presentation"]').click();
+    browser.keys(codeStr);
     browser.keys("Tab");
     browser.keys('\uE000');
     browser.waitUntil(function () {
-      return browser.isVisible('#complete');
+      return browser.$('#complete').isDisplayed();
     }, 10000, 'autocomplete list is not visible');
     return $$('#complete > select > option');
   };
 
   this.callDocAndGetItsTooltip = function (codeCell, codeStr) {
-    codeCell.scroll();
-    codeCell.click('div.CodeMirror-code[role="presentation"]');
-    codeCell.keys(codeStr);
-    browser.keys('Shift');
-    browser.keys('Tab');
+    codeCell.scrollIntoView();
+    codeCell.$('div.CodeMirror-code[role="presentation"]').click();
+    browser.keys(codeStr);
+    browser.keys(["Shift", "Tab"]);
     browser.keys('\uE000');
     browser.waitUntil(function () {
-      return browser.isVisible('#tooltip');
+      return browser.$('#tooltip').isDisplayed();
     }, 10000, 'doc tooltip is not visible');
     return $('div#tooltip div.tooltiptext.smalltooltip');
   };
 
   this.openUIWindow = function(){
     browser.newWindow('http://127.0.0.1:8888/tree');
-    browser.window(browser.windowHandles().value[0]);
+    browser.newWindow('http://127.0.0.1:8888/tree');
+    browser.pause(1000);
+    browser.switchWindow('http://127.0.0.1:8888/tree');
   };
 
   this.setJVMProperties = function (heapSize, key, value, url) {
     this.openUIWindow();
-    browser.window(browser.windowHandles().value[1]);
-    browser.waitForEnabled('a#beakerx_tab');
-    browser.click('a#beakerx_tab');
+    browser.$('a#beakerx_tab').waitForEnabled();
+    browser.$('a#beakerx_tab').click();
     browser.$$('li.p-TabBar-tab')[0].click();
 
     browser.$('input#heap_GB').waitForEnabled();
@@ -153,11 +185,20 @@ var NotebookPageObject = function () {
       this.addPropertyPair();
       this.setProperty(key, value);
     }
-
     browser.pause(2000);
-    browser.window();
-    browser.window(browser.windowHandles().value[0]);
-  }
+  };
+
+  this.getJupyterWidget = function(codeCell){
+    return codeCell.$('div.jupyter-widgets');
+  };
+
+  this.switchToNotebookWindow = function(){
+    browser.switchWindow('/test/ipynb/groovy/MapLikeTableTest');
+  };
+
+  this.getSvgResult = function(container){
+    return container.$('svg');
+  };
 
 };
 module.exports = NotebookPageObject;

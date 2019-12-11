@@ -24,8 +24,12 @@ import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.MagicCommandConfigurationMock;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.NamespaceClientTest;
+import com.twosigma.beakerx.RuntimetoolsMock;
 import com.twosigma.beakerx.clojure.evaluator.ClojureEvaluator;
+import com.twosigma.beakerx.evaluator.ClasspathScannerMock;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
+import com.twosigma.beakerx.kernel.Configuration;
+import com.twosigma.beakerx.kernel.CustomMagicCommandsEmptyImpl;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.comm.Comm;
@@ -62,16 +66,20 @@ public class ClojureAutotranslationTest extends KernelSetUpFixtureTest {
             getTestTempFolderFactory(),
             KERNEL_PARAMETERS,
             nc,
-            commandConfiguration.patterns());
+            commandConfiguration.patterns(),
+            new ClasspathScannerMock());
     return new Clojure(sessionId,
             evaluator,
-            kernelSocketsFactory,
-            closeKernelAction,
-            getCacheFolderFactory(),
-            new BeakerXCommRepositoryMock(),
-            BeakerXServerMock.create(),
-            commandConfiguration,
-            new KernelTest.BeakerXJsonMock());
+            new Configuration(
+                    kernelSocketsFactory,
+                    closeKernelAction,
+                    getCacheFolderFactory(),
+                    new CustomMagicCommandsEmptyImpl(),
+                    new BeakerXCommRepositoryMock(),
+                    BeakerXServerMock.create(),
+                    commandConfiguration,
+                    new KernelTest.BeakerXJsonMock(),
+                    new RuntimetoolsMock()));
   }
 
   @Test

@@ -23,9 +23,11 @@ import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widget.SingleSparkSession;
-import com.twosigma.beakerx.widget.SparkEngine;
+import com.twosigma.beakerx.widget.SparkEngineConf;
+import com.twosigma.beakerx.widget.SparkEngineNoUI;
+import com.twosigma.beakerx.widget.SparkEngineNoUIImpl;
+import com.twosigma.beakerx.widget.SparkEngineWithUI;
 import com.twosigma.beakerx.widget.SparkUI;
-import com.twosigma.beakerx.widget.SparkUIApi;
 import com.twosigma.beakerx.widget.SparkUiDefaults;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
@@ -54,7 +56,7 @@ public class SparkMagicCommandTest {
     singleSparkSession = new SparkMagicCommand.SingleSparkSessionImpl();
     SparkUI.SparkUIFactory sparkUIFactory = createSparkUIFactory(singleSparkSession);
     kernel = new KernelTest();
-    sparkMagicCommand = new SparkMagicCommand(kernel, sparkUIFactory);
+    sparkMagicCommand = new SparkMagicCommand(kernel, new SparkFactoryImpl(kernel, new SparkManagerNoUIFactoryMock(), sparkUIFactory, new SparkFactoryWithUIImplTest.SparkUiDefaultsImplMock()));
   }
 
   @Test
@@ -100,25 +102,25 @@ public class SparkMagicCommandTest {
   private SparkUI.SparkUIFactory createSparkUIFactory(SingleSparkSession singleSparkSession) {
     return new SparkUI.SparkUIFactory() {
 
-      private SparkUI.SparkUIFactoryImpl factory = new SparkUI.SparkUIFactoryImpl(new SparkManagerFactoryTest(), new SparkUiDefaultsImplTest(), singleSparkSession);
+      private SparkUI.SparkUIFactoryImpl factory = new SparkUI.SparkUIFactoryImpl(singleSparkSession);
 
       @Override
-      public SparkUI create(SparkSession.Builder builder) {
-        sparkUI = factory.create(builder);
+      public SparkUI create(SparkSession.Builder builder, SparkEngineWithUI sparkEngineWithUI, SparkUiDefaults sparkUiDefaults) {
+        sparkUI = factory.create(builder, sparkEngineWithUI, sparkUiDefaults);
         return sparkUI;
       }
+
     };
   }
 
-
-  static class SparkManagerFactoryTest implements SparkEngine.SparkEngineFactory {
+  public static class SparkManagerNoUIFactoryMock implements SparkEngineNoUIImpl.SparkEngineNoUIFactory {
 
     @Override
-    public SparkEngine create(SparkSession.Builder sparkSessionBuilder) {
-      return new SparkEngine() {
+    public SparkEngineNoUI create(SparkSession.Builder sparkSessionBuilder) {
+      return new SparkEngineNoUI() {
         @Override
-        public TryResult configure(KernelFunctionality kernel, SparkUIApi spark, Message parentMessage) {
-          return TryResult.createResult("ok");
+        public TryResult configure(KernelFunctionality kernel, Message parentMessage) {
+          return null;
         }
 
         @Override
@@ -137,7 +139,7 @@ public class SparkMagicCommandTest {
         }
 
         @Override
-        public Map<String, String> getAdvanceSettings() {
+        public Map<String, String> getAdvanceSettings(SparkUiDefaults defaults) {
           return new HashMap<>();
         }
 
@@ -155,64 +157,48 @@ public class SparkMagicCommandTest {
         public String sparkVersion() {
           return null;
         }
+
+        @Override
+        public void additionalConf(SparkEngineConf conf) {
+
+        }
+
+        @Override
+        public SparkEngineConf getSparkEngineConf() {
+          return null;
+        }
+
+        @Override
+        public void configAutoStart() {
+
+        }
+
+        @Override
+        public String stageLink(int stageId) {
+          return null;
+        }
+
+        @Override
+        public String jobLink(int jobId) {
+          return null;
+        }
+
+        @Override
+        public void jobLinkFactory(JobLinkFactory jobLinkFactory) {
+
+        }
+
+        @Override
+        public void stageLinkFactory(StageLinkFactory stageLinkFactory) {
+
+        }
+
+        @Override
+        public void sparkUiWebUrlFactory(SparkUiWebUrlFactory factory) {
+
+        }
+
       };
     }
   }
-
-  static class SparkUiDefaultsImplTest implements SparkUiDefaults {
-
-
-    @Override
-    public void saveSparkConf(List<Map<String, Object>> sparkConf) {
-
-    }
-
-    @Override
-    public void loadDefaults(SparkSession.Builder builder) {
-
-    }
-
-    @Override
-    public List<Map<String, Object>> getProfiles() {
-      return null;
-    }
-
-    @Override
-    public Map<String, Object> getProfileByName(String name) {
-      return null;
-    }
-
-    @Override
-    public void removeSparkConf(String profileName) {
-
-    }
-
-    @Override
-    public void loadProfiles() {
-
-    }
-
-    @Override
-    public void saveProfile(Map<String, Object> profile) {
-
-    }
-
-    @Override
-    public List<String> getProfileNames() {
-      return null;
-    }
-
-    @Override
-    public void saveProfileName(String profileName) {
-
-    }
-
-    @Override
-    public String getCurrentProfileName() {
-      return null;
-    }
-
-  }
-
-
 }

@@ -18,26 +18,23 @@ package com.twosigma.beakerx.javash.kernel;
 import com.twosigma.beakerx.BeakerXCommRepository;
 import com.twosigma.beakerx.CommRepository;
 import com.twosigma.beakerx.NamespaceClient;
+import com.twosigma.beakerx.evaluator.ClasspathScannerImpl;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.javash.comm.JavaCommOpenHandler;
 import com.twosigma.beakerx.javash.evaluator.JavaEvaluator;
 import com.twosigma.beakerx.javash.handler.JavaKernelInfoHandler;
-import com.twosigma.beakerx.kernel.BeakerXJson;
 import com.twosigma.beakerx.kernel.BeakerXJsonConfig;
-import com.twosigma.beakerx.kernel.CacheFolderFactory;
-import com.twosigma.beakerx.kernel.CloseKernelAction;
+import com.twosigma.beakerx.kernel.Configuration;
 import com.twosigma.beakerx.kernel.CustomMagicCommandsEmptyImpl;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelConfigurationFile;
 import com.twosigma.beakerx.kernel.KernelRunner;
-import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfiguration;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandConfigurationImpl;
-import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.restserver.impl.GetUrlArgHandler;
 import com.twosigma.beakerx.message.Message;
 
@@ -49,42 +46,8 @@ import static com.twosigma.beakerx.kernel.Utils.uuid;
 
 public class Java extends Kernel {
 
-  private Java(final String id,
-               final Evaluator evaluator,
-               KernelSocketsFactory kernelSocketsFactory,
-               CommRepository commRepository,
-               BeakerXServer beakerXServer,
-               MagicCommandConfiguration magicCommandConfiguration,
-               BeakerXJson beakerXJson) {
-    super(id,
-            evaluator,
-            kernelSocketsFactory,
-            new CustomMagicCommandsEmptyImpl(),
-            commRepository,
-            beakerXServer,
-            magicCommandConfiguration,
-            beakerXJson);
-  }
-
-  public Java(final String id,
-              final Evaluator evaluator,
-              KernelSocketsFactory kernelSocketsFactory,
-              CloseKernelAction closeKernelAction,
-              CacheFolderFactory cacheFolderFactory,
-              CommRepository commRepository,
-              BeakerXServer beakerXServer,
-              MagicCommandConfiguration magicCommandConfiguration,
-              BeakerXJson beakerXJson) {
-    super(id,
-            evaluator,
-            kernelSocketsFactory,
-            closeKernelAction,
-            cacheFolderFactory,
-            new CustomMagicCommandsEmptyImpl(),
-            commRepository,
-            beakerXServer,
-            magicCommandConfiguration,
-            beakerXJson);
+  public Java(final String sessionId, final Evaluator evaluator, Configuration configuration) {
+    super(sessionId, evaluator, configuration);
   }
 
   @Override
@@ -110,14 +73,17 @@ public class Java extends Kernel {
               id,
               getKernelParameters(),
               beakerxClient,
-              magicConfiguration.patterns());
+              magicConfiguration.patterns(),
+              new ClasspathScannerImpl());
       return new Java(id,
               e,
-              kernelSocketsFactory,
-              commRepository,
-              new JavaBeakerXServer(new GetUrlArgHandler(beakerxClient)),
-              magicConfiguration,
-              new BeakerXJsonConfig());
+              new Configuration(
+                      kernelSocketsFactory,
+                      new CustomMagicCommandsEmptyImpl(),
+                      commRepository,
+                      new JavaBeakerXServer(new GetUrlArgHandler(beakerxClient)),
+                      magicConfiguration,
+                      new BeakerXJsonConfig()));
     });
   }
 

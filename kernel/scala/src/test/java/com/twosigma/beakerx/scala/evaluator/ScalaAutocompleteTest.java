@@ -16,10 +16,11 @@
 
 package com.twosigma.beakerx.scala.evaluator;
 
+import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.evaluator.ClasspathScannerMock;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.evaluator.MagicCommandAutocompletePatternsMock;
-import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.scala.kernel.ScalaKernelMock;
 import org.assertj.core.api.Assertions;
@@ -46,7 +47,8 @@ public class ScalaAutocompleteTest {
             getTestTempFolderFactory(),
             EvaluatorTest.KERNEL_PARAMETERS,
             new EvaluatorTest.BeakexClientTestImpl(),
-            new MagicCommandAutocompletePatternsMock());
+            new MagicCommandAutocompletePatternsMock(),
+            new ClasspathScannerMock());
   }
 
   @Before
@@ -114,11 +116,12 @@ public class ScalaAutocompleteTest {
                     getTestTempFolderFactory(),
                     EvaluatorTest.KERNEL_PARAMETERS,
                     new EvaluatorTest.BeakexClientTestImpl(),
-                    new MagicCommandAutocompletePatternsMock());
+                    new MagicCommandAutocompletePatternsMock(),
+                    new ClasspathScannerMock());
 
     try {
       //when
-      localEvaluator.evaluate(new SimpleEvaluationObject(""), "val xyzzy = 32");
+      localEvaluator.evaluate(KernelTest.createSeo(""), "val xyzzy = 32");
       AutocompleteResult autocomplete = localEvaluator.autocomplete("xyz", 3);
       //then
       Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();

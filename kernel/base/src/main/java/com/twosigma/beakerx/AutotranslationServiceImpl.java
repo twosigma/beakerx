@@ -15,15 +15,17 @@
  */
 package com.twosigma.beakerx;
 
+import com.google.gson.Gson;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.entity.ContentType;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gson.Gson;
-import org.apache.http.client.fluent.Request;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.http.entity.ContentType;
+import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 
 public class AutotranslationServiceImpl implements AutotranslationService {
 
@@ -62,6 +64,8 @@ public class AutotranslationServiceImpl implements AutotranslationService {
 
   @Override
   public String update(String name, String json) {
+    checkNotNull(name, "'name' attribute can not be null.");
+    checkNotNull(json, "'json' attribute can not be null.");
     try {
       String reply = Request.Post(LOCALHOST + this.context.getPort() + AUTOTRANSLTION)
               .addHeader(AUTHORIZATION, auth())

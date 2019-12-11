@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 
+
 define([
   './std/plotline',
   './std/plotarea',
@@ -26,7 +27,6 @@ define([
   './std/plotpoint',
   './std/plotstem',
   './std/plottreemapnode',
-  './plotUtils',
   './lodloader/plotLineLodLoader',
   './lodloader/plotBarLodLoader',
   './lodloader/plotStemLodLoader',
@@ -44,14 +44,14 @@ define([
   PlotPoint,
   PlotStem,
   PlotTreeMapNode,
-  plotUtils,
   PlotLineLodLoader,
   PlotBarLodLoader,
   PlotStemLodLoader,
   PlotAreaLodLoader,
   PlotPointLodLoader
 ) {
-  var TimeAxis = require('./std/axis/TimeAxis').default;
+  const TimeAxis = require("./std/axis/TimeAxis").default;
+  const BigNumberUtils = require("beakerx_shared/lib/utils/BigNumberUtils").default;
 
   var plotFactory = {
     createPlotItem : function(item, lodthresh) {
@@ -63,7 +63,7 @@ define([
       if (shouldApplyLod) {
         var eles = item.elements;
         for (var j = 1; j < eles.length; j++) {
-          if (plotUtils.lt(eles[j].x, eles[j - 1].x)) {
+          if (BigNumberUtils.lt(eles[j].x, eles[j - 1].x)) {
             console.warn("x values are not monotonic, LOD is disabled");
             shouldApplyLod = false;
             break;

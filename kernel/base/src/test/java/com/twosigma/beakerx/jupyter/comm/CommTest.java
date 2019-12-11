@@ -81,9 +81,8 @@ public class CommTest {
   }
 
   private Message submitCodeToExecution() {
-    SimpleEvaluationObject value = new SimpleEvaluationObject("ok");
     Message jupyterMessage = commMsg();
-    value.setJupyterMessage(jupyterMessage);
+    SimpleEvaluationObject value = new SimpleEvaluationObject("ok", new KernelTest.SeoConfigurationFactoryMock(kernel,jupyterMessage));
     InternalVariable.setValue(value);
     return jupyterMessage;
   }

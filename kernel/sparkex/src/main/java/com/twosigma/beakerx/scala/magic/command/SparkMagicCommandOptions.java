@@ -15,6 +15,8 @@
  */
 package com.twosigma.beakerx.scala.magic.command;
 
+import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.SparkEngine;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -23,30 +25,58 @@ import org.apache.commons.cli.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.twosigma.beakerx.scala.magic.command.SparkOptions.NO_UI;
 import static com.twosigma.beakerx.scala.magic.command.SparkOptions.START;
+import static com.twosigma.beakerx.scala.magic.command.SparkOptions.YARN;
 
 public class SparkMagicCommandOptions {
 
   private SparkOptions sparkOptions;
-  private SparkMagicActionOptions sparkMagicCommand;
 
-  public SparkMagicCommandOptions(SparkMagicActionOptions sparkMagicCommand) {
-    this.sparkMagicCommand = sparkMagicCommand;
+  public SparkMagicCommandOptions() {
     this.sparkOptions = new SparkOptions();
   }
 
   public OptionsResult parseOptions(String[] args) {
     CommandLineParser parser = new BasicParser();
-    List<SparkMagicCommand.SparkOptionCommand> commands = new ArrayList<>();
+    List<SparkOptionCommand> commands = new ArrayList<>();
     try {
       CommandLine cmd = parser.parse(sparkOptions.getOptions(), args);
-      if (cmd.hasOption(START)) {
-        commands.add((sparkUI, parent) -> sparkMagicCommand.connectToSparkSession(sparkUI, parent));
-      }
+      start(commands, cmd);
+      noUI(commands, cmd);
+      yarn(commands, cmd);
     } catch (ParseException e) {
       return new ErrorOptionsResult(e.getMessage());
     }
     return new SparkOptionsResult(commands);
+  }
+
+  private void yarn(List<SparkOptionCommand> commands, CommandLine cmd) {
+    if (cmd.hasOption(YARN)) {
+      commands.add(new YarnSparkOptionCommand());
+    }
+  }
+
+  private void noUI(List<SparkOptionCommand> commands, CommandLine cmd) {
+    if (cmd.hasOption(NO_UI)) {
+      commands.add(new NoUISparkOptionCommand());
+    }
+  }
+
+  private void start(List<SparkOptionCommand> commands, CommandLine cmd) {
+    if (cmd.hasOption(START)) {
+      commands.add(new SparkOptionCommand() {
+        @Override
+        public void run(SparkEngine sparkEngine, Message parent) {
+          sparkEngine.configAutoStart();
+        }
+
+        @Override
+        public String getName() {
+          return START;
+        }
+      });
+    }
   }
 
   public interface OptionsResult {
@@ -54,7 +84,7 @@ public class SparkMagicCommandOptions {
 
     String errorMsg();
 
-    List<SparkMagicCommand.SparkOptionCommand> options();
+    List<SparkOptionCommand> options();
   }
 
   private class ErrorOptionsResult implements OptionsResult {
@@ -75,15 +105,15 @@ public class SparkMagicCommandOptions {
     }
 
     @Override
-    public List<SparkMagicCommand.SparkOptionCommand> options() {
+    public List<SparkOptionCommand> options() {
       return new ArrayList<>();
     }
   }
 
   private class SparkOptionsResult implements OptionsResult {
-    private List<SparkMagicCommand.SparkOptionCommand> sparkOptions;
+    private List<SparkOptionCommand> sparkOptions;
 
-    public SparkOptionsResult(List<SparkMagicCommand.SparkOptionCommand> sparkOptions) {
+    public SparkOptionsResult(List<SparkOptionCommand> sparkOptions) {
       this.sparkOptions = sparkOptions;
     }
 
@@ -98,9 +128,15 @@ public class SparkMagicCommandOptions {
     }
 
     @Override
-    public List<SparkMagicCommand.SparkOptionCommand> options() {
+    public List<SparkOptionCommand> options() {
       return sparkOptions;
     }
+  }
+
+  interface SparkOptionCommand {
+    void run(SparkEngine sparkEngine, Message parent);
+
+    String getName();
   }
 }
 

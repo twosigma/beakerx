@@ -17,11 +17,19 @@ package com.twosigma.beakerx.kernel.magic.command;
 
 import com.twosigma.beakerx.kernel.commands.MavenInvocationSilentOutputHandler;
 import com.twosigma.beakerx.kernel.commands.MavenJarResolverSilentLogger;
-import com.twosigma.beakerx.kernel.magic.command.functionality.MvnLoggerWidget;
+import com.twosigma.beakerx.kernel.magic.command.functionality.MvnDownloadLoggerWidget;
+import com.twosigma.beakerx.kernel.magic.command.functionality.MvnLogsWidget;
+import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.util.Preconditions;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.maven.shared.invoker.*;
+import org.apache.maven.shared.invoker.DefaultInvocationRequest;
+import org.apache.maven.shared.invoker.DefaultInvoker;
+import org.apache.maven.shared.invoker.InvocationRequest;
+import org.apache.maven.shared.invoker.InvocationResult;
+import org.apache.maven.shared.invoker.Invoker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,7 +39,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -44,10 +58,13 @@ public class MavenJarResolver {
   public static final String GOAL = "validate";
   public static final String MAVEN_BUILT_CLASSPATH_FILE_NAME = "mavenclasspathfilename.txt";
 
+  private static final Logger logger = LoggerFactory.getLogger(MavenJarResolver.class);
+
   private final String pathToMavenRepo;
   private ResolverParams commandParams;
   private String mavenLocation;
   private PomFactory pomFactory;
+  private MvnLogsWidget logs;
 
   public MavenJarResolver(final ResolverParams commandParams,
                           PomFactory pomFactory) {
@@ -56,30 +73,53 @@ public class MavenJarResolver {
     this.pomFactory = pomFactory;
   }
 
-  public AddMvnCommandResult retrieve(Dependency dependency, MvnLoggerWidget progress) {
-    List<Dependency> dependencies = singletonList(dependency);
-    return retrieve(dependencies, progress);
+
+  public AddMvnCommandResult retrieve(PomStyleDependencies dependencies, Message parent) {
+    String pomAsString = pomFactory.createPom(new PomFactory.Params(pathToMavenRepo, commandParams.getRepos(), GOAL, MAVEN_BUILT_CLASSPATH_FILE_NAME), dependencies);
+    return retrieveDeps(dependencies.asString(), parent, pomAsString);
   }
 
-  public AddMvnCommandResult retrieve(List<Dependency> dependencies, MvnLoggerWidget progress) {
+  public AddMvnCommandResult retrieve(Dependency dependency, Message parent) {
+    List<Dependency> dependencies = singletonList(dependency);
+    return retrieve(dependencies, parent);
+  }
+
+  public AddMvnCommandResult retrieve(List<Dependency> dependencies, Message parent) {
+    String pomAsString = pomFactory.createPom(new PomFactory.Params(pathToMavenRepo, commandParams.getRepos(), GOAL, MAVEN_BUILT_CLASSPATH_FILE_NAME), dependencies);
+    String deps = dependencies.stream().map(Dependency::toString).collect(Collectors.joining());
+    return retrieveDeps(deps, parent, pomAsString);
+  }
+
+  private AddMvnCommandResult retrieveDeps(String dependencies, Message parent, String pomAsString) {
     File finalPom = null;
     try {
-      String pomAsString = pomFactory.createPom(new PomFactory.Params(pathToMavenRepo, dependencies, commandParams.getRepos(), GOAL, MAVEN_BUILT_CLASSPATH_FILE_NAME));
       finalPom = saveToFile(commandParams.getPathToNotebookJars(), pomAsString);
-      InvocationRequest request = createInvocationRequest();
-      request.setOffline(commandParams.getOffline());
-      request.setPomFile(finalPom);
-      request.setUpdateSnapshots(true);
-      Invoker invoker = getInvoker(progress);
+      InvocationRequest request = createInvocationRequest(finalPom);
+      MvnDownloadLoggerWidget progress = new MvnDownloadLoggerWidget(parent);
+      this.logs = manageOutput(this.logs, parent);
+      MavenInvocationSilentOutputHandler outputHandler = new MavenInvocationSilentOutputHandler(progress, this.logs);
+      Invoker invoker = getInvoker(outputHandler);
       progress.display();
       InvocationResult invocationResult = invoker.execute(request);
       progress.close();
+      this.logs.stop();
       return getResult(invocationResult, dependencies);
     } catch (Exception e) {
       return AddMvnCommandResult.error(e.getMessage());
     } finally {
       deletePomFolder(finalPom);
     }
+  }
+
+  private MvnLogsWidget manageOutput(MvnLogsWidget output, Message parent) {
+    if (output != null) {
+      output.close();
+    }
+    MvnLogsWidget newInstance = new MvnLogsWidget(parent);
+    if (BxMavenManager.isLogsOn()) {
+      newInstance.display();
+    }
+    return newInstance;
   }
 
   private File saveToFile(String pathToNotebookJars, String pomAsString)
@@ -90,12 +130,12 @@ public class MavenJarResolver {
     return finalPom;
   }
 
-  private Invoker getInvoker(MvnLoggerWidget progress) {
+  private Invoker getInvoker(MavenInvocationSilentOutputHandler mavenInvocationSilentOutputHandler) {
     Invoker invoker = new DefaultInvoker();
     String mvn = findMvn();
     System.setProperty("maven.home", mvn);
     invoker.setLogger(new MavenJarResolverSilentLogger());
-    invoker.setOutputHandler(new MavenInvocationSilentOutputHandler(progress));
+    invoker.setOutputHandler(mavenInvocationSilentOutputHandler);
     invoker.setLocalRepositoryDirectory(getOrCreateFile(this.commandParams.getPathToCache()));
     return invoker;
   }
@@ -120,19 +160,15 @@ public class MavenJarResolver {
     return mavenLocation;
   }
 
-  private AddMvnCommandResult getResult(InvocationResult invocationResult, List<Dependency> dependencies) {
+  private AddMvnCommandResult getResult(InvocationResult invocationResult, String dependencies) {
     if (invocationResult.getExitCode() != 0) {
       if (invocationResult.getExecutionException() != null) {
         return AddMvnCommandResult.error(invocationResult.getExecutionException().getMessage());
       }
       StringBuilder errorMsgBuilder = new StringBuilder("Could not resolve dependencies for:");
-      for (Dependency dependency : dependencies) {
-        errorMsgBuilder
-                .append("\n").append(dependency.groupId).append(" : ")
-                .append(dependency.artifactId).append(" : ")
-                .append(dependency.version).append(" : ")
-                .append(dependency.type);
-      }
+      errorMsgBuilder
+              .append("\n")
+              .append(dependencies);
       return AddMvnCommandResult.error(errorMsgBuilder.toString());
     }
 
@@ -142,7 +178,9 @@ public class MavenJarResolver {
   private List<String> transformFromMavenRepoToKernelRepo(List<String> jarNamesFromBuildClasspath, Map<String, Path> jarNames) {
     List<String> result = new ArrayList<>();
     jarNamesFromBuildClasspath.forEach(jarName -> {
-      result.add(jarNames.get(jarName).toAbsolutePath().toString());
+      if (jarNames.get(jarName) != null) {
+        result.add(jarNames.get(jarName).toAbsolutePath().toString());
+      }
     });
     return result;
   }
@@ -169,9 +207,12 @@ public class MavenJarResolver {
     return stream.map(x -> Paths.get(x).getFileName().toString()).collect(Collectors.toList());
   }
 
-  private InvocationRequest createInvocationRequest() {
+  private InvocationRequest createInvocationRequest(File finalPom) {
     InvocationRequest request = new DefaultInvocationRequest();
     request.setGoals(singletonList(GOAL));
+    request.setOffline(commandParams.getOffline());
+    request.setPomFile(finalPom);
+    request.setUpdateSnapshots(true);
     return request;
   }
 
@@ -235,7 +276,16 @@ public class MavenJarResolver {
     public Optional<String> getClassifier() {
       return classifier;
     }
+
+    @Override
+    public String toString() {
+      return groupId + " : "
+              + artifactId + " : "
+              + version + " : "
+              + type;
+    }
   }
+
 
   public static class AddMvnCommandResult {
 
@@ -306,6 +356,7 @@ public class MavenJarResolver {
     public void setRepos(Map<String, String> repos) {
       this.repos = repos;
     }
+
   }
 
   private File getOrCreateFile(String pathToMavenRepo) {
@@ -318,5 +369,9 @@ public class MavenJarResolver {
       }
     }
     return theDir;
+  }
+
+  public interface RetriveDeps {
+    AddMvnCommandResult getDeps(MavenJarResolver mavenJarResolver);
   }
 }

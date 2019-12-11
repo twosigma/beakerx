@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.widget;
 
-import java.io.Serializable;
 import java.util.HashMap;
 
 public abstract class BoundedFloatWidget extends FloatWidget<Double> {
@@ -34,7 +33,7 @@ public abstract class BoundedFloatWidget extends FloatWidget<Double> {
   }
 
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+  protected HashMap<String, Object> content(HashMap<String, Object> content) {
     super.content(content);
     content.put(MAX, this.getMax());
     content.put(MIN, this.getMin());
@@ -68,10 +67,10 @@ public abstract class BoundedFloatWidget extends FloatWidget<Double> {
 
   public void setMax(Object max) {
     this.max = getDouble(max);
-    sendUpdate(MAX, max);
     if (value > getMax()) {
       setValue(getMax());
     }
+    sendUpdate(MAX, max);
   }
 
   public Double getMin() {
@@ -80,10 +79,10 @@ public abstract class BoundedFloatWidget extends FloatWidget<Double> {
 
   public void setMin(Object min) {
     this.min = getDouble(min);
-    sendUpdate(MIN, min);
     if (value < getMin()) {
       setValue(getMin());
     }
+    sendUpdate(MIN, min);
   }
 
 }

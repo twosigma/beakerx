@@ -100,13 +100,6 @@ setup_args = dict(
         'share/jupyter/nbextensions/beakerx',
         get_data_files(os.path.join('beaker'))
     )],
-    install_requires    = [
-        'notebook ==5.6.0',
-        'ipywidgets >=7.0.0',
-        'pandas',
-        'py4j'
-
-    ],
     python_requires='>=3',
     zip_safe            = False,
     include_package_data= True,

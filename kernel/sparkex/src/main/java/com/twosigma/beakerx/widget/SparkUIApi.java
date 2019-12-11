@@ -16,9 +16,11 @@
 package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.configuration.SparkConfiguration;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public interface SparkUIApi {
 
@@ -37,6 +39,8 @@ public interface SparkUIApi {
   List<SparkConfiguration.Configuration> getAdvancedOptions();
 
   Text getMasterURL();
+
+  boolean getHiveSupport();
 
   Text getExecutorMemory();
 
@@ -59,4 +63,8 @@ public interface SparkUIApi {
   void stopSpinner();
 
   void taskCancelled(int stageId, long taskId);
+
+  Button getConnectButton();
+
+  void afterDisplay(Message message);
 }

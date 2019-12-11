@@ -15,9 +15,9 @@
  */
 package com.twosigma.beakerx.widget;
 
-import com.twosigma.beakerx.TryResult;
-import com.twosigma.beakerx.kernel.KernelFunctionality;
-import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.scala.magic.command.JobLinkFactory;
+import com.twosigma.beakerx.scala.magic.command.SparkUiWebUrlFactory;
+import com.twosigma.beakerx.scala.magic.command.StageLinkFactory;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 
@@ -27,15 +27,13 @@ public interface SparkEngine {
 
   String SPARK_APP_ID = "spark.app.id";
 
-  TryResult configure(KernelFunctionality kernel, SparkUIApi sparkUI, Message parentMessage);
-
   SparkSession getOrCreate();
 
   SparkConf getSparkConf();
 
   String getSparkAppId();
 
-  Map<String, String> getAdvanceSettings();
+  Map<String, String> getAdvanceSettings(SparkUiDefaults defaults);
 
   String getSparkUiWebUrl();
 
@@ -43,7 +41,19 @@ public interface SparkEngine {
 
   String sparkVersion();
 
-  interface SparkEngineFactory {
-    SparkEngine create(SparkSession.Builder sparkSessionBuilder);
-  }
+  void additionalConf(SparkEngineConf conf);
+
+  SparkEngineConf getSparkEngineConf();
+
+  void configAutoStart();
+
+  String stageLink(int stageId);
+
+  String jobLink(int jobId);
+
+  void jobLinkFactory(JobLinkFactory factory);
+
+  void stageLinkFactory(StageLinkFactory factory);
+
+  void sparkUiWebUrlFactory(SparkUiWebUrlFactory factory);
 }

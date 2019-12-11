@@ -29,12 +29,12 @@ trait CategoryBarsProperties extends BasedCategoryGraphicsProperties {
   this: com.twosigma.beakerx.chart.categoryplot.plotitem.CategoryBars =>
 
   def drawOutline: Boolean = getDrawOutline
-  def drawOutlines: Seq[Boolean] = getNullableList(getDrawOutlines).map(_.booleanValue)
+  def drawOutlines: Seq[Boolean] = getNullableList(()=> getDrawOutlines).map(_.booleanValue)
   def drawOutline_=(outline: Boolean): Unit = setDrawOutline(outline)
   def drawOutline_=(outlines: Seq[Boolean]): Unit = setDrawOutline(outlines.map(Boolean.box).asJava)
 
   def fill: Option[Boolean] = safeOption(getFill)
-  def fills: Seq[Boolean] = getNullableList(getFills).map(_.booleanValue)
+  def fills: Seq[Boolean] = getNullableList(()=> getFills).map(_.booleanValue)
   def fill_=(fill: Boolean): Unit = setFill(fill)
   def fill_=(fills: Seq[Boolean]): Unit = setFill(fills.map(Boolean.box).asJava)
 
@@ -42,13 +42,13 @@ trait CategoryBarsProperties extends BasedCategoryGraphicsProperties {
   def labelPosition_=(position: LabelPositionType): Unit = setLabelPosition(position)
 
   def outlineColor: Option[Color] = Option(getOutlineColor)
-  def outlineColors: Seq[Object] = getNullableList(getOutlineColors)
+  def outlineColors: Seq[Object] = getNullableList(()=> getOutlineColors)
   def outlineColor_=(outlineColor: Color): Unit = setOutlineColor(outlineColor)
   def outlineColor_=(outlineColor: java.awt.Color): Unit = setOutlineColor(outlineColor)
   def outlineColor_=[T <: AnyRef : BeakerColor](outlineColors: Seq[T]): Unit = setOutlineColor(outlineColors.toObjects.asJava)
 
   def width: Option[Number] = Option(getWidth)
-  def widths: Seq[Number] = getNullableList(getWidths)
+  def widths: Seq[Number] = getNullableList(()=> getWidths)
   def width_=(width: Number): Unit = setWidth(width)
   def width_=[T : NumberView](widths: Seq[T]): Unit = setWidth(widths.toNumbers.asJava)
 }

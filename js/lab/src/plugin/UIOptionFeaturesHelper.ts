@@ -19,7 +19,7 @@ import { ISettingRegistry, PageConfig } from "@jupyterlab/coreutils";
 import { ServerConnection } from "@jupyterlab/services";
 import { NotebookPanel } from "@jupyterlab/notebook";
 import { CodeCell } from "@jupyterlab/cells";
-import { JupyterLab } from "@jupyterlab/application";
+import {ILabShell, JupyterFrontEnd} from "@jupyterlab/application";
 
 export default class UIOptionFeaturesHelper {
 
@@ -29,20 +29,21 @@ export default class UIOptionFeaturesHelper {
   private improveFontsFeature: ImproveFontsFeature;
 
   constructor(
-    private app: JupyterLab,
+    private app: JupyterFrontEnd,
     private settings: ISettingRegistry,
-    private panel: NotebookPanel
+    private panel: NotebookPanel,
+    private labShell: ILabShell
   ) {
   }
 
   public registerFeatures(): void {
 
-    this.showPublicationFeature = new ShowPublicationFeature(this.panel);
+    this.showPublicationFeature = new ShowPublicationFeature(this.panel, this.app.commands);
     this.autoCloseBracketsFeature = new AutoCloseBracketsFeature(this.panel);
     this.autoSaveFeature = new AutoSaveFeature(this.settings, this.app.commands);
     this.improveFontsFeature = new ImproveFontsFeature();
 
-    this.app.shell.activeChanged.connect((sender, args) => {
+    this.labShell.activeChanged.connect((sender, args) => {
       if (args.newValue !== this.panel) {
         return;
       }
@@ -106,14 +107,14 @@ interface IUIOptionsFeature {
 
 class ShowPublicationFeature implements IUIOptionsFeature {
 
-  constructor(private panel: NotebookPanel) {}
+  constructor(private panel: NotebookPanel, private commands) {}
 
   public init(isEnabled: boolean) {
-    GistPublish.registerFeature(this.panel, isEnabled);
+    GistPublish.registerFeature(this.panel, this.commands, isEnabled);
   }
 
   public update(isEnabled: boolean): void {
-    GistPublish.registerFeature(this.panel, isEnabled);
+    GistPublish.registerFeature(this.panel, this.commands, isEnabled);
   }
 }
 
@@ -138,6 +139,7 @@ class AutoCloseBracketsFeature implements IUIOptionsFeature {
   }
 
   private getCodeCells(): CodeCell[] {
+    if (this.panel.isDisposed) { return []; }
     const cells = this.panel.content.widgets || [];
     return <CodeCell[]>cells.filter((cell) => {
       return (cell instanceof CodeCell);

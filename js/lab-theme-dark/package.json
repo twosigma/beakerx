@@ -1,0 +1,42 @@
+{
+  "name": "beakerx-jupyterlab-theme-dark-extension",
+  "version": "1.5.0",
+  "description": "BeakerX: Beaker Dark Theme Extension for JupyterLab",
+  "author": "Two Sigma Open Source, LLC",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "keywords": [],
+  "files": [
+    "lib/*.d.ts",
+    "lib/*.js.map",
+    "lib/*.js",
+    "style/**/*.{css,ttf,woff,woff2}"
+  ],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "style": "style/index.css",
+  "directories": {
+    "lib": "lib/"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "rimraf lib",
+    "prepublish": "npm run build",
+    "watch": "tsc -b --watch"
+  },
+  "dependencies": {
+    "@jupyterlab/application": "^1.0.2",
+    "@jupyterlab/apputils": "^1.0.2"
+  },
+  "devDependencies": {
+    "rimraf": "^2.6.3",
+    "typescript": "^3.5.3"
+  },
+  "jupyterlab": {
+    "extension": true,
+    "themePath": "style/index.css"
+  }
+}

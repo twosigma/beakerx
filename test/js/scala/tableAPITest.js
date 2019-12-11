@@ -36,7 +36,7 @@ describe('(Scala) Testing of table (scala) ', function () {
 
   describe('Count of types more then number of columns ', function () {
     it('should display java.lang.IllegalStateException', function () {
-      cellIndex = 33;
+      cellIndex = 35;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var errorOutput = beakerxPO.getAllOutputsStderr(codeCell)[0];
       expect(errorOutput.getText()).toMatch('java.lang.IllegalStateException: The length of types should be same');

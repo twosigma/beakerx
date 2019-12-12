@@ -34,9 +34,19 @@ describe('(Scala) Testing of table (scala) ', function () {
   var cellIndex;
   var imageDir = 'scala/tableAPI';
 
-  describe('Count of types more then number of columns ', function () {
+  describe('(Scala) RowFilter ', function () {
+    it('Should display formatted table ', function() {
+      cellIndex = 43;
+      var width = 230, height = 70;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData, imageDir, 'cell20_case1.png');
+    });
+  });
+
+  describe('(Scala) Count of types more then number of columns ', function () {
     it('should display java.lang.IllegalStateException', function () {
-      cellIndex = 35;
+      cellIndex += 2;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var errorOutput = beakerxPO.getAllOutputsStderr(codeCell)[0];
       expect(errorOutput.getText()).toMatch('java.lang.IllegalStateException: The length of types should be same');

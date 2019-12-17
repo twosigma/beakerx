@@ -21,6 +21,10 @@ import ColumnManager from "../column/ColumnManager";
 import {COLUMN_TYPES, SORT_ORDER} from "../column/enums";
 import {DEFAULT_PAGE_LENGTH} from "../consts";
 import ColumnFilter from "../column/ColumnFilter";
+import {BeakerXDataStore} from "../store/BeakerXDataStore";
+import {selectFontColor, selectValues} from "../model/selectors";
+import DataGridCellValue from "./DataGridCellValue";
+import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
 
 export default class RowManager {
   rowsIterator: MapIterator<any[], DataGridRow>;
@@ -31,11 +35,10 @@ export default class RowManager {
   columnManager: ColumnManager;
   rowsToShow: number;
 
-  constructor(data: any[], hasIndex: boolean, columnManager: ColumnManager, rowsToShow:number) {
+  constructor(store: BeakerXDataStore, hasIndex: boolean, columnManager: ColumnManager, rowsToShow:number) {
     this.columnManager = columnManager;
     this.rowsToShow = rowsToShow;
-    this.createRows(data, hasIndex);
-
+    this.createRows(store, hasIndex);
     this.evaluateSearchExpression = this.evaluateSearchExpression.bind(this);
     this.evaluateFilterExpression = this.evaluateFilterExpression.bind(this);
   }
@@ -47,8 +50,39 @@ export default class RowManager {
     this.rowsIterator = null;
   }
 
-  createRows(data, hasIndex) {
-    hasIndex ? this.createRowsWithIndex(data) : this.createRowsWithGeneratedIndex(data);
+  createRows(store: BeakerXDataStore, hasIndex) {
+    let cellValues = this.createCellValue(store);
+    hasIndex ? this.createRowsWithIndex(cellValues) : this.createRowsWithGeneratedIndex(cellValues);
+  }
+
+  private createCellValue( store: BeakerXDataStore) {
+      let data = selectValues(store.state);
+      let fontFun = this.defineFontFun(store, data);
+      let newData = [];
+      for (let i = 0; i < data.length; i++) {
+          let newRows = [];
+          for (let y = 0; y < data[i].length; y++) {
+              let pair = new DataGridCellValue(data[i][y], fontFun(i,y));
+              newRows.push(pair);
+          }
+          newData.push(newRows);
+      }
+      data = newData;
+      return data;
+  }
+
+  private defineFontFun(store: BeakerXDataStore, data) {
+      let fontColors = selectFontColor(store.state);
+
+      if (fontColors && (fontColors.length == data.length)) {
+          return (row: number, col: number): string => {
+              return fontColors[row][col]
+          };
+      } else {
+          return (row: number, col: number): string => {
+              return BeakerXThemeHelper.DEFAULT_DATA_FONT_COLOR;
+          };
+      }
   }
 
   createRowsWithGeneratedIndex(data) {
@@ -132,7 +166,7 @@ export default class RowManager {
   }
 
   defaultValueResolver(row: DataGridRow, columnIndex: number) {
-    return row.values[columnIndex];
+    return row.values[columnIndex].value;
   }
 
   indexValueResolver(row, columnIndex: number) {

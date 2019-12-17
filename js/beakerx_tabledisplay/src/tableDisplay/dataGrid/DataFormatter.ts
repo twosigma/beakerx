@@ -195,7 +195,6 @@ export class DataFormatter {
     }
 
     let precision = doubleValue.toString().split('.')[1];
-
     if (precision && precision.length >= format.maxDecimals) {
       return doubleValue.toFixed(format.maxDecimals);
     }

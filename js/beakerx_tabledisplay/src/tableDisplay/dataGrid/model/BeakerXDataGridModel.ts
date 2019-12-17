@@ -93,7 +93,7 @@ export class BeakerXDataGridModel extends DataModel {
     this.columnManager.resetColumnStates();
     this.store.dispatch(new DataGridAction(UPDATE_MODEL_DATA, state));
     this._data = selectValues(this.store.state);
-    this.rowManager.createRows(this._data, selectHasIndex(this.store.state));
+    this.rowManager.createRows(this.store, selectHasIndex(this.store.state));
     this.rowManager.setRowsToShow(selectRowsToShow(this.store.state));
     this.reset();
   }
@@ -101,7 +101,7 @@ export class BeakerXDataGridModel extends DataModel {
   updateValues(state: IDataModelState) {
     this.store.dispatch(new DataGridAction(UPDATE_MODEL_VALUES, state));
     this._data = selectValues(this.store.state);
-    this.rowManager.createRows(this._data, selectHasIndex(this.store.state));
+    this.rowManager.createRows(this.store, selectHasIndex(this.store.state));
     this.rowManager.filterRows();
     this.rowManager.keepSorting();
     this.columnManager.restoreColumnStates();
@@ -144,7 +144,7 @@ export class BeakerXDataGridModel extends DataModel {
       return row === 0 ? this.columnManager.indexColumnNames[index] : '';
     }
 
-    return dataGridRow.values[index];
+    return dataGridRow.getValues(index);
   }
 
   metadata(region: DataModel.CellRegion, position: number): DataModel.Metadata {

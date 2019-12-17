@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2019 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,18 +14,12 @@
  *  limitations under the License.
  */
 
-import DataGridCellValue from "./DataGridCellValue";
+export default class DataGridCellValue {
+    fontColor: string;
+    value: any;
 
-export default class DataGridRow {
-    index: number;
-    values: DataGridCellValue[];
-
-    constructor(index: number, values: DataGridCellValue[]) {
-        this.index = index;
-        this.values = values;
-    }
-
-    getValues(index){
-        return this.values[index].value
+    constructor(value: any, fontColor: string) {
+        this.value = value;
+        this.fontColor = fontColor;
     }
 }

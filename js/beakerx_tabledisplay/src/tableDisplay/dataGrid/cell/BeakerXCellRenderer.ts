@@ -162,7 +162,7 @@ export default abstract class BeakerXCellRenderer extends TextRenderer {
       return BeakerXThemeHelper.DEFAULT_DATA_FONT_COLOR;
     }
 
-    let dataFontColor = this.dataGrid.rowManager.rows[config.row].values
+    let dataFontColor = this.dataGrid.rowManager.rows[config.row] && this.dataGrid.rowManager.rows[config.row].values
       ? formatColor(this.dataGrid.rowManager.rows[config.row].values[config.column].fontColor)
       : BeakerXThemeHelper.DEFAULT_DATA_FONT_COLOR;
 

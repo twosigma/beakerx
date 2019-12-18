@@ -166,7 +166,7 @@ export default class RowManager {
   }
 
   defaultValueResolver(row: DataGridRow, columnIndex: number) {
-    return row.values[columnIndex].value;
+    return row.getValue(columnIndex);
   }
 
   indexValueResolver(row, columnIndex: number) {
@@ -183,7 +183,7 @@ export default class RowManager {
       if (column.type === COLUMN_TYPES.index) {
         this.expressionVars += `var ${prefix}${name} = row.index;`;
       } else {
-        this.expressionVars += `var ${prefix}${name} = row.values[${column.index}];`;
+        this.expressionVars += `var ${prefix}${name} = row.getValue(${column.index});`;
       }
     };
 
@@ -245,7 +245,12 @@ export default class RowManager {
     const evalInContext = function(expression: string) {
       "use strict";
 
-      const row = { ...this.row };
+      const row = {
+                    ...this.row,
+                    getValue(index){
+                      return this.cells[index].value
+                    }
+                  };
       const result = eval(expression);
 
       return result !== undefined ? result : true;
@@ -270,7 +275,7 @@ export default class RowManager {
 
   getValueByColumn(row: number, columnIndex: number, columnType: COLUMN_TYPES) {
     return columnType === COLUMN_TYPES.body
-      ? this.getRow(row).values[columnIndex]
+      ? this.getRow(row).getValue(columnIndex)
       : this.getRow(row).index;
   }
 

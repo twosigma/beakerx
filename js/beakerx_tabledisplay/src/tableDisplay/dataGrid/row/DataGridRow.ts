@@ -18,14 +18,14 @@ import DataGridCellValue from "./DataGridCellValue";
 
 export default class DataGridRow {
     index: number;
-    values: DataGridCellValue[];
+    cells: DataGridCellValue[];
 
-    constructor(index: number, values: DataGridCellValue[]) {
+    constructor(index: number, cells: DataGridCellValue[]) {
         this.index = index;
-        this.values = values;
+        this.cells = cells;
     }
 
-    getValues(index){
-        return this.values[index].value
+    getValue(index){
+        return this.cells[index].value
     }
 }

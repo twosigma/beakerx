@@ -130,7 +130,7 @@ export class BeakerXDataGridModel extends DataModel {
   data(region: DataModel.CellRegion, row: number, position: number): any {
     const columnRegion = ColumnManager.getColumnRegionByCell({ region });
     const index = selectColumnIndexByPosition(this.store.state, { region: columnRegion, value: position });
-    const dataGridRow = this.rowManager.getRow(row) || { index: row, values: [] };
+    const dataGridRow = this.rowManager.getRow(row) || { index: row, cells: [] , getValue:(index)=> []};
 
     if (region === 'row-header' && position === 0) {
       return dataGridRow.index;
@@ -144,7 +144,7 @@ export class BeakerXDataGridModel extends DataModel {
       return row === 0 ? this.columnManager.indexColumnNames[index] : '';
     }
 
-    return dataGridRow.getValues(index);
+    return dataGridRow.getValue(index);
   }
 
   metadata(region: DataModel.CellRegion, position: number): DataModel.Metadata {
@@ -172,7 +172,7 @@ export class BeakerXDataGridModel extends DataModel {
       return new MapIterator<DataGridRow, any>(iter(this.rowManager.rows), (row) => row.index);
     }
 
-    return new MapIterator(iter(this.rowManager.rows), (row) => row.values[column.index]);
+    return new MapIterator(iter(this.rowManager.rows), (row) => row.getValue(column.index));
   }
 
   setHeaderTextVertical(headersVertical: boolean) {

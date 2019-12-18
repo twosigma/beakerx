@@ -46,23 +46,23 @@ describe('RowManager', () => {
     });
 
     it('should return proper row values', () => {
-      expect(rowManager.getRow(0).values[0]).to.equal(1);
-      expect(rowManager.getRow(1).values[1]).to.equal(6);
+      expect(rowManager.getRow(0).getValue(0)).to.equal(1);
+      expect(rowManager.getRow(1).getValue(1)).to.equal(6);
     });
 
     it('should sort rows', () => {
       const column = dataGrid.columnManager.getColumnByName('test');
       rowManager.sortRows(column, SORT_ORDER.DESC);
 
-      expect(rowManager.getRow(0).values[0]).to.equal(5);
-      expect(rowManager.getRow(1).values[0]).to.equal(1);
+      expect(rowManager.getRow(0).getValue(0)).to.equal(5);
+      expect(rowManager.getRow(1).getValue(0)).to.equal(1);
     });
 
     it('should filter rows', () => {
       const column = dataGrid.columnManager.getColumnByName('test');
       column.filter(column.columnFilter['createFilterExpression']('$>1'));
 
-      expect(rowManager.getRow(0).values[0]).to.equal(5);
+      expect(rowManager.getRow(0).getValue(0)).to.equal(5);
       expect(rowManager.rows).to.have.length(1);
     });
 
@@ -70,7 +70,7 @@ describe('RowManager', () => {
       const column = dataGrid.columnManager.getColumnByName('test');
       column.search(column.columnFilter['createSearchExpression']('5'));
 
-      expect(rowManager.getRow(0).values[0]).to.equal(5);
+      expect(rowManager.getRow(0).getValue(0)).to.equal(5);
       expect(rowManager.rows).to.have.length(1);
     });
   });
@@ -86,23 +86,23 @@ describe('RowManager', () => {
     });
 
     it('should return proper row values', () => {
-      expect(rowManager.getRow(0).values[0]).to.equal(2);
-      expect(rowManager.getRow(1).values[1]).to.equal(7);
+      expect(rowManager.getRow(0).getValue(0)).to.equal(2);
+      expect(rowManager.getRow(1).getValue(1)).to.equal(7);
     });
 
     it('should sort rows', () => {
       const column = dataGrid.columnManager.getColumnByIndex(COLUMN_TYPES.body, 0);
       rowManager.sortRows(column, SORT_ORDER.DESC);
 
-      expect(rowManager.getRow(0).values[0]).to.equal(6);
-      expect(rowManager.getRow(1).values[0]).to.equal(2);
+      expect(rowManager.getRow(0).getValue(0)).to.equal(6);
+      expect(rowManager.getRow(1).getValue(0)).to.equal(2);
     });
 
     it('should filter rows', () => {
       const column = dataGrid.columnManager.getColumnByName('test1');
       column.filter(column.columnFilter['createFilterExpression']('$>2'));
 
-      expect(rowManager.getRow(0).values[0]).to.equal(6);
+      expect(rowManager.getRow(0).getValue(0)).to.equal(6);
       expect(rowManager.rows).to.have.length(1);
     });
 
@@ -110,7 +110,7 @@ describe('RowManager', () => {
       const column = dataGrid.columnManager.getColumnByName('test1');
       column.search(column.columnFilter['createSearchExpression']('6'));
 
-      expect(rowManager.getRow(0).values[0]).to.equal(6);
+      expect(rowManager.getRow(0).getValue(0)).to.equal(6);
       expect(rowManager.rows).to.have.length(1);
     });
   });

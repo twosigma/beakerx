@@ -108,7 +108,8 @@ The notebook extensions are installed to run out of the repo, so just
 a local build should suffice:
 
 ```
-(cd js/notebook; yarn install)
+(cd js/notebook; yarn run build)
+beakerx install
 ```
 
 ### Run TypeScript Unit Tests

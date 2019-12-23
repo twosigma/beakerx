@@ -31,7 +31,7 @@ import {
     selectValues, selectVisibleColumnsFrozenCount
 } from "./selectors";
 import DataGridAction from "../store/DataGridAction";
-import {UPDATE_MODEL_DATA, UPDATE_MODEL_VALUES} from "./reducer";
+import {UPDATE_MODEL_DATA, UPDATE_MODEL_FONT_COLOR, UPDATE_MODEL_VALUES} from "./reducer";
 import {
   selectColumnDataType,
   selectColumnIndexByPosition,
@@ -100,6 +100,7 @@ export class BeakerXDataGridModel extends DataModel {
 
   updateValues(state: IDataModelState) {
     this.store.dispatch(new DataGridAction(UPDATE_MODEL_VALUES, state));
+    this.store.dispatch(new DataGridAction(UPDATE_MODEL_FONT_COLOR, state));
     this._data = selectValues(this.store.state);
     this.rowManager.createRows(this.store, selectHasIndex(this.store.state));
     this.rowManager.filterRows();

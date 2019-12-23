@@ -75,13 +75,9 @@ export default class RowManager {
       let fontColors = selectFontColor(store.state);
 
       if (fontColors && (fontColors.length == data.length)) {
-          return (row: number, col: number): string => {
-              return fontColors[row][col]
-          };
+          return (row: number, col: number): string => fontColors[row][col];
       } else {
-          return (row: number, col: number): string => {
-              return BeakerXThemeHelper.DEFAULT_DATA_FONT_COLOR;
-          };
+          return (row: number, col: number): string => BeakerXThemeHelper.DEFAULT_DATA_FONT_COLOR;
       }
   }
 

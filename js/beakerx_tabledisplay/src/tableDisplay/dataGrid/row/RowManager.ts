@@ -68,7 +68,7 @@ export default class RowManager {
           newData.push(newRows);
       }
       data = newData;
-      return data;
+      return newData;
   }
 
   private defineFontFun(store: BeakerXDataStore, data) {

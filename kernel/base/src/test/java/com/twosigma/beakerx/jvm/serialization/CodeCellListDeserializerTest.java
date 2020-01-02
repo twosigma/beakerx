@@ -28,18 +28,16 @@ public class CodeCellListDeserializerTest {
     //given
     ObjectMapper mapper = new ObjectMapper();
     String str =
-        "[{\"type\":\"CodeCell\",\"execution_count\":null," +
-        "\"cell_type\":null,\"outputs\":null,\"metadata\":null,\"source\":null}," +
-        "{\"type\":\"CodeCell\",\"execution_count\":null,\"" +
-        "cell_type\":null,\"outputs\":null,\"metadata\":null,\"source\":null}]";
-    BeakerCodeCellListDeserializer deserializer =  new BeakerCodeCellListDeserializer(() -> {
-      BasicObjectSerializer boSerializer = new BasicObjectSerializer();
-      boSerializer.addTypeDeserializer(new CodeCell.DeSerializer(boSerializer));
-      return boSerializer;
-    });
+            "[{\"type\":\"CodeCell\",\"execution_count\":null," +
+                    "\"cell_type\":null,\"outputs\":null,\"metadata\":null,\"source\":null}," +
+                    "{\"type\":\"CodeCell\",\"execution_count\":null,\"" +
+                    "cell_type\":null,\"outputs\":null,\"metadata\":null,\"source\":null}]";
+    BasicObjectSerializer boSerializer = new BasicObjectSerializer();
+    boSerializer.addTypeDeserializer(new CodeCell.DeSerializer(boSerializer));
+    BeakerCodeCellListDeserializer deserializer = new BeakerCodeCellListDeserializer(boSerializer);
     //when
     BeakerCodeCellList bkList = (BeakerCodeCellList) deserializer.deserialize(
-        mapper.getFactory().createParser(str), null);
+            mapper.getFactory().createParser(str), null);
     //then
     Assertions.assertThat(bkList).isNotNull();
     Assertions.assertThat(bkList.theList.size()).isEqualTo(2);

@@ -18,8 +18,8 @@ package com.twosigma.beakerx.jvm.serialization;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.TabbedOutputContainerLayoutManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
@@ -33,12 +33,11 @@ public class TabbedOutputContainerLayoutManagerSerializerTest {
   private TabbedOutputContainerLayoutManager layoutManager;
   private static TabbedOutputContainerLayoutManagerSerializer serializer;
   private static SerializationTestHelper<TabbedOutputContainerLayoutManagerSerializer,
-      TabbedOutputContainerLayoutManager> helper;
+          TabbedOutputContainerLayoutManager> helper;
 
   @BeforeClass
   public static void setUpClass() throws IOException {
-    serializer = new TabbedOutputContainerLayoutManagerSerializer(
-        () -> { return new BasicObjectSerializer(); } );
+    serializer = new TabbedOutputContainerLayoutManagerSerializer(new BasicObjectSerializer());
     helper = new SerializationTestHelper<>(serializer);
   }
 

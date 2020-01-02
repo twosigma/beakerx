@@ -36,9 +36,7 @@ public class CyclingOutputContainerLayoutManagerSerializerTest {
 
   @BeforeClass
   public static void setUpClass() throws IOException {
-    serializer = new CyclingOutputContainerLayoutManagerSerializer(
-        () -> { return new BasicObjectSerializer(); }
-    );
+    serializer = new CyclingOutputContainerLayoutManagerSerializer(new BasicObjectSerializer());
     helper = new SerializationTestHelper<>(serializer);
   }
 

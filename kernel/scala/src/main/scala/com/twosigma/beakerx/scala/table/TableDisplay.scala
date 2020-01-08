@@ -102,6 +102,10 @@ object TableDisplay {
     com.twosigma.beakerx.table.TableDisplay.setLoadingMode(m)
   }
 
+  def setTimeZoneGlobally(gtz:String): Unit ={
+    com.twosigma.beakerx.table.TableDisplay.setTimeZoneGlobally(gtz)
+  }
+
 }
 
 class TableDisplay private(tableDisplay: com.twosigma.beakerx.table.TableDisplay) extends DisplayableWidget {
@@ -182,5 +186,7 @@ class TableDisplay private(tableDisplay: com.twosigma.beakerx.table.TableDisplay
   def getCellHighlighters() = tableDisplay.getCellHighlighters()
 
   def setRowsToShow(rows: RowsToShow) = tableDisplay.setRowsToShow(rows)
+
+  def setTimeZone(tz:String) = tableDisplay.setTimeZone(tz)
 
 }

@@ -32,6 +32,7 @@ import com.twosigma.beakerx.table.renderer.TableDisplayCellRenderer;
 import com.twosigma.beakerx.widget.BeakerxWidget;
 import com.twosigma.beakerx.widget.ChangeItem;
 import com.twosigma.beakerx.widget.RunWidgetClosure;
+import org.apache.commons.collections.map.LinkedMap;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,6 +64,7 @@ import static com.twosigma.beakerx.table.TableDisplayToJson.serializeStringForma
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeStringFormatForType;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeTimeZone;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeTooltips;
+import static com.twosigma.beakerx.table.TableDisplayUtils.transformToIndex;
 import static com.twosigma.beakerx.util.Preconditions.checkState;
 import static com.twosigma.beakerx.widget.CompiledCodeRunner.runCompiledCode;
 
@@ -172,6 +174,13 @@ public class TableDisplay extends BeakerxWidget {
 
   public TableDisplay(Collection<Map<String, Object>> v) {
     this(v, new BasicObjectSerializer());
+  }
+
+  public TableDisplay(Collection<Map<String, Object>> v, int columnIndex) {
+    this(transformToIndex(v, columnIndex), new BasicObjectSerializer());
+    if (getColumnNames().size() > 0) {
+      setHasIndex(getColumnNames().get(0));
+    }
   }
 
   public TableDisplay(Map<String, Object>[] v) {
@@ -569,7 +578,7 @@ public class TableDisplay extends BeakerxWidget {
     if (columns != null && values != null) {
 
       for (List<?> value : values) {
-        Map<String, Object> m = new HashMap<String, Object>();
+        Map<String, Object> m = new LinkedMap();
         for (int c = 0; c < columns.size(); c++) {
           if (value.size() > c)
             m.put(columns.get(c), value.get(c));

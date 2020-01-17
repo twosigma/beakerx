@@ -172,7 +172,7 @@ export default class CellManager {
       cells = this.getAllCells();
     }
 
-    this.executeCopy(this.exportCellsTo(cells, 'tabs'));
+    this.executeCopy(this.exportCellsTo(cells, 'tabs',0));
   }
 
   CSVDownload(selectedOnly) {
@@ -234,10 +234,10 @@ export default class CellManager {
 
   private getCSVFromCells(selectedOnly: boolean) {
     if (selectedOnly) {
-      return this.exportCellsTo(this.getSelectedCells(), 'csv');
+      return this.exportCellsTo(this.getSelectedCells(), 'csv',1);
     }
 
-    return this.exportCellsTo(this.getAllCells(), 'csv');
+    return this.exportCellsTo(this.getAllCells(), 'csv',1);
   }
 
   private executeCopy(text: string) {
@@ -258,7 +258,7 @@ export default class CellManager {
     input.remove();
   }
 
-  private exportCellsTo(cells, format) {
+  private exportCellsTo(cells, format, startRowIndex) {
     let fix = (s) => s.replace(/"/g, '""');
     let exportOptions = {
       sep: ',',
@@ -272,11 +272,11 @@ export default class CellManager {
       for (let i = 0; i < cells.length; i++) {
         let row = cells[i];
 
-        for (let j = 1; j < row.length; j++) {
+        for (let j = startRowIndex; j < row.length; j++) {
           let cellData = row[j];
 
           out.push(`${
-            j !== 1 ? exportOptions.sep : ''
+            j !== startRowIndex ? exportOptions.sep : ''
           }${
             exportOptions.qot
           }${

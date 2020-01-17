@@ -109,8 +109,8 @@ describe('CellManager', () => {
     const resultCsv = `"column"\n":)"\n`;
     const resultTabs = `column\n:)\n`;
 
-    expect(cellManager.exportCellsTo(cells, 'csv')).to.equal(resultCsv);
-    expect(cellManager.exportCellsTo(cells, 'tabs')).to.equal(resultTabs);
+    expect(cellManager.exportCellsTo(cells, 'csv',1)).to.equal(resultCsv);
+    expect(cellManager.exportCellsTo(cells, 'tabs',1)).to.equal(resultTabs);
   });
 
   it('should implement getCSVFromCells method', () => {

@@ -53,7 +53,7 @@ dependencies {
   compile group: 'com.h2database', name: 'h2', version: '1.4.197'
   compile group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '6.2.2.jre8'
   compile group: 'postgresql', name: 'postgresql', version: '9.1-901-1.jdbc4'
-  compile group: 'mysql', name: 'mysql-connector-java', version: '6.0.6'
+  compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.18'
   compile group: 'org.apache.derby', name: 'derby', version: '10.14.1.0'
   compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.21.0'
   compile group: 'org.hsqldb', name: 'hsqldb', version: '2.4.0'

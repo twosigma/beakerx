@@ -75,7 +75,7 @@ public class TableDisplay extends BeakerxWidget {
   public static final String LIST_OF_MAPS_SUBTYPE = "ListOfMaps";
   public static final String MATRIX_SUBTYPE = "Matrix";
   public static final String DICTIONARY_SUBTYPE = "Dictionary";
-  public static final String THE_LENGTH_OF_TYPES_SHOULD_BE_SAME_AS_NUMBER_OF_ROWS = "The length of types should be same as number of rows.";
+  public static final String THE_LENGTH_OF_TYPES_SHOULD_BE_SAME_AS_NUMBER_OF_COLUMNS = "The length of types should be same as number of columns.";
   public static final String LOAD_MORE_ROWS = "loadMoreRows";
 
   public int ROWS_LIMIT = 100000;
@@ -145,7 +145,7 @@ public class TableDisplay extends BeakerxWidget {
   public TableDisplay(List<List<?>> v, List<String> co, List<String> cl) {
     super();
     if (!v.isEmpty() && v.get(0) != null && !v.get(0).isEmpty()) {
-      checkState(v.get(0).size() == cl.size(), THE_LENGTH_OF_TYPES_SHOULD_BE_SAME_AS_NUMBER_OF_ROWS);
+      checkState(v.get(0).size() == cl.size(), THE_LENGTH_OF_TYPES_SHOULD_BE_SAME_AS_NUMBER_OF_COLUMNS);
     }
     this.model = new TableDisplayListModel(v, co, cl, new BasicObjectSerializer());
     openComm();

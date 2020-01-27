@@ -1,5 +1,4 @@
-# Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
-#
+# Copyright 2019 TWO SIGMA OPEN SOURCE, LLC  #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -12,13 +11,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .kernel_magic import *
-from .kernel_runner_magic import *
-from .clojure_magic import *
-from .groovy_magic import *
-from .java_magic import *
-from .kotlin_magic import *
-from .scala_magic import *
-from .sql_magic import *
-from .jvm_kernel_magic import *
-from .sparkex_magic import *
+from beakerx_base import Button
+from traitlets import Unicode
+
+
+class RESTButton(Button):
+    _view_name = Unicode('RESTButtonView').tag(sync=True)
+    _model_name = Unicode('RESTButtonModel').tag(sync=True)
+    _view_module = Unicode('beakerx').tag(sync=True)
+    _model_module = Unicode('beakerx').tag(sync=True)
+    tooltip = Unicode('tooltip').tag(sync=True)
+    url = Unicode('url').tag(sync=True)
+
+    def __init__(self, **kwargs):
+        super(RESTButton, self).__init__(**kwargs)
+

@@ -60,7 +60,7 @@ public abstract class BeakerxWidget extends Widget {
     return BeakerxWidget.VIEW_MODULE_VALUE;
   }
 
-  protected void sendModel() {
+  public void sendModel() {
     this.updateModel.update(doSendModel());
   }
 

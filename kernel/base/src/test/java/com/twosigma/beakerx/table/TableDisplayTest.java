@@ -52,7 +52,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.twosigma.beakerx.fileloader.CSVTest.TABLE_ROWS_TEST_CSV;
 import static com.twosigma.beakerx.fileloader.CSVTest.getOsAppropriatePath;
-import static com.twosigma.beakerx.table.TableDisplay.THE_LENGTH_OF_TYPES_SHOULD_BE_SAME_AS_NUMBER_OF_ROWS;
+import static com.twosigma.beakerx.table.TableDisplay.THE_LENGTH_OF_TYPES_SHOULD_BE_SAME_AS_NUMBER_OF_COLUMNS;
 import static com.twosigma.beakerx.table.serializer.DecimalStringFormatSerializer.MAX_DECIMALS;
 import static com.twosigma.beakerx.table.serializer.DecimalStringFormatSerializer.MIN_DECIMALS;
 import static com.twosigma.beakerx.table.serializer.ObservableTableDisplaySerializer.DOUBLE_CLICK_TAG;
@@ -927,7 +927,7 @@ public class TableDisplayTest {
       fail("Should not create TableDisplay when the length of types is not the same as number of rows.");
     } catch (Exception e) {
       //then
-      assertThat(e.getMessage()).contains(THE_LENGTH_OF_TYPES_SHOULD_BE_SAME_AS_NUMBER_OF_ROWS);
+      assertThat(e.getMessage()).contains(THE_LENGTH_OF_TYPES_SHOULD_BE_SAME_AS_NUMBER_OF_COLUMNS);
     }
   }
 

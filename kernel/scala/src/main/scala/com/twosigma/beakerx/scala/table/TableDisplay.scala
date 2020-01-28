@@ -16,9 +16,9 @@
 package com.twosigma.beakerx.scala.table
 
 import java.util
-import java.util.{Spliterator, Spliterators}
 import java.util.concurrent.TimeUnit
 import java.util.stream.StreamSupport
+import java.util.{Spliterator, Spliterators}
 
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter
 import com.twosigma.beakerx.table._
@@ -42,15 +42,16 @@ object TableDisplay {
     val iter: Iterator[Map[String, Any]] = scalaStream.toIterator
     val newIter = new util.Iterator[util.Map[String, Object]] {
       override def hasNext: Boolean = iter.hasNext
-      override def next(): util.Map[String, Object] ={
+
+      override def next(): util.Map[String, Object] = {
         val m: Map[String, Any] = iter.next()
-        val stringToObject = new util.LinkedHashMap[String,Object]()
-        m.foreach{ case (k, v) => stringToObject.put(k,v.asInstanceOf[Object])}
+        val stringToObject = new util.LinkedHashMap[String, Object]()
+        m.foreach { case (k, v) => stringToObject.put(k, v.asInstanceOf[Object]) }
         stringToObject
       }
     }
-    val value = Spliterators.spliteratorUnknownSize(newIter,Spliterator.NONNULL)
-    StreamSupport.stream(value,false)
+    val value = Spliterators.spliteratorUnknownSize(newIter, Spliterator.NONNULL)
+    StreamSupport.stream(value, false)
   }
 
   private def create(v: Map[_, _]) = {
@@ -98,7 +99,7 @@ object TableDisplay {
     new com.twosigma.beakerx.table.TableDisplay(javaCollection, serializer)
   }
 
-  def setLoadingMode(m:TableDisplayLoadingMode): Unit ={
+  def setLoadingMode(m: TableDisplayLoadingMode): Unit = {
     com.twosigma.beakerx.table.TableDisplay.setLoadingMode(m)
   }
 
@@ -177,15 +178,19 @@ class TableDisplay private(tableDisplay: com.twosigma.beakerx.table.TableDisplay
 
   def addContextMenuItem(itemName: String, contextMenuAction: ContextMenuAction) = tableDisplay.addContextMenuItem(itemName, contextMenuAction)
 
-  def getValues():List[List[_]] = {
+  def getValues(): List[List[_]] = {
     tableDisplay.getValues.asScala.toList.map(y => y.asScala.toList)
   }
 
-  def removeAllCellHighlighters()= tableDisplay.removeAllCellHighlighters()
+  def removeAllCellHighlighters() = tableDisplay.removeAllCellHighlighters()
 
   def getCellHighlighters() = tableDisplay.getCellHighlighters()
 
   def setRowsToShow(rows: RowsToShow) = tableDisplay.setRowsToShow(rows)
+
+  def updateCell(row: Int, columnName: String, value: Any) = tableDisplay.updateCell(row, columnName, value)
+
+  def sendModel() = tableDisplay.sendModel()
 
   def setTimeZone(tz:String) = tableDisplay.setTimeZone(tz)
 

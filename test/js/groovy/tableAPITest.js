@@ -36,7 +36,7 @@ describe('(Groovy) Testing of table ', function () {
 
   describe('(Groovy) RowFilter ', function () {
     it('Should display formatted table ', function() {
-      cellIndex = 41;
+      cellIndex = 43;
       var width = 230, height = 70;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);

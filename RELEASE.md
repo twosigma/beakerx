@@ -39,19 +39,45 @@ git tag $version
 git push origin $version
 ```
 
-Make a source archive of the package:
+Make a source archive of the packages:
 ```bash
 git clean -xfd
+
+cd beakerx_base
+python setup.py sdist
+cd ..
+
+cd beakerx_tabledisplay
+python setup.py sdist
+cd ..
+
 cd beakerx
 python setup.py sdist
+cd ..
 ```
 
 Make a test installation with pip into a fresh environment, if it works then continue with:
 ```
 pip install twine
+
+cd beakerx_base
 twine upload dist/*
 # get the sha256 hash for conda-forge install
 shasum -a 256 dist/*.tar.gz
+cd ..
+
+cd beakerx_tabledisplay
+twine upload dist/*
+# get the sha256 hash for conda-forge install
+shasum -a 256 dist/*.tar.gz
+cd ..
+
+cd beakerx
+twine upload dist/*
+# get the sha256 hash for conda-forge install
+shasum -a 256 dist/*.tar.gz
+cd ..
+
 ```
 
 Publish on conda-forge

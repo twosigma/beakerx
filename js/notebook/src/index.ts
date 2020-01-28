@@ -44,3 +44,4 @@ export * from './GistPublisher'
 export * from './GistPublisherUtils'
 
 export const version = require('../package.json').version;
+export {SparkUI2Widget} from "./SparkUI2Widget";

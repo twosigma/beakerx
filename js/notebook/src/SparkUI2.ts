@@ -15,6 +15,7 @@
  */
 
 import widgets from "./widgets";
+import { SparkUI2Widget } from "./SparkUI2Widget";
 
 export class SparkUI2Model extends widgets.BoxModel {
     defaults() {
@@ -32,12 +33,16 @@ export class SparkUI2Model extends widgets.BoxModel {
 
 export class SparkUI2View extends widgets.BoxView {
     render() {
-        super.render.apply(this);
-        console.log('render:sparkui2');
-        this.send({
-            event: 'test' //TODO
-        })
+        super.render();
+
+        this.createWidget();
+
     }
+
+    async createWidget() {
+        await this.displayed;
+        this.pWidget.addWidget(new SparkUI2Widget(this));
+   }
 }
 
 export default {

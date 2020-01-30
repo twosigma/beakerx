@@ -247,7 +247,7 @@ public class MavenJarResolver {
     }
 
     public static Dependency create(List<String> args) {
-      Dependency dependency = new Dependency(args.get(0), args.get(1), args.get(2));
+      Dependency dependency = new Dependency(args.get(0), args.get(1), getVersion(args));
       if (args.size() > 3) {
         dependency.type = args.get(3);
       }
@@ -255,6 +255,14 @@ public class MavenJarResolver {
         dependency.classifier = Optional.of(args.get(4));
       }
       return dependency;
+    }
+
+    private static String getVersion(List<String> args) {
+      if (args.size() > 2) {
+        return args.get(2);
+      } else {
+        return "[0,)";
+      }
     }
 
     public String getGroupId() {

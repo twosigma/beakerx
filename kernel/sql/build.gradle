@@ -49,16 +49,9 @@ dependencies {
   compile group: 'org.apache.commons', name: 'commons-dbcp2', version: '2.1.1'
   compile group: 'org.codehaus.jackson', name: 'jackson-core-asl', version: '1.9.13'
   compile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.5.1'
-  //jdbc drivers
-  compile group: 'com.h2database', name: 'h2', version: '1.4.197'
-  compile group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '6.2.2.jre8'
-  compile group: 'postgresql', name: 'postgresql', version: '9.1-901-1.jdbc4'
-  compile group: 'mysql', name: 'mysql-connector-java', version: '6.0.6'
-  compile group: 'org.apache.derby', name: 'derby', version: '10.14.1.0'
-  compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.21.0'
-  compile group: 'org.hsqldb', name: 'hsqldb', version: '2.4.0'
 
   testCompile project(':base').sourceSets.test.output
+  testCompile group: 'com.h2database', name: 'h2', version: '1.4.197'
 }
 
 jar {

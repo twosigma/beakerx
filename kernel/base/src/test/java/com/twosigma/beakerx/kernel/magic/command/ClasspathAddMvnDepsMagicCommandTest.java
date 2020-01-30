@@ -138,7 +138,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
   @Test
   public void wrongCommandFormat() {
     //given
-    String allCode = CLASSPATH_ADD_MVN + " com.google.code.XXXX gson";
+    String allCode = CLASSPATH_ADD_MVN + " com.google.code.XXXX";
     MagicCommand command = new MagicCommand(new ClasspathAddMvnMagicCommand(configuration.mavenResolverParam(kernel), kernel), allCode);
     Code code = Code.createCode(allCode, singletonList(command), NO_ERRORS, new Message(new Header(JupyterMessages.COMM_MSG, "session1")));
     //when

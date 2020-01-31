@@ -59,10 +59,6 @@ describe('(Groovy) Output Containers ', function () {
     });
   });
 
-  function clickOnTabByName(output, name){
-    output.$('div.p-TabBar-tabLabel=' + name).click();
-  }
-
   function getTabLabelText(output, tabIndex){
     return output.$$('div.p-TabBar-tabLabel')[tabIndex].getText();
   }
@@ -89,16 +85,16 @@ describe('(Groovy) Output Containers ', function () {
     });
 
     it('Tabbed Output contains 3 plots and 1 table ', function () {
-      clickOnTabByName(output, 'Scatter with History');
+      output.$$('div.p-TabBar-tabLabel')[0].click();
       expect(widgetPlotIsVisible(plotWidgets[0])).toBeTruthy();
 
-      clickOnTabByName(output, 'Short Term');
+      output.$$('div.p-TabBar-tabLabel')[1].click();
       expect(widgetPlotIsVisible(plotWidgets[1])).toBeTruthy();
 
-      clickOnTabByName(output, 'Long Term');
+      output.$$('div.p-TabBar-tabLabel')[2].click();
       expect(widgetPlotIsVisible(plotWidgets[2])).toBeTruthy();
 
-      clickOnTabByName(output, '1990/01');
+      output.$$('div.p-TabBar-tabLabel')[3].click();
       expect(widgetTableIsVisible(output)).toBeTruthy();
     });
   });

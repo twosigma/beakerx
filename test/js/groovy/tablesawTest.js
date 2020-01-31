@@ -18,7 +18,7 @@ var BeakerXPageObject = require('../beakerx.po.js');
 var PlotHelperObject = require('../plot.helper.js');
 var beakerxPO;
 
-describe('Tests for combination of code and magics. ', function () {
+describe('Tests for tablesaw lib. ', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
@@ -37,8 +37,6 @@ describe('Tests for combination of code and magics. ', function () {
     it('Output contains names of jars. ', function () {
       cellIndex = 0;
       beakerxPO.runCodeCellByIndex(cellIndex);
-      beakerxPO.waitAndCheckOutputTextOfWidget(cellIndex, /tablesaw-plot/, 1);
-      beakerxPO.waitAndCheckOutputTextOfWidget(cellIndex, /tablesaw-smile/, 1);
       beakerxPO.waitAndCheckOutputTextOfWidget(cellIndex, /tablesaw-beakerx/, 1);
     });
   });
@@ -98,17 +96,6 @@ describe('Tests for combination of code and magics. ', function () {
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell7_case1.png');
-    });
-  });
-
-  describe('Select all columns by "float" type. ', function () {
-    it('Should display 4 columns. ', function () {
-      var width = 250, height = 115;
-      cellIndex += 2;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var canvas = codeCell.$('canvas');
-      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData, imageDir, 'cell8_case1.png');
     });
   });
 
@@ -183,42 +170,29 @@ describe('Tests for combination of code and magics. ', function () {
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell15_case1.png');
-    });
 
-    it('Print claster formation. ', function () {
-      var width = 220, height = 200;
-      cellIndex += 2;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var canvas = codeCell.$('canvas');
-      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData, imageDir, 'cell16_case1.png');
-    });
-
-    it('Print centroids for each claster. ', function () {
-      var width = 500, height = 100;
-      cellIndex += 2;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var canvas = codeCell.$('canvas');
-      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      beakerxPO.checkImageData(imageData, imageDir, 'cell17_case1.png');
     });
 
     it('Gets the distortion for our model. ', function () {
       cellIndex += 2;
       beakerxPO.runCodeCellByIndex(cellIndex);
-      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /385.0489177/);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /K-Means distortion: 387,52701/);
+      beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex, /Clusters of 86 data points of dimension 12/);
     });
 
-    it('Should display line Plot. ', function () {
+    it('Print centroids for each claster. ', function () {
+      var width = 500, height = 100;
       cellIndex += 1;
-      var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
-      expect(plotHelper.getLineByGIndex(svgElement, 0).getAttribute('d')).not.toBeNull();
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var canvas = codeCell.$('canvas');
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData, imageDir, 'cell17_case1.png');
     });
   });
 
   describe('Play (Money)ball with Linear Regression. ', function () {
     it('Should display points Plot. ', function () {
-      cellIndex += 1;
+      cellIndex += 2;
       var svgElement = beakerxPO.runCellToGetSvgElement(cellIndex);
       expect(plotHelper.getAllPointsByGIndexAndType(svgElement, 0, 'rect').length).toBeGreaterThan(0);
     });
@@ -227,7 +201,7 @@ describe('Tests for combination of code and magics. ', function () {
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
       beakerxPO.waitAndCheckOutputTextOfExecuteResult(cellIndex,
-        /Residuals:\s*Min\s*1Q\s*Median\s*3Q\s*Max\s*-14.2662\s*-2.6511\s*0.1282\s*2.9365\s*11.6570/);
+        /Residuals:\s*Min\s*1Q\s*Median\s*3Q\s*Max\s*-115,1010\s*-24,7084\s*-0,8748\s*23,9474\s*110,2269/);
     });
 
     it('Print the “winsModel” for OBP and SLG. ', function () {
@@ -245,14 +219,10 @@ describe('Tests for combination of code and magics. ', function () {
   });
 
   describe('Using Quandl and Tablesaw. ', function () {
-    it('Output contains names of jars. ', function () {
+    it('Should display table. ', function () {
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
-      beakerxPO.waitAndCheckOutputTextOfWidget(cellIndex, /quandl-core/, 1);
-      beakerxPO.waitAndCheckOutputTextOfWidget(cellIndex, /quandl-tablesaw/, 1);
-    });
 
-    it('Should display table. ', function () {
       var width = 500, height = 100;
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);

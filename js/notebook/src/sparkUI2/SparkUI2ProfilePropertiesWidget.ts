@@ -14,10 +14,66 @@
  *  limitations under the License.
  */
 
-import {Panel} from "@phosphor/widgets";
+import {Panel, Widget} from "@phosphor/widgets";
+import {Message, MessageLoop} from "@phosphor/messaging";
 
 export class SparkUI2ProfilePropertiesWidget extends Panel {
+
+    readonly LABEL_LINK_TEXT = 'Available properties';
+    readonly LABEL_LINK_URL = 'https://spark.apache.org/docs/2.4.4/configuration.html#available-properties';
+    readonly ADD_BUTTON_TEXT = '';
+    readonly ADD_BUTTON_TITLE = 'Add property';
+
     constructor() {
         super();
+        this.addWidget(this.createToolbar());
+    }
+
+    private createToolbar(): Panel {
+        let p = new Panel();
+        p.addWidget(this.createAvailableProperties());
+        p.addWidget(this.createAdd());
+        return p;
+    }
+
+    private createAvailableProperties(): Widget {
+        let el = document.createElement('label');
+        let linkEl = document.createElement('a');
+
+        linkEl.target = '_blank';
+        linkEl.textContent = this.LABEL_LINK_TEXT;
+        linkEl.href = this.LABEL_LINK_URL;
+
+        el.append(linkEl);
+
+        let w = new Widget({ node: el });
+
+        w.addClass('widget-label');
+        w.addClass('bx-spark-available-properties');
+
+        return w;
+    }
+
+    private createAdd(): Widget {
+        let el = document.createElement('button');
+
+        el.textContent = this.ADD_BUTTON_TEXT;
+        el.title = this.ADD_BUTTON_TITLE;
+
+        el.addEventListener('click', (evt: MouseEvent) => this.onAddNewClicked(evt));
+
+        let w = new Widget({ node: el });
+
+        w.addClass('jupyter-button');
+        w.addClass('widget-button');
+        w.addClass('bx-button');
+        w.addClass('icon-add');
+        w.addClass('bx-spark-add');
+
+        return w;
+    }
+
+    private onAddNewClicked(evt: MouseEvent): void {
+        MessageLoop.sendMessage(this.parent, new Message('add-new-property-clicked'));
     }
 }

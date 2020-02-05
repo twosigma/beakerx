@@ -35,4 +35,4 @@ export const bkCoreManager = require('beakerx_shared/lib/bk/bkCoreManager').defa
 export const version = require('../package.json').version;
 
 export const BeakerXApi = require('beakerx_shared/lib/api/BeakerXApi').default;
-export {SparkUI2Widget} from "./SparkUI2Widget";
+export {SparkUI2Widget} from "./sparkUI2/SparkUI2Widget";

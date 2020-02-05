@@ -15,7 +15,9 @@
  */
 
 import widgets from "./widgets";
-import { SparkUI2Widget } from "./SparkUI2Widget";
+import {SparkUI2Widget} from "./sparkUI2/SparkUI2Widget";
+
+import './shared/style/spark2.scss';
 
 export class SparkUI2Model extends widgets.BoxModel {
     defaults() {
@@ -41,7 +43,7 @@ export class SparkUI2View extends widgets.BoxView {
 
     async createWidget() {
         await this.displayed;
-        this.pWidget.addWidget(new SparkUI2Widget(this));
+        this.pWidget.addWidget(new SparkUI2Widget());
    }
 }
 

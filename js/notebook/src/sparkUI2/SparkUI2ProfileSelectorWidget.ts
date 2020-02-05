@@ -37,6 +37,7 @@ export class SparkUI2ProfileSelectorWidget extends Panel {
 
         this.addWidget(this.profileSelectWidget);
         this.addWidget(this.profileCreateWidget);
+        this.addWidget(this.profileConfigurationWidget);
     }
 
     private getProfilesList(): IProfileListItem[] {

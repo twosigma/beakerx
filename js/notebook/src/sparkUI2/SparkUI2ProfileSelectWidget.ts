@@ -55,6 +55,7 @@ export class SparkUI2ProfileSelectWidget extends Panel {
 
     private createSelect(profiles: IProfileListItem[]): Widget {
         let el = document.createElement('select');
+        let options = [];
         let optionElement;
 
         el.title = this.SELECT_TITLE;
@@ -63,11 +64,15 @@ export class SparkUI2ProfileSelectWidget extends Panel {
 
         for (let profile of profiles) {
             optionElement = document.createElement('option');
+            optionElement.textContent = profile.value;
             optionElement.value = profile.value;
             optionElement.setAttribute('data-value', profile.value);
+            options.push(optionElement);
         }
 
-        let w = new Widget({node: el});
+        el.append(...options);
+
+        let w = new Widget({ node: el });
 
         w.addClass('widget-dropdown');
 

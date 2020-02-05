@@ -15,14 +15,11 @@
  */
 package com.twosigma.beakerx.jvm.serialization;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.twosigma.beakerx.jvm.object.DashboardLayoutManager;
 
 public class DashboardLayoutManagerSerializer extends BasicGridLayoutManagerSerializer<DashboardLayoutManager> {
 
-  @Inject
-  public DashboardLayoutManagerSerializer(Provider<BeakerObjectConverter> osp) {
+  public DashboardLayoutManagerSerializer(BeakerObjectConverter osp) {
     super(osp);
   }
 }

@@ -15,8 +15,6 @@
  */
 package com.twosigma.beakerx.jvm.serialization;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.twosigma.beakerx.jvm.object.OutputContainer;
 import com.fasterxml.jackson.core.JsonGenerator;
 
@@ -24,9 +22,7 @@ import java.io.IOException;
 
 public class OutputContainerSerializer extends BasicOutputContainerSerializer<OutputContainer> {
 
-
-  @Inject
-  public OutputContainerSerializer(Provider<BeakerObjectConverter> osp) {
+  public OutputContainerSerializer(BeakerObjectConverter osp) {
     super(osp);
   }
 

@@ -19,9 +19,9 @@ package com.twosigma.beakerx.jvm.serialization;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.OutputContainerCell;
 import com.twosigma.beakerx.jvm.object.SimpleLayoutManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
@@ -37,14 +37,15 @@ public class OutputContainerCellSerializerTest {
 
   @BeforeClass
   public static void setUpClass() throws IOException {
-    serializer = new OutputContainerCellSerializer(() -> { return new BasicObjectSerializer(); } );
+    serializer = new OutputContainerCellSerializer(new BasicObjectSerializer());
     helper = new SerializationTestHelper<>(serializer);
   }
 
   @Before
   public void setUp() throws Exception {
     KernelManager.register(new KernelTest());
-    outputContainerCell = new OutputContainerCell() {};
+    outputContainerCell = new OutputContainerCell() {
+    };
   }
 
   @After

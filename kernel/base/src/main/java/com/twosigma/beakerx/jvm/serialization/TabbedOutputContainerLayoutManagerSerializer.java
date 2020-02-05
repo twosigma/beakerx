@@ -15,16 +15,13 @@
  */
 package com.twosigma.beakerx.jvm.serialization;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.twosigma.beakerx.jvm.object.TabbedOutputContainerLayoutManager;
 import com.fasterxml.jackson.core.JsonGenerator;
 import java.io.IOException;
 
 public class TabbedOutputContainerLayoutManagerSerializer extends OutputContainerLayoutManagerSerializer<TabbedOutputContainerLayoutManager>  {
 
-  @Inject
-  public TabbedOutputContainerLayoutManagerSerializer(Provider<BeakerObjectConverter> osp) {
+  public TabbedOutputContainerLayoutManagerSerializer(BeakerObjectConverter osp) {
     super(osp);
   }
 

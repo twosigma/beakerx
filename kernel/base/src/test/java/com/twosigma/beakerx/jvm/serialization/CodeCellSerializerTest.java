@@ -35,7 +35,7 @@ public class CodeCellSerializerTest {
 
   @BeforeClass
   public static void setUpClass() throws IOException {
-    serializer = new CodeCell.Serializer(() -> { return new BasicObjectSerializer(); } );
+    serializer = new CodeCell.Serializer(new BasicObjectSerializer());
     helper = new SerializationTestHelper<>(serializer);
   }
 

@@ -15,8 +15,6 @@
  */
 package com.twosigma.beakerx.jvm.serialization;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.twosigma.beakerx.jvm.object.AbstractGridLayoutManager;
 import com.fasterxml.jackson.core.JsonGenerator;
 
@@ -24,8 +22,7 @@ import java.io.IOException;
 
 public abstract class BasicGridLayoutManagerSerializer<T extends AbstractGridLayoutManager> extends OutputContainerLayoutManagerSerializer<T> {
 
-  @Inject
-  public BasicGridLayoutManagerSerializer(Provider<BeakerObjectConverter> osp) {
+  public BasicGridLayoutManagerSerializer(BeakerObjectConverter osp) {
     super(osp);
   }
 

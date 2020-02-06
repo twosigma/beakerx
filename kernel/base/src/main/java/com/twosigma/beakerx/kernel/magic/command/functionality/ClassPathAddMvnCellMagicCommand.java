@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.twosigma.beakerx.kernel.magic.command.PomStyleDependencies.isPomXmlStyle;
+
 public class ClassPathAddMvnCellMagicCommand extends ClasspathMagicCommand {
 
   public static final String ADD = "add";
@@ -136,9 +138,5 @@ public class ClassPathAddMvnCellMagicCommand extends ClasspathMagicCommand {
     for (int i = 0; i < mvnLines.length; i++) {
       mvnLines[i] = mvnLines[i].replace(":", " ");
     }
-  }
-
-  private boolean isPomXmlStyle(String commandCodeBlock) {
-    return commandCodeBlock != null && commandCodeBlock.startsWith("<dependencies>");
   }
 }

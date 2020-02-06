@@ -17,13 +17,29 @@ package com.twosigma.beakerx.kernel.magic.command;
 
 public class PomStyleDependencies {
 
+  public static final String DEPENDENCY_MANAGEMENT = "<dependencyManagement>";
+  public static final String DEPENDENCIES = "<dependencies>";
   private String dependencies;
+  private String dependencyManagement = "<dependencyManagement></dependencyManagement>";
 
   public PomStyleDependencies(String dependencies) {
-    this.dependencies = dependencies;
+    if (dependencies.startsWith(DEPENDENCY_MANAGEMENT)) {
+      this.dependencyManagement = dependencies.substring(0, dependencies.indexOf("</dependencyManagement>") + "</dependencyManagement>".length());
+      this.dependencies = dependencies.substring(dependencies.indexOf("</dependencyManagement>") + "</dependencyManagement>".length());
+    } else {
+      this.dependencies = dependencies;
+    }
   }
 
-  public String asString() {
+  public String getDependencies() {
     return dependencies;
+  }
+
+  public String getDependencyManagement() {
+    return dependencyManagement;
+  }
+
+  public static boolean isPomXmlStyle(String commandCodeBlock) {
+    return commandCodeBlock != null && (commandCodeBlock.startsWith(DEPENDENCIES) || commandCodeBlock.startsWith(DEPENDENCY_MANAGEMENT));
   }
 }

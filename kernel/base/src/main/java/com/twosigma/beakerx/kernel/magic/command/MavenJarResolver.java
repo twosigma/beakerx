@@ -76,7 +76,7 @@ public class MavenJarResolver {
 
   public AddMvnCommandResult retrieve(PomStyleDependencies dependencies, Message parent) {
     String pomAsString = pomFactory.createPom(new PomFactory.Params(pathToMavenRepo, commandParams.getRepos(), GOAL, MAVEN_BUILT_CLASSPATH_FILE_NAME), dependencies);
-    return retrieveDeps(dependencies.asString(), parent, pomAsString);
+    return retrieveDeps(dependencies.getDependencies(), parent, pomAsString);
   }
 
   public AddMvnCommandResult retrieve(Dependency dependency, Message parent) {

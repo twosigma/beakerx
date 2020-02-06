@@ -73,9 +73,9 @@ public class PomFactory {
   }
 
   private String configureDependencies(PomStyleDependencies dependencies, String pomAsString) {
-    return pomAsString.replace(
-            "<dependencies></dependencies>",
-            dependencies.asString());
+    return pomAsString.
+            replace("<dependencyManagement></dependencyManagement>", dependencies.getDependencyManagement()).
+            replace("<dependencies></dependencies>", dependencies.getDependencies());
   }
 
   private String configureDependencies(List<Dependency> dependencies, String pomAsString) {

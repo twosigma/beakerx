@@ -10,6 +10,7 @@
 
     <repositories></repositories>
 
+    <dependencyManagement></dependencyManagement>
     <dependencies></dependencies>
 
     <build>

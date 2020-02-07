@@ -38,7 +38,7 @@ import {IColumnPosition} from "../../interface/IColumn";
 import {ALL_TYPES} from "../../dataTypes";
 import IHihglighterState from "../../interface/IHighlighterState";
 
-export const DEFAULT_INDEX_COLUMN_NAME = 'index';
+export const DEFAULT_INDEX_COLUMN_NAME = '';
 
 
 const processColumnName = (name) => {

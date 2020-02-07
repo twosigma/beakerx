@@ -57,7 +57,7 @@ describe('CellManager', () => {
     expect(cellManager).to.have.property('getAllCells');
     expect(cellManager.getAllCells).to.be.a('Function');
     expect(allCells).to.have.length(3);
-    expect(allCells[0][0]).to.equal('index');
+    expect(allCells[0][0]).to.equal('');
     expect(allCells[0][1]).to.equal('test');
   });
 

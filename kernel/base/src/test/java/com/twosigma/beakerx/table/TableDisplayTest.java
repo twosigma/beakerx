@@ -112,6 +112,20 @@ public class TableDisplayTest {
   }
 
   @Test
+  public void readDataWithIndex() throws Exception {
+    //given
+    String rates = getOsAppropriatePath(getClass().getClassLoader(), "interest-rates.csv");
+    List<Map<String, Object>> values = new CSV().read(rates);
+    //when
+    TableDisplay tableDisplay = new TableDisplay(values, 1);
+    //then
+    Map<String, Object> actual = tableDisplay.getValuesAsRows().get(0);
+    assertThat(actual.keySet().iterator().next()).isEqualTo("y30");
+    assertThat(actual.values().iterator().next()).isEqualTo(8.2586);
+    assertThat(tableDisplay.getHasIndex()).isEqualTo("y30");
+  }
+
+  @Test
   public void shouldSendCommMsgWhenAlignmentProviderForColumnChange() throws Exception {
     //given
     TableDisplayAlignmentProvider centerAlignment = TableDisplayAlignmentProvider.CENTER_ALIGNMENT;

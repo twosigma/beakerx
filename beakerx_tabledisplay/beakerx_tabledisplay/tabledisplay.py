@@ -202,8 +202,12 @@ class Table(BaseObject):
             row = self.values[row_ind]
             row_font_colors = []
             for col_ind in range(0, len(row)):
-                row_font_colors.append(colorProvider(row_ind, col_ind, self))
+                if self.is_not_index_column(col_ind):
+                    row_font_colors.append(colorProvider(row_ind, col_ind, self))
             self.fontColor.append(row_font_colors)
+
+    def is_not_index_column(self, col_ind):
+        return not self.hasIndex or col_ind != 0
 
     def setHeadersVertical(self, headersVertical):
         self.headersVertical = headersVertical

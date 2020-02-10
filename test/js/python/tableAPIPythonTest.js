@@ -42,6 +42,7 @@ describe('(Python) Testing of table ', function () {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell40_case1.png');
+      // beakerxPO.createTableImage(imageData, imageDir, 'cell40_case1.png');
     });
 
     it('Table have index column menu. ', function () {
@@ -55,6 +56,7 @@ describe('(Python) Testing of table ', function () {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell41_case1.png');
+      // beakerxPO.createTableImage(imageData, imageDir, 'cell41_case1.png');
     });
 
     it('Can use Array of Decimals parameter', function () {
@@ -63,6 +65,7 @@ describe('(Python) Testing of table ', function () {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell42_case1.png');
+      // beakerxPO.createTableImage(imageData, imageDir, 'cell42_case1.png');
     });
 
     it('Can use 2D Array of Decimals parameter', function () {
@@ -71,6 +74,7 @@ describe('(Python) Testing of table ', function () {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell43_case1.png');
+      // beakerxPO.createTableImage(imageData, imageDir, 'cell43_case1.png');
     });
 
     it('Can use Array of Strings parameter', function () {
@@ -79,6 +83,7 @@ describe('(Python) Testing of table ', function () {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell44_case1.png');
+      // beakerxPO.createTableImage(imageData, imageDir, 'cell44_case1.png');
     });
 
     it('Can use 2D Array of Strings parameter', function () {
@@ -87,6 +92,7 @@ describe('(Python) Testing of table ', function () {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell45_case1.png');
+      // beakerxPO.createTableImage(imageData, imageDir, 'cell45_case1.png');
     });
 
     it('Can use Array of Integer Arrays parameter', function () {
@@ -95,6 +101,7 @@ describe('(Python) Testing of table ', function () {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell46_case1.png');
+      // beakerxPO.createTableImage(imageData, imageDir, 'cell46_case1.png');
     });
 
     it('Can use 2D Array of Integer Arrays parameter', function () {
@@ -103,6 +110,7 @@ describe('(Python) Testing of table ', function () {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell47_case1.png');
+      // beakerxPO.createTableImage(imageData, imageDir, 'cell47_case1.png');
     });
 
     it('Can use 2D Array of Integer,Decimal,String,Array Arrays parameter', function () {
@@ -111,6 +119,7 @@ describe('(Python) Testing of table ', function () {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell48_case1.png');
+      // beakerxPO.createTableImage(imageData, imageDir, 'cell48_case1.png');
     });
 
     it('Can use [Integer,Decimal,String,Array] parameter', function () {
@@ -119,6 +128,7 @@ describe('(Python) Testing of table ', function () {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell49_case1.png');
+      // beakerxPO.createTableImage(imageData, imageDir, 'cell49_case1.png');
     });
 
     it('Can use 2D Arrays of [Integer,Decimal,String,Array] parameter', function () {
@@ -127,6 +137,7 @@ describe('(Python) Testing of table ', function () {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell50_case1.png');
+      // beakerxPO.createTableImage(imageData, imageDir, 'cell50_case1.png');
     });
 
     it('Can use numbers as name of Array keys (Array parameter)', function () {
@@ -135,6 +146,7 @@ describe('(Python) Testing of table ', function () {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell51_case1.png');
+      // beakerxPO.createTableImage(imageData, imageDir, 'cell51_case1.png');
     });
 
     it('Can use numbers as name of Array keys (2D Array parameter)', function () {
@@ -143,6 +155,7 @@ describe('(Python) Testing of table ', function () {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell52_case1.png');
+      // beakerxPO.createTableImage(imageData, imageDir, 'cell52_case1.png');
     });
   });
 
@@ -153,6 +166,7 @@ describe('(Python) Testing of table ', function () {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell53_case1.png');
+      // beakerxPO.createTableImage(imageData, imageDir, 'cell53_case1.png');
     });
 
     it('Table have index column menu', function () {
@@ -178,6 +192,7 @@ describe('(Python) Testing of table ', function () {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell54_case1.png');
+      // beakerxPO.createTableImage(imageData, imageDir, 'cell54_case1.png');
     });
   });
 
@@ -188,6 +203,7 @@ describe('(Python) Testing of table ', function () {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell55_case1.png');
+      // beakerxPO.createTableImage(imageData, imageDir, 'cell55_case1.png');
     });
   });
 

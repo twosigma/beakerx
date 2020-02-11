@@ -16,6 +16,8 @@
 
 import {Panel, Widget} from "@phosphor/widgets";
 import {SparkUI2ProfilePropertiesWidget} from "./SparkUI2ProfilePropertiesWidget";
+import {SparkUI2Message} from "./SparkUI2Message";
+import { MessageLoop } from "@phosphor/messaging";
 
 export class SparkUI2ProfileConfigurationWidget extends Panel {
     readonly MASTER_URL_LABEL_TEXT = 'Master URL';
@@ -160,7 +162,9 @@ export class SparkUI2ProfileConfigurationWidget extends Panel {
         el.type = 'checkbox';
         el.title = this.ENABLE_HIVE_SUPPORT_INPUT_TITLE;
 
-        let w = new Widget({node: el});
+        el.addEventListener('click', (evt: MouseEvent) => this.onEnableHiveSupportClicked(evt));
+
+        let w = new Widget({ node: el });
 
         w.addClass('widget-checkbox');
 
@@ -171,7 +175,7 @@ export class SparkUI2ProfileConfigurationWidget extends Panel {
         let el = document.createElement('label');
         el.textContent = this.ENABLE_HIVE_SUPPORT_LABEL_TEXT;
 
-        let w = new Widget({node: el});
+        let w = new Widget({ node: el });
 
         w.addClass('widget-label');
 
@@ -180,6 +184,27 @@ export class SparkUI2ProfileConfigurationWidget extends Panel {
 
     private createProperties(): Panel {
         return new SparkUI2ProfilePropertiesWidget();
+    }
+
+    private onEnableHiveSupportClicked(evt: MouseEvent): void {
+        MessageLoop.sendMessage(this, new SparkUI2Message('enable-hive-support-clicked'))
+    }
+
+    public processMessage(msg: SparkUI2Message): void {
+        switch(msg.type) {
+            case 'add-new-property-clicked':
+                console.log('add-new-property-clicked');
+                break;
+            case 'remove-property-clicked':
+                console.log('remove-property-clicked');
+                break;
+            case 'enable-hive-support-clicked':
+                console.log('enable-hive-support-clicked');
+                break;
+            default:
+                super.processMessage(msg);
+                break;
+        }
     }
 
 }

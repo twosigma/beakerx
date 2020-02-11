@@ -16,7 +16,15 @@
 
 import {Message} from "@phosphor/messaging";
 
-export type SparkUI2MessageTypes = 'start-clicked';
+export type SparkUI2MessageTypes = 'start-clicked' |
+    'enable-hive-support-clicked' |
+    'profile-create-cancel-clicked' |
+    'profile-create-create-clicked' |
+    'add-new-property-clicked' |
+    'profile-save-clicked' |
+    'profile-create-new-clicked' |
+    'profile-remove-clicked' |
+    'profile-selection-changed';
 
 export class SparkUI2Message extends Message {
     constructor(type: SparkUI2MessageTypes) {

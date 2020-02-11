@@ -16,6 +16,7 @@
 
 import {Panel, Widget} from "@phosphor/widgets";
 import {Message, MessageLoop} from "@phosphor/messaging";
+import {SparkUI2Message} from "./SparkUI2Message";
 
 export class SparkUI2ProfileCreateWidget extends Panel {
 
@@ -96,11 +97,11 @@ export class SparkUI2ProfileCreateWidget extends Panel {
     }
 
     private onCreateCreateClicked(ev: MouseEvent): void {
-        MessageLoop.sendMessage(this.parent, new Message('profile-create-create-clicked'));
+        MessageLoop.sendMessage(this.parent, new SparkUI2Message('profile-create-create-clicked'));
     }
 
     private onCreateCancelClicked(ev: MouseEvent): void {
-        MessageLoop.sendMessage(this.parent, new Message('profile-create-cancel-clicked'));
+        MessageLoop.sendMessage(this.parent, new SparkUI2Message('profile-create-cancel-clicked'));
     }
 
 }

@@ -16,6 +16,7 @@
 
 import {Panel, Widget} from "@phosphor/widgets";
 import {Message, MessageLoop} from "@phosphor/messaging";
+import {SparkUI2Message} from "./SparkUI2Message";
 
 export class SparkUI2ProfilePropertiesWidget extends Panel {
 
@@ -74,6 +75,6 @@ export class SparkUI2ProfilePropertiesWidget extends Panel {
     }
 
     private onAddNewClicked(evt: MouseEvent): void {
-        MessageLoop.sendMessage(this.parent, new Message('add-new-property-clicked'));
+        MessageLoop.sendMessage(this.parent, new SparkUI2Message('add-new-property-clicked'));
     }
 }

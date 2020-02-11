@@ -17,6 +17,7 @@
 import {Panel, Widget} from "@phosphor/widgets";
 import {Message, MessageLoop} from "@phosphor/messaging";
 import {IProfileListItem} from "./IProfileListItem";
+import {SparkUI2Message} from "./SparkUI2Message";
 
 export class SparkUI2ProfileSelectWidget extends Panel {
 
@@ -135,18 +136,18 @@ export class SparkUI2ProfileSelectWidget extends Panel {
     }
 
     private onSaveClicked(evt: MouseEvent): void {
-        MessageLoop.sendMessage(this.parent, new Message('profile-save-clicked'));
+        MessageLoop.sendMessage(this.parent, new SparkUI2Message('profile-save-clicked'));
     }
 
     private onCreateNewClicked(evt: MouseEvent): void {
-        MessageLoop.sendMessage(this.parent, new Message('profile-create-new-clicked'));
+        MessageLoop.sendMessage(this.parent, new SparkUI2Message('profile-create-new-clicked'));
     }
 
     private onRemoveClicked(evt: MouseEvent): void {
-        MessageLoop.sendMessage(this.parent, new Message('profile-remove-clicked'));
+        MessageLoop.sendMessage(this.parent, new SparkUI2Message('profile-remove-clicked'));
     }
 
     private onSelectionChanged(evt: Event): void {
-        MessageLoop.sendMessage(this.parent, new Message('profile-selection-changed'));
+        MessageLoop.sendMessage(this.parent, new SparkUI2Message('profile-selection-changed'));
     }
 }

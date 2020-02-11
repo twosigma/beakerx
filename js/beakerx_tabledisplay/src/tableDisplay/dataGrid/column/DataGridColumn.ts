@@ -331,11 +331,15 @@ export default class DataGridColumn {
       this.resizeHTMLRows(valuesIterator);
     } else if (dataType === ALL_TYPES['formatted integer']) {
       stringMinMax = minmax(valuesIterator, ColumnValuesIterator.longestString(valueResolver));
+    } else if (dataType === ALL_TYPES.string){
+        minMax = minmax(
+            filter(valuesIterator,(value) => this.canStringBeConvertedToNumber(valueResolver, value)),
+            ColumnValuesIterator.minMax(valueResolver)
+        );
     } else {
-
       minMax = minmax(
-        filter(valuesIterator, (value) => DataGridColumn.isNumeric(valueResolver(value))),
-        ColumnValuesIterator.minMax(valueResolver)
+        filter(valuesIterator,(value) => !Number.isNaN(valueResolver(value))),
+            ColumnValuesIterator.minMax(valueResolver)
       );
     }
 
@@ -347,11 +351,11 @@ export default class DataGridColumn {
     }
   }
 
-  private static isNumeric(n) {
-     return !isNaN(parseFloat(n)) && isFinite(n);
-  }
+    private canStringBeConvertedToNumber(valueResolver, value) {
+        return !isNaN(parseFloat(valueResolver(value))) && isFinite(valueResolver(value));
+    }
 
-  resetState() {
+    resetState() {
     this.setTimeDisplayType(selectFormatForTimes(this.store.state));
     this.setDisplayType(getDisplayType(
       this.getDataType(),

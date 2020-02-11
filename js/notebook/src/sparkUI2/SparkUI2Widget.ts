@@ -14,7 +14,8 @@
  *  limitations under the License.
  */
 
-import {Panel} from "@phosphor/widgets";
+import {Panel, Widget} from "@phosphor/widgets";
+import { MessageLoop } from "@phosphor/messaging";
 import {SparkUI2StartWidget} from "./SparkUI2StartWidget";
 import {SparkUI2ProfileSelectorWidget} from "./SparkUI2ProfileSelectorWidget";
 import {SparkUI2Message} from "./SparkUI2Message";
@@ -23,6 +24,7 @@ export class SparkUI2Widget extends Panel {
 
     private startWidget: SparkUI2StartWidget;
     private profileSelectorWidget: SparkUI2ProfileSelectorWidget;
+    private sessionWidget: SparkUI2SessionWidget;
 
     constructor() {
         super();
@@ -30,15 +32,18 @@ export class SparkUI2Widget extends Panel {
 
         this.create();
 
-        window.onresize = () => { this.update(); };
     }
 
     private create() {
         this.startWidget = new SparkUI2StartWidget();
         this.profileSelectorWidget = new SparkUI2ProfileSelectorWidget();
+        this.sessionWidget = new SparkUI2SessionWidget();
 
         this.addWidget(this.startWidget);
         this.addWidget(this.profileSelectorWidget);
+        this.addWidget(this.sessionWidget);
+
+        this.sessionWidget.hide();
     }
 
     public processMessage(msg: SparkUI2Message): void {
@@ -54,6 +59,13 @@ export class SparkUI2Widget extends Panel {
                 // show session widget
                 this.startWidget.hide();
                 this.profileSelectorWidget.hide();
+                this.sessionWidget.show();
+                break;
+            case 'stop-clicked':
+                console.log('stop-clicked');
+                this.startWidget.show();
+                this.profileSelectorWidget.show();
+                this.sessionWidget.hide();
                 break;
             default:
                 super.processMessage(msg);
@@ -62,3 +74,34 @@ export class SparkUI2Widget extends Panel {
     }
 }
 
+class SparkUI2SessionWidget extends Panel {
+    private readonly BUTTON_TEXT = 'Stop';
+    private readonly BUTTON_TITLE = 'Stop session';
+
+    constructor() {
+        super();
+        this.addWidget(this.createStop());
+    }
+
+    private createStop(): Widget {
+
+        let el = document.createElement('button');
+
+        el.textContent = this.BUTTON_TEXT;
+        el.title = this.BUTTON_TITLE;
+
+        el.addEventListener('click', (evt: MouseEvent) => this.onStopClicked(evt));
+
+        let w = new Widget({node: el});
+
+        w.addClass('jupyter-button');
+        w.addClass('widget-button');
+        w.addClass('bx-spark-connect');
+
+        return w;
+    }
+
+    private onStopClicked(evt: MouseEvent): void {
+        MessageLoop.sendMessage(this.parent, new SparkUI2Message('stop-clicked'));
+    }
+}

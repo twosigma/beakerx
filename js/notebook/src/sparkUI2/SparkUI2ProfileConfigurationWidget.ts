@@ -187,7 +187,11 @@ export class SparkUI2ProfileConfigurationWidget extends Panel {
     }
 
     private onEnableHiveSupportClicked(evt: MouseEvent): void {
-        MessageLoop.sendMessage(this, new SparkUI2Message('enable-hive-support-clicked'))
+        MessageLoop.sendMessage(this,
+            new SparkUI2Message('enable-hive-support-clicked', {
+                hiveEnabled: (evt.target as HTMLInputElement).checked
+            })
+        );
     }
 
     public processMessage(msg: SparkUI2Message): void {
@@ -199,7 +203,7 @@ export class SparkUI2ProfileConfigurationWidget extends Panel {
                 console.log('remove-property-clicked');
                 break;
             case 'enable-hive-support-clicked':
-                console.log('enable-hive-support-clicked');
+                console.log('enable-hive-support-clicked', msg.payload);
                 break;
             default:
                 super.processMessage(msg);

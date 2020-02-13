@@ -15,10 +15,10 @@
  */
 
 import {Panel, Widget} from "@phosphor/widgets";
-import {Message, MessageLoop} from "@phosphor/messaging";
-import {SparkUI2Message} from "./SparkUI2Message";
+import {MessageLoop} from "@phosphor/messaging";
+import {SparkUI2Message} from "../../SparkUI2Message";
 
-export class SparkUI2ProfileCreateWidget extends Panel {
+export class ProfileCreateWidget extends Panel {
 
     readonly LABEL_TEXT = 'New profile';
     readonly LABEL_TITLE = 'New profile';

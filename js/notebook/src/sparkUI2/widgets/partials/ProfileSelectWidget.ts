@@ -15,11 +15,11 @@
  */
 
 import {Panel, Widget} from "@phosphor/widgets";
-import {Message, MessageLoop} from "@phosphor/messaging";
-import {IProfileListItem} from "./IProfileListItem";
-import {SparkUI2Message} from "./SparkUI2Message";
+import {MessageLoop} from "@phosphor/messaging";
+import {IProfileListItem} from "../../IProfileListItem";
+import {SparkUI2Message} from "../../SparkUI2Message";
 
-export class SparkUI2ProfileSelectWidget extends Panel {
+export class ProfileSelectWidget extends Panel {
 
     readonly LABEL_TEXT = 'Profile';
     readonly LABEL_TITLE = 'Profile';
@@ -30,7 +30,6 @@ export class SparkUI2ProfileSelectWidget extends Panel {
     readonly CREATE_BUTTON_TITLE = 'Create new profile';
     readonly REMOVE_BUTTON_TEXT = '';
     readonly REMOVE_BUTTON_TITLE = 'Delete this profile';
-
 
     constructor(profiles: IProfileListItem[]) {
         super();

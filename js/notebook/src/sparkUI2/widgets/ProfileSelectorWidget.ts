@@ -15,24 +15,22 @@
  */
 
 import {Panel} from "@phosphor/widgets";
-import {SparkUI2ProfileCreateWidget} from "./SparkUI2ProfileCreateWidget";
-import {SparkUI2ProfileConfigurationWidget} from "./SparkUI2ProfileConfigurationWidget";
-import {SparkUI2ProfileSelectWidget} from "./SparkUI2ProfileSelectWidget";
-import {IProfileListItem} from "./IProfileListItem";
-import {SparkUI2Message} from "./SparkUI2Message";
+import {IProfileListItem} from "../IProfileListItem";
+import {SparkUI2Message} from "../SparkUI2Message";
+import {ProfileConfigurationWidget, ProfileCreateWidget, ProfileSelectWidget} from "./partials";
 
-export class SparkUI2ProfileSelectorWidget extends Panel {
+export class ProfileSelectorWidget extends Panel {
 
-    private readonly profileSelectWidget: SparkUI2ProfileSelectWidget;
-    private readonly profileCreateWidget: SparkUI2ProfileCreateWidget;
-    private readonly profileConfigurationWidget: SparkUI2ProfileConfigurationWidget;
+    private readonly profileSelectWidget: ProfileSelectWidget;
+    private readonly profileCreateWidget: ProfileCreateWidget;
+    private readonly profileConfigurationWidget: ProfileConfigurationWidget;
 
     constructor() {
         super();
 
-        this.profileSelectWidget = new SparkUI2ProfileSelectWidget(this.getProfilesList());
-        this.profileCreateWidget = new SparkUI2ProfileCreateWidget();
-        this.profileConfigurationWidget = new SparkUI2ProfileConfigurationWidget();
+        this.profileSelectWidget = new ProfileSelectWidget(this.getProfilesList());
+        this.profileCreateWidget = new ProfileCreateWidget();
+        this.profileConfigurationWidget = new ProfileConfigurationWidget();
         this.profileCreateWidget.hide();
 
         this.addWidget(this.profileSelectWidget);
@@ -80,6 +78,8 @@ export class SparkUI2ProfileSelectorWidget extends Panel {
                 //
                 // get selected profile name
                 // collect profile configuration
+                let profileConfiguration = this.profileConfigurationWidget.getConfiguration();
+                console.log(profileConfiguration);
                 // request backend to update profile with given name data - update(name, data)
                 break;
             case 'profile-selection-changed':

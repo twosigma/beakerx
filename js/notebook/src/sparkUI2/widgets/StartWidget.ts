@@ -16,9 +16,9 @@
 
 import { Panel, Widget } from "@phosphor/widgets";
 import { MessageLoop } from "@phosphor/messaging";
-import { SparkUI2Message } from "./SparkUI2Message";
+import {SparkUI2Message} from "../SparkUI2Message";
 
-export class SparkUI2StartWidget extends Panel {
+export class StartWidget extends Panel {
 
     readonly BUTTON_TEXT: string = 'Start';
     readonly BUTTON_TITLE: string = 'Start a session with cluster (or a local instance)';

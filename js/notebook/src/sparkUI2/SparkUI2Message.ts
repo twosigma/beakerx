@@ -22,6 +22,7 @@ export type SparkUI2MessageTypes = 'start-clicked' |
     'profile-create-cancel-clicked' |
     'profile-create-create-clicked' |
     'add-new-property-clicked' |
+    'remove-property-clicked' |
     'profile-save-clicked' |
     'profile-create-new-clicked' |
     'profile-remove-clicked' |

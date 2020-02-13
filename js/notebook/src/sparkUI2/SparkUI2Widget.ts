@@ -14,30 +14,28 @@
  *  limitations under the License.
  */
 
-import {Panel, Widget} from "@phosphor/widgets";
-import { MessageLoop } from "@phosphor/messaging";
-import {SparkUI2StartWidget} from "./SparkUI2StartWidget";
-import {SparkUI2ProfileSelectorWidget} from "./SparkUI2ProfileSelectorWidget";
+import {Panel} from "@phosphor/widgets";
 import {SparkUI2Message} from "./SparkUI2Message";
+import {ProfileSelectorWidget, StartWidget} from "./widgets";
+import {SessionWidget} from "./widgets/SessionWidget";
 
 export class SparkUI2Widget extends Panel {
 
-    private startWidget: SparkUI2StartWidget;
-    private profileSelectorWidget: SparkUI2ProfileSelectorWidget;
-    private sessionWidget: SparkUI2SessionWidget;
+    private startWidget: StartWidget;
+    private profileSelectorWidget: ProfileSelectorWidget;
+    private sessionWidget: SessionWidget;
 
     constructor() {
         super();
         this.addClass('bx-spark2-widget');
 
         this.create();
-
     }
 
     private create() {
-        this.startWidget = new SparkUI2StartWidget();
-        this.profileSelectorWidget = new SparkUI2ProfileSelectorWidget();
-        this.sessionWidget = new SparkUI2SessionWidget();
+        this.startWidget = new StartWidget();
+        this.profileSelectorWidget = new ProfileSelectorWidget();
+        this.sessionWidget = new SessionWidget();
 
         this.addWidget(this.startWidget);
         this.addWidget(this.profileSelectorWidget);
@@ -74,34 +72,3 @@ export class SparkUI2Widget extends Panel {
     }
 }
 
-class SparkUI2SessionWidget extends Panel {
-    private readonly BUTTON_TEXT = 'Stop';
-    private readonly BUTTON_TITLE = 'Stop session';
-
-    constructor() {
-        super();
-        this.addWidget(this.createStop());
-    }
-
-    private createStop(): Widget {
-
-        let el = document.createElement('button');
-
-        el.textContent = this.BUTTON_TEXT;
-        el.title = this.BUTTON_TITLE;
-
-        el.addEventListener('click', (evt: MouseEvent) => this.onStopClicked(evt));
-
-        let w = new Widget({node: el});
-
-        w.addClass('jupyter-button');
-        w.addClass('widget-button');
-        w.addClass('bx-spark-connect');
-
-        return w;
-    }
-
-    private onStopClicked(evt: MouseEvent): void {
-        MessageLoop.sendMessage(this.parent, new SparkUI2Message('stop-clicked'));
-    }
-}

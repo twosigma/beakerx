@@ -15,4 +15,5 @@
  */
 
 export * from './ProfileSelectorWidget'
+export * from './SessionWidget'
 export * from './StartWidget'

@@ -46,7 +46,7 @@ export class ProfileSelectWidget extends Panel {
         el.textContent = this.LABEL_TEXT;
         el.title = this.LABEL_TITLE;
 
-        let w = new Widget({node: el});
+        let w = new Widget({ node: el });
 
         w.addClass('widget-label');
 
@@ -147,6 +147,10 @@ export class ProfileSelectWidget extends Panel {
     }
 
     private onSelectionChanged(evt: Event): void {
-        MessageLoop.sendMessage(this.parent, new SparkUI2Message('profile-selection-changed'));
+        MessageLoop.sendMessage(this.parent,
+            new SparkUI2Message('profile-selection-changed', {
+                selectedProfile: (evt.target as HTMLSelectElement).value
+            })
+        );
     }
 }

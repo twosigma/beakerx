@@ -152,7 +152,7 @@ public class GroovyReflectionCompletion {
 				result.addAll(stringCompletions);
 			}
 			
-			result.addAll(lowPri);
+//			result.addAll(lowPri);
 			
 			result.removeIf(v -> !v.startsWith(completionToken));
 				

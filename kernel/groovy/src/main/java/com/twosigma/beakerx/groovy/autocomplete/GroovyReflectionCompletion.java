@@ -14,6 +14,7 @@
 package com.twosigma.beakerx.groovy.autocomplete;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.beanutils.BeanUtilsBean2;
 
@@ -155,6 +157,9 @@ public class GroovyReflectionCompletion {
 			result.removeIf(v -> !v.startsWith(completionToken));
 				
 			result.removeAll(filteredCompletions);
+			
+			// Finally, add method names
+			result.addAll(getObjectMethodCompletions(value, completionToken));
 	
 		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 			e.printStackTrace();
@@ -162,4 +167,49 @@ public class GroovyReflectionCompletion {
 		return result;
 	}
 	
+	String formatMethod(Method m) {
+		return m.getName() + "("  
+				+ Stream.of(m.getParameters())
+					    .map(x -> x.getType()
+								   .getName()
+					    		       .replaceAll("java.lang.","")
+					    		       .replaceAll("java.util.","")
+					    		       .replaceAll("groovy.lang.",""))
+					    .collect(Collectors.joining(",")) 
+		+ ")";
+	}
+	
+	public static final List<String> IGNORE_METHODS = 
+			Arrays.asList("invokeMethod",
+					"getMetaClass",
+					"setMetaClass",
+					"setProperty",
+					"getProperty",
+					"equals",
+					"toString",
+					"hashCode",
+					"wait",
+					"getClass",
+					"notify",
+					"notifyAll");
+	
+	
+	List<String> getObjectMethodCompletions(Object obj, String completionToken) {
+		
+		
+		Class c = obj.getClass();
+
+		List<String> methodNames = 
+			Stream.of(c.getMethods())
+				  .filter(m -> 
+				  	!m.getName().startsWith("get") &&
+				  	!m.getName().startsWith("set") &&
+				  	!IGNORE_METHODS.contains(m.getName()))
+				  .filter(m -> m.getName().startsWith(completionToken))
+				  .map(m -> {
+						return formatMethod(m);
+				  })
+				  .collect(Collectors.toList());
+		return methodNames;
+	}
 }

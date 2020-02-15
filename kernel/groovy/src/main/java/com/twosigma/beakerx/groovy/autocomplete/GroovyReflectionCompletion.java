@@ -81,24 +81,11 @@ public class GroovyReflectionCompletion {
 
 		return text.substring(prevLine, nextLine).trim();
 	}
-
-	List<String> autocompleteFromObject(List<String> parts) {
-		
-		List<String> lowPriorityCompletions = Arrays.asList("class","metaClass");
-
-		List<String> filteredCompletions = Arrays.asList("empty");
-		
-		List<String> iterableOnlyCompletions = Arrays.asList("join(");
-
-		List<String> stringCompletions = Arrays.asList(
-				"size()",
-				"split(",
-				"tokenize(",
-				"matches(",
-				"contains("
-	    );
-		
-		List<String> supplementaryCollectionCompletions = Arrays.asList(
+	
+	/**
+	 * These are groovy-fied methods that do not show up in a nice groovy way by reflection
+	 */
+	public static final List<String> SUPPLEMENTARY_COLLECTION_COMPLETIONS = Arrays.asList(
 				"isEmpty()", 
 				"size()", 
 				"collectEntries { ", 
@@ -108,7 +95,25 @@ public class GroovyReflectionCompletion {
 				"groupBy { ",
 				"countBy { "
 		);
+	
+	public final static List<String> STRING_COMPLETIONS = Arrays.asList(
+			"size()",
+			"split(",
+			"tokenize(",
+			"matches(",
+			"contains("
+	);
+	
+	List<String> autocompleteFromObject(List<String> parts) {
+		
+		List<String> lowPriorityCompletions = Arrays.asList("class","metaClass");
 
+		List<String> filteredCompletions = Arrays.asList("empty");
+		
+		List<String> iterableOnlyCompletions = Arrays.asList("join(");
+
+	
+	
 		ArrayList<String> result = new ArrayList<String>();
 		
 		try {
@@ -144,12 +149,12 @@ public class GroovyReflectionCompletion {
 			}
 			
 			if(value instanceof Iterable || value instanceof Map) {
-				result.addAll(supplementaryCollectionCompletions);
+				result.addAll(SUPPLEMENTARY_COLLECTION_COMPLETIONS);
 				result.addAll(iterableOnlyCompletions);
 			}
 			
 			if(value instanceof String) {
-				result.addAll(stringCompletions);
+				result.addAll(STRING_COMPLETIONS);
 			}
 			
 //			result.addAll(lowPri);

@@ -14,6 +14,10 @@
 
 from beakerx_base import BeakerxBox
 from traitlets import Unicode
+from beakerx_magics.sparkex_widget import  SparkStateProgressUiManager
+from beakerx_magics.sparkex_widget.spark_listener import SparkListener
+from beakerx_magics.sparkex_widget.spark_server import BeakerxSparkServer
+
 
 class SparkUI2(BeakerxBox):
     _view_name = Unicode('SparkUI2View').tag(sync=True)
@@ -21,9 +25,48 @@ class SparkUI2(BeakerxBox):
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
 
-    def __init__(self, **kwargs):
+    def __init__(self,builder, ipython, **kwargs):
         super(SparkUI2, self).__init__(**kwargs)
+        self.builder = builder
+        self.ipython = ipython
         self.on_msg(self.handle_msg)
+        self.on_start()
 
     def handle_msg(self, _, content, buffers):
         print(content)
+
+    def on_start(self):
+        spark = self.builder.getOrCreate()
+        sc = spark.sparkContext
+        spark_server = BeakerxSparkServer(sc)
+        ServerRunner().run(spark_server)
+        self.spark_job(self.ipython, spark, spark_server)
+
+    def spark_job(self, ipython, spark, spark_server):
+        sc = spark.sparkContext
+        sc._gateway.start_callback_server()
+        sc._jsc.sc().addSparkListener(SparkListener(SparkStateProgressUiManager(sc, spark_server)))
+        ipython.push({"spark": spark})
+        ipython.push({"sc": sc})
+        return sc
+
+
+class SparkJobRunner:
+    def _task(self, spark_job, ipython, builder, spark_server):
+        spark_job(ipython, builder, spark_server)
+
+    def run(self, spark_job, ipython, builder, spark_server):
+        self._task(spark_job, ipython, builder, spark_server)
+
+
+class ServerRunner:
+
+    def _start_server(self, server):
+        server.run()
+
+    def run(self, server):
+        from threading import Thread
+        t = Thread(target=self._start_server, args=(server,))
+        t.daemon = True
+        t.start()
+

@@ -322,23 +322,26 @@ export default class DataGridColumn {
     let minMax;
     let dataType = this.getDataType();
     let displayType = this.getDisplayType();
-    let valuesIterator = this.dataGrid.model.getColumnValuesIterator(this);
+    let valuesIterator =  () => {
+      return this.dataGrid.model.getColumnValuesIterator(this);
+    };
     let valueResolver = this.dataGrid.model.getColumnValueResolver(
       displayType === ALL_TYPES.html ? displayType : dataType
     );
 
     if (dataType === ALL_TYPES.html || displayType === ALL_TYPES.html) {
-      this.resizeHTMLRows(valuesIterator);
+      this.resizeHTMLRows(valuesIterator());
     } else if (dataType === ALL_TYPES['formatted integer']) {
-      stringMinMax = minmax(valuesIterator, ColumnValuesIterator.longestString(valueResolver));
+      stringMinMax = minmax(valuesIterator(), ColumnValuesIterator.longestString(valueResolver));
     } else if (dataType === ALL_TYPES.string){
         minMax = minmax(
-            filter(valuesIterator,(value) => this.canStringBeConvertedToNumber(valueResolver, value)),
-            ColumnValuesIterator.minMax(valueResolver)
+            filter(valuesIterator(),(value) => this.canStringBeConvertedToNumber(value)),
+            ColumnValuesIterator.minMax(this.dataGrid.model.getColumnValueResolver(ALL_TYPES.double))
         );
+        stringMinMax = minmax(valuesIterator(), ColumnValuesIterator.longestString(valueResolver));
     } else {
       minMax = minmax(
-        filter(valuesIterator,(value) => !Number.isNaN(valueResolver(value))),
+        filter(valuesIterator(),(value) => !Number.isNaN(valueResolver(value))),
             ColumnValuesIterator.minMax(valueResolver)
       );
     }
@@ -351,8 +354,8 @@ export default class DataGridColumn {
     }
   }
 
-    private canStringBeConvertedToNumber(valueResolver, value) {
-        return !isNaN(parseFloat(valueResolver(value))) && isFinite(valueResolver(value));
+    private canStringBeConvertedToNumber(value) {
+        return !isNaN(parseFloat(value)) && isFinite(value);
     }
 
     resetState() {

@@ -23,22 +23,49 @@ describe('DataGridColumn Min and Max ', () => {
     const dataStore = createStore({
         ...modelStateMock,
         types: ['string'],
-        values: [["234a"], [245], [256]],
+        values: [["24a"], [24522], [2563]],
+        columnNames: ['integer column']
+    });
+    const dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplayWidgetMock);
+    const columnManager = dataGrid.columnManager;
+
+    describe('for string column with integers', () => {
+        it('should have min, max and longestStringValue values set', () => {
+            const column = columnManager.bodyColumns[0];
+            expect(column).to.have.property('minValue');
+            expect(column).to.have.property('maxValue');
+            expect(column).to.have.property('longestStringValue');
+            expect(column.minValue).to.equal(2563);
+            expect(column.maxValue).to.equal(24522);
+            expect(column.longestStringValue).to.equal(24522);
+        });
+    });
+});
+
+describe('DataGridColumn Min and Max ', () => {
+    const dataStore = createStore({
+        ...modelStateMock,
+        types: ['string'],
+        values: [["24a"], ["24522"], ["2563"]],
         columnNames: ['integer column']
     });
     const dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplayWidgetMock);
     const columnManager = dataGrid.columnManager;
 
     describe('for string column', () => {
-        it('should have the min and max values set', () => {
+        it('should have the min, max and longestStringValue values set', () => {
             const column = columnManager.bodyColumns[0];
             expect(column).to.have.property('minValue');
             expect(column).to.have.property('maxValue');
-            expect(column.minValue).to.equal(245);
-            expect(column.maxValue).to.equal(256);
+            expect(column).to.have.property('longestStringValue');
+            expect(column.minValue).to.equal("2563");
+            expect(column.maxValue).to.equal("24522");
+            expect(column.longestStringValue).to.equal("24522");
         });
     });
 });
+
+
 
 describe('DataGridColumn Min and Max ', () => {
     const dataStore = createStore({

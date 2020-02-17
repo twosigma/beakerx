@@ -18,10 +18,10 @@ import {InputWithLabelWidget} from "./InputWithLabelWidget";
 
 export class ExecutorCoresWidget extends InputWithLabelWidget {
 
-    readonly LABEL_TEXT: string = 'Executor Cores';
-    readonly LABEL_TITLE: string = 'Executor Cores';
-    readonly INPUT_TITLE: string = 'The number of cores to use on each executor';
-    readonly INPUT_PLACEHOLDER: string = '';
+    get LABEL_TEXT(): string { return 'Executor Cores' };
+    get LABEL_TITLE(): string { return 'Executor Cores' };
+    get INPUT_TITLE(): string { return 'The number of cores to use on each executor' };
+    get INPUT_PLACEHOLDER(): string { return '' };
 
     constructor(value: string = '10') {
         super(value);

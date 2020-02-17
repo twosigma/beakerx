@@ -18,10 +18,10 @@ import {InputWithLabelWidget} from "./InputWithLabelWidget";
 
 export class MasterURLWidget extends InputWithLabelWidget {
 
-    readonly LABEL_TEXT: string = 'Master URL';
-    readonly LABEL_TITLE: string = 'Master URL';
-    readonly INPUT_PLACEHOLDER: string = '';
-    readonly INPUT_TITLE: string = '';
+    get LABEL_TEXT(): string { return 'Master URL' };
+    get LABEL_TITLE(): string { return 'Master URL' };
+    get INPUT_PLACEHOLDER(): string { return '' };
+    get INPUT_TITLE(): string { return '' };
 
     constructor(value: string = 'local[10]') {
         super(value);

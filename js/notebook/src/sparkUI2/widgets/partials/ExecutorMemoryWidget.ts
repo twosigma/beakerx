@@ -18,10 +18,10 @@ import {InputWithLabelWidget} from "./InputWithLabelWidget";
 
 export class ExecutorMemoryWidget extends InputWithLabelWidget {
 
-    readonly LABEL_TEXT: string = 'Executor Memory';
-    readonly LABEL_TITLE: string = 'Executor Memory';
-    readonly INPUT_TITLE: string = 'Amount of memory to use per executor process, in MiB unless otherwise specified. (e.g. 2g, 8g).';
-    readonly INPUT_PLACEHOLDER: string = '';
+    get LABEL_TEXT(): string { return 'Executor Memory' };
+    get LABEL_TITLE(): string { return  'Executor Memory' };
+    get INPUT_TITLE(): string { return  'Amount of memory to use per executor process, in MiB unless otherwise specified. (e.g. 2g, 8g).' };
+    get INPUT_PLACEHOLDER(): string { return '' };
 
     constructor(value: string = '8g') {
         super(value);

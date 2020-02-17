@@ -17,10 +17,6 @@
 import {Panel, Widget} from "@phosphor/widgets";
 
 export abstract class InputWithLabelWidget extends Panel {
-    abstract readonly LABEL_TEXT: string;
-    abstract readonly LABEL_TITLE: string;
-    abstract readonly INPUT_TITLE: string;
-    abstract readonly INPUT_PLACEHOLDER: string;
 
     private readonly labelWidget: Widget;
     private readonly inputWidget: Widget;
@@ -35,6 +31,11 @@ export abstract class InputWithLabelWidget extends Panel {
         this.addWidget(this.labelWidget);
         this.addWidget(this.inputWidget);
     }
+
+    abstract get LABEL_TEXT(): string;
+    abstract get LABEL_TITLE(): string;
+    abstract get INPUT_TITLE(): string;
+    abstract get INPUT_PLACEHOLDER(): string;
 
     public get value(): string {
         return this._value;

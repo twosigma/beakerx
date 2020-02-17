@@ -14,9 +14,9 @@
 
 import unittest
 
-from beakerx_tabledisplay import TableDisplay, Table
 import numpy as np
 import pandas as pd
+from beakerx_tabledisplay import TableDisplay, Table
 
 
 class TestTableDisplay(unittest.TestCase):
@@ -54,9 +54,37 @@ class TestTableDisplay(unittest.TestCase):
         row3 = [2, 2, 3.0, 2]
         row4 = [0, 0, 6.0, 0]
         # when
-        table = TableDisplay(pd.DataFrame([row1, row2, row3, row4], columns=colNames), colNames, ['xxx type', 'integer', 'double', 'number'])
+        table = TableDisplay(pd.DataFrame([row1, row2, row3, row4], columns=colNames), colNames,
+                             ['xxx type', 'integer', 'double', 'number'])
         # then
         self.assertTrue(table.model["types"][0] == "xxx type")
         self.assertTrue(table.model["types"][1] == "integer")
         self.assertTrue(table.model["types"][2] == "double")
         self.assertTrue(table.model["types"][3] == "number")
+
+    def test_should_raise_exception_when_columns_not_equal_types(self):
+        # given
+        colNames = ["column1", "column2", "column3"]
+        row1 = [1, 2, 3]
+        row2 = [4, 5, 6]
+        # when
+        try:
+            TableDisplay(pd.DataFrame([row1, row2]), colNames, ['integer', 'integer'])
+            raise Exception("Test should not pass")
+        except Exception as e:
+            # then
+            self.assertTrue('The length of types should be same as number of columns.' in e.args)
+
+
+    def test_should_create_table_display_when_columns_equal_types(self):
+        # given
+        colNames = ["column1", "column2", "column3"]
+        row1 = [1, 2, 3]
+        row2 = [4, 5, 6]
+        # when
+        try:
+            TableDisplay(pd.DataFrame([row1, row2]), colNames, ['integer', 'integer'])
+            raise Exception("Test should not pass")
+        except Exception as e:
+            # then
+            self.assertTrue('The length of types should be same as number of columns.' in e.args)

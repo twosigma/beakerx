@@ -16,13 +16,11 @@
 
 package com.twosigma.beakerx.chart.actions;
 
-import com.google.inject.Singleton;
 import com.twosigma.beakerx.chart.ChartDetails;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Singleton
 public class ChartObjectManager {
   /* plot id -> plot object */
   private final Map<String, ChartDetails> charts = new HashMap<>();

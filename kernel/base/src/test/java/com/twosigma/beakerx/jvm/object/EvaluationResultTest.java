@@ -32,7 +32,7 @@ public class EvaluationResultTest {
 
   @BeforeClass
   public static void setUpClass() throws IOException {
-    serializer = new EvaluationResult.Serializer(() -> { return new BasicObjectSerializer(); } );
+    serializer = new EvaluationResult.Serializer(new BasicObjectSerializer());
     helper = new SerializationTestHelper<>(serializer);
   }
 

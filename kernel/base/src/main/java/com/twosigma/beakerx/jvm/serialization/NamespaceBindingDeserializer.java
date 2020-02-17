@@ -24,8 +24,6 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.twosigma.beakerx.shared.NamespaceBinding;
 
 /*
@@ -33,10 +31,9 @@ import com.twosigma.beakerx.shared.NamespaceBinding;
  */
 public class NamespaceBindingDeserializer extends JsonDeserializer<NamespaceBinding> {
 
-  private final Provider<BeakerObjectConverter> objectSerializerProvider;
+  private final BeakerObjectConverter objectSerializerProvider;
 
-  @Inject
-  public NamespaceBindingDeserializer(Provider<BeakerObjectConverter> osp) {
+  public NamespaceBindingDeserializer(BeakerObjectConverter osp) {
     objectSerializerProvider = osp;
   }
 
@@ -50,7 +47,7 @@ public class NamespaceBindingDeserializer extends JsonDeserializer<NamespaceBind
     Boolean defined = node.get("defined").asBoolean();
     JsonNode o = node.get("value");
 
-    Object obj = objectSerializerProvider.get().deserialize(o, mapper);
+    Object obj = objectSerializerProvider.deserialize(o, mapper);
     return new NamespaceBinding(name,session,obj,defined);
   }
 }

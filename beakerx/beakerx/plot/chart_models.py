@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import copy
+
 from beakerx.plot.legend import LegendPosition, LegendLayout
 from beakerx.plot.plotitem import YAxis, Text, ConstantLine, ConstantBand, Graphics
 from beakerx.plot.plotitem_treemap import RandomColorProvider, ValueAccessor, Mode
@@ -29,11 +30,14 @@ class Chart(BaseObject):
         self.chart_title = getValue(kwargs, 'title')
         self.show_legend = getValue(kwargs, 'showLegend')
         self.use_tool_tip = getValue(kwargs, 'useToolTip', True)
-        self.legend_position = getValue(kwargs, 'legendPosition',
-                                        LegendPosition())
-        self.legend_layout = getValue(kwargs, 'legendLayout',
-                                      LegendLayout.VERTICAL)
+        self.legend_position = getValue(kwargs, 'legendPosition', LegendPosition.TOP_RIGHT)
+        self.legend_layout = getValue(kwargs, 'legendLayout', LegendLayout.VERTICAL)
         self.type = "Plot"
+
+    def transform(self):
+        self_copy = copy.copy(self)
+        self_copy.legend_position = {'type': 'LegendPosition', 'position': self_copy.legend_position}
+        return super(Chart, self_copy).transform()
 
 
 class AbstractChart(Chart):
@@ -61,7 +65,6 @@ class AbstractChart(Chart):
 
 
 class XYChart(AbstractChart):
-
     TOO_MANY_ROWS = "tooManyRows"
     TOTAL_NUMBER_OF_POINTS = "totalNumberOfPoints"
     NUMBER_OF_POINTS_TO_DISPLAY = "numberOfPointsToDisplay"
@@ -110,7 +113,6 @@ class XYChart(AbstractChart):
 
 
 class HeatMapChart(XYChart):
-
     ROWS_LIMIT = 10000
     COLUMN_LIMIT = 100
 

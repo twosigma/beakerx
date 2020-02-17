@@ -15,15 +15,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 from setuptools import setup, find_packages
+
 from setupbase import (
     create_cmdclass,
     install_node_modules,
     get_version,
     here
 )
-import os
-
 
 cmdclass = create_cmdclass(develop_wrappers=[
     'js'
@@ -37,19 +37,19 @@ cmdclass['js'] = install_node_modules(
 )
 
 setup_args = dict(
-    name                = 'beakerx_tabledisplay',
-    description         = 'BeakerX: Beaker Extensions for Jupyter Notebook',
-    long_description    = 'BeakerX: Beaker Extensions for Jupyter Notebook',
-    version             = get_version(os.path.join('beakerx_tabledisplay', '_version.py')),
-    author              = 'Two Sigma Open Source, LLC',
-    author_email        = 'beakerx-feedback@twosigma.com',
-    url                 = 'http://beakerx.com',
-    keywords            = [
+    name='beakerx_tabledisplay',
+    description='BeakerX: Beaker Extensions for Jupyter Notebook',
+    long_description='BeakerX: Beaker Extensions for Jupyter Notebook',
+    version=get_version(os.path.join('beakerx_tabledisplay', '_version.py')),
+    author='Two Sigma Open Source, LLC',
+    author_email='beakerx-feedback@twosigma.com',
+    url='http://beakerx.com',
+    keywords=[
         'ipython',
         'jupyter',
         'widgets'
     ],
-    classifiers         = [
+    classifiers=[
         'Development Status :: 4 - Beta',
         'Framework :: IPython',
         'Intended Audience :: Developers',
@@ -66,11 +66,14 @@ setup_args = dict(
             'beakerx_tabledisplay = beakerx_tabledisplay:run'
         ]
     },
+    install_requires=[
+        'beakerx_base'
+    ],
     python_requires='>=3',
-    zip_safe            = False,
-    include_package_data= True,
-    packages            = find_packages(),
-    cmdclass            = cmdclass
+    zip_safe=False,
+    include_package_data=True,
+    packages=find_packages(),
+    cmdclass=cmdclass
 )
 
 if __name__ == '__main__':

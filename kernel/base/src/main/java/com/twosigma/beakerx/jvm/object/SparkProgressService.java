@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.jvm.object;
 
-import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +26,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
  * The SparkProgressService reports the progress of tasks and stages
  * during a running Spark job.
  */
-@Singleton
 public class SparkProgressService {
   private final static Logger logger = Logger.getLogger(SparkProgressService.class.getName());
 

@@ -36,7 +36,7 @@ public class SimpleLayoutManagerSerializerTest {
 
   @BeforeClass
   public static void setUpClass() throws IOException {
-    serializer = new SimpleLayoutManagerSerializer(() -> { return new BasicObjectSerializer(); } );
+    serializer = new SimpleLayoutManagerSerializer(new BasicObjectSerializer());
     helper = new SerializationTestHelper<>(serializer);
   }
 

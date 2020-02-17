@@ -15,8 +15,6 @@
  */
 package com.twosigma.beakerx.jvm.serialization;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.twosigma.beakerx.jvm.object.SimpleLayoutManager;
 import com.fasterxml.jackson.core.JsonGenerator;
 
@@ -24,8 +22,7 @@ import java.io.IOException;
 
 public class SimpleLayoutManagerSerializer extends OutputContainerLayoutManagerSerializer<SimpleLayoutManager>  {
 
-  @Inject
-  public SimpleLayoutManagerSerializer(Provider<BeakerObjectConverter> osp) {
+  public SimpleLayoutManagerSerializer(BeakerObjectConverter osp) {
     super(osp);
   }
 

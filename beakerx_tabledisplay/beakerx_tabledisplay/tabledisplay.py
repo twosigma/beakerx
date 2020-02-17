@@ -30,6 +30,7 @@ class Table(BaseObject):
     PAGE_SIZE = 1000
 
     def __init__(self, *args, **kwargs):
+        self.validate_args(args)
         self.values = []
         self.types = []
         types_map = dict()
@@ -69,6 +70,10 @@ class Table(BaseObject):
         self.endlessIndex = 0
         self.loadingMode = 'ALL'
         self.rowsToShow = RowsToShow.SHOW_25
+
+    def validate_args(self, args):
+        if len(args) > 2 and len(args[1]) != len(args[2]):
+            raise Exception("The length of types should be same as number of columns.")
 
     def convert_from_dict(self, args):
         self.columnNames.append("Key")
@@ -197,8 +202,12 @@ class Table(BaseObject):
             row = self.values[row_ind]
             row_font_colors = []
             for col_ind in range(0, len(row)):
-                row_font_colors.append(colorProvider(row_ind, col_ind, self))
+                if self.is_not_index_column(col_ind):
+                    row_font_colors.append(colorProvider(row_ind, col_ind, self))
             self.fontColor.append(row_font_colors)
+
+    def is_not_index_column(self, col_ind):
+        return not self.hasIndex or col_ind != 0
 
     def setHeadersVertical(self, headersVertical):
         self.headersVertical = headersVertical

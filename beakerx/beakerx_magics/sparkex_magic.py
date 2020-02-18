@@ -11,11 +11,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import ipywidgets as widgets
 from IPython import get_ipython
 from IPython.core.magic import (Magics, magics_class, cell_magic)
-from beakerx_magics.sparkex_widget import  SparkStateProgressUiManager
-from beakerx_magics.sparkex_widget.spark_listener import SparkListener
-from beakerx_magics.sparkex_widget.spark_server import BeakerxSparkServer
+from beakerx.spark import SparkUI2
 from pyspark.sql import SparkSession
 
 
@@ -27,16 +26,11 @@ class SparkexMagics(Magics):
         ipython = get_ipython()
         result = self.runCellCode(cell, ipython)
         builder = result.result
-        spark = builder.getOrCreate()
-        sc = spark.sparkContext
-        spark_server = BeakerxSparkServer(sc)
-        ServerRunner().run(spark_server)
-        self.spark_job(ipython, spark, spark_server)
-
-        return "SparkSession is available by 'spark'"
+        spark_widget = SparkUI2(builder, ipython)
+        return spark_widget
 
     def runCellCode(self, cell, ipython):
-        import ipywidgets as widgets
+
         out = widgets.Output(layout={'border': '1px solid black'})
         with out:
             result = ipython.run_cell(cell)
@@ -45,34 +39,6 @@ class SparkexMagics(Magics):
         else:
             raise TypeError("Spark magic command must return SparkSession.Builder object")
         return result
-
-    def spark_job(self, ipython, spark, spark_server):
-        sc = spark.sparkContext
-        sc._gateway.start_callback_server()
-        sc._jsc.sc().addSparkListener(SparkListener(SparkStateProgressUiManager(sc, spark_server)))
-        ipython.push({"spark": spark})
-        ipython.push({"sc": sc})
-        return sc
-
-
-class SparkJobRunner:
-    def _task(self, spark_job, ipython, builder, spark_server):
-        spark_job(ipython, builder, spark_server)
-
-    def run(self, spark_job, ipython, builder, spark_server):
-        self._task(spark_job, ipython, builder, spark_server)
-
-
-class ServerRunner:
-
-    def _start_server(self, server):
-        server.run()
-
-    def run(self, server):
-        from threading import Thread
-        t = Thread(target=self._start_server, args=(server,))
-        t.daemon = True
-        t.start()
 
 
 def load_ipython_extension(ipython):

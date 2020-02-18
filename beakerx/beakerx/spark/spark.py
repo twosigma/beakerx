@@ -13,10 +13,10 @@
 # limitations under the License.
 
 from beakerx_base import BeakerxBox
-from traitlets import Unicode
-from beakerx_magics.sparkex_widget import  SparkStateProgressUiManager
+from beakerx_magics.sparkex_widget import SparkStateProgressUiManager
 from beakerx_magics.sparkex_widget.spark_listener import SparkListener
 from beakerx_magics.sparkex_widget.spark_server import BeakerxSparkServer
+from traitlets import Unicode
 
 
 class SparkUI2(BeakerxBox):
@@ -25,22 +25,45 @@ class SparkUI2(BeakerxBox):
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
 
-    def __init__(self,builder, ipython, **kwargs):
+    def __init__(self, builder, ipython, **kwargs):
         super(SparkUI2, self).__init__(**kwargs)
         self.builder = builder
+        self.sc = None
         self.ipython = ipython
         self.on_msg(self.handle_msg)
         self.on_start()
 
     def handle_msg(self, _, content, buffers):
-        print(content)
+        if content['event'] == "start":
+            self.handle_start(content)
+        elif content['event'] == "stop":
+            self.handle_stop(content)
+
+    def handle_stop(self, content):
+        self.sc.stop()
+
+    def handle_start(self, content):
+        payload = content['payload']
+        for key, value in payload.items():
+            if key == "properties":
+                for item in value:
+                    self.builder.config(item.name, item.value)
+            self.builder.config(key, value)
+        self.on_start()
 
     def on_start(self):
         spark = self.builder.getOrCreate()
-        sc = spark.sparkContext
-        spark_server = BeakerxSparkServer(sc)
+        self.sc = spark.sparkContext
+        spark_server = BeakerxSparkServer(self.sc)
         ServerRunner().run(spark_server)
         self.spark_job(self.ipython, spark, spark_server)
+        msg = {
+            'method': 'update',
+            'event': {
+                "start": "completed"
+            }
+        }
+        self.comm.send(data=msg)
 
     def spark_job(self, ipython, spark, spark_server):
         sc = spark.sparkContext
@@ -69,4 +92,3 @@ class ServerRunner:
         t = Thread(target=self._start_server, args=(server,))
         t.daemon = True
         t.start()
-

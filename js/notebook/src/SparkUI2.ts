@@ -43,7 +43,7 @@ export class SparkUI2View extends widgets.BoxView {
 
     async createWidget() {
         await this.displayed;
-        this.pWidget.addWidget(new SparkUI2Widget());
+        this.pWidget.addWidget(new SparkUI2Widget({ view: this }));
    }
 }
 

@@ -25,6 +25,8 @@ export class ProfileSelectorWidget extends Panel {
     private readonly profileCreateWidget: ProfileCreateWidget;
     private readonly profileConfigurationWidget: ProfileConfigurationWidget;
 
+    private selectedProfileName: string = '';
+
     constructor() {
         super();
 
@@ -36,6 +38,19 @@ export class ProfileSelectorWidget extends Panel {
         this.addWidget(this.profileSelectWidget);
         this.addWidget(this.profileCreateWidget);
         this.addWidget(this.profileConfigurationWidget);
+    }
+
+    public getSelectedProfileName(): string {
+        return this.selectedProfileName;
+    }
+
+    public getConfiguration(): {
+        masterURL: string;
+        executorCores: string;
+        executorMemory: string;
+        properties: { [key: string]: string };
+    } {
+        return this.profileConfigurationWidget.getConfiguration();
     }
 
     private getProfilesList(): IProfileListItem[] {
@@ -85,6 +100,7 @@ export class ProfileSelectorWidget extends Panel {
             case 'profile-selection-changed':
                 console.log('profile-selection-changed');
                 console.log(msg.payload);
+                this.selectedProfileName = msg.payload.selectedProfile;
                 // user requested loading configuration of a profile with given name
                 //
                 // get selected profile name

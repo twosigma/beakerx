@@ -67,6 +67,7 @@ namespace Private {
                 value: value,
                 widget: w,
             });
+            this.addWidget(w);
         }
 
         public removeProperty(name: string) {
@@ -137,7 +138,7 @@ namespace Private {
             if (p === null) {
                 return;
             }
-            MessageLoop.sendMessage(this.parent, new SparkUI2Message('remove-property-clicked', {
+            MessageLoop.sendMessage(this.parent.parent, new SparkUI2Message('remove-property-clicked', {
                 name: p.name
             }))
         }
@@ -210,10 +211,7 @@ namespace Private {
         }
 
         private onAddNewClicked(evt: MouseEvent): void {
-            MessageLoop.sendMessage(this.parent, new SparkUI2Message('add-new-property-clicked'));
+            MessageLoop.sendMessage(this.parent.parent, new SparkUI2Message('add-new-property-clicked'));
         }
-
-
-
     }
 }

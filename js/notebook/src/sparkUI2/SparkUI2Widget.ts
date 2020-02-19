@@ -53,6 +53,7 @@ export class SparkUI2Widget extends Panel {
 
         this.comm.on_msg((msg) => {
             let data = msg.content.data;
+
             if (data.method === "update" && data.event.start === "completed") {
                 this._started.emit(undefined);
                 return;
@@ -102,7 +103,6 @@ export class SparkUI2Widget extends Panel {
     }
 
     private _onStart(sender: SparkUI2Widget) {
-        debugger;
         this.started.disconnect(this._onStart, this);
         this.startWidget.hide();
         this.profileSelectorWidget.hide();
@@ -111,7 +111,6 @@ export class SparkUI2Widget extends Panel {
     }
 
     private _onStop(sender: SparkUI2Widget) {
-        debugger;
         this.stopped.disconnect(this._onStop, this);
         this.startWidget.show();
         this.startWidget.enableButton();
@@ -139,7 +138,6 @@ export class SparkUI2Widget extends Panel {
                 "properties": properties
             }
         };
-        console.log(msg);
         this.send(msg);
     }
 
@@ -150,7 +148,6 @@ export class SparkUI2Widget extends Panel {
 
           }
       };
-      console.log(msg);
       this.send(msg);
     }
 }

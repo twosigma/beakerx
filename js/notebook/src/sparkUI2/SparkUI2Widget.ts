@@ -91,6 +91,7 @@ export class SparkUI2Widget extends Panel {
                 break;
             case 'stop-clicked':
                 console.log('stop-clicked');
+                this.sessionWidget.disableStop();
                 this.stopped.connect(this._onStop, this);
                 this.sendStopMessage();
                 break;
@@ -106,6 +107,7 @@ export class SparkUI2Widget extends Panel {
         this.startWidget.hide();
         this.profileSelectorWidget.hide();
         this.sessionWidget.show();
+        this.sessionWidget.enableStop();
     }
 
     private _onStop(sender: SparkUI2Widget) {

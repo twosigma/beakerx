@@ -22,21 +22,30 @@ export class SessionWidget extends Panel {
     private readonly BUTTON_TEXT = 'Stop';
     private readonly BUTTON_TITLE = 'Stop session';
 
+    private stopEl: HTMLButtonElement;
+
     constructor() {
         super();
         this.addWidget(this.createStop());
     }
 
-    private createStop(): Widget {
+    public disableStop() {
+        this.stopEl.disabled = true;
+    }
 
-        let el = document.createElement('button');
+    public enableStop() {
+        this.stopEl.disabled = false;
+    }
+
+    private createStop(): Widget {
+        let el = this.stopEl = document.createElement('button');
 
         el.textContent = this.BUTTON_TEXT;
         el.title = this.BUTTON_TITLE;
 
         el.addEventListener('click', (evt: MouseEvent) => this.onStopClicked(evt));
 
-        let w = new Widget({node: el});
+        let w = new Widget({ node: el });
 
         w.addClass('jupyter-button');
         w.addClass('widget-button');

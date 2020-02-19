@@ -32,11 +32,11 @@ export class StartWidget extends Panel {
         this.addWidget(this.createError());
     }
 
-    disableButton() {
+    public disableButton() {
         this.buttonEl.disabled = true;
     }
 
-    enableButton() {
+    public enableButton() {
         this.buttonEl.disabled = false;
     }
 

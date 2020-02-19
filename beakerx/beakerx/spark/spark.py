@@ -1,4 +1,4 @@
-# Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+# Copyright 2020 TWO SIGMA OPEN SOURCE, LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,38 +25,43 @@ class SparkUI2(BeakerxBox):
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
 
-    def __init__(self, builder, ipython, **kwargs):
+    def __init__(self, builder, ipython_manager, spark_server_factory, **kwargs):
         super(SparkUI2, self).__init__(**kwargs)
-        self.builder = builder
-        self.sc = None
-        self.ipython = ipython
+        self.builder = self.check_is_None(builder)
+        self.ipython_manager = self.check_is_None(ipython_manager)
+        self.spark_server_factory = self.check_is_None(spark_server_factory)
         self.on_msg(self.handle_msg)
-        self.on_start()
 
-    def handle_msg(self, _, content, buffers):
+    def handle_msg(self, _, content, buffers=None):
         if content['event'] == "start":
-            self.handle_start(content)
+            self._handle_start(content)
         elif content['event'] == "stop":
-            self.handle_stop(content)
+            self._handle_stop(content)
 
-    def handle_stop(self, content):
+    def _handle_stop(self, content):
         self.sc.stop()
+        msg = {
+            'method': 'update',
+            'event': {
+                "stop": "done"
+            }
+        }
+        self.comm.send(data=msg)
 
-    def handle_start(self, content):
+    def _handle_start(self, content):
         payload = content['payload']
         for key, value in payload.items():
             if key == "properties":
                 for item in value:
                     self.builder.config(item.name, item.value)
             self.builder.config(key, value)
-        self.on_start()
+        self._on_start()
 
-    def on_start(self):
+    def _on_start(self):
         spark = self.builder.getOrCreate()
         self.sc = spark.sparkContext
-        spark_server = BeakerxSparkServer(self.sc)
-        ServerRunner().run(spark_server)
-        self.spark_job(self.ipython, spark, spark_server)
+        spark_server = self.spark_server_factory.run_new_instance(self.sc)
+        self.ipython_manager.configure(spark, spark_server)
         msg = {
             'method': 'update',
             'event': {
@@ -65,13 +70,10 @@ class SparkUI2(BeakerxBox):
         }
         self.comm.send(data=msg)
 
-    def spark_job(self, ipython, spark, spark_server):
-        sc = spark.sparkContext
-        sc._gateway.start_callback_server()
-        sc._jsc.sc().addSparkListener(SparkListener(SparkStateProgressUiManager(sc, spark_server)))
-        ipython.push({"spark": spark})
-        ipython.push({"sc": sc})
-        return sc
+    def check_is_None(self, value):
+        if value is None:
+            raise Exception('value can not be None')
+        return value
 
 
 class SparkJobRunner:
@@ -92,3 +94,24 @@ class ServerRunner:
         t = Thread(target=self._start_server, args=(server,))
         t.daemon = True
         t.start()
+
+
+class BeakerxSparkServerFactory:
+
+    def run_new_instance(self, spark_context):
+        server = BeakerxSparkServer(spark_context)
+        ServerRunner().run(server)
+        return server
+
+
+class IpythonManager:
+    def __init__(self, ipython):
+        self.ipython = ipython
+
+    def configure(self, spark, spark_server):
+        sc = spark.sparkContext
+        sc._gateway.start_callback_server()
+        sc._jsc.sc().addSparkListener(SparkListener(SparkStateProgressUiManager(sc, spark_server)))
+        self.ipython.push({"spark": spark})
+        self.ipython.push({"sc": sc})
+        return sc

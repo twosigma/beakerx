@@ -58,8 +58,8 @@ function tableAPIBase() {
       var width = 528, height = 118;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      // beakerxPO.checkImageData(imageData, imageDir, 'cell2_case1.png');
-      beakerxPO.createTableImage(imageData, imageDir, 'cell2_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell2_case1.png');
+      // beakerxPO.createTableImage(imageData, imageDir, 'cell2_case1.png');
     });
   });
 
@@ -209,8 +209,8 @@ function tableAPIBase() {
       var width = 500, height = 92;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
-      // beakerxPO.checkImageData(imageData, imageDir, 'cell13_case1.png');
-      beakerxPO.createTableImage(imageData, imageDir, 'cell13_case1.png');
+      beakerxPO.checkImageData(imageData, imageDir, 'cell13_case1.png');
+      // beakerxPO.createTableImage(imageData, imageDir, 'cell13_case1.png');
     });
   });
 

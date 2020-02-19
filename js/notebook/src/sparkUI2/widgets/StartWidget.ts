@@ -23,6 +23,8 @@ export class StartWidget extends Panel {
     readonly BUTTON_TEXT: string = 'Start';
     readonly BUTTON_TITLE: string = 'Start a session with cluster (or a local instance)';
 
+    private buttonEl: HTMLButtonElement;
+
     constructor() {
         super();
 
@@ -30,8 +32,16 @@ export class StartWidget extends Panel {
         this.addWidget(this.createError());
     }
 
+    disableButton() {
+        this.buttonEl.disabled = true;
+    }
+
+    enableButton() {
+        this.buttonEl.disabled = false;
+    }
+
     private createButton(): Widget {
-        let el = document.createElement('button');
+        let el = this.buttonEl = document.createElement('button');
 
         el.textContent = this.BUTTON_TEXT;
         el.title = this.BUTTON_TITLE;

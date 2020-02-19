@@ -19,6 +19,8 @@ import {SparkUI2Message} from "./SparkUI2Message";
 import {ProfileSelectorWidget, StartWidget} from "./widgets";
 import {SessionWidget} from "./widgets/SessionWidget";
 import {SparkUI2View} from "../SparkUI2";
+import {IClassicComm} from "@jupyter-widgets/base";
+import {ISignal, Signal} from "@phosphor/signaling";
 
 export class SparkUI2Widget extends Panel {
 
@@ -27,14 +29,40 @@ export class SparkUI2Widget extends Panel {
     private sessionWidget: SessionWidget;
 
     private view: SparkUI2View;
+    private comm: IClassicComm;
 
-    constructor(options: { view: SparkUI2View }) {
+    private _started = new Signal<this, void>(this);
+    private _stopped = new Signal<this, void>(this);
+
+    private get started(): ISignal<this, void> {
+        return this._started;
+    }
+
+    private get stopped(): ISignal<this, void> {
+        return this._stopped;
+    }
+
+    constructor(options: { view: SparkUI2View, comm: IClassicComm }) {
         super();
         this.view = options.view;
+        this.comm = options.comm;
 
         this.addClass('bx-spark2-widget');
 
         this.create();
+
+        this.comm.on_msg((msg) => {
+            let data = msg.content.data;
+            if (data.method === "update" && data.event.start === "completed") {
+                this._started.emit(undefined);
+                return;
+            }
+
+            if (data.method === "update" && data.event.stop === "done") {
+                this._stopped.emit(undefined);
+                return;
+            }
+        });
     }
 
     private create() {
@@ -57,29 +85,36 @@ export class SparkUI2Widget extends Panel {
         switch(msg.type) {
             case 'start-clicked':
                 console.log('start-clicked');
-                // user requested start
-                //
-                // get selected profile name
-                // request backend to start session with a given profile name - start(name)
-                // hide profile selector
-                // hide start
-                // show session widget
+                this.startWidget.disableButton();
+                this.started.connect(this._onStart, this);
                 this.sendStartMessage();
-                this.startWidget.hide();
-                this.profileSelectorWidget.hide();
-                this.sessionWidget.show();
                 break;
             case 'stop-clicked':
                 console.log('stop-clicked');
+                this.stopped.connect(this._onStop, this);
                 this.sendStopMessage();
-                this.startWidget.show();
-                this.profileSelectorWidget.show();
-                this.sessionWidget.hide();
                 break;
             default:
                 super.processMessage(msg);
                 break;
         }
+    }
+
+    private _onStart(sender: SparkUI2Widget) {
+        debugger;
+        this.started.disconnect(this._onStart, this);
+        this.startWidget.hide();
+        this.profileSelectorWidget.hide();
+        this.sessionWidget.show();
+    }
+
+    private _onStop(sender: SparkUI2Widget) {
+        debugger;
+        this.stopped.disconnect(this._onStop, this);
+        this.startWidget.show();
+        this.startWidget.enableButton();
+        this.profileSelectorWidget.show();
+        this.sessionWidget.hide();
     }
 
     private sendStartMessage(): void {

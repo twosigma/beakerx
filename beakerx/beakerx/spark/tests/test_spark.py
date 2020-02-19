@@ -19,6 +19,24 @@ from ipykernel.comm import Comm
 
 class TestSparkUI(unittest.TestCase):
 
+    def test_should_send_done_message_when_sc_stops(self):
+        # given
+        builder = BuilderMock()
+        ipython_manager = IpythonManagerMock()
+        spark_server_factory = SparkServerFactoryMock()
+        sui = SparkUI2(builder, ipython_manager, spark_server_factory)
+        sui.comm = CommMock()
+        sui._on_start()
+        msg_stop = {
+            'event': 'stop'
+        }
+        # when
+        sui.handle_msg(sui, msg_stop)
+        # then
+        self.assertTrue(sui.comm.message["method"] == "update")
+        event = sui.comm.message["event"]
+        self.assertTrue(event["stop"] == "done")
+
     def test_should_send_completed_message_when_sc_starts(self):
         # given
         builder = BuilderMock()
@@ -116,12 +134,16 @@ class SparkSessionMock:
     def __init__(self):
         pass
 
+    @property
     def sparkContext(self):
-        return
+        return SparkContextMock()
 
 
 class SparkContextMock:
     def __init__(self):
+        pass
+
+    def stop(self):
         pass
 
 

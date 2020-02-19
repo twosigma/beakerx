@@ -40,6 +40,13 @@ class SparkUI2(BeakerxBox):
 
     def _handle_stop(self, content):
         self.sc.stop()
+        msg = {
+            'method': 'update',
+            'event': {
+                "stop": "done"
+            }
+        }
+        self.comm.send(data=msg)
 
     def _handle_start(self, content):
         payload = content['payload']

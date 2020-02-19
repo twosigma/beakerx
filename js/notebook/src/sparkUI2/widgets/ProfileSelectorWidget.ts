@@ -18,6 +18,7 @@ import {Panel} from "@phosphor/widgets";
 import {IProfileListItem} from "../IProfileListItem";
 import {SparkUI2Message} from "../SparkUI2Message";
 import {ProfileConfigurationWidget, ProfileCreateWidget, ProfileSelectWidget} from "./partials";
+import {SparkUI2Comm} from "../SparkUI2Comm";
 
 export class ProfileSelectorWidget extends Panel {
 
@@ -27,10 +28,18 @@ export class ProfileSelectorWidget extends Panel {
 
     private selectedProfileName: string = '';
 
-    constructor() {
+    private profiles: IProfileListItem[] = [{
+        "name": "",
+        "spark.executor.cores": "10",
+        "spark.executor.memory": "8g",
+        "spark.master": "local[10]",
+        "properties": []
+    }];
+
+    constructor(private readonly comm: SparkUI2Comm) {
         super();
 
-        this.profileSelectWidget = new ProfileSelectWidget(this.getProfilesList());
+        this.profileSelectWidget = new ProfileSelectWidget(this.profiles);
         this.profileCreateWidget = new ProfileCreateWidget();
         this.profileConfigurationWidget = new ProfileConfigurationWidget();
         this.profileCreateWidget.hide();
@@ -53,29 +62,9 @@ export class ProfileSelectorWidget extends Panel {
         return this.profileConfigurationWidget.getConfiguration();
     }
 
-    private getProfilesList(): IProfileListItem[] {
-        // TODO implement getting this from backend and probably move it somewhere else
-        return [
-            {
-                value: ''
-            },
-            {
-                value: 'Profile 1'
-            },
-            {
-                value: 'Profile 2'
-            }
-        ];
-    }
-
     public processMessage(msg: SparkUI2Message): void {
         switch(msg.type) {
             case 'profile-create-new-clicked':
-                console.log('profile-create-new-clicked');
-                // user requested creating new profile
-                //
-                // hide form with available profiles
-                // show creation form
                 this.profileSelectWidget.hide();
                 this.profileCreateWidget.show();
                 break;
@@ -89,17 +78,13 @@ export class ProfileSelectorWidget extends Panel {
                 break;
             case 'profile-save-clicked':
                 console.log('profile-save-clicked');
-                // user requested saving currently selected profile configuration
-                //
-                // get selected profile name
-                // collect profile configuration
-                let profileConfiguration = this.profileConfigurationWidget.getConfiguration();
-                console.log(profileConfiguration);
-                // request backend to update profile with given name data - update(name, data)
+                // this.profileConfigurationWidget.disable()
+                this.comm.saved.connect(this._onSave, this);
+                this.sendSaveProfilesMessage();
+
                 break;
             case 'profile-selection-changed':
                 console.log('profile-selection-changed');
-                console.log(msg.payload);
                 this.selectedProfileName = msg.payload.selectedProfile;
                 // user requested loading configuration of a profile with given name
                 //
@@ -108,24 +93,36 @@ export class ProfileSelectorWidget extends Panel {
                 // fill form with provided configuration
                 break;
             case 'profile-create-create-clicked':
-                console.log('profile-create-create-clicked');
-                // user requested creation of a profile with provided name
-                //
-                // get provided name
-                // request backend to create a profile with provided name - create(name)
-                // request backend to send configuration of created profile - load(name)
-                // fill a form with provided configuration
-                // hide creation form
-                // show a form with available profiles
+                console.log(msg);
+                let profileName = msg.payload.profileName.trim();
+                if (profileName === '') {
+                    console.log(`Profile name can't be empty.`)
+                    return;
+                }
+
+                let profile = this.getProfileByName(profileName);
+                if (profile !== null) {
+                    console.log(`Profile name '%s' already exists`, profileName);
+                    return;
+                }
+
+                profile = {
+                    name: profileName,
+                    "spark.master": "local[10]",
+                    "spark.executor.cores": "10",
+                    "spark.executor.memory": "8g",
+                    "properties": [],
+                };
+                this.profiles.push(profile);
+
+                this.profileSelectWidget.addProfile(profile);
+                this.profileSelectWidget.selectProfile(profile.name);
+
                 this.profileSelectWidget.show();
                 this.profileCreateWidget.hide();
                 break;
             case 'profile-create-cancel-clicked':
                 console.log('profile-create-cancel-clicked');
-                // user don't want to create new profile configuration
-                //
-                // hide creation form
-                // show a form with available profiles
                 this.profileSelectWidget.show();
                 this.profileCreateWidget.hide();
                 break;
@@ -134,6 +131,59 @@ export class ProfileSelectorWidget extends Panel {
                 super.processMessage(msg);
                 break
         }
+    }
+
+    private getProfileByName(profileName: string) {
+        for (let p of this.profiles) {
+            if (p.name === profileName) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    private updateProfileByName(profileName: string, configuration) {
+        let properties = [];
+
+        for (let i in this.profiles) {
+            if (this.profiles[i].name === profileName) {
+                for (const propertyName in configuration.properties) {
+                    properties.push({
+                        name : propertyName,
+                        value: configuration.properties[propertyName]
+                    })
+                }
+                this.profiles[i] = {
+                    "spark.executor.memory": configuration.executorMemory,
+                    "spark.master": configuration.masterURL,
+                    "name": profileName,
+                    "spark.executor.cores": configuration.executorCores,
+                    "properties": properties
+                }
+            }
+        }
+    }
+
+    private _onSave(sender: SparkUI2Comm) {
+        this.comm.saved.disconnect(this._onSave, this);
+        console.log('saved');
+    }
+
+    private updateProfile() {
+        let name = this.getSelectedProfileName();
+        let profileConfiguration = this.profileConfigurationWidget.getConfiguration();
+        console.log(this.profiles);
+        console.log(profileConfiguration);
+        this.updateProfileByName(name, profileConfiguration);
+    }
+
+    private sendSaveProfilesMessage() {
+        this.updateProfile();
+        let msg = {
+            event: 'save_profiles',
+            payload: this.profiles
+        };
+        this.comm.send(msg);
     }
     
 }

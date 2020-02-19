@@ -15,5 +15,9 @@
  */
 
 export interface IProfileListItem {
-    value: string;
+    'name': string;
+    'spark.executor.cores': string;
+    'spark.executor.memory': string;
+    'spark.master': string;
+    'properties': { name: string; value: string; }[];
 }

@@ -18,57 +18,21 @@ import {Panel} from "@phosphor/widgets";
 import {SparkUI2Message} from "./SparkUI2Message";
 import {ProfileSelectorWidget, StartWidget} from "./widgets";
 import {SessionWidget} from "./widgets/SessionWidget";
-import {SparkUI2View} from "../SparkUI2";
-import {IClassicComm} from "@jupyter-widgets/base";
-import {ISignal, Signal} from "@phosphor/signaling";
+import {SparkUI2Comm} from "./SparkUI2Comm";
 
 export class SparkUI2Widget extends Panel {
 
-    private startWidget: StartWidget;
-    private profileSelectorWidget: ProfileSelectorWidget;
-    private sessionWidget: SessionWidget;
+    private readonly startWidget: StartWidget;
+    private readonly profileSelectorWidget: ProfileSelectorWidget;
+    private readonly sessionWidget: SessionWidget;
 
-    private view: SparkUI2View;
-    private comm: IClassicComm;
-
-    private _started = new Signal<this, void>(this);
-    private _stopped = new Signal<this, void>(this);
-
-    private get started(): ISignal<this, void> {
-        return this._started;
-    }
-
-    private get stopped(): ISignal<this, void> {
-        return this._stopped;
-    }
-
-    constructor(options: { view: SparkUI2View, comm: IClassicComm }) {
+    constructor(private readonly comm: SparkUI2Comm) {
         super();
-        this.view = options.view;
-        this.comm = options.comm;
 
         this.addClass('bx-spark2-widget');
 
-        this.create();
-
-        this.comm.on_msg((msg) => {
-            let data = msg.content.data;
-
-            if (data.method === "update" && data.event.start === "completed") {
-                this._started.emit(undefined);
-                return;
-            }
-
-            if (data.method === "update" && data.event.stop === "done") {
-                this._stopped.emit(undefined);
-                return;
-            }
-        });
-    }
-
-    private create() {
         this.startWidget = new StartWidget();
-        this.profileSelectorWidget = new ProfileSelectorWidget();
+        this.profileSelectorWidget = new ProfileSelectorWidget(this.comm);
         this.sessionWidget = new SessionWidget();
 
         this.addWidget(this.startWidget);
@@ -78,22 +42,18 @@ export class SparkUI2Widget extends Panel {
         this.sessionWidget.hide();
     }
 
-    private send(msg: { event: string; payload: any; }) {
-        this.view.send(msg);
-    }
-
     public processMessage(msg: SparkUI2Message): void {
         switch(msg.type) {
             case 'start-clicked':
                 console.log('start-clicked');
                 this.startWidget.disableButton();
-                this.started.connect(this._onStart, this);
+                this.comm.started.connect(this._onStart, this);
                 this.sendStartMessage();
                 break;
             case 'stop-clicked':
                 console.log('stop-clicked');
                 this.sessionWidget.disableStop();
-                this.stopped.connect(this._onStop, this);
+                this.comm.stopped.connect(this._onStop, this);
                 this.sendStopMessage();
                 break;
             default:
@@ -102,16 +62,16 @@ export class SparkUI2Widget extends Panel {
         }
     }
 
-    private _onStart(sender: SparkUI2Widget) {
-        this.started.disconnect(this._onStart, this);
+    private _onStart(sender: SparkUI2Comm) {
+        this.comm.started.disconnect(this._onStart, this);
         this.startWidget.hide();
         this.profileSelectorWidget.hide();
         this.sessionWidget.show();
         this.sessionWidget.enableStop();
     }
 
-    private _onStop(sender: SparkUI2Widget) {
-        this.stopped.disconnect(this._onStop, this);
+    private _onStop(sender: SparkUI2Comm) {
+        this.comm.stopped.disconnect(this._onStop, this);
         this.startWidget.show();
         this.startWidget.enableButton();
         this.profileSelectorWidget.show();
@@ -138,7 +98,7 @@ export class SparkUI2Widget extends Panel {
                 "properties": properties
             }
         };
-        this.send(msg);
+        this.comm.send(msg);
     }
 
     private sendStopMessage(): void {
@@ -148,7 +108,7 @@ export class SparkUI2Widget extends Panel {
 
           }
       };
-      this.send(msg);
+      this.comm.send(msg);
     }
 }
 

@@ -31,6 +31,8 @@ export class ProfileSelectWidget extends Panel {
     readonly REMOVE_BUTTON_TEXT = '';
     readonly REMOVE_BUTTON_TITLE = 'Delete this profile';
 
+    private selectEl: HTMLSelectElement;
+
     constructor(profiles: IProfileListItem[]) {
         super();
         this.addWidget(this.createLabel());
@@ -54,7 +56,7 @@ export class ProfileSelectWidget extends Panel {
     }
 
     private createSelect(profiles: IProfileListItem[]): Widget {
-        let el = document.createElement('select');
+        let el = this.selectEl = document.createElement('select');
         let options = [];
         let optionElement;
 
@@ -64,9 +66,9 @@ export class ProfileSelectWidget extends Panel {
 
         for (let profile of profiles) {
             optionElement = document.createElement('option');
-            optionElement.textContent = profile.value;
-            optionElement.value = profile.value;
-            optionElement.setAttribute('data-value', profile.value);
+            optionElement.textContent = profile.name;
+            optionElement.value = profile.name;
+            optionElement.setAttribute('data-value', profile.name);
             options.push(optionElement);
         }
 
@@ -150,6 +152,25 @@ export class ProfileSelectWidget extends Panel {
         MessageLoop.sendMessage(this.parent,
             new SparkUI2Message('profile-selection-changed', {
                 selectedProfile: (evt.target as HTMLSelectElement).value
+            })
+        );
+    }
+
+    public addProfile(profile: IProfileListItem) {
+        let optionElement = document.createElement('option');
+        optionElement.textContent = profile.name;
+        optionElement.value = profile.name;
+        optionElement.setAttribute('data-value', profile.name);
+        this.selectEl.add(optionElement);
+
+    }
+
+    public selectProfile(name: string) {
+        (this.selectEl.querySelector(`option[value="${name}"]`) as HTMLOptionElement).selected = true;
+
+        MessageLoop.sendMessage(this.parent,
+            new SparkUI2Message('profile-selection-changed', {
+                selectedProfile: this.selectEl.value
             })
         );
     }

@@ -16,6 +16,7 @@
 
 import widgets from "./widgets";
 import {SparkUI2Widget} from "./sparkUI2/SparkUI2Widget";
+import {SparkUI2Comm} from "./sparkUI2/SparkUI2Comm";
 
 import './shared/style/spark2.scss';
 
@@ -43,7 +44,8 @@ export class SparkUI2View extends widgets.BoxView {
 
     async createWidget() {
         await this.displayed;
-        this.pWidget.addWidget(new SparkUI2Widget({ view: this, comm: this.model.comm }));
+        let comm = new SparkUI2Comm( this, this.model.comm );
+        this.pWidget.addWidget(new SparkUI2Widget(comm));
    }
 }
 

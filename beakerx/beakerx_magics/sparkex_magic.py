@@ -14,7 +14,8 @@
 import ipywidgets as widgets
 from IPython import get_ipython
 from IPython.core.magic import (Magics, magics_class, cell_magic)
-from beakerx.spark import (SparkUI2, IpythonManager,BeakerxSparkServerFactory)
+from beakerx.spark import (SparkUI2, IpythonManager, BeakerxSparkServerFactory)
+from beakerx.spark.profile import Profile
 from pyspark.sql import SparkSession
 
 
@@ -26,7 +27,10 @@ class SparkexMagics(Magics):
         ipython = get_ipython()
         result = self.runCellCode(cell, ipython)
         builder = result.result
-        spark_widget = SparkUI2(builder, IpythonManager(ipython), BeakerxSparkServerFactory())
+        spark_widget = SparkUI2(builder,
+                                IpythonManager(ipython),
+                                BeakerxSparkServerFactory(),
+                                Profile())
         return spark_widget
 
     def runCellCode(self, cell, ipython):

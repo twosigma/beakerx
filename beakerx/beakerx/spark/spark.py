@@ -25,11 +25,12 @@ class SparkUI2(BeakerxBox):
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
 
-    def __init__(self, builder, ipython_manager, spark_server_factory, **kwargs):
+    def __init__(self, builder, ipython_manager, spark_server_factory, profile, **kwargs):
         super(SparkUI2, self).__init__(**kwargs)
         self.builder = self.check_is_None(builder)
         self.ipython_manager = self.check_is_None(ipython_manager)
         self.spark_server_factory = self.check_is_None(spark_server_factory)
+        self.profile = self.check_is_None(profile)
         self.on_msg(self.handle_msg)
 
     def handle_msg(self, _, content, buffers=None):
@@ -37,6 +38,19 @@ class SparkUI2(BeakerxBox):
             self._handle_start(content)
         elif content['event'] == "stop":
             self._handle_stop(content)
+        elif content['event'] == "save_profiles":
+            self._handle_save_profile(content)
+
+    def _handle_save_profile(self, content):
+        result, err = self.profile.save()
+        if result:
+            msg = {
+                'method': 'update',
+                'event': {
+                    "save_profiles": "done"
+                }
+            }
+            self.comm.send(data=msg)
 
     def _handle_stop(self, content):
         self.sc.stop()
@@ -65,7 +79,7 @@ class SparkUI2(BeakerxBox):
         msg = {
             'method': 'update',
             'event': {
-                "start": "completed"
+                "start": "done"
             }
         }
         self.comm.send(data=msg)

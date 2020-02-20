@@ -43,6 +43,12 @@ export class ProfilePropertiesWidget extends Panel {
         return this.container.collectProperties();
     }
 
+    updateProperties(properties: { name: string; value: string }[]) {
+        this.container.removeProperties();
+        for (let p of properties) {
+            this.container.addProperty(p.name, p.value);
+        }
+    }
 }
 
 namespace Private {
@@ -79,6 +85,13 @@ namespace Private {
 
             p.widget.dispose();
             this.properties = this.properties.filter((p) => { return p.name !== name; });
+        }
+
+        public removeProperties() {
+            for (let p of this.properties) {
+                p.widget.dispose();
+            }
+            this.properties = [];
         }
 
         public collectProperties() {

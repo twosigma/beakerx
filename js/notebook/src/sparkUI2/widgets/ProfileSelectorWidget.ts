@@ -86,6 +86,8 @@ export class ProfileSelectorWidget extends Panel {
             case 'profile-selection-changed':
                 console.log('profile-selection-changed');
                 this.selectedProfileName = msg.payload.selectedProfile;
+                let selectedProfile = this.getProfileByName(this.selectedProfileName);
+                this.profileConfigurationWidget.updateConfiguration(selectedProfile);
                 // user requested loading configuration of a profile with given name
                 //
                 // get selected profile name

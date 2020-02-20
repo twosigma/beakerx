@@ -21,6 +21,7 @@ import {MasterURLWidget} from "./MasterURLWidget";
 import {ExecutorCoresWidget} from "./ExecutorCoresWidget";
 import {ExecutorMemoryWidget} from "./ExecutorMemoryWidget";
 import {SparkUI2Message} from "../../SparkUI2Message";
+import {IProfileListItem} from "../../IProfileListItem";
 
 export class ProfileConfigurationWidget extends Panel {
     private readonly propertiesWidget: ProfilePropertiesWidget;
@@ -87,4 +88,10 @@ export class ProfileConfigurationWidget extends Panel {
         }
     }
 
+    public updateConfiguration(selectedProfile: IProfileListItem) {
+        this.masterURLWidget.value = selectedProfile["spark.master"];
+        this.executorCoresWidget.value = selectedProfile["spark.executor.cores"];
+        this.executorMemoryWidget.value = selectedProfile["spark.executor.memory"];
+        this.propertiesWidget.updateProperties(selectedProfile.properties);
+    }
 }

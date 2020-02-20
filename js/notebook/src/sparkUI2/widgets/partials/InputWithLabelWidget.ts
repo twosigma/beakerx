@@ -41,6 +41,11 @@ export abstract class InputWithLabelWidget extends Panel {
         return this._value;
     }
 
+    public set value(value) {
+        this._value = value;
+        (this.inputWidget.node as HTMLInputElement).value = value;
+    }
+
     private createLabel(): Widget {
         let el = document.createElement('label');
 

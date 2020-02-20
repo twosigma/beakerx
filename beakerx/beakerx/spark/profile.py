@@ -35,13 +35,18 @@ class Profile:
         self.path_to_beakerx_json = path_to_beakerx_json
 
     def save(self, profile_to_save):
-        result, err = self.load()
+        result, err = self.load_beakerx_json()
         result["beakerx"]["spark_options"]["profiles"] = profile_to_save
         with open(self.path_to_beakerx_json, 'w') as outfile:
             json.dump(result, outfile)
         return True, Profile.ERR
 
-    def load(self):
+    def load_beakerx_json(self):
         with open(self.path_to_beakerx_json) as json_file:
             data = json.load(json_file)
         return data, Profile.ERR
+
+    def load_profile(self):
+        with open(self.path_to_beakerx_json) as json_file:
+            data = json.load(json_file)
+        return data["beakerx"]["spark_options"], Profile.ERR

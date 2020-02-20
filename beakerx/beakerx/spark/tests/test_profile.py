@@ -26,11 +26,10 @@ class TestSparkUIProfile(unittest.TestCase):
         # given
         sut = Profile(path_to_beakerx_json=TestSparkUIProfile.MOCK_JSON)
         # when
-        result, err = sut.load()
-
+        result, err = sut.load_profile()
         # then
         self.assertTrue(err is None)
-        self.assertTrue("beakerx" in result)
+        self.assertTrue("profiles" in result)
 
     def test_should_save_profile(self):
         # given
@@ -60,7 +59,7 @@ class TestSparkUIProfile(unittest.TestCase):
         # then
         self.assertTrue(err is None)
         self.assertTrue(result)
-        result, err = sut.load()
-        profiles = result["beakerx"]["spark_options"]["profiles"]
+        result, err = sut.load_profile()
+        profiles = result["profiles"]
         self.assertTrue("pf_new" in profiles[0]["name"])
         os.remove(TestSparkUIProfile.MOCK_TEST_JSON)

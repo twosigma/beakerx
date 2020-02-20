@@ -25,13 +25,16 @@ class SparkUI2(BeakerxBox):
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
 
-    def __init__(self, builder, ipython_manager, spark_server_factory, profile, **kwargs):
+    def __init__(self, builder, ipython_manager, spark_server_factory, profile, comm=None, **kwargs):
         super(SparkUI2, self).__init__(**kwargs)
         self.builder = self.check_is_None(builder)
         self.ipython_manager = self.check_is_None(ipython_manager)
         self.spark_server_factory = self.check_is_None(spark_server_factory)
         self.profile = self.check_is_None(profile)
         self.on_msg(self.handle_msg)
+        if comm is not None:
+            self.comm = comm
+        self._init_profiles()
 
     def handle_msg(self, _, content, buffers=None):
         if content['event'] == "start":
@@ -88,6 +91,15 @@ class SparkUI2(BeakerxBox):
         if value is None:
             raise Exception('value can not be None')
         return value
+
+    def _init_profiles(self):
+        data, err = self.profile.load_profile()
+        if err is None:
+            msg = {
+                'method': 'update',
+                'update_model': data
+            }
+        self.comm.send(data=msg)
 
 
 class SparkJobRunner:

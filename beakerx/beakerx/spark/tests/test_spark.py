@@ -19,14 +19,26 @@ from ipykernel.comm import Comm
 
 class TestSparkUI(unittest.TestCase):
 
+    def test_should_load_profile_on_widget_creation(self):
+        # given
+        builder = BuilderMock()
+        ipython_manager = IpythonManagerMock()
+        spark_server_factory = SparkServerFactoryMock()
+        profile = ProfileMock()
+        # when
+        sui = SparkUI2(builder, ipython_manager, spark_server_factory, profile, CommMock())
+        # then
+        self.assertTrue(sui.comm.message["method"] == "update")
+        model = sui.comm.message["update_model"]
+        self.assertTrue(model["profiles"] == [])
+
     def test_should_save_profile(self):
         # given
         builder = BuilderMock()
         ipython_manager = IpythonManagerMock()
         spark_server_factory = SparkServerFactoryMock()
         profile = ProfileMock()
-        sui = SparkUI2(builder, ipython_manager, spark_server_factory, profile)
-        sui.comm = CommMock()
+        sui = SparkUI2(builder, ipython_manager, spark_server_factory, profile, CommMock())
         sui._on_start()
         msg_save_profile = {
             'event': 'save_profiles'
@@ -47,8 +59,7 @@ class TestSparkUI(unittest.TestCase):
         ipython_manager = IpythonManagerMock()
         spark_server_factory = SparkServerFactoryMock()
         profile = ProfileMock()
-        sui = SparkUI2(builder, ipython_manager, spark_server_factory, profile)
-        sui.comm = CommMock()
+        sui = SparkUI2(builder, ipython_manager, spark_server_factory, profile, CommMock())
         sui._on_start()
         msg_stop = {
             'event': 'stop'
@@ -66,8 +77,7 @@ class TestSparkUI(unittest.TestCase):
         ipython_manager = IpythonManagerMock()
         spark_server_factory = SparkServerFactoryMock()
         profile = ProfileMock()
-        sui = SparkUI2(builder, ipython_manager, spark_server_factory, profile)
-        sui.comm = CommMock()
+        sui = SparkUI2(builder, ipython_manager, spark_server_factory, profile, CommMock())
         msg_start = {
             'event': 'start',
             'payload': {
@@ -132,7 +142,7 @@ class TestSparkUI(unittest.TestCase):
         ipython = IpythonManagerMock()
         profile = ProfileMock()
         # when
-        spark_ui = SparkUI2(builder, ipython, spark_server_factory, profile)
+        spark_ui = SparkUI2(builder, ipython, spark_server_factory, profile, CommMock())
         # then
         self.assertTrue(spark_ui)
 
@@ -201,3 +211,6 @@ class ProfileMock:
 
     def save(self):
         return True, ProfileMock.err
+
+    def load_profile(self):
+        return {"profiles": []}, ProfileMock.err

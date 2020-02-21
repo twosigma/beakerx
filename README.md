@@ -64,7 +64,7 @@ beakerx_databrowser install
 ### Build and Install (win)
 ```
 conda env create -n beakerx -f configuration.yml
-activate beakerx
+conda activate beakerx
 cd beakerx
 pip install -r requirements.txt --verbose
 cd ..

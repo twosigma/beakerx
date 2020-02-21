@@ -46,7 +46,7 @@ class TestSparkUI(unittest.TestCase):
                 {
                     "spark.executor.memory": "8g",
                     "spark.master": "local[10]",
-                    "name": "",
+                    "name": "new_prof_1",
                     "spark.executor.cores": "10",
                     "properties": []
                 }
@@ -56,7 +56,7 @@ class TestSparkUI(unittest.TestCase):
         sui.handle_msg(sui, msg_save_profile)
         # then
         result, err = profile.load_profiles()
-        self.assertTrue(result)
+        self.assertTrue(result[0]["name"]=="new_prof_1")
         self.assertTrue(err is None)
         self.assertTrue(sui.comm.message["method"] == "update")
         event = sui.comm.message["event"]

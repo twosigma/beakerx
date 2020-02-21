@@ -91,11 +91,14 @@ export class SparkUI2Widget extends Panel {
         let msg = {
             event: 'start',
             payload: {
-                "spark.executor.memory": configuration.executorMemory,
-                "spark.master": configuration.masterURL,
-                "name": name,
-                "spark.executor.cores": configuration.executorCores,
-                "properties": properties
+                "current_profile_name": name,
+                "spark_options": {
+                    "spark.executor.memory": configuration.executorMemory,
+                    "spark.master": configuration.masterURL,
+                    "name": name,
+                    "spark.executor.cores": configuration.executorCores,
+                    "properties": properties
+                }
             }
         };
         this.comm.send(msg);

@@ -19,13 +19,47 @@ from ipykernel.comm import Comm
 
 class TestSparkUI(unittest.TestCase):
 
+    def test_should_load_profile_on_widget_creation(self):
+        # given
+        builder = BuilderMock()
+        ipython_manager = IpythonManagerMock()
+        spark_server_factory = SparkServerFactoryMock()
+        profile = ProfileMock()
+        # when
+        sui = SparkUI2(builder, ipython_manager, spark_server_factory, profile, CommMock())
+        # then
+        self.assertTrue(sui.comm.message["method"] == "update")
+        model = sui.comm.message["update_model"]
+        self.assertTrue(model["profiles"] == [])
+
+    def test_should_save_profile(self):
+        # given
+        builder = BuilderMock()
+        ipython_manager = IpythonManagerMock()
+        spark_server_factory = SparkServerFactoryMock()
+        profile = ProfileMock()
+        sui = SparkUI2(builder, ipython_manager, spark_server_factory, profile, CommMock())
+        sui._on_start()
+        msg_save_profile = {
+            'event': 'save_profiles'
+        }
+        # when
+        sui.handle_msg(sui, msg_save_profile)
+        # then
+        result, err = profile.save()
+        self.assertTrue(result)
+        self.assertTrue(err is None)
+        self.assertTrue(sui.comm.message["method"] == "update")
+        event = sui.comm.message["event"]
+        self.assertTrue(event["save_profiles"] == "done")
+
     def test_should_send_done_message_when_sc_stops(self):
         # given
         builder = BuilderMock()
         ipython_manager = IpythonManagerMock()
         spark_server_factory = SparkServerFactoryMock()
-        sui = SparkUI2(builder, ipython_manager, spark_server_factory)
-        sui.comm = CommMock()
+        profile = ProfileMock()
+        sui = SparkUI2(builder, ipython_manager, spark_server_factory, profile, CommMock())
         sui._on_start()
         msg_stop = {
             'event': 'stop'
@@ -37,19 +71,22 @@ class TestSparkUI(unittest.TestCase):
         event = sui.comm.message["event"]
         self.assertTrue(event["stop"] == "done")
 
-    def test_should_send_completed_message_when_sc_starts(self):
+    def test_should_send_done_message_when_sc_starts(self):
         # given
         builder = BuilderMock()
         ipython_manager = IpythonManagerMock()
         spark_server_factory = SparkServerFactoryMock()
-        sui = SparkUI2(builder, ipython_manager, spark_server_factory)
-        sui.comm = CommMock()
+        profile = ProfileMock()
+        sui = SparkUI2(builder, ipython_manager, spark_server_factory, profile, CommMock())
         msg_start = {
             'event': 'start',
             'payload': {
-                'spark.executor.memory': '8g',
-                'spark.master': 'local[10]',
-                'properties': []
+                "current_profile_name": "profile1",
+                "spark_options": {
+                    'spark.executor.memory': '8g',
+                    'spark.master': 'local[10]',
+                    'properties': []
+                }
             }
         }
         # when
@@ -57,16 +94,40 @@ class TestSparkUI(unittest.TestCase):
         # then
         self.assertTrue(sui.comm.message["method"] == "update")
         event = sui.comm.message["event"]
-        self.assertTrue(event["start"] == "completed")
+        self.assertTrue(event["start"] == "done")
+
+    def test_should_send_save_current_profile_when_sc_starts(self):
+        # given
+        builder = BuilderMock()
+        ipython_manager = IpythonManagerMock()
+        spark_server_factory = SparkServerFactoryMock()
+        profile = ProfileMock()
+        sui = SparkUI2(builder, ipython_manager, spark_server_factory, profile, CommMock())
+        msg_start = {
+            'event': 'start',
+            'payload': {
+                "current_profile_name": "profile1",
+                "spark_options": {
+                    'spark.executor.memory': '8g',
+                    'spark.master': 'local[10]',
+                    'properties': []
+                }
+            }
+        }
+        # when
+        sui.handle_msg(sui, msg_start)
+        # then
+        self.assertTrue(profile.current_profile_name == "profile1")
 
     def test_should_not_create_sc_when_builder_is_None(self):
         # given
         builder = None
         spark_server_factory = SparkServerFactoryMock()
         ipython = IpythonManagerMock()
+        profile = ProfileMock()
         # when
         try:
-            SparkUI2(builder, ipython, spark_server_factory)
+            SparkUI2(builder, ipython, spark_server_factory, profile)
             self.fail("builder is None")
         except Exception as err:
             self.assertTrue("value can not be None" in str(err), "Should not create SparkUI when builder is None")
@@ -76,10 +137,11 @@ class TestSparkUI(unittest.TestCase):
         # given
         builder = BuilderMock()
         spark_server_factory = SparkServerFactoryMock()
+        profile = ProfileMock()
         ipython = None
         # when
         try:
-            SparkUI2(builder, ipython, spark_server_factory)
+            SparkUI2(builder, ipython, spark_server_factory, profile)
             self.fail("ipython is None")
         except Exception as err:
             self.assertTrue("value can not be None" in str(err), "Should not create SparkUI when ipython is None")
@@ -89,10 +151,11 @@ class TestSparkUI(unittest.TestCase):
         # given
         builder = BuilderMock()
         ipython = IpythonManagerMock()
+        profile = ProfileMock()
         spark_server_factory = None
         # when
         try:
-            SparkUI2(builder, ipython, spark_server_factory)
+            SparkUI2(builder, ipython, spark_server_factory, profile)
             self.fail("spark server factory is None")
         except Exception as err:
             self.assertTrue("value can not be None" in str(err), "Should not create SparkUI when factory is None")
@@ -103,8 +166,9 @@ class TestSparkUI(unittest.TestCase):
         spark_server_factory = SparkServerFactoryMock()
         builder = BuilderMock()
         ipython = IpythonManagerMock()
+        profile = ProfileMock()
         # when
-        spark_ui = SparkUI2(builder, ipython, spark_server_factory)
+        spark_ui = SparkUI2(builder, ipython, spark_server_factory, profile, CommMock())
         # then
         self.assertTrue(spark_ui)
 
@@ -163,3 +227,20 @@ class SparkServerFactoryMock:
 
     def run_new_instance(self, spark_context):
         pass
+
+
+class ProfileMock:
+    err = None
+
+    def __init__(self):
+        self.current_profile_name = None
+
+    def save(self):
+        return True, ProfileMock.err
+
+    def load_profile(self):
+        return {"profiles": []}, ProfileMock.err
+
+    def save_current_profile_name(self, current_profile_name):
+        self.current_profile_name = current_profile_name
+        return True, ProfileMock.err

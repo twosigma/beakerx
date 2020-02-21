@@ -1,0 +1,64 @@
+{
+  "beakerx": {
+    "jvm_options": {
+      "heap_GB": null,
+      "other": [],
+      "properties": []
+    },
+    "spark_options": {
+      "current_profile": "",
+      "profiles": [
+        {
+          "spark.executor.memory": "1g",
+          "spark.master": "local[4]",
+          "name": "",
+          "spark.executor.cores": "4",
+          "properties": [
+            {
+              "name": "prop1",
+              "value": "value1"
+            },
+            {
+              "name": "prop2",
+              "value": "value2"
+            }
+          ]
+        },
+        {
+          "spark.executor.memory": "1g",
+          "spark.master": "local[4]",
+          "name": "profile1",
+          "spark.executor.cores": "4",
+          "properties": [
+            {
+              "name": "prop3",
+              "value": "value3"
+            }
+          ]
+        },
+        {
+          "spark.executor.memory": "1g",
+          "spark.master": "local[4]",
+          "name": "profile2",
+          "spark.executor.cores": "4",
+          "properties": [
+            {
+              "name": "prop4",
+              "value": "value4"
+            }
+          ]
+        }
+      ]
+    },
+    "ui_options": {
+      "auto_close": true,
+      "auto_save": true,
+      "improve_fonts": true,
+      "show_catalog": true,
+      "show_publication": true,
+      "use_data_grid": true,
+      "wide_cells": true
+    },
+    "version": 2
+  }
+}

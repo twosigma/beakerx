@@ -66,13 +66,15 @@ class SparkUI2(BeakerxBox):
         self.comm.send(data=msg)
 
     def _handle_start(self, content):
-        payload = content['payload']
-        for key, value in payload.items():
+        current_profile_name = content['payload']['current_profile_name']
+        spark_options = content['payload']['spark_options']
+        for key, value in spark_options.items():
             if key == "properties":
                 for item in value:
                     self.builder.config(item.name, item.value)
             self.builder.config(key, value)
         self._on_start()
+        self.profile.save_current_profile_name(current_profile_name)
 
     def _on_start(self):
         spark = self.builder.getOrCreate()

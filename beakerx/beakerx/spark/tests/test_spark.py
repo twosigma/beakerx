@@ -81,9 +81,12 @@ class TestSparkUI(unittest.TestCase):
         msg_start = {
             'event': 'start',
             'payload': {
-                'spark.executor.memory': '8g',
-                'spark.master': 'local[10]',
-                'properties': []
+                "current_profile_name": "profile1",
+                "spark_options": {
+                    'spark.executor.memory': '8g',
+                    'spark.master': 'local[10]',
+                    'properties': []
+                }
             }
         }
         # when
@@ -92,6 +95,29 @@ class TestSparkUI(unittest.TestCase):
         self.assertTrue(sui.comm.message["method"] == "update")
         event = sui.comm.message["event"]
         self.assertTrue(event["start"] == "done")
+
+    def test_should_send_save_current_profile_when_sc_starts(self):
+        # given
+        builder = BuilderMock()
+        ipython_manager = IpythonManagerMock()
+        spark_server_factory = SparkServerFactoryMock()
+        profile = ProfileMock()
+        sui = SparkUI2(builder, ipython_manager, spark_server_factory, profile, CommMock())
+        msg_start = {
+            'event': 'start',
+            'payload': {
+                "current_profile_name": "profile1",
+                "spark_options": {
+                    'spark.executor.memory': '8g',
+                    'spark.master': 'local[10]',
+                    'properties': []
+                }
+            }
+        }
+        # when
+        sui.handle_msg(sui, msg_start)
+        # then
+        self.assertTrue(profile.current_profile_name == "profile1")
 
     def test_should_not_create_sc_when_builder_is_None(self):
         # given
@@ -207,10 +233,14 @@ class ProfileMock:
     err = None
 
     def __init__(self):
-        pass
+        self.current_profile_name = None
 
     def save(self):
         return True, ProfileMock.err
 
     def load_profile(self):
         return {"profiles": []}, ProfileMock.err
+
+    def save_current_profile_name(self, current_profile_name):
+        self.current_profile_name = current_profile_name
+        return True, ProfileMock.err

@@ -14,11 +14,11 @@
 import os
 import unittest
 from shutil import copyfile
+
 from beakerx.spark.profile import Profile
 
 
 class TestSparkUIProfile(unittest.TestCase):
-
     MOCK_TEST_JSON = "resources" + os.path.sep + "beakerxMock2.json"
     MOCK_JSON = "resources" + os.path.sep + "beakerxMock.json"
 
@@ -62,4 +62,18 @@ class TestSparkUIProfile(unittest.TestCase):
         result, err = sut.load_profile()
         profiles = result["profiles"]
         self.assertTrue("pf_new" in profiles[0]["name"])
+        os.remove(TestSparkUIProfile.MOCK_TEST_JSON)
+
+    def test_should_save_current_profile_name(self):
+        # given
+        copyfile(TestSparkUIProfile.MOCK_JSON, TestSparkUIProfile.MOCK_TEST_JSON)
+        sut = Profile(path_to_beakerx_json=TestSparkUIProfile.MOCK_TEST_JSON)
+        # when
+        result, err = sut.save_current_profile_name("new_profile_name1")
+        # then
+        self.assertTrue(err is None)
+        self.assertTrue(result)
+        result, err = sut.load_profile()
+        current_profile_name = result["current_profile"]
+        self.assertTrue(current_profile_name == "new_profile_name1")
         os.remove(TestSparkUIProfile.MOCK_TEST_JSON)

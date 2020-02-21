@@ -46,7 +46,7 @@ class Profile:
             data = json.load(json_file)
         return data, Profile.ERR
 
-    def load_profile(self):
+    def load_profiles(self):
         with open(self.path_to_beakerx_json) as json_file:
             data = json.load(json_file)
         return data["beakerx"]["spark_options"], Profile.ERR

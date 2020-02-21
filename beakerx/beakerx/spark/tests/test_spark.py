@@ -32,7 +32,7 @@ class TestSparkUI(unittest.TestCase):
         model = sui.comm.message["update_model"]
         self.assertTrue(model["profiles"] == [])
 
-    def test_should_save_profile(self):
+    def test_should_save_profiles(self):
         # given
         builder = BuilderMock()
         ipython_manager = IpythonManagerMock()
@@ -41,12 +41,21 @@ class TestSparkUI(unittest.TestCase):
         sui = SparkUI2(builder, ipython_manager, spark_server_factory, profile, CommMock())
         sui._on_start()
         msg_save_profile = {
-            'event': 'save_profiles'
+            "event": "save_profiles",
+            "payload": [
+                {
+                    "spark.executor.memory": "8g",
+                    "spark.master": "local[10]",
+                    "name": "",
+                    "spark.executor.cores": "10",
+                    "properties": []
+                }
+            ]
         }
         # when
         sui.handle_msg(sui, msg_save_profile)
         # then
-        result, err = profile.save()
+        result, err = profile.load_profiles()
         self.assertTrue(result)
         self.assertTrue(err is None)
         self.assertTrue(sui.comm.message["method"] == "update")
@@ -234,12 +243,16 @@ class ProfileMock:
 
     def __init__(self):
         self.current_profile_name = None
+        self.profiles = {
+            "profiles": []
+        }
 
-    def save(self):
+    def save(self, content):
+        self.profiles = content
         return True, ProfileMock.err
 
-    def load_profile(self):
-        return {"profiles": []}, ProfileMock.err
+    def load_profiles(self):
+        return self.profiles, ProfileMock.err
 
     def save_current_profile_name(self, current_profile_name):
         self.current_profile_name = current_profile_name

@@ -45,7 +45,8 @@ class SparkUI2(BeakerxBox):
             self._handle_save_profile(content)
 
     def _handle_save_profile(self, content):
-        result, err = self.profile.save()
+        payload = content["payload"]
+        result, err = self.profile.save(payload)
         if result:
             msg = {
                 'method': 'update',
@@ -95,7 +96,7 @@ class SparkUI2(BeakerxBox):
         return value
 
     def _init_profiles(self):
-        data, err = self.profile.load_profile()
+        data, err = self.profile.load_profiles()
         if err is None:
             msg = {
                 'method': 'update',

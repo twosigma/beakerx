@@ -22,11 +22,11 @@ class TestSparkUIProfile(unittest.TestCase):
     MOCK_TEST_JSON = "resources" + os.path.sep + "beakerxMock2.json"
     MOCK_JSON = "resources" + os.path.sep + "beakerxMock.json"
 
-    def test_should_load_profile(self):
+    def test_should_load_profiles(self):
         # given
         sut = Profile(path_to_beakerx_json=TestSparkUIProfile.MOCK_JSON)
         # when
-        result, err = sut.load_profile()
+        result, err = sut.load_profiles()
         # then
         self.assertTrue(err is None)
         self.assertTrue("profiles" in result)
@@ -59,7 +59,7 @@ class TestSparkUIProfile(unittest.TestCase):
         # then
         self.assertTrue(err is None)
         self.assertTrue(result)
-        result, err = sut.load_profile()
+        result, err = sut.load_profiles()
         profiles = result["profiles"]
         self.assertTrue("pf_new" in profiles[0]["name"])
         os.remove(TestSparkUIProfile.MOCK_TEST_JSON)
@@ -73,7 +73,7 @@ class TestSparkUIProfile(unittest.TestCase):
         # then
         self.assertTrue(err is None)
         self.assertTrue(result)
-        result, err = sut.load_profile()
+        result, err = sut.load_profiles()
         current_profile_name = result["current_profile"]
         self.assertTrue(current_profile_name == "new_profile_name1")
         os.remove(TestSparkUIProfile.MOCK_TEST_JSON)

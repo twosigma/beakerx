@@ -90,6 +90,21 @@ public class GroovyReflectionCompletionTest {
 		assert grc.resolveExpression("hello", 3).equals("hello");
 	}
 	
+	
+	@Test
+	public void testCompletePropertyNames2() {
+		
+		Binding binding = new Binding();
+		
+		binding.setVariable("a", new A());
+		
+		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding);
+		
+		List<String> result = grc.autocomplete("a.", 2);
+		
+		assert result.get(0).equals("b");
+	}
+		
 
 	@Test
 	public void testCompletePropertyNames() {

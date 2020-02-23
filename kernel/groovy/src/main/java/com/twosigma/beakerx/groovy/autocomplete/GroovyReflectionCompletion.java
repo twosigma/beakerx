@@ -66,7 +66,7 @@ public class GroovyReflectionCompletion {
 	
 	public String resolveExpression(String text, int pos) {
 		
-		int nextLine = pos+1;
+		int nextLine = Math.min(text.length()-1,pos+1);
 		char nextChar = text.charAt(nextLine);
 		while(nextLine<text.length() && Character.isJavaIdentifierPart(nextChar)) {
 			++nextLine;

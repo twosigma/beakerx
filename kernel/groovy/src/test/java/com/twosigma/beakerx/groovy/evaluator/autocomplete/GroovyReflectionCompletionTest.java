@@ -119,7 +119,31 @@ public class GroovyReflectionCompletionTest {
 		assert result.size() >= 1;
 
 		assert result.stream().filter(x -> x.equals("house")).count()>0;
+		
+		result = grc.autocomplete("tree.", 4);
+		
+		assert result.size() >= 1;
+		
+		assert result.stream().filter(x -> x.equals("house")).count()>0;
+		
 	}
+	
+	@Test
+	public void testExpressionInParentheses() {
+		
+		Binding binding = new Binding();
+		
+		binding.setVariable("tree", new Tree());
+		
+		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding);
+			
+		List result = grc.autocomplete("x.foo(tree.h)", 11);
+		
+		assert result.size() >= 1;
+
+		assert result.stream().filter(x -> x.equals("house")).count()>0;
+	}
+	
 	
 	@Test
 	public void testMapLiteral() {

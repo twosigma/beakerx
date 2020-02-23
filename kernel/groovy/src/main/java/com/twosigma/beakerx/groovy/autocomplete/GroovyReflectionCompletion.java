@@ -66,20 +66,35 @@ public class GroovyReflectionCompletion {
 	
 	public String resolveExpression(String text, int pos) {
 		
-		int nextLine = pos;
-		while(nextLine<text.length() && !Character.isWhitespace(text.charAt(nextLine))) {
+		int nextLine = pos+1;
+		char nextChar = text.charAt(nextLine);
+		while(nextLine<text.length() && Character.isJavaIdentifierPart(nextChar)) {
 			++nextLine;
+			
+			if(nextLine<text.length())
+				nextChar = text.charAt(nextLine);
+			else
+				nextChar = '\n';
 		}
 		
 		int prevLine = pos;
-		while(prevLine>=0 && !Character.isWhitespace(text.charAt(prevLine))) {
+		while(prevLine>=0 && (text.charAt(prevLine) == '.' || Character.isJavaIdentifierPart(text.charAt(prevLine)))) {
 			--prevLine;
 		}
 		
 		prevLine = Math.max(0,prevLine);
 		nextLine = Math.min(text.length(),nextLine);
-
-		return text.substring(prevLine, nextLine).trim();
+		
+		String result = text.substring(prevLine, nextLine).trim();
+		
+		if(!Character.isJavaIdentifierPart(result.charAt(result.length()-1))) {
+			result = result.substring(0, result.length()-1);
+		}
+		
+		if(!Character.isJavaIdentifierPart(result.charAt(0))) {
+			result = result.substring(1);
+		}
+		return result;
 	}
 	
 	/**

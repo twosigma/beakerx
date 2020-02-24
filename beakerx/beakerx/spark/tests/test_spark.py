@@ -28,9 +28,7 @@ class TestSparkUI(unittest.TestCase):
         # when
         sui = SparkUI2(builder, ipython_manager, spark_server_factory, profile, CommMock())
         # then
-        self.assertTrue(sui.comm.message["method"] == "update")
-        model = sui.comm.message["update_model"]
-        self.assertTrue(model["profiles"] == [])
+        self.assertTrue(sui.profiles == [])
 
     def test_should_save_profiles(self):
         # given
@@ -56,7 +54,7 @@ class TestSparkUI(unittest.TestCase):
         sui.handle_msg(sui, msg_save_profile)
         # then
         result, err = profile.load_profiles()
-        self.assertTrue(result[0]["name"]=="new_prof_1")
+        self.assertTrue(result[0]["name"] == "new_prof_1")
         self.assertTrue(err is None)
         self.assertTrue(sui.comm.message["method"] == "update")
         event = sui.comm.message["event"]

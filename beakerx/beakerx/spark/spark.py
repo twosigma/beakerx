@@ -16,7 +16,7 @@ from beakerx_base import BeakerxBox
 from beakerx_magics.sparkex_widget import SparkStateProgressUiManager
 from beakerx_magics.sparkex_widget.spark_listener import SparkListener
 from beakerx_magics.sparkex_widget.spark_server import BeakerxSparkServer
-from traitlets import Unicode
+from traitlets import Unicode, List
 
 
 class SparkUI2(BeakerxBox):
@@ -24,9 +24,9 @@ class SparkUI2(BeakerxBox):
     _model_name = Unicode('SparkUI2Model').tag(sync=True)
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
+    profiles = List().tag(sync=True)
 
     def __init__(self, builder, ipython_manager, spark_server_factory, profile, comm=None, **kwargs):
-        super(SparkUI2, self).__init__(**kwargs)
         self.builder = self.check_is_None(builder)
         self.ipython_manager = self.check_is_None(ipython_manager)
         self.spark_server_factory = self.check_is_None(spark_server_factory)
@@ -34,7 +34,8 @@ class SparkUI2(BeakerxBox):
         self.on_msg(self.handle_msg)
         if comm is not None:
             self.comm = comm
-        self._init_profiles()
+        self.profiles = self._get_init_profiles()
+        super(SparkUI2, self).__init__(**kwargs)
 
     def handle_msg(self, _, content, buffers=None):
         if content['event'] == "start":
@@ -95,14 +96,11 @@ class SparkUI2(BeakerxBox):
             raise Exception('value can not be None')
         return value
 
-    def _init_profiles(self):
+    def _get_init_profiles(self):
         data, err = self.profile.load_profiles()
         if err is None:
-            msg = {
-                'method': 'update',
-                'update_model': data
-            }
-        self.comm.send(data=msg)
+            return data["profiles"]
+        return {}
 
 
 class SparkJobRunner:

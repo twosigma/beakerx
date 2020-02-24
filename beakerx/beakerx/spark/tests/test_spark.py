@@ -29,6 +29,7 @@ class TestSparkUI(unittest.TestCase):
         sui = SparkUI2(builder, ipython_manager, spark_server_factory, profile, CommMock())
         # then
         self.assertTrue(sui.profiles == [])
+        self.assertTrue(sui.current_profile_name == "")
 
     def test_should_save_profiles(self):
         # given
@@ -54,7 +55,7 @@ class TestSparkUI(unittest.TestCase):
         sui.handle_msg(sui, msg_save_profile)
         # then
         result, err = profile.load_profiles()
-        self.assertTrue(result[0]["name"] == "new_prof_1")
+        self.assertTrue(result["profiles"][0]["name"] == "new_prof_1")
         self.assertTrue(err is None)
         self.assertTrue(sui.comm.message["method"] == "update")
         event = sui.comm.message["event"]
@@ -124,7 +125,7 @@ class TestSparkUI(unittest.TestCase):
         # when
         sui.handle_msg(sui, msg_start)
         # then
-        self.assertTrue(profile.current_profile_name == "profile1")
+        self.assertTrue(profile.spark_options["current_profile"] == "profile1")
 
     def test_should_not_create_sc_when_builder_is_None(self):
         # given
@@ -240,18 +241,18 @@ class ProfileMock:
     err = None
 
     def __init__(self):
-        self.current_profile_name = None
-        self.profiles = {
+        self.spark_options = {
+            "current_profile": "",
             "profiles": []
         }
 
     def save(self, content):
-        self.profiles = content
+        self.spark_options["profiles"] = content
         return True, ProfileMock.err
 
     def load_profiles(self):
-        return self.profiles, ProfileMock.err
+        return self.spark_options, ProfileMock.err
 
     def save_current_profile_name(self, current_profile_name):
-        self.current_profile_name = current_profile_name
+        self.spark_options["current_profile"] = current_profile_name
         return True, ProfileMock.err

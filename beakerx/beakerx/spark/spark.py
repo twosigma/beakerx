@@ -25,6 +25,7 @@ class SparkUI2(BeakerxBox):
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
     profiles = List().tag(sync=True)
+    current_profile_name = Unicode("").tag(sync=True)
 
     def __init__(self, builder, ipython_manager, spark_server_factory, profile, comm=None, **kwargs):
         self.builder = self.check_is_None(builder)
@@ -34,7 +35,7 @@ class SparkUI2(BeakerxBox):
         self.on_msg(self.handle_msg)
         if comm is not None:
             self.comm = comm
-        self.profiles = self._get_init_profiles()
+        self.profiles, self.current_profile_name = self._get_init_profiles()
         super(SparkUI2, self).__init__(**kwargs)
 
     def handle_msg(self, _, content, buffers=None):
@@ -99,8 +100,8 @@ class SparkUI2(BeakerxBox):
     def _get_init_profiles(self):
         data, err = self.profile.load_profiles()
         if err is None:
-            return data["profiles"]
-        return {}
+            return data["profiles"], data["current_profile"]
+        return {}, "", err
 
 
 class SparkJobRunner:

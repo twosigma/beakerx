@@ -25,7 +25,7 @@ class SparkUI2(BeakerxBox):
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
     profiles = List().tag(sync=True)
-    current_profile_name = Unicode("").tag(sync=True)
+    current_profile = Unicode("").tag(sync=True)
 
     def __init__(self, builder, ipython_manager, spark_server_factory, profile, comm=None, **kwargs):
         self.builder = self.check_is_None(builder)
@@ -35,7 +35,7 @@ class SparkUI2(BeakerxBox):
         self.on_msg(self.handle_msg)
         if comm is not None:
             self.comm = comm
-        self.profiles, self.current_profile_name = self._get_init_profiles()
+        self.profiles, self.current_profile = self._get_init_profiles()
         super(SparkUI2, self).__init__(**kwargs)
 
     def handle_msg(self, _, content, buffers=None):
@@ -69,7 +69,7 @@ class SparkUI2(BeakerxBox):
         self.comm.send(data=msg)
 
     def _handle_start(self, content):
-        current_profile_name = content['payload']['current_profile_name']
+        current_profile = content['payload']['current_profile']
         spark_options = content['payload']['spark_options']
         for key, value in spark_options.items():
             if key == "properties":
@@ -77,7 +77,7 @@ class SparkUI2(BeakerxBox):
                     self.builder.config(item.name, item.value)
             self.builder.config(key, value)
         self._on_start()
-        self.profile.save_current_profile_name(current_profile_name)
+        self.profile.save_current_profile(current_profile)
 
     def _on_start(self):
         spark = self.builder.getOrCreate()

@@ -64,16 +64,16 @@ class TestSparkUIProfile(unittest.TestCase):
         self.assertTrue("pf_new" in profiles[0]["name"])
         os.remove(TestSparkUIProfile.MOCK_TEST_JSON)
 
-    def test_should_save_current_profile_name(self):
+    def test_should_save_current_profile(self):
         # given
         copyfile(TestSparkUIProfile.MOCK_JSON, TestSparkUIProfile.MOCK_TEST_JSON)
         sut = Profile(path_to_beakerx_json=TestSparkUIProfile.MOCK_TEST_JSON)
         # when
-        result, err = sut.save_current_profile_name("new_profile_name1")
+        result, err = sut.save_current_profile("new_profile_name1")
         # then
         self.assertTrue(err is None)
         self.assertTrue(result)
         result, err = sut.load_profiles()
-        current_profile_name = result["current_profile"]
-        self.assertTrue(current_profile_name == "new_profile_name1")
+        current_profile = result["current_profile"]
+        self.assertTrue(current_profile == "new_profile_name1")
         os.remove(TestSparkUIProfile.MOCK_TEST_JSON)

@@ -51,9 +51,9 @@ class Profile:
             data = json.load(json_file)
         return data["beakerx"]["spark_options"], Profile.ERR
 
-    def save_current_profile_name(self, current_profile_name):
+    def save_current_profile(self, current_profile):
         result, err = self.load_beakerx_json()
-        result["beakerx"]["spark_options"]["current_profile"] = current_profile_name
+        result["beakerx"]["spark_options"]["current_profile"] = current_profile
         with open(self.path_to_beakerx_json, 'w') as outfile:
             json.dump(result, outfile)
         return True, Profile.ERR

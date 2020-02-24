@@ -29,7 +29,7 @@ class TestSparkUI(unittest.TestCase):
         sui = SparkUI2(builder, ipython_manager, spark_server_factory, profile, CommMock())
         # then
         self.assertTrue(sui.profiles == [])
-        self.assertTrue(sui.current_profile_name == "")
+        self.assertTrue(sui.current_profile == "")
 
     def test_should_save_profiles(self):
         # given
@@ -89,7 +89,7 @@ class TestSparkUI(unittest.TestCase):
         msg_start = {
             'event': 'start',
             'payload': {
-                "current_profile_name": "profile1",
+                "current_profile": "profile1",
                 "spark_options": {
                     'spark.executor.memory': '8g',
                     'spark.master': 'local[10]',
@@ -114,7 +114,7 @@ class TestSparkUI(unittest.TestCase):
         msg_start = {
             'event': 'start',
             'payload': {
-                "current_profile_name": "profile1",
+                "current_profile": "profile1",
                 "spark_options": {
                     'spark.executor.memory': '8g',
                     'spark.master': 'local[10]',
@@ -253,6 +253,6 @@ class ProfileMock:
     def load_profiles(self):
         return self.spark_options, ProfileMock.err
 
-    def save_current_profile_name(self, current_profile_name):
-        self.spark_options["current_profile"] = current_profile_name
+    def save_current_profile(self, current_profile):
+        self.spark_options["current_profile"] = current_profile
         return True, ProfileMock.err

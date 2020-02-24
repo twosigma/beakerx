@@ -38,7 +38,7 @@ class Profile:
         result, err = self.load_beakerx_json()
         result["beakerx"]["spark_options"]["profiles"] = profile_to_save
         with open(self.path_to_beakerx_json, 'w') as outfile:
-            json.dump(result, outfile)
+            self._dump(outfile, result)
         return True, Profile.ERR
 
     def load_beakerx_json(self):
@@ -55,5 +55,8 @@ class Profile:
         result, err = self.load_beakerx_json()
         result["beakerx"]["spark_options"]["current_profile"] = current_profile
         with open(self.path_to_beakerx_json, 'w') as outfile:
-            json.dump(result, outfile)
+            self._dump(outfile, result)
         return True, Profile.ERR
+
+    def _dump(self, outfile, result):
+        json.dump(result, outfile, indent=4, sort_keys=True)

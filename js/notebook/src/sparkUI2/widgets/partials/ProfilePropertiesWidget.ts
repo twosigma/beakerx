@@ -122,7 +122,7 @@ namespace Private {
             w.addClass('bx-spark-property');
 
             elName.addEventListener('change', (evt: Event) => this.onNameChange(evt, w));
-            elName.addEventListener('change', (evt: Event) => this.onValueChange(evt, w));
+            elValue.addEventListener('change', (evt: Event) => this.onValueChange(evt, w));
             elRemove.addEventListener('click', (evt: MouseEvent) => this.onRemoveClicked(evt, w));
 
             return w;

@@ -93,5 +93,13 @@ export class ProfileConfigurationWidget extends Panel {
         this.executorCoresWidget.value = selectedProfile["spark.executor.cores"];
         this.executorMemoryWidget.value = selectedProfile["spark.executor.memory"];
         this.propertiesWidget.updateProperties(selectedProfile.properties);
+        let isHiveEnabled = false;
+        for (let p of selectedProfile.properties) {
+            if (p.name === 'spark.sql.catalogImplementation' && p.value === 'hive') {
+                isHiveEnabled = true;
+                break;
+            }
+        }
+        this.enableHiveSupportWidget.enabled = isHiveEnabled;
     }
 }

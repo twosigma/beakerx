@@ -71,4 +71,8 @@ export class HiveSupportWidget extends Panel {
         );
     }
 
+    public set enabled(enabled: boolean) {
+        (this.checkboxWidget.node as HTMLInputElement).checked = enabled;
+    }
+
 }

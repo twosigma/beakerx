@@ -42,6 +42,14 @@ export class ProfileSelectWidget extends Panel {
         this.addWidget(this.createRemove());
     }
 
+    public updateProfiles(profiles: IProfileListItem[]) {
+        this.selectEl.textContent = '';
+
+        for (let p of profiles) {
+            this.addProfile(p);
+        }
+    }
+
     private createLabel(): Widget {
         let el = document.createElement('label');
 

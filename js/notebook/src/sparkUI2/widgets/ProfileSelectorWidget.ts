@@ -26,9 +26,9 @@ export class ProfileSelectorWidget extends Panel {
     private readonly profileCreateWidget: ProfileCreateWidget;
     private readonly profileConfigurationWidget: ProfileConfigurationWidget;
 
-    private selectedProfileName: string = '';
+    private _currentProfileName: string = '';
 
-    private profiles: IProfileListItem[] = [{
+    private _profiles: IProfileListItem[] = [{
         "name": "",
         "spark.executor.cores": "10",
         "spark.executor.memory": "8g",
@@ -39,7 +39,7 @@ export class ProfileSelectorWidget extends Panel {
     constructor(private readonly comm: SparkUI2Comm) {
         super();
 
-        this.profileSelectWidget = new ProfileSelectWidget(this.profiles);
+        this.profileSelectWidget = new ProfileSelectWidget(this._profiles);
         this.profileCreateWidget = new ProfileCreateWidget();
         this.profileConfigurationWidget = new ProfileConfigurationWidget();
         this.profileCreateWidget.hide();
@@ -49,8 +49,18 @@ export class ProfileSelectorWidget extends Panel {
         this.addWidget(this.profileConfigurationWidget);
     }
 
-    public getSelectedProfileName(): string {
-        return this.selectedProfileName;
+    public set profiles(profiles: IProfileListItem[]) {
+        this._profiles = profiles;
+        this.profileSelectWidget.updateProfiles(profiles);
+    }
+
+    public set currentProfileName(profileName: string) {
+        this._currentProfileName = profileName;
+        // this.profileSelectWidget.selectProfile(profileName);
+    }
+
+    public get currentProfileName(): string {
+        return this._currentProfileName;
     }
 
     public getConfiguration(): {
@@ -85,9 +95,9 @@ export class ProfileSelectorWidget extends Panel {
                 break;
             case 'profile-selection-changed':
                 console.log('profile-selection-changed');
-                this.selectedProfileName = msg.payload.selectedProfile;
-                let selectedProfile = this.getProfileByName(this.selectedProfileName);
-                this.profileConfigurationWidget.updateConfiguration(selectedProfile);
+                this.currentProfileName = msg.payload.selectedProfile;
+                let currentProfileConfiguration = this.getProfileByName(this._currentProfileName);
+                this.profileConfigurationWidget.updateConfiguration(currentProfileConfiguration);
                 // user requested loading configuration of a profile with given name
                 //
                 // get selected profile name
@@ -109,13 +119,13 @@ export class ProfileSelectorWidget extends Panel {
                 }
 
                 profile = {
-                    name: profileName,
+                    "name": profileName,
                     "spark.master": "local[10]",
                     "spark.executor.cores": "10",
                     "spark.executor.memory": "8g",
                     "properties": [],
                 };
-                this.profiles.push(profile);
+                this._profiles.push(profile);
 
                 this.profileSelectWidget.addProfile(profile);
                 this.profileSelectWidget.selectProfile(profile.name);
@@ -136,7 +146,7 @@ export class ProfileSelectorWidget extends Panel {
     }
 
     private getProfileByName(profileName: string) {
-        for (let p of this.profiles) {
+        for (let p of this._profiles) {
             if (p.name === profileName) {
                 return p;
             }
@@ -147,15 +157,15 @@ export class ProfileSelectorWidget extends Panel {
     private updateProfileByName(profileName: string, configuration) {
         let properties = [];
 
-        for (let i in this.profiles) {
-            if (this.profiles[i].name === profileName) {
+        for (let i in this._profiles) {
+            if (this._profiles[i].name === profileName) {
                 for (const propertyName in configuration.properties) {
                     properties.push({
                         name : propertyName,
                         value: configuration.properties[propertyName]
                     })
                 }
-                this.profiles[i] = {
+                this._profiles[i] = {
                     "spark.executor.memory": configuration.executorMemory,
                     "spark.master": configuration.masterURL,
                     "name": profileName,
@@ -172,18 +182,17 @@ export class ProfileSelectorWidget extends Panel {
     }
 
     private updateProfile() {
-        let name = this.getSelectedProfileName();
-        let profileConfiguration = this.profileConfigurationWidget.getConfiguration();
-        console.log(this.profiles);
-        console.log(profileConfiguration);
-        this.updateProfileByName(name, profileConfiguration);
+        this.updateProfileByName(
+            this._currentProfileName,
+            this.profileConfigurationWidget.getConfiguration()
+        );
     }
 
     private sendSaveProfilesMessage() {
         this.updateProfile();
         let msg = {
             event: 'save_profiles',
-            payload: this.profiles
+            payload: this._profiles
         };
         this.comm.send(msg);
     }

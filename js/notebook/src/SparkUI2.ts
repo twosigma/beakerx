@@ -39,13 +39,19 @@ export class SparkUI2View extends widgets.BoxView {
         super.render();
 
         this.createWidget();
-
     }
 
     async createWidget() {
         await this.displayed;
-        let comm = new SparkUI2Comm( this, this.model.comm );
-        this.pWidget.addWidget(new SparkUI2Widget(comm));
+
+        let w = new SparkUI2Widget(
+            new SparkUI2Comm( this, this.model.comm )
+        );
+
+        w.profiles = this.model.get('profiles');
+        w.currentProfileName = this.model.get('current_profile');
+
+        this.pWidget.addWidget(w);
    }
 }
 

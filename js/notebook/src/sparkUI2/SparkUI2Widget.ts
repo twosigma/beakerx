@@ -19,12 +19,21 @@ import {SparkUI2Message} from "./SparkUI2Message";
 import {ProfileSelectorWidget, StartWidget} from "./widgets";
 import {SessionWidget} from "./widgets/SessionWidget";
 import {SparkUI2Comm} from "./SparkUI2Comm";
+import {IProfileListItem} from "./IProfileListItem";
 
 export class SparkUI2Widget extends Panel {
 
     private readonly startWidget: StartWidget;
     private readonly profileSelectorWidget: ProfileSelectorWidget;
     private readonly sessionWidget: SessionWidget;
+
+    public set profiles(profiles: IProfileListItem[]) {
+        this.profileSelectorWidget.profiles = profiles;
+    }
+
+    public set currentProfileName(profileName: string) {
+        this.profileSelectorWidget.currentProfileName = profileName;
+    }
 
     constructor(private readonly comm: SparkUI2Comm) {
         super();
@@ -79,19 +88,19 @@ export class SparkUI2Widget extends Panel {
     }
 
     private sendStartMessage(): void {
-        let name = this.profileSelectorWidget.getSelectedProfileName();
+        let name = this.profileSelectorWidget.currentProfileName;
         let configuration = this.profileSelectorWidget.getConfiguration();
         let properties = [];
         for (const propertyName in configuration.properties) {
             properties.push({
                 name : propertyName,
-                value: configuration[propertyName]
+                value: configuration.properties[propertyName]
             })
         }
         let msg = {
             event: 'start',
             payload: {
-                "current_profile_name": name,
+                "current_profile": name,
                 "spark_options": {
                     "spark.executor.memory": configuration.executorMemory,
                     "spark.master": configuration.masterURL,

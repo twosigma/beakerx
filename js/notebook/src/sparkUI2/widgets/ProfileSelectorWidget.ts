@@ -79,33 +79,27 @@ export class ProfileSelectorWidget extends Panel {
                 this.profileCreateWidget.show();
                 break;
             case 'profile-remove-clicked':
-                console.log('profile-remove-clicked');
-                // user requested removing currently selected profile
-                //
-                // get selected profile name
-                // request backend to remove profile with name - remove(name)
-                // reload available profiles list
+                if (this._currentProfileName === '') {
+                    console.log(`You can't remove default profile`);
+                    return;
+                }
+                this._profiles = this._profiles.filter(p => p.name !== this._currentProfileName);
+                this._currentProfileName = '';
+
+                this.profileSelectWidget.updateProfiles(this._profiles);
+                this.profileConfigurationWidget.updateConfiguration(this._profiles.filter(p => p.name === this._currentProfileName)[0]);
                 break;
             case 'profile-save-clicked':
-                console.log('profile-save-clicked');
-                // this.profileConfigurationWidget.disable()
                 this.comm.saved.connect(this._onSave, this);
                 this.sendSaveProfilesMessage();
 
                 break;
             case 'profile-selection-changed':
-                console.log('profile-selection-changed');
                 this.currentProfileName = msg.payload.selectedProfile;
                 let currentProfileConfiguration = this.getProfileByName(this._currentProfileName);
                 this.profileConfigurationWidget.updateConfiguration(currentProfileConfiguration);
-                // user requested loading configuration of a profile with given name
-                //
-                // get selected profile name
-                // request backend to send configuration of a profile with given name - load(name)
-                // fill form with provided configuration
                 break;
             case 'profile-create-create-clicked':
-                console.log(msg);
                 let profileName = msg.payload.profileName.trim();
                 if (profileName === '') {
                     console.log(`Profile name can't be empty.`)
@@ -134,7 +128,6 @@ export class ProfileSelectorWidget extends Panel {
                 this.profileCreateWidget.hide();
                 break;
             case 'profile-create-cancel-clicked':
-                console.log('profile-create-cancel-clicked');
                 this.profileSelectWidget.show();
                 this.profileCreateWidget.hide();
                 break;
@@ -178,7 +171,6 @@ export class ProfileSelectorWidget extends Panel {
 
     private _onSave(sender: SparkUI2Comm) {
         this.comm.saved.disconnect(this._onSave, this);
-        console.log('saved');
     }
 
     private updateProfile() {

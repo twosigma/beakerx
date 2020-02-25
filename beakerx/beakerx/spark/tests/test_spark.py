@@ -93,7 +93,12 @@ class TestSparkUI(unittest.TestCase):
                 "spark_options": {
                     'spark.executor.memory': '8g',
                     'spark.master': 'local[10]',
-                    'properties': []
+                    'properties': [
+                        {
+                            "name": "wwww",
+                            "value": "wwwww"
+                        }
+                    ]
                 }
             }
         }

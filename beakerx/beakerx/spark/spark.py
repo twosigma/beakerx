@@ -74,7 +74,7 @@ class SparkUI2(BeakerxBox):
         for key, value in spark_options.items():
             if key == "properties":
                 for item in value:
-                    self.builder.config(item.name, item.value)
+                    self.builder.config(item['name'], item['value'])
             self.builder.config(key, value)
         self._on_start()
         self.profile.save_current_profile(current_profile)

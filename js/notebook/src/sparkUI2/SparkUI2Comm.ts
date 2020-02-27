@@ -74,10 +74,43 @@ export class SparkUI2Comm {
         return this._updateModel;
     }
 
-    public sendSaveProfilesMessage(profilesPayload: IProfileListItem[]) {
+    public sendSaveProfilesMessage(profilesPayload: IProfileListItem[]): void {
         let msg = {
             event: 'save_profiles',
             payload: profilesPayload,
+        };
+        this.send(msg);
+    }
+
+    public sendStopMessage(): void {
+        let msg = {
+            event: 'stop',
+            payload: {
+
+            }
+        };
+        this.send(msg);
+    }
+
+    public sendStartMessage(
+        currentProfileName: string,
+        executorMemory: string,
+        masterURL: string,
+        executorCores: string,
+        properties: { name: string; value: string }[]
+    ): void {
+        let msg = {
+            event: 'start',
+            payload: {
+                "current_profile": currentProfileName,
+                "spark_options": {
+                    "spark.executor.memory": executorMemory,
+                    "spark.master": masterURL,
+                    "name": currentProfileName,
+                    "spark.executor.cores": executorCores,
+                    "properties": properties
+                }
+            }
         };
         this.send(msg);
     }

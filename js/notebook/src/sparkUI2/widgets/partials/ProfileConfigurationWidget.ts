@@ -24,6 +24,7 @@ import {SparkUI2Message} from "../../SparkUI2Message";
 import {IProfileListItem} from "../../IProfileListItem";
 
 export class ProfileConfigurationWidget extends Panel {
+
     private readonly propertiesWidget: ProfilePropertiesWidget;
     private readonly enableHiveSupportWidget: HiveSupportWidget;
     private readonly masterURLWidget: MasterURLWidget;
@@ -60,34 +61,6 @@ export class ProfileConfigurationWidget extends Panel {
         }
     }
 
-    public processMessage(msg: SparkUI2Message): void {
-        switch (msg.type) {
-            case 'add-new-property-clicked':
-                console.log('add-new-property-clicked');
-                this.propertiesWidget.addProperty('', '');
-                break;
-            case 'remove-property-clicked':
-                console.log('remove-property-clicked', msg.payload);
-                this.propertiesWidget.removeProperty(msg.payload.name);
-                if (msg.payload.name === 'spark.sql.catalogImplementation') {
-                    (this.enableHiveSupportWidget.node.querySelector('.bx-spark-enable-hive-checkbox') as HTMLInputElement).checked = false;
-
-                }
-                break;
-            case 'enable-hive-support-clicked':
-                console.log('enable-hive-support-clicked', msg.payload);
-                if (msg.payload.hiveEnabled) {
-                    this.propertiesWidget.addProperty('spark.sql.catalogImplementation', 'hive');
-                } else {
-                    this.propertiesWidget.removeProperty('spark.sql.catalogImplementation');
-                }
-                break;
-            default:
-                super.processMessage(msg);
-                break;
-        }
-    }
-
     public updateConfiguration(selectedProfile: IProfileListItem) {
         this.masterURLWidget.value = selectedProfile["spark.master"];
         this.executorCoresWidget.value = selectedProfile["spark.executor.cores"];
@@ -101,5 +74,51 @@ export class ProfileConfigurationWidget extends Panel {
             }
         }
         this.enableHiveSupportWidget.enabled = isHiveEnabled;
+    }
+
+    public processMessage(msg: SparkUI2Message): void {
+        switch (msg.type) {
+            case 'add-new-property-clicked':
+                Private.MessageHandlers.onAddNewProperty(this.propertiesWidget);
+                break;
+            case 'remove-property-clicked':
+                Private.MessageHandlers.onRemoveProperty(msg.payload.name, this.propertiesWidget, this.enableHiveSupportWidget);
+                break;
+            case 'enable-hive-support-clicked':
+                Private.MessageHandlers.onEnableHiveSupport(msg.payload.hiveEnabled, this.propertiesWidget);
+                break;
+            default:
+                super.processMessage(msg);
+                break;
+        }
+    }
+}
+
+namespace Private {
+
+    export namespace MessageHandlers {
+
+        export function onAddNewProperty(propertiesWidget: ProfilePropertiesWidget): void {
+            propertiesWidget.addProperty('', '');
+        }
+
+        export function onEnableHiveSupport(hiveEnabled: boolean, propertiesWidget: ProfilePropertiesWidget): void {
+            if (hiveEnabled) {
+                propertiesWidget.addProperty('spark.sql.catalogImplementation', 'hive');
+            } else {
+                propertiesWidget.removeProperty('spark.sql.catalogImplementation');
+            }
+        }
+
+        export function onRemoveProperty(propertyName: string, propertiesWidget: ProfilePropertiesWidget, enableHiveSupportWidget: HiveSupportWidget) {
+            propertiesWidget.removeProperty(propertyName);
+
+            if (propertyName !== 'spark.sql.catalogImplementation') {
+                return;
+            }
+
+            this.enableHiveSupportWidget.enabled = false;
+        }
+
     }
 }

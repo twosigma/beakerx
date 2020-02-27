@@ -43,7 +43,7 @@ export class ProfilePropertiesWidget extends Panel {
         return this.container.collectProperties();
     }
 
-    updateProperties(properties: { name: string; value: string }[]) {
+    public updateProperties(properties: { name: string; value: string }[]) {
         this.container.removeProperties();
         for (let p of properties) {
             this.container.addProperty(p.name, p.value);

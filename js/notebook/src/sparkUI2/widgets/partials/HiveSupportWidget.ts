@@ -36,6 +36,10 @@ export class HiveSupportWidget extends Panel {
         this.addWidget(this.labelWidget);
     }
 
+    public set enabled(enabled: boolean) {
+        (this.checkboxWidget.node as HTMLInputElement).checked = enabled;
+    }
+
     private createCheckbox(): Widget {
         let el = document.createElement('input');
         el.type = 'checkbox';
@@ -70,9 +74,4 @@ export class HiveSupportWidget extends Panel {
             })
         );
     }
-
-    public set enabled(enabled: boolean) {
-        (this.checkboxWidget.node as HTMLInputElement).checked = enabled;
-    }
-
 }

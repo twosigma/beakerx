@@ -65,6 +65,10 @@ export class ProfileSelectorWidget extends Panel {
         return this._currentProfileName;
     }
 
+    public selectProfile(profileName: string) {
+        this.profileSelectWidget.selectProfile(profileName);
+    }
+
     public getConfiguration(): {
         masterURL: string;
         executorCores: string;
@@ -146,7 +150,7 @@ namespace Private {
             profileConfigurationWidget: ProfileConfigurationWidget
         ): void  {
             let currentProfileName = msg.payload.selectedProfile;
-            profileSelectorWidget.currentProfileName = currentProfileName
+            profileSelectorWidget.currentProfileName = currentProfileName;
             let currentProfileConfiguration = Private.Utils.getProfileByName(profiles, currentProfileName);
             profileConfigurationWidget.updateConfiguration(currentProfileConfiguration);
         }

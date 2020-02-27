@@ -32,7 +32,7 @@ export class SparkUI2Widget extends Panel {
     }
 
     public set currentProfileName(profileName: string) {
-        this.profileSelectorWidget.currentProfileName = profileName;
+        this.profileSelectorWidget.selectProfile(profileName);
     }
 
     constructor(private readonly comm: SparkUI2Comm) {

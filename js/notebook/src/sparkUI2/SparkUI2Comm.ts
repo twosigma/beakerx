@@ -17,16 +17,19 @@
 import {IClassicComm} from "@jupyter-widgets/base";
 import {SparkUI2View} from "../SparkUI2";
 import {ISignal, Signal} from "@phosphor/signaling";
+import {IProfileListItem} from "./IProfileListItem";
 
 export class SparkUI2Comm {
 
     private _started = new Signal<this, void>(this);
     private _stopped = new Signal<this, void>(this);
     private _saved = new Signal<this, void>(this);
+    private _updateModel =  new Signal<this, any>(this);
 
     constructor(private view: SparkUI2View, private comm: IClassicComm) {
         this.comm.on_msg((msg) => {
             let data = msg.content.data;
+            console.log(msg);
 
             if (data.method === "update" && data.event.start === "done") {
                 this._started.emit(undefined);
@@ -40,6 +43,12 @@ export class SparkUI2Comm {
 
             if (data.method === "update" && data.event.save_profiles === "done") {
                 this._saved.emit(undefined);
+                return;
+            }
+
+            if (data.method === "update" && data.hasOwnProperty('update_model')) {
+                debugger;
+                this._updateModel.emit(data.update_model);
                 return;
             }
         });
@@ -59,5 +68,17 @@ export class SparkUI2Comm {
 
     public get saved(): ISignal<this, void> {
         return this._saved;
+    }
+
+    public get updateModel(): ISignal<this, void> {
+        return this._updateModel;
+    }
+
+    public sendSaveProfilesMessage(profilesPayload: IProfileListItem[]) {
+        let msg = {
+            event: 'save_profiles',
+            payload: profilesPayload,
+        };
+        this.send(msg);
     }
 }

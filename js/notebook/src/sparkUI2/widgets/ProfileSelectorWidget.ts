@@ -22,6 +22,7 @@ import {SparkUI2Comm} from "../SparkUI2Comm";
 
 export class ProfileSelectorWidget extends Panel {
 
+    private readonly comm: SparkUI2Comm;
     private readonly profileSelectWidget: ProfileSelectWidget;
     private readonly profileCreateWidget: ProfileCreateWidget;
     private readonly profileConfigurationWidget: ProfileConfigurationWidget;
@@ -36,8 +37,10 @@ export class ProfileSelectorWidget extends Panel {
         "properties": []
     }];
 
-    constructor(private readonly comm: SparkUI2Comm) {
+    constructor(comm: SparkUI2Comm) {
         super();
+
+        this.comm = comm;
 
         this.profileSelectWidget = new ProfileSelectWidget(this._profiles);
         this.profileCreateWidget = new ProfileCreateWidget();
@@ -56,7 +59,6 @@ export class ProfileSelectorWidget extends Panel {
 
     public set currentProfileName(profileName: string) {
         this._currentProfileName = profileName;
-        // this.profileSelectWidget.selectProfile(profileName);
     }
 
     public get currentProfileName(): string {
@@ -75,90 +77,150 @@ export class ProfileSelectorWidget extends Panel {
     public processMessage(msg: SparkUI2Message): void {
         switch(msg.type) {
             case 'profile-create-new-clicked':
-                this.profileSelectWidget.hide();
-                this.profileCreateWidget.show();
+                Private.MessageHandlers.onProfileCreateNew(this.profileSelectWidget, this.profileCreateWidget);
                 break;
             case 'profile-remove-clicked':
-                if (this._currentProfileName === '') {
-                    console.log(`You can't remove default profile`);
-                    return;
-                }
-                this._profiles = this._profiles.filter(p => p.name !== this._currentProfileName);
-                this._currentProfileName = '';
-
-                this.profileSelectWidget.updateProfiles(this._profiles);
-                this.profileConfigurationWidget.updateConfiguration(this._profiles.filter(p => p.name === this._currentProfileName)[0]);
+                Private.MessageHandlers.onProfileRemove(this._currentProfileName, this._profiles, this.profileSelectWidget, this.profileConfigurationWidget);
                 break;
             case 'profile-save-clicked':
-                this.comm.saved.connect(this._onSave, this);
-                this.sendSaveProfilesMessage();
-
+                Private.MessageHandlers.onProfileSave(this.comm, this._profiles, this._currentProfileName, this.profileConfigurationWidget.getConfiguration());
                 break;
             case 'profile-selection-changed':
-                this.currentProfileName = msg.payload.selectedProfile;
-                let currentProfileConfiguration = this.getProfileByName(this._currentProfileName);
-                this.profileConfigurationWidget.updateConfiguration(currentProfileConfiguration);
+                Private.MessageHandlers.onProfileSelectionChanged(this, msg, this._profiles, this.profileConfigurationWidget);
                 break;
             case 'profile-create-create-clicked':
-                let profileName = msg.payload.profileName.trim();
-                if (profileName === '') {
-                    console.log(`Profile name can't be empty.`)
-                    return;
-                }
-
-                let profile = this.getProfileByName(profileName);
-                if (profile !== null) {
-                    console.log(`Profile name '%s' already exists`, profileName);
-                    return;
-                }
-
-                profile = {
-                    "name": profileName,
-                    "spark.master": "local[10]",
-                    "spark.executor.cores": "10",
-                    "spark.executor.memory": "8g",
-                    "properties": [],
-                };
-                this._profiles.push(profile);
-
-                this.profileSelectWidget.addProfile(profile);
-                this.profileSelectWidget.selectProfile(profile.name);
-
-                this.profileSelectWidget.show();
-                this.profileCreateWidget.hide();
+                Private.MessageHandlers.onProfileCreateConfirmed(msg, this._profiles, this.profileSelectWidget, this.profileCreateWidget);
                 break;
             case 'profile-create-cancel-clicked':
-                this.profileSelectWidget.show();
-                this.profileCreateWidget.hide();
+                Private.MessageHandlers.onProfileCreateCanceled(this.profileSelectWidget, this.profileCreateWidget);
                 break;
-
             default:
                 super.processMessage(msg);
                 break
         }
     }
+}
 
-    private getProfileByName(profileName: string) {
-        for (let p of this._profiles) {
-            if (p.name === profileName) {
-                return p;
-            }
+namespace Private {
+
+    export namespace MessageHandlers {
+
+        export function onProfileCreateNew(
+            profileSelectWidget: ProfileSelectWidget,
+            profileCreateWidget: ProfileCreateWidget
+        ): void {
+            profileSelectWidget.hide();
+            profileCreateWidget.show();
         }
-        return null;
+
+        export function onProfileRemove(
+            currentProfileName: string,
+            profiles: IProfileListItem[],
+            profileSelectWidget: ProfileSelectWidget,
+            profileConfigurationWidget: ProfileConfigurationWidget
+        ): void {
+            if (currentProfileName === '') {
+                console.log(`You can't remove default profile`);
+                return;
+            }
+            profiles = profiles.filter(p => p.name !== currentProfileName);
+            currentProfileName = '';
+
+            profileSelectWidget.updateProfiles(profiles);
+            profileConfigurationWidget.updateConfiguration(profiles.filter(p => p.name === currentProfileName)[0]);
+        }
+
+        export function onProfileSave(comm: SparkUI2Comm, profiles: IProfileListItem[], profileName, configuration) {
+            comm.saved.connect(_onSave, comm);
+            Utils.updateProfileByName(profiles, profileName, configuration);
+            comm.sendSaveProfilesMessage(profiles);
+        }
+
+        function _onSave() {
+            this.saved.disconnect(_onSave, this);
+        }
+
+        export function onProfileSelectionChanged(
+            profileSelectorWidget: ProfileSelectorWidget,
+            msg: SparkUI2Message, profiles:IProfileListItem[],
+            profileConfigurationWidget: ProfileConfigurationWidget
+        ): void  {
+            let currentProfileName = msg.payload.selectedProfile;
+            profileSelectorWidget.currentProfileName = currentProfileName
+            let currentProfileConfiguration = Private.Utils.getProfileByName(profiles, currentProfileName);
+            profileConfigurationWidget.updateConfiguration(currentProfileConfiguration);
+        }
+
+        export function onProfileCreateConfirmed(
+            msg: SparkUI2Message,
+            profiles: IProfileListItem[],
+            profileSelectWidget: ProfileSelectWidget,
+            profileCreateWidget: ProfileCreateWidget
+        ): void {
+            let profileName = msg.payload.profileName.trim();
+            if (profileName === '') {
+                console.log(`Profile name can't be empty.`);
+                return;
+            }
+
+            let profile = Utils.getProfileByName(profiles, profileName);
+            if (profile !== null) {
+                console.log(`Profile name '%s' already exists`, profileName);
+                return;
+            }
+
+            profile = {
+                "name": profileName,
+                "spark.master": "local[10]",
+                "spark.executor.cores": "10",
+                "spark.executor.memory": "8g",
+                "properties": [],
+            };
+
+            profiles.push(profile);
+
+            profileSelectWidget.addProfile(profile);
+            profileSelectWidget.selectProfile(profile.name);
+
+            profileSelectWidget.show();
+            profileCreateWidget.hide();
+        }
+
+        export function onProfileCreateCanceled(
+            profileSelectWidget: ProfileSelectWidget,
+            profileCreateWidget: ProfileCreateWidget
+        ): void {
+            profileSelectWidget.show();
+            profileCreateWidget.hide();
+        }
+
     }
 
-    private updateProfileByName(profileName: string, configuration) {
-        let properties = [];
+    export namespace Utils {
 
-        for (let i in this._profiles) {
-            if (this._profiles[i].name === profileName) {
+        export function getProfileByName(profiles:IProfileListItem[], profileName: string): IProfileListItem|null {
+            for (let p of profiles) {
+                if (p.name === profileName) {
+                    return p;
+                }
+            }
+            return null;
+        }
+
+        export function updateProfileByName(profiles: IProfileListItem[], profileName: string, configuration): void {
+            let properties = [];
+
+            for (let i in profiles) {
+                if (profiles[i].name !== profileName) {
+                    continue;
+                }
                 for (const propertyName in configuration.properties) {
                     properties.push({
                         name : propertyName,
                         value: configuration.properties[propertyName]
                     })
                 }
-                this._profiles[i] = {
+                profiles[i] = {
                     "spark.executor.memory": configuration.executorMemory,
                     "spark.master": configuration.masterURL,
                     "name": profileName,
@@ -169,25 +231,5 @@ export class ProfileSelectorWidget extends Panel {
         }
     }
 
-    private _onSave(sender: SparkUI2Comm) {
-        this.comm.saved.disconnect(this._onSave, this);
-    }
-
-    private updateProfile() {
-        this.updateProfileByName(
-            this._currentProfileName,
-            this.profileConfigurationWidget.getConfiguration()
-        );
-    }
-
-    private sendSaveProfilesMessage() {
-        this.updateProfile();
-        let msg = {
-            event: 'save_profiles',
-            payload: this._profiles
-        };
-        this.comm.send(msg);
-    }
-    
 }
 

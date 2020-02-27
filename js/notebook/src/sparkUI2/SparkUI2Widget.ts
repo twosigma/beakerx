@@ -86,7 +86,7 @@ namespace Private {
             profileSelectorWidget: ProfileSelectorWidget,
             sessionWidget: SessionWidget
         ): void {
-            let configuration = this.profileSelectorWidget.getConfiguration();
+            let configuration = profileSelectorWidget.getConfiguration();
             let properties: { name: string; value: string }[] = [];
             for (const propertyName in configuration.properties) {
                 properties.push({

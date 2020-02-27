@@ -24,12 +24,10 @@ export class SparkUI2Comm {
     private _started = new Signal<this, void>(this);
     private _stopped = new Signal<this, void>(this);
     private _saved = new Signal<this, void>(this);
-    private _updateModel =  new Signal<this, any>(this);
 
     constructor(private view: SparkUI2View, private comm: IClassicComm) {
         this.comm.on_msg((msg) => {
             let data = msg.content.data;
-            console.log(msg);
 
             if (data.method === "update" && data.event.start === "done") {
                 this._started.emit(undefined);
@@ -45,17 +43,7 @@ export class SparkUI2Comm {
                 this._saved.emit(undefined);
                 return;
             }
-
-            if (data.method === "update" && data.hasOwnProperty('update_model')) {
-                debugger;
-                this._updateModel.emit(data.update_model);
-                return;
-            }
         });
-    }
-
-    public send(msg: { event: string; payload: any; }) {
-        this.view.send(msg);
     }
 
     public get started(): ISignal<this, void> {
@@ -70,16 +58,12 @@ export class SparkUI2Comm {
         return this._saved;
     }
 
-    public get updateModel(): ISignal<this, void> {
-        return this._updateModel;
-    }
-
     public sendSaveProfilesMessage(profilesPayload: IProfileListItem[]): void {
         let msg = {
             event: 'save_profiles',
             payload: profilesPayload,
         };
-        this.send(msg);
+        this.view.send(msg);
     }
 
     public sendStopMessage(): void {
@@ -89,7 +73,7 @@ export class SparkUI2Comm {
 
             }
         };
-        this.send(msg);
+        this.view.send(msg);
     }
 
     public sendStartMessage(
@@ -112,6 +96,6 @@ export class SparkUI2Comm {
                 }
             }
         };
-        this.send(msg);
+        this.view.send(msg);
     }
 }

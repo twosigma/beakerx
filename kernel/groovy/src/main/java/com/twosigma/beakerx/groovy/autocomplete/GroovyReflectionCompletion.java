@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.beanutils.BeanUtilsBean2;
+import org.apache.commons.lang3.StringUtils;
 
 import groovy.lang.Binding;
 
@@ -48,6 +49,9 @@ public class GroovyReflectionCompletion {
 		while(tokenizer.hasMoreTokens()) {
 			parts.add(tokenizer.nextToken());
 		}
+		
+		if(text.endsWith("."))
+			parts.add("");
 	
 		if(binding.hasVariable(parts.get(0)) && ((parts.size() > 1) || text.endsWith("."))) {
 			return autocompleteFromObject(parts);
@@ -137,15 +141,20 @@ public class GroovyReflectionCompletion {
 			int i = 1;
 			for(; i<parts.size()-1; ++i) {
 				value = beanUtils.getProperty(value, parts.get(i));
+				if(value == null) {
+					// We can't complete anything on it
+					// TODO: we could complete on the static type one day
+					return result;
+				}
 			}
 			
 			String completionToken = parts.size() > 1 ? parts.get(parts.size()-1) : "";
 			
-			Map<String,String> desc = beanUtils.describe(value);
+			List<String> properties = getObjectPropertyNames(value); 
 			
 			List<String> lowPri = new ArrayList<String>();
 		
-			desc.forEach((String key, String val) -> {
+			properties.forEach((String key) -> {
 				if(key.startsWith(completionToken)) {
 					if(lowPriorityCompletions.contains(key)) {
 						lowPri.add(key);
@@ -185,6 +194,24 @@ public class GroovyReflectionCompletion {
 			e.printStackTrace();
 		}
 		return result;
+	}
+
+	private List<String> getObjectPropertyNames(Object value) {
+		Stream<Method> methods = Stream.of(value.getClass().getMethods());
+
+		List<String> properties = 
+				  methods.filter(m -> 
+					m.getName().startsWith("get") && 
+					m.getName().length() > 3 && 
+					Character.isUpperCase(m.getName().charAt(3)) 
+					&& java.lang.reflect.Modifier.isPublic(m.getModifiers()) &&
+					m.getParameters().length == 0
+				  )
+				  .map((Method m) -> 
+					 StringUtils.uncapitalize(m.getName().substring(3))
+				  )
+				  .collect(Collectors.toList());
+		return properties;
 	}
 	
 	String formatMethod(Method m) {

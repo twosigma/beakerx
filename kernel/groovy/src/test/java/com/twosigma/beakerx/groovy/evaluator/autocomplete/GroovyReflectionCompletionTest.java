@@ -38,6 +38,18 @@ public class GroovyReflectionCompletionTest {
 		}
 	}
 	
+	public static class C {
+		String foo = "FOOOO";
+
+		public String getFoo() {
+			return foo;
+		}
+
+		public void setFoo(String foo) {
+			this.foo = foo;
+		}
+	}
+	
 	public static class House {
 
 		String cubby;
@@ -211,6 +223,23 @@ public class GroovyReflectionCompletionTest {
 		
 		assert !result.contains("moo(String)");
 		assert result.stream().filter(s -> s.startsWith("getHouse")).count() == 0;
+	}
+	
+	@Test
+	public void testNestedDot() {
+		Binding binding = new Binding();
+		
+		binding.setVariable("c", new C());
+		
+		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding);
+		
+		List<String> result = grc.autocomplete("c.foo.", 6);
+		
+		assert !result.contains("foo");
+		assert result.contains("size()");
+		
+		System.out.println(result);
+		
 	}
 
 }

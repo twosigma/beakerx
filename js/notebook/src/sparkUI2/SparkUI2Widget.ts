@@ -97,6 +97,7 @@ namespace Private {
 
             startWidget.disableButton();
             comm.started.connect(_onStart.bind(comm, { startWidget, profileSelectorWidget, sessionWidget }), comm);
+            comm.errored.connect(_onError, comm);
             comm.sendStartMessage(
                 profileSelectorWidget.currentProfileName,
                 configuration.executorMemory,
@@ -117,6 +118,13 @@ namespace Private {
             widgets.profileSelectorWidget.hide();
             widgets.sessionWidget.show();
             widgets.sessionWidget.enableStop();
+        }
+
+        function _onError(sender: SparkUI2Comm, msg: string): void {
+            console.log(msg);
+            this.errored.disconnect(_onError, this);
+            //TODO
+
         }
 
         export function onStop(

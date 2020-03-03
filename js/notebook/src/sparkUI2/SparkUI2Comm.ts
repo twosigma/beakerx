@@ -24,6 +24,7 @@ export class SparkUI2Comm {
     private _started = new Signal<this, void>(this);
     private _stopped = new Signal<this, void>(this);
     private _saved = new Signal<this, void>(this);
+    private _errored = new Signal<this, string>(this);
 
     constructor(private view: SparkUI2View, private comm: IClassicComm) {
         this.comm.on_msg((msg) => {
@@ -43,6 +44,11 @@ export class SparkUI2Comm {
                 this._saved.emit(undefined);
                 return;
             }
+
+            if (data.method === "update" && data.hasOwnProperty('error')) {
+                this._errored.emit(data.message);
+                return;
+            }
         });
     }
 
@@ -56,6 +62,10 @@ export class SparkUI2Comm {
 
     public get saved(): ISignal<this, void> {
         return this._saved;
+    }
+
+    public get errored(): ISignal<this, string> {
+        return this._errored;
     }
 
     public sendSaveProfilesMessage(profilesPayload: IProfileListItem[]): void {

@@ -27,7 +27,9 @@ import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widget.SparkEngineNoUI;
 import com.twosigma.beakerx.widget.SparkEngineNoUIImpl;
 import com.twosigma.beakerx.widget.SparkEngineWithUI;
+import com.twosigma.beakerx.widget.SparkEngineWithUIMock;
 import com.twosigma.beakerx.widget.SparkUI;
+import com.twosigma.beakerx.widget.SparkUIFactory;
 import com.twosigma.beakerx.widget.SparkUiDefaults;
 import org.apache.spark.sql.SparkSession;
 import org.jetbrains.annotations.NotNull;
@@ -51,7 +53,10 @@ public class SparkFactoryNoUIImplTest {
   public void setUp() throws Exception {
     kernel = new KernelFunctionalityMock();
     sparkEngineNoUIFactory = new SparkEngineNoUIFactoryMock();
-    sparkFactory = new SparkFactoryImpl(kernel, sparkEngineNoUIFactory, new SparkUIFactoryMock(), new SparkFactoryWithUIImplTest.SparkUiDefaultsImplMock());
+    sparkFactory = new SparkFactoryImpl(kernel,
+            sparkEngineNoUIFactory,
+            sparkSessionBuilder -> new SparkEngineWithUIMock(),
+            new SparkUIFactoryMock(), new SparkUiDefaultsImplMock());
   }
 
   @Test
@@ -124,7 +129,7 @@ public class SparkFactoryNoUIImplTest {
     }
   }
 
-  class SparkUIFactoryMock implements SparkUI.SparkUIFactory {
+  class SparkUIFactoryMock implements SparkUIFactory {
 
     @Override
     public SparkUI create(SparkSession.Builder builder, SparkEngineWithUI sparkEngineWithUI, SparkUiDefaults sparkUiDefaults) {

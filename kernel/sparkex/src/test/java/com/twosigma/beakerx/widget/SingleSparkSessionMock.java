@@ -15,16 +15,22 @@
  */
 package com.twosigma.beakerx.widget;
 
-import com.twosigma.beakerx.TryResult;
-import com.twosigma.beakerx.kernel.KernelFunctionality;
-import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.SingleSparkSession;
 
-import java.util.Map;
+public class SingleSparkSessionMock implements SingleSparkSession {
 
-public interface SparkEngineWithUI extends SparkEngine {
+  @Override
+  public boolean isActive() {
+    return false;
+  }
 
-  TryResult configure(KernelFunctionality kernel, SparkUIApi sparkUI, Message parentMessage, Map<String, Object> sparkOptions);
+  @Override
+  public void active() {
 
-  boolean isAutoStart();
+  }
 
+  @Override
+  public void inActive() {
+
+  }
 }

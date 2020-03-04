@@ -18,14 +18,11 @@ package com.twosigma.beakerx.widget;
 import com.twosigma.beakerx.kernel.BeakerXJson;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXECUTOR_CORES_DEFAULT;
-import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXECUTOR_MEMORY_DEFAULT;
-import static com.twosigma.beakerx.widget.SparkUI.SPARK_MASTER_DEFAULT;
+
 import static com.twosigma.beakerx.widget.SparkUIApi.SPARK_ADVANCED_OPTIONS;
 import static com.twosigma.beakerx.widget.SparkUIApi.SPARK_EXECUTOR_CORES;
 import static com.twosigma.beakerx.widget.SparkUIApi.SPARK_EXECUTOR_MEMORY;
@@ -33,13 +30,15 @@ import static com.twosigma.beakerx.widget.SparkUIApi.SPARK_MASTER;
 
 public class SparkUiDefaultsImpl implements SparkUiDefaults {
 
+  public static final String SPARK_EXECUTOR_CORES_DEFAULT = "10";
+  public static final String SPARK_EXECUTOR_MEMORY_DEFAULT = "8g";
+  public static final String SPARK_MASTER_DEFAULT = "local[*]";
+
   public static final String NAME = "name";
   public static final String VALUE = "value";
   public static final String PROPERTIES = "properties";
   public static final String SPARK_OPTIONS = "spark_options";
   public static final String BEAKERX = "beakerx";
-  private static final String SPARK_PROFILES = "profiles";
-  private static final String CURRENT_PROFILE = "current_profile";
   private Map<String, Object> defaults = new HashMap<>();
   private List<Map<String, Object>> profiles = new ArrayList<>();
 
@@ -80,7 +79,7 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
     Map<String, Map> beakerxJsonAsMap = beakerXJson.beakerxJsonAsMap();
     Map sparkOptions = (Map) beakerxJsonAsMap.get(BEAKERX).getOrDefault(SPARK_OPTIONS, new HashMap<>());
     List<Map<String, Object>> profiles = (List<Map<String, Object>>) sparkOptions.get(SPARK_PROFILES);
-    currentProfile = (String) sparkOptions.getOrDefault(CURRENT_PROFILE, DEFAULT_PROFILE);
+    this.currentProfile = (String) sparkOptions.getOrDefault(CURRENT_PROFILE, DEFAULT_PROFILE);
     if (profiles == null) {
       //save default config if doesn't exist
       Map<String, Object> defaultProfile = new HashMap<>();
@@ -89,33 +88,21 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
       defaultProfile.put(SPARK_EXECUTOR_CORES, SPARK_EXECUTOR_CORES_DEFAULT);
       defaultProfile.put(SPARK_EXECUTOR_MEMORY, SPARK_EXECUTOR_MEMORY_DEFAULT);
       defaultProfile.put(SPARK_ADVANCED_OPTIONS, new ArrayList<>());
-      saveProfile(defaultProfile);
+      saveProfiles(Arrays.asList(defaultProfile));
     } else {
       this.profiles = profiles;
     }
   }
 
   @Override
-  public void saveProfile(Map<String, Object> profile) {
-    int idx = IntStream.range(0, profiles.size())
-            .filter(i -> profile.get("name").equals(profiles.get(i).get("name")))
-            .findFirst().orElse(-1);
-    if (idx == -1) {
-      profiles.add(profile);
-    } else {
-      profiles.set(idx, profile);
-    }
+  public void saveProfiles(List<Map<String, Object>> profiles) {
+    this.profiles = profiles;
     saveSparkConf(profiles);
 
   }
 
   @Override
-  public List<String> getProfileNames() {
-    return profiles.stream().map(x -> (String) x.get("name")).collect(Collectors.toList());
-  }
-
-  @Override
-  public void saveProfileName(String profileName) {
+  public void saveCurrentProfileName(String profileName) {
     Map<String, Map> map = beakerXJson.beakerxJsonAsMap();
     Map<String, Object> sparkOptions = (Map<String, Object>) map.get(BEAKERX).getOrDefault(SPARK_OPTIONS, new HashMap<>());
     sparkOptions.put(CURRENT_PROFILE, profileName);
@@ -127,11 +114,6 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
   @Override
   public String getCurrentProfileName() {
     return currentProfile;
-  }
-
-  @Override
-  public boolean containsKey(String key) {
-    return this.defaults.containsKey(key);
   }
 
   @Override

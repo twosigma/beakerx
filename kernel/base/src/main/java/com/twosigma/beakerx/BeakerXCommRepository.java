@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx;
 
+import com.twosigma.beakerx.kernel.comm.BxComm;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
 
@@ -36,7 +37,7 @@ public class BeakerXCommRepository implements CommRepository {
   @Override
   public Comm getOrCreateAutotranslationComm() {
     if (autotranslationComm == null) {
-      autotranslationComm = new Comm(TargetNamesEnum.BEAKER_AUTOTRANSLATION);
+      autotranslationComm = new BxComm(TargetNamesEnum.BEAKER_AUTOTRANSLATION);
       autotranslationComm.open();
     }
     return autotranslationComm;

@@ -158,6 +158,21 @@ public class SparkMagicCommandOptionsTest {
     public void sparkUiWebUrlFactory(SparkUiWebUrlFactory factory) {
 
     }
+
+    @Override
+    public void stop() {
+
+    }
+
+    @Override
+    public void cancelAllJobs() {
+
+    }
+
+    @Override
+    public void cancelStage(int stageid) {
+
+    }
   }
 
 }

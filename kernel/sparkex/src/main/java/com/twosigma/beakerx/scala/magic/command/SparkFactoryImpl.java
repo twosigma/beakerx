@@ -29,9 +29,10 @@ import com.twosigma.beakerx.scala.magic.command.SparkMagicCommandOptions.SparkOp
 import com.twosigma.beakerx.widget.SparkEngineNoUI;
 import com.twosigma.beakerx.widget.SparkEngineNoUIImpl.SparkEngineNoUIFactory;
 import com.twosigma.beakerx.widget.SparkEngineWithUI;
+import com.twosigma.beakerx.widget.SparkEngineWithUIFactory;
 import com.twosigma.beakerx.widget.SparkEngineWithUIImpl;
-import com.twosigma.beakerx.widget.SparkUI.SparkUIFactory;
 import com.twosigma.beakerx.widget.SparkUIApi;
+import com.twosigma.beakerx.widget.SparkUIFactory;
 import com.twosigma.beakerx.widget.SparkUiDefaults;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
@@ -46,15 +47,17 @@ public class SparkFactoryImpl implements SparkFactory {
 
   public static final String SPARK_SESSION_AVAILABLE_BY_SPARK = "SparkSession is available by 'spark'";
   public static final String CONFIGURATION_MUST_BE_PROVIDED = "Body of  " + ENABLE_SPARK_SUPPORT + " magic command must return SparkConf object or SparkSession.Builder object";
+  private final SparkEngineWithUIFactory sparkEngineWithUIFactory;
 
   private KernelFunctionality kernel;
   private SparkEngineNoUIFactory sparkEngineNoUIFactory;
   private SparkUIFactory sparkUIFactory;
   private SparkUiDefaults sparkUiDefaults;
 
-  public SparkFactoryImpl(KernelFunctionality kernel, SparkEngineNoUIFactory sparkEngineNoUIFactory, SparkUIFactory sparkUIFactory, SparkUiDefaults sparkUiDefaults ) {
+  public SparkFactoryImpl(KernelFunctionality kernel, SparkEngineNoUIFactory sparkEngineNoUIFactory, SparkEngineWithUIFactory sparkEngineWithUIFactory, SparkUIFactory sparkUIFactory, SparkUiDefaults sparkUiDefaults) {
     this.kernel = kernel;
     this.sparkEngineNoUIFactory = sparkEngineNoUIFactory;
+    this.sparkEngineWithUIFactory = sparkEngineWithUIFactory;
     this.sparkUIFactory = sparkUIFactory;
     this.sparkUiDefaults = sparkUiDefaults;
   }
@@ -93,11 +96,10 @@ public class SparkFactoryImpl implements SparkFactory {
 
   private void createAndDisplaySparkUI(List<SparkOptionCommand> options, SparkSession.Builder builder, Message message) {
     sparkUiDefaults.loadDefaults();
-    SparkEngineWithUIImpl.SparkEngineWithUIFactoryImpl sparkEngineWithUIFactory = new SparkEngineWithUIImpl.SparkEngineWithUIFactoryImpl();
     SparkEngineWithUI sparkEngineWithUI = sparkEngineWithUIFactory.create(builder);
     options.forEach(option -> option.run(sparkEngineWithUI, message));
     SparkUIApi sparkUI = sparkUIFactory.create(builder, sparkEngineWithUI, sparkUiDefaults);
-    displaySparkUI(sparkUI,message);
+    displaySparkUI(sparkUI, message);
   }
 
   private MagicCommandOutcomeItem createSparkBasedOnEmptyConfiguration(MagicCommandExecutionParam param, List<SparkOptionCommand> options) {

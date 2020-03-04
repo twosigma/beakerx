@@ -15,9 +15,8 @@
  */
 package com.twosigma.beakerx.widget;
 
-import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.kernel.comm.Buffer;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -56,7 +55,7 @@ public class Image extends ValueWidget<byte[]> {
     this.value = getValueFromObject(value);
     ArrayList<List<String>> bufferPaths = new ArrayList<>();
     bufferPaths.add(Arrays.asList("value"));
-    sendUpdate(new Comm.Buffer(Collections.singletonList(this.value), bufferPaths));
+    sendUpdate(new Buffer(Collections.singletonList(this.value), bufferPaths));
   }
 
   @Override

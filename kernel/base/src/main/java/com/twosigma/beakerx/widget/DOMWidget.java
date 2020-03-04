@@ -18,6 +18,7 @@ package com.twosigma.beakerx.widget;
 import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
 
 import com.twosigma.beakerx.handler.Handler;
+import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.message.Message;
 
 import java.io.Serializable;
@@ -39,8 +40,10 @@ public abstract class DOMWidget extends Widget {
   protected Style style;
   private List<String> domClasses = new ArrayList<>();
 
-  private UpdateValueCallback updateValueCallback = () -> {
-  };
+  public DOMWidget(Comm comm) {
+    super(comm);
+    layout = new Layout(comm.createNewComm());
+  }
 
   public DOMWidget() {
     super();
@@ -51,6 +54,9 @@ public abstract class DOMWidget extends Widget {
     super();
     layout = new Layout(parent);
   }
+
+  private UpdateValueCallback updateValueCallback = () -> {
+  };
 
   @SuppressWarnings("unchecked")
   @Override

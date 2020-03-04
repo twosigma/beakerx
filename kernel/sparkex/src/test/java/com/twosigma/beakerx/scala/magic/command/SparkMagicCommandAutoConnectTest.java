@@ -15,13 +15,17 @@
  */
 package com.twosigma.beakerx.scala.magic.command;
 
+import com.twosigma.beakerx.CommMock;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.widget.SingleSparkSession;
 import com.twosigma.beakerx.widget.SparkEngineWithUI;
+import com.twosigma.beakerx.widget.SparkEngineWithUIMock;
 import com.twosigma.beakerx.widget.SparkUI;
+import com.twosigma.beakerx.widget.SparkUIFactory;
 import com.twosigma.beakerx.widget.SparkUiDefaults;
 import org.apache.spark.sql.SparkSession;
 import org.junit.Before;
@@ -37,13 +41,25 @@ public class SparkMagicCommandAutoConnectTest {
   private SparkMagicCommand sparkMagicCommand;
   public SparkUI sparkUI;
   private SingleSparkSession singleSparkSession;
+  private KernelTest kernel;
+  private SparkEngineWithUIMock sparkEngineWithUIMock;
 
   @Before
   public void setUp() {
     singleSparkSession = new SparkMagicCommand.SingleSparkSessionImpl();
-    SparkUI.SparkUIFactory sparkUIFactory = createSparkUIFactory(singleSparkSession);
-    KernelTest kernel = new KernelTest();
-    sparkMagicCommand = new SparkMagicCommand(kernel, new SparkFactoryImpl(kernel, new SparkMagicCommandTest.SparkManagerNoUIFactoryMock(), sparkUIFactory, new SparkFactoryWithUIImplTest.SparkUiDefaultsImplMock()));
+    SparkUIFactory sparkUIFactory = createSparkUIFactory(singleSparkSession);
+    kernel = new KernelTest();
+    sparkEngineWithUIMock = new SparkEngineWithUIMock();
+    sparkMagicCommand = new SparkMagicCommand(
+            kernel,
+            new SparkFactoryImpl(
+                    kernel,
+                    new SparkMagicCommandTest.SparkManagerNoUIFactoryMock(),
+                    sparkSessionBuilder -> {
+                      return sparkEngineWithUIMock;
+                    },
+                    sparkUIFactory,
+                    new SparkUiDefaultsImplMock()));
   }
 
   @Test
@@ -62,7 +78,7 @@ public class SparkMagicCommandAutoConnectTest {
     MagicCommandOutcomeItem execute = createSparkUi("--start");
     //then
     assertThat(execute.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.OK);
-    assertThat(singleSparkSession.isActive()).isTrue();
+    assertThat(sparkEngineWithUIMock.isAutoStart()).isTrue();
   }
 
   @Test
@@ -72,7 +88,7 @@ public class SparkMagicCommandAutoConnectTest {
     MagicCommandOutcomeItem execute = createSparkUi("-s");
     //then
     assertThat(execute.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.OK);
-    assertThat(singleSparkSession.isActive()).isTrue();
+    assertThat(sparkEngineWithUIMock.isAutoStart()).isTrue();
   }
 
   private MagicCommandOutcomeItem createSparkUi(String option) {
@@ -82,15 +98,14 @@ public class SparkMagicCommandAutoConnectTest {
     return execute;
   }
 
-  private SparkUI.SparkUIFactory createSparkUIFactory(SingleSparkSession singleSparkSession) {
-    return new SparkUI.SparkUIFactory() {
+  private SparkUIFactory createSparkUIFactory(SingleSparkSession singleSparkSession) {
+    return new SparkUIFactory() {
       @Override
       public SparkUI create(SparkSession.Builder builder, SparkEngineWithUI sparkEngineWithUI, SparkUiDefaults sparkUiDefaults) {
-        sparkUI = factory.create(builder, sparkEngineWithUI, sparkUiDefaults);
+        CommMock commMock = new CommMock("id1", JupyterMessages.COMM_MSG.getName(), kernel);
+        sparkUI = new SparkUI(commMock, sparkEngineWithUI, sparkUiDefaults, singleSparkSession, kernel);
         return sparkUI;
       }
-
-      private SparkUI.SparkUIFactoryImpl factory = new SparkUI.SparkUIFactoryImpl(singleSparkSession);
     };
   }
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 20208 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,16 +15,8 @@
  */
 package com.twosigma.beakerx.widget;
 
-import com.twosigma.beakerx.TryResult;
-import com.twosigma.beakerx.kernel.KernelFunctionality;
-import com.twosigma.beakerx.message.Message;
+import org.apache.spark.sql.SparkSession;
 
-import java.util.Map;
-
-public interface SparkEngineWithUI extends SparkEngine {
-
-  TryResult configure(KernelFunctionality kernel, SparkUIApi sparkUI, Message parentMessage, Map<String, Object> sparkOptions);
-
-  boolean isAutoStart();
-
+public interface SparkUIFactory {
+  SparkUIApi create(SparkSession.Builder builder, SparkEngineWithUI sparkEngineWithUI, SparkUiDefaults sparkUiDefaults);
 }

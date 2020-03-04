@@ -32,6 +32,9 @@ import org.apache.spark.sql.SparkSession;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.twosigma.beakerx.widget.SparkUIApi.BEAKERX_ID;
@@ -53,19 +56,34 @@ public class SparkEngineWithUIImpl extends SparkEngineBase implements SparkEngin
     this.autoStart = true;
   }
 
+  @Override
+  public void stop() {
+    getOrCreate().sparkContext().stop();
+  }
+
+  @Override
+  public void cancelAllJobs() {
+    getOrCreate().sparkContext().cancelAllJobs();
+  }
+
+  @Override
+  public void cancelStage(int stageid) {
+    getOrCreate().sparkContext().cancelStage(stageid);
+  }
+
   public boolean isAutoStart() {
     return this.autoStart;
   }
 
   @Override
-  public TryResult configure(KernelFunctionality kernel, SparkUIApi sparkUI, Message parentMessage) {
-    SparkConf sparkConf = createSparkConf(sparkUI.getAdvancedOptions(), getSparkConfBasedOn(this.sparkSessionBuilder));
-    sparkConf = configureSparkConf(sparkConf, sparkUI);
+  public TryResult configure(KernelFunctionality kernel, SparkUIApi sparkUI, Message parentMessage, Map<String, Object> sparkOptions) {
+    SparkConf sparkConf = createSparkConf(sparkOptions, getSparkConfBasedOn(this.sparkSessionBuilder));
+    sparkConf = configureSparkConf(sparkConf);
     this.sparkSessionBuilder = SparkSession.builder().config(sparkConf);
-    if (sparkUI.getHiveSupport()) {
+    if (shouldEnableHive(sparkOptions)) {
       this.sparkSessionBuilder.enableHiveSupport();
     }
-    TryResult sparkSessionTry = createSparkSession(sparkUI, parentMessage);
+    TryResult sparkSessionTry = createSparkSession();
     if (sparkSessionTry.isError()) {
       return sparkSessionTry;
     }
@@ -76,6 +94,15 @@ public class SparkEngineWithUIImpl extends SparkEngineBase implements SparkEngin
       kernel.registerCancelHook(SparkVariable::cancelAllJobs);
     }
     return tryResultSparkContext;
+  }
+
+  private boolean shouldEnableHive(Map<String, Object> sparkOptions) {
+    if (!sparkOptions.isEmpty()) {
+      List properties = (List) sparkOptions.get("properties");
+      Optional first = properties.stream().filter(x -> ((Map) x).get("name").equals("spark.sql.catalogImplementation")).findFirst();
+      return (first.isPresent() && ((Map) first.get()).get("value").equals("hive"));
+    }
+    return false;
   }
 
   private SparkContext addListener(SparkContext sc, SparkUIApi sparkUIManager) {
@@ -127,10 +154,6 @@ public class SparkEngineWithUIImpl extends SparkEngineBase implements SparkEngin
     builder.config(SPARK_EXTRA_LISTENERS, START_STOP_SPARK_LISTENER);
     builder.config(BEAKERX_ID, UUID.randomUUID().toString());
     return builder;
-  }
-
-  public interface SparkEngineWithUIFactory {
-    SparkEngineWithUI create(SparkSession.Builder sparkSessionBuilder);
   }
 
   public static class SparkEngineWithUIFactoryImpl implements SparkEngineWithUIFactory {

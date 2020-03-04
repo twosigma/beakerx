@@ -109,7 +109,7 @@ class TestSparkUI(unittest.TestCase):
         event = sui.comm.message["event"]
         self.assertTrue(event["start"] == "done")
 
-    def test_should_send_save_current_profile_when_sc_starts(self):
+    def test_should_save_current_profile_when_sc_starts(self):
         # given
         builder = BuilderMock()
         ipython_manager = IpythonManagerMock()

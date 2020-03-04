@@ -25,7 +25,6 @@ import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.scala.magic.command.JobLinkFactory;
 import com.twosigma.beakerx.scala.magic.command.SparkUiWebUrlFactory;
 import com.twosigma.beakerx.scala.magic.command.StageLinkFactory;
-import com.twosigma.beakerx.widget.configuration.SparkConfiguration;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.RuntimeConfig;
 import org.apache.spark.sql.SparkSession;
@@ -106,20 +105,6 @@ abstract class SparkEngineBase implements SparkEngine {
     }
   }
 
-  protected TryResult createSparkSession(SparkUIApi sparkUI, Message parentMessage) {
-    sparkUI.startSpinner(parentMessage);
-    try {
-      SparkSession sparkSession = getOrCreate();
-      return TryResult.createResult(sparkSession);
-    } catch (Exception e) {
-      return TryResult.createError(errorPrinter.print(e));
-    } catch (Throwable e) {
-      return TryResult.createError(e.toString());
-    } finally {
-      sparkUI.stopSpinner();
-    }
-  }
-
   @Override
   public SparkSession getOrCreate() {
     return sparkSessionBuilder.getOrCreate();
@@ -169,16 +154,22 @@ abstract class SparkEngineBase implements SparkEngine {
     return kernel.executeCode(addSc, seo);
   }
 
-  protected SparkConf createSparkConf(List<SparkConfiguration.Configuration> configurations, SparkConf old) {
+  protected SparkConf createSparkConf(Map<String, Object> sparkOptions, SparkConf old) {
     SparkConf sparkConf = new SparkConf();
     sparkConf.set(SPARK_EXTRA_LISTENERS, old.get(SPARK_EXTRA_LISTENERS));
     sparkConf.set(BEAKERX_ID, old.get(BEAKERX_ID));
     if (old.contains(SPARK_APP_NAME)) {
       sparkConf.set(SPARK_APP_NAME, old.get(SPARK_APP_NAME));
     }
-    configurations.forEach(x -> {
-      if (x.getName() != null) {
-        sparkConf.set(x.getName(), (x.getValue() != null) ? x.getValue() : "");
+    sparkOptions.forEach((k, v) -> {
+      if (k.equals("properties")) {
+        List properties = (List) v;
+        properties.forEach(p -> {
+          Map m = (Map) p;
+          sparkConf.set((String) m.get("name"), (String) m.get("value"));
+        });
+      } else {
+        sparkConf.set(k, (v != null) ? v.toString() : "");
       }
     });
     return sparkConf;
@@ -207,21 +198,6 @@ abstract class SparkEngineBase implements SparkEngine {
     }
     this.conf.getConfigs().forEach(sparkConf::set);
     return sparkConf;
-  }
-
-  protected SparkConf configureSparkConf(SparkConf sc, SparkUIApi sparkUI) {
-    if (sparkUI.getMasterURL().getValue() != null && !sparkUI.getMasterURL().getValue().isEmpty()) {
-      sc.set(SPARK_MASTER, sparkUI.getMasterURL().getValue());
-    }
-    if (sparkUI.getExecutorMemory().getValue() != null && !sparkUI.getExecutorMemory().getValue().isEmpty()) {
-      sc.set(SPARK_EXECUTOR_MEMORY, sparkUI.getExecutorMemory().getValue());
-    }
-
-    if (sparkUI.getExecutorCores().getValue() != null && !sparkUI.getExecutorCores().getValue().isEmpty()) {
-      sc.set(SPARK_EXECUTOR_CORES, sparkUI.getExecutorCores().getValue());
-    }
-
-    return configureSparkConf(sc);
   }
 
   @Override

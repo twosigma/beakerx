@@ -15,15 +15,16 @@
  */
 package com.twosigma.beakerx.widget;
 
+
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.InternalVariable;
+import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
-import com.twosigma.beakerx.kernel.msg.StacktraceHtmlPrinter;
+import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.restserver.Context;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widget.configuration.SparkConfiguration;
 import org.apache.spark.sql.SparkSession;
 
 import java.util.ArrayList;
@@ -31,44 +32,51 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.twosigma.beakerx.kernel.comm.BxComm.createComm;
+import static com.twosigma.beakerx.widget.SparkUiDefaultsImpl.CURRENT_PROFILE;
+import static com.twosigma.beakerx.widget.SparkUiDefaultsImpl.SPARK_PROFILES;
 import static java.util.Arrays.asList;
 
 public class SparkUI extends VBox implements SparkUIApi {
 
   public static final String ONE_SPARK_SESSION_MSG_ERROR = "Cannot have more than one Spark session open in the same notebook.";
 
-  public static final String VIEW_NAME_VALUE = "SparkUIView";
-  public static final String MODEL_NAME_VALUE = "SparkUIModel";
-  public static final String SPARK_MASTER_DEFAULT = "local[*]";
-  private static final String SPARK_APP_ID = "sparkAppId";
-  public static final String ERROR_CREATING_SPARK_SESSION = "Error creating SparkSession, see the console log for more explanation";
-  public static final String SPARK_EXECUTOR_CORES_DEFAULT = "10";
-  public static final String SPARK_EXECUTOR_MEMORY_DEFAULT = "8g";
-  public static final Map<String, String> SPARK_ADVANCED_OPTIONS_DEFAULT = new HashMap<>();
+  public static final String VIEW_NAME_VALUE = "SparkUI2View";
+  public static final String MODEL_NAME_VALUE = "SparkUI2Model";
   public static final String PUT_SPARK_JOBS_IN_THE_BACKGROUND = "putSparkJobsInTheBackground";
   public static final String CANCELLED_SPARK_JOBS = "cancelledSparkJobs";
 
-
-  private final SparkUIForm sparkUIForm;
-  private HBox statusPanel;
-  private Map<Integer, SparkStateGroupPanel> progressBarMap = new HashMap<>();
-  private SparkFoldout jobPanel = null;
-  private Message currentParentHeader = null;
+  private final KernelFunctionality kernel;
   private SparkEngineWithUI sparkEngine;
   private SparkUiDefaults sparkUiDefaults;
   private SingleSparkSession singleSparkSession;
+  private Message currentParentHeader = null;
+  private SparkFoldout jobPanel = null;
+  private Map<Integer, SparkStateGroupPanel> progressBarMap = new HashMap<>();
 
-  SparkUI(SparkEngineWithUI sparkEngine, SparkUiDefaults sparkUiDefaults, SingleSparkSession singleSparkSession) {
-    super(new ArrayList<>());
+  public SparkUI(Comm comm, SparkEngineWithUI sparkEngine, SparkUiDefaults sparkUiDefaults, SingleSparkSession singleSparkSession, KernelFunctionality kernel) {
+    super(comm, new ArrayList<>());
     this.sparkUiDefaults = sparkUiDefaults;
     this.sparkEngine = sparkEngine;
     this.singleSparkSession = singleSparkSession;
-    VBox sparkUIFormPanel = new VBox(new ArrayList<>());
-    add(sparkUIFormPanel);
+    this.kernel = kernel;
+    getComm().addMsgCallbackList((Handler<Message>) this::handleMessage);
     SparkVariable.putSparkUI(this);
-    this.sparkUIForm = new SparkUIForm(sparkEngine, sparkUiDefaults, this::initSparkContext);
-    sparkUIFormPanel.add(sparkUIForm);
     this.configureRESTMapping();
+    openComm();
+  }
+
+  public SparkUI(SparkEngineWithUI sparkEngine, SparkUiDefaults sparkUiDefaults, SingleSparkSession singleSparkSession) {
+    this(createComm(), sparkEngine, sparkUiDefaults, singleSparkSession, KernelManager.get());
+  }
+
+  @Override
+  protected HashMap<String, Object> content(HashMap<String, Object> content) {
+    this.sparkUiDefaults.loadProfiles();
+    super.content(content);
+    content.put(SPARK_PROFILES, this.sparkUiDefaults.getProfiles());
+    content.put(CURRENT_PROFILE, this.sparkUiDefaults.getCurrentProfileName());
+    return content;
   }
 
   @Override
@@ -92,75 +100,117 @@ public class SparkUI extends VBox implements SparkUIApi {
   }
 
   @Override
-  public void startSpinner(Message parentMessage) {
-    this.sparkUIForm.startSpinner(parentMessage);
+  public void afterDisplay(Message parent) {
+    if (this.sparkEngine.isAutoStart()) {
+      handleAutoStart(parent);
+    }
   }
 
-  @Override
-  public void stopSpinner() {
-    this.sparkUIForm.stopSpinner();
+  private void handleMessage(Message message) {
+    Map data = (Map) message.getContent().get("data");
+    Map content = (Map) data.get("content");
+    String event = (String) content.get("event");
+    if (event.equals("start")) {
+      handleStartEvent(content, message);
+    } else if (event.equals("stop")) {
+      handleStopEvent();
+    } else if (event.equals("save_profiles")) {
+      handleSaveProfilesEvent(content);
+    }
   }
 
+  private void handleStopEvent() {
+    sparkEngine.stop();
+    getComm().sendData("event", new HashMap<String, String>() {
+      {
+        put("stop", "done");
+      }
+    });
+  }
 
-  private void initSparkContext(Message parentMessage) {
-    this.sparkUIForm.clearErrors();
+  private void handleAutoStart(Message message) {
+    Map<String, Object> spark_options = sparkUiDefaults.getProfileByName(sparkUiDefaults.getCurrentProfileName());
+    TryResult tryResult = initSparkContext(message, spark_options);
+    if (tryResult.isError()) {
+      sendError(tryResult.error());
+    } else {
+      getComm().sendData("event", new HashMap<String, String>() {
+        {
+          put("start", "done");
+        }
+      });
+    }
+  }
+
+  private void handleStartEvent(Map content, Message message) {
+    Map payload = (Map) content.get("payload");
+    Map spark_options = (Map) payload.get("spark_options");
+    TryResult tryResult = initSparkContext(message, spark_options);
+    if (tryResult.isError()) {
+      sendError(tryResult.error());
+    } else {
+      String current_profile = (String) payload.get("current_profile");
+      sparkUiDefaults.saveCurrentProfileName(current_profile);
+      getComm().sendData("event", new HashMap<String, String>() {
+        {
+          put("start", "done");
+        }
+      });
+    }
+  }
+
+  private void handleSaveProfilesEvent(Map content) {
+    List payload = (List) content.get("payload");
+    this.sparkUiDefaults.saveProfiles(payload);
+    getComm().sendData("event", new HashMap<String, String>() {
+      {
+        put("save_profiles", "done");
+      }
+    });
+  }
+
+  private TryResult initSparkContext(Message parentMessage, Map sparkOptions) {
     KernelFunctionality kernel = KernelManager.get();
     if (singleSparkSession.isActive()) {
-      this.sparkUIForm.sendError(StacktraceHtmlPrinter.printRedBold(ONE_SPARK_SESSION_MSG_ERROR));
+      return TryResult.createError(ONE_SPARK_SESSION_MSG_ERROR);
     } else {
       SparkVariable.putSparkUI(this);
-      configureSparkContext(parentMessage, kernel);
+      return configureSparkContext(parentMessage, kernel, sparkOptions);
     }
   }
 
-  private void configureSparkContext(Message parentMessage, KernelFunctionality kernel) {
+  private TryResult configureSparkContext(Message parentMessage, KernelFunctionality kernel, Map sparkOptions) {
     try {
-      this.sparkUIForm.setAllToDisabled();
-      TryResult configure = sparkEngine.configure(kernel, this, parentMessage);
+      TryResult configure = sparkEngine.configure(kernel, this, parentMessage, sparkOptions);
       if (configure.isError()) {
-        this.sparkUIForm.sendError(StacktraceHtmlPrinter.printRedBold(ERROR_CREATING_SPARK_SESSION));
-        this.sparkUIForm.setAllToEnabled();
+        return TryResult.createError(configure.error());
       } else {
         singleSparkSession.active();
-        sparkUIForm.saveDefaults();
-        sparkUIForm.getConnectButton().setDomClasses(asList("hidden"));
-        sparkUiDefaults.saveProfileName(sparkUIForm.getProfileName());
         applicationStart();
+        return TryResult.createResult("done");
       }
     } catch (Exception e) {
-      this.sparkUIForm.setAllToEnabled();
-      this.sparkUIForm.sendError(StacktraceHtmlPrinter.printRedBold(e.getMessage()));
+      return TryResult.createError(e.toString());
     }
   }
 
-  private SparkSession getSparkSession() {
-    return sparkEngine.getOrCreate();
+  private void sendError(String text) {
+    getComm().sendData("error", new HashMap<String, String>() {
+      {
+        put("message", text);
+      }
+    });
   }
 
   private void applicationStart() {
-    this.statusPanel = new SparkUIStatus(() -> getSparkSession().sparkContext().stop());
-    this.sparkUIForm.setDomClasses(new ArrayList<>(asList("bx-disabled")));
-    add(0, this.statusPanel);
-    sendUpdate(SPARK_APP_ID, sparkEngine.getSparkAppId());
-    sendUpdate("sparkUiWebUrl", sparkEngine.getSparkUiWebUrl());
-    sendUpdate("sparkMasterUrl", sparkEngine.getSparkMasterUrl());
   }
 
   @Override
   public void applicationEnd() {
-    this.sparkUIForm.setDomClasses(new ArrayList<>());
-    this.sparkUIForm.setAllToEnabled();
-    removeStatusPanel();
     singleSparkSession.inActive();
   }
 
-  private void removeStatusPanel() {
-    if (statusPanel != null) {
-      remove(statusPanel);
-      statusPanel = null;
-    }
-  }
-
+  @Override
   public void startStage(int stageId, int numTasks) {
     if (isStartStageFromNewCell()) {
       jobPanel = createSparkFoldout(jobPanel);
@@ -172,22 +222,57 @@ public class SparkUI extends VBox implements SparkUIApi {
     SparkStateGroupPanel sparkProgressDecorator = new SparkStateGroupPanel(intProgress, asList(xButton, bkgButton));
     jobPanel.add(sparkProgressDecorator);
     progressBarMap.put(stageId, sparkProgressDecorator);
+
   }
 
-  private Widget createBkgJobsButton(int stageId) {
-    BeakerXServer beakerXServer = KernelManager.get().getBeakerXServer();
-    RESTButton bkgButton = new RESTButton(beakerXServer.getURL() + PUT_SPARK_JOBS_IN_THE_BACKGROUND);
-    bkgButton.setTooltip("put spark job in the background, let it complete asynchronously");
-    bkgButton.setDomClasses(new ArrayList<>(asList("bx-button", "icon-bg")));
-    return bkgButton;
+  @Override
+  public void endStage(int stageId) {
+    SparkStateGroupPanel decorator = progressBarMap.get(stageId);
+    decorator.getSparkStateProgress().hide();
+
   }
 
-  private Widget createCancelledJobsButton(int stageId) {
-    BeakerXServer beakerXServer = KernelManager.get().getBeakerXServer();
-    RESTButton xButton = new RESTButton(beakerXServer.getURL() + CANCELLED_SPARK_JOBS + "/" + stageId);
-    xButton.setTooltip("interrupt spark job");
-    xButton.setDomClasses(new ArrayList<>(asList("bx-button", "icon-close")));
-    return xButton;
+  @Override
+  public void taskStart(int stageId, long taskId) {
+    SparkStateGroupPanel decorator = progressBarMap.get(stageId);
+    decorator.getSparkStateProgress().addActive();
+  }
+
+  @Override
+  public void taskEnd(int stageId, long taskId) {
+    SparkStateGroupPanel decorator = progressBarMap.get(stageId);
+    decorator.getSparkStateProgress().addDone();
+  }
+
+  @Override
+  public void taskCancelled(int stageId, long taskId) {
+    SparkStateGroupPanel decorator = progressBarMap.get(stageId);
+    decorator.getSparkStateProgress().addCancelled();
+  }
+
+  public void cancelAllJobs() {
+    sparkEngine.cancelAllJobs();
+  }
+
+  public static class SparkUIFactoryImpl implements SparkUIFactory {
+    private SingleSparkSession singleSparkSession;
+
+    public SparkUIFactoryImpl(SingleSparkSession singleSparkSession) {
+      this.singleSparkSession = singleSparkSession;
+    }
+
+    @Override
+    public SparkUI create(SparkSession.Builder builder, SparkEngineWithUI sparkEngine, SparkUiDefaults sparkUiDefaults) {
+      return new SparkUI(sparkEngine, sparkUiDefaults, singleSparkSession);
+    }
+  }
+
+  private void configureRESTMapping() {
+    BeakerXServer beakerXServer = this.kernel.getBeakerXServer();
+    beakerXServer.addPostMapping(PUT_SPARK_JOBS_IN_THE_BACKGROUND,
+            (Context ctx) -> this.kernel.putEvaluationInToBackground());
+    beakerXServer.addPostMapping(CANCELLED_SPARK_JOBS + "/:stageid",
+            (Context ctx) -> sparkEngine.cancelStage(Integer.parseInt(ctx.param("stageid"))));
   }
 
   private boolean isStartStageFromNewCell() {
@@ -208,26 +293,6 @@ public class SparkUI extends VBox implements SparkUIApi {
     return jobPanel;
   }
 
-  public void endStage(int stageId) {
-    SparkStateGroupPanel decorator = progressBarMap.get(stageId);
-    decorator.getSparkStateProgress().hide();
-  }
-
-  public void taskStart(int stageId, long taskId) {
-    SparkStateGroupPanel decorator = progressBarMap.get(stageId);
-    decorator.getSparkStateProgress().addActive();
-  }
-
-  public void taskEnd(int stageId, long taskId) {
-    SparkStateGroupPanel decorator = progressBarMap.get(stageId);
-    decorator.getSparkStateProgress().addDone();
-  }
-
-  public void taskCancelled(int stageId, long taskId) {
-    SparkStateGroupPanel decorator = progressBarMap.get(stageId);
-    decorator.getSparkStateProgress().addCancelled();
-  }
-
   private String stageLink(int stageId) {
     return this.sparkEngine.stageLink(stageId);
   }
@@ -236,74 +301,20 @@ public class SparkUI extends VBox implements SparkUIApi {
     return this.sparkEngine.jobLink(jobId);
   }
 
-  public void cancelAllJobs() {
-    getSparkSession().sparkContext().cancelAllJobs();
+  private Widget createCancelledJobsButton(int stageId) {
+    BeakerXServer beakerXServer = KernelManager.get().getBeakerXServer();
+    RESTButton xButton = new RESTButton(beakerXServer.getURL() + CANCELLED_SPARK_JOBS + "/" + stageId);
+    xButton.setTooltip("interrupt spark job");
+    xButton.setDomClasses(new ArrayList<>(asList("bx-button", "icon-close")));
+    return xButton;
   }
 
-  public Text getMasterURL() {
-    return this.sparkUIForm.getMasterURL();
-  }
-
-  public boolean getHiveSupport() {
-    return this.sparkUIForm.getHiveSupport().getValue();
-  }
-
-  public Text getExecutorMemory() {
-    return this.sparkUIForm.getExecutorMemory();
-  }
-
-  public Text getExecutorCores() {
-    return this.sparkUIForm.getExecutorCores();
-  }
-
-  public List<SparkConfiguration.Configuration> getAdvancedOptions() {
-    return this.sparkUIForm.getAdvancedOptions();
-  }
-
-  public Button getConnectButton() {
-    return this.sparkUIForm.getConnectButton();
-  }
-
-  public void afterDisplay(Message parent) {
-    if (this.sparkEngine.isAutoStart()) {
-      getConnectButton().onClick(new HashMap(), parent);
-    }
-  }
-
-  public interface SparkUIFactory {
-    SparkUIApi create(SparkSession.Builder builder, SparkEngineWithUI sparkEngineWithUI, SparkUiDefaults sparkUiDefaults);
-  }
-
-  public static class SparkUIFactoryImpl implements SparkUIFactory {
-    private SingleSparkSession singleSparkSession;
-
-    public SparkUIFactoryImpl(SingleSparkSession singleSparkSession) {
-      this.singleSparkSession = singleSparkSession;
-    }
-
-    @Override
-    public SparkUI create(SparkSession.Builder builder, SparkEngineWithUI sparkEngine, SparkUiDefaults sparkUiDefaults) {
-      return new SparkUI(sparkEngine, sparkUiDefaults, singleSparkSession);
-    }
-  }
-
-  @FunctionalInterface
-  public interface OnSparkButtonAction {
-    void run(Message message);
-  }
-
-  @FunctionalInterface
-  public interface OnSparkRestButtonAction {
-    void run();
-  }
-
-  private void configureRESTMapping() {
-    KernelFunctionality kernel = KernelManager.get();
-    BeakerXServer beakerXServer = kernel.getBeakerXServer();
-    beakerXServer.addPostMapping(PUT_SPARK_JOBS_IN_THE_BACKGROUND,
-            (Context ctx) -> kernel.putEvaluationInToBackground());
-    beakerXServer.addPostMapping(CANCELLED_SPARK_JOBS + "/:stageid",
-            (Context ctx) -> getSparkSession().sparkContext().cancelStage(Integer.parseInt(ctx.param("stageid"))));
+  private Widget createBkgJobsButton(int stageId) {
+    BeakerXServer beakerXServer = KernelManager.get().getBeakerXServer();
+    RESTButton bkgButton = new RESTButton(beakerXServer.getURL() + PUT_SPARK_JOBS_IN_THE_BACKGROUND);
+    bkgButton.setTooltip("put spark job in the background, let it complete asynchronously");
+    bkgButton.setDomClasses(new ArrayList<>(asList("bx-button", "icon-bg")));
+    return bkgButton;
   }
 
 }

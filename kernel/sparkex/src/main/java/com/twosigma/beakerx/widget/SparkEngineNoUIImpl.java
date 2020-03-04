@@ -65,6 +65,22 @@ public class SparkEngineNoUIImpl extends SparkEngineBase implements SparkEngineN
     }
   }
 
+  @Override
+  public void stop() {
+    getOrCreate().sparkContext().stop();
+  }
+
+  @Override
+  public void cancelAllJobs() {
+    getOrCreate().sparkContext().cancelAllJobs();
+  }
+
+  @Override
+  public void cancelStage(int stageid) {
+    getOrCreate().sparkContext().cancelStage(stageid);
+  }
+
+
   public interface SparkEngineNoUIFactory {
     SparkEngineNoUI create(SparkSession.Builder sparkSessionBuilder);
   }

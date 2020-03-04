@@ -13,18 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget;
+package com.twosigma.beakerx;
 
-import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
-import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.kernel.Utils;
+import com.twosigma.beakerx.kernel.comm.BxComm;
+import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 
-import java.util.Map;
+public class CommMock extends BxComm {
+  public CommMock(String commId, String targetName, KernelFunctionality kernel) {
+    super(commId, targetName, kernel);
+  }
 
-public interface SparkEngineWithUI extends SparkEngine {
-
-  TryResult configure(KernelFunctionality kernel, SparkUIApi sparkUI, Message parentMessage, Map<String, Object> sparkOptions);
-
-  boolean isAutoStart();
-
+  @Override
+  public Comm createNewComm() {
+    return new CommMock(Utils.commUUID(), JupyterMessages.COMM_MSG.getName(), kernel);
+  }
 }

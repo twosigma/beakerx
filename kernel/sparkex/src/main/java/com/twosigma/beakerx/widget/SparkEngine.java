@@ -56,4 +56,10 @@ public interface SparkEngine {
   void stageLinkFactory(StageLinkFactory factory);
 
   void sparkUiWebUrlFactory(SparkUiWebUrlFactory factory);
+
+  void stop();
+
+  void cancelAllJobs();
+
+  void cancelStage(int stageid);
 }

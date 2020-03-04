@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.message.Message;
 
 import java.io.Serializable;
@@ -43,6 +44,11 @@ public class Layout extends Widget {
   private String height;
   private String visibility;
   private String margin;
+
+  public Layout(Comm comm) {
+    super(comm);
+    openComm();
+  }
 
   public Layout() {
     super();

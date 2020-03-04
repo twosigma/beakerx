@@ -163,6 +163,21 @@ public class YarnSparkOptionCommandTest {
     public void sparkUiWebUrlFactory(SparkUiWebUrlFactory factory) {
       this.sparkUiWebUrlFactory = factory;
     }
+
+    @Override
+    public void stop() {
+
+    }
+
+    @Override
+    public void cancelAllJobs() {
+
+    }
+
+    @Override
+    public void cancelStage(int stageid) {
+
+    }
   }
 
 }

@@ -23,15 +23,13 @@ import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widget.Button;
 import com.twosigma.beakerx.widget.SparkEngineNoUI;
 import com.twosigma.beakerx.widget.SparkEngineNoUIImpl;
 import com.twosigma.beakerx.widget.SparkEngineWithUI;
-import com.twosigma.beakerx.widget.SparkUI;
+import com.twosigma.beakerx.widget.SparkEngineWithUIMock;
 import com.twosigma.beakerx.widget.SparkUIApi;
+import com.twosigma.beakerx.widget.SparkUIFactory;
 import com.twosigma.beakerx.widget.SparkUiDefaults;
-import com.twosigma.beakerx.widget.Text;
-import com.twosigma.beakerx.widget.configuration.SparkConfiguration;
 import org.apache.spark.sql.SparkSession;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
@@ -39,9 +37,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,7 +53,11 @@ public class SparkFactoryWithUIImplTest {
     kernel = new KernelFunctionalityMock();
     sparkEngineNoUIFactory = new SparkEngineNoUIFactoryMock();
     sparkUiDefaults = new SparkUiDefaultsImplMock();
-    sparkFactory = new SparkFactoryImpl(kernel, sparkEngineNoUIFactory, new SparkUIFactoryMock(), sparkUiDefaults);
+    sparkFactory = new SparkFactoryImpl(kernel,
+            sparkEngineNoUIFactory,
+            sparkSessionBuilder -> new SparkEngineWithUIMock(),
+            new SparkUIFactoryMock(),
+            sparkUiDefaults);
     KernelManager.register(kernel);
   }
 
@@ -70,77 +69,6 @@ public class SparkFactoryWithUIImplTest {
     sparkFactory.createSpark(sparkUIParam(), Collections.emptyList());
     //then
     assertThat(sparkUiDefaults.loaded).isTrue();
-  }
-
-  public static class SparkUiDefaultsImplMock implements SparkUiDefaults {
-
-    public boolean saved = false;
-    public boolean loaded = false;
-
-    @Override
-    public void saveSparkConf(List<Map<String, Object>> sparkConf) {
-      saved = true;
-    }
-
-    @Override
-    public void loadDefaults() {
-      loaded = true;
-    }
-
-    @Override
-    public List<Map<String, Object>> getProfiles() {
-      return null;
-    }
-
-    @Override
-    public Map<String, Object> getProfileByName(String name) {
-      return null;
-    }
-
-    @Override
-    public void removeSparkConf(String profileName) {
-
-    }
-
-    @Override
-    public void loadProfiles() {
-
-    }
-
-    @Override
-    public void saveProfile(Map<String, Object> profile) {
-
-    }
-
-    @Override
-    public List<String> getProfileNames() {
-      return null;
-    }
-
-    @Override
-    public void saveProfileName(String profileName) {
-
-    }
-
-    @Override
-    public String getCurrentProfileName() {
-      return null;
-    }
-
-    @Override
-    public boolean containsKey(String key) {
-      return false;
-    }
-
-    @Override
-    public Object get(String key) {
-      return null;
-    }
-
-    @Override
-    public Map<String, String> getProperties() {
-      return new HashMap<>();
-    }
   }
 
 
@@ -179,35 +107,11 @@ public class SparkFactoryWithUIImplTest {
     }
   }
 
-  class SparkUIFactoryMock implements SparkUI.SparkUIFactory {
+  class SparkUIFactoryMock implements SparkUIFactory {
 
     @Override
     public SparkUIApi create(SparkSession.Builder builder, SparkEngineWithUI sparkEngineWithUI, SparkUiDefaults sparkUiDefaults) {
       return new SparkUIApi() {
-        @Override
-        public List<SparkConfiguration.Configuration> getAdvancedOptions() {
-          return null;
-        }
-
-        @Override
-        public Text getMasterURL() {
-          return null;
-        }
-
-        @Override
-        public boolean getHiveSupport() {
-          return false;
-        }
-
-        @Override
-        public Text getExecutorMemory() {
-          return null;
-        }
-
-        @Override
-        public Text getExecutorCores() {
-          return null;
-        }
 
         @Override
         public void startStage(int stageId, int numTasks) {
@@ -240,23 +144,8 @@ public class SparkFactoryWithUIImplTest {
         }
 
         @Override
-        public void startSpinner(Message message) {
-
-        }
-
-        @Override
-        public void stopSpinner() {
-
-        }
-
-        @Override
         public void taskCancelled(int stageId, long taskId) {
 
-        }
-
-        @Override
-        public Button getConnectButton() {
-          return null;
         }
 
         @Override

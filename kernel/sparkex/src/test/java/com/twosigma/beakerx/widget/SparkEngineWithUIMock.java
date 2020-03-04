@@ -13,23 +13,31 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.scala.magic.command;
+package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widget.SparkEngineConf;
-import com.twosigma.beakerx.widget.SparkEngineNoUI;
-import com.twosigma.beakerx.widget.SparkUiDefaults;
+import com.twosigma.beakerx.scala.magic.command.JobLinkFactory;
+import com.twosigma.beakerx.scala.magic.command.SparkUiWebUrlFactory;
+import com.twosigma.beakerx.scala.magic.command.StageLinkFactory;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 
 import java.util.Map;
 
-public class SparkEngineNoUIEmptyMock implements SparkEngineNoUI {
+public class SparkEngineWithUIMock implements SparkEngineWithUI {
+
+  private boolean autoStartConfigured = false;
+
   @Override
-  public TryResult configure(KernelFunctionality kernel, Message parentMessage) {
-    return null;
+  public TryResult configure(KernelFunctionality kernel, SparkUIApi sparkUI, Message parentMessage, Map<String, Object> sparkOptions) {
+    return TryResult.createResult("done");
+  }
+
+  @Override
+  public boolean isAutoStart() {
+    return autoStartConfigured;
   }
 
   @Override
@@ -79,7 +87,7 @@ public class SparkEngineNoUIEmptyMock implements SparkEngineNoUI {
 
   @Override
   public void configAutoStart() {
-
+    this.autoStartConfigured = true;
   }
 
   @Override
@@ -93,12 +101,12 @@ public class SparkEngineNoUIEmptyMock implements SparkEngineNoUI {
   }
 
   @Override
-  public void jobLinkFactory(JobLinkFactory jobLinkFactory) {
+  public void jobLinkFactory(JobLinkFactory factory) {
 
   }
 
   @Override
-  public void stageLinkFactory(StageLinkFactory stageLinkFactory) {
+  public void stageLinkFactory(StageLinkFactory factory) {
 
   }
 

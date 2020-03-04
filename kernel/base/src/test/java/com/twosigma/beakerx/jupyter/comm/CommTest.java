@@ -20,11 +20,13 @@ import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelManager;
-import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.kernel.comm.Buffer;
+import com.twosigma.beakerx.kernel.comm.BxComm;
 import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.message.Message;
 import org.junit.After;
 import org.junit.Before;
-import com.twosigma.beakerx.message.Message;
 import org.junit.Test;
 
 import java.io.Serializable;
@@ -45,7 +47,7 @@ public class CommTest {
   public void setUp() {
     kernel = new KernelTest();
     KernelManager.register(kernel);
-    comm = new Comm("targetName");
+    comm = new BxComm("targetName");
   }
 
   @After
@@ -63,7 +65,7 @@ public class CommTest {
     assertThat(kernel.getPublishedMessages().get(0).getParentHeader()).isEqualTo(parentMessage.getHeader());
     kernel.clearPublishedMessages();
     //then
-    comm.send(COMM_MSG, Comm.Buffer.EMPTY, comm.getData());
+    comm.send(COMM_MSG, Buffer.EMPTY, comm.getData());
     assertThat(kernel.getPublishedMessages().get(0).getParentHeader()).isEqualTo(parentMessage.getHeader());
   }
 
@@ -76,13 +78,13 @@ public class CommTest {
     kernel.clearPublishedMessages();
     // code from second execution
     Message message2 = submitCodeToExecution();
-    comm.send(COMM_MSG, Comm.Buffer.EMPTY, comm.getData());
+    comm.send(COMM_MSG, Buffer.EMPTY, comm.getData());
     assertThat(kernel.getPublishedMessages().get(0).getParentHeader()).isEqualTo(message2.getHeader());
   }
 
   private Message submitCodeToExecution() {
     Message jupyterMessage = commMsg();
-    SimpleEvaluationObject value = new SimpleEvaluationObject("ok", new KernelTest.SeoConfigurationFactoryMock(kernel,jupyterMessage));
+    SimpleEvaluationObject value = new SimpleEvaluationObject("ok", new KernelTest.SeoConfigurationFactoryMock(kernel, jupyterMessage));
     InternalVariable.setValue(value);
     return jupyterMessage;
   }
@@ -200,7 +202,7 @@ public class CommTest {
   @Test
   public void commSend_shouldSendIOPubSocketMessage() throws NoSuchAlgorithmException {
     //when
-    comm.send(COMM_MSG, Comm.Buffer.EMPTY, comm.getData());
+    comm.send(COMM_MSG, Buffer.EMPTY, comm.getData());
     //then
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
     assertThat(kernel.getPublishedMessages().get(0)).isNotNull();
@@ -209,7 +211,7 @@ public class CommTest {
   @Test
   public void commSend_sentMessageHasTypeIsCommClose() throws NoSuchAlgorithmException {
     //when
-    comm.send(COMM_MSG, Comm.Buffer.EMPTY, comm.getData());
+    comm.send(COMM_MSG, Buffer.EMPTY, comm.getData());
     //then
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message sendMessage = kernel.getPublishedMessages().get(0);
@@ -220,7 +222,7 @@ public class CommTest {
   @Test
   public void commSend_sentMessageHasCommId() throws NoSuchAlgorithmException {
     //when
-    comm.send(COMM_MSG, Comm.Buffer.EMPTY, comm.getData());
+    comm.send(COMM_MSG, Buffer.EMPTY, comm.getData());
     //then
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message sendMessage = kernel.getPublishedMessages().get(0);
@@ -231,7 +233,7 @@ public class CommTest {
   public void commClose_sentMessageHasData() throws NoSuchAlgorithmException {
     initCommData(comm);
     //when
-    comm.send(COMM_MSG, Comm.Buffer.EMPTY, comm.getData());
+    comm.send(COMM_MSG, Buffer.EMPTY, comm.getData());
     //then
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message sendMessage = kernel.getPublishedMessages().get(0);

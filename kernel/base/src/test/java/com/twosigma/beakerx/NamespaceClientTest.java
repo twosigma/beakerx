@@ -18,6 +18,7 @@ package com.twosigma.beakerx;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.kernel.comm.BxComm;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
 import org.junit.After;
@@ -46,7 +47,7 @@ public class NamespaceClientTest {
     namespaceClient = new NamespaceClient(new AutotranslationServiceTestImpl(), new DefaultBeakerXJsonSerializer(), commRepository);
     kernel = new KernelTest(commRepository);
     KernelManager.register(kernel);
-    commRepository.addComm("commId", new Comm(TargetNamesEnum.BEAKER_AUTOTRANSLATION));
+    commRepository.addComm("commId", new BxComm(TargetNamesEnum.BEAKER_AUTOTRANSLATION));
   }
 
   @After

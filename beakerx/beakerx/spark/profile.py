@@ -59,4 +59,4 @@ class Profile:
         return True, Profile.ERR
 
     def _dump(self, outfile, result):
-        json.dump(result, outfile, indent=4, sort_keys=True)
+        json.dump(result, outfile, indent=2, sort_keys=True)

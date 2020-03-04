@@ -22,6 +22,7 @@ import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 import com.twosigma.beakerx.widget.SingleSparkSession;
 import com.twosigma.beakerx.widget.SparkEngineNoUIImpl;
+import com.twosigma.beakerx.widget.SparkEngineWithUIImpl;
 import com.twosigma.beakerx.widget.SparkUI;
 import com.twosigma.beakerx.widget.SparkUiDefaultsImpl;
 
@@ -43,6 +44,7 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
             kernel,
             new SparkFactoryImpl(kernel,
                     new SparkEngineNoUIImpl.SparkEngineNoUIFactoryImpl(),
+                    new SparkEngineWithUIImpl.SparkEngineWithUIFactoryImpl(),
                     new SparkUI.SparkUIFactoryImpl(SINGLE_SPARK_SESSION),
                     new SparkUiDefaultsImpl(kernel.getBeakerXJson())
             )

@@ -22,7 +22,7 @@ public class SparkVariable {
   private static SparkUIApi sparkUI = null;
   private static SparkSession sparkSession = null;
 
-  static void putSparkUI(SparkUIApi ui) {
+  public static void putSparkUI(SparkUIApi ui) {
     sparkUI = ui;
   }
 

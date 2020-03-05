@@ -48,6 +48,7 @@ public class SparkUI extends VBox implements SparkUIApi {
   public static final String SPARK_APP_ID = "sparkAppId";
   public static final String SPARK_UI_WEB_URL = "sparkUiWebUrl";
   public static final String START = "start";
+  public static final String IS_AUTO_START = "is_auto_start";
 
   private final KernelFunctionality kernel;
   private SparkEngineWithUI sparkEngine;
@@ -79,6 +80,7 @@ public class SparkUI extends VBox implements SparkUIApi {
     super.content(content);
     content.put(SPARK_PROFILES, this.sparkUiDefaults.getProfiles());
     content.put(CURRENT_PROFILE, this.sparkUiDefaults.getCurrentProfileName());
+    content.put(IS_AUTO_START, this.sparkEngine.isAutoStart());
     return content;
   }
 
@@ -137,7 +139,7 @@ public class SparkUI extends VBox implements SparkUIApi {
     if (tryResult.isError()) {
       sendError(tryResult.error());
     } else {
-      sendStartDoneEvent();
+      sendStartDoneEvent("auto_start");
     }
   }
 
@@ -150,14 +152,14 @@ public class SparkUI extends VBox implements SparkUIApi {
     } else {
       String current_profile = (String) payload.get("current_profile");
       sparkUiDefaults.saveCurrentProfileName(current_profile);
-      sendStartDoneEvent();
+      sendStartDoneEvent(START);
     }
   }
 
-  private void sendStartDoneEvent() {
+  private void sendStartDoneEvent(String event) {
     getComm().sendData("event", new HashMap<String, String>() {
       {
-        put(START, "done");
+        put(event, "done");
         put(SPARK_APP_ID, sparkEngine.getSparkAppId());
         put(SPARK_UI_WEB_URL, sparkEngine.getSparkUiWebUrl());
       }

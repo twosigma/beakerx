@@ -21,17 +21,20 @@ import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widget.SingleSparkSession;
 import com.twosigma.beakerx.widget.SparkEngineWithUI;
 import com.twosigma.beakerx.widget.SparkEngineWithUIMock;
 import com.twosigma.beakerx.widget.SparkUI;
 import com.twosigma.beakerx.widget.SparkUIFactory;
 import com.twosigma.beakerx.widget.SparkUiDefaults;
+import com.twosigma.beakerx.widget.TestWidgetUtils;
 import org.apache.spark.sql.SparkSession;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import static com.twosigma.beakerx.MessageFactorTest.commMsg;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -79,6 +82,9 @@ public class SparkMagicCommandAutoConnectTest {
     //then
     assertThat(execute.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.OK);
     assertThat(sparkEngineWithUIMock.isAutoStart()).isTrue();
+    Message openMessages = TestWidgetUtils.getOpenMessages(kernel.getPublishedMessages()).get(1);
+    Map state = TestWidgetUtils.getState(openMessages);
+    assertThat((Boolean) state.get("is_auto_start")).isTrue();
   }
 
   @Test

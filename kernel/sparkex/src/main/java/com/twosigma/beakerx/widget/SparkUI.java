@@ -45,6 +45,9 @@ public class SparkUI extends VBox implements SparkUIApi {
   public static final String MODEL_NAME_VALUE = "SparkUI2Model";
   public static final String PUT_SPARK_JOBS_IN_THE_BACKGROUND = "putSparkJobsInTheBackground";
   public static final String CANCELLED_SPARK_JOBS = "cancelledSparkJobs";
+  public static final String SPARK_APP_ID = "sparkAppId";
+  public static final String SPARK_UI_WEB_URL = "sparkUiWebUrl";
+  public static final String START = "start";
 
   private final KernelFunctionality kernel;
   private SparkEngineWithUI sparkEngine;
@@ -134,11 +137,7 @@ public class SparkUI extends VBox implements SparkUIApi {
     if (tryResult.isError()) {
       sendError(tryResult.error());
     } else {
-      getComm().sendData("event", new HashMap<String, String>() {
-        {
-          put("start", "done");
-        }
-      });
+      sendStartDoneEvent();
     }
   }
 
@@ -151,12 +150,18 @@ public class SparkUI extends VBox implements SparkUIApi {
     } else {
       String current_profile = (String) payload.get("current_profile");
       sparkUiDefaults.saveCurrentProfileName(current_profile);
-      getComm().sendData("event", new HashMap<String, String>() {
-        {
-          put("start", "done");
-        }
-      });
+      sendStartDoneEvent();
     }
+  }
+
+  private void sendStartDoneEvent() {
+    getComm().sendData("event", new HashMap<String, String>() {
+      {
+        put(START, "done");
+        put(SPARK_APP_ID, sparkEngine.getSparkAppId());
+        put(SPARK_UI_WEB_URL, sparkEngine.getSparkUiWebUrl());
+      }
+    });
   }
 
   private void handleSaveProfilesEvent(Map content) {

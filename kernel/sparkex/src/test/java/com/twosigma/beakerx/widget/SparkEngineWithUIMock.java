@@ -28,6 +28,8 @@ import java.util.Map;
 
 public class SparkEngineWithUIMock implements SparkEngineWithUI {
 
+  public static final String SPARK_UI_WEB_URL_1 = "SparkUiWebUrl1";
+  public static final String APP_ID_LOCAL_1 = "appIdLocal1";
   private boolean autoStartConfigured = false;
 
   @Override
@@ -52,7 +54,7 @@ public class SparkEngineWithUIMock implements SparkEngineWithUI {
 
   @Override
   public String getSparkAppId() {
-    return null;
+    return APP_ID_LOCAL_1;
   }
 
   @Override
@@ -62,7 +64,7 @@ public class SparkEngineWithUIMock implements SparkEngineWithUI {
 
   @Override
   public String getSparkUiWebUrl() {
-    return null;
+    return SPARK_UI_WEB_URL_1;
   }
 
   @Override

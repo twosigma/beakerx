@@ -32,6 +32,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.twosigma.beakerx.widget.SparkEngineWithUIMock.APP_ID_LOCAL_1;
+import static com.twosigma.beakerx.widget.SparkEngineWithUIMock.SPARK_UI_WEB_URL_1;
+import static com.twosigma.beakerx.widget.SparkUI.SPARK_APP_ID;
+import static com.twosigma.beakerx.widget.SparkUI.SPARK_UI_WEB_URL;
 import static com.twosigma.beakerx.widget.SparkUiDefaults.CURRENT_PROFILE;
 import static com.twosigma.beakerx.widget.SparkUiDefaults.SPARK_PROFILES;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -144,6 +148,8 @@ public class SparkUITest {
     Map data = TestWidgetUtils.getData(doneMsg);
     Map event = (Map) data.get("event");
     assertThat(event.get("start")).isEqualTo("done");
+    assertThat(event.get(SPARK_APP_ID)).isEqualTo(APP_ID_LOCAL_1);
+    assertThat(event.get(SPARK_UI_WEB_URL)).isEqualTo(SPARK_UI_WEB_URL_1);
   }
 
   @Test

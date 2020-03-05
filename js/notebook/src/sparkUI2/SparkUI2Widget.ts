@@ -113,11 +113,15 @@ namespace Private {
             sessionWidget: SessionWidget
         }): void {
             this.started.disconnect(_onStart, this);
-
+            this.statsChanged.connect(_onStatsChanged.bind(this, widgets), this);
             widgets.startWidget.hide();
             widgets.profileSelectorWidget.hide();
             widgets.sessionWidget.show();
             widgets.sessionWidget.enableStop();
+        }
+
+        function _onStatsChanged(widgets, comm: SparkUI2Comm, data: {activeTasks: number; isActive: boolean; memoryUsed: number}[]): void {
+            widgets.sessionWidget.updateStats(data);
         }
 
         function _onError(sender: SparkUI2Comm, msg: string): void {
@@ -140,15 +144,13 @@ namespace Private {
 
         function _onStop(widgets: { startWidget: StartWidget, profileSelectorWidget: ProfileSelectorWidget, sessionWidget: SessionWidget }) {
             this.stopped.disconnect(_onStop, this);
+            this.statsChanged.disconnect(_onStatsChanged.bind(this, widgets), this);
 
             widgets.startWidget.show();
             widgets.startWidget.enableButton();
             widgets.profileSelectorWidget.show();
             widgets.sessionWidget.hide();
-
         }
-
-
     }
 }
 

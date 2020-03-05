@@ -17,15 +17,22 @@
 import {Panel, Widget} from "@phosphor/widgets";
 import {MessageLoop} from "@phosphor/messaging";
 import {SparkUI2Message} from "../SparkUI2Message";
+import CommonUtils from "beakerx_shared/lib/utils/CommonUtils";
 
 export class SessionWidget extends Panel {
     private readonly BUTTON_TEXT = 'Stop';
     private readonly BUTTON_TITLE = 'Stop session';
 
     private stopEl: HTMLButtonElement;
+    private statsEl: HTMLDivElement;
+
+    private statsActiveEl: HTMLDivElement;
+    private statsDeadEl: HTMLDivElement;
+    private statsMemoryEl: HTMLDivElement;
 
     constructor() {
         super();
+        this.addWidget(this.createStats());
         this.addWidget(this.createStop());
     }
 
@@ -35,6 +42,55 @@ export class SessionWidget extends Panel {
 
     public enableStop() {
         this.stopEl.disabled = false;
+    }
+
+    public updateStats(data: {
+        isActive: boolean;
+        activeTasks: number;
+        memoryUsed: number
+    }[]): void {
+        let activeTasks: number = 0;
+        let deadExecutors: number = 0;
+        let storageMemory: number = 0;
+
+        for (let d of data) {
+            if (d.isActive) {
+                activeTasks += d.activeTasks;
+                storageMemory += d.memoryUsed;
+            } else {
+                deadExecutors += 1;
+            }
+        }
+
+        this.statsActiveEl.textContent = `${activeTasks}`;
+        this.statsDeadEl.textContent = `${deadExecutors}`;
+        this.statsMemoryEl.textContent = `${CommonUtils.formatBytes(storageMemory)}`;
+    }
+
+    private createStats(): Widget {
+        let el = this.statsEl = document.createElement('div');
+
+        let activeEl = this.statsActiveEl = document.createElement('div');
+        activeEl.classList.add('active', 'label', 'label-info');
+        activeEl.title = 'Active Tasks';
+        activeEl.textContent = '0';
+
+        let deadEl = this.statsDeadEl = document.createElement('div');
+        deadEl.classList.add('dead', 'label', 'label-danger');
+        deadEl.title = 'Dead Executors';
+        deadEl.textContent = '0';
+
+        let memoryEl = this.statsMemoryEl = document.createElement('div');
+        memoryEl.classList.add('memory', 'label', 'label-default');
+        memoryEl.title = 'Storage Memory';
+        memoryEl.textContent = '0 KB';
+
+        el.append(activeEl, deadEl, memoryEl);
+
+        let w = new Widget({ node: el });
+        w.addClass('bx-stats');
+
+        return w;
     }
 
     private createStop(): Widget {

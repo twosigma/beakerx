@@ -18,6 +18,7 @@ import {IClassicComm} from "@jupyter-widgets/base";
 import {SparkUI2View} from "../SparkUI2";
 import {ISignal, Signal} from "@phosphor/signaling";
 import {IProfileListItem} from "./IProfileListItem";
+import BeakerXApi from "beakerx_shared/lib/api/BeakerXApi";
 
 export class SparkUI2Comm {
 
@@ -25,28 +26,48 @@ export class SparkUI2Comm {
     private _stopped = new Signal<this, void>(this);
     private _saved = new Signal<this, void>(this);
     private _errored = new Signal<this, string>(this);
+    private _statsChanged = new Signal<this, {
+        isActive: boolean;
+        activeTasks: number;
+        memoryUsed: number
+    }[]>(this);
+    private _statsChangedTimeout: NodeJS.Timeout;
+
+    private api: BeakerXApi;
+    private sparkAppId: string;
+    private sparkUiWebUrl: string;
 
     constructor(private view: SparkUI2View, private comm: IClassicComm) {
+        this.setApi();
         this.comm.on_msg((msg) => {
             let data = msg.content.data;
 
-            if (data.method === "update" && data.event.start === "done") {
+            if (data.method !== "update") {
+                return;
+            }
+
+            if (data.event?.start === "done") {
                 this._started.emit(undefined);
+                this.startStatsChanged(
+                    data.event.sparkAppId,
+                    data.event.sparkUiWebUrl
+                );
                 return;
             }
 
-            if (data.method === "update" && data.event.stop === "done") {
+            if (data.event?.stop === "done") {
                 this._stopped.emit(undefined);
+                this.stopStatsChanged();
                 return;
             }
 
-            if (data.method === "update" && data.event.save_profiles === "done") {
+            if (data.event?.save_profiles === "done") {
                 this._saved.emit(undefined);
                 return;
             }
 
-            if (data.method === "update" && data.hasOwnProperty('error')) {
-                this._errored.emit(data.message);
+            if (data.hasOwnProperty('error')) {
+                this._errored.emit(data.error.message);
                 return;
             }
         });
@@ -66,6 +87,10 @@ export class SparkUI2Comm {
 
     public get errored(): ISignal<this, string> {
         return this._errored;
+    }
+
+    public get statsChanged(): ISignal<this, {}> {
+        return this._statsChanged;
     }
 
     public sendSaveProfilesMessage(profilesPayload: IProfileListItem[]): void {
@@ -107,5 +132,52 @@ export class SparkUI2Comm {
             }
         };
         this.view.send(msg);
+    }
+
+    private setApi() {
+        let baseUrl;
+
+        if (this.api) {
+            return;
+        }
+
+        try {
+            const coreutils = require('@jupyterlab/coreutils');
+            coreutils.PageConfig.getOption('pageUrl');
+            baseUrl = coreutils.PageConfig.getBaseUrl();
+        } catch(e) {
+            baseUrl = `${window.location.origin}/`;
+        }
+
+        this.api = new BeakerXApi(baseUrl);
+    }
+
+    private startStatsChanged(sparkAppId: string, sparkUiWebUrl: string) {
+        this.sparkAppId = sparkAppId;
+        this.sparkUiWebUrl = sparkUiWebUrl;
+
+        this._statsChangedTimeout = setInterval(this.getMetrics.bind(this),1000);
+    }
+
+    private async getMetrics() {
+        try {
+            let sparkUrl = `${this.api.getApiUrl('sparkmetrics/executors')}?sparkAppId=${this.sparkAppId}&sparkUiWebUrl=${this.sparkUiWebUrl}`;
+            const response = await fetch(sparkUrl, { method: 'GET', credentials: 'include' });
+
+            if (!response.ok) {
+                this.stopStatsChanged();
+                return;
+            }
+
+            const data = await response.json();
+            this._statsChanged.emit(data);
+        } catch(error) {
+            this.stopStatsChanged();
+            return
+        }
+    }
+
+    private stopStatsChanged() {
+        clearInterval(this._statsChangedTimeout);
     }
 }

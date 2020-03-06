@@ -2,6 +2,6 @@
 --require tsconfig-paths/register
 --require ts-node/register/transpile-only
 --require ignore-styles
---require ./test/setup.js
+--require ./test/setup.cjs
 --watch-extensions ts,tsx
 ./test/**/*.spec.ts

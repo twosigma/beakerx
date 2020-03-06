@@ -27,8 +27,8 @@ class SparkUI2(BeakerxBox):
     profiles = List().tag(sync=True)
     current_profile = Unicode("").tag(sync=True)
 
-    def __init__(self, builder, ipython_manager, spark_server_factory, profile, comm=None, **kwargs):
-        self.builder = self.check_is_None(builder)
+    def __init__(self, engine, ipython_manager, spark_server_factory, profile, comm=None, **kwargs):
+        self.engine = self.check_is_None(engine)
         self.ipython_manager = self.check_is_None(ipython_manager)
         self.spark_server_factory = self.check_is_None(spark_server_factory)
         self.profile = self.check_is_None(profile)
@@ -59,7 +59,7 @@ class SparkUI2(BeakerxBox):
             self.comm.send(data=msg)
 
     def _handle_stop(self, content):
-        self.sc.stop()
+        self.engine.stop()
         msg = {
             'method': 'update',
             'event': {
@@ -74,21 +74,22 @@ class SparkUI2(BeakerxBox):
         for key, value in spark_options.items():
             if key == "properties":
                 for item in value:
-                    self.builder.config(item['name'], item['value'])
+                    self.engine.config(item['name'], item['value'])
             else:
-                self.builder.config(key, value)
+                self.engine.config(key, value)
         self._on_start()
         self.profile.save_current_profile(current_profile)
 
     def _on_start(self):
-        spark = self.builder.getOrCreate()
-        self.sc = spark.sparkContext
-        spark_server = self.spark_server_factory.run_new_instance(self.sc)
-        self.ipython_manager.configure(spark, spark_server)
+
+        spark_server = self.spark_server_factory.run_new_instance(self.engine)
+        self.ipython_manager.configure(self.engine, spark_server)
         msg = {
             'method': 'update',
             'event': {
-                "start": "done"
+                "start": "done",
+                "sparkAppId": self.engine.spark_app_id(),
+                "sparkUiWebUrl": self.engine.ui_web_url()
             }
         }
         self.comm.send(data=msg)
@@ -127,7 +128,8 @@ class ServerRunner:
 
 class BeakerxSparkServerFactory:
 
-    def run_new_instance(self, spark_context):
+    def run_new_instance(self, engine):
+        spark_context = engine.getOrCreate().sparkContext
         server = BeakerxSparkServer(spark_context)
         ServerRunner().run(server)
         return server
@@ -137,7 +139,8 @@ class IpythonManager:
     def __init__(self, ipython):
         self.ipython = ipython
 
-    def configure(self, spark, spark_server):
+    def configure(self, engine, spark_server):
+        spark = engine.getOrCreate()
         sc = spark.sparkContext
         sc._gateway.start_callback_server()
         sc._jsc.sc().addSparkListener(SparkListener(SparkStateProgressUiManager(sc, spark_server)))

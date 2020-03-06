@@ -50,6 +50,7 @@ export class SparkUI2View extends widgets.BoxView {
 
         w.profiles = this.model.get('profiles');
         w.currentProfileName = this.model.get('current_profile');
+        w.isAutoStart = this.model.get('is_auto_start');
 
         this.pWidget.addWidget(w);
    }

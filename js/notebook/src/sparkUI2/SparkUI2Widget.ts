@@ -27,12 +27,26 @@ export class SparkUI2Widget extends Panel {
     private readonly profileSelectorWidget: ProfileSelectorWidget;
     private readonly sessionWidget: SessionWidget;
 
+    private _isAutoStart: boolean = false;
+
     public set profiles(profiles: IProfileListItem[]) {
         this.profileSelectorWidget.profiles = profiles;
     }
 
     public set currentProfileName(profileName: string) {
         this.profileSelectorWidget.selectProfile(profileName);
+    }
+
+    public set isAutoStart(isAutoStart: boolean) {
+        this._isAutoStart = isAutoStart;
+        if (isAutoStart) {
+            Private.MessageHandlers.onAutoStart(
+                this.comm,
+                this.startWidget,
+                this.profileSelectorWidget,
+                this.sessionWidget
+            )
+        }
     }
 
     constructor(private readonly comm: SparkUI2Comm) {
@@ -105,6 +119,17 @@ namespace Private {
                 configuration.executorCores,
                 properties
             );
+        }
+
+        export function onAutoStart(
+            comm: SparkUI2Comm,
+            startWidget: StartWidget,
+            profileSelectorWidget: ProfileSelectorWidget,
+            sessionWidget: SessionWidget
+        ) {
+            startWidget.disableButton();
+            comm.autoStarted.connect(_onStart.bind(comm, { startWidget, profileSelectorWidget, sessionWidget }), comm);
+            comm.errored.connect(_onError, comm);
         }
 
         function _onStart(widgets: {

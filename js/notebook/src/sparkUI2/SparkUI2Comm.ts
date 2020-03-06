@@ -23,6 +23,7 @@ import BeakerXApi from "beakerx_shared/lib/api/BeakerXApi";
 export class SparkUI2Comm {
 
     private _started = new Signal<this, void>(this);
+    private _autoStarted = new Signal<this, void>(this);
     private _stopped = new Signal<this, void>(this);
     private _saved = new Signal<this, void>(this);
     private _errored = new Signal<this, string>(this);
@@ -55,6 +56,15 @@ export class SparkUI2Comm {
                 return;
             }
 
+            if (data.event?.auto_start === "done") {
+                this._autoStarted.emit(undefined);
+                this.startStatsChanged(
+                    data.event.sparkAppId,
+                    data.event.sparkUiWebUrl
+                );
+                return;
+            }
+
             if (data.event?.stop === "done") {
                 this._stopped.emit(undefined);
                 this.stopStatsChanged();
@@ -71,6 +81,10 @@ export class SparkUI2Comm {
                 return;
             }
         });
+    }
+
+    public get autoStarted(): ISignal<this, void> {
+        return this._autoStarted;
     }
 
     public get started(): ISignal<this, void> {

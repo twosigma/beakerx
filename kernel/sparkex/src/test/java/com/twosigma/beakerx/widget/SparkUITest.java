@@ -34,6 +34,7 @@ import java.util.Map;
 
 import static com.twosigma.beakerx.widget.SparkEngineWithUIMock.APP_ID_LOCAL_1;
 import static com.twosigma.beakerx.widget.SparkEngineWithUIMock.SPARK_UI_WEB_URL_1;
+import static com.twosigma.beakerx.widget.SparkUI.IS_AUTO_START;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_APP_ID;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_UI_WEB_URL;
 import static com.twosigma.beakerx.widget.SparkUiDefaults.CURRENT_PROFILE;
@@ -69,6 +70,18 @@ public class SparkUITest {
     assertThat(profiles).isEqualTo(new ArrayList<>());
     String currentProfile = (String) state.get(CURRENT_PROFILE);
     assertThat(currentProfile).isEqualTo("default");
+  }
+
+  @Test
+  public void testShouldHaveAutoStartOnFalseOnCreation() {
+    //given
+    //when
+    new SparkUI(commMock, sparkEngineWithUIMock, sparkUiDefaults, singleSparkSessionMock, kernel);
+    //then
+    Message sparkUiFormOpenMessage = kernel.getPublishedMessages().get(1);
+    Map state = TestWidgetUtils.getState(sparkUiFormOpenMessage);
+    Boolean isAutoStart = (Boolean) state.get(IS_AUTO_START);
+    assertThat(isAutoStart).isFalse();
   }
 
   @Test

@@ -240,17 +240,30 @@ public class GroovyReflectionCompletion {
 					"notify",
 					"notifyAll");
 	
+	boolean isNonPropertyMethod(final Method m) {
+		
+	  if(m.getName().startsWith("get") && m.getParameterCount()==0)
+		  return false;
+	  
+	  if(m.getName().equals("setYBounds")) {
+		  System.err.println("setting ybound");
+	  }
+
+	  if(m.getName().startsWith("set") && m.getParameterCount()==1)
+		  return false;
+	  
+	  return true;
+	}
 	
 	List<String> getObjectMethodCompletions(Object obj, String completionToken) {
 		
-		
+		@SuppressWarnings("rawtypes")
 		Class c = obj.getClass();
 
 		List<String> methodNames = 
 			Stream.of(c.getMethods())
 				  .filter(m -> 
-				  	!m.getName().startsWith("get") &&
-				  	!m.getName().startsWith("set") &&
+				    isNonPropertyMethod(m) &&
 				  	!IGNORE_METHODS.contains(m.getName()))
 				  .filter(m -> m.getName().startsWith(completionToken))
 				  .map(m -> {

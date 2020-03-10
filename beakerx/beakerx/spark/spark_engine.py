@@ -10,6 +10,8 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
+# See the License for the specific language governing permissions and
+# See the License for the specific language governing permissions and
 # limitations under the License.
 from beakerx.commons import check_is_None
 
@@ -18,6 +20,7 @@ class SparkEngine:
 
     def __init__(self, builder):
         self.builder = check_is_None(builder)
+        self.auto_start = False
 
     def config(self, name, value):
         self.builder.config(name, value)
@@ -33,3 +36,9 @@ class SparkEngine:
 
     def stop(self):
         self.getOrCreate().sparkContext.stop()
+
+    def is_auto_start(self):
+        return self.auto_start
+
+    def configure_auto_start(self):
+        self.auto_start = True

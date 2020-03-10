@@ -85,6 +85,9 @@ public class SparkMagicCommandAutoConnectTest {
     Message openMessages = TestWidgetUtils.getOpenMessages(kernel.getPublishedMessages()).get(1);
     Map state = TestWidgetUtils.getState(openMessages);
     assertThat((Boolean) state.get("is_auto_start")).isTrue();
+    Map data = TestWidgetUtils.getData(kernel.getPublishedMessages().get(3));
+    Map event = (Map)data.get("event");
+    assertThat((String) event.get("auto_start")).isEqualTo("done");
   }
 
   @Test

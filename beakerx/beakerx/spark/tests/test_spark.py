@@ -14,7 +14,7 @@
 import unittest
 
 from beakerx import SparkUI2
-from beakerx.commons import check_is_None
+from beakerx.spark.spark_engine import SparkEngine
 from ipykernel.comm import Comm
 
 
@@ -218,25 +218,13 @@ class BuilderMock:
         pass
 
 
-class SparkEngineMock:
-
-    def __init__(self, builder):
-        self.builder = check_is_None(builder)
-
-    def config(self, name, value):
-        pass
-
-    def getOrCreate(self):
-        pass
+class SparkEngineMock(SparkEngine):
 
     def spark_app_id(self):
         return 'appIdLocal1'
 
     def ui_web_url(self):
         return 'SparkUiWebUrl1'
-
-    def stop(self):
-        pass
 
 
 class SparkSessionMock:

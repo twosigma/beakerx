@@ -13,10 +13,13 @@
 
 import ipywidgets as widgets
 from IPython import get_ipython
+from IPython.core import magic_arguments
+from IPython.core.display import display
 from IPython.core.magic import (Magics, magics_class, cell_magic)
-from beakerx.spark import (SparkUI2, IpythonManager, BeakerxSparkServerFactory)
+from beakerx.spark import (IpythonManager, BeakerxSparkServerFactory)
 from beakerx.spark.profile import Profile
 from beakerx.spark.spark_engine import SparkEngine
+from beakerx_magics.sparkex_widget.spark_factory import SparkFactory
 from pyspark.sql import SparkSession
 
 
@@ -24,18 +27,30 @@ from pyspark.sql import SparkSession
 class SparkexMagics(Magics):
 
     @cell_magic
+    @magic_arguments.magic_arguments()
+    @magic_arguments.argument('--start', '-s', action='store_true', help='auto start')
     def spark(self, line, cell):
         ipython = get_ipython()
-        result = self.runCellCode(cell, ipython)
+        result = self._runCellCode(cell, ipython)
         builder = result.result
-        engine = SparkEngine(builder)
-        spark_widget = SparkUI2(engine,
-                                IpythonManager(ipython),
-                                BeakerxSparkServerFactory(),
-                                Profile())
-        return spark_widget
+        options = magic_arguments.parse_argstring(self.spark, line)
+        factory = self._create_spark_factory(
+            builder,
+            IpythonManager(ipython),
+            BeakerxSparkServerFactory(),
+            Profile(),
+            options,
+            self._display_ui)
+        factory.create_spark()
 
-    def runCellCode(self, cell, ipython):
+    def _create_spark_factory(self, builder, ipython_manager, server_factory, profile, options, display_func):
+        factory = SparkFactory(options, SparkEngine(builder), ipython_manager, server_factory, profile, display_func)
+        return factory
+
+    def _display_ui(self, spark_ui):
+        return display(spark_ui)
+
+    def _runCellCode(self, cell, ipython):
 
         out = widgets.Output(layout={'border': '1px solid black'})
         with out:

@@ -37,7 +37,6 @@ function tableAPIBase() {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell1_case1.png');
-      // beakerxPO.createTableImage(imageData, imageDir, 'cell1_case1.png');
     });
   });
 
@@ -48,7 +47,6 @@ function tableAPIBase() {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell1_case2.png');
-      // beakerxPO.createTableImage(imageData, imageDir, 'cell1_case2.png');
     });
   });
 
@@ -59,7 +57,6 @@ function tableAPIBase() {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell2_case1.png');
-      // beakerxPO.createTableImage(imageData, imageDir, 'cell2_case1.png');
     });
   });
 
@@ -70,7 +67,6 @@ function tableAPIBase() {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell3_case1.png');
-      // beakerxPO.createTableImage(imageData, imageDir, 'cell3_case1.png');
     });
   });
 
@@ -81,7 +77,6 @@ function tableAPIBase() {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell4_case1.png');
-      // beakerxPO.createTableImage(imageData, imageDir, 'cell4_case1.png');
     });
   });
 
@@ -92,7 +87,6 @@ function tableAPIBase() {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell5_case1.png');
-      // beakerxPO.createTableImage(imageData, imageDir, 'cell5_case1.png');
     });
   });
 
@@ -103,7 +97,6 @@ function tableAPIBase() {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell6_case1.png');
-      // beakerxPO.createTableImage(imageData, imageDir, 'cell6_case1.png');
     });
   });
 
@@ -114,7 +107,6 @@ function tableAPIBase() {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell7_case1.png');
-      // beakerxPO.createTableImage(imageData, imageDir, 'cell7_case1.png');
     });
   });
 
@@ -125,7 +117,6 @@ function tableAPIBase() {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell8_case1.png');
-      // beakerxPO.createTableImage(imageData, imageDir, 'cell8_case1.png');
     });
   });
 
@@ -136,7 +127,6 @@ function tableAPIBase() {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell9_case1.png');
-      // beakerxPO.createTableImage(imageData, imageDir, 'cell9_case1.png');
     });
   });
 
@@ -148,14 +138,12 @@ function tableAPIBase() {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width9, height9);
       beakerxPO.checkImageData(imageData, imageDir, 'cell9_case2.png');
-      // beakerxPO.createTableImage(imageData, imageDir, 'cell9_case2.png');
     });
     it('Should remove all CellHighlighters ', function () {
       var codeCell = beakerxPO.getCodeCellByIndex(cellIndex - 2);
       var canvas = codeCell.$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width9, height9);
       beakerxPO.checkImageData(imageData, imageDir, 'cell9_case2.png');
-      // beakerxPO.createTableImage(imageData, imageDir, 'cell9_case2.png');
     });
   });
 
@@ -166,7 +154,6 @@ function tableAPIBase() {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell9_case3.png');
-      // beakerxPO.createTableImage(imageData, imageDir, 'cell9_case3.png');
     });
   });
 
@@ -177,7 +164,6 @@ function tableAPIBase() {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell10_case1.png');
-      // beakerxPO.createTableImage(imageData, imageDir, 'cell10_case1.png');
     });
   });
 
@@ -188,7 +174,6 @@ function tableAPIBase() {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell11_case1.png');
-      // beakerxPO.createTableImage(imageData, imageDir, 'cell11_case1.png');
     });
   });
 
@@ -199,7 +184,6 @@ function tableAPIBase() {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell12_case1.png');
-      // beakerxPO.createTableImage(imageData, imageDir, 'cell12_case1.png');
     });
   });
 
@@ -210,7 +194,6 @@ function tableAPIBase() {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell13_case1.png');
-      // beakerxPO.createTableImage(imageData, imageDir, 'cell13_case1.png');
     });
   });
 
@@ -221,7 +204,6 @@ function tableAPIBase() {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell14_case1.png');
-      // beakerxPO.createTableImage(imageData, imageDir, 'cell14_case1.png');
     });
   });
 
@@ -244,7 +226,6 @@ function tableAPIBase() {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell16_case1.png');
-      // beakerxPO.createTableImage(imageData, imageDir, 'cell16_case1.png');
     });
   });
 
@@ -255,7 +236,6 @@ function tableAPIBase() {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell16_case2.png');
-      // beakerxPO.createTableImage(imageData, imageDir, 'cell16_case2.png');
     });
   });
 
@@ -266,7 +246,6 @@ function tableAPIBase() {
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell19_case1.png');
-      // beakerxPO.createTableImage(imageData, imageDir, 'cell19_case1.png');
     });
     it('Should display table after updating ', function() {
       cellIndex += 1;
@@ -275,7 +254,6 @@ function tableAPIBase() {
       var canvas = beakerxPO.getCodeCellByIndex(cellIndex - 1).$('canvas');
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell19_case2.png');
-      // beakerxPO.createTableImage(imageData, imageDir, 'cell19_case2.png');
     });
   });
 

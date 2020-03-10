@@ -40,7 +40,7 @@ describe('(Groovy) Java Properties and Heap Size tests', function () {
       expect(heapSize).toBeGreaterThan(4.7);
       expect(heapSize).toBeLessThan(5.3);
     });
-/*
+
     it('Correct property is set', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
@@ -73,6 +73,6 @@ describe('(Groovy) Java Properties and Heap Size tests', function () {
       cellIndex = 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       expect(beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText()).toBe('null');
-    });  */
+    });
   });
 });

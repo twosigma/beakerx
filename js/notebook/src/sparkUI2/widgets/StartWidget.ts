@@ -24,12 +24,15 @@ export class StartWidget extends Panel {
     readonly BUTTON_TITLE: string = 'Start a session with cluster (or a local instance)';
 
     private buttonEl: HTMLButtonElement;
+    private readonly errorWidget: ErrorWidget;
 
     constructor() {
         super();
 
+        this.errorWidget = new ErrorWidget();
+
         this.addWidget(this.createButton());
-        this.addWidget(this.createError());
+        this.addWidget(this.errorWidget);
     }
 
     public disableButton() {
@@ -38,6 +41,16 @@ export class StartWidget extends Panel {
 
     public enableButton() {
         this.buttonEl.disabled = false;
+    }
+
+    public showError(errorMessage: string) {
+        this.errorWidget.setMessage(errorMessage);
+        this.errorWidget.show();
+    }
+
+    public clearError() {
+        this.errorWidget.setMessage('');
+        this.errorWidget.hide();
     }
 
     private createButton(): Widget {
@@ -57,15 +70,20 @@ export class StartWidget extends Panel {
         return w;
     }
 
-    private createError(): Widget {
-        let w = new Widget();
-
-        w.addClass('bx-spark-connect-error');
-
-        return w;
-    }
-
     private onStartClicked(evt: MouseEvent): void {
         MessageLoop.sendMessage(this.parent, new SparkUI2Message('start-clicked'));
     }
+}
+
+class ErrorWidget extends Widget {
+
+    constructor() {
+        super();
+        this.addClass('bx-spark-connect-error');
+    }
+
+    public setMessage(message: string) {
+        this.node.textContent = message;
+    }
+
 }

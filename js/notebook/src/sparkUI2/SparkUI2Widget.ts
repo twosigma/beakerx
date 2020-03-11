@@ -23,10 +23,10 @@ import {IProfileListItem} from "./IProfileListItem";
 
 export class SparkUI2Widget extends Panel {
 
-    private readonly startWidget: StartWidget;
-    private readonly profileSelectorWidget: ProfileSelectorWidget;
-    private readonly sessionWidget: SessionWidget;
-
+    readonly comm: SparkUI2Comm;
+    readonly startWidget: StartWidget;
+    readonly profileSelectorWidget: ProfileSelectorWidget;
+    readonly sessionWidget: SessionWidget;
     private _isAutoStart: boolean = false;
 
     public set profiles(profiles: IProfileListItem[]) {
@@ -40,17 +40,14 @@ export class SparkUI2Widget extends Panel {
     public set isAutoStart(isAutoStart: boolean) {
         this._isAutoStart = isAutoStart;
         if (isAutoStart) {
-            Private.MessageHandlers.onAutoStart(
-                this.comm,
-                this.startWidget,
-                this.profileSelectorWidget,
-                this.sessionWidget
-            )
+            Private.MessageHandlers.onAutoStart(this);
         }
     }
 
-    constructor(private readonly comm: SparkUI2Comm) {
+    constructor(comm: SparkUI2Comm) {
         super();
+
+        this.comm = comm;
 
         this.addClass('bx-spark2-widget');
 
@@ -68,20 +65,10 @@ export class SparkUI2Widget extends Panel {
     public processMessage(msg: SparkUI2Message): void {
         switch(msg.type) {
             case 'start-clicked':
-                Private.MessageHandlers.onStart(
-                    this.comm,
-                    this.startWidget,
-                    this.profileSelectorWidget,
-                    this.sessionWidget
-                );
+                Private.MessageHandlers.onStart(this);
                 break;
             case 'stop-clicked':
-                Private.MessageHandlers.onStop(
-                    this.comm,
-                    this.startWidget,
-                    this.profileSelectorWidget,
-                    this.sessionWidget
-                );
+                Private.MessageHandlers.onStop(this);
                 break;
             default:
                 super.processMessage(msg);
@@ -94,13 +81,8 @@ namespace Private {
 
     export namespace MessageHandlers {
 
-        export function onStart(
-            comm: SparkUI2Comm,
-            startWidget: StartWidget,
-            profileSelectorWidget: ProfileSelectorWidget,
-            sessionWidget: SessionWidget
-        ): void {
-            let configuration = profileSelectorWidget.getConfiguration();
+        export function onStart(widget: SparkUI2Widget): void {
+            let configuration = widget.profileSelectorWidget.getConfiguration();
             let properties: { name: string; value: string }[] = [];
             for (const propertyName in configuration.properties) {
                 properties.push({
@@ -109,11 +91,12 @@ namespace Private {
                 })
             }
 
-            startWidget.disableButton();
-            comm.started.connect(_onStart.bind(comm, { startWidget, profileSelectorWidget, sessionWidget }), comm);
-            comm.errored.connect(_onError, comm);
-            comm.sendStartMessage(
-                profileSelectorWidget.currentProfileName,
+            widget.startWidget.disableButton();
+
+            widget.comm.started.connect(_onStart, widget);
+            widget.comm.errored.connect(_onError, widget);
+            widget.comm.sendStartMessage(
+                widget.profileSelectorWidget.currentProfileName,
                 configuration.executorMemory,
                 configuration.masterURL,
                 configuration.executorCores,
@@ -121,60 +104,47 @@ namespace Private {
             );
         }
 
-        export function onAutoStart(
-            comm: SparkUI2Comm,
-            startWidget: StartWidget,
-            profileSelectorWidget: ProfileSelectorWidget,
-            sessionWidget: SessionWidget
-        ) {
-            startWidget.disableButton();
-            comm.autoStarted.connect(_onStart.bind(comm, { startWidget, profileSelectorWidget, sessionWidget }), comm);
-            comm.errored.connect(_onError, comm);
+        export function onAutoStart(widget: SparkUI2Widget) {
+            widget.startWidget.disableButton();
+            widget.comm.autoStarted.connect(_onStart, widget);
+            widget.comm.errored.connect(_onError, widget);
         }
 
-        function _onStart(widgets: {
-            startWidget: StartWidget,
-            profileSelectorWidget: ProfileSelectorWidget,
-            sessionWidget: SessionWidget
-        }): void {
-            this.started.disconnect(_onStart, this);
-            this.statsChanged.connect(_onStatsChanged.bind(this, widgets), this);
-            widgets.startWidget.hide();
-            widgets.profileSelectorWidget.hide();
-            widgets.sessionWidget.show();
-            widgets.sessionWidget.enableStop();
+        function _onStart(this: SparkUI2Widget): void {
+            this.comm.started.disconnect(_onStart, this);
+            this.comm.statsChanged.connect(_onStatsChanged, this);
+            this.startWidget.enableButton();
+            this.startWidget.clearError();
+            this.startWidget.hide();
+            this.profileSelectorWidget.hide();
+            this.sessionWidget.show();
+            this.sessionWidget.enableStop();
         }
 
-        function _onStatsChanged(widgets, comm: SparkUI2Comm, data: {activeTasks: number; isActive: boolean; memoryUsed: number}[]): void {
-            widgets.sessionWidget.updateStats(data);
+        function _onStatsChanged(sender, data: { activeTasks: number; isActive: boolean; memoryUsed: number }[]): void {
+            this.sessionWidget.updateStats(data);
         }
 
-        function _onError(sender: SparkUI2Comm, msg: string): void {
-            console.log(msg);
-            this.errored.disconnect(_onError, this);
-            //TODO
-
+        function _onError(this: SparkUI2Widget, sender, msg: string): void {
+            this.comm.errored.disconnect(_onError, this);
+            this.startWidget.showError(msg);
+            this.startWidget.enableButton();
         }
 
-        export function onStop(
-            comm: SparkUI2Comm,
-            startWidget: StartWidget,
-            profileSelectorWidget: ProfileSelectorWidget,
-            sessionWidget: SessionWidget
-        ): void {
-            sessionWidget.disableStop();
-            comm.stopped.connect(_onStop.bind(comm, { startWidget, profileSelectorWidget, sessionWidget}), comm);
-            comm.sendStopMessage();
+        export function onStop(widget: SparkUI2Widget): void {
+            widget.sessionWidget.disableStop();
+            widget.comm.stopped.connect(_onStop, widget);
+            widget.comm.sendStopMessage();
         }
 
-        function _onStop(widgets: { startWidget: StartWidget, profileSelectorWidget: ProfileSelectorWidget, sessionWidget: SessionWidget }) {
-            this.stopped.disconnect(_onStop, this);
-            this.statsChanged.disconnect(_onStatsChanged.bind(this, widgets), this);
+        function _onStop(this: SparkUI2Widget) {
+            this.comm.stopped.disconnect(_onStop, this);
+            this.comm.statsChanged.disconnect(_onStatsChanged, this);
 
-            widgets.startWidget.show();
-            widgets.startWidget.enableButton();
-            widgets.profileSelectorWidget.show();
-            widgets.sessionWidget.hide();
+            this.startWidget.show();
+            this.startWidget.enableButton();
+            this.profileSelectorWidget.show();
+            this.sessionWidget.hide();
         }
     }
 }

@@ -13,33 +13,45 @@
 # limitations under the License.
 
 from beakerx.spark import SparkUI2
+from beakerx.spark.spark_wihtout_ui import SparkWithoutUI
 
 
 class SparkFactory:
 
-    def __init__(self, options, spark_engine, ipython_manager, server_factory, profile, display_func):
-        self.display_func = display_func
+    def __init__(self, options, spark_engine, ipython_manager, server_factory, profile,
+                 display_func):
         self.options = options
+        self.spark_engine = spark_engine
+        self.display_func = display_func
         self.profile = profile
         self.server_factory = server_factory
         self.ipythonManager = ipython_manager
-        self.engine = spark_engine
 
     def create_spark(self):
-        self.engine = self._parse_spark_options(self.engine, self.options)
-        spark_widget = self._create_spark_ui()
-        self.display_func(spark_widget)
-        spark_widget.after_display()
-        return spark_widget
+        self.spark_engine = self._parse_spark_options(self.spark_engine, self.options)
+        if self._is_no_ui(self.options):
+            return self._create_spark_without_ui()
+        else:
+            spark_widget = self._create_spark_ui()
+            self.display_func(spark_widget)
+            spark_widget.after_display()
+            return None
+
+    def _create_spark_without_ui(self):
+        swui = SparkWithoutUI(self.spark_engine, self.ipythonManager)
+        return swui.create_spark()
 
     def _create_spark_ui(self):
-        spark_widget = SparkUI2(self.engine,
+        spark_widget = SparkUI2(self.spark_engine,
                                 self.ipythonManager,
                                 self.server_factory,
                                 self.profile)
         return spark_widget
 
-    def _parse_spark_options(self, engine, args):
-        if args.start:
+    def _parse_spark_options(self, engine, options):
+        if "start" in options and options.start:
             engine.configure_auto_start()
         return engine
+
+    def _is_no_ui(self, options):
+        return "noUI" in options and options.noUI

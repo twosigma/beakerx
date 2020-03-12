@@ -13,8 +13,6 @@
 # limitations under the License.
 
 from beakerx_base import BeakerxBox
-from beakerx_magics.sparkex_widget import SparkStateProgressUiManager
-from beakerx_magics.sparkex_widget.spark_listener import SparkListener
 from beakerx_magics.sparkex_widget.spark_server import BeakerxSparkServer
 from traitlets import Unicode, List, Bool
 
@@ -95,8 +93,9 @@ class SparkUI2(BeakerxBox):
         self.profile.save_current_profile(current_profile)
 
     def _on_start(self):
-        spark_server = self.spark_server_factory.run_new_instance(self.engine)
-        self.ipython_manager.configure(self.engine, spark_server)
+        self.ipython_manager.configure(self.engine)
+        server = self.spark_server_factory.run_new_instance(self.engine)
+        self.engine.configure_listeners(self.engine, server)
 
     def _send_start_done_event(self, event_name):
         msg = {
@@ -155,7 +154,8 @@ class ServerRunner:
 class BeakerxSparkServerFactory:
 
     def run_new_instance(self, engine):
-        spark_context = engine.getOrCreate().sparkContext
+        spark_session = engine.getOrCreate()
+        spark_context = spark_session.sparkContext
         server = BeakerxSparkServer(spark_context)
         ServerRunner().run(server)
         return server
@@ -165,11 +165,9 @@ class IpythonManager:
     def __init__(self, ipython):
         self.ipython = ipython
 
-    def configure(self, engine, spark_server):
-        spark = engine.getOrCreate()
-        sc = spark.sparkContext
-        sc._gateway.start_callback_server()
-        sc._jsc.sc().addSparkListener(SparkListener(SparkStateProgressUiManager(sc, spark_server)))
-        self.ipython.push({"spark": spark})
+    def configure(self, engine):
+        spark_session = engine.getOrCreate()
+        sc = spark_session.sparkContext
+        self.ipython.push({"spark": spark_session})
         self.ipython.push({"sc": sc})
         return sc

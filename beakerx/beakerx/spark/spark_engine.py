@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from beakerx.commons import check_is_None
+from beakerx_magics.sparkex_widget import SparkStateProgressUiManager
+from beakerx_magics.sparkex_widget.spark_listener import SparkListener
 
 
 class SparkEngine:
@@ -42,3 +44,9 @@ class SparkEngine:
 
     def configure_auto_start(self):
         self.auto_start = True
+
+    def configure_listeners(self, engine, server):
+        spark_session = engine.getOrCreate()
+        spark_context = spark_session.sparkContext
+        spark_context._gateway.start_callback_server()
+        spark_context._jsc.sc().addSparkListener(SparkListener(SparkStateProgressUiManager(spark_context, server)))

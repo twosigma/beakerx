@@ -54,7 +54,7 @@ class SparkexMagicsForTests(SparkexMagics):
 class SparkFactoryMock(SparkFactory):
 
     def _create_spark_ui(self):
-        spark_widget = SparkUI2(self.engine,
+        spark_widget = SparkUI2(self.spark_engine,
                                 self.ipythonManager,
                                 self.server_factory,
                                 self.profile,
@@ -80,13 +80,16 @@ class SparkEngineMock(SparkEngine):
     def stop(self):
         pass
 
+    def configure_listeners(self, engine, server):
+        pass
+
 
 class BeakerxSparkServerFactoryMock:
-    def run_new_instance(self, engine):
+    def run_new_instance(self, spark_session):
         pass
 
 
 class IpythonManagerMock:
 
-    def configure(self, engine, spark_server):
+    def configure(self, spark_context):
         pass

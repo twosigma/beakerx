@@ -226,6 +226,8 @@ class SparkEngineMock(SparkEngine):
     def ui_web_url(self):
         return 'SparkUiWebUrl1'
 
+    def configure_listeners(self, engine, server):
+        pass
 
 class SparkSessionMock:
     def __init__(self):
@@ -249,7 +251,7 @@ class IpythonManagerMock:
     def __init__(self):
         pass
 
-    def configure(self, spark, spark_server):
+    def configure(self, spark):
         pass
 
 

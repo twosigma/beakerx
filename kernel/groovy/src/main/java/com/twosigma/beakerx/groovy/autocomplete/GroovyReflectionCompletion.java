@@ -61,7 +61,7 @@ public class GroovyReflectionCompletion {
 				((Map<String,Object>)binding.getVariables())
 											.keySet()
 											.stream()
-											.filter(x -> x.startsWith(text))
+											.filter(x -> x.startsWith(expr))
 											.collect(Collectors.toList());
 			return result;
 		}

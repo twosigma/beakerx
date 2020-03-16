@@ -18,6 +18,7 @@ import {Panel, Widget} from "@phosphor/widgets";
 import {MessageLoop} from "@phosphor/messaging";
 import {SparkUI2Message} from "../SparkUI2Message";
 import CommonUtils from "beakerx_shared/lib/utils/CommonUtils";
+import {SpinnerWidget} from "./SpinnerWidget";
 
 export class SessionWidget extends Panel {
     private readonly BUTTON_TEXT = 'Stop';
@@ -30,10 +31,15 @@ export class SessionWidget extends Panel {
     private statsDeadEl: HTMLDivElement;
     private statsMemoryEl: HTMLDivElement;
 
+    private readonly spinnerWidget: SpinnerWidget;
+
     constructor() {
         super();
+        this.addClass('bx-spark-session');
+        this.spinnerWidget = new SpinnerWidget();
         this.addWidget(this.createStats());
         this.addWidget(this.createStop());
+        this.addWidget(this.spinnerWidget);
     }
 
     public disableStop() {
@@ -42,6 +48,14 @@ export class SessionWidget extends Panel {
 
     public enableStop() {
         this.stopEl.disabled = false;
+    }
+
+    public showSpinner() {
+        this.spinnerWidget.show();
+    }
+
+    public hideSpinner() {
+        this.spinnerWidget.hide();
     }
 
     public updateStats(data: {

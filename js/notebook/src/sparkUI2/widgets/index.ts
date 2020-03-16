@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 
-export * from './ProfileSelectorWidget'
-export * from './SessionWidget'
-export * from './StartWidget'
+export {ProfileSelectorWidget} from './ProfileSelectorWidget'
+export {SessionWidget} from './SessionWidget'
+export {StartWidget} from './StartWidget'
+export {SpinnerWidget} from "./SpinnerWidget";

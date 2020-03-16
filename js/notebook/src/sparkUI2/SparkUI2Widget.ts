@@ -92,6 +92,7 @@ namespace Private {
             }
 
             widget.startWidget.disableButton();
+            widget.startWidget.showSpinner();
 
             widget.comm.started.connect(_onStart, widget);
             widget.comm.errored.connect(_onError, widget);
@@ -106,6 +107,7 @@ namespace Private {
 
         export function onAutoStart(widget: SparkUI2Widget) {
             widget.startWidget.disableButton();
+            widget.startWidget.showSpinner();
             widget.comm.autoStarted.connect(_onStart, widget);
             widget.comm.errored.connect(_onError, widget);
         }
@@ -114,6 +116,7 @@ namespace Private {
             this.comm.started.disconnect(_onStart, this);
             this.comm.statsChanged.connect(_onStatsChanged, this);
             this.startWidget.enableButton();
+            this.startWidget.hideSpinner();
             this.startWidget.clearError();
             this.startWidget.hide();
             this.profileSelectorWidget.hide();
@@ -129,10 +132,12 @@ namespace Private {
             this.comm.errored.disconnect(_onError, this);
             this.startWidget.showError(msg);
             this.startWidget.enableButton();
+            this.startWidget.hideSpinner();
         }
 
         export function onStop(widget: SparkUI2Widget): void {
             widget.sessionWidget.disableStop();
+            widget.sessionWidget.showSpinner();
             widget.comm.stopped.connect(_onStop, widget);
             widget.comm.sendStopMessage();
         }
@@ -144,6 +149,7 @@ namespace Private {
             this.startWidget.show();
             this.startWidget.enableButton();
             this.profileSelectorWidget.show();
+            this.sessionWidget.hideSpinner();
             this.sessionWidget.hide();
         }
     }

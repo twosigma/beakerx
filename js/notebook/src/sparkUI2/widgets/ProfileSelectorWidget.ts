@@ -40,6 +40,8 @@ export class ProfileSelectorWidget extends Panel {
     constructor(comm: SparkUI2Comm) {
         super();
 
+        this.addClass('bx-spark-profile-selector');
+
         this.comm = comm;
 
         this.profileSelectWidget = new ProfileSelectWidget(this._profiles);

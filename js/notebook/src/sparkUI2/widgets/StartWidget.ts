@@ -14,9 +14,10 @@
  *  limitations under the License.
  */
 
-import { Panel, Widget } from "@phosphor/widgets";
-import { MessageLoop } from "@phosphor/messaging";
+import {Panel, Widget} from "@phosphor/widgets";
+import {MessageLoop} from "@phosphor/messaging";
 import {SparkUI2Message} from "../SparkUI2Message";
+import {SpinnerWidget} from "./SpinnerWidget";
 
 export class StartWidget extends Panel {
 
@@ -24,14 +25,19 @@ export class StartWidget extends Panel {
     readonly BUTTON_TITLE: string = 'Start a session with cluster (or a local instance)';
 
     private buttonEl: HTMLButtonElement;
-    private readonly errorWidget: ErrorWidget;
+    private readonly errorWidget: Private.ErrorWidget;
+    private readonly spinnerWidget: SpinnerWidget;
 
     constructor() {
         super();
 
-        this.errorWidget = new ErrorWidget();
+        this.addClass('bx-spark-start')
+
+        this.errorWidget = new Private.ErrorWidget();
+        this.spinnerWidget = new SpinnerWidget();
 
         this.addWidget(this.createButton());
+        this.addWidget(this.spinnerWidget);
         this.addWidget(this.errorWidget);
     }
 
@@ -51,6 +57,14 @@ export class StartWidget extends Panel {
     public clearError() {
         this.errorWidget.setMessage('');
         this.errorWidget.hide();
+    }
+
+    public showSpinner() {
+        this.spinnerWidget.show();
+    }
+
+    public hideSpinner() {
+        this.spinnerWidget.hide();
     }
 
     private createButton(): Widget {
@@ -75,15 +89,18 @@ export class StartWidget extends Panel {
     }
 }
 
-class ErrorWidget extends Widget {
+namespace Private {
+    export class ErrorWidget extends Widget {
 
-    constructor() {
-        super();
-        this.addClass('bx-spark-connect-error');
-    }
+        constructor() {
+            super();
+            this.addClass('bx-spark-error');
+        }
 
-    public setMessage(message: string) {
-        this.node.textContent = message;
+        public setMessage(message: string) {
+            this.node.textContent = message;
+        }
+
     }
 
 }

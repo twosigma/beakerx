@@ -29,6 +29,7 @@ class SparkexMagics(Magics):
     @cell_magic
     @magic_arguments.magic_arguments()
     @magic_arguments.argument('--start', '-s', action='store_true', help='auto start')
+    @magic_arguments.argument('--noUI', '-nu', action='store_true', help='no UI')
     def spark(self, line, cell):
         ipython = get_ipython()
         result = self._runCellCode(cell, ipython)
@@ -41,7 +42,7 @@ class SparkexMagics(Magics):
             Profile(),
             options,
             self._display_ui)
-        factory.create_spark()
+        return factory.create_spark()
 
     def _create_spark_factory(self, builder, ipython_manager, server_factory, profile, options, display_func):
         factory = SparkFactory(options, SparkEngine(builder), ipython_manager, server_factory, profile, display_func)

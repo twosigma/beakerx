@@ -13,14 +13,33 @@
 # See the License for the specific language governing permissions and
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import copy
+
 from beakerx.commons import check_is_None
+from beakerx_magics.sparkex_widget import SparkStateProgressUiManager
+from beakerx_magics.sparkex_widget.spark_listener import SparkListener
+from pyspark.sql import SparkSession
 
 
 class SparkEngine:
 
     def __init__(self, builder):
-        self.builder = check_is_None(builder)
+        self.user_builder = check_is_None(builder)
         self.auto_start = False
+        self.additional_spark_options = {}
+        self.builder = None
+
+    def new_spark_builder(self):
+        self.builder = SparkSession.builder
+
+    def get_user_spark_config(self):
+        return copy.deepcopy(self.user_builder._options)
+
+    def add_additional_spark_options(self, options):
+        self.additional_spark_options = options
+
+    def get_additional_spark_options(self):
+        return copy.deepcopy(self.additional_spark_options)
 
     def config(self, name, value):
         self.builder.config(name, value)
@@ -42,3 +61,9 @@ class SparkEngine:
 
     def configure_auto_start(self):
         self.auto_start = True
+
+    def configure_listeners(self, engine, server):
+        spark_session = engine.getOrCreate()
+        spark_context = spark_session.sparkContext
+        spark_context._gateway.start_callback_server()
+        spark_context._jsc.sc().addSparkListener(SparkListener(SparkStateProgressUiManager(spark_context, server)))

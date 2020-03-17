@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import copy
+
 from beakerx_base import BeakerxBox
-from beakerx_magics.sparkex_widget import SparkStateProgressUiManager
-from beakerx_magics.sparkex_widget.spark_listener import SparkListener
 from beakerx_magics.sparkex_widget.spark_server import BeakerxSparkServer
-from traitlets import Unicode, List, Bool
+from traitlets import Unicode, List, Bool, Dict
 
 
 class SparkUI2(BeakerxBox):
@@ -27,6 +27,7 @@ class SparkUI2(BeakerxBox):
     profiles = List().tag(sync=True)
     current_profile = Unicode("").tag(sync=True)
     is_auto_start = Bool().tag(sync=True)
+    user_spark_conf = Dict().tag(sync=True)
 
     def __init__(self, engine, ipython_manager, spark_server_factory, profile, comm=None, **kwargs):
         self.engine = self.check_is_None(engine)
@@ -37,8 +38,15 @@ class SparkUI2(BeakerxBox):
         if comm is not None:
             self.comm = comm
         self.profiles, self.current_profile = self._get_init_profiles()
+        self.user_spark_conf = self.get_user_spark_conf()
         self.is_auto_start = self.engine.is_auto_start()
         super(SparkUI2, self).__init__(**kwargs)
+
+    def get_user_spark_conf(self):
+        spark_options = self._get_current_profile()
+        spark_options.update(self.engine.get_additional_spark_options())
+        spark_options.update(self.engine.get_user_spark_config())
+        return spark_options
 
     def handle_msg(self, _, content, buffers=None):
         if content['event'] == "start":
@@ -72,6 +80,8 @@ class SparkUI2(BeakerxBox):
 
     def _handle_auto_start(self):
         spark_options = self._get_current_profile()
+        spark_options.update(self.engine.get_user_spark_config())
+        self.engine.new_spark_builder()
         for key, value in spark_options.items():
             if key == "properties":
                 for item in value:
@@ -84,6 +94,7 @@ class SparkUI2(BeakerxBox):
     def _handle_start(self, content):
         current_profile = content['payload']['current_profile']
         spark_options = content['payload']['spark_options']
+        self.engine.new_spark_builder()
         for key, value in spark_options.items():
             if key == "properties":
                 for item in value:
@@ -95,8 +106,9 @@ class SparkUI2(BeakerxBox):
         self.profile.save_current_profile(current_profile)
 
     def _on_start(self):
-        spark_server = self.spark_server_factory.run_new_instance(self.engine)
-        self.ipython_manager.configure(self.engine, spark_server)
+        self.ipython_manager.configure(self.engine)
+        server = self.spark_server_factory.run_new_instance(self.engine)
+        self.engine.configure_listeners(self.engine, server)
 
     def _send_start_done_event(self, event_name):
         msg = {
@@ -127,7 +139,7 @@ class SparkUI2(BeakerxBox):
     def _get_current_profile(self):
         spark_options = list(filter(lambda x: x['name'] == self.current_profile, self.profiles))
         if len(spark_options) > 0:
-            return spark_options.pop(0)
+            return copy.deepcopy(spark_options.pop(0))
         else:
             return {}
 
@@ -155,7 +167,8 @@ class ServerRunner:
 class BeakerxSparkServerFactory:
 
     def run_new_instance(self, engine):
-        spark_context = engine.getOrCreate().sparkContext
+        spark_session = engine.getOrCreate()
+        spark_context = spark_session.sparkContext
         server = BeakerxSparkServer(spark_context)
         ServerRunner().run(server)
         return server
@@ -165,11 +178,9 @@ class IpythonManager:
     def __init__(self, ipython):
         self.ipython = ipython
 
-    def configure(self, engine, spark_server):
-        spark = engine.getOrCreate()
-        sc = spark.sparkContext
-        sc._gateway.start_callback_server()
-        sc._jsc.sc().addSparkListener(SparkListener(SparkStateProgressUiManager(sc, spark_server)))
-        self.ipython.push({"spark": spark})
+    def configure(self, engine):
+        spark_session = engine.getOrCreate()
+        sc = spark_session.sparkContext
+        self.ipython.push({"spark": spark_session})
         self.ipython.push({"sc": sc})
         return sc

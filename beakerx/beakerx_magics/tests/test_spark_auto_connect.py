@@ -83,6 +83,9 @@ class SparkEngineMock(SparkEngine):
     def configure_listeners(self, engine, server):
         pass
 
+    def get_user_spark_config(self):
+        return {}
+
 
 class BeakerxSparkServerFactoryMock:
     def run_new_instance(self, spark_session):

@@ -30,8 +30,28 @@ class TestSparkUI(unittest.TestCase):
         # when
         sui = SparkUI2(engine, ipython_manager, spark_server_factory, profile, CommMock())
         # then
-        self.assertTrue(sui.profiles == [])
+        self.assertTrue(sui.profiles == [
+            {
+                "name": "",
+                "prop_1": "init_value_1"
+            }
+        ])
         self.assertTrue(sui.current_profile == "")
+
+    def test_should_create_spark_conf_based_on_user_conf_when_widget_creation(self):
+        # given
+        builder = BuilderMock()
+        engine = SparkEngineMock(builder)
+        ipython_manager = IpythonManagerMock()
+        spark_server_factory = SparkServerFactoryMock()
+        profile = ProfileMock()
+        # when
+        sui = SparkUI2(engine, ipython_manager, spark_server_factory, profile, CommMock())
+        # then
+        self.assertTrue(sui.user_spark_conf == {
+            "name": "",
+            "prop_1": "user_value_1"
+        })
 
     def test_should_save_profiles(self):
         # given
@@ -229,6 +249,18 @@ class SparkEngineMock(SparkEngine):
     def configure_listeners(self, engine, server):
         pass
 
+    def get_user_spark_config(self):
+        return {
+            "prop_1": "user_value_1"
+        }
+
+    def getOrCreate(self):
+        return {}
+
+    def stop(self):
+        pass
+
+
 class SparkSessionMock:
     def __init__(self):
         pass
@@ -270,7 +302,12 @@ class ProfileMock:
     def __init__(self):
         self.spark_options = {
             "current_profile": "",
-            "profiles": []
+            "profiles": [
+                {
+                    "name": "",
+                    "prop_1": "init_value_1"
+                }
+            ]
         }
 
     def save(self, content):

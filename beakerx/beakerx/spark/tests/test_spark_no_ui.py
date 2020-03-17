@@ -71,6 +71,12 @@ class SparkEngineMock:
     def configure_auto_start(self):
         self.auto_start = True
 
+    def get_additional_spark_options(self):
+        return {}
+
+    def get_user_spark_config(self):
+        return {}
+
 
 class IpythonManagerMock:
 

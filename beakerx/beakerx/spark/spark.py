@@ -12,9 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import copy
+
 from beakerx_base import BeakerxBox
 from beakerx_magics.sparkex_widget.spark_server import BeakerxSparkServer
-from traitlets import Unicode, List, Bool
+from traitlets import Unicode, List, Bool, Dict
 
 
 class SparkUI2(BeakerxBox):
@@ -25,6 +27,7 @@ class SparkUI2(BeakerxBox):
     profiles = List().tag(sync=True)
     current_profile = Unicode("").tag(sync=True)
     is_auto_start = Bool().tag(sync=True)
+    user_spark_conf = Dict().tag(sync=True)
 
     def __init__(self, engine, ipython_manager, spark_server_factory, profile, comm=None, **kwargs):
         self.engine = self.check_is_None(engine)
@@ -35,8 +38,15 @@ class SparkUI2(BeakerxBox):
         if comm is not None:
             self.comm = comm
         self.profiles, self.current_profile = self._get_init_profiles()
+        self.user_spark_conf = self.get_user_spark_conf()
         self.is_auto_start = self.engine.is_auto_start()
         super(SparkUI2, self).__init__(**kwargs)
+
+    def get_user_spark_conf(self):
+        spark_options = self._get_current_profile()
+        spark_options.update(self.engine.get_additional_spark_options())
+        spark_options.update(self.engine.get_user_spark_config())
+        return spark_options
 
     def handle_msg(self, _, content, buffers=None):
         if content['event'] == "start":
@@ -70,6 +80,8 @@ class SparkUI2(BeakerxBox):
 
     def _handle_auto_start(self):
         spark_options = self._get_current_profile()
+        spark_options.update(self.engine.get_user_spark_config())
+        self.engine.new_spark_builder()
         for key, value in spark_options.items():
             if key == "properties":
                 for item in value:
@@ -82,6 +94,7 @@ class SparkUI2(BeakerxBox):
     def _handle_start(self, content):
         current_profile = content['payload']['current_profile']
         spark_options = content['payload']['spark_options']
+        self.engine.new_spark_builder()
         for key, value in spark_options.items():
             if key == "properties":
                 for item in value:
@@ -126,7 +139,7 @@ class SparkUI2(BeakerxBox):
     def _get_current_profile(self):
         spark_options = list(filter(lambda x: x['name'] == self.current_profile, self.profiles))
         if len(spark_options) > 0:
-            return spark_options.pop(0)
+            return copy.deepcopy(spark_options.pop(0))
         else:
             return {}
 

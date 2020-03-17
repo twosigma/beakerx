@@ -12,6 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+import sys
+
 from beakerx.spark import SparkUI2
 from beakerx.spark.spark_wihtout_ui import SparkWithoutUI
 
@@ -51,6 +54,18 @@ class SparkFactory:
     def _parse_spark_options(self, engine, options):
         if "start" in options and options.start:
             engine.configure_auto_start()
+        if "yarn" in options:
+            if "HADOOP_CONF_DIR" not in os.environ:
+                pass  # send an error, please provide an environmental variable
+                # import os
+                # os.environ["HADOOP_CONF_DIR"] = PATH_TO_HADOOP_CONF_DIR
+
+            self.spark_engine.add_additional_spark_options({
+                "spark.executor.cores": "4",
+                "spark.executor.memory": "1g",
+                "spark.master": "yarn"
+            })
+
         return engine
 
     def _is_no_ui(self, options):

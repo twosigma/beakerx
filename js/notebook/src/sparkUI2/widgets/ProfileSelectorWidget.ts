@@ -71,6 +71,17 @@ export class ProfileSelectorWidget extends Panel {
         this.profileSelectWidget.selectProfile(profileName);
     }
 
+    public set userSparkConf(conf: {
+        "name": string;
+        "properties": { name: string; value: string; }[];
+        "spark.executor.cores": string;
+        "spark.executor.memory": string;
+        "spark.master": string;
+        "spark.app.name": string;
+    }) {
+        this.profileConfigurationWidget.updateConfiguration({...conf})
+    }
+
     public getConfiguration(): {
         masterURL: string;
         executorCores: string;

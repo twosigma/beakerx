@@ -44,6 +44,17 @@ export class SparkUI2Widget extends Panel {
         }
     }
 
+    public set userSparkConf(conf: {
+        "name": string;
+        "properties": { name: string; value: string; }[];
+        "spark.executor.cores": string;
+        "spark.executor.memory": string;
+        "spark.master": string;
+        "spark.app.name": string;
+    }) {
+        this.profileSelectorWidget.userSparkConf = conf;
+    }
+
     constructor(comm: SparkUI2Comm) {
         super();
 

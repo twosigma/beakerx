@@ -31,6 +31,16 @@
     padding: 4px 0;
   }
 
+  .bx-spark-property-container {
+    .bx-spark-property {
+      padding: 2px 0;
+      input[type="text"] {
+        margin:0 4px 0 0;
+        line-height: 22px;
+      }
+    }
+  }
+
   .bx-spark-session {
     padding: 4px 0;
   }
@@ -40,6 +50,11 @@
   }
   .bx-spark-hive {
     margin-left:133px;
+
+    .bx-spark-enable-hive-checkbox {
+      width: auto;
+      vertical-align: bottom;
+    }
   }
   .bx-spark-save {
     margin: 0 4px 0 10px;

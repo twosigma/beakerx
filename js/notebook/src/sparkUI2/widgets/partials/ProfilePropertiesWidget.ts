@@ -114,7 +114,9 @@ namespace Private {
             elValue.placeholder = 'value';
             elValue.value = value;
             let elRemove = document.createElement('button');
-            elRemove.textContent = 'Remove';
+            elRemove.textContent = '';
+            elRemove.title = 'Remove this property';
+            elRemove.classList.add('jupyter-button', 'widget-button', 'bx-button', 'icon', 'icon-close');
 
             el.append(elName, elValue, elRemove);
             let w = new Widget({ node: el });

@@ -29,6 +29,8 @@ export class HiveSupportWidget extends Panel {
     constructor() {
         super();
 
+        this.addClass('bx-spark-hive');
+
         this.checkboxWidget = this.createCheckbox();
         this.labelWidget = this.createLabel();
 

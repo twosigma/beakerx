@@ -24,6 +24,7 @@ import com.twosigma.beakerx.scala.magic.command.StageLinkFactory;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class SparkEngineWithUIMock implements SparkEngineWithUI {
@@ -40,6 +41,14 @@ public class SparkEngineWithUIMock implements SparkEngineWithUI {
   @Override
   public boolean isAutoStart() {
     return autoStartConfigured;
+  }
+
+  @Override
+  public Map<String, Object> getSparkConfAsMap() {
+    return new HashMap<String, Object>() {{
+      put("name", "");
+      put("prop_1", "user_value_1");
+    }};
   }
 
   @Override

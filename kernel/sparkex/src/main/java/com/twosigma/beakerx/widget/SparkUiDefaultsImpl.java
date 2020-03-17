@@ -70,8 +70,7 @@ public class SparkUiDefaultsImpl implements SparkUiDefaults {
   }
 
   public Map<String, Object> getProfileByName(String name) {
-    Map<String, Object> profile = new HashMap<>();
-    return profiles.stream().filter(x -> x.get("name").equals(name)).findFirst().orElse(profile);
+    return new HashMap<>(profiles.stream().filter(x -> x.get("name").equals(name)).findFirst().orElse(new HashMap<>()));
   }
 
   @Override

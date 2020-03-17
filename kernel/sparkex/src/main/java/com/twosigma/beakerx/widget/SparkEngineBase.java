@@ -46,8 +46,6 @@ import static com.twosigma.beakerx.kernel.PlainCode.createSimpleEvaluationObject
 import static com.twosigma.beakerx.widget.SparkUI.BEAKERX_ID;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_APP_NAME;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_CONTEXT_NAME;
-import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXECUTOR_CORES;
-import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXECUTOR_MEMORY;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXTRA_LISTENERS;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_MASTER;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_REPL_CLASS_OUTPUT_DIR;
@@ -177,6 +175,16 @@ abstract class SparkEngineBase implements SparkEngine {
 
   public SparkConf getSparkConf() {
     return getSparkConfBasedOn(this.sparkSessionBuilder);
+  }
+
+  public Map<String, Object> getSparkConfAsMap() {
+    Map<String, Object> sparkConf = new HashMap();
+    Iterator iterator = getConfigIterator(this.sparkSessionBuilder);
+    while (iterator.hasNext()) {
+      Tuple2 x = (Tuple2) iterator.next();
+      sparkConf.put((String) (x)._1, (x)._2);
+    }
+    return sparkConf;
   }
 
   public static SparkConf getSparkConfBasedOn(SparkSession.Builder sparkSessionBuilder) {

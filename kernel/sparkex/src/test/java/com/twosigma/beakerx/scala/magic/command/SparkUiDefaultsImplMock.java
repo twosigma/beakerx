@@ -46,8 +46,11 @@ public class SparkUiDefaultsImplMock implements SparkUiDefaults {
   }
 
   @Override
-  public Map<String, Object> getProfileByName(String name) {
-    return null;
+  public Map<String, Object> getProfileByName(String name){
+    return new HashMap<String, Object>() {{
+      put("name", name);
+      put("prop_1", "value_1");
+    }};
   }
 
   @Override

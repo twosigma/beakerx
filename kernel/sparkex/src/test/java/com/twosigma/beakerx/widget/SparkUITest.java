@@ -37,6 +37,7 @@ import static com.twosigma.beakerx.widget.SparkEngineWithUIMock.SPARK_UI_WEB_URL
 import static com.twosigma.beakerx.widget.SparkUI.IS_AUTO_START;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_APP_ID;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_UI_WEB_URL;
+import static com.twosigma.beakerx.widget.SparkUI.USER_SPARK_CONF;
 import static com.twosigma.beakerx.widget.SparkUiDefaults.CURRENT_PROFILE;
 import static com.twosigma.beakerx.widget.SparkUiDefaults.SPARK_PROFILES;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -70,6 +71,21 @@ public class SparkUITest {
     assertThat(profiles).isEqualTo(new ArrayList<>());
     String currentProfile = (String) state.get(CURRENT_PROFILE);
     assertThat(currentProfile).isEqualTo("default");
+  }
+
+  @Test
+  public void testShouldSendUserSparkConfOnCreation() {
+    //given
+    //when
+    new SparkUI(commMock, sparkEngineWithUIMock, sparkUiDefaults, singleSparkSessionMock, kernel);
+    //then
+    Message sparkUiFormOpenMessage = kernel.getPublishedMessages().get(1);
+    Map state = TestWidgetUtils.getState(sparkUiFormOpenMessage);
+    Map userSparkConf = (Map) state.get(USER_SPARK_CONF);
+    assertThat(userSparkConf).isEqualTo(new HashMap<String, Object>() {{
+      put("name", "");
+      put("prop_1", "user_value_1");
+    }});
   }
 
   @Test

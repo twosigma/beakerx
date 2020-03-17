@@ -27,4 +27,6 @@ public interface SparkEngineWithUI extends SparkEngine {
 
   boolean isAutoStart();
 
+  Map<String, Object> getSparkConfAsMap();
+
 }

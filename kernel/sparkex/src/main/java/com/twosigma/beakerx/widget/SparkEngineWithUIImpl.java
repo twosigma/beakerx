@@ -46,7 +46,6 @@ public class SparkEngineWithUIImpl extends SparkEngineBase implements SparkEngin
 
   SparkEngineWithUIImpl(SparkSession.Builder sparkSessionBuilder) {
     super(sparkSessionBuilder, errorPrinter());
-    configureSparkSessionBuilder(this.sparkSessionBuilder);
   }
 
   private boolean autoStart;
@@ -77,6 +76,7 @@ public class SparkEngineWithUIImpl extends SparkEngineBase implements SparkEngin
 
   @Override
   public TryResult configure(KernelFunctionality kernel, SparkUIApi sparkUI, Message parentMessage, Map<String, Object> sparkOptions) {
+    configureSparkSessionBuilder(this.sparkSessionBuilder);
     SparkConf sparkConf = createSparkConf(sparkOptions, getSparkConfBasedOn(this.sparkSessionBuilder));
     sparkConf = configureSparkConf(sparkConf);
     this.sparkSessionBuilder = SparkSession.builder().config(sparkConf);

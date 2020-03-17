@@ -49,6 +49,7 @@ public class SparkUI extends VBox implements SparkUIApi {
   public static final String SPARK_UI_WEB_URL = "sparkUiWebUrl";
   public static final String START = "start";
   public static final String IS_AUTO_START = "is_auto_start";
+  public static final String USER_SPARK_CONF = "user_spark_conf";
 
   private final KernelFunctionality kernel;
   private SparkEngineWithUI sparkEngine;
@@ -81,7 +82,15 @@ public class SparkUI extends VBox implements SparkUIApi {
     content.put(SPARK_PROFILES, this.sparkUiDefaults.getProfiles());
     content.put(CURRENT_PROFILE, this.sparkUiDefaults.getCurrentProfileName());
     content.put(IS_AUTO_START, this.sparkEngine.isAutoStart());
+    content.put(USER_SPARK_CONF, this.getUserSparkConf());
     return content;
+  }
+
+  private Map getUserSparkConf() {
+    Map<String, Object> spark_options = sparkUiDefaults.getProfileByName(sparkUiDefaults.getCurrentProfileName());
+    Map<String, Object> sparkConfAsMap = this.sparkEngine.getSparkConfAsMap();
+    spark_options.putAll(sparkConfAsMap);
+    return spark_options;
   }
 
   @Override

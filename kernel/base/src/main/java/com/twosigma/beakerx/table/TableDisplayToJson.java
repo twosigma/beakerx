@@ -287,10 +287,16 @@ public class TableDisplayToJson {
     return value;
   }
 
-  static Map<Object, Object> serializeValues(TableDisplay tableDisplay) {
-    List list = tableDisplay.takeNextPage();
+  static Map<Object, Object> serializeValues(List list) {
     Map<Object, Object> result = new LinkedHashMap<>();
     result.put(VALUES, list);
+    return result;
+  }
+
+  static Map<Object, Object> serializeValuesWithFonts(List values,Map<Object, Object>  fonts) {
+    Map<Object, Object> result = new LinkedHashMap<>();
+    result.put(VALUES, values);
+    result.putAll(fonts);
     return result;
   }
 

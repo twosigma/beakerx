@@ -77,7 +77,7 @@ public class TableDisplaySerializer extends ObservableTableDisplaySerializer<Tab
       jgen.writeObjectField(TOOLTIPS, tableDisplay.getTooltips());
       jgen.writeObjectField(DATA_FONT_SIZE, tableDisplay.getDataFontSize());
       jgen.writeObjectField(HEADER_FONT_SIZE, tableDisplay.getHeaderFontSize());
-      jgen.writeObjectField(FONT_COLOR, tableDisplay.getFontColor());
+      jgen.writeObjectField(FONT_COLOR, tableDisplay.getFontColor().get());
       jgen.writeObjectField(ROWS_TO_SHOW, tableDisplay.getRowsToShow().getRows());
 
       if (tableDisplay.getFilteredValues() != null) {

@@ -99,7 +99,7 @@ public class TableDisplay extends BeakerxWidget {
   private List<List<String>> tooltips = new ArrayList<>();
   private Integer dataFontSize;
   private Integer headerFontSize;
-  private List<List<Color>> fontColor = new ArrayList<>();
+  private FontColor fontColor = new FontColor();
   private List<List<?>> filteredValues;
   private boolean headersVertical;
   private String hasIndex;
@@ -116,6 +116,7 @@ public class TableDisplay extends BeakerxWidget {
   private TableDisplayModel model;
   private String loadMoreRows = "loadMoreServerInit";
   private RowsToShow rowsToShow = RowsToShow.SHOW_25;
+  private Object fontColorProviderClosure;
 
   @Override
   public String getModelNameValue() {
@@ -236,7 +237,14 @@ public class TableDisplay extends BeakerxWidget {
 
   void setLoadMoreRows(String loadMoreRows) {
     this.loadMoreRows = loadMoreRows;
-    sendModelUpdate(TableDisplayToJson.serializeValues(this));
+    int start = this.model.values.size();
+    List values = this.takeNextPage();
+    if (this.fontColorProviderClosure != null) {
+      List<List<Color>> fontColors = createFontColors(this.fontColorProviderClosure, start, this.model.values.size());
+      sendModelUpdate(TableDisplayToJson.serializeValuesWithFonts(values, serializeFontColor(fontColors)));
+    } else {
+      sendModelUpdate(TableDisplayToJson.serializeValues(values));
+    }
   }
 
   public List<List<?>> takeNextPage() {
@@ -474,13 +482,26 @@ public class TableDisplay extends BeakerxWidget {
     sendModelUpdate(serializeHeaderFontSize(this.headerFontSize));
   }
 
-  public List<List<Color>> getFontColor() {
+  public FontColor getFontColor() {
     return fontColor;
   }
 
   public void setFontColorProvider(Object closure) {
+    this.fontColorProviderClosure = closure;
+    setFontColorProvider(this.fontColorProviderClosure, 0, this.model.values.size());
+  }
+
+  private void setFontColorProvider(Object closure, int start, int end) {
+    List<List<Color>> fontColors = createFontColors(closure, start, end);
+    sendModelUpdate(serializeFontColor(fontColors));
+  }
+
+  private List<List<Color>> createFontColors(Object closure, int start, int end) {
+    if (start == 0) {
+      this.fontColor.clear();
+    }
     try {
-      for (int rowInd = 0; rowInd < this.model.values.size(); rowInd++) {
+      for (int rowInd = start; rowInd < end; rowInd++) {
         List<?> row = this.model.values.get(rowInd);
         List<Color> rowFontColors = new ArrayList<>();
         for (int colInd = 0; colInd < row.size(); colInd++) {
@@ -492,7 +513,7 @@ public class TableDisplay extends BeakerxWidget {
     } catch (Throwable e) {
       throw new IllegalArgumentException("Can not set font color using closure.", e);
     }
-    sendModelUpdate(serializeFontColor(this.fontColor));
+    return this.fontColor.get(start, end);
   }
 
   public void setFontColorProvider(FontColorProvider fontColorProvider) {
@@ -508,7 +529,7 @@ public class TableDisplay extends BeakerxWidget {
     } catch (Throwable e) {
       throw new IllegalArgumentException("Can not set font color using closure.", e);
     }
-    sendModelUpdate(serializeFontColor(this.fontColor));
+    sendModelUpdate(serializeFontColor(this.fontColor.get()));
   }
 
   public void setRowFilter(Object closure) {

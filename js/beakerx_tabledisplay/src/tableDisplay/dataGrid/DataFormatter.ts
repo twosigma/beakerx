@@ -195,7 +195,6 @@ export class DataFormatter {
     }
 
     let precision = doubleValue.toString().split('.')[1];
-
     if (precision && precision.length >= format.maxDecimals) {
       return doubleValue.toFixed(format.maxDecimals);
     }
@@ -250,7 +249,7 @@ export class DataFormatter {
         return formatTimestamp(value.timestamp, tz, format);
     }
 
-    let milli = isNaN(value) ?
+    let milli = null === value || isNaN(value)  ?
         value :
         new Big(value).times(valueModifier);
 

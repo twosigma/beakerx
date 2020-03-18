@@ -56,6 +56,8 @@ class Table(BaseObject):
         self.cellHighlighters = []
         self.type = "TableDisplay"
         self.timeZone = None
+        if TableDisplay.timeZoneGlobal:
+            self.timeZone = TableDisplay.timeZoneGlobal
         self.tooltips = []
         self.columnsFrozen = {}
         self.rendererForType = {}
@@ -120,7 +122,10 @@ class Table(BaseObject):
         else:
             column = None
             for column in self.columnNames:
-                column_type = self.convert_type(args[0].dtypes[column].name)
+                if column == "time":
+                    column_type = "time"
+                else:
+                    column_type = self.convert_type(args[0].dtypes[column].name)
                 self.types.append(column_type)
                 types_map[column] = column_type
         for index in range(len(args[0])):
@@ -266,6 +271,8 @@ class TableDisplay(BeakerxDOMWidget):
     _view_module_version = Unicode('*').tag(sync=True)
 
     loadingMode = 'ALL'
+    timeZoneGlobal = None
+
     model = Dict().tag(sync=True)
     contextMenuListeners = dict()
     updateData = Dict().tag(sync=True)

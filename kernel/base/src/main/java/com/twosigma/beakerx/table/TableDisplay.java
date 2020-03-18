@@ -103,15 +103,16 @@ public class TableDisplay extends BeakerxWidget {
   private List<List<?>> filteredValues;
   private boolean headersVertical;
   private String hasIndex;
-  private String timeZone;
   private Object doubleClickListener;
   private String doubleClickTag;
   private Map<String, Object> contextMenuListeners = new HashMap<>();
   private Map<String, String> contextMenuTags = new HashMap<>();
   private TableActionDetails details;
   private TableDisplayActions displayActions = new TableDisplayActions(this);
+  private String timeZone;
 
   private static TableDisplayLoadingMode loadingMode = TableDisplayLoadingMode.ALL;
+  private static String timeZoneGlobal;
   public static int PAGE_SIZE = 1000;
   private TableDisplayModel model;
   private String loadMoreRows = "loadMoreServerInit";
@@ -142,6 +143,7 @@ public class TableDisplay extends BeakerxWidget {
     super();
     this.model = new TableDisplayKeyValueModel(v, new BasicObjectSerializer());
     openComm();
+    this.init();
     model.initValues();
   }
 
@@ -152,6 +154,7 @@ public class TableDisplay extends BeakerxWidget {
     }
     this.model = new TableDisplayListModel(v, co, cl, new BasicObjectSerializer());
     openComm();
+    this.init();
     this.model.initValues();
   }
 
@@ -159,6 +162,7 @@ public class TableDisplay extends BeakerxWidget {
     super();
     this.model = new TableDisplayMapModel(v, serializer);
     openComm();
+    this.init();
     this.model.initValues();
   }
 
@@ -166,7 +170,14 @@ public class TableDisplay extends BeakerxWidget {
     super();
     this.model = new TableDisplayMapModel(v, serializer);
     openComm(message);
+    this.init();
     this.model.initValues();
+  }
+
+  private void init() {
+    if (timeZoneGlobal != null) {
+      setTimeZone(timeZoneGlobal);
+    }
   }
 
   public TableDisplay(Stream<Map<String, Object>> v) {
@@ -588,6 +599,14 @@ public class TableDisplay extends BeakerxWidget {
 
   public String getTimeZone() {
     return timeZone;
+  }
+
+  public static void setTimeZoneGlobally(String tz) {
+    timeZoneGlobal = tz;
+  }
+
+  public String getTimeZoneGlobally() {
+    return timeZoneGlobal;
   }
 
   public List<List<?>> getFilteredValues() {

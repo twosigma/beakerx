@@ -19,12 +19,14 @@ define([
   'underscore',
   './../std/plotarea',
   './../plotSampler',
-  './../lod/plotLodRiver'
+  './../lod/plotLodRiver',
+  './../auxes/plotAuxRiver'
 ], function(
   _,
   PlotArea,
   PlotSampler,
-  PlotLodRiver
+  PlotLodRiver,
+  PlotAuxRiver
 ) {
   const PlotUtils = require("../utils/PlotUtils").default;
   const PlotColorUtils = require("../utils/PlotColorUtils").default;

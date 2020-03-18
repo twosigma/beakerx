@@ -560,6 +560,30 @@ public class TableDisplayTest {
   }
 
   @Test
+  public void shouldSetGlobalTimezone() throws Exception {
+    //given
+    String gtimezone = "GTZ1";
+    //when
+    TableDisplay.setTimeZoneGlobally(gtimezone);
+    TableDisplay tdWithGlobalTimezone1 = new TableDisplay(getListOfMapsData());
+    TableDisplay tdWithGlobalTimezone2 = new TableDisplay(getListOfMapsData());
+    //then
+    assertThat(tdWithGlobalTimezone1.getTimeZone()).isEqualTo(gtimezone);
+    assertThat(tdWithGlobalTimezone2.getTimeZone()).isEqualTo(gtimezone);
+  }
+
+  @Test
+  public void shouldSetLocalTimezone() throws Exception {
+    //given
+    TableDisplay.setTimeZoneGlobally("GTZ1");
+    //when
+    TableDisplay td = new TableDisplay(getListOfMapsData());
+    td.setTimeZone("TZ2");
+    //then
+    assertThat(td.getTimeZone()).isEqualTo("TZ2");
+  }
+
+  @Test
   public void shouldSendCommMsgWithAllModelWhenDisplay() throws Exception {
     //given
     kernel.clearMessages();

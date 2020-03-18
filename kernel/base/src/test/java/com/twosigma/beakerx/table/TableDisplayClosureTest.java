@@ -22,6 +22,7 @@ import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.table.format.ValueStringFormat;
 import com.twosigma.beakerx.table.highlight.ValueHighlighter;
 import org.assertj.core.api.Assertions;
+import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,16 +70,7 @@ public class TableDisplayClosureTest {
   @Test
   public void addCellHighlighterClosure_shouldFormatCellColors() throws Exception {
     //when
-    tableDisplay.addCellHighlighter(new ClosureTest() {
-      @Override
-      public Color call(Object row, Object col, Object tbl) {
-        return ((int)row%2 == 0) ? Color.GREEN : Color.BLUE;
-      }
-      @Override
-      public int getMaximumNumberOfParameters() {
-        return 3;
-      }
-    });
+    tableDisplay.addCellHighlighter(fontClosure(2));
     //then
     ValueHighlighter highlighter = (ValueHighlighter) tableDisplay.getCellHighlighters().get(0);
     Assertions.assertThat(highlighter.getColors().get(0)).isEqualTo(Color.GREEN);
@@ -107,20 +99,48 @@ public class TableDisplayClosureTest {
   @Test
   public void setFontColorProviderClosure_shouldFormatFontColor() throws Exception {
     //when
-    tableDisplay.setFontColorProvider(new ClosureTest() {
+    tableDisplay.setFontColorProvider(fontClosure(2));
+    //then
+    List<List<Color>> fontColor = tableDisplay.getFontColor().get();
+    Assertions.assertThat(fontColor.get(0).get(0)).isEqualTo(Color.GREEN);
+    Assertions.assertThat(fontColor.get(1).get(0)).isEqualTo(Color.BLUE);
+  }
+
+  @Test
+  public void setFontColorProviderClosure() throws Exception {
+    //when
+    tableDisplay.setFontColorProvider(fontClosure(2));
+    //then
+    List<List<Color>> fontColor = tableDisplay.getFontColor().get();
+    Assertions.assertThat(fontColor.size()).isEqualTo(2);
+    Assertions.assertThat(tableDisplay.getValues().size()).isEqualTo(2);
+  }
+
+  @Test
+  public void redefineSetFontColorProviderClosure() throws Exception {
+    //given
+    tableDisplay.setFontColorProvider(fontClosure(2));
+    //when
+    tableDisplay.setFontColorProvider(fontClosure(3));
+    //then
+    List<List<Color>> fontColor = tableDisplay.getFontColor().get();
+    Assertions.assertThat(fontColor.size()).isEqualTo(2);
+    Assertions.assertThat(tableDisplay.getValues().size()).isEqualTo(2);
+  }
+
+  @NotNull
+  private ClosureTest fontClosure(int i) {
+    return new ClosureTest() {
       @Override
       public Color call(Object row, Object col, Object tbl) {
-        return ((int)row%2 == 0) ? Color.GREEN : Color.BLUE;
+        return ((int) row % i == 0) ? Color.GREEN : Color.BLUE;
       }
+
       @Override
       public int getMaximumNumberOfParameters() {
         return 3;
       }
-    });
-    //then
-    List<List<Color>> fontColor = tableDisplay.getFontColor();
-    Assertions.assertThat(fontColor.get(0).get(0)).isEqualTo(Color.GREEN);
-    Assertions.assertThat(fontColor.get(1).get(0)).isEqualTo(Color.BLUE);
+    };
   }
 
   @Test

@@ -45,3 +45,35 @@ class TestTableDisplayAPI_time_zone(unittest.TestCase):
         tabledisplay.setTimeZone(timezone)
         # then
         self.assertEqual(tabledisplay.model["timeZone"], timezone)
+
+    def test_should_set_global_timezone(self):
+        #given
+        gtimezone = "GTZ1"
+        mapList4 = [
+            {"a": 1, "b": 2, "c": 3},
+            {"a": 4, "b": 5, "c": 6},
+            {"a": 7, "b": 8, "c": 5}
+        ]
+        #when
+        TableDisplay.timeZoneGlobal = gtimezone
+        tabledisplay1 = TableDisplay(mapList4)
+        tabledisplay2 = TableDisplay(mapList4)
+        # then
+        self.assertEqual(tabledisplay1.model["timeZone"], gtimezone)
+        self.assertEqual(tabledisplay2.model["timeZone"], gtimezone)
+
+
+    def test_should_set_local_timezone(self):
+        #given
+        gtimezone = "GTZ1"
+        mapList4 = [
+            {"a": 1, "b": 2, "c": 3},
+            {"a": 4, "b": 5, "c": 6},
+            {"a": 7, "b": 8, "c": 5}
+        ]
+        TableDisplay.timeZoneGlobal = gtimezone
+        #when
+        tabledisplay1 = TableDisplay(mapList4)
+        tabledisplay1.setTimeZone("TZ2")
+        # then
+        self.assertEqual(tabledisplay1.model["timeZone"], "TZ2")

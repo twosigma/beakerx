@@ -144,7 +144,7 @@ export default class CellManager {
             region: 'body',
             row: row.index,
             column: column.index,
-            value: row.values[column.index]
+            value: row.getValue(column.index)
           })));
         }
       });

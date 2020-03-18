@@ -23,7 +23,7 @@ export default class BigNumberUtils {
     if (n2 === Infinity) { return true; }
     if (n1 === -Infinity) { return true; }
 
-    return n1 instanceof Big ? n1.lt(n2) : Big(n1).lt(n2);
+    return this.isBig(n1) ? (n1 as Big).lt(n2) : Big(n1).lt(n2);
   }
 
   public static lte(n1: BigJs.BigSource, n2: BigJs.BigSource): boolean {
@@ -32,7 +32,7 @@ export default class BigNumberUtils {
     if (n2 === Infinity)  { return true; }
     if (n1 === Infinity) { return false; }
 
-    return n1 instanceof Big ? n1.lte(n2) : Big(n1).lte(n2);
+    return this.isBig(n1) ? (n1 as Big).lte(n2) : Big(n1).lte(n2);
   }
 
   public static gt(n1: BigJs.BigSource, n2: BigJs.BigSource): boolean {
@@ -41,7 +41,7 @@ export default class BigNumberUtils {
     if (n2 === Infinity) { return false; }
     if (n1 === Infinity) { return true; }
 
-    return n1 instanceof Big ? n1.gt(n2) : Big(n1).gt(n2);
+    return this.isBig(n1) ? (n1 as Big).gt(n2) : Big(n1).gt(n2);
   }
 
   public static gte(n1: BigJs.BigSource, n2: BigJs.BigSource): boolean {
@@ -50,7 +50,7 @@ export default class BigNumberUtils {
     if (n1 === -Infinity) { return false; }
     if (n2 === Infinity) { return false; }
 
-    return n1 instanceof Big ? n1.gte(n2) : Big(n1).gte(n2);
+    return this.isBig(n1) ? (n1 as Big).gte(n2) : Big(n1).gte(n2);
   }
 
   public static eq(n1: BigJs.BigSource, n2: BigJs.BigSource): boolean {
@@ -60,15 +60,15 @@ export default class BigNumberUtils {
     if (n1 === -Infinity) { return false; }
     if (n2 === Infinity) { return false; }
     if (n2 === -Infinity) { return false; }
-    return n1 instanceof Big ? n1.eq(n2) : Big(n1).eq(n2);
+    return this.isBig(n1) ? (n1 as Big).eq(n2) : Big(n1).eq(n2);
   }
 
   public static plus(n1: BigJs.BigSource, n2: BigJs.BigSource): BigJs.BigSource {
-    if (n1 instanceof Big) {
-      return n1.plus(n2);
+    if (this.isBig(n1)) {
+      return (n1 as Big).plus(n2);
     }
-    if (n2 instanceof Big) {
-      return n2.plus(n1);
+    if (this.isBig(n2)) {
+      return (n2 as Big).plus(n1);
     }
     if (typeof n1 === 'string') {
       return n1 + n2; // string
@@ -76,14 +76,14 @@ export default class BigNumberUtils {
     if (typeof n2 === 'string') {
       return n1 + n2; // string
     }
-    return n1 + n2; // number
+    return (n1 as number) + (n2 as number); // number
   }
 
   public static minus(n1: BigJs.BigSource, n2: BigJs.BigSource): BigJs.BigSource {
-    if (n1 instanceof Big) {
-      return n1.minus(n2);
+    if (this.isBig(n1)) {
+      return (n1 as Big).minus(n2);
     }
-    if (n2 instanceof Big) {
+    if (this.isBig(n2)) {
       return Big(n1).minus(n2);
     }
     if (typeof n1 === 'string') {
@@ -92,14 +92,14 @@ export default class BigNumberUtils {
     if (typeof n2 === 'string') {
       return Big(n1).minus(n2);
     }
-    return n1 - n2;
+    return (n1 as number) - (n2 as number);
   }
 
   public static mult(n1: BigJs.BigSource, n2: BigJs.BigSource): BigJs.BigSource {
-    if (n1 instanceof Big) {
-      return n1.times(n2);
+    if (this.isBig(n1)) {
+      return (n1 as Big).times(n2);
     }
-    if (n2 instanceof Big) {
+    if (this.isBig(n2)) {
       return Big(n1).times(n2);
     }
     if (typeof n1 === "string") {
@@ -108,14 +108,14 @@ export default class BigNumberUtils {
     if (typeof n2 === "string") {
       return Big(n1).times(n2);
     }
-    return n1 * n2;
+    return (n1 as number) * (n2 as number);
   }
 
   public static div(n1: BigJs.BigSource, n2: BigJs.BigSource): BigJs.BigSource {
-    if (n1 instanceof Big) {
-      return n1.div(n2);
+    if (this.isBig(n1)) {
+      return (n1 as Big).div(n2);
     }
-    if (n2 instanceof Big) {
+    if (this.isBig(n2)) {
       return Big(n1).div(n2);
 
     }
@@ -125,7 +125,7 @@ export default class BigNumberUtils {
     if (typeof n2 === "string") {
       return Big(n1).div(n2);
     }
-    return n1 / n2;
+    return (n1 as number) / (n2 as number);
   }
 
   public static max(n1: BigJs.BigSource, n2: BigJs.BigSource): BigJs.BigSource {
@@ -134,6 +134,10 @@ export default class BigNumberUtils {
 
   public static min(n1: BigJs.BigSource, n2: BigJs.BigSource): BigJs.BigSource {
     return this.lt(n1, n2) ? n1 : n2;
+  }
+
+  public static isBig(n1: any): boolean {
+    return n1.constructor.name === "Big";
   }
 
 }

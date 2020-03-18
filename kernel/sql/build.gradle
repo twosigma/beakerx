@@ -55,7 +55,7 @@ dependencies {
   compile group: 'postgresql', name: 'postgresql', version: '9.1-901-1.jdbc4'
   compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.18'
   compile group: 'org.apache.derby', name: 'derby', version: '10.14.1.0'
-  compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.21.0'
+  compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.30.1'
   compile group: 'org.hsqldb', name: 'hsqldb', version: '2.4.0'
 
   testCompile project(':base').sourceSets.test.output

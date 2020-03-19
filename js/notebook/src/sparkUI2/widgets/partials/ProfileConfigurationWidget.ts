@@ -25,6 +25,8 @@ import {IProfileListItem} from "../../IProfileListItem";
 
 export class ProfileConfigurationWidget extends Panel {
 
+    public readonly SPARK_LOCAL_MASTER_URL_PREFIX = 'local';
+
     private readonly propertiesWidget: ProfilePropertiesWidget;
     private readonly enableHiveSupportWidget: HiveSupportWidget;
     private readonly masterURLWidget: MasterURLWidget;
@@ -45,6 +47,8 @@ export class ProfileConfigurationWidget extends Panel {
         this.addWidget(this.executorMemoryWidget);
         this.addWidget(this.enableHiveSupportWidget);
         this.addWidget(this.propertiesWidget);
+
+        this.toggleExecutorInputs();
     }
 
     public getConfiguration(): {
@@ -74,6 +78,8 @@ export class ProfileConfigurationWidget extends Panel {
             }
         }
         this.enableHiveSupportWidget.enabled = isHiveEnabled;
+
+        this.toggleExecutorInputs();
     }
 
     public processMessage(msg: SparkUI2Message): void {
@@ -90,6 +96,16 @@ export class ProfileConfigurationWidget extends Panel {
             default:
                 super.processMessage(msg);
                 break;
+        }
+    }
+
+    private toggleExecutorInputs(): void {
+        if (this.masterURLWidget.value.indexOf(this.SPARK_LOCAL_MASTER_URL_PREFIX) === 0) {
+            this.executorMemoryWidget.disableInput();
+            this.executorCoresWidget.disableInput();
+        } else {
+            this.executorMemoryWidget.enableInput();
+            this.executorCoresWidget.enableInput();
         }
     }
 }

@@ -46,6 +46,14 @@ export abstract class InputWithLabelWidget extends Panel {
         (this.inputWidget.node as HTMLInputElement).value = value;
     }
 
+    public disableInput() {
+        (this.inputWidget.node as HTMLInputElement).disabled = true;
+    }
+
+    public enableInput() {
+        (this.inputWidget.node as HTMLInputElement).disabled = false;
+    }
+
     private createLabel(): Widget {
         let el = document.createElement('label');
 

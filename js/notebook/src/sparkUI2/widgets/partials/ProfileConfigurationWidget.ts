@@ -117,7 +117,7 @@ namespace Private {
                 return;
             }
 
-            this.enableHiveSupportWidget.enabled = false;
+            enableHiveSupportWidget.enabled = false;
         }
 
     }

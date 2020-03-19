@@ -13,6 +13,7 @@
  */
 package com.twosigma.beakerx.groovy.evaluator.autocomplete;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -238,8 +239,35 @@ public class GroovyReflectionCompletionTest {
 		assert !result.contains("foo");
 		assert result.contains("size()");
 		
-		System.out.println(result);
+//		System.out.println(result);
 		
 	}
 
+	@Test
+	public void testIndexedExpression() {
+		Binding binding = new Binding();
+		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding);
+		assert ("something[2]".equals(grc.resolveExpression("something[2].", 12)));
+	}
+	
+	@Test
+	public void testIndexedListCompletion() {
+		Binding binding = new Binding();
+		
+		List<C> list = new ArrayList<C>();
+		list.add(new C());
+		list.add(new C());
+		
+		binding.setVariable("clist", list);
+		
+		
+		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding);
+		
+		List<String> result = grc.autocomplete("clist[1].", 9);
+		
+		System.out.println(result);
+		
+		assert result.contains("foo");
+	}
+	
 }

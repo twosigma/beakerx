@@ -17,15 +17,19 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.beanutils.BeanUtilsBean2;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import groovy.lang.Binding;
@@ -35,7 +39,9 @@ public class GroovyReflectionCompletion {
 	Binding binding;
 
 	private BeanUtilsBean2 beanUtils = new BeanUtilsBean2();
-
+	
+	private Pattern indexedAccessPattern = Pattern.compile("(.*)\\[([0-9]{1,})\\]");
+	
 	public GroovyReflectionCompletion(Binding binding) {
 		this.binding = binding;
 	}
@@ -52,8 +58,14 @@ public class GroovyReflectionCompletion {
 		
 		if(text.endsWith("."))
 			parts.add("");
+		
+		String bindingReference = parts.get(0);
+		Matcher m = indexedAccessPattern.matcher(bindingReference);
+		if(m.matches()) {
+			bindingReference = m.group(1);
+		}
 	
-		if(binding.hasVariable(parts.get(0)) && ((parts.size() > 1) || text.endsWith("."))) {
+		if(binding.hasVariable(bindingReference) && ((parts.size() > 1) || text.endsWith("."))) {
 			return autocompleteFromObject(parts);
 		}
 		else  {
@@ -67,29 +79,26 @@ public class GroovyReflectionCompletion {
 		}
 	}
 
-	
+	/**
+	 * Extracts the expression to be autocompleted.
+	 * 
+	 * The expression is an executable statement that would (if executed) return the
+	 * value that should be autocompleted.
+	 * 
+	 * @param text	the text at the cursor
+	 * @param pos	the position of the cursor within the text
+	 * @return
+	 */
 	public String resolveExpression(String text, int pos) {
 		
-		int nextLine = Math.min(text.length()-1,pos+1);
-		char nextChar = text.charAt(nextLine);
-		while(nextLine<text.length() && Character.isJavaIdentifierPart(nextChar)) {
-			++nextLine;
-			
-			if(nextLine<text.length())
-				nextChar = text.charAt(nextLine);
-			else
-				nextChar = '\n';
-		}
+		int expressionEnd = findExpressionEnd(text, pos);
 		
-		int prevLine = pos;
-		while(prevLine>=0 && (text.charAt(prevLine) == '.' || Character.isJavaIdentifierPart(text.charAt(prevLine)))) {
-			--prevLine;
-		}
+		int expressionStart = findExpressionStart(text, pos);
 		
-		prevLine = Math.max(0,prevLine);
-		nextLine = Math.min(text.length(),nextLine);
+		expressionStart = Math.max(0,expressionStart);
+		expressionEnd = Math.min(text.length(),expressionEnd);
 		
-		String result = text.substring(prevLine, nextLine).trim();
+		String result = text.substring(expressionStart, expressionEnd).trim();
 		
 		if(!Character.isJavaIdentifierPart(result.charAt(result.length()-1))) {
 			result = result.substring(0, result.length()-1);
@@ -98,7 +107,81 @@ public class GroovyReflectionCompletion {
 		if(!Character.isJavaIdentifierPart(result.charAt(0))) {
 			result = result.substring(1);
 		}
+		
+//		System.out.println("Expression is " + result);
 		return result;
+	}
+
+	private int findExpressionStart(String text, int startPos) {
+		List<Character> bracketStack = new ArrayList<Character>();
+
+		int pos = startPos;
+		while(pos >= 0) {
+			char c  = text.charAt(pos);
+			
+			if(c == '.') {
+				// allow
+			}
+			else
+			if(Character.isJavaIdentifierPart(c)) {
+				// allow
+			}
+			else
+			if(c == ']') {
+				bracketStack.add(c);
+			}
+			else
+			if(c == '[') {
+				if(!bracketStack.isEmpty() && bracketStack.get(bracketStack.size()-1) == ']') {
+					bracketStack.remove(bracketStack.size()-1);
+				}
+				else
+					break;
+			}
+			else
+				break;
+
+			--pos;
+		}
+		return pos;
+	}
+
+	private int findExpressionEnd(String text, int startPos) {
+		
+		List<Character> bracketStack = new ArrayList<Character>();
+
+		int pos = startPos;
+		while(pos < text.length()) {
+			final char c  = text.charAt(pos);
+			
+			if(c == '\n') {
+				break;
+			}
+			if(c == '.') {
+				// allow
+			}
+			else
+			if(Character.isJavaIdentifierPart(c)) {
+				// allow
+			}
+			else
+			if(c == ']') {
+				bracketStack.add(c);
+			}
+			else
+			if(c == '[') {
+				if(!bracketStack.isEmpty() && bracketStack.get(bracketStack.size()-1) == ']') {
+					bracketStack.remove(bracketStack.size()-1);
+				}
+				else
+					break;
+			}
+			else
+				break;
+			++pos;
+		}
+		return pos;
+		
 	}
 	
 	/**
@@ -137,10 +220,30 @@ public class GroovyReflectionCompletion {
 		
 		try {
 
-			Object value = binding.getVariable(parts.get(0));
+			String bindingReference = parts.get(0);
+			Matcher m = indexedAccessPattern.matcher(bindingReference);
+			
+			Object value;
+			if(m.matches()) {
+				List collValue = (List)binding.getVariable(m.group(1));
+				value = collValue.get(Integer.parseInt(m.group(2)));
+			}
+			else
+				value = binding.getVariable(bindingReference);
+
 			int i = 1;
 			for(; i<parts.size()-1; ++i) {
-				value = beanUtils.getProperty(value, parts.get(i));
+				String partExpr = parts.get(i);
+				
+				
+				Matcher m2 = indexedAccessPattern.matcher(partExpr);
+				if(m2.matches()) {
+					value = PropertyUtils.getIndexedProperty(value, partExpr);
+				}
+				else {
+					value = PropertyUtils.getSimpleProperty(value, partExpr);
+				}
+			
 				if(value == null) {
 					// We can't complete anything on it
 					// TODO: we could complete on the static type one day
@@ -245,10 +348,6 @@ public class GroovyReflectionCompletion {
 	  if(m.getName().startsWith("get") && m.getParameterCount()==0)
 		  return false;
 	  
-	  if(m.getName().equals("setYBounds")) {
-		  System.err.println("setting ybound");
-	  }
-
 	  if(m.getName().startsWith("set") && m.getParameterCount()==1)
 		  return false;
 	  

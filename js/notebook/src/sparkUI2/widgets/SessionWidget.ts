@@ -27,11 +27,14 @@ export class SessionWidget extends Panel {
     private stopEl: HTMLButtonElement;
     private statsEl: HTMLDivElement;
 
+    private connectionStatusEl: HTMLDivElement;
     private statsActiveEl: HTMLDivElement;
     private statsDeadEl: HTMLDivElement;
     private statsMemoryEl: HTMLDivElement;
 
     private readonly spinnerWidget: SpinnerWidget;
+
+    private _sparkUiWebUrl: string = null;
 
     constructor() {
         super();
@@ -40,6 +43,10 @@ export class SessionWidget extends Panel {
         this.addWidget(this.createStats());
         this.addWidget(this.createStop());
         this.addWidget(this.spinnerWidget);
+    }
+
+    public set sparkUiWebUrl(url: string) {
+        this._sparkUiWebUrl = url;
     }
 
     public disableStop() {
@@ -84,22 +91,30 @@ export class SessionWidget extends Panel {
     private createStats(): Widget {
         let el = this.statsEl = document.createElement('div');
 
+        let connectionStatusEl = this.connectionStatusEl = document.createElement('div');
+        connectionStatusEl.classList.add('bx-label', 'connection');
+        connectionStatusEl.style.cursor = 'pointer';
+
+        connectionStatusEl.addEventListener('click', (event: MouseEvent) => {
+            window.open(`${this._sparkUiWebUrl}/executors`, '_blank');
+        });
+
         let activeEl = this.statsActiveEl = document.createElement('div');
-        activeEl.classList.add('active', 'label', 'label-info');
+        activeEl.classList.add('bx-label', 'active');
         activeEl.title = 'Active Tasks';
         activeEl.textContent = '0';
 
         let deadEl = this.statsDeadEl = document.createElement('div');
-        deadEl.classList.add('dead', 'label', 'label-danger');
+        deadEl.classList.add('bx-label', 'dead');
         deadEl.title = 'Dead Executors';
         deadEl.textContent = '0';
 
         let memoryEl = this.statsMemoryEl = document.createElement('div');
-        memoryEl.classList.add('memory', 'label', 'label-default');
+        memoryEl.classList.add('bx-label', 'memory');
         memoryEl.title = 'Storage Memory';
         memoryEl.textContent = '0 KB';
 
-        el.append(activeEl, deadEl, memoryEl);
+        el.append(connectionStatusEl, activeEl, deadEl, memoryEl);
 
         let w = new Widget({ node: el });
         w.addClass('bx-stats');
@@ -120,6 +135,7 @@ export class SessionWidget extends Panel {
         w.addClass('jupyter-button');
         w.addClass('widget-button');
         w.addClass('bx-spark-connect');
+        w.addClass('bx-spark-connect-stop');
 
         return w;
     }

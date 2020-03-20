@@ -123,7 +123,7 @@ namespace Private {
             widget.comm.errored.connect(_onError, widget);
         }
 
-        function _onStart(this: SparkUI2Widget): void {
+        function _onStart(this: SparkUI2Widget, sender, msg: { sparkUiWebUrl: string}): void {
             this.comm.started.disconnect(_onStart, this);
             this.comm.statsChanged.connect(_onStatsChanged, this);
             this.startWidget.enableButton();
@@ -131,6 +131,10 @@ namespace Private {
             this.startWidget.clearError();
             this.startWidget.hide();
             this.profileSelectorWidget.hide();
+            // console.log(msg);
+            // this.sessionWidget.sparkMasterURL;
+            this.sessionWidget.sparkUiWebUrl = msg.sparkUiWebUrl;
+
             this.sessionWidget.show();
             this.sessionWidget.enableStop();
         }

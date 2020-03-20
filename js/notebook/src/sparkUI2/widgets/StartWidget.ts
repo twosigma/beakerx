@@ -80,6 +80,7 @@ export class StartWidget extends Panel {
         w.addClass('jupyter-button');
         w.addClass('widget-button');
         w.addClass('bx-spark-connect');
+        w.addClass('bx-spark-connect-start');
 
         return w;
     }

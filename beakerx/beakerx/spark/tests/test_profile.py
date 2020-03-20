@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import os
+import pathlib
 import unittest
 from shutil import copyfile
 
@@ -19,8 +20,8 @@ from beakerx.spark.profile import Profile
 
 
 class TestSparkUIProfile(unittest.TestCase):
-    MOCK_TEST_JSON = "resources" + os.path.sep + "beakerxMock2.json"
-    MOCK_JSON = "resources" + os.path.sep + "beakerxMock.json"
+    MOCK_TEST_JSON = str(pathlib.Path(__file__).parent.absolute()) + os.path.sep + "resources" + os.path.sep + "beakerxMock2.json"
+    MOCK_JSON = str(pathlib.Path(__file__).parent.absolute()) + os.path.sep + "resources" + os.path.sep + "beakerxMock.json"
 
     def test_should_load_profiles(self):
         # given

@@ -30,13 +30,13 @@ class SparkUI2(BeakerxBox):
     user_spark_conf = Dict().tag(sync=True)
 
     def __init__(self, engine, ipython_manager, spark_server_factory, profile, comm=None, **kwargs):
+        if comm is not None:
+            self.comm = comm
         self.engine = self.check_is_None(engine)
         self.ipython_manager = self.check_is_None(ipython_manager)
         self.spark_server_factory = self.check_is_None(spark_server_factory)
         self.profile = self.check_is_None(profile)
         self.on_msg(self.handle_msg)
-        if comm is not None:
-            self.comm = comm
         self.profiles, self.current_profile = self._get_init_profiles()
         self.user_spark_conf = self.get_user_spark_conf()
         self.is_auto_start = self.engine.is_auto_start()
@@ -49,12 +49,15 @@ class SparkUI2(BeakerxBox):
         return spark_options
 
     def handle_msg(self, _, content, buffers=None):
-        if content['event'] == "start":
-            self._handle_start(content)
-        elif content['event'] == "stop":
-            self._handle_stop(content)
-        elif content['event'] == "save_profiles":
-            self._handle_save_profile(content)
+        try:
+            if content['event'] == "start":
+                self._handle_start(content)
+            elif content['event'] == "stop":
+                self._handle_stop(content)
+            elif content['event'] == "save_profiles":
+                self._handle_save_profile(content)
+        except Exception as err:
+            self.send_error(str(err))
 
     def _handle_save_profile(self, content):
         payload = content["payload"]
@@ -105,6 +108,15 @@ class SparkUI2(BeakerxBox):
         self._send_start_done_event("start")
         self.profile.save_current_profile(current_profile)
 
+    def send_error(self, message):
+        msg = {
+            'method': 'update',
+            'error': {
+                "message": message
+            }
+        }
+        self.comm.send(data=msg)
+
     def _on_start(self):
         self.ipython_manager.configure(self.engine)
         server = self.spark_server_factory.run_new_instance(self.engine)
@@ -116,7 +128,7 @@ class SparkUI2(BeakerxBox):
             'event': {
                 event_name: "done",
                 "sparkAppId": self.engine.spark_app_id(),
-                "sparkUiWebUrl": self.engine.ui_web_url()
+                "sparkUiWebUrl": self.engine.get_ui_web_url()
             }
         }
         self.comm.send(data=msg)

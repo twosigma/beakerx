@@ -74,8 +74,8 @@ class SparkEngineMock(SparkEngine):
     def spark_app_id(self):
         pass
 
-    def ui_web_url(self):
-        pass
+    def get_ui_web_url(self):
+        return 'SparkUiWebUrl1'
 
     def stop(self):
         pass

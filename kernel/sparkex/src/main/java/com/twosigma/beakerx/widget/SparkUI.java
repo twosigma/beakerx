@@ -88,8 +88,8 @@ public class SparkUI extends VBox implements SparkUIApi {
 
   private Map getUserSparkConf() {
     Map<String, Object> spark_options = sparkUiDefaults.getProfileByName(sparkUiDefaults.getCurrentProfileName());
-    Map<String, Object> sparkConfAsMap = this.sparkEngine.getSparkConfAsMap();
-    spark_options.putAll(sparkConfAsMap);
+    spark_options.putAll(this.sparkEngine.getSparkEngineConf().getConfigs());
+    spark_options.putAll(this.sparkEngine.getSparkConfAsMap());
     return spark_options;
   }
 

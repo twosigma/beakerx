@@ -19,6 +19,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.twosigma.beakerx.widget.SparkUIApi.SPARK_EXECUTOR_CORES;
+import static com.twosigma.beakerx.widget.SparkUIApi.SPARK_EXECUTOR_MEMORY;
+import static com.twosigma.beakerx.widget.SparkUIApi.SPARK_MASTER;
+
 public class SparkEngineConf {
 
   private String master = null;
@@ -55,6 +59,17 @@ public class SparkEngineConf {
   }
 
   public Map<String, String> getConfigs() {
-    return configs;
+    HashMap<String, String> conf = new HashMap<>(configs);
+    if (master != null) {
+      conf.put(SPARK_MASTER, master);
+    }
+    if (executorMemory != null) {
+      conf.put(SPARK_EXECUTOR_MEMORY, executorMemory);
+    }
+    if (executorCores != null) {
+      conf.put(SPARK_EXECUTOR_CORES, executorCores);
+    }
+
+    return conf;
   }
 }

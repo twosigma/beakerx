@@ -28,6 +28,7 @@ class SparkEngine:
         self.auto_start = False
         self.additional_spark_options = {}
         self.builder = None
+        self.uiWebUrlFunc = lambda spark_session: spark_session.sparkContext.uiWebUrl
 
     def new_spark_builder(self):
         self.builder = SparkSession.builder
@@ -50,8 +51,8 @@ class SparkEngine:
     def spark_app_id(self):
         return self.getOrCreate().sparkContext._jsc.sc().applicationId()
 
-    def ui_web_url(self):
-        return self.getOrCreate().sparkContext.uiWebUrl
+    def get_ui_web_url(self):
+        return self.uiWebUrlFunc(self.getOrCreate())
 
     def stop(self):
         self.getOrCreate().sparkContext.stop()
@@ -66,4 +67,4 @@ class SparkEngine:
         spark_session = engine.getOrCreate()
         spark_context = spark_session.sparkContext
         spark_context._gateway.start_callback_server()
-        spark_context._jsc.sc().addSparkListener(SparkListener(SparkStateProgressUiManager(spark_context, server)))
+        spark_context._jsc.sc().addSparkListener(SparkListener(SparkStateProgressUiManager(engine, server)))

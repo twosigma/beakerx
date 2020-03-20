@@ -93,7 +93,7 @@ public class SparkEngineWithUIMock implements SparkEngineWithUI {
 
   @Override
   public SparkEngineConf getSparkEngineConf() {
-    return null;
+    return new SparkEngineConf();
   }
 
   @Override

@@ -20,7 +20,7 @@ class SparkListener:
 
     def __init__(self, manager):
         self.manager = manager
-        self.sc = manager.sc
+        self.engine = manager.engine
         self.group = None
         self.bar = None
         self.jobPanel = None

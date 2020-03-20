@@ -239,7 +239,7 @@ abstract class SparkEngineBase implements SparkEngine {
 
   private static Field getOptionsField(SparkSession.Builder sparkSessionBuilder) {
     Field[] declaredFields = sparkSessionBuilder.getClass().getDeclaredFields();
-    Optional<Field> options = Arrays.stream(declaredFields).filter(f -> f.getName().equals("options")).findFirst();
+    Optional<Field> options = Arrays.stream(declaredFields).filter(f -> f.getName().contains("options")).findFirst();
     if (options.isPresent()) {
       return options.get();
     }

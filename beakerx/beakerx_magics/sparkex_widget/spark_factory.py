@@ -31,7 +31,9 @@ class SparkFactory:
         self.ipythonManager = ipython_manager
 
     def create_spark(self):
-        self.spark_engine = self._parse_spark_options(self.spark_engine, self.options)
+        err = self._execute_options(self.spark_engine, self.options)
+        if err is not None:
+            return err
         if self._is_no_ui(self.options):
             return self._create_spark_without_ui()
         else:
@@ -51,22 +53,28 @@ class SparkFactory:
                                 self.profile)
         return spark_widget
 
-    def _parse_spark_options(self, engine, options):
+    def _execute_options(self, engine, options):
         if "start" in options and options.start:
             engine.configure_auto_start()
-        if "yarn" in options:
+            return None
+        if "yarn" in options and options.yarn:
             if "HADOOP_CONF_DIR" not in os.environ:
-                pass  # send an error, please provide an environmental variable
-                # import os
-                # os.environ["HADOOP_CONF_DIR"] = PATH_TO_HADOOP_CONF_DIR
-
+                return """'HADOOP_CONF_DIR' is not set,\nplease use os.environ['HADOOP_CONF_DIR'] = PATH_TO_HADOOP_CONF_DIR"""
+            self.init_yarn()
+            self.spark_engine.uiWebUrlFunc = lambda spark_session: spark_session.sparkContext._conf._jconf.get(
+                "spark.org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter.param.PROXY_URI_BASES")
             self.spark_engine.add_additional_spark_options({
                 "spark.executor.cores": "4",
                 "spark.executor.memory": "1g",
                 "spark.master": "yarn"
             })
 
-        return engine
+        return None
 
     def _is_no_ui(self, options):
         return "noUI" in options and options.noUI
+
+    def init_yarn(self):
+        path_to_python = sys.executable
+        os.environ["PYSPARK_PYTHON"] = path_to_python
+        os.environ["PYSPARK_DRIVER_PYTHON"] = path_to_python

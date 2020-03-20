@@ -243,9 +243,6 @@ class SparkEngineMock(SparkEngine):
     def spark_app_id(self):
         return 'appIdLocal1'
 
-    def ui_web_url(self):
-        return 'SparkUiWebUrl1'
-
     def configure_listeners(self, engine, server):
         pass
 
@@ -259,6 +256,9 @@ class SparkEngineMock(SparkEngine):
 
     def stop(self):
         pass
+
+    def get_ui_web_url(self):
+        return 'SparkUiWebUrl1'
 
 
 class SparkSessionMock:

@@ -15,6 +15,7 @@ import unittest
 
 from beakerx import SparkUI2
 from beakerx.spark.spark_engine import SparkEngine
+from beakerx_magics import SingleSparkSession
 from ipykernel.comm import Comm
 
 
@@ -23,7 +24,8 @@ class TestSparkUI(unittest.TestCase):
     def test_should_load_profile_on_widget_creation(self):
         # given
         builder = BuilderMock()
-        engine = SparkEngineMock(builder)
+        spark_session_mock = SingleSparkSessionMock()
+        engine = SparkEngineMock(builder, spark_session_mock)
         ipython_manager = IpythonManagerMock()
         spark_server_factory = SparkServerFactoryMock()
         profile = ProfileMock()
@@ -41,7 +43,8 @@ class TestSparkUI(unittest.TestCase):
     def test_should_create_spark_conf_based_on_user_conf_when_widget_creation(self):
         # given
         builder = BuilderMock()
-        engine = SparkEngineMock(builder)
+        spark_session_mock = SingleSparkSessionMock()
+        engine = SparkEngineMock(builder, spark_session_mock)
         ipython_manager = IpythonManagerMock()
         spark_server_factory = SparkServerFactoryMock()
         profile = ProfileMock()
@@ -56,7 +59,8 @@ class TestSparkUI(unittest.TestCase):
     def test_should_save_profiles(self):
         # given
         builder = BuilderMock()
-        engine = SparkEngineMock(builder)
+        spark_session_mock = SingleSparkSessionMock()
+        engine = SparkEngineMock(builder, spark_session_mock)
         ipython_manager = IpythonManagerMock()
         spark_server_factory = SparkServerFactoryMock()
         profile = ProfileMock()
@@ -87,7 +91,8 @@ class TestSparkUI(unittest.TestCase):
     def test_should_send_done_message_when_sc_stops(self):
         # given
         builder = BuilderMock()
-        engine = SparkEngineMock(builder)
+        spark_session_mock = SingleSparkSessionMock()
+        engine = SparkEngineMock(builder, spark_session_mock)
         ipython_manager = IpythonManagerMock()
         spark_server_factory = SparkServerFactoryMock()
         profile = ProfileMock()
@@ -106,7 +111,8 @@ class TestSparkUI(unittest.TestCase):
     def test_should_send_done_message_when_sc_starts(self):
         # given
         builder = BuilderMock()
-        engine = SparkEngineMock(builder)
+        spark_session_mock = SingleSparkSessionMock()
+        engine = SparkEngineMock(builder, spark_session_mock)
         ipython_manager = IpythonManagerMock()
         spark_server_factory = SparkServerFactoryMock()
         profile = ProfileMock()
@@ -139,7 +145,8 @@ class TestSparkUI(unittest.TestCase):
     def test_should_save_current_profile_when_sc_starts(self):
         # given
         builder = BuilderMock()
-        engine = SparkEngineMock(builder)
+        spark_session_mock = SingleSparkSessionMock()
+        engine = SparkEngineMock(builder, spark_session_mock)
         ipython_manager = IpythonManagerMock()
         spark_server_factory = SparkServerFactoryMock()
         profile = ProfileMock()
@@ -177,7 +184,8 @@ class TestSparkUI(unittest.TestCase):
     def test_should_not_create_sc_when_ipython_is_None(self):
         # given
         builder = BuilderMock()
-        engine = SparkEngineMock(builder)
+        spark_session_mock = SingleSparkSessionMock()
+        engine = SparkEngineMock(builder, spark_session_mock)
         spark_server_factory = SparkServerFactoryMock()
         profile = ProfileMock()
         ipython = None
@@ -192,7 +200,8 @@ class TestSparkUI(unittest.TestCase):
     def test_should_not_create_sc_when_factory_is_None(self):
         # given
         builder = BuilderMock()
-        engine = SparkEngineMock(builder)
+        spark_session_mock = SingleSparkSessionMock()
+        engine = SparkEngineMock(builder, spark_session_mock)
         ipython = IpythonManagerMock()
         profile = ProfileMock()
         spark_server_factory = None
@@ -208,13 +217,20 @@ class TestSparkUI(unittest.TestCase):
         # given
         spark_server_factory = SparkServerFactoryMock()
         builder = BuilderMock()
-        engine = SparkEngineMock(builder)
+        spark_session_mock = SingleSparkSessionMock()
+        engine = SparkEngineMock(builder, spark_session_mock)
         ipython = IpythonManagerMock()
         profile = ProfileMock()
         # when
         spark_ui = SparkUI2(engine, ipython, spark_server_factory, profile, CommMock())
         # then
         self.assertTrue(spark_ui)
+
+
+class SingleSparkSessionMock(SingleSparkSession):
+
+    def __init__(self) -> None:
+        super().__init__()
 
 
 class CommMock(Comm):

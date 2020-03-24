@@ -26,7 +26,7 @@ class SparkListener:
         self.jobPanel = None
 
     def onApplicationEnd(self, applicationEnd):
-        pass
+        self.engine.inactivate_spark_session()
 
     def onApplicationStart(self, applicationStart):
         pass

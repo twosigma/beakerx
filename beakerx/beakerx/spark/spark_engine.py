@@ -23,7 +23,8 @@ from pyspark.sql import SparkSession
 
 class SparkEngine:
 
-    def __init__(self, builder):
+    def __init__(self, builder, single_spark_session):
+        self.single_spark_session = single_spark_session
         self.user_builder = check_is_None(builder)
         self.auto_start = False
         self.additional_spark_options = {}
@@ -62,6 +63,15 @@ class SparkEngine:
 
     def configure_auto_start(self):
         self.auto_start = True
+
+    def is_active_spark_session(self):
+        return self.single_spark_session.active
+
+    def activate_spark_session(self):
+        self.single_spark_session.active = True
+
+    def inactivate_spark_session(self):
+        self.single_spark_session.active = False
 
     def configure_listeners(self, engine, server):
         spark_session = engine.getOrCreate()

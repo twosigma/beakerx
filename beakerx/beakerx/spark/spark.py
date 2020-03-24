@@ -20,6 +20,8 @@ from traitlets import Unicode, List, Bool, Dict
 
 
 class SparkUI2(BeakerxBox):
+    ONE_SPARK_SESSION_MSG_ERROR = "Cannot have more than one Spark session open in the same notebook."
+
     _view_name = Unicode('SparkUI2View').tag(sync=True)
     _model_name = Unicode('SparkUI2Model').tag(sync=True)
     _view_module = Unicode('beakerx').tag(sync=True)
@@ -91,7 +93,10 @@ class SparkUI2(BeakerxBox):
                     self.engine.config(item['name'], item['value'])
             else:
                 self.engine.config(key, value)
-        self._on_start()
+        err = self._on_start()
+        if err is not None:
+            self.send_error(err)
+            return
         self._send_start_done_event("auto_start")
 
     def _handle_start(self, content):
@@ -104,7 +109,10 @@ class SparkUI2(BeakerxBox):
                     self.engine.config(item['name'], item['value'])
             else:
                 self.engine.config(key, value)
-        self._on_start()
+        err = self._on_start()
+        if err is not None:
+            self.send_error(err)
+            return
         self._send_start_done_event("start")
         self.profile.save_current_profile(current_profile)
 
@@ -118,9 +126,13 @@ class SparkUI2(BeakerxBox):
         self.comm.send(data=msg)
 
     def _on_start(self):
+        if self.engine.is_active_spark_session():
+            return SparkUI2.ONE_SPARK_SESSION_MSG_ERROR
         self.ipython_manager.configure(self.engine)
         server = self.spark_server_factory.run_new_instance(self.engine)
         self.engine.configure_listeners(self.engine, server)
+        self.engine.activate_spark_session()
+        return None
 
     def _send_start_done_event(self, event_name):
         msg = {

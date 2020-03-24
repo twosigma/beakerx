@@ -15,19 +15,20 @@ import unittest
 
 from beakerx import SparkUI2
 from beakerx.spark.tests.test_spark import BuilderMock, SparkEngineMock, IpythonManagerMock, SparkServerFactoryMock, \
-    ProfileMock, CommMock
+    ProfileMock, CommMock, SingleSparkSessionMock
 
 
 class TestSparkAutoConnect(unittest.TestCase):
 
     def test_auto_connect_spark(self):
         # given
-        builder = BuilderMock()
         ipython_manager = IpythonManagerMock()
+        builder = BuilderMock()
         spark_server_factory = SparkServerFactoryMock()
         profile = ProfileMock()
         comm_mock = CommMock()
-        engine = SparkEngineMock(builder)
+        spark_session_mock = SingleSparkSessionMock()
+        engine = SparkEngineMock(builder, spark_session_mock)
         engine.configure_auto_start()
         sui = SparkUI2(engine, ipython_manager, spark_server_factory, profile, comm_mock)
         # when

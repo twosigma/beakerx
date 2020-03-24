@@ -25,7 +25,11 @@ class TestSparkNoUI(unittest.TestCase):
         # given
         parser = argparse.ArgumentParser(description='spark options.')
         options = parser.parse_args()
-        sut = SparkFactory(options, SparkEngineMock(), IpythonManagerMock(), SparkServerFactoryMock(), ProfileMock(),
+        sut = SparkFactory(options,
+                           SparkEngineMock(),
+                           IpythonManagerMock(),
+                           SparkServerFactoryMock(),
+                           ProfileMock(),
                            display_func_mock)
         # when
         spark_message = sut.create_spark()

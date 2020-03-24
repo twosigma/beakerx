@@ -21,8 +21,7 @@ from beakerx.spark.spark_wihtout_ui import SparkWithoutUI
 
 class SparkFactory:
 
-    def __init__(self, options, spark_engine, ipython_manager, server_factory, profile,
-                 display_func):
+    def __init__(self, options, spark_engine, ipython_manager, server_factory, profile, display_func):
         self.options = options
         self.spark_engine = spark_engine
         self.display_func = display_func

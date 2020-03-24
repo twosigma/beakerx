@@ -25,8 +25,24 @@ from beakerx_magics.sparkex_widget.spark_factory import SparkFactory
 from pyspark.sql import SparkSession
 
 
+class SingleSparkSession:
+
+    def __init__(self) -> None:
+        self.active = False
+
+    def is_active(self):
+        return self.active
+
+    def activate(self):
+        self.active = True
+
+    def inactivate(self):
+        self.active = False
+
+
 @magics_class
 class SparkexMagics(Magics):
+    SINGLE_SPARK_SESSION = SingleSparkSession()
 
     @cell_magic
     @magic_arguments.magic_arguments()
@@ -48,7 +64,8 @@ class SparkexMagics(Magics):
             BeakerxSparkServerFactory(),
             Profile(),
             options,
-            self._display_ui)
+            self._display_ui,
+            SparkexMagics.SINGLE_SPARK_SESSION)
         err = factory.create_spark()
         if err is not None:
             print(err, file=sys.stderr)
@@ -57,8 +74,20 @@ class SparkexMagics(Magics):
     def clear_spark_session(self):
         SparkSession.builder._options = {}
 
-    def _create_spark_factory(self, builder, ipython_manager, server_factory, profile, options, display_func):
-        factory = SparkFactory(options, SparkEngine(builder), ipython_manager, server_factory, profile, display_func)
+    def _create_spark_factory(self,
+                              builder,
+                              ipython_manager,
+                              server_factory,
+                              profile,
+                              options,
+                              display_func,
+                              single_spark_session):
+        factory = SparkFactory(options,
+                               SparkEngine(builder, single_spark_session),
+                               ipython_manager,
+                               server_factory,
+                               profile,
+                               display_func)
         return factory
 
     def _display_ui(self, spark_ui):

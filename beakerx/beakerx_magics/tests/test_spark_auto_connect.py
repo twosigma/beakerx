@@ -43,8 +43,9 @@ class TestSparkUI(unittest.TestCase):
 
 class SparkexMagicsForTests(SparkexMagics):
 
-    def _create_spark_factory(self, builder, ipython_manager, server_factory, profile, options, display_func):
-        factory = SparkFactoryMock(options, SparkEngineMock(builder), IpythonManagerMock(),
+    def _create_spark_factory(self, builder, ipython_manager, server_factory, profile, options, display_func,
+                              single_spark_session):
+        factory = SparkFactoryMock(options, SparkEngineMock(builder, single_spark_session), IpythonManagerMock(),
                                    BeakerxSparkServerFactoryMock(),
                                    profile,
                                    display_func_mock)
@@ -61,6 +62,12 @@ class SparkFactoryMock(SparkFactory):
                                 CommMock())
         TestSparkUI.spark_widget = spark_widget
         return spark_widget
+
+
+class SingleSparkSessionMock(SingleSparkSession):
+
+    def __init__(self) -> None:
+        super().__init__()
 
 
 def display_func_mock(spark_ui):

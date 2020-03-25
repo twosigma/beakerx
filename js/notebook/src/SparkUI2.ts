@@ -46,6 +46,11 @@ export class SparkUI2Model extends widgets.BoxModel {
             comm.stopped.emit(undefined);
         });
 
+        this.listenTo(this, 'beakerx:spark.global_stopped', async () => {
+            await comm.ready;
+            comm.globalStopped.emit(undefined);
+        });
+
         this.listenTo(this, 'beakerx:spark.stop-stats-changed', async () => {
             await comm.ready;
             comm.stopStatsChanged();
@@ -101,8 +106,14 @@ export class SparkUI2Model extends widgets.BoxModel {
             return Promise.resolve();
         }
 
-        if (data.event?.stop === "done") {
+        if (data.event?.stop_from_spark_ui_form_button === "done") {
             this.trigger('beakerx:spark.stopped');
+            this.trigger('beakerx:spark.stop-stats-changed');
+            return Promise.resolve();
+        }
+
+        if (data.event?.stop === "done") {
+            this.trigger('beakerx:spark.global_stopped');
             this.trigger('beakerx:spark.stop-stats-changed');
             return Promise.resolve();
         }

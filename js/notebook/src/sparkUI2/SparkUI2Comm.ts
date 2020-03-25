@@ -24,6 +24,7 @@ export class SparkUI2Comm {
 
     private _started = new Signal<this, { sparkUiWebUrl: string }>(this);
     private _autoStarted = new Signal<this, { sparkUiWebUrl: string }>(this);
+    private _globalStopped = new Signal<this, void>(this);
     private _stopped = new Signal<this, void>(this);
     private _saved = new Signal<this, void>(this);
     private _errored = new Signal<this, string>(this);
@@ -66,6 +67,10 @@ export class SparkUI2Comm {
 
     public get stopped(): Signal<this, void> {
         return this._stopped;
+    }
+
+    public get globalStopped(): Signal<this, void> {
+        return this._globalStopped;
     }
 
     public get saved(): Signal<this, void> {

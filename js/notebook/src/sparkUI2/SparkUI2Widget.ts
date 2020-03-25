@@ -71,6 +71,8 @@ export class SparkUI2Widget extends Panel {
         this.addWidget(this.sessionWidget);
 
         this.sessionWidget.hide();
+
+        Private.MessageHandlers.onGlobalStop(this);
     }
 
     public processMessage(msg: SparkUI2Message): void {
@@ -153,6 +155,10 @@ namespace Private {
             widget.sessionWidget.showSpinner();
             widget.comm.stopped.connect(_onStop, widget);
             widget.comm.sendStopMessage();
+        }
+
+        export function onGlobalStop(widget: SparkUI2Widget) {
+            widget.comm.globalStopped.connect(_onStop, widget);
         }
 
         function _onStop(this: SparkUI2Widget) {

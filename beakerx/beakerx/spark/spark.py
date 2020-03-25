@@ -81,7 +81,7 @@ class SparkUI2(BeakerxBox):
         msg = {
             'method': 'update',
             'event': {
-                "stop": "done"
+                self.engine.stop_context: "done"
             }
         }
         self.comm.send(data=msg)

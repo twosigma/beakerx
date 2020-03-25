@@ -22,6 +22,8 @@ from pyspark.sql import SparkSession
 
 
 class SparkEngine:
+    STOP = "stop"
+    STOP_FROM_UI = "stop_from_spark_ui_form_button"
 
     def __init__(self, builder, single_spark_session):
         self.single_spark_session = single_spark_session
@@ -30,8 +32,10 @@ class SparkEngine:
         self.additional_spark_options = {}
         self.builder = None
         self.uiWebUrlFunc = lambda spark_session: spark_session.sparkContext.uiWebUrl
+        self.stop_context = SparkEngine.STOP
 
     def new_spark_builder(self):
+        self.stop_context = SparkEngine.STOP
         self.builder = SparkSession.builder
 
     def get_user_spark_config(self):
@@ -56,6 +60,7 @@ class SparkEngine:
         return self.uiWebUrlFunc(self.getOrCreate())
 
     def stop(self):
+        self.stop_context = SparkEngine.STOP_FROM_UI
         self.getOrCreate().sparkContext.stop()
 
     def is_auto_start(self):

@@ -20,5 +20,6 @@ class SparkWithoutUI:
         self.engine = engine
 
     def create_spark(self):
+        self.engine.new_spark_builder()
         self.ipython_manager.configure(self.engine)
         return "SparkSession is available by 'spark'"

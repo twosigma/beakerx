@@ -75,6 +75,9 @@ class SparkUI2(BeakerxBox):
 
     def _handle_stop(self, content):
         self.engine.stop()
+
+    def end_application(self):
+        self.engine.inactivate_spark_session()
         msg = {
             'method': 'update',
             'event': {
@@ -130,7 +133,7 @@ class SparkUI2(BeakerxBox):
             return SparkUI2.ONE_SPARK_SESSION_MSG_ERROR
         self.ipython_manager.configure(self.engine)
         server = self.spark_server_factory.run_new_instance(self.engine)
-        self.engine.configure_listeners(self.engine, server)
+        self.engine.configure_listeners(self, server)
         self.engine.activate_spark_session()
         return None
 

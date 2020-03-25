@@ -256,11 +256,15 @@ class BuilderMock:
 
 class SparkEngineMock(SparkEngine):
 
+    def __init__(self, builder, single_spark_session):
+        super().__init__(builder, single_spark_session)
+        self.sparkui = None
+
     def spark_app_id(self):
         return 'appIdLocal1'
 
-    def configure_listeners(self, engine, server):
-        pass
+    def configure_listeners(self, sparkui, server):
+        self.sparkui = sparkui
 
     def get_user_spark_config(self):
         return {
@@ -271,7 +275,7 @@ class SparkEngineMock(SparkEngine):
         return {}
 
     def stop(self):
-        pass
+        self.sparkui.end_application()
 
     def get_ui_web_url(self):
         return 'SparkUiWebUrl1'

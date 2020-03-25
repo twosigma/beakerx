@@ -73,8 +73,9 @@ class SparkEngine:
     def inactivate_spark_session(self):
         self.single_spark_session.active = False
 
-    def configure_listeners(self, engine, server):
-        spark_session = engine.getOrCreate()
+    def configure_listeners(self, sparkui, server):
+        spark_session = sparkui.engine.getOrCreate()
         spark_context = spark_session.sparkContext
         spark_context._gateway.start_callback_server()
-        spark_context._jsc.sc().addSparkListener(SparkListener(SparkStateProgressUiManager(engine, server)))
+        spark_context._jsc.sc().addSparkListener(
+            SparkListener(sparkui, SparkStateProgressUiManager(sparkui.engine, server)))

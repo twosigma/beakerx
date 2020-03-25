@@ -13,6 +13,8 @@
 # limitations under the License.
 import unittest
 
+from beakerx import SparkUI2
+from beakerx.spark.tests.test_spark import CommMock, IpythonManagerMock, SparkServerFactoryMock, ProfileMock
 from beakerx_magics import *
 from beakerx_magics.sparkex_widget.spark_listener import SparkListener
 
@@ -26,7 +28,11 @@ class TestSparkListener(unittest.TestCase):
         engine = SparkEngineMock(builder, spark_session_mock)
         engine.activate_spark_session()
         self.assertTrue(engine.is_active_spark_session())
-        listener = SparkListener(SparkStateProgressUiManagerMock(engine))
+        ipython_manager = IpythonManagerMock()
+        spark_server_factory = SparkServerFactoryMock()
+        profile = ProfileMock()
+        sparkUi = SparkUI2(engine, ipython_manager, spark_server_factory, profile, CommMock())
+        listener = SparkListener(sparkUi, SparkStateProgressUiManagerMock(engine))
         # when
         listener.onApplicationEnd(None)
         # then

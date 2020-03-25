@@ -57,6 +57,9 @@ class SparkEngineMock:
     def __init__(self):
         self.auto_start = False
 
+    def new_spark_builder(self):
+        pass
+
     def getOrCreate(self):
         pass
 

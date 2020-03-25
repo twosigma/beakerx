@@ -16,7 +16,7 @@
 
 import {IClassicComm} from "@jupyter-widgets/base";
 import {SparkUI2View} from "../SparkUI2";
-import {ISignal, Signal} from "@phosphor/signaling";
+import {Signal} from "@phosphor/signaling";
 import {IProfileListItem} from "./IProfileListItem";
 import BeakerXApi from "beakerx_shared/lib/api/BeakerXApi";
 
@@ -32,78 +32,51 @@ export class SparkUI2Comm {
         activeTasks: number;
         memoryUsed: number
     }[]>(this);
+    private _readySignal = new Signal<this, void>(this);
     private _statsChangedTimeout: NodeJS.Timeout;
 
     private api: BeakerXApi;
     private sparkAppId: string;
     private sparkUiWebUrl: string;
 
-    constructor(private view: SparkUI2View, private comm: IClassicComm) {
-        this.setApi();
-        this.comm.on_msg((msg) => {
-            let data = msg.content.data;
+    private _view: SparkUI2View;
 
-            if (data.method !== "update") {
-                return;
-            }
-
-            if (data.event?.start === "done") {
-                this._started.emit({ sparkUiWebUrl: data.event.sparkUiWebUrl });
-                this.startStatsChanged(
-                    data.event.sparkAppId,
-                    data.event.sparkUiWebUrl
-                );
-                return;
-            }
-
-            if (data.event?.auto_start === "done") {
-                this._autoStarted.emit({ sparkUiWebUrl: data.event.sparkUiWebUrl });
-                this.startStatsChanged(
-                    data.event.sparkAppId,
-                    data.event.sparkUiWebUrl
-                );
-                return;
-            }
-
-            if (data.event?.stop === "done") {
-                this._stopped.emit(undefined);
-                this.stopStatsChanged();
-                return;
-            }
-
-            if (data.event?.save_profiles === "done") {
-                this._saved.emit(undefined);
-                return;
-            }
-
-            if (data.hasOwnProperty('error')) {
-                this._errored.emit(data.error.message);
-                return;
-            }
+    public ready: Promise<void> = new Promise<void>((resolve, reject) => {
+        this._readySignal.connect(() => {
+            resolve();
         });
+    });
+
+    set view(view: SparkUI2View) {
+        this._view = view;
+        this._readySignal.emit();
     }
 
-    public get autoStarted(): ISignal<this, { sparkUiWebUrl: string }> {
+    constructor(private comm: IClassicComm) {
+        this.setApi();
+    }
+
+    public get autoStarted(): Signal<this, { sparkUiWebUrl: string }> {
         return this._autoStarted;
     }
 
-    public get started(): ISignal<this, { sparkUiWebUrl: string }> {
+    public get started(): Signal<this, { sparkUiWebUrl: string }> {
         return this._started;
     }
 
-    public get stopped(): ISignal<this, void> {
+    public get stopped(): Signal<this, void> {
         return this._stopped;
     }
 
-    public get saved(): ISignal<this, void> {
+    public get saved(): Signal<this, void> {
         return this._saved;
     }
 
-    public get errored(): ISignal<this, string> {
+    public get errored(): Signal<this, string> {
         return this._errored;
     }
 
-    public get statsChanged(): ISignal<this, {}> {
+    public get statsChanged(): Signal<this, {}> {
         return this._statsChanged;
     }
 
@@ -112,7 +85,13 @@ export class SparkUI2Comm {
             event: 'save_profiles',
             payload: profilesPayload,
         };
-        this.view.send(msg);
+        this.send(msg);
+    }
+
+    private async send(msg: any) {
+        await this.ready;
+        this._view.send(msg);
+
     }
 
     public sendStopMessage(): void {
@@ -122,7 +101,7 @@ export class SparkUI2Comm {
 
             }
         };
-        this.view.send(msg);
+        this.send(msg);
     }
 
     public sendStartMessage(
@@ -145,7 +124,7 @@ export class SparkUI2Comm {
                 }
             }
         };
-        this.view.send(msg);
+        this.send(msg);
     }
 
     private setApi() {
@@ -166,7 +145,7 @@ export class SparkUI2Comm {
         this.api = new BeakerXApi(baseUrl);
     }
 
-    private startStatsChanged(sparkAppId: string, sparkUiWebUrl: string) {
+    public startStatsChanged(sparkAppId: string, sparkUiWebUrl: string) {
         this.sparkAppId = sparkAppId;
         this.sparkUiWebUrl = sparkUiWebUrl;
 
@@ -187,11 +166,11 @@ export class SparkUI2Comm {
             this._statsChanged.emit(data);
         } catch(error) {
             this.stopStatsChanged();
-            return
+            return;
         }
     }
 
-    private stopStatsChanged() {
+    public stopStatsChanged() {
         clearInterval(this._statsChangedTimeout);
     }
 }

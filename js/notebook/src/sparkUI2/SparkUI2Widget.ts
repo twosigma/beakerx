@@ -131,8 +131,6 @@ namespace Private {
             this.startWidget.clearError();
             this.startWidget.hide();
             this.profileSelectorWidget.hide();
-            // console.log(msg);
-            // this.sessionWidget.sparkMasterURL;
             this.sessionWidget.sparkUiWebUrl = msg.sparkUiWebUrl;
 
             this.sessionWidget.show();

@@ -15,7 +15,7 @@ import unittest
 
 from beakerx import SparkUI2
 from beakerx.spark.tests.test_spark import BuilderMock, SingleSparkSessionMock, SparkEngineMock, IpythonManagerMock, \
-    SparkServerFactoryMock, ProfileMock, CommMock
+    SparkServerFactoryMock, ProfileMock, CommMock, SparkSessionFactoryMock
 
 
 class TestSparkUI(unittest.TestCase):
@@ -24,7 +24,7 @@ class TestSparkUI(unittest.TestCase):
         # given
         builder = BuilderMock()
         spark_session_mock = SingleSparkSessionMock()
-        engine = SparkEngineMock(builder, spark_session_mock)
+        engine = SparkEngineMock(builder, spark_session_mock, SparkSessionFactoryMock())
         engine.activate_spark_session()
         ipython_manager = IpythonManagerMock()
         spark_server_factory = SparkServerFactoryMock()
@@ -61,7 +61,7 @@ class TestSparkUI(unittest.TestCase):
         profile = ProfileMock()
         comm_mock = CommMock()
         spark_session_mock = SingleSparkSessionMock()
-        engine = SparkEngineMock(builder, spark_session_mock)
+        engine = SparkEngineMock(builder, spark_session_mock, SparkSessionFactoryMock())
         engine.activate_spark_session()
         engine.configure_auto_start()
         sui = SparkUI2(engine, ipython_manager, spark_server_factory, profile, comm_mock)

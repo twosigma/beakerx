@@ -15,7 +15,7 @@ import unittest
 
 from IPython import InteractiveShell
 from beakerx import SparkUI2
-from beakerx.spark.tests.test_spark import CommMock
+from beakerx.spark.tests.test_spark import CommMock, SparkSessionFactoryMock
 from beakerx_magics import *
 
 
@@ -45,7 +45,9 @@ class SparkexMagicsForTests(SparkexMagics):
 
     def _create_spark_factory(self, builder, ipython_manager, server_factory, profile, options, display_func,
                               single_spark_session):
-        factory = SparkFactoryMock(options, SparkEngineMock(builder, single_spark_session), IpythonManagerMock(),
+        factory = SparkFactoryMock(options,
+                                   SparkEngineMock(builder, single_spark_session, SparkSessionFactoryMock()),
+                                   IpythonManagerMock(),
                                    BeakerxSparkServerFactoryMock(),
                                    profile,
                                    display_func_mock)

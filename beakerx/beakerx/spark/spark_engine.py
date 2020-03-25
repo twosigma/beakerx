@@ -18,14 +18,14 @@ import copy
 from beakerx.commons import check_is_None
 from beakerx_magics.sparkex_widget import SparkStateProgressUiManager
 from beakerx_magics.sparkex_widget.spark_listener import SparkListener
-from pyspark.sql import SparkSession
 
 
 class SparkEngine:
     STOP = "stop"
     STOP_FROM_UI = "stop_from_spark_ui_form_button"
 
-    def __init__(self, builder, single_spark_session):
+    def __init__(self, builder, single_spark_session, spark_session_factory):
+        self.spark_session_factory = spark_session_factory
         self.single_spark_session = single_spark_session
         self.user_builder = check_is_None(builder)
         self.auto_start = False
@@ -36,7 +36,7 @@ class SparkEngine:
 
     def new_spark_builder(self):
         self.stop_context = SparkEngine.STOP
-        self.builder = SparkSession.builder
+        self.builder = self.spark_session_factory.builder()
 
     def get_user_spark_config(self):
         return copy.deepcopy(self.user_builder._options)

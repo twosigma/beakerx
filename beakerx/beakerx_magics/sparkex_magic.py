@@ -40,6 +40,11 @@ class SingleSparkSession:
         self.active = False
 
 
+class SparkSessionFactory:
+    def builder(self):
+        return SparkSession.builder
+
+
 @magics_class
 class SparkexMagics(Magics):
     SINGLE_SPARK_SESSION = SingleSparkSession()
@@ -83,7 +88,7 @@ class SparkexMagics(Magics):
                               display_func,
                               single_spark_session):
         factory = SparkFactory(options,
-                               SparkEngine(builder, single_spark_session),
+                               SparkEngine(builder, single_spark_session, SparkSessionFactory()),
                                ipython_manager,
                                server_factory,
                                profile,

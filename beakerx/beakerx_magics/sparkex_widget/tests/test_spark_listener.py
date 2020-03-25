@@ -14,7 +14,8 @@
 import unittest
 
 from beakerx import SparkUI2
-from beakerx.spark.tests.test_spark import CommMock, IpythonManagerMock, SparkServerFactoryMock, ProfileMock
+from beakerx.spark.tests.test_spark import CommMock, IpythonManagerMock, SparkServerFactoryMock, ProfileMock, \
+    SparkSessionFactoryMock
 from beakerx_magics import *
 from beakerx_magics.sparkex_widget.spark_listener import SparkListener
 
@@ -25,7 +26,7 @@ class TestSparkListener(unittest.TestCase):
         # given
         builder = BuilderMock()
         spark_session_mock = SingleSparkSessionMock()
-        engine = SparkEngineMock(builder, spark_session_mock)
+        engine = SparkEngineMock(builder, spark_session_mock, SparkSessionFactoryMock())
         engine.activate_spark_session()
         self.assertTrue(engine.is_active_spark_session())
         ipython_manager = IpythonManagerMock()

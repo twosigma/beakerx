@@ -135,11 +135,6 @@ public class SparkUI extends VBox implements SparkUIApi {
 
   private void handleStopEvent() {
     sparkEngine.stop();
-    getComm().sendData("event", new HashMap<String, String>() {
-      {
-        put("stop", "done");
-      }
-    });
   }
 
   private void handleAutoStart(Message message) {
@@ -201,7 +196,7 @@ public class SparkUI extends VBox implements SparkUIApi {
       if (configure.isError()) {
         return TryResult.createError(configure.error());
       } else {
-        singleSparkSession.active();
+        singleSparkSession.activate();
         applicationStart();
         return TryResult.createResult("done");
       }
@@ -223,7 +218,12 @@ public class SparkUI extends VBox implements SparkUIApi {
 
   @Override
   public void applicationEnd() {
-    singleSparkSession.inActive();
+    singleSparkSession.inActivate();
+    getComm().sendData("event", new HashMap<String, String>() {
+      {
+        put(sparkEngine.getStopContext(), "done");
+      }
+    });
   }
 
   @Override

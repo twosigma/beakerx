@@ -32,9 +32,11 @@ public class SparkEngineWithUIMock implements SparkEngineWithUI {
   public static final String SPARK_UI_WEB_URL_1 = "SparkUiWebUrl1";
   public static final String APP_ID_LOCAL_1 = "appIdLocal1";
   private boolean autoStartConfigured = false;
+  private SparkUIApi sparkUIApi;
 
   @Override
   public TryResult configure(KernelFunctionality kernel, SparkUIApi sparkUI, Message parentMessage, Map<String, Object> sparkOptions) {
+    this.sparkUIApi = sparkUI;
     return TryResult.createResult("done");
   }
 
@@ -57,28 +59,12 @@ public class SparkEngineWithUIMock implements SparkEngineWithUI {
   }
 
   @Override
-  public SparkConf getSparkConf() {
-    return null;
-  }
-
-  @Override
   public String getSparkAppId() {
     return APP_ID_LOCAL_1;
   }
-
-  @Override
-  public Map<String, String> getAdvanceSettings(SparkUiDefaults defaults) {
-    return null;
-  }
-
   @Override
   public String getSparkUiWebUrl() {
     return SPARK_UI_WEB_URL_1;
-  }
-
-  @Override
-  public String getSparkMasterUrl() {
-    return null;
   }
 
   @Override
@@ -128,7 +114,7 @@ public class SparkEngineWithUIMock implements SparkEngineWithUI {
 
   @Override
   public void stop() {
-
+    this.sparkUIApi.applicationEnd();
   }
 
   @Override
@@ -140,4 +126,10 @@ public class SparkEngineWithUIMock implements SparkEngineWithUI {
   public void cancelStage(int stageid) {
 
   }
+
+  @Override
+  public String getStopContext() {
+    return SparkEngineBase.STOP;
+  }
+
 }

@@ -95,27 +95,12 @@ public class YarnSparkOptionCommandTest {
     }
 
     @Override
-    public SparkConf getSparkConf() {
-      return null;
-    }
-
-    @Override
     public String getSparkAppId() {
       return null;
     }
 
     @Override
-    public Map<String, String> getAdvanceSettings(SparkUiDefaults defaults) {
-      return null;
-    }
-
-    @Override
     public String getSparkUiWebUrl() {
-      return null;
-    }
-
-    @Override
-    public String getSparkMasterUrl() {
       return null;
     }
 
@@ -177,6 +162,11 @@ public class YarnSparkOptionCommandTest {
     @Override
     public void cancelStage(int stageid) {
 
+    }
+
+    @Override
+    public String getStopContext() {
+      return null;
     }
   }
 

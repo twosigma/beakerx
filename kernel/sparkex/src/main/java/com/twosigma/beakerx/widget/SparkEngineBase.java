@@ -54,6 +54,8 @@ import static com.twosigma.beakerx.widget.SparkUI.STANDARD_SETTINGS;
 
 abstract class SparkEngineBase implements SparkEngine {
 
+  public static final String STOP = "stop";
+
   protected SparkSession.Builder sparkSessionBuilder;
 
   private ErrorPrinter errorPrinter;
@@ -117,12 +119,6 @@ abstract class SparkEngineBase implements SparkEngine {
   @Override
   public String getSparkUiWebUrl() {
     return sparkUiWebUrlFactory.create();
-  }
-
-  @Override
-  public String getSparkMasterUrl() {
-    RuntimeConfig conf = getOrCreate().conf();
-    return conf.getAll().get(SPARK_MASTER).get();
   }
 
   @Override
@@ -208,25 +204,6 @@ abstract class SparkEngineBase implements SparkEngine {
     return sparkConf;
   }
 
-  @Override
-  public Map<String, String> getAdvanceSettings(SparkUiDefaults defaults) {
-    Map<String, String> configs = new HashMap<>();
-    Iterator iterator = getConfigIterator(sparkSessionBuilder);
-    while (iterator.hasNext()) {
-      Tuple2 x = (Tuple2) iterator.next();
-      if (isAdvancedSettings((String) x._1)) {
-        configs.put((String) (x)._1, (String) (x)._2);
-      }
-    }
-    Map<String, String> props = defaults.getProperties();
-    props.forEach((pname, pvalue) -> {
-      if ((pname != null && !pname.isEmpty() && !configs.containsKey(pname)) && (pvalue != null && !pvalue.isEmpty())) {
-        configs.put(pname, pvalue);
-      }
-    });
-    return configs;
-  }
-
   private static Iterator getConfigIterator(SparkSession.Builder sparkSessionBuilder) {
     try {
       Field options = getOptionsField(sparkSessionBuilder);
@@ -244,10 +221,6 @@ abstract class SparkEngineBase implements SparkEngine {
       return options.get();
     }
     throw new RuntimeException("SparkSession.builder does not contain 'options' field.");
-  }
-
-  private boolean isAdvancedSettings(String name) {
-    return !STANDARD_SETTINGS.contains(name);
   }
 
   private static boolean isLocalSpark(SparkConf sparkConf) {
@@ -296,4 +269,8 @@ abstract class SparkEngineBase implements SparkEngine {
     return () -> getOrCreate().sparkContext().uiWebUrl().get();
   }
 
+  @Override
+  public String getStopContext() {
+    return STOP;
+  }
 }

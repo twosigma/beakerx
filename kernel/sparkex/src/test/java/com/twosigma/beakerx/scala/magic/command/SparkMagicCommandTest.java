@@ -142,27 +142,12 @@ public class SparkMagicCommandTest {
         }
 
         @Override
-        public SparkConf getSparkConf() {
-          return new SparkConf();
-        }
-
-        @Override
         public String getSparkAppId() {
           return "sparkAppId1";
         }
 
         @Override
-        public Map<String, String> getAdvanceSettings(SparkUiDefaults defaults) {
-          return new HashMap<>();
-        }
-
-        @Override
         public String getSparkUiWebUrl() {
-          return "";
-        }
-
-        @Override
-        public String getSparkMasterUrl() {
           return "";
         }
 
@@ -224,6 +209,11 @@ public class SparkMagicCommandTest {
         @Override
         public void cancelStage(int stageid) {
 
+        }
+
+        @Override
+        public String getStopContext() {
+          return null;
         }
 
       };

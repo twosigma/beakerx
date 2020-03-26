@@ -145,6 +145,8 @@ public class SparkUITest {
   @Test
   public void testShouldSendDoneMessageWhenSparkContextStops() {
     new SparkUI(commMock, sparkEngineWithUIMock, sparkUiDefaults, singleSparkSessionMock, kernel);
+    HashMap<String, Serializable> start = startContent();
+    commMock.handleMsg(commMsg(start));
     kernel.clearMessages();
     HashMap<String, Serializable> stop = new HashMap<String, Serializable>() {
       {

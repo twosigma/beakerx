@@ -43,6 +43,8 @@ import static com.twosigma.beakerx.widget.StartStopSparkListener.START_STOP_SPAR
 
 public class SparkEngineWithUIImpl extends SparkEngineBase implements SparkEngineWithUI {
 
+  public static final String STOP_FROM_SPARK_UI_FORM_BUTTON = "stop_from_spark_ui_form_button";
+  private String stopContext = STOP;
 
   SparkEngineWithUIImpl(SparkSession.Builder sparkSessionBuilder) {
     super(sparkSessionBuilder, errorPrinter());
@@ -57,8 +59,15 @@ public class SparkEngineWithUIImpl extends SparkEngineBase implements SparkEngin
 
   @Override
   public void stop() {
+    this.stopContext = STOP_FROM_SPARK_UI_FORM_BUTTON;
     getOrCreate().sparkContext().stop();
   }
+
+  @Override
+  public String getStopContext() {
+    return this.stopContext;
+  }
+
 
   @Override
   public void cancelAllJobs() {
@@ -70,12 +79,14 @@ public class SparkEngineWithUIImpl extends SparkEngineBase implements SparkEngin
     getOrCreate().sparkContext().cancelStage(stageid);
   }
 
+
   public boolean isAutoStart() {
     return this.autoStart;
   }
 
   @Override
   public TryResult configure(KernelFunctionality kernel, SparkUIApi sparkUI, Message parentMessage, Map<String, Object> sparkOptions) {
+    this.stopContext = STOP;
     configureSparkSessionBuilder(this.sparkSessionBuilder);
     SparkConf sparkConf = createSparkConf(sparkOptions, getSparkConfBasedOn(this.sparkSessionBuilder));
     sparkConf = configureSparkConf(sparkConf);

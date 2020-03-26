@@ -29,15 +29,9 @@ public interface SparkEngine {
 
   SparkSession getOrCreate();
 
-  SparkConf getSparkConf();
-
   String getSparkAppId();
 
-  Map<String, String> getAdvanceSettings(SparkUiDefaults defaults);
-
   String getSparkUiWebUrl();
-
-  String getSparkMasterUrl();
 
   String sparkVersion();
 
@@ -62,4 +56,6 @@ public interface SparkEngine {
   void cancelAllJobs();
 
   void cancelStage(int stageid);
+
+  String getStopContext();
 }

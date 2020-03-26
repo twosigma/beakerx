@@ -15,8 +15,6 @@
  */
 package com.twosigma.beakerx.widget;
 
-import com.twosigma.beakerx.widget.SingleSparkSession;
-
 public class SingleSparkSessionMock implements SingleSparkSession {
 
   @Override
@@ -25,12 +23,12 @@ public class SingleSparkSessionMock implements SingleSparkSession {
   }
 
   @Override
-  public void active() {
+  public void activate() {
 
   }
 
   @Override
-  public void inActive() {
+  public void inActivate() {
 
   }
 }

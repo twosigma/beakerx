@@ -19,7 +19,7 @@ public interface SingleSparkSession {
 
   boolean isActive();
 
-  void active();
+  void activate();
 
-  void inActive();
+  void inActivate();
 }

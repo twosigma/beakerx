@@ -89,12 +89,12 @@ public class SparkMagicCommand implements MagicCommandFunctionality {
     }
 
     @Override
-    public void active() {
+    public void activate() {
       active = true;
     }
 
     @Override
-    public void inActive() {
+    public void inActivate() {
       active = false;
     }
   }

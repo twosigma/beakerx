@@ -31,7 +31,7 @@ import {
     selectValues, selectVisibleColumnsFrozenCount
 } from "./selectors";
 import DataGridAction from "../store/DataGridAction";
-import {UPDATE_MODEL_DATA, UPDATE_MODEL_VALUES} from "./reducer";
+import {UPDATE_MODEL_DATA, UPDATE_MODEL_FONT_COLOR, UPDATE_MODEL_VALUES} from "./reducer";
 import {
   selectColumnDataType,
   selectColumnIndexByPosition,
@@ -93,15 +93,16 @@ export class BeakerXDataGridModel extends DataModel {
     this.columnManager.resetColumnStates();
     this.store.dispatch(new DataGridAction(UPDATE_MODEL_DATA, state));
     this._data = selectValues(this.store.state);
-    this.rowManager.createRows(this._data, selectHasIndex(this.store.state));
+    this.rowManager.createRows(this.store, selectHasIndex(this.store.state));
     this.rowManager.setRowsToShow(selectRowsToShow(this.store.state));
     this.reset();
   }
 
   updateValues(state: IDataModelState) {
     this.store.dispatch(new DataGridAction(UPDATE_MODEL_VALUES, state));
+    this.store.dispatch(new DataGridAction(UPDATE_MODEL_FONT_COLOR, state));
     this._data = selectValues(this.store.state);
-    this.rowManager.createRows(this._data, selectHasIndex(this.store.state));
+    this.rowManager.createRows(this.store, selectHasIndex(this.store.state));
     this.rowManager.filterRows();
     this.rowManager.keepSorting();
     this.columnManager.restoreColumnStates();
@@ -130,7 +131,7 @@ export class BeakerXDataGridModel extends DataModel {
   data(region: DataModel.CellRegion, row: number, position: number): any {
     const columnRegion = ColumnManager.getColumnRegionByCell({ region });
     const index = selectColumnIndexByPosition(this.store.state, { region: columnRegion, value: position });
-    const dataGridRow = this.rowManager.getRow(row) || { index: row, values: [] };
+    const dataGridRow = this.rowManager.getRow(row) || { index: row, cells: [] , getValue:(index)=> []};
 
     if (region === 'row-header' && position === 0) {
       return dataGridRow.index;
@@ -144,7 +145,7 @@ export class BeakerXDataGridModel extends DataModel {
       return row === 0 ? this.columnManager.indexColumnNames[index] : '';
     }
 
-    return dataGridRow.values[index];
+    return dataGridRow.getValue(index);
   }
 
   metadata(region: DataModel.CellRegion, position: number): DataModel.Metadata {
@@ -172,7 +173,7 @@ export class BeakerXDataGridModel extends DataModel {
       return new MapIterator<DataGridRow, any>(iter(this.rowManager.rows), (row) => row.index);
     }
 
-    return new MapIterator(iter(this.rowManager.rows), (row) => row.values[column.index]);
+    return new MapIterator(iter(this.rowManager.rows), (row) => row.getValue(column.index));
   }
 
   setHeaderTextVertical(headersVertical: boolean) {

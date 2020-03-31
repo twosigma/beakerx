@@ -18,8 +18,8 @@ package com.twosigma.beakerx.jvm.serialization;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.DashboardLayoutManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
@@ -35,7 +35,7 @@ public class DashboardLayoutManagerSerializerTest {
 
   @BeforeClass
   public static void setUpClass() throws IOException {
-    serializer = new DashboardLayoutManagerSerializer(() -> { return new BasicObjectSerializer(); } );
+    serializer = new DashboardLayoutManagerSerializer(new BasicObjectSerializer());
     helper = new SerializationTestHelper<>(serializer);
   }
 

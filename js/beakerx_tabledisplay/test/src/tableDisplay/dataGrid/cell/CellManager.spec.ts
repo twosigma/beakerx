@@ -57,7 +57,7 @@ describe('CellManager', () => {
     expect(cellManager).to.have.property('getAllCells');
     expect(cellManager.getAllCells).to.be.a('Function');
     expect(allCells).to.have.length(3);
-    expect(allCells[0][0]).to.equal('index');
+    expect(allCells[0][0]).to.equal('');
     expect(allCells[0][1]).to.equal('test');
   });
 
@@ -109,8 +109,8 @@ describe('CellManager', () => {
     const resultCsv = `"column"\n":)"\n`;
     const resultTabs = `column\n:)\n`;
 
-    expect(cellManager.exportCellsTo(cells, 'csv',1)).to.equal(resultCsv);
-    expect(cellManager.exportCellsTo(cells, 'tabs',1)).to.equal(resultTabs);
+    expect(cellManager.exportCellsTo(cells, 'csv',false)).to.equal(resultCsv);
+    expect(cellManager.exportCellsTo(cells, 'tabs',false)).to.equal(resultTabs);
   });
 
   it('should implement getCSVFromCells method', () => {

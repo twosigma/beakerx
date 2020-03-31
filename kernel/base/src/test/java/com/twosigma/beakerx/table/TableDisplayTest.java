@@ -52,7 +52,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.twosigma.beakerx.fileloader.CSVTest.TABLE_ROWS_TEST_CSV;
 import static com.twosigma.beakerx.fileloader.CSVTest.getOsAppropriatePath;
-import static com.twosigma.beakerx.table.TableDisplay.THE_LENGTH_OF_TYPES_SHOULD_BE_SAME_AS_NUMBER_OF_ROWS;
+import static com.twosigma.beakerx.table.TableDisplay.THE_LENGTH_OF_TYPES_SHOULD_BE_SAME_AS_NUMBER_OF_COLUMNS;
 import static com.twosigma.beakerx.table.serializer.DecimalStringFormatSerializer.MAX_DECIMALS;
 import static com.twosigma.beakerx.table.serializer.DecimalStringFormatSerializer.MIN_DECIMALS;
 import static com.twosigma.beakerx.table.serializer.ObservableTableDisplaySerializer.DOUBLE_CLICK_TAG;
@@ -109,6 +109,20 @@ public class TableDisplayTest {
   @After
   public void tearDown() throws Exception {
     KernelManager.register(null);
+  }
+
+  @Test
+  public void readDataWithIndex() throws Exception {
+    //given
+    String rates = getOsAppropriatePath(getClass().getClassLoader(), "interest-rates.csv");
+    List<Map<String, Object>> values = new CSV().read(rates);
+    //when
+    TableDisplay tableDisplay = new TableDisplay(values, 1);
+    //then
+    Map<String, Object> actual = tableDisplay.getValuesAsRows().get(0);
+    assertThat(actual.keySet().iterator().next()).isEqualTo("y30");
+    assertThat(actual.values().iterator().next()).isEqualTo(8.2586);
+    assertThat(tableDisplay.getHasIndex()).isEqualTo("y30");
   }
 
   @Test
@@ -546,6 +560,30 @@ public class TableDisplayTest {
   }
 
   @Test
+  public void shouldSetGlobalTimezone() throws Exception {
+    //given
+    String gtimezone = "GTZ1";
+    //when
+    TableDisplay.setTimeZoneGlobally(gtimezone);
+    TableDisplay tdWithGlobalTimezone1 = new TableDisplay(getListOfMapsData());
+    TableDisplay tdWithGlobalTimezone2 = new TableDisplay(getListOfMapsData());
+    //then
+    assertThat(tdWithGlobalTimezone1.getTimeZone()).isEqualTo(gtimezone);
+    assertThat(tdWithGlobalTimezone2.getTimeZone()).isEqualTo(gtimezone);
+  }
+
+  @Test
+  public void shouldSetLocalTimezone() throws Exception {
+    //given
+    TableDisplay.setTimeZoneGlobally("GTZ1");
+    //when
+    TableDisplay td = new TableDisplay(getListOfMapsData());
+    td.setTimeZone("TZ2");
+    //then
+    assertThat(td.getTimeZone()).isEqualTo("TZ2");
+  }
+
+  @Test
   public void shouldSendCommMsgWithAllModelWhenDisplay() throws Exception {
     //given
     kernel.clearMessages();
@@ -903,7 +941,7 @@ public class TableDisplayTest {
       fail("Should not create TableDisplay when the length of types is not the same as number of rows.");
     } catch (Exception e) {
       //then
-      assertThat(e.getMessage()).contains(THE_LENGTH_OF_TYPES_SHOULD_BE_SAME_AS_NUMBER_OF_ROWS);
+      assertThat(e.getMessage()).contains(THE_LENGTH_OF_TYPES_SHOULD_BE_SAME_AS_NUMBER_OF_COLUMNS);
     }
   }
 

@@ -15,11 +15,11 @@
  */
 
 import {CellRenderer, DataGrid, DataModel, GraphicsContext} from "@phosphor/datagrid";
-import { BeakerXDataGridModel } from "./model/BeakerXDataGridModel";
-import { Widget } from "@phosphor/widgets";
-import { Signal } from '@phosphor/signaling';
-import { ICellData } from "./interface/ICell";
-import { CellRendererFactory } from "./cell/CellRendererFactory";
+import {BeakerXDataGridModel} from "./model/BeakerXDataGridModel";
+import {Widget} from "@phosphor/widgets";
+import {Signal} from '@phosphor/signaling';
+import {ICellData} from "./interface/ICell";
+import {CellRendererFactory} from "./cell/CellRendererFactory";
 import DataGridColumn from "./column/DataGridColumn";
 import IDataModelState from "./interface/IDataGridModelState";
 import HighlighterManager from "./highlighter/HighlighterManager";
@@ -32,24 +32,21 @@ import EventManager from "./event/EventManager";
 import CellFocusManager from "./cell/CellFocusManager";
 import CellTooltipManager from "./cell/CellTooltipManager";
 import {BeakerXDataStore} from "./store/BeakerXDataStore";
-import {
-    selectHasIndex,
-    selectRowsToShow,
-    selectValues
-} from "./model/selectors";
-import throttle = DataGridHelpers.throttle;
+import {selectFontColor, selectHasIndex, selectRowsToShow, selectValues} from "./model/selectors";
 import DataGridCell from "./cell/DataGridCell";
-import disableKeyboardManager = DataGridHelpers.disableKeyboardManager;
-import enableKeyboardManager = DataGridHelpers.enableKeyboardManager;
 import ColumnPosition from "./column/ColumnPosition";
 import {SectionList} from "@phosphor/datagrid/lib/sectionlist";
-import ColumnRegion = DataModel.ColumnRegion;
 import {DataGridResize} from "./DataGridResize";
 import {ALL_TYPES} from "./dataTypes";
 import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
 import CommonUtils from "beakerx_shared/lib/utils/CommonUtils";
 import {TableDisplayView, TableDisplayWidget} from "../../TableDisplay";
 import BeakerXApi from "beakerx_shared/lib/api/BeakerXApi";
+import throttle = DataGridHelpers.throttle;
+import disableKeyboardManager = DataGridHelpers.disableKeyboardManager;
+import enableKeyboardManager = DataGridHelpers.enableKeyboardManager;
+import ColumnRegion = DataModel.ColumnRegion;
+import DataGridCellValue from "./row/DataGridCellValue";
 
 declare global {
   interface Window {
@@ -119,7 +116,7 @@ export class BeakerXDataGrid extends DataGrid {
     this.store = store;
     this.columnManager = new ColumnManager(this);
     this.columnPosition = new ColumnPosition(this);
-    this.rowManager = new RowManager(selectValues(store.state), selectHasIndex(store.state), this.columnManager, selectRowsToShow(store.state));
+    this.rowManager = new RowManager(store, selectHasIndex(store.state), this.columnManager, selectRowsToShow(store.state));
     this.cellSelectionManager = new CellSelectionManager(this);
     this.cellManager = new CellManager(this);
     this.eventManager = new EventManager(this);

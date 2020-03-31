@@ -15,14 +15,11 @@
  */
 package com.twosigma.beakerx.easyform;
 
-import com.google.inject.Singleton;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Singleton
 public class EasyFormObjectManager {
   private final Map<String, EasyForm> _forms = new HashMap<>();
   private final Map<String, String> _shellToId = new HashMap<>();

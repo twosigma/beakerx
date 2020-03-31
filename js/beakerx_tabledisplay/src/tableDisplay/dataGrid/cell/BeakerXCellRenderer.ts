@@ -162,9 +162,8 @@ export default abstract class BeakerXCellRenderer extends TextRenderer {
       return BeakerXThemeHelper.DEFAULT_DATA_FONT_COLOR;
     }
 
-    let colors = selectFontColor(this.store.state);
-    let dataFontColor = colors && colors[config.row]
-      ? formatColor(colors[config.row][config.column])
+    let dataFontColor = this.dataGrid.rowManager.rows[config.row] && this.dataGrid.rowManager.rows[config.row].cells
+      ? formatColor(this.dataGrid.rowManager.rows[config.row].cells[config.column].fontColor)
       : BeakerXThemeHelper.DEFAULT_DATA_FONT_COLOR;
 
     return config.region === 'column-header' || config.region === "corner-header"

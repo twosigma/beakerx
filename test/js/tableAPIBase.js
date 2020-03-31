@@ -29,10 +29,10 @@ function tableAPIBase() {
   var imageDir = this.kernelName + '/tableAPI';
   imageDir = imageDir.charAt(0).toLowerCase() + imageDir.slice(1)
 
-  describe('(' + this.kernelName + ') Set alignment provider for column ', function () {
+  describe('(' + this.kernelName + ') Default alignments ', function () {
     it('Should display formatted table ', function () {
       cellIndex = 0;
-      var width = 410, height = 92;
+      var width = 528, height = 118;
       beakerxPO.runCodeCellByIndex(cellIndex);
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
@@ -40,11 +40,20 @@ function tableAPIBase() {
     });
   });
 
+  describe('(' + this.kernelName + ') Set alignment provider for column ', function () {
+    it('Should display formatted table ', function () {
+      cellIndex += 2;
+      var width = 528, height = 118;
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
+      var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
+      beakerxPO.checkImageData(imageData, imageDir, 'cell1_case2.png');
+    });
+  });
 
   describe('(' + this.kernelName + ') Set alignment provider for type ', function () {
     it('Should display formatted table ', function () {
       cellIndex += 2;
-      var width = 404, height = 92;
+      var width = 528, height = 118;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell2_case1.png');

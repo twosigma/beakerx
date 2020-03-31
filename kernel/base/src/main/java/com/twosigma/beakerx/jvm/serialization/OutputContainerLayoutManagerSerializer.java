@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.jvm.serialization;
 
-import com.google.inject.Provider;
 import com.twosigma.beakerx.util.SerializerUtil;
 import com.twosigma.beakerx.jvm.object.OutputContainerLayoutManager;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -28,14 +27,14 @@ import java.io.IOException;
 public abstract class OutputContainerLayoutManagerSerializer<T extends OutputContainerLayoutManager> extends
                                                                                                      JsonSerializer<T> {
 
-  private final Provider<BeakerObjectConverter> objectSerializerProvider;
+  private final BeakerObjectConverter objectSerializerProvider;
 
-  public OutputContainerLayoutManagerSerializer(Provider<BeakerObjectConverter> osp) {
+  public OutputContainerLayoutManagerSerializer(BeakerObjectConverter osp) {
     objectSerializerProvider = osp;
   }
 
   protected BeakerObjectConverter getObjectSerializer() {
-    return objectSerializerProvider.get();
+    return objectSerializerProvider;
   }
 
   @Override

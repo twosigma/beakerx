@@ -14,12 +14,18 @@
  *  limitations under the License.
  */
 
-export default class DataGridRow {
-  index: number;
-  values: any[];
+import DataGridCellValue from "./DataGridCellValue";
 
-  constructor(index: number, values: any[]) {
-    this.index = index;
-    this.values = values;
-  }
+export default class DataGridRow {
+    index: number;
+    cells: DataGridCellValue[];
+
+    constructor(index: number, cells: DataGridCellValue[]) {
+        this.index = index;
+        this.cells = cells;
+    }
+
+    getValue(index){
+        return this.cells[index].value
+    }
 }

@@ -117,11 +117,11 @@ class TestHeatMap(unittest.TestCase):
     def test_legend_default_position(self):
         # given
         # when
-        widget = HeatMap(data=[],
-                         legendPosition=LegendPosition(position=LegendPosition.Position.TOP))
+        widget = HeatMap(data=[], legendPosition=LegendPosition.TOP)
         # then
         model = widget.model
         self.assertEqual(model['legend_position']['position'], "TOP")
+        self.assertEqual(model['legend_position']['type'], "LegendPosition")
 
     def test_legend_default_layout(self):
         # given

@@ -30,6 +30,7 @@ class Table(BaseObject):
     PAGE_SIZE = 1000
 
     def __init__(self, *args, **kwargs):
+        self.validate_args(args)
         self.values = []
         self.types = []
         types_map = dict()
@@ -55,6 +56,8 @@ class Table(BaseObject):
         self.cellHighlighters = []
         self.type = "TableDisplay"
         self.timeZone = None
+        if TableDisplay.timeZoneGlobal:
+            self.timeZone = TableDisplay.timeZoneGlobal
         self.tooltips = []
         self.columnsFrozen = {}
         self.rendererForType = {}
@@ -66,9 +69,14 @@ class Table(BaseObject):
         self.columnsVisible = {}
         self.hasDoubleClickAction = False
         self.filteredValues = None
-        self.endlessIndex = 0
+        self.startIndex = 0
+        self.endIndex = Table.PAGE_SIZE
         self.loadingMode = 'ALL'
         self.rowsToShow = RowsToShow.SHOW_25
+
+    def validate_args(self, args):
+        if len(args) > 2 and len(args[1]) != len(args[2]):
+            raise Exception("The length of types should be same as number of columns.")
 
     def convert_from_dict(self, args):
         self.columnNames.append("Key")
@@ -114,7 +122,10 @@ class Table(BaseObject):
         else:
             column = None
             for column in self.columnNames:
-                column_type = self.convert_type(args[0].dtypes[column].name)
+                if column == "time":
+                    column_type = "time"
+                else:
+                    column_type = self.convert_type(args[0].dtypes[column].name)
                 self.types.append(column_type)
                 types_map[column] = column_type
         for index in range(len(args[0])):
@@ -193,12 +204,19 @@ class Table(BaseObject):
         self.headerFontSize = headerFontSize
 
     def setFontColorProvider(self, colorProvider):
+        self.startIndex = 0
+        self.endIndex = Table.PAGE_SIZE
+        self.fontColor=[]
         for row_ind in range(0, len(self.values)):
             row = self.values[row_ind]
             row_font_colors = []
             for col_ind in range(0, len(row)):
-                row_font_colors.append(colorProvider(row_ind, col_ind, self))
+                if self.is_not_index_column(col_ind):
+                    row_font_colors.append(colorProvider(row_ind, col_ind, self))
             self.fontColor.append(row_font_colors)
+
+    def is_not_index_column(self, col_ind):
+        return not self.hasIndex or col_ind != 0
 
     def setHeadersVertical(self, headersVertical):
         self.headersVertical = headersVertical
@@ -216,19 +234,32 @@ class Table(BaseObject):
         if TableDisplay.loadingMode == "ALL":
             return super(Table, self).transform()
         else:
+            start_index = self.startIndex
+            end_index = self.endIndex
             self_copy = copy.copy(self)
             i = 0
-            result = []
-            has_next = len(self.values) > self.endlessIndex
+            newValues = []
+            new_fonts = []
+            has_next = len(self.values) > end_index
             while i < Table.PAGE_SIZE and has_next:
-                tmp = self.values[self.endlessIndex]
-                result.append(tmp)
+                currentValue = self.values[start_index]
+                newValues.append(currentValue)
+                has_next_font_color = len(self.fontColor) > end_index
+                if has_next_font_color:
+                    current_font = self.fontColor[start_index]
+                    new_fonts.append(current_font)
+
                 i = i + 1
-                self.endlessIndex = self.endlessIndex + 1
-                has_next = len(self.values) > self.endlessIndex
-            self_copy.values = result
+                start_index = start_index + 1
+            self_copy.values = newValues
+            self_copy.fontColor = new_fonts
             self_copy.loadingMode = TableDisplay.loadingMode
             return super(Table, self_copy).transform()
+
+    def transformWhenMoreRowsRequest(self):
+        self.startIndex = self.endIndex
+        self.endIndex = self.endIndex + Table.PAGE_SIZE
+        return self.transform()
 
 
 class TableDisplay(BeakerxDOMWidget):
@@ -240,6 +271,8 @@ class TableDisplay(BeakerxDOMWidget):
     _view_module_version = Unicode('*').tag(sync=True)
 
     loadingMode = 'ALL'
+    timeZoneGlobal = None
+
     model = Dict().tag(sync=True)
     contextMenuListeners = dict()
     updateData = Dict().tag(sync=True)
@@ -248,7 +281,7 @@ class TableDisplay(BeakerxDOMWidget):
     def on_load_more_rows_change(self, change):
         if change.new == "loadMoreRequestJS":
             self.loadMoreRows = "loadMoreServerDone"
-            self.updateData = self.chart.transform()
+            self.updateData = self.chart.transformWhenMoreRowsRequest()
 
     def __init__(self, *args, **kwargs):
         super(TableDisplay, self).__init__(**kwargs)
@@ -412,7 +445,6 @@ class TableDisplay(BeakerxDOMWidget):
             self.chart.setRowsToShow(rows)
             self.model = self.chart.transform()
         return self
-
 
 
 class TableActionDetails:

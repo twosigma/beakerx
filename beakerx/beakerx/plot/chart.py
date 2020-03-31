@@ -11,18 +11,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import json
 from enum import Enum
 
+import pandas as pd
 from beakerx.plot.plotitem import GradientColor, Points, Line
+from beakerx_base import getValue, Color, date_time_2_millis, BeakerxDOMWidget
 from ipykernel.comm import Comm
 from pandas import DataFrame
 from traitlets import Dict, Unicode
-import pandas as pd
 
-from beakerx_base import getValue, Color, date_time_2_millis, BeakerxDOMWidget
 from .chart_models import XYChart, CategoryChart, HeatMapChart, \
     HistogramChart, TreeMapChart, CombinedChart, LegendLayout, LegendPosition
-import json
 
 
 class Plot(BeakerxDOMWidget):
@@ -182,8 +182,7 @@ class HeatMap(BeakerxDOMWidget):
         if not 'legendLayout' in kwargs:
             kwargs['legendLayout'] = LegendLayout.HORIZONTAL
         if not 'legendPosition' in kwargs:
-            kwargs['legendPosition'] = LegendPosition(
-                position=LegendPosition.Position.BOTTOM_RIGHT)
+            kwargs['legendPosition'] = LegendPosition.BOTTOM_RIGHT
         self.rows_limit = rows_limit
         self.column_limit = column_limit
         self.chart = HeatMapChart(self.rows_limit, self.column_limit, **kwargs)

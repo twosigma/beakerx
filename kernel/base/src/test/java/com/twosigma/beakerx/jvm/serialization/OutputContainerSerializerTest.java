@@ -36,7 +36,7 @@ public class OutputContainerSerializerTest {
 
   @BeforeClass
   public static void setUpClass() throws IOException {
-    serializer = new OutputContainerSerializer(() -> { return new BasicObjectSerializer(); } );
+    serializer = new OutputContainerSerializer(new BasicObjectSerializer());
     helper = new SerializationTestHelper<>(serializer);
   }
 

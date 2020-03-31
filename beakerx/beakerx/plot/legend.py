@@ -14,32 +14,18 @@
 
 from enum import Enum
 
-from beakerx_base import getValue
-
 
 class LegendLayout(Enum):
     HORIZONTAL = "HORIZONTAL"
     VERTICAL = "VERTICAL"
 
 
-class LegendPosition():
-    def __init__(self, **kwargs):
-        self.position = getValue(kwargs, 'position')
-        self.x = getValue(kwargs, 'x')
-        self.y = getValue(kwargs, 'y')
-        
-        if self.x is None and self.y is None and self.position is None:
-            self.position = LegendPosition.Position.TOP_RIGHT
-        elif self.position is not None:
-            self.x = None
-            self.y = None
-    
-    class Position(Enum):
-        TOP = "TOP"
-        LEFT = "LEFT"
-        BOTTOM = "BOTTOM"
-        RIGHT = "RIGHT"
-        TOP_LEFT = "TOP_LEFT"
-        TOP_RIGHT = "TOP_RIGHT"
-        BOTTOM_LEFT = "BOTTOM_LEFT"
-        BOTTOM_RIGHT = "BOTTOM_RIGHT"
+class LegendPosition(Enum):
+    TOP = "TOP"
+    LEFT = "LEFT"
+    BOTTOM = "BOTTOM"
+    RIGHT = "RIGHT"
+    TOP_LEFT = "TOP_LEFT"
+    TOP_RIGHT = "TOP_RIGHT"
+    BOTTOM_LEFT = "BOTTOM_LEFT"
+    BOTTOM_RIGHT = "BOTTOM_RIGHT"

@@ -15,7 +15,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 from setuptools import setup, find_packages
+
 from setupbase import (
     create_cmdclass,
     install_node_modules,
@@ -24,8 +26,6 @@ from setupbase import (
     get_data_files,
     here
 )
-import os
-
 
 cmdclass = create_cmdclass(develop_wrappers=[
     'js',
@@ -52,14 +52,14 @@ cmdclass['java'] = run_gradle(cmd='build', skip_tests=False)
 cmdclass['javadoc'] = run_gradle(cmd='base:javadoc')
 
 setup_args = dict(
-    name                = 'beakerx',
-    description         = 'BeakerX: Beaker Extensions for Jupyter Notebook',
-    long_description    = 'BeakerX: Beaker Extensions for Jupyter Notebook',
-    version             = get_version(os.path.join('beakerx', '_version.py')),
-    author              = 'Two Sigma Open Source, LLC',
-    author_email        = 'beakerx-feedback@twosigma.com',
-    url                 = 'http://beakerx.com',
-    keywords            = [
+    name='beakerx',
+    description='BeakerX: Beaker Extensions for Jupyter Notebook',
+    long_description='BeakerX: Beaker Extensions for Jupyter Notebook',
+    version=get_version(os.path.join('beakerx', '_version.py')),
+    author='Two Sigma Open Source, LLC',
+    author_email='beakerx-feedback@twosigma.com',
+    url='http://beakerx.com',
+    keywords=[
         'ipython',
         'jupyter',
         'widgets',
@@ -70,7 +70,7 @@ setup_args = dict(
         'kotlin',
         'sql',
     ],
-    classifiers         = [
+    classifiers=[
         'Development Status :: 4 - Beta',
         'Framework :: IPython',
         'Intended Audience :: Developers',
@@ -96,15 +96,18 @@ setup_args = dict(
             'static/*.js'
         ]
     },
-    data_files          = [(
+    data_files=[(
         'share/jupyter/nbextensions/beakerx',
         get_data_files(os.path.join('beaker'))
     )],
+    install_requires=[
+        'beakerx_tabledisplay'
+    ],
     python_requires='>=3',
-    zip_safe            = False,
-    include_package_data= True,
-    packages            = find_packages(),
-    cmdclass            = cmdclass
+    zip_safe=False,
+    include_package_data=True,
+    packages=find_packages(),
+    cmdclass=cmdclass
 )
 
 if __name__ == '__main__':

@@ -161,7 +161,7 @@ export default class ColumnFilter {
   }
 
   private createFilterExpression(value: any): string {
-    return value.replace('$', `${ColumnFilter.getColumnNameVarPrefix(this.column.name)}${ColumnFilter.escapeColumnName(this.column.name)}`);
+    return value.split("$").join(`${ColumnFilter.getColumnNameVarPrefix(this.column.name)}${ColumnFilter.escapeColumnName(this.column.name)}`);
   }
 
   private createSearchExpression(value: any) {

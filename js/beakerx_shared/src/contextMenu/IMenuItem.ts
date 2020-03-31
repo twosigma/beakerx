@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { CommandRegistry } from '@phosphor/commands';
+import { CommandRegistry } from '@lumino/commands';
 
 export default interface IMenuItem {
   title: string,

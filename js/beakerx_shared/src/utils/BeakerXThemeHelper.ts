@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { DataGrid } from "@phosphor/datagrid";
+import { DataGrid } from "@lumino/datagrid";
 
 export default class BeakerXThemeHelper {
 
@@ -22,7 +22,7 @@ export default class BeakerXThemeHelper {
     return document.body.classList.contains('bx-dark-theme');
   }
 
-  public static getStyle(): DataGrid.IStyle {
+  public static getStyle(): DataGrid.Style {
       return this.isDark ?
         this.getDarkStyle() :
         this.getLightStyle();
@@ -68,7 +68,7 @@ export default class BeakerXThemeHelper {
     return this.isDark ? 15 : 35;
   }
 
-  private static getDarkStyle(): DataGrid.IStyle {
+  private static getDarkStyle(): DataGrid.Style {
     return {
     ...DataGrid.defaultStyle,
       voidColor: '#636363',
@@ -80,7 +80,7 @@ export default class BeakerXThemeHelper {
     };
   }
 
-  private static getLightStyle(): DataGrid.IStyle {
+  private static getLightStyle(): DataGrid.Style {
     return {
       ...DataGrid.defaultStyle,
       voidColor: '#ffffff',

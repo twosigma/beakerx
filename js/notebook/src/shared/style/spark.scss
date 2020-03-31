@@ -271,7 +271,8 @@
   vertical-align: middle;
   float: right;
 
-  .bx-status-panel > .p-Widget {
+  .bx-status-panel > .p-Widget,
+  .bx-status-panel > .lm-Widget {
     margin-top: 2px;
   }
   .bx-stats {

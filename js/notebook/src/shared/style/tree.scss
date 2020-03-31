@@ -71,7 +71,8 @@ a {
   .bx-options-widget {
     padding: 15px 0;
     display: flex;
-    .p-TabPanel-stackedPanel {
+    .p-TabPanel-stackedPanel,
+    .lm-TabPanel-stackedPanel {
       left: 15px;
       right: 15px;
     }
@@ -88,19 +89,22 @@ a {
     margin-left: 10px;
   }
 
-  .p-TabBar {
+  .p-TabBar,
+  .lm-TabBar {
     min-height: 30px;
     max-height: 30px;
   }
 
-  .p-TabBar-content {
+  .p-TabBar-content,
+  .lm-TabBar-content {
     min-width: 0;
     align-items: flex-end;
     border-bottom: 1px solid $bxBorderColor1;
     padding: 0 15px;
   }
 
-  .p-TabBar-tab {
+  .p-TabBar-tab,
+  .lm-TabBar-tab {
     flex: 0 1 auto;
     min-height: 26px;
     max-height: 26px;
@@ -110,18 +114,21 @@ a {
     padding: 4px 15px;
   }
 
-  .p-TabBar-tab:first-child {
+  .p-TabBar-tab:first-child,
+  .lm-TabBar-tab:first-child {
     margin-left: 0;
   }
 
-  .p-TabBar-tab.p-mod-current {
+  .p-TabBar-tab.p-mod-current,
+  .lm-TabBar-tab.lm-mod-current {
     background-color: $bxBgColor1;
     border-color: $bxBorderColor1;
     border-bottom-color: transparent;
     transform: translateY(1px);
   }
 
-  .p-TabBar-tab:hover:not(.p-mod-current) {
+  .p-TabBar-tab:hover:not(.p-mod-current),
+  .lm-TabBar-tab:hover:not(.lm-mod-current) {
     background: $bxBgColor2;
   }
 

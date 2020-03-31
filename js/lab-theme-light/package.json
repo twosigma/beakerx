@@ -28,12 +28,12 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/application": "^1.0.2",
-    "@jupyterlab/apputils": "^1.0.2"
+    "@jupyterlab/application": "^2.0.2",
+    "@jupyterlab/apputils": "^2.0.2"
   },
   "devDependencies": {
-    "rimraf": "^2.6.3",
-    "typescript": "^3.5.3"
+    "rimraf": "^3.0.2",
+    "typescript": "^3.8.3"
   },
   "jupyterlab": {
     "extension": true,

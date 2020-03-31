@@ -17,13 +17,14 @@
 /// <reference path='../global.env.ts'/>
 
 import { BEAKER_AUTOTRANSLATION } from "./comm";
+import {IKernelConnection} from "@jupyterlab/services/lib/kernel/kernel";
 
 export namespace Autotranslation {
   export const LOCK_PROXY = 'LOCK_PROXY';
   export const TABLE_FOCUSED = 'tableFocused';
 
-  export function proxify(beakerxInstance: any, kernelInstance): Proxy<any> {
-    let autotranslationComm = kernelInstance.connectToComm(BEAKER_AUTOTRANSLATION);
+  export function proxify(beakerxInstance: any, kernelInstance:IKernelConnection): Proxy<any> {
+    let autotranslationComm = kernelInstance.createComm(BEAKER_AUTOTRANSLATION);
     autotranslationComm.open();
 
     const handler = {

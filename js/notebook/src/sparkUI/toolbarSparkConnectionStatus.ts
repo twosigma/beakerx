@@ -15,7 +15,7 @@
  */
 
 import {SparkUIView} from "../SparkUI";
-import {Widget} from "@phosphor/widgets";
+import {Widget} from "@lumino/widgets";
 
 export class ToolbarSparkConnectionStatus {
   private sparkUIView: SparkUIView;

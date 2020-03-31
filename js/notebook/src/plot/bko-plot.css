@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-@import "~@phosphor/widgets/style/menu.css";
+@import "~@lumino/widgets/style/menu.css";
 
 .plot-plotcontainer {
   background-color: #FEFEFE;

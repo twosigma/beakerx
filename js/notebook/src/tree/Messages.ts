@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { Message } from "@phosphor/messaging";
+import { Message } from "@lumino/messaging";
 import IJVMOptions, {
   IDefaultJVMOptions,
   IOtherJVMOptions,

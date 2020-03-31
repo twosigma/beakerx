@@ -17,8 +17,8 @@
 import * as $ from "jquery";
 import * as _ from "underscore";
 
-import { Widget } from "@phosphor/widgets";
-import { MessageLoop } from "@phosphor/messaging";
+import { Widget } from "@lumino/widgets";
+import { MessageLoop } from "@lumino/messaging";
 
 import DefaultOptionsWidgetInterface from "./DefaultOptionsWidgetInterface";
 import HeapGBValidator from "../../Utils/HeapGBValidator";

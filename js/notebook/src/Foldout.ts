@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import {Widget, Panel} from '@phosphor/widgets';
+import { Widget, Panel } from '@lumino/widgets';
 import widgets from './widgets';
 
 const DEFAULT_LABEL_TEXT = 'Output';

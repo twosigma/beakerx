@@ -16,7 +16,7 @@
 
 import * as $ from "jquery";
 
-import { Widget } from "@phosphor/widgets";
+import { Widget } from "@lumino/widgets";
 
 export default class SyncIndicatorWidget extends Widget {
 

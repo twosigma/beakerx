@@ -17,8 +17,8 @@
 import * as $ from "jquery";
 import * as _ from "underscore";
 
-import { Widget } from "@phosphor/widgets";
-import { MessageLoop, Message } from "@phosphor/messaging";
+import { Widget } from "@lumino/widgets";
+import { MessageLoop, Message } from "@lumino/messaging";
 
 import { Messages } from "../../Messages";
 import {IPropertiesJVMOptions} from "beakerx_shared/lib/api/IJVMOptions";

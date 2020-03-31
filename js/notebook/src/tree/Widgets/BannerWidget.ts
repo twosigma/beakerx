@@ -16,7 +16,7 @@
 
 import * as $ from 'jquery';
 
-import { Widget } from "@phosphor/widgets";
+import { Widget } from "@lumino/widgets";
 
 import BeakerXApi from "beakerx_shared/lib/api/BeakerXApi";
 

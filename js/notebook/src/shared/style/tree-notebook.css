@@ -18,4 +18,4 @@
  this styles are needed in notebook,
  but must not be loaded in lab - breaks whole lab UI
  */
-@import '~@phosphor/widgets/style/index.css';
+@import '~@lumino/widgets/style/index.css';

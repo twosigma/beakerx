@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-import { TabPanel } from "@phosphor/widgets";
-import { Message, MessageLoop } from "@phosphor/messaging";
+import { TabPanel } from "@lumino/widgets";
+import { Message, MessageLoop } from "@lumino/messaging";
 
 import { UIOptionsWidget } from "./UIOptions/UIOptionsWidget";
 import UIOptionsModel from "../Models/UIOptionsModel";

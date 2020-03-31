@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-import { Panel } from "@phosphor/widgets";
-import { Message } from "@phosphor/messaging";
+import { Panel } from "@lumino/widgets";
+import { Message } from "@lumino/messaging";
 
 import BeakerXApi from "beakerx_shared/lib/api/BeakerXApi";
 import BannerWidget from "./Widgets/BannerWidget";

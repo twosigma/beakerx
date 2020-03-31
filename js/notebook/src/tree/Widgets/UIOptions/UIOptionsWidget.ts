@@ -16,8 +16,8 @@
 
 import * as $ from "jquery";
 
-import { Widget } from "@phosphor/widgets";
-import { MessageLoop } from "@phosphor/messaging";
+import { Widget } from "@lumino/widgets";
+import { MessageLoop } from "@lumino/messaging";
 
 import UIOptionsWidgetInterface from "./UIOptionsWidgetInterface";
 import { Messages } from "../../Messages";

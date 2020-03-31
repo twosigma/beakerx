@@ -24,7 +24,7 @@ define([
   "use strict";
 
   var $ = require('jquery');
-  var Widget = require('@phosphor/widgets').Widget;
+  var Widget = require('@lumino/widgets').Widget;
 
   function load() {
     var TreeWidget = require('./tree/TreeWidget').default;

@@ -30,18 +30,16 @@ import com.twosigma.beakerx.widget.SparkEngineNoUI;
 import com.twosigma.beakerx.widget.SparkEngineNoUIImpl;
 import com.twosigma.beakerx.widget.SparkEngineWithUIFactory;
 import com.twosigma.beakerx.widget.SparkEngineWithUIMock;
+import com.twosigma.beakerx.widget.SparkSessionBuilder;
+import com.twosigma.beakerx.widget.SparkSessionBuilderFactory;
 import com.twosigma.beakerx.widget.SparkUI;
 import com.twosigma.beakerx.widget.SparkUIFactory;
 import com.twosigma.beakerx.widget.SparkUITest;
-import com.twosigma.beakerx.widget.SparkUiDefaults;
 import com.twosigma.beakerx.widget.TestWidgetUtils;
-import org.apache.spark.SparkConf;
-import org.apache.spark.sql.SparkSession;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -63,7 +61,7 @@ public class SparkMagicCommandTest {
   @Before
   public void setUp() {
     singleSparkSession = new SparkMagicCommand.SingleSparkSessionImpl();
-    sparkEngineWithUIFactoryMock = sparkSessionBuilder -> new SparkEngineWithUIMock();
+    sparkEngineWithUIFactoryMock = (sparkSessionBuilder, ssbf, ssl) -> new SparkEngineWithUIMock();
     sparkUiDefaults = new SparkUiDefaultsImplMock();
     kernel = new KernelTest();
     SparkUIFactory sparkUIFactory = createSparkUIFactory(singleSparkSession);
@@ -72,7 +70,9 @@ public class SparkMagicCommandTest {
                     new SparkManagerNoUIFactoryMock(),
                     sparkEngineWithUIFactoryMock,
                     sparkUIFactory,
-                    sparkUiDefaults));
+                    sparkUiDefaults,
+                    new SparkSessionBuilderFactoryMock(),
+                    new SparkListenerServiceMock()));
   }
 
   @Test
@@ -95,7 +95,7 @@ public class SparkMagicCommandTest {
     List<Message> messages = dataContains(kernel.getPublishedMessages(), "error");
     assertThat(messages.size()).isEqualTo(1);
     Map data = TestWidgetUtils.getData(messages.get(0));
-    Map error = (Map)data.get("error");
+    Map error = (Map) data.get("error");
     assertThat(error.get("message")).isEqualTo(ONE_SPARK_SESSION_MSG_ERROR);
   }
 
@@ -129,15 +129,10 @@ public class SparkMagicCommandTest {
   public static class SparkManagerNoUIFactoryMock implements SparkEngineNoUIImpl.SparkEngineNoUIFactory {
 
     @Override
-    public SparkEngineNoUI create(SparkSession.Builder sparkSessionBuilder) {
+    public SparkEngineNoUI create(SparkSessionBuilder sparkSessionBuilder, SparkSessionBuilderFactory sparkSessionBuilderFactory) {
       return new SparkEngineNoUI() {
         @Override
         public TryResult configure(KernelFunctionality kernel, Message parentMessage) {
-          return null;
-        }
-
-        @Override
-        public SparkSession getOrCreate() {
           return null;
         }
 
@@ -213,6 +208,16 @@ public class SparkMagicCommandTest {
 
         @Override
         public String getStopContext() {
+          return null;
+        }
+
+        @Override
+        public String getConf(String name) {
+          return null;
+        }
+
+        @Override
+        public Map<String, Object> getUserSparkConfAsMap() {
           return null;
         }
 

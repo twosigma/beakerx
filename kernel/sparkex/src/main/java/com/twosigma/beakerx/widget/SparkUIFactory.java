@@ -15,8 +15,6 @@
  */
 package com.twosigma.beakerx.widget;
 
-import org.apache.spark.sql.SparkSession;
-
 public interface SparkUIFactory {
-  SparkUIApi create(SparkSession.Builder builder, SparkEngineWithUI sparkEngineWithUI, SparkUiDefaults sparkUiDefaults);
+  SparkUIApi create(SparkSessionBuilder builder, SparkEngineWithUI sparkEngineWithUI, SparkUiDefaults sparkUiDefaults);
 }

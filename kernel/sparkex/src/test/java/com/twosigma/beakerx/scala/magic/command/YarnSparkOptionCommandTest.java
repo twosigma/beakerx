@@ -45,41 +45,10 @@ public class YarnSparkOptionCommandTest {
   @Test
   public void yarnMaster() {
     //given
-
     //when
     sut.run(sparkEngineMock, commMsg());
     //then
     assertThat(sparkEngineMock.conf.getMaster().get()).isEqualTo("yarn");
-  }
-
-  @Test
-  public void yarnJobLink() {
-    //given
-    sut.run(sparkEngineMock, commMsg());
-    //when
-    String job = sparkEngineMock.jobLinkFactory.create(1);
-    //then
-    assertThat(job).contains("1");
-  }
-
-  @Test
-  public void yarnStageLink() {
-    //given
-    sut.run(sparkEngineMock, commMsg());
-    //when
-    String stage = sparkEngineMock.stageLinkFactory.create(1);
-    //then
-    assertThat(stage).contains("1");
-  }
-
-  @Test
-  public void yarnSparkUiWebUrl() {
-    //given
-    sut.run(sparkEngineMock, commMsg());
-    //when
-    String url = sparkEngineMock.sparkUiWebUrlFactory.create();
-    //then
-    assertThat(url).isNotNull();
   }
 
   class SparkEngineMock implements SparkEngine {
@@ -88,11 +57,6 @@ public class YarnSparkOptionCommandTest {
     private StageLinkFactory stageLinkFactory;
     private SparkUiWebUrlFactory sparkUiWebUrlFactory;
     private SparkEngineConf conf;
-
-    @Override
-    public SparkSession getOrCreate() {
-      return null;
-    }
 
     @Override
     public String getSparkAppId() {
@@ -166,6 +130,16 @@ public class YarnSparkOptionCommandTest {
 
     @Override
     public String getStopContext() {
+      return null;
+    }
+
+    @Override
+    public String getConf(String name) {
+      return null;
+    }
+
+    @Override
+    public Map<String, Object> getUserSparkConfAsMap() {
       return null;
     }
   }

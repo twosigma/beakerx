@@ -1,4 +1,3 @@
-
 /*
  *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
@@ -16,25 +15,26 @@
  */
 package com.twosigma.beakerx.widget;
 
-import com.twosigma.beakerx.scala.magic.command.SparkListenerServiceMock;
-import com.twosigma.beakerx.scala.magic.command.SparkSessionBuilderFactoryImpl;
+import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
-import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.Map;
 
-public class SparkEngineImplTest {
+public interface SparkSessionBuilder {
 
-  @Test
-  public void sparkVersion() {
-    //given
-    SparkEngineBase sparkEngine = new SparkEngineWithUIImpl(
-            new SparkSessionBuilderImpl(SparkSession.builder()),
-            new SparkSessionBuilderFactoryImpl(),
-            new SparkListenerServiceMock());
-    //when
-    String version = sparkEngine.sparkVersion();
-    //then
-    assertThat(version).isEqualTo("2.4.4");
-  }
+  SparkSession getOrCreate();
+
+  void config(String key, String value);
+
+  void enableHiveSupport();
+
+  Map<String, Object> getSparkConfAsMap();
+
+  SparkConf getSparkConf();
+
+  void stop();
+
+  void cancelAllJobs();
+
+  void cancelStage(int stageid);
 }

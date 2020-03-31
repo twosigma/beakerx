@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import os
-import sys
 
 from beakerx.spark import SparkUI2
 from beakerx.spark.spark_wihtout_ui import SparkWithoutUI
@@ -32,14 +31,14 @@ class SparkFactory:
     def create_spark(self):
         err = self._execute_options(self.spark_engine, self.options)
         if err is not None:
-            return err
+            return None, err
         if self._is_no_ui(self.options):
             return self._create_spark_without_ui()
         else:
             spark_widget = self._create_spark_ui()
             self.display_func(spark_widget)
             spark_widget.after_display()
-            return None
+            return None, None
 
     def _create_spark_without_ui(self):
         swui = SparkWithoutUI(self.spark_engine, self.ipythonManager)
@@ -59,21 +58,12 @@ class SparkFactory:
         if "yarn" in options and options.yarn:
             if "HADOOP_CONF_DIR" not in os.environ:
                 return """'HADOOP_CONF_DIR' is not set,\nplease use os.environ['HADOOP_CONF_DIR'] = PATH_TO_HADOOP_CONF_DIR"""
-            self.init_yarn()
-            self.spark_engine.uiWebUrlFunc = lambda spark_session: spark_session.sparkContext._conf._jconf.get(
-                "spark.org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter.param.PROXY_URI_BASES")
             self.spark_engine.add_additional_spark_options({
                 "spark.executor.cores": "4",
                 "spark.executor.memory": "1g",
                 "spark.master": "yarn"
             })
-
-        return None
+            return None
 
     def _is_no_ui(self, options):
         return "noUI" in options and options.noUI
-
-    def init_yarn(self):
-        path_to_python = sys.executable
-        os.environ["PYSPARK_PYTHON"] = path_to_python
-        os.environ["PYSPARK_DRIVER_PYTHON"] = path_to_python

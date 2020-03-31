@@ -62,19 +62,21 @@ class SparkexMagics(Magics):
             print(err, file=sys.stderr)
             return
         builder = result.result
-        options = magic_arguments.parse_argstring(self.spark, line)
+        ui_options = magic_arguments.parse_argstring(self.spark, line)
         factory = self._create_spark_factory(
             builder,
             IpythonManager(ipython),
             BeakerxSparkServerFactory(),
             Profile(),
-            options,
+            ui_options,
             self._display_ui,
             SparkexMagics.SINGLE_SPARK_SESSION)
-        err = factory.create_spark()
+        result , err = factory.create_spark()
         if err is not None:
             print(err, file=sys.stderr)
-            return
+        elif result is not None:
+            print(result)
+        return
 
     def clear_spark_session(self):
         SparkSession.builder._options = {}
@@ -84,10 +86,10 @@ class SparkexMagics(Magics):
                               ipython_manager,
                               server_factory,
                               profile,
-                              options,
+                              ui_options,
                               display_func,
                               single_spark_session):
-        factory = SparkFactory(options,
+        factory = SparkFactory(ui_options,
                                SparkEngine(builder, single_spark_session, SparkSessionFactory()),
                                ipython_manager,
                                server_factory,

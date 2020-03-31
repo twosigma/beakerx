@@ -25,11 +25,11 @@ import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widget.SingleSparkSession;
 import com.twosigma.beakerx.widget.SparkEngineWithUI;
 import com.twosigma.beakerx.widget.SparkEngineWithUIMock;
+import com.twosigma.beakerx.widget.SparkSessionBuilder;
 import com.twosigma.beakerx.widget.SparkUI;
 import com.twosigma.beakerx.widget.SparkUIFactory;
 import com.twosigma.beakerx.widget.SparkUiDefaults;
 import com.twosigma.beakerx.widget.TestWidgetUtils;
-import org.apache.spark.sql.SparkSession;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -58,11 +58,13 @@ public class SparkMagicCommandAutoConnectTest {
             new SparkFactoryImpl(
                     kernel,
                     new SparkMagicCommandTest.SparkManagerNoUIFactoryMock(),
-                    sparkSessionBuilder -> {
+                    (sparkSessionBuilder, ssbf, ssl) -> {
                       return sparkEngineWithUIMock;
                     },
                     sparkUIFactory,
-                    new SparkUiDefaultsImplMock()));
+                    new SparkUiDefaultsImplMock(),
+                    new SparkSessionBuilderFactoryMock(),
+                    new SparkListenerServiceMock()));
   }
 
   @Test
@@ -86,7 +88,7 @@ public class SparkMagicCommandAutoConnectTest {
     Map state = TestWidgetUtils.getState(openMessages);
     assertThat((Boolean) state.get("is_auto_start")).isTrue();
     Map data = TestWidgetUtils.getData(kernel.getPublishedMessages().get(3));
-    Map event = (Map)data.get("event");
+    Map event = (Map) data.get("event");
     assertThat((String) event.get("auto_start")).isEqualTo("done");
   }
 
@@ -110,7 +112,7 @@ public class SparkMagicCommandAutoConnectTest {
   private SparkUIFactory createSparkUIFactory(SingleSparkSession singleSparkSession) {
     return new SparkUIFactory() {
       @Override
-      public SparkUI create(SparkSession.Builder builder, SparkEngineWithUI sparkEngineWithUI, SparkUiDefaults sparkUiDefaults) {
+      public SparkUI create(SparkSessionBuilder builder, SparkEngineWithUI sparkEngineWithUI, SparkUiDefaults sparkUiDefaults) {
         CommMock commMock = new CommMock("id1", JupyterMessages.COMM_MSG.getName(), kernel);
         sparkUI = new SparkUI(commMock, sparkEngineWithUI, sparkUiDefaults, singleSparkSession, kernel);
         return sparkUI;

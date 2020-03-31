@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import copy
+import os
+import sys
 
 from beakerx.commons import check_is_None
 from beakerx_magics.sparkex_widget import SparkStateProgressUiManager
@@ -31,11 +33,12 @@ class SparkEngine:
         self.auto_start = False
         self.additional_spark_options = {}
         self.builder = None
-        self.uiWebUrlFunc = lambda spark_session: spark_session.sparkContext.uiWebUrl
+        self.uiWebUrlFunc = self._create_ui_web_url()
         self.stop_context = SparkEngine.STOP
 
     def new_spark_builder(self):
         self.stop_context = SparkEngine.STOP
+        self.uiWebUrlFunc = self._create_ui_web_url()
         self.builder = self.spark_session_factory.builder()
 
     def get_user_spark_config(self):
@@ -84,3 +87,18 @@ class SparkEngine:
         spark_context._gateway.start_callback_server()
         spark_context._jsc.sc().addSparkListener(
             SparkListener(sparkui, SparkStateProgressUiManager(sparkui.engine, server)))
+
+    def _create_ui_web_url(self):
+        return lambda spark_session: spark_session.sparkContext.uiWebUrl
+
+    def _configure_yarn(self):
+        path_to_python = sys.executable
+        os.environ["PYSPARK_PYTHON"] = path_to_python
+        os.environ["PYSPARK_DRIVER_PYTHON"] = path_to_python
+        self.uiWebUrlFunc = lambda spark_session: spark_session.sparkContext._conf._jconf.get(
+            "spark.org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter.param.PROXY_URI_BASES")
+
+    def configure_runtime(self):
+        if "spark.master" in self.builder._options and "yarn" in self.builder._options["spark.master"]:
+            self._configure_yarn()
+            return None

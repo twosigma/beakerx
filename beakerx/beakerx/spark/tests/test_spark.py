@@ -65,7 +65,6 @@ class TestSparkUI(unittest.TestCase):
         spark_server_factory = SparkServerFactoryMock()
         profile = ProfileMock()
         sui = SparkUI2(engine, ipython_manager, spark_server_factory, profile, CommMock())
-        sui._on_start()
         msg_save_profile = {
             "event": "save_profiles",
             "payload": [
@@ -97,7 +96,8 @@ class TestSparkUI(unittest.TestCase):
         spark_server_factory = SparkServerFactoryMock()
         profile = ProfileMock()
         sui = SparkUI2(engine, ipython_manager, spark_server_factory, profile, CommMock())
-        sui._on_start()
+        msg_start = self.create_msg_start()
+        sui.handle_msg(sui, msg_start)
         msg_stop = {
             'event': 'stop'
         }
@@ -117,7 +117,18 @@ class TestSparkUI(unittest.TestCase):
         spark_server_factory = SparkServerFactoryMock()
         profile = ProfileMock()
         sui = SparkUI2(engine, ipython_manager, spark_server_factory, profile, CommMock())
-        msg_start = {
+        msg_start = self.create_msg_start()
+        # when
+        sui.handle_msg(sui, msg_start)
+        # then
+        self.assertTrue(sui.comm.message["method"] == "update")
+        event = sui.comm.message["event"]
+        self.assertTrue(event["start"] == "done")
+        self.assertTrue(event["sparkAppId"] == "appIdLocal1")
+        self.assertTrue(event["sparkUiWebUrl"] == "SparkUiWebUrl1")
+
+    def create_msg_start(self):
+        return {
             'event': 'start',
             'payload': {
                 "current_profile": "profile1",
@@ -133,14 +144,6 @@ class TestSparkUI(unittest.TestCase):
                 }
             }
         }
-        # when
-        sui.handle_msg(sui, msg_start)
-        # then
-        self.assertTrue(sui.comm.message["method"] == "update")
-        event = sui.comm.message["event"]
-        self.assertTrue(event["start"] == "done")
-        self.assertTrue(event["sparkAppId"] == "appIdLocal1")
-        self.assertTrue(event["sparkUiWebUrl"] == "SparkUiWebUrl1")
 
     def test_should_save_current_profile_when_sc_starts(self):
         # given
@@ -245,7 +248,7 @@ class CommMock(Comm):
 class BuilderMock:
 
     def __init__(self):
-        pass
+        self._options = {}
 
     def getOrCreate(self):
         return SparkSessionMock()

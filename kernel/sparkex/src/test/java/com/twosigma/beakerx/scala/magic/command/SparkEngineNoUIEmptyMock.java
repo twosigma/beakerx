@@ -20,20 +20,12 @@ import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widget.SparkEngineConf;
 import com.twosigma.beakerx.widget.SparkEngineNoUI;
-import com.twosigma.beakerx.widget.SparkUiDefaults;
-import org.apache.spark.SparkConf;
-import org.apache.spark.sql.SparkSession;
 
 import java.util.Map;
 
 public class SparkEngineNoUIEmptyMock implements SparkEngineNoUI {
   @Override
   public TryResult configure(KernelFunctionality kernel, Message parentMessage) {
-    return null;
-  }
-
-  @Override
-  public SparkSession getOrCreate() {
     return null;
   }
 
@@ -109,6 +101,16 @@ public class SparkEngineNoUIEmptyMock implements SparkEngineNoUI {
 
   @Override
   public String getStopContext() {
+    return null;
+  }
+
+  @Override
+  public String getConf(String name) {
+    return null;
+  }
+
+  @Override
+  public Map<String, Object> getUserSparkConfAsMap() {
     return null;
   }
 }

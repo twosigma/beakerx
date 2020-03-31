@@ -34,7 +34,7 @@ class TestSparkNoUI(unittest.TestCase):
         # when
         spark_message = sut.create_spark()
         # then
-        self.assertEqual(spark_message, None)
+        self.assertEqual(spark_message, (None, None))
 
     def test_auto_connect_when_no_ui(self):
         # given
@@ -49,7 +49,7 @@ class TestSparkNoUI(unittest.TestCase):
         spark_message = sut.create_spark()
         # then
         self.assertTrue(ipython_manager_mock.configured)
-        self.assertEqual(spark_message, "SparkSession is available by 'spark'")
+        self.assertEqual(spark_message, ("SparkSession is available by 'spark'", None))
 
 
 class SparkEngineMock:

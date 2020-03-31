@@ -131,6 +131,7 @@ class SparkUI2(BeakerxBox):
     def _on_start(self):
         if self.engine.is_active_spark_session():
             return SparkUI2.ONE_SPARK_SESSION_MSG_ERROR
+        self.engine.configure_runtime()
         self.ipython_manager.configure(self.engine)
         server = self.spark_server_factory.run_new_instance(self.engine)
         self.engine.configure_listeners(self, server)

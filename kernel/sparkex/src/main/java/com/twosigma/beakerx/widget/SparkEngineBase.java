@@ -29,47 +29,48 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.sql.RuntimeConfig;
 import org.apache.spark.sql.SparkSession;
 import org.jetbrains.annotations.NotNull;
-import scala.Tuple2;
-import scala.collection.Iterator;
 
 import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
 
 import static com.twosigma.beakerx.kernel.PlainCode.createSimpleEvaluationObject;
-import static com.twosigma.beakerx.widget.SparkUI.BEAKERX_ID;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_APP_NAME;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_CONTEXT_NAME;
-import static com.twosigma.beakerx.widget.SparkUI.SPARK_EXTRA_LISTENERS;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_MASTER;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_REPL_CLASS_OUTPUT_DIR;
 import static com.twosigma.beakerx.widget.SparkUI.SPARK_SESSION_NAME;
-import static com.twosigma.beakerx.widget.SparkUI.STANDARD_SETTINGS;
 
 abstract class SparkEngineBase implements SparkEngine {
 
   public static final String STOP = "stop";
 
-  protected SparkSession.Builder sparkSessionBuilder;
-
+  protected SparkSessionBuilder userSparkSessionBuilder;
+  protected SparkSessionBuilder sparkSessionBuilder;
   private ErrorPrinter errorPrinter;
   protected SparkEngineConf conf = new SparkEngineConf();
   private StageLinkFactory stageLinkFactory;
   private JobLinkFactory jobLinkFactory;
   private SparkUiWebUrlFactory sparkUiWebUrlFactory;
+  protected String stopContext = STOP;
 
-  SparkEngineBase(SparkSession.Builder sparkSessionBuilder, ErrorPrinter errorPrinter) {
-    this.sparkSessionBuilder = sparkSessionBuilder;
+  SparkEngineBase(SparkSessionBuilder sparkSessionBuilder, ErrorPrinter errorPrinter) {
+    this.userSparkSessionBuilder = sparkSessionBuilder;
     this.errorPrinter = errorPrinter;
     this.jobLinkFactory(createJobLinkFactory());
     this.stageLinkFactory(createStageLinkFactory());
     this.sparkUiWebUrlFactory(createSparkUiWebUrl());
+  }
+
+  @Override
+  public String getConf(String name) {
+    SparkSession sparkSession = getOrCreate();
+    if (sparkSession != null && sparkSession.sparkContext().getConf().contains(name)) {
+      return getOrCreate().sparkContext().getConf().get(name);
+    }
+    return "";
   }
 
   @Override
@@ -105,8 +106,7 @@ abstract class SparkEngineBase implements SparkEngine {
     }
   }
 
-  @Override
-  public SparkSession getOrCreate() {
+  private SparkSession getOrCreate() {
     return sparkSessionBuilder.getOrCreate();
   }
 
@@ -148,13 +148,8 @@ abstract class SparkEngineBase implements SparkEngine {
     return kernel.executeCode(addSc, seo);
   }
 
-  protected SparkConf createSparkConf(Map<String, Object> sparkOptions, SparkConf old) {
+  protected SparkConf createSparkConf(Map<String, Object> sparkOptions) {
     SparkConf sparkConf = new SparkConf();
-    sparkConf.set(SPARK_EXTRA_LISTENERS, old.get(SPARK_EXTRA_LISTENERS));
-    sparkConf.set(BEAKERX_ID, old.get(BEAKERX_ID));
-    if (old.contains(SPARK_APP_NAME)) {
-      sparkConf.set(SPARK_APP_NAME, old.get(SPARK_APP_NAME));
-    }
     sparkOptions.forEach((k, v) -> {
       if (k.equals("properties")) {
         List properties = (List) v;
@@ -169,59 +164,20 @@ abstract class SparkEngineBase implements SparkEngine {
     return sparkConf;
   }
 
-  public SparkConf getSparkConf() {
-    return getSparkConfBasedOn(this.sparkSessionBuilder);
+  @Override
+  public Map<String, Object> getUserSparkConfAsMap() {
+    return this.userSparkSessionBuilder.getSparkConfAsMap();
   }
 
-  public Map<String, Object> getSparkConfAsMap() {
-    Map<String, Object> sparkConf = new HashMap();
-    Iterator iterator = getConfigIterator(this.sparkSessionBuilder);
-    while (iterator.hasNext()) {
-      Tuple2 x = (Tuple2) iterator.next();
-      sparkConf.put((String) (x)._1, (x)._2);
-    }
-    return sparkConf;
-  }
-
-  public static SparkConf getSparkConfBasedOn(SparkSession.Builder sparkSessionBuilder) {
-    SparkConf sparkConf = new SparkConf();
-    Iterator iterator = getConfigIterator(sparkSessionBuilder);
-    while (iterator.hasNext()) {
-      Tuple2 x = (Tuple2) iterator.next();
-      sparkConf.set((String) (x)._1, (String) (x)._2);
-    }
-    return sparkConf;
-  }
-
-  protected SparkConf configureSparkConf(SparkConf sparkConf) {
+  protected void configureSparkConf(SparkConf sparkConf) {
     if (!sparkConf.contains(SPARK_APP_NAME)) {
       sparkConf.setAppName("beaker_" + UUID.randomUUID().toString());
     }
-    if (!isLocalSpark(sparkConf)) {
+    if (sparkConf.contains(SPARK_MASTER) && !isLocalSpark(sparkConf)) {
       sparkConf.set(SPARK_REPL_CLASS_OUTPUT_DIR, KernelManager.get().getOutDir());
     }
-    this.conf.getConfigs().forEach(sparkConf::set);
-    return sparkConf;
   }
 
-  private static Iterator getConfigIterator(SparkSession.Builder sparkSessionBuilder) {
-    try {
-      Field options = getOptionsField(sparkSessionBuilder);
-      options.setAccessible(true);
-      return ((scala.collection.mutable.HashMap) options.get(sparkSessionBuilder)).iterator();
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private static Field getOptionsField(SparkSession.Builder sparkSessionBuilder) {
-    Field[] declaredFields = sparkSessionBuilder.getClass().getDeclaredFields();
-    Optional<Field> options = Arrays.stream(declaredFields).filter(f -> f.getName().contains("options")).findFirst();
-    if (options.isPresent()) {
-      return options.get();
-    }
-    throw new RuntimeException("SparkSession.builder does not contain 'options' field.");
-  }
 
   private static boolean isLocalSpark(SparkConf sparkConf) {
     return sparkConf.contains(SPARK_MASTER) && sparkConf.get(SPARK_MASTER) != null && sparkConf.get("spark.master").startsWith("local");
@@ -243,7 +199,7 @@ abstract class SparkEngineBase implements SparkEngine {
   }
 
   @NotNull
-  private StageLinkFactory createStageLinkFactory() {
+  protected StageLinkFactory createStageLinkFactory() {
     return (stageId) -> {
       if (getOrCreate().sparkContext().uiWebUrl().isDefined()) {
         return getOrCreate().sparkContext().uiWebUrl().get() + "/stages/stage/?id=" + stageId + "&attempt=0";
@@ -254,7 +210,7 @@ abstract class SparkEngineBase implements SparkEngine {
   }
 
   @NotNull
-  private JobLinkFactory createJobLinkFactory() {
+  protected JobLinkFactory createJobLinkFactory() {
     return (jobId) -> {
       if (getOrCreate().sparkContext().uiWebUrl().isDefined()) {
         return getOrCreate().sparkContext().uiWebUrl().get() + "/jobs/job/?id=" + jobId;
@@ -265,12 +221,12 @@ abstract class SparkEngineBase implements SparkEngine {
   }
 
   @NotNull
-  private SparkUiWebUrlFactory createSparkUiWebUrl() {
+  protected SparkUiWebUrlFactory createSparkUiWebUrl() {
     return () -> getOrCreate().sparkContext().uiWebUrl().get();
   }
 
   @Override
   public String getStopContext() {
-    return STOP;
+    return stopContext;
   }
 }

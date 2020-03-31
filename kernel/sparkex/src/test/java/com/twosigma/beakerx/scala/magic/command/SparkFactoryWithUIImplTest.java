@@ -27,6 +27,8 @@ import com.twosigma.beakerx.widget.SparkEngineNoUI;
 import com.twosigma.beakerx.widget.SparkEngineNoUIImpl;
 import com.twosigma.beakerx.widget.SparkEngineWithUI;
 import com.twosigma.beakerx.widget.SparkEngineWithUIMock;
+import com.twosigma.beakerx.widget.SparkSessionBuilder;
+import com.twosigma.beakerx.widget.SparkSessionBuilderFactory;
 import com.twosigma.beakerx.widget.SparkUIApi;
 import com.twosigma.beakerx.widget.SparkUIFactory;
 import com.twosigma.beakerx.widget.SparkUiDefaults;
@@ -47,17 +49,22 @@ public class SparkFactoryWithUIImplTest {
   private SparkEngineNoUIFactoryMock sparkEngineNoUIFactory;
   private KernelFunctionalityMock kernel;
   private SparkUiDefaultsImplMock sparkUiDefaults;
+  private SparkSessionBuilderFactoryMock sparkSessionBuilderFactoryMock;
 
   @Before
   public void setUp() throws Exception {
     kernel = new KernelFunctionalityMock();
     sparkEngineNoUIFactory = new SparkEngineNoUIFactoryMock();
     sparkUiDefaults = new SparkUiDefaultsImplMock();
-    sparkFactory = new SparkFactoryImpl(kernel,
+    sparkSessionBuilderFactoryMock = new SparkSessionBuilderFactoryMock();
+    sparkFactory = new SparkFactoryImpl(
+            kernel,
             sparkEngineNoUIFactory,
-            sparkSessionBuilder -> new SparkEngineWithUIMock(),
+            (sparkSessionBuilder, ssfb, ssl) -> new SparkEngineWithUIMock(),
             new SparkUIFactoryMock(),
-            sparkUiDefaults);
+            sparkUiDefaults,
+            sparkSessionBuilderFactoryMock,
+            new SparkListenerServiceMock());
     KernelManager.register(kernel);
   }
 
@@ -86,7 +93,7 @@ public class SparkFactoryWithUIImplTest {
     private boolean configuration;
 
     @Override
-    public SparkEngineNoUI create(SparkSession.Builder sparkSessionBuilder) {
+    public SparkEngineNoUI create(SparkSessionBuilder sparkSessionBuilder, SparkSessionBuilderFactory sparkSessionBuilderFactory) {
       return new SparkEngineNoUIEmptyMock() {
         @Override
         public TryResult configure(KernelFunctionality kernel, Message parentMessage) {
@@ -110,7 +117,7 @@ public class SparkFactoryWithUIImplTest {
   class SparkUIFactoryMock implements SparkUIFactory {
 
     @Override
-    public SparkUIApi create(SparkSession.Builder builder, SparkEngineWithUI sparkEngineWithUI, SparkUiDefaults sparkUiDefaults) {
+    public SparkUIApi create(SparkSessionBuilder builder, SparkEngineWithUI sparkEngineWithUI, SparkUiDefaults sparkUiDefaults) {
       return new SparkUIApi() {
 
         @Override

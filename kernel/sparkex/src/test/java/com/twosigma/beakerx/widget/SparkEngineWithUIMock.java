@@ -21,8 +21,6 @@ import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.scala.magic.command.JobLinkFactory;
 import com.twosigma.beakerx.scala.magic.command.SparkUiWebUrlFactory;
 import com.twosigma.beakerx.scala.magic.command.StageLinkFactory;
-import org.apache.spark.SparkConf;
-import org.apache.spark.sql.SparkSession;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +33,7 @@ public class SparkEngineWithUIMock implements SparkEngineWithUI {
   private SparkUIApi sparkUIApi;
 
   @Override
-  public TryResult configure(KernelFunctionality kernel, SparkUIApi sparkUI, Message parentMessage, Map<String, Object> sparkOptions) {
+  public TryResult createSparkContext(KernelFunctionality kernel, SparkUIApi sparkUI, Message parentMessage, Map<String, Object> sparkOptions) {
     this.sparkUIApi = sparkUI;
     return TryResult.createResult("done");
   }
@@ -46,7 +44,7 @@ public class SparkEngineWithUIMock implements SparkEngineWithUI {
   }
 
   @Override
-  public Map<String, Object> getSparkConfAsMap() {
+  public Map<String, Object> getUserSparkConfAsMap() {
     return new HashMap<String, Object>() {{
       put("name", "");
       put("prop_1", "user_value_1");
@@ -54,14 +52,10 @@ public class SparkEngineWithUIMock implements SparkEngineWithUI {
   }
 
   @Override
-  public SparkSession getOrCreate() {
-    return null;
-  }
-
-  @Override
   public String getSparkAppId() {
     return APP_ID_LOCAL_1;
   }
+
   @Override
   public String getSparkUiWebUrl() {
     return SPARK_UI_WEB_URL_1;
@@ -130,6 +124,11 @@ public class SparkEngineWithUIMock implements SparkEngineWithUI {
   @Override
   public String getStopContext() {
     return SparkEngineBase.STOP;
+  }
+
+  @Override
+  public String getConf(String name) {
+    return null;
   }
 
 }

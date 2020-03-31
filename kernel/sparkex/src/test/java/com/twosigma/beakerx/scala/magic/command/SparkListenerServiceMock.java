@@ -13,18 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget;
+package com.twosigma.beakerx.scala.magic.command;
 
-import com.twosigma.beakerx.TryResult;
-import com.twosigma.beakerx.kernel.KernelFunctionality;
-import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widget.SparkListenerService;
+import com.twosigma.beakerx.widget.SparkSessionBuilder;
+import com.twosigma.beakerx.widget.SparkUIApi;
 
-import java.util.Map;
+public class SparkListenerServiceMock implements SparkListenerService {
+  public boolean configured;
 
-public interface SparkEngineWithUI extends SparkEngine {
-
-  TryResult createSparkContext(KernelFunctionality kernel, SparkUIApi sparkUI, Message parentMessage, Map<String, Object> sparkOptions);
-
-  boolean isAutoStart();
-
+  @Override
+  public void configure(SparkSessionBuilder sparkSessionBuilder, SparkUIApi sparkUI) {
+    configured = true;
+  }
 }

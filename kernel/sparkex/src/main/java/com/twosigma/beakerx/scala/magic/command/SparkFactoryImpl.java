@@ -30,7 +30,9 @@ import com.twosigma.beakerx.widget.SparkEngineNoUI;
 import com.twosigma.beakerx.widget.SparkEngineNoUIImpl.SparkEngineNoUIFactory;
 import com.twosigma.beakerx.widget.SparkEngineWithUI;
 import com.twosigma.beakerx.widget.SparkEngineWithUIFactory;
-import com.twosigma.beakerx.widget.SparkEngineWithUIImpl;
+import com.twosigma.beakerx.widget.SparkListenerService;
+import com.twosigma.beakerx.widget.SparkSessionBuilder;
+import com.twosigma.beakerx.widget.SparkSessionBuilderFactory;
 import com.twosigma.beakerx.widget.SparkUIApi;
 import com.twosigma.beakerx.widget.SparkUIFactory;
 import com.twosigma.beakerx.widget.SparkUiDefaults;
@@ -53,13 +55,23 @@ public class SparkFactoryImpl implements SparkFactory {
   private SparkEngineNoUIFactory sparkEngineNoUIFactory;
   private SparkUIFactory sparkUIFactory;
   private SparkUiDefaults sparkUiDefaults;
+  private SparkSessionBuilderFactory sparkSessionBuilderFactory;
+  private SparkListenerService sparkListenerService;
 
-  public SparkFactoryImpl(KernelFunctionality kernel, SparkEngineNoUIFactory sparkEngineNoUIFactory, SparkEngineWithUIFactory sparkEngineWithUIFactory, SparkUIFactory sparkUIFactory, SparkUiDefaults sparkUiDefaults) {
+  public SparkFactoryImpl(KernelFunctionality kernel,
+                          SparkEngineNoUIFactory sparkEngineNoUIFactory,
+                          SparkEngineWithUIFactory sparkEngineWithUIFactory,
+                          SparkUIFactory sparkUIFactory,
+                          SparkUiDefaults sparkUiDefaults,
+                          SparkSessionBuilderFactory sparkSessionBuilderFactory,
+                          SparkListenerService sparkListenerService) {
     this.kernel = kernel;
     this.sparkEngineNoUIFactory = sparkEngineNoUIFactory;
     this.sparkEngineWithUIFactory = sparkEngineWithUIFactory;
     this.sparkUIFactory = sparkUIFactory;
     this.sparkUiDefaults = sparkUiDefaults;
+    this.sparkSessionBuilderFactory = sparkSessionBuilderFactory;
+    this.sparkListenerService = sparkListenerService;
   }
 
   @Override
@@ -84,7 +96,7 @@ public class SparkFactoryImpl implements SparkFactory {
 
   private MagicCommandOutcomeItem createSparkWithoutUI(MagicCommandExecutionParam param, List<SparkOptionCommand> options) {
     return createSparkBasedOnUserSparkConfiguration(param, (builder, message) -> {
-      SparkEngineNoUI sparkEngine = sparkEngineNoUIFactory.create(builder);
+      SparkEngineNoUI sparkEngine = sparkEngineNoUIFactory.create(builder, this.sparkSessionBuilderFactory);
       options.forEach(option -> option.run(sparkEngine, message));
       TryResult configure = sparkEngine.configure(kernel, param.getCode().getMessage());
       if (configure.isError()) {
@@ -94,9 +106,9 @@ public class SparkFactoryImpl implements SparkFactory {
     });
   }
 
-  private void createAndDisplaySparkUI(List<SparkOptionCommand> options, SparkSession.Builder builder, Message message) {
+  private void createAndDisplaySparkUI(List<SparkOptionCommand> options, SparkSessionBuilder builder, Message message) {
     sparkUiDefaults.loadDefaults();
-    SparkEngineWithUI sparkEngineWithUI = sparkEngineWithUIFactory.create(builder);
+    SparkEngineWithUI sparkEngineWithUI = sparkEngineWithUIFactory.create(builder, this.sparkSessionBuilderFactory, this.sparkListenerService);
     options.forEach(option -> option.run(sparkEngineWithUI, message));
     SparkUIApi sparkUI = sparkUIFactory.create(builder, sparkEngineWithUI, sparkUiDefaults);
     displaySparkUI(sparkUI, message);
@@ -105,7 +117,7 @@ public class SparkFactoryImpl implements SparkFactory {
   private MagicCommandOutcomeItem createSparkBasedOnEmptyConfiguration(MagicCommandExecutionParam param, List<SparkOptionCommand> options) {
     SimpleEvaluationObject seo = createSEO(param);
     InternalVariable.setValue(seo);
-    SparkSession.Builder config = SparkSession.builder().config(new SparkConf());
+    SparkSessionBuilder config = this.sparkSessionBuilderFactory.newInstance(new SparkConf());
     createAndDisplaySparkUI(options, config, param.getCode().getMessage());
     return new MagicCommandOutput(MagicCommandOutput.Status.OK);
   }
@@ -114,9 +126,9 @@ public class SparkFactoryImpl implements SparkFactory {
     SimpleEvaluationObject seo = createSEO(param);
     TryResult either = kernel.executeCode(param.getCommandCodeBlock(), seo);
     if (either.isResult()) {
-      Optional<SparkSession.Builder> builderFromUser = getBuilderFromUser(either.result());
+      Optional<SparkSessionBuilder> builderFromUser = getBuilderFromUser(either.result());
       if (builderFromUser.isPresent()) {
-        SparkSession.Builder builder = builderFromUser.get();
+        SparkSessionBuilder builder = builderFromUser.get();
         return sparkRunner.run(builder, param.getCode().getMessage());
       } else {
         return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, CONFIGURATION_MUST_BE_PROVIDED);
@@ -126,18 +138,18 @@ public class SparkFactoryImpl implements SparkFactory {
     }
   }
 
-  private Optional<SparkSession.Builder> getBuilderFromUser(Object result) {
+  private Optional<SparkSessionBuilder> getBuilderFromUser(Object result) {
     if (result instanceof SparkConf) {
-      return of(SparkSession.builder().config((SparkConf) result));
+      return of(sparkSessionBuilderFactory.newInstance((SparkConf) result));
     } else if (result instanceof SparkSession.Builder) {
-      return of((SparkSession.Builder) result);
+      return of(sparkSessionBuilderFactory.newInstance((SparkSession.Builder) result));
     } else {
       return Optional.empty();
     }
   }
 
   public interface SparkRunner {
-    MagicCommandOutput run(SparkSession.Builder builder, Message message);
+    MagicCommandOutput run(SparkSessionBuilder builder, Message message);
   }
 
   private SparkUIApi displaySparkUI(SparkUIApi sparkUI, Message message) {

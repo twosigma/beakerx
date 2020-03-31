@@ -25,7 +25,6 @@ import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.restserver.BeakerXServer;
 import com.twosigma.beakerx.kernel.restserver.Context;
 import com.twosigma.beakerx.message.Message;
-import org.apache.spark.sql.SparkSession;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -89,7 +88,7 @@ public class SparkUI extends VBox implements SparkUIApi {
   private Map getUserSparkConf() {
     Map<String, Object> spark_options = sparkUiDefaults.getProfileByName(sparkUiDefaults.getCurrentProfileName());
     spark_options.putAll(this.sparkEngine.getSparkEngineConf().getConfigs());
-    spark_options.putAll(this.sparkEngine.getSparkConfAsMap());
+    spark_options.putAll(this.sparkEngine.getUserSparkConfAsMap());
     return spark_options;
   }
 
@@ -186,15 +185,15 @@ public class SparkUI extends VBox implements SparkUIApi {
       return TryResult.createError(ONE_SPARK_SESSION_MSG_ERROR);
     } else {
       SparkVariable.putSparkUI(this);
-      return configureSparkContext(parentMessage, kernel, sparkOptions);
+      return createSparkContext(parentMessage, kernel, sparkOptions);
     }
   }
 
-  private TryResult configureSparkContext(Message parentMessage, KernelFunctionality kernel, Map sparkOptions) {
+  private TryResult createSparkContext(Message parentMessage, KernelFunctionality kernel, Map sparkOptions) {
     try {
-      TryResult configure = sparkEngine.configure(kernel, this, parentMessage, sparkOptions);
-      if (configure.isError()) {
-        return TryResult.createError(configure.error());
+      TryResult result = sparkEngine.createSparkContext(kernel, this, parentMessage, sparkOptions);
+      if (result.isError()) {
+        return TryResult.createError(result.error());
       } else {
         singleSparkSession.activate();
         applicationStart();
@@ -278,7 +277,7 @@ public class SparkUI extends VBox implements SparkUIApi {
     }
 
     @Override
-    public SparkUI create(SparkSession.Builder builder, SparkEngineWithUI sparkEngine, SparkUiDefaults sparkUiDefaults) {
+    public SparkUI create(SparkSessionBuilder builder, SparkEngineWithUI sparkEngine, SparkUiDefaults sparkUiDefaults) {
       return new SparkUI(sparkEngine, sparkUiDefaults, singleSparkSession);
     }
   }

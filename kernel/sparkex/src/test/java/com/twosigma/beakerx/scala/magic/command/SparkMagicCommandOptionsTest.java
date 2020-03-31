@@ -17,9 +17,6 @@ package com.twosigma.beakerx.scala.magic.command;
 
 import com.twosigma.beakerx.widget.SparkEngine;
 import com.twosigma.beakerx.widget.SparkEngineConf;
-import com.twosigma.beakerx.widget.SparkUiDefaults;
-import org.apache.spark.SparkConf;
-import org.apache.spark.sql.SparkSession;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -84,12 +81,7 @@ public class SparkMagicCommandOptionsTest {
 
     boolean sparkConnected = false;
 
-    @Override
-    public SparkSession getOrCreate() {
-      return null;
-    }
-
-    @Override
+     @Override
     public String getSparkAppId() {
       return null;
     }
@@ -161,6 +153,16 @@ public class SparkMagicCommandOptionsTest {
 
     @Override
     public String getStopContext() {
+      return null;
+    }
+
+    @Override
+    public String getConf(String name) {
+      return null;
+    }
+
+    @Override
+    public Map<String, Object> getUserSparkConfAsMap() {
       return null;
     }
   }

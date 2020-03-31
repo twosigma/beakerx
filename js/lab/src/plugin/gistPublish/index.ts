@@ -16,11 +16,11 @@
 
 import { NotebookPanel } from "@jupyterlab/notebook";
 import { showDialog, Dialog, ToolbarButton } from '@jupyterlab/apputils';
-import beakerx from "../../beakerx";
-import GistPublishModal from './gistPublishModal';
-import AccessTokenProvider from "../../AccessTokenProvider";
+import { beakerx } from "../../beakerx";
+import { GistPublishModal } from './gistPublishModal';
+import { AccessTokenProvider } from "../../AccessTokenProvider";
 import { CodeCell, Cell } from "@jupyterlab/cells";
-import {CommandRegistry} from "@phosphor/commands";
+import { CommandRegistry } from "@lumino/commands";
 
 export function registerFeature(panel: NotebookPanel, commands: CommandRegistry, showPublication: boolean) {
   if (showPublication) {

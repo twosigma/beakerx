@@ -15,13 +15,14 @@
  */
 
 import * as GistPublish from "./gistPublish/index";
-import { ISettingRegistry, PageConfig } from "@jupyterlab/coreutils";
+import { PageConfig } from "@jupyterlab/coreutils";
 import { ServerConnection } from "@jupyterlab/services";
 import { NotebookPanel } from "@jupyterlab/notebook";
 import { CodeCell } from "@jupyterlab/cells";
-import {ILabShell, JupyterFrontEnd} from "@jupyterlab/application";
+import { ILabShell, JupyterFrontEnd} from "@jupyterlab/application";
+import { ISettingRegistry } from "@jupyterlab/settingregistry";
 
-export default class UIOptionFeaturesHelper {
+export class UIOptionFeaturesHelper {
 
   private showPublicationFeature: ShowPublicationFeature;
   private autoCloseBracketsFeature: AutoCloseBracketsFeature;

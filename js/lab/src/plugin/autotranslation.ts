@@ -16,7 +16,7 @@
 
 /// <reference path='../global.env.ts'/>
 
-import {BEAKER_AUTOTRANSLATION} from "./comm";
+import { BEAKER_AUTOTRANSLATION } from "./comm";
 
 export namespace Autotranslation {
   export const LOCK_PROXY = 'LOCK_PROXY';

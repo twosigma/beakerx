@@ -16,7 +16,7 @@
 
 import { DocumentRegistry } from '@jupyterlab/docregistry';
 import { INotebookModel, Notebook, NotebookPanel } from '@jupyterlab/notebook';
-import { showDialog, Dialog, IClientSession } from '@jupyterlab/apputils';
+import { showDialog, Dialog, ISessionContext } from '@jupyterlab/apputils';
 import { sendJupyterCodeCells, getCodeCellsByTag } from './codeCells';
 import {messageData, messageState} from '../interface/messageData';
 import { Kernel } from "@jupyterlab/services";
@@ -29,7 +29,7 @@ export const BEAKER_AUTOTRANSLATION = 'beakerx.autotranslation';
 export const BEAKER_TAG_RUN = 'beakerx.tag.run';
 
 const getMsgHandlers = (
-  session: IClientSession,
+  session: ISessionContext,
   kernelInstance: Kernel.IKernelConnection,
   notebook: Notebook
 ) => ({
@@ -79,10 +79,10 @@ const getMsgHandlers = (
 });
 
 export const registerCommTargets = async (panel: NotebookPanel, context: DocumentRegistry.IContext<INotebookModel>): Promise<void> => {
-  const session = context.session;
-  const kernelInstance = session.kernel;
+  const sessionContext = context.sessionContext;
+  const kernelInstance = sessionContext.session.kernel;
   const notebook = panel.content;
-  const msgHandlers = getMsgHandlers(session, kernelInstance, notebook);
+  const msgHandlers = getMsgHandlers(sessionContext, kernelInstance, notebook);
 
   kernelInstance.registerCommTarget(BEAKER_GETCODECELLS, (comm) => {
     comm.onMsg = msgHandlers[BEAKER_GETCODECELLS];
@@ -109,7 +109,7 @@ const assignMsgHandlersToExistingComms = (
 ): void => {
   let comm;
   for (let commId in comms) {
-    comm = kernelInstance.connectToComm(comms[commId].target_name, commId);
+    comm = kernelInstance.createComm(comms[commId].target_name, commId);
     assignMsgHandlerToComm(comm, msgHandlers[comm.targetName]);
   }
 };

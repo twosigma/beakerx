@@ -16,7 +16,7 @@
 
 let loader: Promise<void>;
 
-export default class RequirejsLoader {
+export class RequirejsLoader {
 
   public static load(): Promise<void> {
 

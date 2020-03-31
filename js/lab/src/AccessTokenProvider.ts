@@ -15,9 +15,9 @@
  */
 
 
-import GistPublishModal from "./plugin/gistPublish/gistPublishModal";
+import { GistPublishModal } from "./plugin/gistPublish/gistPublishModal";
 
-export default class AccessTokenProvider {
+export class AccessTokenProvider {
   public getPersonalAccessToken(): Promise<string> {
     return new Promise(function(resolve, reject) {
       new GistPublishModal().show((personalAccessToken) => {

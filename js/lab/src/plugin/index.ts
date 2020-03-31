@@ -14,18 +14,18 @@
  *  limitations under the License.
  */
 
-import {Widget} from '@phosphor/widgets';
-import {DisposableDelegate} from '@phosphor/disposable';
-import {DocumentRegistry} from '@jupyterlab/docregistry';
-import {INotebookModel, NotebookPanel} from '@jupyterlab/notebook';
-import {ILabShell, JupyterFrontEnd} from "@jupyterlab/application";
-import {ISettingRegistry} from "@jupyterlab/coreutils";
-import {registerCommTargets} from './comm';
-import {extendHighlightModes, registerCommentOutCmd} from './codeEditor';
-import {enableInitializationCellsFeature} from './initializationCells';
-import UIOptionFeaturesHelper from "./UIOptionFeaturesHelper";
-import {Autotranslation} from "./autotranslation";
-import beakerx from "./../beakerx";
+import { Widget } from '@lumino/widgets';
+import { DisposableDelegate } from '@lumino/disposable';
+import { DocumentRegistry } from '@jupyterlab/docregistry';
+import { INotebookModel, NotebookPanel } from '@jupyterlab/notebook';
+import { ILabShell, JupyterFrontEnd } from "@jupyterlab/application";
+import { ISettingRegistry } from "@jupyterlab/settingregistry";
+import { registerCommTargets } from './comm';
+import { extendHighlightModes, registerCommentOutCmd } from './codeEditor';
+import { enableInitializationCellsFeature } from './initializationCells';
+import { UIOptionFeaturesHelper } from "./UIOptionFeaturesHelper";
+import { Autotranslation } from "./autotranslation";
+import { beakerx } from "./../beakerx";
 import proxify = Autotranslation.proxify;
 
 function displayHTML(widget: Widget, html: string): void {
@@ -40,7 +40,7 @@ function displayHTML(widget: Widget, html: string): void {
   widget.node.appendChild(childElement);
 }
 
-class BeakerxExtension implements DocumentRegistry.WidgetExtension {
+export class BeakerxExtension implements DocumentRegistry.WidgetExtension {
   constructor(
     private app: JupyterFrontEnd,
     private settings: ISettingRegistry,
@@ -54,7 +54,7 @@ class BeakerxExtension implements DocumentRegistry.WidgetExtension {
     let settings = this.settings;
     let labShell = this.labShell;
 
-    Promise.all([panel.session.ready, context.ready]).then(function() {
+    Promise.all([panel.sessionContext.ready, context.ready]).then(function() {
       extendHighlightModes(panel);
       enableInitializationCellsFeature(panel);
       registerCommentOutCmd(panel);
@@ -67,13 +67,13 @@ class BeakerxExtension implements DocumentRegistry.WidgetExtension {
         displayHTML,
         prefs: beakerx.bkCoreManager.getBkApp().getBeakerObject().beakerObj.prefs,
       };
-      window.beakerx = proxify(beakerxInstance, context.session.kernel);
-      window.beakerxHolder[context.session.kernel.id] = window.beakerx;
+      window.beakerx = proxify(beakerxInstance, context.sessionContext.session.kernel);
+      window.beakerxHolder[context.sessionContext.session.kernel.id] = window.beakerx;
 
       plotApiList.setActiveLabPanel(panel);
       labShell.activeChanged.connect((sender, args) => {
         if (args.newValue == panel){
-            window.beakerx = window.beakerxHolder[panel.context.session.kernel.id];
+            window.beakerx = window.beakerxHolder[panel.context.sessionContext.session.kernel.id];
             plotApiList.setActiveLabPanel(panel);
         }
       });
@@ -93,5 +93,3 @@ class BeakerxExtension implements DocumentRegistry.WidgetExtension {
     return new DisposableDelegate(() => { });
   }
 }
-
-export default BeakerxExtension;

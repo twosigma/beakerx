@@ -15,14 +15,14 @@
  */
 
 import './global.env';
-import {ILabShell, JupyterFrontEnd, JupyterFrontEndPlugin} from '@jupyterlab/application';
-import { ISettingRegistry } from "@jupyterlab/coreutils";
-import BeakerxExtension from './plugin';
-import BeakerxTreeJupyterLabPlugin from "./tree";
-import RequirejsLoader from "./plugin/requirejs";
-import {IJupyterWidgetRegistry} from "@jupyter-widgets/base";
-import beakerx from "./beakerx";
-import beakerx_tabledisplay from "./beakerx_tabledisplay";
+import { ILabShell, JupyterFrontEnd, JupyterFrontEndPlugin } from '@jupyterlab/application';
+import { ISettingRegistry } from "@jupyterlab/settingregistry";
+import { BeakerxExtension } from './plugin';
+import { tree as BeakerxTreeJupyterLabPlugin } from "./tree";
+import { RequirejsLoader } from "./plugin/requirejs";
+import { IJupyterWidgetRegistry } from "@jupyter-widgets/base";
+import { beakerx } from "./beakerx";
+import { beakerx_tabledisplay } from "./beakerx_tabledisplay";
 
 export const beakerx_ext: JupyterFrontEndPlugin<void> = {
   id: 'beakerx',

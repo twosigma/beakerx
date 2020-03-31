@@ -14,6 +14,4 @@
  *  limitations under the License.
  */
 
-const beakerx = require('../lib/index.js');
-
-export default beakerx;
+export const beakerx = require('../lib/index.js');

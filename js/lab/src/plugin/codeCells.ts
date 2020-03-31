@@ -15,10 +15,10 @@
  */
 
 import { Notebook } from "@jupyterlab/notebook";
-import { JSONArray } from '@phosphor/coreutils';
+import { JSONArray } from '@lumino/coreutils';
 import { Cell, CodeCell, CodeCellModel } from '@jupyterlab/cells';
-import beakerx from "./../beakerx";
-import {PageConfig} from "@jupyterlab/coreutils";
+import { beakerx } from "./../beakerx";
+import { PageConfig } from "@jupyterlab/coreutils";
 
 export function sendJupyterCodeCells(
   notebook: Notebook,

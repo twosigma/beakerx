@@ -14,6 +14,4 @@
  *  limitations under the License.
  */
 
-const beakerx_tabledisplay = require('../lib/td_index.js');
-
-export default beakerx_tabledisplay;
+export const beakerx_tabledisplay = require('../lib/td_index.js');

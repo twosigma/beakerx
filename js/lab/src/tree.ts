@@ -18,7 +18,7 @@ declare function require(moduleName: string): any;
 
 import { JupyterFrontEndPlugin, ILayoutRestorer, JupyterFrontEnd} from "@jupyterlab/application";
 import { ICommandPalette, WidgetTracker } from "@jupyterlab/apputils";
-import { JSONExt } from "@phosphor/coreutils";
+import { JSONExt } from "@lumino/coreutils";
 import { PageConfig } from "@jupyterlab/coreutils";
 
 const BeakerXTreeLib = require("../lib/tree.js").default;
@@ -63,11 +63,9 @@ function activate(app: JupyterFrontEnd, palette: ICommandPalette, restorer: ILay
   });
 }
 
-const tree: JupyterFrontEndPlugin<void> = {
+export const tree: JupyterFrontEndPlugin<void> = {
   id: 'beakerx_tree',
   autoStart: true,
   requires: [ICommandPalette, ILayoutRestorer],
   activate: activate
 };
-
-export default tree;

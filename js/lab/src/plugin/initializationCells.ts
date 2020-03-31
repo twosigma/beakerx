@@ -16,7 +16,7 @@
 
 import { NotebookPanel } from "@jupyterlab/notebook";
 import { Cell, CodeCell } from '@jupyterlab/cells';
-import { showDialog, Dialog } from '@jupyterlab/apputils';
+import {showDialog, Dialog, ToolbarButtonComponent} from '@jupyterlab/apputils';
 import { ToolbarButton } from '@jupyterlab/apputils'
 
 export interface IInitCellsOptions {
@@ -33,7 +33,7 @@ export function enableInitializationCellsFeature(panel: NotebookPanel): void {
 
   registerNotebookInitCellsAction(panel, options);
 
-  panel.session.kernel.ready.then(() => runInitCells(panel, options));
+  runInitCells(panel, options);
 }
 
 export function runInitCells(panel: NotebookPanel, options: IInitCellsOptions): void {
@@ -46,7 +46,7 @@ export function runInitCells(panel: NotebookPanel, options: IInitCellsOptions): 
     }
   
     console.log(logPrefix, 'running all initialization cells');
-    cells.forEach((cell: CodeCell) => CodeCell.execute(cell, panel.session));
+    cells.forEach((cell: CodeCell) => CodeCell.execute(cell, panel.sessionContext));
     console.log(logPrefix, `finished running ${cells.length} initialization cell${(cells.length !== 1 ? 's' : '')}`);
 }
 
@@ -58,15 +58,19 @@ export function getInitCells(panel: NotebookPanel): CodeCell[] {
   );
 }
 
-function canExecuteInitCells (panel: NotebookPanel, options: IInitCellsOptions, cells: CodeCell[]) {
+async function canExecuteInitCells(panel: NotebookPanel, options: IInitCellsOptions, cells: CodeCell[]): Promise<boolean> {
   const trusted = cells.length && cells[0].model.trusted;
 
-  return (
-    options.run_on_kernel_ready &&
-    (trusted || options.run_untrusted) &&
-    panel.session.kernel &&
-    panel.session.kernel.info.status === 'ok'
-  );
+  if (!options.run_on_kernel_ready) {
+    return false;
+  }
+
+  if (!trusted && !options.run_untrusted) {
+    return false;
+  }
+
+  let info = await panel.sessionContext.session.kernel.info;
+  return info.status === 'ok';
 }
 
 function handleUntrustedKernelInitCells(cells: CodeCell[], options: IInitCellsOptions) {
@@ -83,11 +87,11 @@ export function registerNotebookInitCellsAction(
   panel: NotebookPanel,
   options: IInitCellsOptions
 ): void {
-  const action = {
-    iconClassName: 'bx-RunInitializationCellsIcon fa fa-calculator',
+  const props: ToolbarButtonComponent.IProps = {
+    iconClass: 'bx-RunInitializationCellsIcon fa fa-calculator',
     tooltip: 'Run all initialization cells',
     onClick: () => runInitCells(panel,{ ...options, run_untrusted: true })
   };
 
-  panel.toolbar.insertItem(9,'run-initialization-cells', new ToolbarButton(action));
+  panel.toolbar.insertItem(9,'run-initialization-cells', new ToolbarButton(props));
 }

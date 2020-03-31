@@ -26,8 +26,6 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beakerx.jvm.serialization.ObjectDeserializer;
 import org.slf4j.Logger;
@@ -87,15 +85,14 @@ public class CodeCell {
 
   public static class Serializer extends JsonSerializer<CodeCell> {
 
-    private final Provider<BeakerObjectConverter> objectSerializerProvider;
+    private final BeakerObjectConverter objectSerializerProvider;
 
-    @Inject
-    public Serializer(Provider<BeakerObjectConverter> osp) {
+    public Serializer(BeakerObjectConverter osp) {
       objectSerializerProvider = osp;
     }
 
     private BeakerObjectConverter getObjectSerializer() {
-      return objectSerializerProvider.get();
+      return objectSerializerProvider;
     }
 
     @Override

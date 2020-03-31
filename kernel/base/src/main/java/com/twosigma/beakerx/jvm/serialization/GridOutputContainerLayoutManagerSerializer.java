@@ -15,14 +15,11 @@
  */
 package com.twosigma.beakerx.jvm.serialization;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.twosigma.beakerx.jvm.object.GridOutputContainerLayoutManager;
 
 public class GridOutputContainerLayoutManagerSerializer extends BasicGridLayoutManagerSerializer<GridOutputContainerLayoutManager>  {
 
-  @Inject
-  public GridOutputContainerLayoutManagerSerializer(Provider<BeakerObjectConverter> osp) {
+  public GridOutputContainerLayoutManagerSerializer(BeakerObjectConverter osp) {
     super(osp);
   }
 

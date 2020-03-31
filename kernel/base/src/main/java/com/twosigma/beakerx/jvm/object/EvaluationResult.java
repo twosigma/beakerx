@@ -15,16 +15,13 @@
  */
 package com.twosigma.beakerx.jvm.object;
 
-import java.io.IOException;
-
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.JsonGenerator;
-
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
+
+import java.io.IOException;
 
 public class EvaluationResult {
 
@@ -40,20 +37,19 @@ public class EvaluationResult {
 
   public static class Serializer extends JsonSerializer<EvaluationResult> {
 
-    private final Provider<BeakerObjectConverter> objectSerializerProvider;
+    private final BeakerObjectConverter objectSerializerProvider;
 
-    @Inject
-    public Serializer(Provider<BeakerObjectConverter> osp) {
+    public Serializer(BeakerObjectConverter osp) {
       objectSerializerProvider = osp;
     }
 
     private BeakerObjectConverter getObjectSerializer() {
-      return objectSerializerProvider.get();
+      return objectSerializerProvider;
     }
 
     @Override
-    public void serialize( EvaluationResult evalResult, JsonGenerator jgen,
-        SerializerProvider sp) throws IOException, JsonProcessingException {
+    public void serialize(EvaluationResult evalResult, JsonGenerator jgen,
+                          SerializerProvider sp) throws IOException, JsonProcessingException {
 
       Object obj = evalResult.getValue();
       if (!getObjectSerializer().writeObject(obj, jgen, true))

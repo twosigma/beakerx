@@ -78,13 +78,26 @@ export class TableDisplayView extends widgets.DOMWidgetView implements TableDisp
     const change = this.model.get('updateData');
     const currentModel = this.model.get('model');
     if (change.hasOwnProperty('values')){
-        this.model.set('model', {...currentModel, ...change, values: currentModel.values.concat(change.values||[])},{"shouldResetModel":false});
-        this._currentScope.updateModelValues(this.model.get('model'));
-        this.model.set('loadMoreRows', "loadMoreJSDone");
+        this.updateValues(currentModel, change);
     }else {
         this.model.set('model', {...currentModel, ...change});
         this.handleModelUpdate(model,value, options);
     }
+  }
+
+  private updateValues(currentModel, change) {
+      let newValues = currentModel.values.concat(change.values || [])
+      let newFonts = currentModel.fontColor;
+      if (change.hasOwnProperty('fontColor')) {
+          newFonts = currentModel.fontColor.concat(change.fontColor || [])
+      }
+      this.model.set('model', {
+          ...currentModel, ...change,
+          values: newValues,
+          fontColor: newFonts
+      }, {"shouldResetModel": false});
+      this._currentScope.updateModelValues(this.model.get('model'));
+      this.model.set('loadMoreRows', "loadMoreJSDone");
   }
 
   showWarning(data): void {

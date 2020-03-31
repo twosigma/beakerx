@@ -21,6 +21,7 @@ import {COLUMN_TYPES} from "../column/enums";
 import {ICellData} from "../interface/ICell";
 import {DataGridHelpers} from "../dataGridHelpers";
 import isUrl = DataGridHelpers.isUrl;
+import {selectHasIndex} from "../model/selectors";
 
 export interface ICellDataOptions {
   row: number,
@@ -143,7 +144,7 @@ export default class CellManager {
             region: 'body',
             row: row.index,
             column: column.index,
-            value: row.values[column.index]
+            value: row.getValue(column.index)
           })));
         }
       });
@@ -172,7 +173,7 @@ export default class CellManager {
       cells = this.getAllCells();
     }
 
-    this.executeCopy(this.exportCellsTo(cells, 'tabs'));
+    this.executeCopy(this.exportCellsTo(cells, 'tabs', selectHasIndex(this.dataGrid.store.state)));
   }
 
   CSVDownload(selectedOnly) {
@@ -234,10 +235,10 @@ export default class CellManager {
 
   private getCSVFromCells(selectedOnly: boolean) {
     if (selectedOnly) {
-      return this.exportCellsTo(this.getSelectedCells(), 'csv');
+      return this.exportCellsTo(this.getSelectedCells(), 'csv',selectHasIndex(this.dataGrid.store.state));
     }
 
-    return this.exportCellsTo(this.getAllCells(), 'csv');
+    return this.exportCellsTo(this.getAllCells(), 'csv',selectHasIndex(this.dataGrid.store.state));
   }
 
   private executeCopy(text: string) {
@@ -258,7 +259,7 @@ export default class CellManager {
     input.remove();
   }
 
-  private exportCellsTo(cells, format) {
+  private exportCellsTo(cells, format, has_index) {
     let fix = (s) => s.replace(/"/g, '""');
     let exportOptions = {
       sep: ',',
@@ -266,17 +267,21 @@ export default class CellManager {
       eol: '\n'
     };
 
+    function getStartIndex(has_index) {
+        return (has_index) ?0:1;
+    }
+
     function exportCells(cells, exportOptions) {
       let out = [];
 
       for (let i = 0; i < cells.length; i++) {
         let row = cells[i];
 
-        for (let j = 1; j < row.length; j++) {
+        for (let j = getStartIndex(has_index); j < row.length; j++) {
           let cellData = row[j];
 
           out.push(`${
-            j !== 1 ? exportOptions.sep : ''
+            j !== getStartIndex(has_index) ? exportOptions.sep : ''
           }${
             exportOptions.qot
           }${

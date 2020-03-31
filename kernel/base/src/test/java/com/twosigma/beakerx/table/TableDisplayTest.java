@@ -112,6 +112,20 @@ public class TableDisplayTest {
   }
 
   @Test
+  public void readDataWithIndex() throws Exception {
+    //given
+    String rates = getOsAppropriatePath(getClass().getClassLoader(), "interest-rates.csv");
+    List<Map<String, Object>> values = new CSV().read(rates);
+    //when
+    TableDisplay tableDisplay = new TableDisplay(values, 1);
+    //then
+    Map<String, Object> actual = tableDisplay.getValuesAsRows().get(0);
+    assertThat(actual.keySet().iterator().next()).isEqualTo("y30");
+    assertThat(actual.values().iterator().next()).isEqualTo(8.2586);
+    assertThat(tableDisplay.getHasIndex()).isEqualTo("y30");
+  }
+
+  @Test
   public void shouldSendCommMsgWhenAlignmentProviderForColumnChange() throws Exception {
     //given
     TableDisplayAlignmentProvider centerAlignment = TableDisplayAlignmentProvider.CENTER_ALIGNMENT;
@@ -543,6 +557,30 @@ public class TableDisplayTest {
     LinkedHashMap model = getModelUpdate();
     assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(TIME_ZONE)).isEqualTo(timezone);
+  }
+
+  @Test
+  public void shouldSetGlobalTimezone() throws Exception {
+    //given
+    String gtimezone = "GTZ1";
+    //when
+    TableDisplay.setTimeZoneGlobally(gtimezone);
+    TableDisplay tdWithGlobalTimezone1 = new TableDisplay(getListOfMapsData());
+    TableDisplay tdWithGlobalTimezone2 = new TableDisplay(getListOfMapsData());
+    //then
+    assertThat(tdWithGlobalTimezone1.getTimeZone()).isEqualTo(gtimezone);
+    assertThat(tdWithGlobalTimezone2.getTimeZone()).isEqualTo(gtimezone);
+  }
+
+  @Test
+  public void shouldSetLocalTimezone() throws Exception {
+    //given
+    TableDisplay.setTimeZoneGlobally("GTZ1");
+    //when
+    TableDisplay td = new TableDisplay(getListOfMapsData());
+    td.setTimeZone("TZ2");
+    //then
+    assertThat(td.getTimeZone()).isEqualTo("TZ2");
   }
 
   @Test

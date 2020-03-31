@@ -41,6 +41,9 @@ export default class HeatmapHighlighter extends Highlighter {
     if (this.state.style === HIGHLIGHTER_STYLE.FULL_ROW) {
       return this.colorScale(value);
     }
-    return config.metadata.dataType === 'string' ? BeakerXThemeHelper.DEFAULT_CELL_BACKGROUND : this.colorScale(value);
+    if (isNaN(value)) {
+        return BeakerXThemeHelper.DEFAULT_CELL_BACKGROUND;
+    }
+    return this.colorScale(value);
   }
 }

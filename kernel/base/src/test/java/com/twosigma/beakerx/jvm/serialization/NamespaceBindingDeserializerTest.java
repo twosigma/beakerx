@@ -31,11 +31,9 @@ public class NamespaceBindingDeserializerTest {
     ObjectMapper mapper = new ObjectMapper();
     String str = "{\"type\":\"NamespaceBinding\",\"name\":\"test\"," +
             "\"session\":\"test\",\"value\":1,\"defined\":true}";
-    NamespaceBindingDeserializer deserializer =  new NamespaceBindingDeserializer(() -> {
-      BasicObjectSerializer boSerializer = new BasicObjectSerializer();
-      boSerializer.addTypeDeserializer(new CodeCell.DeSerializer(boSerializer));
-      return boSerializer;
-    });
+    BasicObjectSerializer boSerializer = new BasicObjectSerializer();
+    boSerializer.addTypeDeserializer(new CodeCell.DeSerializer(boSerializer));
+    NamespaceBindingDeserializer deserializer =  new NamespaceBindingDeserializer(boSerializer);
     //when
     NamespaceBinding namespaceBinding = (NamespaceBinding) deserializer.deserialize(
         mapper.getFactory().createParser(str), null);

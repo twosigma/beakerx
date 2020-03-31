@@ -45,13 +45,13 @@ repositories {
 }
 
 dependencies {
-  provided project(':base')
-  compile group: 'org.apache.commons', name: 'commons-dbcp2', version: '2.1.1'
-  compile group: 'org.codehaus.jackson', name: 'jackson-core-asl', version: '1.9.13'
-  compile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.5.1'
+    provided project(':base')
+    compile group: 'org.apache.commons', name: 'commons-dbcp2', version: '2.1.1'
+    compile group: 'org.codehaus.jackson', name: 'jackson-core-asl', version: '1.9.13'
+    compile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.5.1'
 
-  testCompile project(':base').sourceSets.test.output
-  testCompile group: 'com.h2database', name: 'h2', version: '1.4.197'
+    testCompile project(':base').sourceSets.test.output
+    testCompile group: 'com.h2database', name: 'h2', version: '1.4.197'
 }
 
 jar {

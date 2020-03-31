@@ -16,18 +16,27 @@
 
 import { expect } from 'chai';
 import DataGridRow from "../../../../../src/tableDisplay/dataGrid/row/DataGridRow";
+import DataGridCellValue from "../../../../../src/tableDisplay/dataGrid/row/DataGridCellValue";
 
 describe('DataGridRow', () => {
-  const values = [1,2,3,4];
-  const row = new DataGridRow(0,values);
+  const cells = [
+      new DataGridCellValue(1,"#000000"),
+      new DataGridCellValue(2,"#000000"),
+      new DataGridCellValue(3,"#000000"),
+      new DataGridCellValue(4,"#000000")];
+  const row = new DataGridRow(0,cells);
 
   it('should have index property', () => {
     expect(row).to.have.property('index');
     expect(row.index).to.equal(0);
   });
 
-  it('should have values property', () => {
-    expect(row).to.have.property('values');
-    expect(row.values).to.equal(values);
+  it('should have cells property', () => {
+    expect(row).to.have.property('cells');
+    expect(row.cells).to.equal(cells);
   });
+    it('should have getValue function', () => {
+        expect(row.getValue(0)).to.equal(1);
+        expect(row.getValue(3)).to.equal(4);
+    });
 });

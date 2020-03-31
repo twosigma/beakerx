@@ -32,6 +32,7 @@ import com.twosigma.beakerx.table.renderer.TableDisplayCellRenderer;
 import com.twosigma.beakerx.widget.BeakerxWidget;
 import com.twosigma.beakerx.widget.ChangeItem;
 import com.twosigma.beakerx.widget.RunWidgetClosure;
+import org.apache.commons.collections.map.LinkedMap;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,6 +64,7 @@ import static com.twosigma.beakerx.table.TableDisplayToJson.serializeStringForma
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeStringFormatForType;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeTimeZone;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeTooltips;
+import static com.twosigma.beakerx.table.TableDisplayUtils.transformToIndex;
 import static com.twosigma.beakerx.util.Preconditions.checkState;
 import static com.twosigma.beakerx.widget.CompiledCodeRunner.runCompiledCode;
 
@@ -97,23 +99,25 @@ public class TableDisplay extends BeakerxWidget {
   private List<List<String>> tooltips = new ArrayList<>();
   private Integer dataFontSize;
   private Integer headerFontSize;
-  private List<List<Color>> fontColor = new ArrayList<>();
+  private FontColor fontColor = new FontColor();
   private List<List<?>> filteredValues;
   private boolean headersVertical;
   private String hasIndex;
-  private String timeZone;
   private Object doubleClickListener;
   private String doubleClickTag;
   private Map<String, Object> contextMenuListeners = new HashMap<>();
   private Map<String, String> contextMenuTags = new HashMap<>();
   private TableActionDetails details;
   private TableDisplayActions displayActions = new TableDisplayActions(this);
+  private String timeZone;
 
   private static TableDisplayLoadingMode loadingMode = TableDisplayLoadingMode.ALL;
+  private static String timeZoneGlobal;
   public static int PAGE_SIZE = 1000;
   private TableDisplayModel model;
   private String loadMoreRows = "loadMoreServerInit";
   private RowsToShow rowsToShow = RowsToShow.SHOW_25;
+  private Object fontColorProviderClosure;
 
   @Override
   public String getModelNameValue() {
@@ -139,6 +143,7 @@ public class TableDisplay extends BeakerxWidget {
     super();
     this.model = new TableDisplayKeyValueModel(v, new BasicObjectSerializer());
     openComm();
+    this.init();
     model.initValues();
   }
 
@@ -149,6 +154,7 @@ public class TableDisplay extends BeakerxWidget {
     }
     this.model = new TableDisplayListModel(v, co, cl, new BasicObjectSerializer());
     openComm();
+    this.init();
     this.model.initValues();
   }
 
@@ -156,6 +162,7 @@ public class TableDisplay extends BeakerxWidget {
     super();
     this.model = new TableDisplayMapModel(v, serializer);
     openComm();
+    this.init();
     this.model.initValues();
   }
 
@@ -163,7 +170,14 @@ public class TableDisplay extends BeakerxWidget {
     super();
     this.model = new TableDisplayMapModel(v, serializer);
     openComm(message);
+    this.init();
     this.model.initValues();
+  }
+
+  private void init() {
+    if (timeZoneGlobal != null) {
+      setTimeZone(timeZoneGlobal);
+    }
   }
 
   public TableDisplay(Stream<Map<String, Object>> v) {
@@ -172,6 +186,13 @@ public class TableDisplay extends BeakerxWidget {
 
   public TableDisplay(Collection<Map<String, Object>> v) {
     this(v, new BasicObjectSerializer());
+  }
+
+  public TableDisplay(Collection<Map<String, Object>> v, int columnIndex) {
+    this(transformToIndex(v, columnIndex), new BasicObjectSerializer());
+    if (getColumnNames().size() > 0) {
+      setHasIndex(getColumnNames().get(0));
+    }
   }
 
   public TableDisplay(Map<String, Object>[] v) {
@@ -227,7 +248,14 @@ public class TableDisplay extends BeakerxWidget {
 
   void setLoadMoreRows(String loadMoreRows) {
     this.loadMoreRows = loadMoreRows;
-    sendModelUpdate(TableDisplayToJson.serializeValues(this));
+    int start = this.model.values.size();
+    List values = this.takeNextPage();
+    if (this.fontColorProviderClosure != null) {
+      List<List<Color>> fontColors = createFontColors(this.fontColorProviderClosure, start, this.model.values.size());
+      sendModelUpdate(TableDisplayToJson.serializeValuesWithFonts(values, serializeFontColor(fontColors)));
+    } else {
+      sendModelUpdate(TableDisplayToJson.serializeValues(values));
+    }
   }
 
   public List<List<?>> takeNextPage() {
@@ -465,13 +493,26 @@ public class TableDisplay extends BeakerxWidget {
     sendModelUpdate(serializeHeaderFontSize(this.headerFontSize));
   }
 
-  public List<List<Color>> getFontColor() {
+  public FontColor getFontColor() {
     return fontColor;
   }
 
   public void setFontColorProvider(Object closure) {
+    this.fontColorProviderClosure = closure;
+    setFontColorProvider(this.fontColorProviderClosure, 0, this.model.values.size());
+  }
+
+  private void setFontColorProvider(Object closure, int start, int end) {
+    List<List<Color>> fontColors = createFontColors(closure, start, end);
+    sendModelUpdate(serializeFontColor(fontColors));
+  }
+
+  private List<List<Color>> createFontColors(Object closure, int start, int end) {
+    if (start == 0) {
+      this.fontColor.clear();
+    }
     try {
-      for (int rowInd = 0; rowInd < this.model.values.size(); rowInd++) {
+      for (int rowInd = start; rowInd < end; rowInd++) {
         List<?> row = this.model.values.get(rowInd);
         List<Color> rowFontColors = new ArrayList<>();
         for (int colInd = 0; colInd < row.size(); colInd++) {
@@ -483,7 +524,7 @@ public class TableDisplay extends BeakerxWidget {
     } catch (Throwable e) {
       throw new IllegalArgumentException("Can not set font color using closure.", e);
     }
-    sendModelUpdate(serializeFontColor(this.fontColor));
+    return this.fontColor.get(start, end);
   }
 
   public void setFontColorProvider(FontColorProvider fontColorProvider) {
@@ -499,7 +540,7 @@ public class TableDisplay extends BeakerxWidget {
     } catch (Throwable e) {
       throw new IllegalArgumentException("Can not set font color using closure.", e);
     }
-    sendModelUpdate(serializeFontColor(this.fontColor));
+    sendModelUpdate(serializeFontColor(this.fontColor.get()));
   }
 
   public void setRowFilter(Object closure) {
@@ -560,6 +601,14 @@ public class TableDisplay extends BeakerxWidget {
     return timeZone;
   }
 
+  public static void setTimeZoneGlobally(String tz) {
+    timeZoneGlobal = tz;
+  }
+
+  public String getTimeZoneGlobally() {
+    return timeZoneGlobal;
+  }
+
   public List<List<?>> getFilteredValues() {
     return filteredValues;
   }
@@ -569,7 +618,7 @@ public class TableDisplay extends BeakerxWidget {
     if (columns != null && values != null) {
 
       for (List<?> value : values) {
-        Map<String, Object> m = new HashMap<String, Object>();
+        Map<String, Object> m = new LinkedMap();
         for (int c = 0; c < columns.size(); c++) {
           if (value.size() > c)
             m.put(columns.get(c), value.get(c));

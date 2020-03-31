@@ -18,8 +18,8 @@ package com.twosigma.beakerx.jvm.serialization;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.GridOutputContainerLayoutManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
@@ -32,18 +32,19 @@ public class GridOutputContainerLayoutManagerSerializerTest {
   private GridOutputContainerLayoutManager layoutManager;
   private static GridOutputContainerLayoutManagerSerializer serializer;
   private static SerializationTestHelper<GridOutputContainerLayoutManagerSerializer,
-      GridOutputContainerLayoutManager> helper;
+          GridOutputContainerLayoutManager> helper;
 
   @BeforeClass
   public static void setUpClass() throws IOException {
-    serializer = new GridOutputContainerLayoutManagerSerializer(() -> { return new BasicObjectSerializer(); } );
+    serializer = new GridOutputContainerLayoutManagerSerializer(new BasicObjectSerializer());
     helper = new SerializationTestHelper<>(serializer);
   }
 
   @Before
   public void setUp() throws Exception {
     KernelManager.register(new KernelTest());
-    layoutManager = new GridOutputContainerLayoutManager(5) {};
+    layoutManager = new GridOutputContainerLayoutManager(5) {
+    };
   }
 
   @After

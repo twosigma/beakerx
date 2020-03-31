@@ -26,18 +26,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 /*
  * This class is used to deserialize the above fake root object when reading the notebook code cells
  */
 public class BeakerCodeCellListDeserializer extends JsonDeserializer<BeakerCodeCellList> {
 
-  private final Provider<BeakerObjectConverter> objectSerializerProvider;
+  private final BeakerObjectConverter objectSerializerProvider;
 
-  @Inject
-  public BeakerCodeCellListDeserializer(Provider<BeakerObjectConverter> osp) {
+  public BeakerCodeCellListDeserializer(BeakerObjectConverter osp) {
     objectSerializerProvider = osp;
   }
 
@@ -50,7 +47,7 @@ public class BeakerCodeCellListDeserializer extends JsonDeserializer<BeakerCodeC
     List<CodeCell> l = new ArrayList<CodeCell>();
     if (node.isArray()) {
       for (JsonNode o : node) {
-        Object obj = objectSerializerProvider.get().deserialize(o, mapper);
+        Object obj = objectSerializerProvider.deserialize(o, mapper);
         if (obj instanceof CodeCell)
           l.add((CodeCell) obj);
       }

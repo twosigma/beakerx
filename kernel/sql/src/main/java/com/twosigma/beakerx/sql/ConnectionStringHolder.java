@@ -24,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Driver;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class ConnectionStringHolder {
 
@@ -91,7 +92,8 @@ public class ConnectionStringHolder {
 
       if(ds!= null){
         user = getProperty(USER_CONNECTION_KEY, connectionString, ds.getDriver());
-      }if(user == null){
+      }
+      if(user == null){
         user = getProperty(USER_CONNECTION_KEY, connectionString);
       }
        
@@ -121,7 +123,7 @@ public class ConnectionStringHolder {
     String ret = null;
     if(property != null && !property.isEmpty() && dbDriver != null && connectionString != null && !connectionString.isEmpty()){
       try {
-        for (DriverPropertyInfo dpi : dbDriver.getPropertyInfo(connectionString, null)) {
+        for (DriverPropertyInfo dpi : dbDriver.getPropertyInfo(connectionString, new Properties())) {
           if(property.equalsIgnoreCase(dpi.name.trim())){
             ret = dpi.value;
             break;

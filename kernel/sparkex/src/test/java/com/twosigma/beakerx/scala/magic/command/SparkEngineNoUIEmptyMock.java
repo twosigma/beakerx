@@ -20,9 +20,6 @@ import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widget.SparkEngineConf;
 import com.twosigma.beakerx.widget.SparkEngineNoUI;
-import com.twosigma.beakerx.widget.SparkUiDefaults;
-import org.apache.spark.SparkConf;
-import org.apache.spark.sql.SparkSession;
 
 import java.util.Map;
 
@@ -33,32 +30,12 @@ public class SparkEngineNoUIEmptyMock implements SparkEngineNoUI {
   }
 
   @Override
-  public SparkSession getOrCreate() {
-    return null;
-  }
-
-  @Override
-  public SparkConf getSparkConf() {
-    return null;
-  }
-
-  @Override
   public String getSparkAppId() {
     return null;
   }
 
   @Override
-  public Map<String, String> getAdvanceSettings(SparkUiDefaults defaults) {
-    return null;
-  }
-
-  @Override
   public String getSparkUiWebUrl() {
-    return null;
-  }
-
-  @Override
-  public String getSparkMasterUrl() {
     return null;
   }
 
@@ -105,5 +82,35 @@ public class SparkEngineNoUIEmptyMock implements SparkEngineNoUI {
   @Override
   public void sparkUiWebUrlFactory(SparkUiWebUrlFactory factory) {
 
+  }
+
+  @Override
+  public void stop() {
+
+  }
+
+  @Override
+  public void cancelAllJobs() {
+
+  }
+
+  @Override
+  public void cancelStage(int stageid) {
+
+  }
+
+  @Override
+  public String getStopContext() {
+    return null;
+  }
+
+  @Override
+  public String getConf(String name) {
+    return null;
+  }
+
+  @Override
+  public Map<String, Object> getUserSparkConfAsMap() {
+    return null;
   }
 }

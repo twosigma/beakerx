@@ -19,10 +19,7 @@ import com.twosigma.beakerx.kernel.KernelInfo;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widget.SparkEngine;
 import com.twosigma.beakerx.widget.SparkEngineConf;
-import org.apache.spark.sql.SparkSession;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.apache.spark.SparkConf;
 
 import static com.twosigma.beakerx.scala.magic.command.SparkOptions.YARN;
 
@@ -36,18 +33,13 @@ public class YarnSparkOptionCommand implements SparkMagicCommandOptions.SparkOpt
     conf.setMaster("yarn");
     conf.setExecutorCores("4");
     conf.setExecutorMemory("1g");
-    Map<String, String> configs = new HashMap<>();
-    configs.put("spark.submit.deployMode", "client");
-    configs.put("spark.yarn.jars", KernelInfo.mvnRepoPath() + "/*");
-    conf.setConfigs(configs);
     sparkEngine.additionalConf(conf);
-    sparkEngine.sparkUiWebUrlFactory(() -> {
-      SparkSession sparkSession = sparkEngine.getOrCreate();
-      if (sparkSession!= null && sparkSession.sparkContext().getConf().contains(PROXY_URI_BASES)) {
-        return sparkEngine.getOrCreate().sparkContext().getConf().get(PROXY_URI_BASES);
-      }
-      return "";
-    });
+  }
+
+  public static void runtimeConfiguration(SparkEngine sparkEngine, SparkConf sparkConf) {
+    sparkConf.set("spark.submit.deployMode", "client");
+    sparkConf.set("spark.yarn.jars", KernelInfo.mvnRepoPath() + "/*");
+    sparkEngine.sparkUiWebUrlFactory(() -> sparkEngine.getConf(PROXY_URI_BASES));
     sparkEngine.stageLinkFactory((stageId) -> {
       String url = sparkEngine.getSparkUiWebUrl();
       return url + "/stages/stage/?id=" + stageId + "&attempt=0";

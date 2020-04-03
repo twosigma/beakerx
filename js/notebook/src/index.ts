@@ -37,9 +37,11 @@ export * from './TabView';
 export * from './GridView';
 export * from './CyclingDisplayBox';
 export * from './EasyForm';
+export * from './SparkUI2';
 export * from './Plot';
 export * from './Spinner';
 export * from './GistPublisher'
 export * from './GistPublisherUtils'
 
 export const version = require('../package.json').version;
+export {SparkUI2Widget} from "./sparkUI2/SparkUI2Widget";

@@ -11,68 +11,106 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
+
+import ipywidgets as widgets
 from IPython import get_ipython
+from IPython.core import magic_arguments
+from IPython.core.display import display
 from IPython.core.magic import (Magics, magics_class, cell_magic)
-from beakerx_magics.sparkex_widget import  SparkStateProgressUiManager
-from beakerx_magics.sparkex_widget.spark_listener import SparkListener
-from beakerx_magics.sparkex_widget.spark_server import BeakerxSparkServer
+from beakerx.spark import (IpythonManager, BeakerxSparkServerFactory)
+from beakerx.spark.profile import Profile
+from beakerx.spark.spark_engine import SparkEngine
+from beakerx_magics.sparkex_widget.spark_factory import SparkFactory
 from pyspark.sql import SparkSession
+
+
+class SingleSparkSession:
+
+    def __init__(self) -> None:
+        self.active = False
+
+    def is_active(self):
+        return self.active
+
+    def activate(self):
+        self.active = True
+
+    def inactivate(self):
+        self.active = False
+
+
+class SparkSessionFactory:
+    def builder(self):
+        return SparkSession.builder
 
 
 @magics_class
 class SparkexMagics(Magics):
+    SINGLE_SPARK_SESSION = SingleSparkSession()
 
     @cell_magic
+    @magic_arguments.magic_arguments()
+    @magic_arguments.argument('--start', '-s', action='store_true', help='auto start')
+    @magic_arguments.argument('--noUI', '-nu', action='store_true', help='no UI')
+    @magic_arguments.argument('--yarn', '-yr', action='store_true', help='yarn')
     def spark(self, line, cell):
+        self.clear_spark_session()
         ipython = get_ipython()
-        result = self.runCellCode(cell, ipython)
+        result, err = self._runCellCode(cell, ipython)
+        if err is not None:
+            print(err, file=sys.stderr)
+            return
         builder = result.result
-        spark = builder.getOrCreate()
-        sc = spark.sparkContext
-        spark_server = BeakerxSparkServer(sc)
-        ServerRunner().run(spark_server)
-        self.spark_job(ipython, spark, spark_server)
+        ui_options = magic_arguments.parse_argstring(self.spark, line)
+        factory = self._create_spark_factory(
+            builder,
+            IpythonManager(ipython),
+            BeakerxSparkServerFactory(),
+            Profile(),
+            ui_options,
+            self._display_ui,
+            SparkexMagics.SINGLE_SPARK_SESSION)
+        result , err = factory.create_spark()
+        if err is not None:
+            print(err, file=sys.stderr)
+        elif result is not None:
+            print(result)
+        return
 
-        return "SparkSession is available by 'spark'"
+    def clear_spark_session(self):
+        SparkSession.builder._options = {}
 
-    def runCellCode(self, cell, ipython):
-        import ipywidgets as widgets
+    def _create_spark_factory(self,
+                              builder,
+                              ipython_manager,
+                              server_factory,
+                              profile,
+                              ui_options,
+                              display_func,
+                              single_spark_session):
+        factory = SparkFactory(ui_options,
+                               SparkEngine(builder, single_spark_session, SparkSessionFactory()),
+                               ipython_manager,
+                               server_factory,
+                               profile,
+                               display_func)
+        return factory
+
+    def _display_ui(self, spark_ui):
+        return display(spark_ui)
+
+    def _runCellCode(self, cell, ipython):
         out = widgets.Output(layout={'border': '1px solid black'})
         with out:
             result = ipython.run_cell(cell)
         if isinstance(result.result, SparkSession.Builder):
-            pass
+            return result, None
         else:
-            raise TypeError("Spark magic command must return SparkSession.Builder object")
-        return result
-
-    def spark_job(self, ipython, spark, spark_server):
-        sc = spark.sparkContext
-        sc._gateway.start_callback_server()
-        sc._jsc.sc().addSparkListener(SparkListener(SparkStateProgressUiManager(sc, spark_server)))
-        ipython.push({"spark": spark})
-        ipython.push({"sc": sc})
-        return sc
-
-
-class SparkJobRunner:
-    def _task(self, spark_job, ipython, builder, spark_server):
-        spark_job(ipython, builder, spark_server)
-
-    def run(self, spark_job, ipython, builder, spark_server):
-        self._task(spark_job, ipython, builder, spark_server)
-
-
-class ServerRunner:
-
-    def _start_server(self, server):
-        server.run()
-
-    def run(self, server):
-        from threading import Thread
-        t = Thread(target=self._start_server, args=(server,))
-        t.daemon = True
-        t.start()
+            if result.error_in_exec is not None:
+                return None, result.error_in_exec
+            else:
+                return None, "Spark magic command must return SparkSession.Builder object"
 
 
 def load_ipython_extension(ipython):

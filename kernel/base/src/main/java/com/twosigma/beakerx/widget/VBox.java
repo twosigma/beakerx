@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.message.Message;
 
 import java.util.List;
@@ -26,6 +27,12 @@ public class VBox extends Box {
 
   public static final String VIEW_NAME_VALUE = "VBoxView";
   public static final String MODEL_NAME_VALUE = "VBoxModel";
+
+
+  public VBox(Comm comm, List<Widget> children) {
+    super(comm, children);
+  }
+
 
   public VBox(List<Widget> children) {
     super(children);

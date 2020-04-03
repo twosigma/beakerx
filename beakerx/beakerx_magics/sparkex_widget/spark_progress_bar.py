@@ -85,19 +85,19 @@ class SparkStateProgressUiManager:
     CANCELLED_SPARK_JOBS = "cancelledSparkJobs"
     PUT_SPARK_JOBS_IN_THE_BACKGROUND = "putSparkJobsInTheBackground"
 
-    def __init__(self, sc, spark_server):
-        self.sc = sc
+    def __init__(self, engine, spark_server):
+        self.engine = engine
         self.spark_server = spark_server
 
     def job_link(self, job_id):
-        if self.sc.uiWebUrl is not None:
-            return self.sc.uiWebUrl + "/jobs/job/?id=" + str(job_id)
+        if self.engine.get_ui_web_url() is not None:
+            return self.engine.get_ui_web_url() + "/jobs/job/?id=" + str(job_id)
         else:
             return ""
 
     def stage_link(self, stageId):
-        if self.sc.uiWebUrl is not None:
-            return self.sc.uiWebUrl + "/stages/stage/?id=" + str(stageId) + "&attempt=0"
+        if self.engine.get_ui_web_url() is not None:
+            return self.engine.get_ui_web_url() + "/stages/stage/?id=" + str(stageId) + "&attempt=0"
         else:
             return ""
 

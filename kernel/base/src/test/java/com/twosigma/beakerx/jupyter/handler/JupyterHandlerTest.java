@@ -17,6 +17,7 @@
 package com.twosigma.beakerx.jupyter.handler;
 
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.kernel.comm.BxComm;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.Code;
@@ -144,7 +145,7 @@ public class JupyterHandlerTest {
     Message openMessage = initOpenMessage();
     String commId = (String) openMessage.getContent().get(COMM_ID);
     String targetName = (String) openMessage.getContent().get(TARGET_NAME);
-    Comm comm = new Comm(commId, targetName) {
+    Comm comm = new BxComm(commId, targetName) {
       @Override
       public void handleMsg(Message parentMessage) {
       }

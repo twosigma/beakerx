@@ -19,7 +19,10 @@ import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.ConfigurationFile;
 import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.kernel.comm.Buffer;
+import com.twosigma.beakerx.kernel.comm.BxComm;
 import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.kernel.comm.Data;
 import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
 
 import java.io.Serializable;
@@ -95,7 +98,7 @@ public class NamespaceClient implements BeakerXClient {
       state.put("sync", true);
       data.put("state", state);
       data.put("buffer_paths", new HashMap<>());
-      c.send(COMM_MSG, Comm.Buffer.EMPTY, new Comm.Data(data));
+      c.send(COMM_MSG, Buffer.EMPTY, new Data(data));
       return value;
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -128,7 +131,7 @@ public class NamespaceClient implements BeakerXClient {
 
   private Comm getCodeCellsComm() {
     if (codeCellsComm == null) {
-      codeCellsComm = new Comm(TargetNamesEnum.BEAKER_GETCODECELLS);
+      codeCellsComm = new BxComm(TargetNamesEnum.BEAKER_GETCODECELLS);
       codeCellsComm.open();
     }
     return codeCellsComm;
@@ -136,7 +139,7 @@ public class NamespaceClient implements BeakerXClient {
 
   private Comm getTagRunComm() {
     if (tagRunComm == null) {
-      tagRunComm = new Comm(TargetNamesEnum.BEAKER_TAG_RUN);
+      tagRunComm = new BxComm(TargetNamesEnum.BEAKER_TAG_RUN);
       tagRunComm.open();
     }
     return tagRunComm;
@@ -154,7 +157,7 @@ public class NamespaceClient implements BeakerXClient {
       data.put("url", KernelManager.get().getBeakerXServer().getURL() + CODE_CELL_PATH);
       data.put("state", state);
       data.put("buffer_paths", new HashMap<>());
-      c.send(COMM_MSG, Comm.Buffer.EMPTY, new Comm.Data(data));
+      c.send(COMM_MSG, Buffer.EMPTY, new Data(data));
       // block
       Object cells = getMessageQueue("CodeCells").take();
       return (List<CodeCell>) cells;
@@ -171,7 +174,7 @@ public class NamespaceClient implements BeakerXClient {
     state.put("runByTag", tag);
     data.put("state", state);
     data.put("buffer_paths", new HashMap<>());
-    c.send(COMM_MSG, Comm.Buffer.EMPTY, new Comm.Data(data));
+    c.send(COMM_MSG, Buffer.EMPTY, new Data(data));
   }
 
   @Override
@@ -206,7 +209,7 @@ public class NamespaceClient implements BeakerXClient {
       data.put("type", "rest");
       data.put("state", state);
       data.put("buffer_paths", new HashMap<>());
-      c.send(COMM_MSG, Comm.Buffer.EMPTY, new Comm.Data(data));
+      c.send(COMM_MSG, Buffer.EMPTY, new Data(data));
       // block
       Object argNameValue = getMessageQueue(URL_ARG).take();
       return (String) argNameValue;
@@ -217,7 +220,7 @@ public class NamespaceClient implements BeakerXClient {
 
   private Comm getUrlArgComm() {
     if (urlArgComm == null) {
-      urlArgComm = new Comm(TargetNamesEnum.BEAKER_GET_URL_ARG);
+      urlArgComm = new BxComm(TargetNamesEnum.BEAKER_GET_URL_ARG);
       urlArgComm.open();
     }
     return urlArgComm;

@@ -15,351 +15,84 @@
  */
 package com.twosigma.beakerx.kernel.comm;
 
-import com.twosigma.beakerx.evaluator.InternalVariable;
-import com.twosigma.beakerx.kernel.KernelManager;
-import com.twosigma.beakerx.kernel.Utils;
-import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
-import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.util.Preconditions;
 import com.twosigma.beakerx.widget.ChangeItem;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_CLOSE;
-import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
-import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_OPEN;
-import static com.twosigma.beakerx.util.Preconditions.checkNotNull;
-import static java.util.Collections.EMPTY_LIST;
-import static java.util.Collections.singletonList;
+public interface Comm {
 
-public class Comm {
+  String METHOD = "method";
+  String UPDATE = "update";
+  String STATE = "state";
+  String VERSION = "version";
 
-  public static final String METHOD = "method";
-  public static final String UPDATE = "update";
-  public static final String STATE = "state";
-  public static final String VERSION = "version";
-
-  public static final String COMM_ID = "comm_id";
-  public static final String TARGET_NAME = "target_name";
-  public static final String DATA = "data";
-  public static final String METADATA = "metadata";
-  public static final String TARGET_MODULE = "target_module";
-  public static final String COMMS = "comms";
-  public static final String BUFFER_PATHS = "buffer_paths";
-
-  private String commId;
-  private String targetName;
-  private Comm.Data data;
-  private HashMap<?, ?> metadata;
-  private String targetModule;
-  private KernelFunctionality kernel;
-  private List<Handler<Message>> msgCallbackList = new ArrayList<>();
-  private List<Handler<Message>> closeCallbackList = new ArrayList<>();
+  String COMM_ID = "comm_id";
+  String TARGET_NAME = "target_name";
+  String DATA = "data";
+  String METADATA = "metadata";
+  String TARGET_MODULE = "target_module";
+  String COMMS = "comms";
+  String BUFFER_PATHS = "buffer_paths";
 
 
-  public Comm(String commId, String targetName, Message parentMessage) {
-    this(commId, targetName);
-    getParentMessageStrategy = () -> parentMessage;
-  }
+  void addMsgCallbackList(Handler<Message>... handlers);
 
-  public Comm(String commId, String targetName) {
-    super();
-    this.kernel = KernelManager.get();
-    this.commId = commId;
-    this.targetName = targetName;
-    this.data = new Comm.Data(new HashMap<>());
-    this.metadata = new HashMap<>();
-  }
+  void setData(HashMap<?, ?> data);
 
-  public Comm(String commId, TargetNamesEnum targetName) {
-    this(commId, targetName.getTargetName());
-  }
+  void open();
 
-  public Comm(TargetNamesEnum targetName) {
-    this(Utils.commUUID(), targetName.getTargetName());
-  }
+  void open(Buffer buffer);
 
-  public Comm(String targetName) {
-    this(Utils.commUUID(), targetName);
-  }
+  void open(Message parentMessage);
 
-  public String getCommId() {
-    return commId;
-  }
+  void close();
 
-  public String getTargetName() {
-    return targetName;
-  }
+  String getCommId();
 
-  public Comm.Data getData() {
-    return new Comm.Data(new HashMap<>(data.getData()));
-  }
+  void send(Buffer buffer, Data data);
 
-  public void setData(HashMap<?, ?> data) {
-    this.data = new Comm.Data(data);
-  }
+  void send(JupyterMessages type, Data data);
 
-  public void setMetaData(HashMap<?, ?> metadata) {
-    this.metadata = metadata;
-  }
+  void send(JupyterMessages type, Buffer buffer, Data data);
 
-  public String getTargetModule() {
-    return targetModule;
-  }
+  void sendUpdate(Buffer buffer);
 
-  public void setTargetModule(String targetModule) {
-    this.targetModule = targetModule;
-  }
+  void sendUpdate(List<ChangeItem> changes);
 
-  public void addMsgCallbackList(Handler<Message>... handlers) {
-    this.msgCallbackList.addAll(Arrays.asList(handlers));
-  }
+  void sendUpdate(List<ChangeItem> changes, Message parent);
 
-  public void clearMsgCallbackList() {
-    this.msgCallbackList = new ArrayList<>();
-  }
+  Message createUpdateMessage(List<ChangeItem> changes, Message parent);
 
-  public List<Handler<Message>> getCloseCallbackList() {
-    return closeCallbackList;
-  }
+  Message createUpdateMessage(List<ChangeItem> changes, HashMap<String, Object> state);
 
-  public void addCloseCallbackList(Handler<Message>... handlers) {
-    this.closeCallbackList.addAll(Arrays.asList(handlers));
-  }
+  Message createOutputContent(final Map<String, Serializable> content);
 
-  public void clearCloseCallbackList() {
-    this.closeCallbackList = new ArrayList<>();
-  }
+  Message getParentMessage();
 
-  public void open() {
-    doOpen(getParentMessage(), Buffer.EMPTY);
-  }
+  void publish(List<Message> list);
 
-  public void open(Comm.Buffer buffer) {
-    doOpen(getParentMessage(), buffer);
-  }
+  Message createMessage(JupyterMessages type, Buffer buffer, Data data, Message parent);
 
-  public void open(Message parentMessage) {
-    getParentMessageStrategy = () -> parentMessage;
-    doOpen(parentMessage, Buffer.EMPTY);
-  }
+  Message createMessage(JupyterMessages type, Buffer buffer, Data data);
 
-  private void doOpen(Message parentMessage, Buffer buffer) {
-    Preconditions.checkNotNull(parentMessage, "parent message can not be null");
-    Message message = new Message(new Header(COMM_OPEN, parentMessage.getHeader().getSession()));
-    message.setParentHeader(parentMessage.getHeader());
-    HashMap<String, Serializable> map = new HashMap<>();
-    map.put(COMM_ID, getCommId());
-    map.put(TARGET_NAME, getTargetName());
+  String getTargetName();
 
-    HashMap<String, Serializable> state = new HashMap<>();
-    state.put(STATE, data.getData());
-    state.put(METHOD, (Serializable) data.getData().get(METHOD));
-    if (!buffer.isEmpty()) {
-      state.put(BUFFER_PATHS, buffer.getBufferPaths());
-      message.setBuffers(buffer.getBuffers());
-    }
-    map.put(DATA, state);
-    map.put(METADATA, metadata);
+  void handleMsg(Message parentMessage);
 
-    map.put(TARGET_MODULE, getTargetModule());
-    message.setContent(map);
-    message.setMetadata(buildMetadata());
-    kernel.publish(singletonList(message));
-    kernel.addComm(getCommId(), this);
-  }
+  String getTargetModule();
 
-  public void close() {
-    Message parentMessage = getParentMessage();
+  void setTargetModule(String targetModule);
 
-    if (this.getCloseCallbackList() != null && !this.getCloseCallbackList().isEmpty()) {
-      for (Handler<Message> handler : getCloseCallbackList()) {
-        handler.handle(parentMessage);
-      }
-    }
-    Message message = new Message(new Header(COMM_CLOSE, parentMessage.getHeader().getSession()));
-    if (parentMessage != null) {
-      message.setParentHeader(parentMessage.getHeader());
-    }
-    HashMap<String, Serializable> map = new HashMap<>();
-    map.put(COMM_ID, getCommId());
-    map.put(DATA, new HashMap<>());
-    map.put(METADATA, new HashMap<>());
-    message.setContent(map);
-    message.setMetadata(buildMetadata());
+  Data getData();
 
-    kernel.removeComm(getCommId());
-    kernel.publish(singletonList(message));
-  }
+  Comm createNewComm();
 
-  public void send(Comm.Buffer buffer, Comm.Data data) {
-    send(COMM_MSG, buffer, data);
-  }
+  void sendData(String event, HashMap<String, String> payload);
 
-  public void send(JupyterMessages type, Comm.Data data) {
-    send(type, Buffer.EMPTY, data);
-  }
-
-  public void send(JupyterMessages type, Comm.Buffer buffer, Comm.Data data) {
-    Message message = createMessage(type, buffer, data);
-    kernel.publish(singletonList(message));
-  }
-
-  public Message createMessage(JupyterMessages type, Buffer buffer, Comm.Data data, Message parent) {
-    HashMap<String, Serializable> map = new HashMap<>(6);
-    if (type != JupyterMessages.DISPLAY_DATA) {
-      map.put(COMM_ID, getCommId());
-    }
-    map.put(DATA, data.getData());
-    map.put(METADATA, metadata);
-    return create(type, buffer, map, parent);
-  }
-
-  public Message createMessage(JupyterMessages type, Buffer buffer, Comm.Data data) {
-    HashMap<String, Serializable> map = new HashMap<>(6);
-    if (type != JupyterMessages.DISPLAY_DATA) {
-      map.put(COMM_ID, getCommId());
-    }
-    map.put(DATA, data.getData());
-    map.put(METADATA, metadata);
-    return create(type, buffer, map);
-  }
-
-  private Message create(JupyterMessages type, Comm.Buffer buffer, Map<String, Serializable> content, Message parent) {
-    return messageMessage(type, buffer, content, parent);
-  }
-
-  private Message create(JupyterMessages type, Comm.Buffer buffer, Map<String, Serializable> content) {
-    return messageMessage(type, buffer, content, getParentMessage());
-  }
-
-  public static Message messageMessage(JupyterMessages type, Buffer buffer, Map<String, Serializable> content, Message parentMessage) {
-    Message message = new Message(new Header(type, parentMessage.getHeader().getSession()));
-    checkNotNull(parentMessage);
-    message.setParentHeader(parentMessage.getHeader());
-    message.setContent(content);
-    message.setMetadata(buildMetadata());
-    if (!buffer.isEmpty()) {
-      message.setBuffers(buffer.getBuffers());
-    }
-    return message;
-  }
-
-  public void publish(List<Message> list) {
-    kernel.publish(list);
-  }
-
-  public void sendUpdate(Comm.Buffer buffer) {
-    HashMap<String, Serializable> content = new HashMap<>();
-    content.put(METHOD, UPDATE);
-    HashMap<Object, Object> state = new HashMap<>();
-    content.put(STATE, state);
-    content.put(BUFFER_PATHS, buffer.getBufferPaths());
-    this.send(buffer, new Comm.Data(content));
-  }
-
-  public Message createOutputContent(final Map<String, Serializable> content) {
-    return this.create(JupyterMessages.STREAM, Buffer.EMPTY, content);
-  }
-
-  public void sendUpdate(List<ChangeItem> changes) {
-    Message message = createUpdateMessage(changes, new HashMap<>());
-    kernel.publish(singletonList(message));
-  }
-
-  public void sendUpdate(List<ChangeItem> changes, Message parent) {
-    Message message = createUpdateMessage(changes, parent);
-    kernel.publish(singletonList(message));
-  }
-
-  public Message createUpdateMessage(List<ChangeItem> changes, Message parent) {
-    HashMap<String, Serializable> content = new HashMap<>();
-    content.put(METHOD, UPDATE);
-    HashMap<Object, Object> state = new HashMap<>();
-    changes.forEach( x-> state.put(x.getPropertyName(), x.getValue()));
-    content.put(STATE, state);
-    content.put(BUFFER_PATHS, new HashMap<>());
-    return this.createMessage(COMM_MSG, Buffer.EMPTY, new Comm.Data(content), parent);
-  }
-
-  public Message createUpdateMessage(List<ChangeItem> changes, HashMap<String, Object> state) {
-    HashMap<String, Serializable> content = new HashMap<>();
-    content.put(METHOD, UPDATE);
-    changes.forEach( x-> state.put(x.getPropertyName(), x.getValue()));
-    content.put(STATE, state);
-    content.put(BUFFER_PATHS, new HashMap<>());
-    return this.createMessage(COMM_MSG, Buffer.EMPTY, new Comm.Data(content));
-  }
-
-  public void handleMsg(Message parentMessage) {
-    for (Handler<Message> handler : this.msgCallbackList) {
-      handler.handle(parentMessage);
-    }
-  }
-
-  private static HashMap<String, Serializable> buildMetadata() {
-    HashMap<String, Serializable> metadata = new HashMap<>();
-    metadata.put(VERSION, "2");
-    return metadata;
-  }
-
-  @Override
-  public String toString() {
-    return commId + "/" + targetName + "/" + (targetModule != null && !targetModule.isEmpty() ? targetModule : "");
-  }
-
-  public Message getParentMessage() {
-    return getParentMessageStrategy.getParentMessage();
-  }
-
-  private GetParentMessageStrategy getParentMessageStrategy = InternalVariable::getParentHeader;
-
-  interface GetParentMessageStrategy {
-    Message getParentMessage();
-  }
-
-  public static class Data {
-
-    private HashMap<?, ?> data;
-
-    public Data(HashMap<?, ?> data) {
-      this.data = data;
-    }
-
-    public HashMap<?, ?> getData() {
-      return data;
-    }
-  }
-
-  public static class Buffer {
-    public final static Buffer EMPTY = new Buffer(EMPTY_LIST, new ArrayList<>());
-
-    private List<byte[]> buffers;
-    private ArrayList<List<String>> bufferPaths;
-
-    public Buffer(List<byte[]> buffers, ArrayList<List<String>> bufferPaths) {
-      this.buffers = buffers;
-      this.bufferPaths = bufferPaths;
-    }
-
-    public List<byte[]> getBuffers() {
-      return buffers;
-    }
-
-    public ArrayList<List<String>> getBufferPaths() {
-      return bufferPaths;
-    }
-
-    public boolean isEmpty() {
-      return buffers.isEmpty();
-    }
-  }
 }

@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.twosigma.beakerx.kernel.comm.Comm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +34,14 @@ public abstract class BeakerxWidget extends Widget {
   public static final String VIEW_MODULE_VALUE = "beakerx";
   public static final String MODEL = "model";
   public static final String MODEL_UPDATE = "updateData";
+
+  public BeakerxWidget(Comm comm) {
+    super(comm);
+  }
+
+  public BeakerxWidget() {
+  }
+
   private UpdateModel updateModel = (List<ChangeItem> changes) -> {
     //empty function
   };

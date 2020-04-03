@@ -19,9 +19,11 @@ import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.message.Message;
 
+import java.util.Map;
+
 public interface SparkEngineWithUI extends SparkEngine {
 
-  TryResult configure(KernelFunctionality kernel, SparkUIApi sparkUI, Message parentMessage);
+  TryResult createSparkContext(KernelFunctionality kernel, SparkUIApi sparkUI, Message parentMessage, Map<String, Object> sparkOptions);
 
   boolean isAutoStart();
 

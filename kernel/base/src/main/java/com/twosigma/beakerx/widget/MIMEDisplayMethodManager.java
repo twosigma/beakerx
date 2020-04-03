@@ -17,7 +17,8 @@ package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.Display;
 import com.twosigma.beakerx.kernel.KernelManager;
-import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.kernel.comm.Buffer;
+import com.twosigma.beakerx.kernel.comm.BxComm;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 
@@ -65,7 +66,7 @@ public class MIMEDisplayMethodManager {
       mimeContainers.forEach(x -> data.put(x.getMime().asString(), x.getData()));
       content.put(DATA, data);
       content.put(METADATA, new HashMap<>());
-      Message message = Comm.messageMessage(DISPLAY_DATA, Comm.Buffer.EMPTY, content, getParentHeader());
+      Message message = BxComm.messageMessage(DISPLAY_DATA, Buffer.EMPTY, content, getParentHeader());
       KernelManager.get().publish(singletonList(message));
     }
   }

@@ -1,0 +1,48 @@
+$spinner_size: 28px;
+$spinner_radius: $spinner_size * .35;
+$spinner_width: $spinner_size * .08;
+$spinner_height: $spinner_size * .22;
+$spinner_color: none;
+$spinner_bgcolor: #000000;
+$spinner_speed: 1.2s;
+
+@keyframes lds-spinner {
+  0% {
+    opacity: 1
+  }
+  100% {
+    opacity: 0
+  }
+}
+
+.lds-spinner {
+  color: $spinner_color;
+  display: inline-block;
+  position: relative;
+  width: round($spinner_size);
+  height: round($spinner_size);
+  vertical-align: bottom;
+
+  div {
+    transform-origin: round($spinner_size * .5) round($spinner_size * .5);
+    animation: lds-spinner $spinner_speed linear infinite;
+    &:after {
+      content: " ";
+      display: block;
+      position: absolute;
+      top: round($spinner_size * .5 - $spinner_radius - $spinner_height * .5);
+      left: round($spinner_size * .5 - $spinner_width * .5);
+      width: round($spinner_width);
+      height: round($spinner_height);
+      border-radius: 20%;
+      background: $spinner_bgcolor;
+    }
+
+    @for $i from 0 through 11 {
+      &:nth-child(#{$i + 1}) {
+        transform: rotate(#{$i * 30deg});
+        animation-delay: ($spinner_speed * -1 * (11 - $i) / 12);
+      }
+    }
+  }
+}

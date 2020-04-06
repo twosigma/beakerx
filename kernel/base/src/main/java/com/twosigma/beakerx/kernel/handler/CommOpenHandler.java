@@ -16,9 +16,11 @@
 
 package com.twosigma.beakerx.kernel.handler;
 
-import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.handler.Handler;
+import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.comm.BxComm;
+import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import org.slf4j.Logger;
@@ -28,6 +30,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 import static com.twosigma.beakerx.kernel.comm.Comm.COMM_ID;
 import static com.twosigma.beakerx.kernel.comm.Comm.DATA;
 import static com.twosigma.beakerx.kernel.comm.Comm.TARGET_MODULE;
@@ -35,9 +38,6 @@ import static com.twosigma.beakerx.kernel.comm.Comm.TARGET_NAME;
 import static com.twosigma.beakerx.kernel.comm.TargetNamesEnum.BEAKER_AUTOTRANSLATION;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_CLOSE;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_OPEN;
-import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
-
-import com.twosigma.beakerx.kernel.KernelFunctionality;
 
 /**
  * @author konst
@@ -107,9 +107,9 @@ public abstract class CommOpenHandler extends KernelHandler<Message> {
     String targetName = getString(map, TARGET_NAME);
     Comm ret;
     if (BEAKER_AUTOTRANSLATION.getTargetName().equals(targetName)) {
-      ret = new Comm(getString(map, COMM_ID), targetName, message);
+      ret = new BxComm(getString(map, COMM_ID), targetName, message);
     } else {
-      ret = new Comm(getString(map, COMM_ID), targetName);
+      ret = new BxComm(getString(map, COMM_ID), targetName);
     }
     return ret;
   }

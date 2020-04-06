@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.message.Message;
 
 import java.io.Serializable;
@@ -36,6 +37,12 @@ public abstract class Box extends ValueWidget<String> {
 
   private List<Widget> children;
   private String boxStyle="";
+
+  public Box(Comm comm, List<Widget> children) {
+    super(comm);
+    this.children = children;
+  }
+
 
   public Box(List<Widget> children) {
     super();

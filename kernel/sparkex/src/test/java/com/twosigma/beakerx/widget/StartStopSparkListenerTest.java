@@ -50,31 +50,6 @@ public class StartStopSparkListenerTest {
     private boolean ended = false;
 
     @Override
-    public List<SparkConfiguration.Configuration> getAdvancedOptions() {
-      return null;
-    }
-
-    @Override
-    public Text getMasterURL() {
-      return null;
-    }
-
-    @Override
-    public boolean getHiveSupport() {
-      return false;
-    }
-
-    @Override
-    public Text getExecutorMemory() {
-      return null;
-    }
-
-    @Override
-    public Text getExecutorCores() {
-      return null;
-    }
-
-    @Override
     public void startStage(int stageId, int numTasks) {
 
     }
@@ -105,23 +80,8 @@ public class StartStopSparkListenerTest {
     }
 
     @Override
-    public void startSpinner(Message message) {
-
-    }
-
-    @Override
-    public void stopSpinner() {
-
-    }
-
-    @Override
     public void taskCancelled(int stageId, long taskId) {
 
-    }
-
-    @Override
-    public Button getConnectButton() {
-      return null;
     }
 
     @Override

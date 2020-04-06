@@ -21,6 +21,8 @@ import java.util.Map;
 public interface SparkUiDefaults {
 
   String DEFAULT_PROFILE = "";
+  String SPARK_PROFILES = "profiles";
+  String CURRENT_PROFILE = "current_profile";
 
   void saveSparkConf(List<Map<String, Object>> sparkConf);
 
@@ -34,15 +36,11 @@ public interface SparkUiDefaults {
 
   void loadProfiles();
 
-  void saveProfile(Map<String, Object> profile);
+  void saveProfiles(List<Map<String, Object>> profile);
 
-  List<String> getProfileNames();
-
-  void saveProfileName(String profileName);
+  void saveCurrentProfileName(String profileName);
 
   String getCurrentProfileName();
-
-  boolean containsKey(String key);
 
   Object get(String key);
 

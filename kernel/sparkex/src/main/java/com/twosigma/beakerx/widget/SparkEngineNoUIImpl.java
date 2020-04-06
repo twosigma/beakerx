@@ -19,7 +19,6 @@ import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.message.Message;
 import org.apache.spark.SparkConf;
-import org.apache.spark.sql.SparkSession;
 
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -31,26 +30,34 @@ import static com.twosigma.beakerx.widget.SparkUIApi.SPARK_MASTER;
 
 public class SparkEngineNoUIImpl extends SparkEngineBase implements SparkEngineNoUI {
 
-  SparkEngineNoUIImpl(SparkSession.Builder sparkSessionBuilder) {
+  private SparkSessionBuilderFactory sparkSessionBuilderFactory;
+
+  SparkEngineNoUIImpl(SparkSessionBuilder sparkSessionBuilder, SparkSessionBuilderFactory sparkSessionBuilderFactory) {
     super(sparkSessionBuilder, errorPrinter());
+    this.sparkSessionBuilderFactory = sparkSessionBuilderFactory;
   }
 
   @Override
   public TryResult configure(KernelFunctionality kernel, Message parentMessage) {
-    final SparkConf sparkConf = getSparkConfBasedOn(this.sparkSessionBuilder);
-    configureSparkConfDefaults(sparkConf);
-    configureSparkConf(sparkConf);
-    this.sparkSessionBuilder = SparkSession.builder().config(sparkConf);
+    final SparkConf sparkConf = newSparkConf();
+    this.sparkSessionBuilder = this.sparkSessionBuilderFactory.newInstance(sparkConf);
     TryResult sparkSessionTry = createSparkSession();
     if (sparkSessionTry.isError()) {
       return sparkSessionTry;
     }
-    SparkVariable.putSparkSession(getOrCreate());
+    SparkVariable.putSparkSession(this.sparkSessionBuilder.getOrCreate());
     TryResult tryResultSparkContext = initSparkContextInShell(kernel, parentMessage);
     if (!tryResultSparkContext.isError()) {
       kernel.registerCancelHook(SparkVariable::cancelAllJobs);
     }
     return tryResultSparkContext;
+  }
+
+  private SparkConf newSparkConf() {
+    final SparkConf sparkConf = this.userSparkSessionBuilder.getSparkConf();
+    configureSparkConfDefaults(sparkConf);
+    configureSparkConf(sparkConf);
+    return sparkConf;
   }
 
   private void configureSparkConfDefaults(SparkConf sparkConf) {
@@ -65,15 +72,31 @@ public class SparkEngineNoUIImpl extends SparkEngineBase implements SparkEngineN
     }
   }
 
+  @Override
+  public void stop() {
+    sparkSessionBuilder.stop();
+  }
+
+  @Override
+  public void cancelAllJobs() {
+    sparkSessionBuilder.cancelAllJobs();
+  }
+
+  @Override
+  public void cancelStage(int stageid) {
+    sparkSessionBuilder.cancelStage(stageid);
+  }
+
+
   public interface SparkEngineNoUIFactory {
-    SparkEngineNoUI create(SparkSession.Builder sparkSessionBuilder);
+    SparkEngineNoUI create(SparkSessionBuilder sparkSessionBuilder, SparkSessionBuilderFactory sparkSessionBuilderFactory);
   }
 
   public static class SparkEngineNoUIFactoryImpl implements SparkEngineNoUIFactory {
 
     @Override
-    public SparkEngineNoUI create(SparkSession.Builder sparkSessionBuilder) {
-      return new SparkEngineNoUIImpl(sparkSessionBuilder);
+    public SparkEngineNoUI create(SparkSessionBuilder sparkSessionBuilder, SparkSessionBuilderFactory sparkSessionBuilderFactory) {
+      return new SparkEngineNoUIImpl(sparkSessionBuilder, sparkSessionBuilderFactory);
     }
   }
 

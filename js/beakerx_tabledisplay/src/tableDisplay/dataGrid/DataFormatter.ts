@@ -249,7 +249,7 @@ export class DataFormatter {
         return formatTimestamp(value.timestamp, tz, format);
     }
 
-    let milli = null === value || isNaN(value)  ?
+    let milli = isNaN(value) ?
         value :
         new Big(value).times(valueModifier);
 

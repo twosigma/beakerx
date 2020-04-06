@@ -173,4 +173,19 @@ public class TestWidgetUtils {
             .collect(Collectors.toList());
     return result;
   }
+
+  public static List<Message> dataContains(List<Message> messages, String attribute) {
+    List<Message> result = messages.stream()
+            .filter(message -> {
+              Map data = TestWidgetUtils.getData(message);
+              if (data != null) {
+                Object expected = data.get(attribute);
+                return expected != null;
+              }
+              return false;
+            })
+            .collect(Collectors.toList());
+    return result;
+  }
+
 }

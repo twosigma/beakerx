@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.message.Message;
 
 import java.io.Serializable;
@@ -36,6 +37,10 @@ public abstract class ValueWidget<T extends Serializable> extends DOMWidget {
   protected String description = "";
   protected Integer msg_throttle = 3;
   private ActionOnUpdate<T> actionOnUpdate;
+
+  public ValueWidget(Comm comm) {
+    super(comm);
+  }
 
   public ValueWidget() {
     super();

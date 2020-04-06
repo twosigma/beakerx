@@ -15,7 +15,8 @@
  */
 package com.twosigma.beakerx.widget;
 
-import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.kernel.comm.Buffer;
+import com.twosigma.beakerx.kernel.comm.Data;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 
@@ -126,7 +127,7 @@ public class Output extends DOMWidget {
   private void display(HashMap<String, Serializable> content) {
     List<Message> list = new ArrayList<>();
     list.add(getComm().createUpdateMessage(asList(new ChangeItem(MSG_ID, getComm().getParentMessage().getHeader().getId())), new HashMap<>()));
-    list.add(getComm().createMessage(DISPLAY_DATA, Comm.Buffer.EMPTY, new Comm.Data(content)));
+    list.add(getComm().createMessage(DISPLAY_DATA, Buffer.EMPTY, new Data(content)));
     getComm().publish(list);
   }
 

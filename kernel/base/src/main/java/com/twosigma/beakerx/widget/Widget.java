@@ -16,8 +16,10 @@
 package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.kernel.comm.Buffer;
+import com.twosigma.beakerx.kernel.comm.BxComm;
 import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
+import com.twosigma.beakerx.kernel.comm.Data;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.table.handlers.StateRequestMsgCallbackHandler;
 
@@ -59,19 +61,23 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget, Wi
 
   private Comm comm;
 
-  public Widget() {
-    comm = new Comm(TargetNamesEnum.JUPYTER_WIDGET);
+  public Widget(Comm comm) {
+    this.comm = comm;
     getComm().addMsgCallbackList(new StateRequestMsgCallbackHandler(this::stateRequestHandler));
   }
 
-  public void stateRequestHandler(){
+  public Widget() {
+    this(BxComm.createComm());
+  }
+
+  public void stateRequestHandler() {
   }
 
   protected void openComm() {
-    openComm(Comm.Buffer.EMPTY);
+    openComm(Buffer.EMPTY);
   }
 
-  private void openComm(Comm.Buffer buffer) {
+  private void openComm(Buffer buffer) {
     comm.setData(createState());
     addValueChangeMsgCallback();
     comm.open(buffer);
@@ -107,7 +113,7 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget, Wi
     data.put(MODEL_ID, getComm().getCommId());
     content.put(METHOD, DISPLAY);
     content.put(APPLICATION_VND_JUPYTER_WIDGET_VIEW_JSON, data);
-    getComm().send(DISPLAY_DATA, new Comm.Data(content));
+    getComm().send(DISPLAY_DATA, new Data(content));
   }
 
   protected HashMap<String, Object> createState() {
@@ -162,7 +168,7 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget, Wi
   }
 
   public void sendUpdate(String propertyName, Object value, Message parent) {
-    this.sendUpdate(asList(new ChangeItem(propertyName, value)),parent);
+    this.sendUpdate(asList(new ChangeItem(propertyName, value)), parent);
   }
 
   public void sendUpdate(ChangeItem change) {
@@ -177,7 +183,7 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget, Wi
     this.comm.sendUpdate(changes, parent);
   }
 
-  public void sendUpdate(Comm.Buffer buffer) {
+  public void sendUpdate(Buffer buffer) {
     this.comm.sendUpdate(buffer);
   }
 

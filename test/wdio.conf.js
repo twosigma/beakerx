@@ -20,7 +20,8 @@ exports.config = {
   ],
   exclude: [
     './js/nbviewer/*.js',
-    './js/*/infinit*.js'
+    './js/*/infinit*.js',
+    './js/groovy/javaArg*.js'
   ],
   maxInstances: 1,
   capabilities: [{

@@ -30,17 +30,17 @@ describe('Spark UI', function () {
 
   function startSparkSession(codeCell){
     var output = beakerxPO.getAllOutputsWidget(codeCell)[0];
-    output.$('button.p-Widget.bx-spark-connect').click();
+    output.$('button.bx-spark-connect-start').click();
     browser.waitUntil(function(){
-      return output.$$('div.p-Widget.bx-status-panel').length > 0;
+      return output.$('div.p-Widget.bx-stats').isDisplayed();
     });
   }
 
   function stopSparkSession(codeCell){
     var output = beakerxPO.getAllOutputsWidget(codeCell)[0];
-    output.$('button.bx-button.icon-close').click();
+    output.$('button.bx-spark-connect-stop').click();
     browser.waitUntil(function(){
-      return !output.$('div.p-Widget.bx-status-panel').isExisting();
+      return !output.$('div.p-Widget.bx-stats').isDisplayed();
     });
   }
 
@@ -60,110 +60,33 @@ describe('Spark UI', function () {
     it('Should add Spark jars ', function () {
       cellIndex = 0;
       beakerxPO.runCodeCellByIndex(cellIndex);
-      beakerxPO.kernelIdleIcon.waitForEnabled();
+      beakerxPO.kernelIdleIcon.waitForEnabled(60000);
       beakerxPO.waitAndCheckOutputTextOfWidget(cellIndex, /spark-sql/, 1);
       beakerxPO.waitAndCheckOutputTextOfWidget(cellIndex, /spark-core/, 1);
     });
   });
 
   describe('Spark cell magic ', function () {
-    var output;
+    var sparkWdg;
     var codeCell;
 
     it('Should display GUI dialog', function () {
       cellIndex += 1;
       codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      output = beakerxPO.getAllOutputsWidget(codeCell)[0];
-      expect(output.$('button.p-Widget.bx-spark-connect').isEnabled()).toBeTruthy();
-      expect(output.$('div.p-Widget.bx-spark-profile').isEnabled()).toBeTruthy();
-      expect(output.$('div.p-Widget.bx-spark-master-url').isEnabled()).toBeTruthy();
-      expect(output.$('div.p-Widget.bx-spark-executor-cores').isEnabled()).toBeTruthy();
-      expect(output.$('div.p-Widget.bx-spark-executor-memory').isEnabled()).toBeTruthy();
+      var output = beakerxPO.getAllOutputsWidget(codeCell)[0];
+      sparkWdg = output.$('div.p-Widget.bx-spark2-widget');
+      expect(sparkWdg.$('button.p-Widget.bx-spark-connect').isEnabled()).toBeTruthy();
+      expect(sparkWdg.$('div.p-Widget.bx-spark-profile-selector').isEnabled()).toBeTruthy();
     });
 
     it('Should start spark session', function () {
       startSparkSession(codeCell);
-      expect(output.$('div.p-Widget.bx-status-panel').isEnabled()).toBeTruthy();
+      expect(sparkWdg.$('div.p-Widget.bx-spark-session').isDisplayed()).toBeTruthy();
     });
 
     it('Should stop spark session', function () {
       stopSparkSession(codeCell);
-      expect(output.$('div.p-Widget.bx-status-panel').isExisting()).toBeFalsy();
-    });
-  });
-
-  function clickSaveProfile(output) {
-    output.$('button[title="Save profile"]').click();
-  }
-
-  function clickAddProperty(output) {
-    cleanProfileProperties(output);
-    output.$('button.bx-properties-add-button').click();
-  }
-  
-  function checkProfileError(output, msg) {
-    expect(output.$('div.bx-spark-connect-error').getText()).toEqual(msg);
-  }
-
-  function cleanProfileProperties(output){
-    while(output.$$('button.icon-close').length > 1){
-      output.$$('button.icon-close')[1].click();
-      browser.pause(500);
-    }
-  }
-
-  describe('Add property to Spark profile', function () {
-    var output;
-
-    it("Can't save when 'name' property is empty ", function () {
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      output = beakerxPO.getAllOutputsWidget(codeCell)[0];
-      expect(output.$('div.p-Widget.bx-spark-configuration').isEnabled()).toBeTruthy();
-      clickAddProperty(output);
-      browser.pause(1000);
-      clickSaveProfile(output);
-      checkProfileError(output, "Property 'name' can not be empty");
-    });
-    it("Can't start when 'name' property is empty ", function () {
-      output.$$('button.icon-close')[1].click();
-      clickAddProperty(output);
-      output.$('button.p-Widget.bx-spark-connect').click();
-      browser.pause(1000);
-      checkProfileError(output, "Property 'name' can not be empty");
-    });
-    it("Can't save when 'value' property is empty ", function () {
-      output.$$('button.icon-close')[1].click();
-      clickAddProperty(output);
-      output.$('div.bx-spark-configuration').$$('input')[0].click();
-      browser.keys('g');
-      clickSaveProfile(output);
-      checkProfileError(output, "Property 'value' can not be empty");
-    });
-    it("Can't start when 'value' property is empty ", function () {
-      output.$$('button.icon-close')[1].click();
-      clickAddProperty(output);
-      output.$('div.bx-spark-configuration').$$('input')[0].click();
-      browser.keys('g');
-      output.$('button.p-Widget.bx-spark-connect').click();
-      checkProfileError(output, "Property 'value' can not be empty");
-    });
-    it("Should save not empty property ", function () {
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      output = beakerxPO.getAllOutputsWidget(codeCell)[0];
-      expect(output.$('div.p-Widget.bx-spark-configuration').isEnabled()).toBeTruthy();
-      clickAddProperty(output);
-      output.$('div.bx-spark-configuration').$$('input')[0].click();
-      browser.keys('n');
-      output.$('div.bx-spark-configuration').$$('input')[1].click();
-      browser.keys('v');
-      clickSaveProfile(output);
-      expect(output.$('div.bx-spark-connect-error').getText().length).toEqual(0);
-    });
-    it("Should remove property ", function () {
-      expect(output.$('div.bx-spark-configuration').$$('input').length).toEqual(2);
-      output.$$('button.icon-close')[1].click();
-      clickSaveProfile(output);
-      expect(output.$('div.bx-spark-connect-error').getText().length).toEqual(0);
+      expect(sparkWdg.$('div.p-Widget.bx-spark-session').isDisplayed()).toBeFalsy();
     });
   });
 
@@ -209,7 +132,7 @@ describe('Spark UI', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       var output = beakerxPO.getAllOutputsWidget(codeCell)[0];
       startSparkSession(codeCell);
-      expect(output.$('div.p-Widget.bx-status-panel').isEnabled()).toBeTruthy();
+      expect(output.$('div.p-Widget.bx-spark-session').isDisplayed()).toBeTruthy();
       stopSparkSession(codeCell);
     });
   });

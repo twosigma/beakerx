@@ -24,7 +24,7 @@
   "scripts": {
     "build": "tsc -b",
     "clean": "rimraf lib",
-    "prepublish": "npm run build",
+    "prepublish": "yarn run build",
     "watch": "tsc -b --watch"
   },
   "dependencies": {

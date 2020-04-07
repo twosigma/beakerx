@@ -68,6 +68,9 @@ function easyFormBase() {
     it('Should setup text value by code ', function () {
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
+      browser.waitUntil(function(){
+        return (easyForm.$('input[type="text"]').getValue() == '1text from code1');
+      });
       expect(easyForm.$('input[type="text"]').getValue()).toBe('1text from code1');
     });
 
@@ -149,6 +152,9 @@ function easyFormBase() {
     it('Should be unchecked by code ', function () {
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
+      browser.waitUntil(function(){
+        return !(easyForm.$('input[type="checkbox"]').isSelected());
+      });
       expect(easyForm.$('input[type="checkbox"]').isSelected()).toBeFalsy();
     });
 
@@ -185,6 +191,9 @@ function easyFormBase() {
     it('Should select Combobox value by code ', function () {
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
+      browser.waitUntil(function(){
+        return easyForm.$('input.easyform-combobox-input').getValue() == 'three';
+      });
       expect(easyForm.$('input.easyform-combobox-input').getValue()).toBe('three');
     });
   });
@@ -237,6 +246,9 @@ function easyFormBase() {
       cellIndex += 1;
       var testValue = "one";
       beakerxPO.runCodeCellByIndex(cellIndex);
+      browser.waitUntil(function(){
+        return easyForm.$('select').getValue() == testValue;
+      });
       expect(easyForm.$('option=' + testValue).isSelected()).toBeTruthy();
       expect(easyForm.$('select').getValue()).toBe(testValue);
     });
@@ -301,7 +313,9 @@ function easyFormBase() {
     it('Should select CheckBoxes value by code ', function () {
       cellIndex += 1;
       beakerxPO.runCodeCellByIndex(cellIndex);
-      browser.pause(1000);
+      browser.waitUntil(function(){
+        return easyForm.$$('input[type="checkbox"]')[0].isSelected();
+      });
       expect(easyForm.$$('input[type="checkbox"]')[0].isSelected()).toBeTruthy();
     });
 
@@ -390,8 +404,10 @@ function easyFormBase() {
 
     it('Should select 27th day by code ', function () {
       cellIndex += 1;
-      beakerxPO.runCodeCellByIndex(cellIndex);
-      expect(easyForm.$('input[type="text"]').getValue()).toMatch('27');
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      var result = beakerxPO.getAllOutputsExecuteResult(codeCell)[0].getText();
+      expect(result).toMatch('27');
+      expect(result).toMatch('2017');
     });
   });
 

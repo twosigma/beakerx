@@ -15,9 +15,9 @@
     "jupyterlab-extension"
   ],
   "scripts": {
-    "build": "npm run build:src",
+    "build": "yarn run build:src",
     "build:src": "rimraf dist && tsc --project src",
-    "prepublish": "npm run build:src",
+    "prepublish": "yarn run build:src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
@@ -40,7 +40,7 @@
     "@lumino/coreutils": "^1.4.2",
     "@lumino/commands": "^1.10.1",
     "@lumino/datagrid": "^0.6.0",
-    "@types/node": "^13.9.8",
+    "@types/node": "^13.11.0",
     "@types/codemirror": "^0.0.76",
     "rimraf": "^3.0.2",
     "typescript": "^3.8.3"

@@ -17,11 +17,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,22 +30,55 @@ import org.apache.commons.beanutils.BeanUtilsBean2;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.twosigma.beakerx.kernel.Imports;
+
 import groovy.lang.Binding;
 
 public class GroovyReflectionCompletion {
 	
 	Binding binding;
+	
+	ClassLoader gcl;
+	
+	Imports imports;
 
 	private BeanUtilsBean2 beanUtils = new BeanUtilsBean2();
 	
 	private Pattern indexedAccessPattern = Pattern.compile("(.*)\\[([0-9]{1,})\\]");
 	
-	public GroovyReflectionCompletion(Binding binding) {
+	public GroovyReflectionCompletion(Binding binding, ClassLoader classLoader, Imports imports) {
 		this.binding = binding;
+		this.gcl = classLoader;
+		this.imports = imports;
 	}
 
 	public List<String> autocomplete(String text, int pos) {
 		
+		List<String> constructorResults = null;
+		try {
+			constructorResults = tryResolveConstructor(text, pos);
+		} catch (ClassNotFoundException e) {
+			// Ignore: try to complete based on standard expression
+			e.printStackTrace();
+		}
+
+		List<String> expressionResults = null;
+		try {
+			expressionResults = this.autocompleteExpression(text, pos);
+		} catch (Exception e) {
+			// Ignore: use other results instead
+			e.printStackTrace();
+		}
+		
+		List<String> allResults = new ArrayList<String>();
+		if(constructorResults != null)
+			allResults.addAll(constructorResults);
+		if(expressionResults != null)
+			allResults.addAll(expressionResults);
+		return allResults;
+	}
+		
+	public List<String> autocompleteExpression(String text, int pos) {
 		String expr = resolveExpression(text,pos-1);
 		
 		ArrayList<String> parts = new ArrayList<String>();
@@ -78,6 +109,113 @@ public class GroovyReflectionCompletion {
 			return result;
 		}
 	}
+	
+	final static Pattern CONSTRUCTOR_PATTERN = Pattern.compile("new ([A-Za-z0-9_]{1,})\\((\\s*[a-z0-9_A-Z]*:.*,\\s*){0,}\\s*([a-z0-9_A-Z]*)@@@\\s*\\)");
+	
+	public class ConstructorMatch {
+		String text;
+		int pos;
+		public String className;
+		public String propName;
+		public ConstructorMatch(String text, int pos, String className, String propName) {
+			this.text = text;
+			this.pos = pos;
+			this.className = className;
+			this.propName = propName;
+		}
+
+		public List<String> computeConstructorCompletions() throws ClassNotFoundException {
+
+			Class clazz = findClassMatch();
+			
+			System.out.println("Loaded class " + clazz);
+		
+			ArrayList<String> result = new ArrayList<String>();
+			getClassMutablePropertyNames(clazz).forEach(prop -> {
+				String completion = null;
+				if(this.propName != null && !this.propName.isEmpty()) {
+					if(!prop.startsWith(this.propName))
+						return;
+					completion = text.substring(0,pos-propName.length()) + prop + ": ";
+				} 				
+				else {
+					completion = text.substring(0,pos) + prop + ": ";
+				}
+				
+				result.add(completion);
+			});
+			
+			return result;
+		}
+
+		private Class findClassMatch() throws ClassNotFoundException {
+			
+			final String dotClassName = "." + className;
+			
+			List<String> classesToTry = new ArrayList<String>();
+			classesToTry.add(className);
+			
+			imports.getImportPaths()
+				.stream()
+				.filter(p -> !p.isStatic())
+				.map(p -> p.path())
+				.filter(path -> {
+					return path.endsWith(".*") || path.endsWith(dotClassName);
+				})
+				.map(path -> {
+					if(path.endsWith(".*")) {
+						return path.substring(0,path.length()-2) + dotClassName;
+					}
+					else {
+						return path;
+					}
+				})
+				.forEach(classesToTry::add);
+
+			Iterator<String> i = classesToTry.iterator();
+			for(String classToTry = i.next(); i.hasNext(); classToTry = i.next()) {
+				Class clazz = tryLoadClass(classToTry);
+				if(clazz != null)
+					return clazz;
+			}
+			return null;
+		}
+	}
+	
+	private Class tryLoadClass(String className) {
+		try {
+			return gcl.loadClass(className);
+		} catch (ClassNotFoundException e) {
+			return null;
+		}
+	}
+
+	public List<String> tryResolveConstructor(String text, int pos) throws ClassNotFoundException {
+		
+		ConstructorMatch match = tryMatchConstructor(text, pos);
+		if(match == null) {
+			return null;
+		}
+		else {
+			return match.computeConstructorCompletions();
+		}
+	}
+
+	public ConstructorMatch tryMatchConstructor(String text, int pos) throws ClassNotFoundException {
+
+		// Insert a cursor symbol at the position of the cursor to allow
+		// for regex matching to it
+		String matchText = text.substring(0, pos) + "@@@" + text.substring(pos);
+		
+		Matcher m = CONSTRUCTOR_PATTERN.matcher(matchText);
+		if(m.find()) {
+			String className = m.group(1);
+			String propName = m.groupCount() > 1 ? m.group(m.groupCount()) : null;
+
+			return new ConstructorMatch(text, pos, className, propName);
+		}
+		return null;
+	}
 
 	/**
 	 * Extracts the expression to be autocompleted.
@@ -94,6 +232,10 @@ public class GroovyReflectionCompletion {
 		int expressionEnd = findExpressionEnd(text, pos);
 		
 		int expressionStart = findExpressionStart(text, pos);
+		
+		if(expressionStart == expressionEnd) {
+			return null;
+		}
 		
 		expressionStart = Math.max(0,expressionStart);
 		expressionEnd = Math.min(text.length(),expressionEnd);
@@ -300,7 +442,30 @@ public class GroovyReflectionCompletion {
 	}
 
 	private List<String> getObjectPropertyNames(Object value) {
-		Stream<Method> methods = Stream.of(value.getClass().getMethods());
+		return getClassPropertyNames(value.getClass());
+	}
+	
+	private List<String> getClassMutablePropertyNames(final Class clazz) {
+		Stream<Method> methods = Stream.of(clazz.getMethods());
+
+		List<String> properties = 
+				  methods.filter(m -> 
+					m.getName().startsWith("set") && 
+					m.getName().length() > 3 && 
+					Character.isUpperCase(m.getName().charAt(3)) 
+					&& java.lang.reflect.Modifier.isPublic(m.getModifiers()) &&
+					m.getParameters().length == 1
+				  )
+				  .map((Method m) -> 
+					 StringUtils.uncapitalize(m.getName().substring(3))
+				  )
+				  .collect(Collectors.toList());
+		return properties;
+	}
+	
+
+	private List<String> getClassPropertyNames(final Class clazz) {
+		Stream<Method> methods = Stream.of(clazz.getMethods());
 
 		List<String> properties = 
 				  methods.filter(m -> 

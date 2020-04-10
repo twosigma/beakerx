@@ -22,6 +22,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import com.twosigma.beakerx.groovy.autocomplete.GroovyReflectionCompletion;
+import com.twosigma.beakerx.groovy.autocomplete.GroovyReflectionCompletion.ConstructorMatch;
 
 import groovy.lang.Binding;
 
@@ -98,7 +99,7 @@ public class GroovyReflectionCompletionTest {
 	@Test
 	public void testExtractExpression() {
 		Binding binding = new Binding();
-		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding);
+		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding,null,null);
 
 		assert grc.resolveExpression("hello", 3).equals("hello");
 	}
@@ -111,7 +112,7 @@ public class GroovyReflectionCompletionTest {
 		
 		binding.setVariable("a", new A());
 		
-		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding);
+		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding,null,null);
 		
 		List<String> result = grc.autocomplete("a.", 2);
 		
@@ -126,7 +127,7 @@ public class GroovyReflectionCompletionTest {
 		
 		binding.setVariable("x", new A());
 		
-		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding);
+		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding,null,null);
 		
 		List<String> result = grc.autocomplete("x.", 1);
 		
@@ -140,7 +141,7 @@ public class GroovyReflectionCompletionTest {
 		
 		binding.setVariable("tree", new Tree());
 		
-		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding);
+		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding,null,null);
 			
 		List result = grc.autocomplete("tree.h", 5);
 		
@@ -163,7 +164,7 @@ public class GroovyReflectionCompletionTest {
 		
 		binding.setVariable("tree", new Tree());
 		
-		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding);
+		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding,null,null);
 			
 		List result = grc.autocomplete("x.foo(tree.h)", 11);
 		
@@ -186,7 +187,7 @@ public class GroovyReflectionCompletionTest {
 		
 		binding.setVariable("blah", m);
 		
-		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding);
+		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding,null,null);
 			
 		List result = grc.autocomplete("blah.c", 5);
 		
@@ -203,7 +204,7 @@ public class GroovyReflectionCompletionTest {
 		
 		binding.setVariable("blah", Arrays.asList("super","cat","dog","tree"));
 		
-		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding);
+		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding,null,null);
 			
 		List result = grc.autocomplete("blah.s", 5);
 		
@@ -218,7 +219,7 @@ public class GroovyReflectionCompletionTest {
 		
 		binding.setVariable("blah", new Cow());
 		
-		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding);
+		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding,null,null);
 			
 		List<String> result = grc.autocomplete("blah.b", 5);
 		
@@ -232,7 +233,7 @@ public class GroovyReflectionCompletionTest {
 		
 		binding.setVariable("c", new C());
 		
-		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding);
+		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding,null,null);
 		
 		List<String> result = grc.autocomplete("c.foo.", 6);
 		
@@ -246,7 +247,7 @@ public class GroovyReflectionCompletionTest {
 	@Test
 	public void testIndexedExpression() {
 		Binding binding = new Binding();
-		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding);
+		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding,this.getClass().getClassLoader(), null);
 		assert ("something[2]".equals(grc.resolveExpression("something[2].", 12)));
 	}
 	
@@ -261,7 +262,7 @@ public class GroovyReflectionCompletionTest {
 		binding.setVariable("clist", list);
 		
 		
-		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding);
+		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding,null,null);
 		
 		List<String> result = grc.autocomplete("clist[1].", 9);
 		
@@ -269,5 +270,35 @@ public class GroovyReflectionCompletionTest {
 		
 		assert result.contains("foo");
 	}
+	
+	@Test
+	public void testConstructorAutoComplete() throws ClassNotFoundException {
+		
+		String [] testCases = new String[] {
+			  "new TestA(foo:'cow',@)",
+			  "new TestA(@)",
+			  "new TestA(\n@\n)",
+			  "new TestA(foo@)",
+			  "new TestA(foo:'cow', bar@)",
+			  "new TestA(foo:'cow', @)",
+			  "new TestA(\nfoo@\n)",
+			  "new TestA(\nbar:'hello',\nfoo@\n)"
+		};
+		
+		
+		Binding binding = new Binding();
+
+		GroovyReflectionCompletion grc = new GroovyReflectionCompletion(binding,this.getClass().getClassLoader(), null);
+
+		for(String testCase : testCases) {
+			ConstructorMatch match = grc.tryMatchConstructor(testCase.replaceAll("@", ""),testCase.indexOf('@'));
+			assert match != null;
+		}
+		
+		String testCase = "new TestA(\nbar:'hello',\nfoo:@\n)";
+		ConstructorMatch match = grc.tryMatchConstructor(testCase.replaceAll("@", ""),testCase.indexOf('@'));
+		assert match == null;
+	}
+	
 	
 }

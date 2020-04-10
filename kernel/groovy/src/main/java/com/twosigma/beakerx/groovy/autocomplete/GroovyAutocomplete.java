@@ -90,7 +90,7 @@ public class GroovyAutocomplete extends AutocompleteServiceBeakerx {
     GroovyImportDeclarationCompletion extractor = new GroovyImportDeclarationCompletion(txt, cur, registry, cps, cu);
     GroovyNameBuilder extractor2 = new GroovyNameBuilder(registry, cu);
     GroovyNodeCompletion extractor3 = new GroovyNodeCompletion(txt, cur, registry, cu);
-    GroovyReflectionCompletion extractor4 = new GroovyReflectionCompletion(scriptBinding);
+    GroovyReflectionCompletion extractor4 = new GroovyReflectionCompletion(scriptBinding, groovyClassLoader, imports);
 
     walker.walk(extractor, t);
     if (extractor.getQuery() != null)

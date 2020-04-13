@@ -187,6 +187,9 @@ describe('Testing of Plot (python)', function () {
       var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
       var svgElement = dtContainer.$('#svgg');
       svgElement.$('rect#i0_0').click();
+      browser.waitUntil(function(){
+        return dtContainer.$('div#tip_i0_0').isDisplayed();
+      });
       var tipElement = dtContainer.$('div#tip_i0_0');
       expect(tipElement.getText()).toMatch('x: 2017 Oct 09 Mon, 05:26:41 .624');
     });
@@ -196,6 +199,9 @@ describe('Testing of Plot (python)', function () {
       var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
       var svgElement = dtContainer.$('#svgg');
       svgElement.$('rect#i0_1').click();
+      browser.waitUntil(function(){
+        return dtContainer.$('div#tip_i0_1').isDisplayed();
+      });
       var tipElement = dtContainer.$('div#tip_i0_1');
       expect(tipElement.getText()).toMatch('x: 2017 Oct 09 Mon, 09:26:41.624000007');
     });
@@ -224,7 +230,11 @@ describe('Testing of Plot (python)', function () {
 
     it('Combined plot has 3 plots', function(){
       cellIndex += 1;
-      combPlot = beakerxPO.runCodeCellByIndex(cellIndex).$('div.combplot-plotcontainer');
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      browser.waitUntil(function(){
+        return codeCell.$('div.combplot-plotcontainer').isDisplayed();
+      })
+      combPlot = codeCell.$('div.combplot-plotcontainer');
       expect(combPlot.isDisplayed()).toBeTruthy();
       expect(combPlot.$$('div.dtcontainer').length).toEqual(3);
     });

@@ -36,8 +36,7 @@ describe('SQL base tests ', function () {
       beakerxPO.runCodeCellByIndex(0);
       beakerxPO.runCodeCellByIndex(1);
 
-      var codeCell = beakerxPO.runCodeCellByIndex(2);
-      var canvas = codeCell.$('canvas');
+      var canvas = beakerxPO.runCellToGetCanvas(2);
       var imageData = beakerxPO.getCanvasImageData(canvas, 210, 120);
       beakerxPO.checkImageData(imageData, imageDir, 'cell3_case1.png');
     });

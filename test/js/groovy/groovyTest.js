@@ -121,7 +121,7 @@ describe('Groovy base tests. ', function () {
     it('Output contains table. ', function () {
       cellIndex += 1;
       var fileName = 'cell10_case1.png';
-      var width = 410, height = 43;
+      var width = 360, height = 43;
       var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, fileName);

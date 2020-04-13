@@ -71,10 +71,6 @@ describe('(Python) Output Containers ', function () {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       output = beakerxPO.getAllOutputsWidget(codeCell)[0];
-      browser.waitUntil(function(){
-        return (output.$$('div.widget-tab-contents').length > 0)
-          && (output.$$('div.p-TabBar-tabLabel').length > 0);
-      });
       plotWidgets =  output.$('div.widget-tab-contents').$$('div.dtcontainer');
       expect(plotWidgets.length).toBe(3);
       expect(output.$$('div.p-Widget.beaker-table-display').length).toBe(1);

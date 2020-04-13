@@ -23,6 +23,8 @@ import com.twosigma.beakerx.autocomplete.AutocompleteServiceBeakerx;
 import com.twosigma.beakerx.autocomplete.ClassUtils;
 import com.twosigma.beakerx.autocomplete.MagicCommandAutocompletePatterns;
 import com.twosigma.beakerx.kernel.Imports;
+
+import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -32,6 +34,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.twosigma.beakerx.groovy.autocomplete.AutocompleteRegistryFactory.setup;
 
@@ -40,15 +43,18 @@ public class GroovyAutocomplete extends AutocompleteServiceBeakerx {
   private GroovyClasspathScanner cps;
   private GroovyClassLoader groovyClassLoader;
   private Imports imports;
+  private Binding scriptBinding;
 
   public GroovyAutocomplete(GroovyClasspathScanner _cps,
                             GroovyClassLoader groovyClassLoader,
                             Imports imports,
-                            MagicCommandAutocompletePatterns autocompletePatterns) {
+                            MagicCommandAutocompletePatterns autocompletePatterns,
+                            Binding scriptBinding) {
     super(autocompletePatterns);
     cps = _cps;
     this.groovyClassLoader = groovyClassLoader;
     this.imports = imports;
+    this.scriptBinding = scriptBinding;
     registry = AutocompleteRegistryFactory.createRegistry(cps);
   }
 
@@ -84,6 +90,7 @@ public class GroovyAutocomplete extends AutocompleteServiceBeakerx {
     GroovyImportDeclarationCompletion extractor = new GroovyImportDeclarationCompletion(txt, cur, registry, cps, cu);
     GroovyNameBuilder extractor2 = new GroovyNameBuilder(registry, cu);
     GroovyNodeCompletion extractor3 = new GroovyNodeCompletion(txt, cur, registry, cu);
+    GroovyReflectionCompletion extractor4 = new GroovyReflectionCompletion(scriptBinding, groovyClassLoader, imports);
 
     walker.walk(extractor, t);
     if (extractor.getQuery() != null)
@@ -93,6 +100,9 @@ public class GroovyAutocomplete extends AutocompleteServiceBeakerx {
     if (extractor3.getQuery() != null)
       q.addAll(extractor3.getQuery());
     List<String> ret = registry.searchCandidates(q);
+    
+	List<String> reflectionCompletions = extractor4.autocomplete(txt, cur);
+	ret.addAll(reflectionCompletions);
 
     if (!ret.isEmpty()) {
       return new AutocompleteResult(ret, getStartIndex(extractor, extractor2, extractor3));

@@ -126,7 +126,7 @@ public class GroovyEvaluator extends BaseEvaluator {
   }
 
   private GroovyAutocomplete createGroovyAutocomplete(GroovyClasspathScanner c, GroovyClassLoader groovyClassLoader, Imports imports, MagicCommandAutocompletePatterns autocompletePatterns) {
-    return new GroovyAutocomplete(c, groovyClassLoader, imports, autocompletePatterns);
+    return new GroovyAutocomplete(c, groovyClassLoader, imports, autocompletePatterns, scriptBinding);
   }
 
   private String createClasspath(Classpath classPath) {

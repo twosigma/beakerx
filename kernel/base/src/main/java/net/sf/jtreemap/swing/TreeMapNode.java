@@ -35,6 +35,7 @@ package net.sf.jtreemap.swing;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Node of a JTreeMap.<BR>
@@ -179,7 +180,7 @@ public class TreeMapNode extends DefaultMutableTreeNode {
      * @return List with the children
      */
     @SuppressWarnings("unchecked")
-    public List<TreeMapNode> getChildren() {
+    public Vector getChildren() {
         return this.children;
     }
 

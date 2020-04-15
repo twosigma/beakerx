@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2020 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,22 +13,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package com.twosigma.beakerx.java11.kernel;
 
-package com.twosigma.beakerx.autocomplete;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.restserver.impl.BeakerXServerJavalin;
+import com.twosigma.beakerx.kernel.restserver.impl.GetUrlArgHandler;
+import io.javalin.Javalin;
 
-import org.junit.Test;
+public class JavaBeakerXServer extends BeakerXServerJavalin {
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-public class ClasspathScannerTest {
-
-  @Test
-  public void createClasspathScanner_hasPackagesAndClasses() {
-    //when
-    AutocompleteClasspathScanner cps = new AutocompleteClasspathScanner();
-    //then
-    assertThat(cps.getPackages()).isNotEmpty();
-    assertThat(cps.getClasses("java.lang")).isNotEmpty();
+  public JavaBeakerXServer(GetUrlArgHandler urlArgHandler) {
+    super(urlArgHandler);
   }
 
+  @Override
+  public void createMapping(Javalin app, KernelFunctionality kernel) {
+  }
 }

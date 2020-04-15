@@ -212,7 +212,7 @@ public abstract class KernelExecutionTest extends ClasspathManagerTest {
     assertThat(result).isPresent();
     Map actual = ((Map) result.get().getContent().get(Comm.DATA));
     String value = (String) actual.get("text/plain");
-    assertThat(value).isEqualTo("Demo_test_123");
+    assertThat(value).contains("Demo_test_123");
   }
 
   protected String pathToDemoClassFromAddedDemoJar() {

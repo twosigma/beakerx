@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2020 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,22 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package com.twosigma.beakerx.java11.kernel;
 
-package com.twosigma.beakerx.autocomplete;
+import com.twosigma.beakerx.DefaultJVMVariables;
 
-import org.junit.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-public class ClasspathScannerTest {
-
-  @Test
-  public void createClasspathScanner_hasPackagesAndClasses() {
-    //when
-    AutocompleteClasspathScanner cps = new AutocompleteClasspathScanner();
-    //then
-    assertThat(cps.getPackages()).isNotEmpty();
-    assertThat(cps.getClasses("java.lang")).isNotEmpty();
-  }
+/**
+ *
+ */
+public class JavaDefaultVariables extends DefaultJVMVariables {
 
 }

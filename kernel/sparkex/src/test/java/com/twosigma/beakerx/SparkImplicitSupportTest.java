@@ -44,7 +44,7 @@ public class SparkImplicitSupportTest extends KernelSetUpFixtureTest {
     return KernelFactoryFixtureSetup.createKernel(sessionId, kernelSocketsFactory, closeKernelAction);
   }
 
-  @Test
+//  @Test
   public void sparkImplicit() throws Exception {
     try {
       //given

@@ -1,0 +1,7 @@
+{
+  "argv": [ "java", "-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9030",
+                    "-cp", ${PATH}, "com.twosigma.beakerx.java11.kernel.Java11", "{connection_file}" ],
+  "display_name": "Java11",
+  "language": "java",
+  "env": { "PS1":"java>"}
+}

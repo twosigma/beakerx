@@ -1,0 +1,73 @@
+/*
+ *  Copyright 2020 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+apply plugin: 'application'
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+
+ext.kernelIdName = 'java11'
+mainClassName = 'com.twosigma.beakerx.java11.kernel.Java11'
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+configurations {
+  provided
+  antlr
+}
+
+compileJava {
+  options.encoding = "UTF-8"
+}
+
+sourceSets {
+  main {
+    compileClasspath += configurations.provided
+  }
+  test {
+    compileClasspath += configurations.provided
+    runtimeClasspath += configurations.provided
+  }
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  provided project(':base')
+
+  testCompile project(':base').sourceSets.test.output
+}
+
+jar {
+  manifest {
+    attributes "Main-Class": "$mainClassName"
+  }
+}
+
+publishing {
+  publications {
+    maven(MavenPublication) {
+      groupId 'com.twosigma'
+      artifactId 'beaker-kernel-java11'
+      version '2.0-SNAPSHOT'
+
+      from components.java
+    }
+  }
+}
+
+installDist.into new File(pathToStaticContent, kernelIdName)
+distZip.dependsOn installDist

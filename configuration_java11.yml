@@ -1,0 +1,16 @@
+name: beakerx
+channels:
+  - conda-forge
+dependencies:
+  - python =3.7.5
+  - openjdk=11.0.1
+  - notebook>=5.7.6
+  - tornado>6
+  - ipywidgets>=7.5.1
+  - nodejs
+  - pandas
+  - maven
+  - py4j
+  - requests
+  - pyspark
+  - bottle

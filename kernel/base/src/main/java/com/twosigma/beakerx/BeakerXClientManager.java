@@ -20,6 +20,7 @@ public class BeakerXClientManager {
 
   public static String BEAKER_X_CLIENT_MANAGER_PATH = BeakerXClientManager.class.getName();
   public static String BEAKER_X_CLIENT_MANAGER_GET = BeakerXClientManager.class.getSimpleName() + ".get()";
+  public static String BEAKER_X_CLIENT_MANAGER = BeakerXClientManager.class.getName() + ".get()";
 
   private static BeakerXClient beakerXClientInst;
 

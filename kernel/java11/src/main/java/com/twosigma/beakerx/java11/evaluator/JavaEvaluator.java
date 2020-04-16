@@ -37,9 +37,12 @@ import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.PathToJar;
 import jdk.jshell.JShell;
+import jdk.jshell.execution.LocalExecutionControlProvider;
 
 import java.io.File;
 import java.util.concurrent.Executors;
+
+import static com.twosigma.beakerx.BeakerXClientManager.BEAKER_X_CLIENT_MANAGER;
 
 public class JavaEvaluator extends BaseEvaluator {
 
@@ -159,10 +162,17 @@ public class JavaEvaluator extends BaseEvaluator {
   }
 
   private JShell newJShell() {
-    JShell jShell = JShell.create();
+    JShell jShell = JShell.builder().executionEngine(new LocalExecutionControlProvider(), null).build();
     for (ImportPath ip : getImports().getImportPaths()) {
       addImportToClassLoader(ip, jShell);
     }
+    jShell = configureBeakerxObject(jShell);
+    return jShell;
+  }
+
+  private JShell configureBeakerxObject(JShell jShell) {
+    var beakerxObject = "var beakerx = " + BEAKER_X_CLIENT_MANAGER + ";";
+    jShell.eval(beakerxObject);
     return jShell;
   }
 

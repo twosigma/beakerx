@@ -43,7 +43,7 @@ public class SparkPreviewTest extends KernelSetUpFixtureTest {
     return KernelFactoryFixtureSetup.createKernel(sessionId, kernelSocketsFactory, closeKernelAction);
   }
 
-  //@Test
+  @Test
   public void sparkPreviewDisplayer() throws Exception {
     try {
       //given

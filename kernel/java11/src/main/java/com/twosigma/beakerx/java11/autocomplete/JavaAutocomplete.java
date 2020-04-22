@@ -17,28 +17,30 @@
 package com.twosigma.beakerx.java11.autocomplete;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
-import com.twosigma.beakerx.autocomplete.AutocompleteServiceBeakerx;
-import com.twosigma.beakerx.autocomplete.MagicCommandAutocompletePatterns;
-import com.twosigma.beakerx.kernel.Imports;
+import jdk.jshell.SourceCodeAnalysis;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
-public class JavaAutocomplete extends AutocompleteServiceBeakerx {
+public class JavaAutocomplete {
 
-  private final Imports imports;
-  private JavaClasspathScanner cps;
-  private ClassLoader classLoader;
 
-  public JavaAutocomplete(JavaClasspathScanner _cps, ClassLoader classLoader, Imports imports, MagicCommandAutocompletePatterns autocompletePatterns) {
-    super(autocompletePatterns);
-    cps = _cps;
-    this.classLoader = classLoader;
-    this.imports = imports;
+  public JavaAutocomplete() {
   }
 
-  @Override
-  protected AutocompleteResult doAutocomplete(String txt, int cur) {
-    return new AutocompleteResult(new ArrayList<>(), 0);
+  public AutocompleteResult find(String code, int cur, SourceCodeAnalysis sourceCodeAnalysis) {
+    int[] anchor = new int[]{-1};
+    List<SourceCodeAnalysis.Suggestion> suggestions = sourceCodeAnalysis.completionSuggestions(code, cur, anchor);
+    if (suggestions.isEmpty()) {
+      return new AutocompleteResult(new ArrayList<>(), 0);
+    }
+    List<String> matches = suggestions.stream()
+            .filter(SourceCodeAnalysis.Suggestion::matchesType)
+            .map(SourceCodeAnalysis.Suggestion::continuation)
+            .distinct()
+            .collect(Collectors.toList());
+    return new AutocompleteResult(matches, anchor[0]);
   }
 }

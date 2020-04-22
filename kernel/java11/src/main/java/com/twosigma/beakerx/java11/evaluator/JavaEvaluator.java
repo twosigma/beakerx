@@ -26,20 +26,17 @@ import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
 import com.twosigma.beakerx.java11.JavaBeakerXUrlClassLoader;
 import com.twosigma.beakerx.java11.autocomplete.JavaAutocomplete;
-import com.twosigma.beakerx.java11.autocomplete.JavaClasspathScanner;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
-import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.ExecutionOptions;
 import com.twosigma.beakerx.kernel.ImportPath;
-import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.PathToJar;
 import jdk.jshell.JShell;
+import jdk.jshell.SourceCodeAnalysis;
 import jdk.jshell.execution.LocalExecutionControlProvider;
 
-import java.io.File;
 import java.util.concurrent.Executors;
 
 import static com.twosigma.beakerx.BeakerXClientManager.BEAKER_X_CLIENT_MANAGER;
@@ -50,6 +47,7 @@ public class JavaEvaluator extends BaseEvaluator {
   private JavaAutocomplete jac;
   private JavaBeakerXUrlClassLoader loader = null;
   private JShell jshell;
+  private SourceCodeAnalysis sourceCodeAnalysis;
 
   public JavaEvaluator(String id,
                        String sId,
@@ -70,8 +68,9 @@ public class JavaEvaluator extends BaseEvaluator {
                        ClasspathScanner classpathScanner) {
     super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient, autocompletePatterns, classpathScanner);
     loader = newClassLoader();
-    jac = createJavaAutocomplete(new JavaClasspathScanner(), imports, loader);
+    jac = createJavaAutocomplete();
     this.jshell = newJShell();
+    this.sourceCodeAnalysis = this.jshell.sourceCodeAnalysis();
   }
 
   public JShell getJshell() {
@@ -85,10 +84,10 @@ public class JavaEvaluator extends BaseEvaluator {
 
   @Override
   protected void doResetEnvironment() {
-    String cp = createClasspath(classPath);
     loader = newClassLoader();
-    jshell = newJShell();
-    jac = createAutocomplete(new JavaClasspathScanner(cp), imports, loader);
+    this.jshell = newJShell();
+    this.sourceCodeAnalysis = this.jshell.sourceCodeAnalysis();
+    jac = createJavaAutocomplete();
     executorService.shutdown();
     executorService = Executors.newSingleThreadExecutor();
   }
@@ -101,11 +100,11 @@ public class JavaEvaluator extends BaseEvaluator {
 
   @Override
   protected void addImportToClassLoader(ImportPath anImport) {
-    addImportToClassLoader(anImport, this.jshell);
+    addImportToClassLoader(anImport.asString(), this.jshell);
   }
 
-  private void addImportToClassLoader(ImportPath anImport, JShell jShell) {
-    jShell.eval("import " + anImport.asString() + ";");
+  private void addImportToClassLoader(String anImport, JShell jShell) {
+    jShell.eval("import " + anImport + ";");
   }
 
   @Override
@@ -128,27 +127,11 @@ public class JavaEvaluator extends BaseEvaluator {
 
   @Override
   public AutocompleteResult autocomplete(String code, int caretPosition) {
-    return jac.find(code, caretPosition);
+    return jac.find(code, caretPosition, this.sourceCodeAnalysis);
   }
 
-  private JavaAutocomplete createJavaAutocomplete(JavaClasspathScanner c, Imports imports, ClassLoader loader) {
-    return new JavaAutocomplete(c, loader, imports, autocompletePatterns);
-  }
-
-  private JavaAutocomplete createAutocomplete(JavaClasspathScanner cps, Imports imports, ClassLoader loader) {
-    JavaAutocomplete jac = createJavaAutocomplete(cps, imports, loader);
-    return jac;
-  }
-
-  private String createClasspath(Classpath classPath) {
-    String cpp = "";
-    for (String pt : classPath.getPathsAsStrings()) {
-      cpp += pt;
-      cpp += File.pathSeparator;
-    }
-    cpp += File.pathSeparator;
-    cpp += System.getProperty("java.class.path");
-    return cpp;
+  private JavaAutocomplete createJavaAutocomplete() {
+    return new JavaAutocomplete();
   }
 
   private JavaBeakerXUrlClassLoader newClassLoader() {
@@ -162,12 +145,14 @@ public class JavaEvaluator extends BaseEvaluator {
   }
 
   private JShell newJShell() {
-    JShell jShell = JShell.builder().executionEngine(new LocalExecutionControlProvider(), null).build();
+    JShell shell = JShell.builder()
+            .executionEngine(new LocalExecutionControlProvider(), null)
+            .build();
     for (ImportPath ip : getImports().getImportPaths()) {
-      addImportToClassLoader(ip, jShell);
+      addImportToClassLoader(ip.asString(), shell);
     }
-    jShell = configureBeakerxObject(jShell);
-    return jShell;
+    shell = configureBeakerxObject(shell);
+    return shell;
   }
 
   private JShell configureBeakerxObject(JShell jShell) {

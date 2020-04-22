@@ -22,4 +22,18 @@ import com.twosigma.beakerx.DefaultJVMVariables;
  */
 public class JavaDefaultVariables extends DefaultJVMVariables {
 
+  public JavaDefaultVariables() {
+    addImports(
+            "java.io.*",
+            "java.math.*",
+            "java.net.*",
+            "java.nio.file.*",
+            "java.util.*",
+            "java.util.concurrent.*",
+            "java.util.function.*",
+            "java.util.prefs.*",
+            "java.util.regex.*",
+            "java.util.stream.*");
+  }
+
 }

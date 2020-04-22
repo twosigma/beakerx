@@ -93,10 +93,14 @@ public class JavaAutotranslationTest extends KernelSetUpFixtureTest {
   public void transformFromJsonToJavaObject() throws Exception {
     //given
     autotranslationService.update("foo", "\"Hello Java 11\"");
+    String set = "beakerx.set(\"foo\",\"Hello Java 11\");";
+    Message messageset = getExecuteRequestMessage(set);
+    kernelSocketsService.handleMsg(messageset);
+    kernelSocketsService.clear();
     //when
-    String code = NamespaceClient.NAMESPACE_CLIENT + ".get(\"foo\");";
-    Message message = getExecuteRequestMessage(code);
-    kernelSocketsService.handleMsg(message);
+    String get = "beakerx.get(\"foo\");";
+    Message messageget = getExecuteRequestMessage(get);
+    kernelSocketsService.handleMsg(messageget);
     //then
     Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
     assertThat(idleMessage).isPresent();

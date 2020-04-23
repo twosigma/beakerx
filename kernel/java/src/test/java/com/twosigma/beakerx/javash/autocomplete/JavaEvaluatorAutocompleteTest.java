@@ -21,14 +21,17 @@ import com.twosigma.beakerx.evaluator.ClasspathScannerMock;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.evaluator.MagicCommandAutocompletePatternsMock;
 import com.twosigma.beakerx.javash.evaluator.JavaEvaluator;
+import com.twosigma.beakerx.javash.kernel.JavaDefaultVariables;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.stream.Collectors;
 
-import static com.twosigma.beakerx.evaluator.EvaluatorTest.KERNEL_PARAMETERS;
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,12 +42,15 @@ public class JavaEvaluatorAutocompleteTest {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
+    HashMap<String, Object> map = new HashMap<>();
+    map.put(IMPORTS, new JavaDefaultVariables().getImports());
+    EvaluatorParameters kernelParameters = new EvaluatorParameters(map);
     evaluator = new JavaEvaluator(
             "id",
             "sid",
             cellExecutor(),
             getTestTempFolderFactory(),
-            KERNEL_PARAMETERS,
+            kernelParameters,
             new EvaluatorTest.BeakexClientTestImpl(),
             new MagicCommandAutocompletePatternsMock(),
             new ClasspathScannerMock());
@@ -375,7 +381,7 @@ public class JavaEvaluatorAutocompleteTest {
     assertThat(autocomplete.getStartIndex()).isEqualTo(0);
   }
 
-  //@Test
+  @Test
   public void autocompleteArrayListAfterDot() throws Exception {
     String code = "List myList = new ArrayList();\n" +
             "myList.";
@@ -387,7 +393,7 @@ public class JavaEvaluatorAutocompleteTest {
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
   }
 
- //@Test
+  @Test
   public void autocompleteMapAfterDot() throws Exception {
     String code = "Map myMap = new HashMap<>();\n" +
             "myMap.";
@@ -399,7 +405,7 @@ public class JavaEvaluatorAutocompleteTest {
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
   }
 
-  //@Test
+  @Test
   public void autocompleteArrayListWithGenericsAfterDot() throws Exception {
     String code = "List<String> myList = new ArrayList();\n" +
             "myList.";
@@ -411,7 +417,7 @@ public class JavaEvaluatorAutocompleteTest {
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
   }
 
-  //@Test
+  @Test
   public void autocompleteMapWithGenericsAfterDot() throws Exception {
     String code = "Map<String,String> myMap = new HashMap<>();\n" +
             "myMap.";

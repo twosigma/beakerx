@@ -15,12 +15,12 @@
  */
 package com.twosigma.beakerx;
 
-import static com.twosigma.beakerx.kernel.Utils.getAsString;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
+import static com.twosigma.beakerx.kernel.Utils.getAsString;
 
 /**
  * @author konst
@@ -42,6 +42,16 @@ public class DefaultJVMVariables {
 
   public DefaultJVMVariables() {
     addImports(
+            "java.io.*",
+            "java.math.*",
+            "java.net.*",
+            "java.nio.file.*",
+            "java.util.*",
+            "java.util.concurrent.*",
+            "java.util.function.*",
+            "java.util.prefs.*",
+            "java.util.regex.*",
+            "java.util.stream.*",
             "com.twosigma.beakerx.NamespaceClient",
             "com.twosigma.beakerx.widget.OutputManager",
             "com.twosigma.beakerx.ClasspathManager",

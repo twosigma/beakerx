@@ -24,6 +24,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static com.twosigma.beakerx.KernelTest.createSeo;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.KERNEL_PARAMETERS;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
@@ -62,7 +64,7 @@ public class JavaEvaluatorTest {
     SimpleEvaluationObject seo2 = createSeo(code2);
     TryResult evaluate2 = javaEvaluator.evaluate(seo2, code2);
     //then
-    assertThat(evaluate2.result()).isEqualTo("4");
+    assertThat(evaluate2.result()).isEqualTo(4);
   }
 
   @Test
@@ -76,7 +78,7 @@ public class JavaEvaluatorTest {
     //when
     TryResult evaluate = javaEvaluator.evaluate(seo, code);
     //then
-    assertThat(evaluate.result()).isEqualTo("[1]");
+    assertThat(evaluate.result()).isEqualTo(Arrays.asList(1));
   }
 
   @Test

@@ -35,7 +35,6 @@ import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.PathToJar;
 import jdk.jshell.JShell;
 import jdk.jshell.SourceCodeAnalysis;
-import jdk.jshell.execution.LocalExecutionControlProvider;
 
 import java.util.concurrent.Executors;
 
@@ -48,6 +47,7 @@ public class JavaEvaluator extends BaseEvaluator {
   private JavaBeakerXUrlClassLoader loader = null;
   private JShell jshell;
   private SourceCodeAnalysis sourceCodeAnalysis;
+  private BeakerxLocalExecutionControl executionControl;
 
   public JavaEvaluator(String id,
                        String sId,
@@ -75,6 +75,10 @@ public class JavaEvaluator extends BaseEvaluator {
 
   public JShell getJshell() {
     return this.jshell;
+  }
+
+  public BeakerxLocalExecutionControl getExecutionControl() {
+    return executionControl;
   }
 
   @Override
@@ -145,8 +149,9 @@ public class JavaEvaluator extends BaseEvaluator {
   }
 
   private JShell newJShell() {
+    this.executionControl = new BeakerxLocalExecutionControl();
     JShell shell = JShell.builder()
-            .executionEngine(new LocalExecutionControlProvider(), null)
+            .executionEngine(new BeakerxLocalExecutionControlProvider(executionControl), null)
             .build();
     for (ImportPath ip : getImports().getImportPaths()) {
       addImportToClassLoader(ip.asString(), shell);

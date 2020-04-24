@@ -23,6 +23,7 @@ import jdk.jshell.Snippet;
 import jdk.jshell.SnippetEvent;
 import jdk.jshell.SourceCodeAnalysis.CompletionInfo;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -84,10 +85,19 @@ class JavaCodeRunner implements Callable<TryResult> {
         }
         info = analyze(info.remaining());
       }
-      return TryResult.createResult(snippetsList.get(0).value());
+      return TryResult.createResult(getResult(snippetsList.get(0)));
     } catch (Exception e) {
       return TryResult.createError(e.getMessage());
     }
+  }
+
+  @Nullable
+  private Object getResult(SnippetEvent snippet) {
+    String uuid = snippet.value();
+    if (uuid == null) {
+      return null;
+    }
+    return javaEvaluator.getExecutionControl().getObject(uuid);
   }
 
   private String createErrorMessage(Snippet sn) {

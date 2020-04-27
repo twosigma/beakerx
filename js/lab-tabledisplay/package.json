@@ -3,6 +3,7 @@
   "version": "1.5.0",
   "description": "BeakerX: TableDisplay Extension for JupyterLab",
   "author": "Two Sigma Open Source, LLC",
+  "main": "dist/index.js",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -13,15 +14,12 @@
     "jupyterlab",
     "jupyterlab-extension"
   ],
-  "files": [],
-  "main": "",
-  "types": "",
-  "style": "",
-  "directories": {
-    "lib": "lib/"
+  "scripts": {
+    "build": "yarn run build:src",
+    "build:src": "rimraf dist && tsc -b",
+    "prepublish": "yarn run build:src",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "scripts": {},
-  "dependencies": {},
   "devDependencies": {
     "@jupyter-widgets/base": "^3.0.0",
     "@jupyterlab/application": "^2.0.2",
@@ -31,5 +29,9 @@
   },
   "jupyterlab": {
     "extension": true
-  }
+  },
+  "files": [
+    "dist/**/*.js",
+    "lib/*"
+  ]
 }

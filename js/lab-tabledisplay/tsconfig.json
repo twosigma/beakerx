@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfigbase",
+  "compilerOptions": {
+    "declarationDir": "dist",
+    "outDir": "dist",
+    "rootDir": "src",
+    "lib": ["dom", "es2017"],
+    "types": ["node"]
+  },
+  "include": ["src/*"]
+}

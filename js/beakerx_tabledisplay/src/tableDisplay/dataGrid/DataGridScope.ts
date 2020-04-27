@@ -14,17 +14,17 @@
  *  limitations under the License.
  */
 
-import { Widget } from '@phosphor/widgets';
-import { RendererMap } from "@phosphor/datagrid";
-import { BeakerXDataGrid } from './BeakerXDataGrid';
-import IDataGridScopeOptions from "./interface/IDataGridScopeOptions";
-import DataGridContextMenu from "./contextMenu/DataGridContextMenu";
-import ColumnLimitModal from "./modal/ColumnLimitModal";
-import createStore, { BeakerXDataStore } from "./store/BeakerXDataStore";
-import { selectModel } from "./model/selectors";
-import IDataModelState from "./interface/IDataGridModelState";
+import { Widget } from '@lumino/widgets';
+import { CellRenderer, RendererMap, TextRenderer } from "@lumino/datagrid";
 import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
-import {TableDisplayView} from "../../TableDisplay";
+import { BeakerXDataGrid } from './BeakerXDataGrid';
+import { IDataGridScopeOptions } from "./interface/IDataGridScopeOptions";
+import { DataGridContextMenu } from "./contextMenu/DataGridContextMenu";
+import { ColumnLimitModal } from "./modal/ColumnLimitModal";
+import { createStore, BeakerXDataStore } from "./store/BeakerXDataStore";
+import { selectModel } from "./model/selectors";
+import { IDataModelState } from "./interface/IDataGridModelState";
+import { TableDisplayView } from "../../TableDisplay";
 
 export class DataGridScope {
   contextMenu: DataGridContextMenu;
@@ -48,7 +48,11 @@ export class DataGridScope {
     this._dataGrid = new BeakerXDataGrid(
       {
         style: BeakerXThemeHelper.getStyle(),
-        cellRenderers: new RendererMap({ priority: ['body|{dataType: html}','body|'] })
+        // FIXME
+        // cellRenderers: new RendererMap({ priority: ['body|{dataType: html}','body|'] })
+        cellRenderers: new RendererMap({
+          body: (cellConfig: CellRenderer.CellConfig) => { console.log(cellConfig); return new TextRenderer(); }
+        })
       },
       this.store,
       this.tableDisplayView

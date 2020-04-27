@@ -15,9 +15,9 @@
  */
 
 import { expect } from 'chai';
-import { DataModel } from "@phosphor/datagrid";
+import { DataModel } from "@lumino/datagrid";
 import modelStateMock from "../mock/modelStateMock";
-import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
+import { createStore } from "../../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
 import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
 import tableDisplayWidgetMock from "../mock/tableDisplayMock";
 
@@ -25,7 +25,7 @@ describe('BeakerXDataGridModel', () => {
   describe('BeakerXDataGridModel.hasIndex === false', () => {
     const dataStore = createStore(modelStateMock);
     const dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplayWidgetMock);
-    const beakerxDataGridModel = dataGrid.model;
+    const beakerxDataGridModel = dataGrid.dataModel;
 
     it('should be instance of DataModel', () => {
       expect(beakerxDataGridModel).to.be.an.instanceof(DataModel);
@@ -67,7 +67,7 @@ describe('BeakerXDataGridModel', () => {
       hasIndex: true
     });
     const dataGrid = new BeakerXDataGrid({}, dataStore, tableDisplayWidgetMock);
-    const beakerxDataGridModel = dataGrid.model;
+    const beakerxDataGridModel = dataGrid.dataModel;
 
     it('should return proper data', () => {
       expect(beakerxDataGridModel.data('corner-header', 0, 0)).to.equal('test');

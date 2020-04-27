@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
+import IMenuItem from "beakerx_shared/lib/contextMenu/IMenuItem";
 import { TIME_UNIT_FORMATS, scopeData } from '../consts';
 import { ALL_TYPES, getAllowedTypesByType } from "../dataTypes";
-import DataGridColumn from "../column/DataGridColumn";
-import IMenuItem from "beakerx_shared/lib/contextMenu/IMenuItem";
+import { DataGridColumn } from "../column/DataGridColumn";
 
 export function createFormatMenuItems(column: DataGridColumn) {
   const types = getAllowedTypesByType(column.getDataType());

@@ -14,17 +14,17 @@
  *  limitations under the License.
  */
 
-import {Reducer} from "@phosphor/datastore";
-import IDataModelState from "../interface/IDataGridModelState";
-import DataGridAction, {DataGridColumnAction} from "../store/DataGridAction";
-import { each } from "@phosphor/algorithm";
+import { Reducer } from "../../tmp_migration";
+import { each } from "@lumino/algorithm";
+import { IDataModelState } from "../interface/IDataGridModelState";
+import { DataGridAction, DataGridColumnAction } from "../store/DataGridAction";
 import {
   selectColumnNames, selectColumnOrder, selectColumnsFrozen,
   selectColumnsVisible, selectHasIndex
 } from "./selectors";
-import {selectCellHighlighters} from "./selectors/model";
-import IHihglighterState from "../interface/IHighlighterState";
-import {selectColumnHighlighters} from "./selectors/column";
+import { selectCellHighlighters } from "./selectors/model";
+import { IHighlighterState } from "../interface/IHighlighterState";
+import { selectColumnHighlighters } from "./selectors/column";
 
 export const UPDATE_MODEL_DATA = 'UPDATE_MODEL_DATA';
 export const UPDATE_MODEL_VALUES = 'UPDATE_MODEL_VALUES';
@@ -232,7 +232,7 @@ function addCellHighlighters(state, action) {
 
 function removeCellHighlighters(state, action) {
   const cellHighlighters = [...selectCellHighlighters({ model: state })];
-  const highlighterState: IHihglighterState = action.payload.value;
+  const highlighterState: IHighlighterState = action.payload.value;
   const currentHighlighters = selectColumnHighlighters({ model: state }, highlighterState.colName, highlighterState.type);
 
   if (currentHighlighters.length > 0) {

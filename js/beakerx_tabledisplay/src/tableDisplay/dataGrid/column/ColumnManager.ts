@@ -14,26 +14,23 @@
  *  limitations under the License.
  */
 
-import DataGridColumn from "./DataGridColumn";
-import {CellRenderer, DataModel} from "@phosphor/datagrid";
-import { chain, find } from '@phosphor/algorithm'
+import { CellRenderer, DataModel } from "@lumino/datagrid";
+import { chain, find } from '@lumino/algorithm'
+import { Signal } from '@lumino/signaling';
+import { DataGridColumn } from "./DataGridColumn";
 import { BeakerXDataGrid } from "../BeakerXDataGrid";
-import { Signal } from '@phosphor/signaling';
-import {ICellData} from "../interface/ICell";
-import {IColumnPosition, IColumns} from "../interface/IColumn";
-import {BeakerXDataStore} from "../store/BeakerXDataStore";
+import { ICellData } from "../interface/ICell";
+import { IColumnPosition, IColumns } from "../interface/IColumn";
+import { BeakerXDataStore } from "../store/BeakerXDataStore";
 import {
   selectColumnNames, selectHasIndex, selectBodyColumnNames, selectIndexColumnNames
 } from "../model/selectors";
-import {default as DataGridAction, DataGridColumnsAction} from "../store/DataGridAction";
-import {selectColumnIndexByPosition} from "./selectors";
-import {UPDATE_COLUMNS_FILTERS} from "./reducer";
-import {COLUMN_TYPES, SORT_ORDER} from "./enums";
-import CellRegion = DataModel.CellRegion;
-import ICellConfig = CellRenderer.ICellConfig;
-import {DataGridHelpers} from "../dataGridHelpers";
-import sortColumnsByPositionCallback = DataGridHelpers.sortColumnsByPositionCallback;
-import {RESET_COLUMNS_ORDER, UPDATE_COLUMNS_VISIBLE} from "../model/reducer";
+import { DataGridAction, DataGridColumnsAction } from "../store/DataGridAction";
+import { selectColumnIndexByPosition } from "./selectors";
+import { UPDATE_COLUMNS_FILTERS } from "./reducer";
+import { COLUMN_TYPES, SORT_ORDER } from "./enums";
+import { DataGridHelpers } from "../dataGridHelpers";
+import { RESET_COLUMNS_ORDER, UPDATE_COLUMNS_VISIBLE } from "../model/reducer";
 
 export interface IBkoColumnsChangedArgs {
   type: COLUMN_CHANGED_TYPES,
@@ -45,7 +42,7 @@ export enum COLUMN_CHANGED_TYPES {
   'columnSort'
 }
 
-export default class ColumnManager {
+export class ColumnManager {
   store: BeakerXDataStore;
   dataGrid: BeakerXDataGrid;
   columns: IColumns = {};
@@ -56,14 +53,14 @@ export default class ColumnManager {
     this.store = this.dataGrid.store;
   }
 
-  static createPositionFromCell(config: ICellConfig|ICellData): IColumnPosition {
+  static createPositionFromCell(config: CellRenderer.CellConfig|ICellData): IColumnPosition {
     let region = ColumnManager.getColumnRegionByCell(config);
 
     return { region, value: config.column };
   }
 
   static getColumnRegionByCell(
-    config: ICellConfig|ICellData|{ region: CellRegion }
+    config: CellRenderer.CellConfig|ICellData|{ region: DataModel.CellRegion }
   ): DataModel.ColumnRegion {
     return config.region === 'row-header' || config.region === 'corner-header' ? 'row-header' : 'body'
   }
@@ -90,7 +87,7 @@ export default class ColumnManager {
     this.addBodyColumns();
   }
 
-  getColumn(config: CellRenderer.ICellConfig): DataGridColumn {
+  getColumn(config: CellRenderer.CellConfig): DataGridColumn {
     const columnType = DataGridColumn.getColumnTypeByRegion(config.region, config.column);
     const columnIndex = selectColumnIndexByPosition(
       this.store.state,
@@ -127,7 +124,7 @@ export default class ColumnManager {
       value: sortOrder
     });
     this.dataGrid.rowManager.sortByColumn(column);
-    this.dataGrid.model.reset();
+    this.dataGrid.dataModel.reset();
   }
 
   resetFilters() {
@@ -140,7 +137,7 @@ export default class ColumnManager {
         value: selectColumnNames(this.store.state).map(name => ''),
         defaultValue: ['']
       }));
-    this.dataGrid.model.setFilterHeaderVisible(false);
+    this.dataGrid.dataModel.setFilterHeaderVisible(false);
     this.bodyColumns.forEach(resetFilterFn);
     this.indexColumns.forEach(resetFilterFn);
     this.dataGrid.rowManager.filterRows();
@@ -195,7 +192,7 @@ export default class ColumnManager {
             || position.region === 'body' && position.value <= endCell.column
           );
         })
-        .sort(sortColumnsByPositionCallback);
+        .sort(DataGridHelpers.sortColumnsByPositionCallback);
     }
 
     if (startCell.type === COLUMN_TYPES.index) {
@@ -229,7 +226,7 @@ export default class ColumnManager {
     this.bodyColumns.forEach((column) => {
       column.resetAlignment();
     });
-    this.dataGrid.model.reset();
+    this.dataGrid.dataModel.reset();
   }
 
   resetColumnPositions() {
@@ -278,7 +275,7 @@ export default class ColumnManager {
       );
     };
 
-    this.dataGrid.model.setFilterHeaderVisible(true);
+    this.dataGrid.dataModel.setFilterHeaderVisible(true);
     this.bodyColumns.forEach(showInputsFn);
     this.indexColumns.forEach(showInputsFn);
   }

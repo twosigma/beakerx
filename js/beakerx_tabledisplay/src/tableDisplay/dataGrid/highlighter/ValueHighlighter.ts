@@ -14,22 +14,22 @@
  *  limitations under the License.
  */
 
-import IHihglighterState, { HIGHLIGHTER_STYLE } from "../interface/IHighlighterState";
-import DataGridColumn from "../column/DataGridColumn";
-import Highlighter from "./Highlighter";
-import {CellRenderer} from "@phosphor/datagrid";
-import {formatColor} from "../style/dataGridStyle";
+import { CellRenderer } from "@lumino/datagrid";
 import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
+import { IHighlighterState,  HIGHLIGHTER_STYLE } from "../interface/IHighlighterState";
+import { DataGridColumn } from "../column/DataGridColumn";
+import { Highlighter } from "./Highlighter";
+import { formatColor } from "../style/dataGridStyle";
 
-export default class ValueHighlighter extends Highlighter {
-  constructor(column: DataGridColumn, state: IHihglighterState) {
+export class ValueHighlighter extends Highlighter {
+  constructor(column: DataGridColumn, state: IHighlighterState) {
     super(column, state);
 
     this.state.style = HIGHLIGHTER_STYLE.SINGLE_COLUMN;
     this.state.colors = this.state.colors || [];
   }
 
-  getBackgroundColor(config: CellRenderer.ICellConfig) {
+  getBackgroundColor(config: CellRenderer.CellConfig) {
     return this.state.colors && formatColor(this.state.colors[config.row]) || BeakerXThemeHelper.DEFAULT_CELL_BACKGROUND;
   }
 }

@@ -14,16 +14,16 @@
  *  limitations under the License.
  */
 
-import {IBeakerXDataGridState} from "../store/BeakerXDataStore";
+import { find } from "@lumino/algorithm";
+import { IBeakerXDataGridState } from "../store/BeakerXDataStore";
 import {
   selectColumnNames, selectColumnOrder,
   selectColumnsVisible,
 } from "../model/selectors";
-import {find} from "@phosphor/algorithm";
-import {IColumnPosition, IColumnsState, IColumnState} from "../interface/IColumn";
-import {ALL_TYPES} from "../dataTypes";
-import {COLUMN_TYPES, SORT_ORDER} from "./enums";
-import {createSelector} from "reselect";
+import { IColumnPosition, IColumnsState, IColumnState } from "../interface/IColumn";
+import { ALL_TYPES } from "../dataTypes";
+import { COLUMN_TYPES, SORT_ORDER } from "./enums";
+import { createSelector } from "reselect";
 
 const defaultState: IColumnState = {
   name: '',
@@ -105,7 +105,7 @@ export const selectColumnWidth = (state: IBeakerXDataGridState, column) => (
   selectColumnState(state, column).width || 0
 );
 
-export const selectColumnPosition = (state: IBeakerXDataGridState, column) => (
+export const selectColumnPosition = (state: IBeakerXDataGridState, column): IColumnPosition => (
   selectColumnState(state, column).position
 );
 

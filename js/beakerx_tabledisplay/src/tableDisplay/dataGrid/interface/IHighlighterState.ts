@@ -27,7 +27,7 @@ export enum HIGHLIGHTER_TYPE {
   sort = 'SortHighlighter'
 }
 
-export default interface IHihglighterState {
+export interface IHighlighterState {
   colName: string,
   maxColor: string|null,
   maxVal: number|null,

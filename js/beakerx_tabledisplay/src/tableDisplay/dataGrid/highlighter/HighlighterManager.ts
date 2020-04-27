@@ -14,22 +14,22 @@
  *  limitations under the License.
  */
 
-import IHihglighterState, {
-  HIGHLIGHTER_STYLE,
-  HIGHLIGHTER_TYPE
-} from "../interface/IHighlighterState";
-import Highlighter from "./Highlighter";
-import HighlighterFactory from "./HighlighterFactory";
-import { BeakerXDataGrid } from "../BeakerXDataGrid";
-import { each, iter, filter, toArray } from "@phosphor/algorithm";
-import { CellRenderer } from "@phosphor/datagrid";
-import DataGridColumn from "../column/DataGridColumn";
-import {selectCellHighlighters} from "../model/selectors/model";
-import {DataGridColumnAction} from "../store/DataGridAction";
-import {ADD_COLUMN_HIGHLIGHTER, REMOVE_COLUMN_HIGHLIGHTER} from "../model/reducer";
+import { each, iter, filter, toArray } from "@lumino/algorithm";
+import { CellRenderer } from "@lumino/datagrid";
 import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
+import {
+  HIGHLIGHTER_STYLE,
+  HIGHLIGHTER_TYPE, IHighlighterState
+} from "../interface/IHighlighterState";
+import { Highlighter } from "./Highlighter";
+import { HighlighterFactory } from "./HighlighterFactory";
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
+import { DataGridColumn } from "../column/DataGridColumn";
+import { selectCellHighlighters } from "../model/selectors/model";
+import { DataGridColumnAction } from "../store/DataGridAction";
+import { ADD_COLUMN_HIGHLIGHTER, REMOVE_COLUMN_HIGHLIGHTER } from "../model/reducer";
 
-export default class HighlighterManager {
+export class HighlighterManager {
   highlighters: Highlighter[];
   dataGrid: BeakerXDataGrid;
   cachedHighlighters: Map<string, Highlighter>;
@@ -59,7 +59,7 @@ export default class HighlighterManager {
     state.forEach(this.createHighlighter);
   }
 
-  createHighlighter(state: IHihglighterState): void {
+  createHighlighter(state: IHighlighterState): void {
     let column = this.dataGrid.getColumnByName(state.colName);
 
     if (!column) {
@@ -126,7 +126,7 @@ export default class HighlighterManager {
   }
 
   private createColumnHighlighterState(highlighterType: HIGHLIGHTER_TYPE, column) {
-    const highlighterState: IHihglighterState = {
+    const highlighterState: IHighlighterState = {
          ...HighlighterFactory.defaultHighlighterState,
          type: highlighterType,
          minVal: column.minValue,
@@ -178,7 +178,7 @@ export default class HighlighterManager {
     this.dataGrid.repaint();
   }
 
-  getCellBackground(config: CellRenderer.ICellConfig): string {
+  getCellBackground(config: CellRenderer.CellConfig): string {
     let background = BeakerXThemeHelper.DEFAULT_CELL_BACKGROUND;
     let column = this.dataGrid.getColumn(config);
 

@@ -14,16 +14,16 @@
  *  limitations under the License.
  */
 
-import {CellRenderer, GraphicsContext} from "@phosphor/datagrid";
-import {BeakerXDataGrid} from "../BeakerXDataGrid";
-import {BeakerXDataStore} from "../store/BeakerXDataStore";
-import {DataGridHelpers} from "../dataGridHelpers";
-import getBackgroundColor = DataGridHelpers.getBackgroundColor;
-import ICellConfig = CellRenderer.ICellConfig;
-import ColumnManager from "../column/ColumnManager";
-import {selectColumnWidth} from "../column/selectors";
+import {CellRenderer, DataModel, GraphicsContext} from "@lumino/datagrid";
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
+import { BeakerXDataStore } from "../store/BeakerXDataStore";
+import { DataGridHelpers } from "../dataGridHelpers";
+import { ColumnManager } from "../column/ColumnManager";
+import { selectColumnWidth } from "../column/selectors";
+import { IColumnPosition } from "../interface/IColumn";
+import { DataGridColumn } from "../column/DataGridColumn";
 
-export default class ImageCellRenderer extends CellRenderer {
+export class ImageCellRenderer extends CellRenderer {
   store: BeakerXDataStore;
   dataGrid: BeakerXDataGrid;
   backgroundColor: CellRenderer.ConfigOption<string>;
@@ -33,10 +33,10 @@ export default class ImageCellRenderer extends CellRenderer {
 
     this.store = dataGrid.store;
     this.dataGrid = dataGrid;
-    this.backgroundColor = (config: ICellConfig) => getBackgroundColor(this.dataGrid, config);
+    this.backgroundColor = (config: CellRenderer.CellConfig) => DataGridHelpers.getBackgroundColor(this.dataGrid, config);
   }
 
-  drawBackground(gc: GraphicsContext, config: CellRenderer.ICellConfig): void {
+  drawBackground(gc: GraphicsContext, config: CellRenderer.CellConfig): void {
     let color = CellRenderer.resolveOption(this.backgroundColor, config);
 
     if (!color) {
@@ -47,12 +47,12 @@ export default class ImageCellRenderer extends CellRenderer {
     gc.fillRect(config.x, config.y, config.width, config.height);
   }
 
-  paint(gc: GraphicsContext, config: CellRenderer.ICellConfig): void {
+  paint(gc: GraphicsContext, config: CellRenderer.CellConfig): void {
     this.drawBackground(gc, config);
     this.drawImage(gc, config);
   }
 
-  drawImage(gc: GraphicsContext, config: CellRenderer.ICellConfig): void {
+  async drawImage(gc: GraphicsContext, config: CellRenderer.CellConfig): Promise<void> {
     if (!config.value) {
       return;
     }
@@ -69,7 +69,7 @@ export default class ImageCellRenderer extends CellRenderer {
     gc.rect(x, y, width, height - 1);
     gc.clip();
 
-    img.src = this.prepareImageSrc(config);
+    img.src = await this.prepareImageSrc(config);
 
     if (!img.complete) {
       img.onload = () => {
@@ -82,18 +82,19 @@ export default class ImageCellRenderer extends CellRenderer {
     }
   }
 
-  resizeCell(config, width, height) {
+  resizeCell(config: CellRenderer.CellConfig, width: number, height: number) {
     setTimeout(() => {
-      const column = this.dataGrid.columnManager.getColumnByPosition(
-        ColumnManager.createPositionFromCell(config)
-      );
+      let position: IColumnPosition = ColumnManager.createPositionFromCell(config);
+      const column: DataGridColumn = this.dataGrid.columnManager.getColumnByPosition(position);
 
-      if (this.dataGrid.sectionSize('row', config.row) < height) {
-        this.dataGrid.resizeSection('row', config.row, height);
+      let rowSize = this.dataGrid.rowSize(position.region as DataModel.RowRegion, config.row);
+      if (rowSize < height) {
+        this.dataGrid.resizeRow(position.region as DataModel.RowRegion, config.row, height);
       }
 
-      if (selectColumnWidth(this.dataGrid.store.state, column) < width) {
-        column.dataGrid.dataGridResize.setSectionWidth("column", column, width);
+      let columnWidth = selectColumnWidth(this.dataGrid.store.state, column);
+      if (columnWidth < width) {
+        column.dataGrid.dataGridResize.setSectionWidth(position.region, column, width);
         column.dataGrid.dataGridResize.updateWidgetWidth();
       }
 
@@ -101,7 +102,7 @@ export default class ImageCellRenderer extends CellRenderer {
     });
   }
 
-  private prepareImageSrc(config): string {
+  private async prepareImageSrc(config): Promise<string> {
     let baseUrl;
 
     if (config.value[0] !== '.') {
@@ -109,7 +110,7 @@ export default class ImageCellRenderer extends CellRenderer {
     }
 
     try {
-      const coreutils = require('@jupyterlab/coreutils');
+      const coreutils = await import ('@jupyterlab/coreutils');
       coreutils.PageConfig.getOption('pageUrl');
       baseUrl = coreutils.PageConfig.getBaseUrl();
 

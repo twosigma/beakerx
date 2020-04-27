@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-import {COLUMN_TYPES} from "../column/enums";
-import {DataModel} from "@phosphor/datagrid";
+import { DataModel } from "@lumino/datagrid";
+import { COLUMN_TYPES } from "../column/enums";
 
 export interface ICellData {
   type: COLUMN_TYPES,

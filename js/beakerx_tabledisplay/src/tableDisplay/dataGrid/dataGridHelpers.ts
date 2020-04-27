@@ -14,15 +14,15 @@
  *  limitations under the License.
  */
 
-import {SectionList} from "@phosphor/datagrid/lib/sectionlist";
 import {darken, DEFAULT_DATA_FONT_SIZE} from "./style/dataGridStyle";
 import {KEYBOARD_KEYS} from "./event/enums";
-import DataGridColumn from "./column/DataGridColumn";
+import { DataGridColumn } from "./column/DataGridColumn";
 import moment from 'moment-timezone';
-import {CellRenderer} from "@phosphor/datagrid";
+import {CellRenderer} from "@lumino/datagrid";
 import {BeakerXDataGrid} from "./BeakerXDataGrid";
 import SanitizeUtils from "beakerx_shared/lib/utils/SanitizeUtils";
 import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
+import {SectionList} from "@lumino/datagrid/lib/sectionlist";
 
 export namespace DataGridHelpers {
   const urlRegex = /((https?|ftp|file):\/\/)(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[A-Z0-9+&@#/%=~_|$])/i;
@@ -102,12 +102,12 @@ export namespace DataGridHelpers {
     cursorPosition: number
   ): { index: number, delta: number } | null {
     // Bail early if the list is empty or the position is invalid.
-    if (list.sectionCount === 0 || cursorPosition < 0 || cursorPosition - list.totalSize > 0) {
+    if (list. count === 0 || cursorPosition < 0 || cursorPosition - list.length > 0) {
       return null;
     }
 
-    let index = list.sectionIndex(cursorPosition);
-    let delta = cursorPosition - (list.sectionOffset(index));
+    let index = list.indexOf(cursorPosition);
+    let delta = cursorPosition - (list.offsetOf(index));
 
     if (index >= 0) {
       return { index, delta };
@@ -215,7 +215,7 @@ export namespace DataGridHelpers {
     return /[A-Z]+/gm.test(value);
   }
 
-  export function getBackgroundColor(dataGrid: BeakerXDataGrid, config: CellRenderer.ICellConfig): string {
+  export function getBackgroundColor(dataGrid: BeakerXDataGrid, config: CellRenderer.CellConfig): string {
     let selectionColor = dataGrid.cellSelectionManager.getBackgroundColor(config);
     let highlighterColor = dataGrid.highlighterManager.getCellBackground(config);
     let focusedColor = dataGrid.cellFocusManager.getFocussedCellBackground(config);

@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
-import DataGridColumn from "../column/DataGridColumn";
-import {DataModel, TextRenderer} from "@phosphor/datagrid";
-import {ALL_TYPES} from "../dataTypes";
-import {COLUMN_TYPES, SORT_ORDER} from "../column/enums";
+import { DataModel, TextRenderer } from "@lumino/datagrid";
+import { DataGridColumn } from "../column/DataGridColumn";
+import { ALL_TYPES } from "../dataTypes";
+import { COLUMN_TYPES, SORT_ORDER } from "../column/enums";
 
 export interface IColumn {
   index: number,

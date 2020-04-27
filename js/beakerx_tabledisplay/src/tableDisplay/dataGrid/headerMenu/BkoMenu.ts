@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
-import { Menu } from '@phosphor/widgets'
-import { Message } from '@phosphor/messaging'
+import { Menu } from '@lumino/widgets'
+import { Message } from '@lumino/messaging'
 
-export default class BkoMenu extends Menu {
+export class BkoMenu extends Menu {
   keepOpen: boolean|undefined;
   trigger: HTMLElement;
 
@@ -50,7 +50,7 @@ export default class BkoMenu extends Menu {
   protected onBeforeAttach(msg: Message): void {
     super.onBeforeAttach(msg);
 
-    if (this.parentMenu && this.parentMenu.activeItem && this.parentMenu.activeItem.type === 'submenu') {
+    if (this.parentMenu?.activeItem?.type === 'submenu') {
       this.hide();
     }
   }

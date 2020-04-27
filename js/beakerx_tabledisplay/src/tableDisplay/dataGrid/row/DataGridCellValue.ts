@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-export default class DataGridCellValue {
+export class DataGridCellValue {
     fontColor: string;
     value: any;
 

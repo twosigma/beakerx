@@ -14,17 +14,17 @@
  *  limitations under the License.
  */
 
-import {DEFAULT_PAGE_LENGTH, TIME_UNIT_FORMATS} from "../../consts";
-import {getAlignmentByType} from "../../column/columnAlignment";
-import {ALL_TYPES} from "../../dataTypes";
-import IDataModelState from "../../interface/IDataGridModelState";
-import IHihglighterState from "../../interface/IHighlighterState"
+import { DEFAULT_PAGE_LENGTH, TIME_UNIT_FORMATS } from "../../consts";
+import { getAlignmentByType } from "../../column/columnAlignment";
+import { ALL_TYPES } from "../../dataTypes";
+import { IDataModelState } from "../../interface/IDataGridModelState";
+import { IHighlighterState } from "../../interface/IHighlighterState"
 
 export const selectModel = (state): IDataModelState => state.model;
-export const selectValues = (state) => { let model = selectModel(state); return model.hasOwnProperty("filteredValues") ? model.filteredValues: model.values };
-export const selectHasIndex = (state) => selectModel(state).hasIndex;
+export const selectValues = (state) => { let model = selectModel(state); return model.hasOwnProperty("filteredValues") ? model.filteredValues : model.values };
+export const selectHasIndex = (state): boolean => selectModel(state).hasIndex;
 export const selectTooltips = (state) => selectModel(state).tooltips || [];
-export const selectCellHighlighters = (state): IHihglighterState[] => selectModel(state).cellHighlighters || [];
+export const selectCellHighlighters = (state): IHighlighterState[] => selectModel(state).cellHighlighters || [];
 export const selectHeadersVertical = (state) => selectModel(state).headersVertical;
 export const selectHeaderFontSize = (state) => selectModel(state).headerFontSize;
 export const selectDataFontSize = (state) => selectModel(state).dataFontSize;

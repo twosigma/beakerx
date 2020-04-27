@@ -14,14 +14,13 @@
  *  limitations under the License.
  */
 
-import {BeakerXDataGrid} from "../BeakerXDataGrid";
-import {IRangeCells} from "./CellSelectionManager";
-import {CellRenderer, DataModel} from "@phosphor/datagrid";
-import {COLUMN_TYPES} from "../column/enums";
-import {ICellData} from "../interface/ICell";
-import {DataGridHelpers} from "../dataGridHelpers";
-import isUrl = DataGridHelpers.isUrl;
-import {selectHasIndex} from "../model/selectors";
+import { CellRenderer, DataModel } from "@lumino/datagrid";
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
+import { IRangeCells } from "./CellSelectionManager";
+import { COLUMN_TYPES } from "../column/enums";
+import { ICellData } from "../interface/ICell";
+import { DataGridHelpers } from "../dataGridHelpers";
+import { selectHasIndex } from "../model/selectors";
 
 export interface ICellDataOptions {
   row: number,
@@ -30,7 +29,7 @@ export interface ICellDataOptions {
   region: DataModel.CellRegion
 }
 
-export default class CellManager {
+export class CellManager {
   dataGrid: BeakerXDataGrid;
   hoveredCellData: ICellData;
 
@@ -68,7 +67,7 @@ export default class CellManager {
       cellData.offset,
       cellData.offsetTop,
       this.dataGrid.bodyWidth,
-      this.dataGrid.baseRowSize
+      this.dataGrid.rowSections.defaultSize
     );
   }
 
@@ -192,7 +191,7 @@ export default class CellManager {
 
   createCellConfig(
     { row = 0, column = 0, value = 0, region = 'body' }: ICellDataOptions|ICellData
-  ): CellRenderer.ICellConfig {
+  ): CellRenderer.CellConfig {
     return {
       row,
       column,
@@ -226,7 +225,7 @@ export default class CellManager {
   }
 
   private updateViewportCursor(value) {
-    if (isUrl(value)) {
+    if (DataGridHelpers.isUrl(value)) {
       this.dataGrid['_canvas'].style.cursor = 'pointer';
     } else {
       this.dataGrid['_canvas'].style.cursor = '';

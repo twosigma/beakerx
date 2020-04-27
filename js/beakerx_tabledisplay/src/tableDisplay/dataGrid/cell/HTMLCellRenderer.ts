@@ -13,17 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import {CellRenderer, GraphicsContext, TextRenderer} from "@phosphor/datagrid";
-import BeakerXCellRenderer from "./BeakerXCellRenderer";
-import LatexRenderer from './LatexRenderer';
+import { CellRenderer, GraphicsContext, TextRenderer } from "@lumino/datagrid";
+import { BeakerXCellRenderer } from "./BeakerXCellRenderer";
+import { LatexRenderer } from './LatexRenderer';
 
-const LatoRegular = require('../../../shared/fonts/lato/Lato-Regular.woff');
-const LatoBlack = require('../../../shared/fonts/lato/Lato-Black.woff');
+import LatoRegular from "../../../shared/fonts/lato/Lato-Regular.woff";
+import LatoBlack   from "../../../shared/fonts/lato/Lato-Black.woff";
 
-export default class HTMLCellRenderer extends BeakerXCellRenderer {
+export class HTMLCellRenderer extends BeakerXCellRenderer {
   dataCache = new Map<string, string>();
 
-  drawText(gc: GraphicsContext, config: CellRenderer.ICellConfig): void {
+  drawText(gc: GraphicsContext, config: CellRenderer.CellConfig): void {
     const font = CellRenderer.resolveOption(this.font, config);
 
     if (!font) {
@@ -94,7 +94,7 @@ export default class HTMLCellRenderer extends BeakerXCellRenderer {
     }`;
   }
 
-  getSVGData(text: string, config: CellRenderer.ICellConfig, vAlign, hAlign): string {
+  getSVGData(text: string, config: CellRenderer.CellConfig, vAlign, hAlign): string {
     const cacheKey = this.getCacheKey(config, vAlign, hAlign);
 
     if (this.dataCache.has(cacheKey)) {

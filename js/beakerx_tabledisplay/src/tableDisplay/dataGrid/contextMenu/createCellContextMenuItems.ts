@@ -14,14 +14,14 @@
  *  limitations under the License.
  */
 
-import {BeakerXDataGrid} from "../BeakerXDataGrid";
-import DataGridContextMenu from "./DataGridContextMenu";
-import {selectContextMenuItems, selectContextMenuTags} from "../model/selectors";
-import {selectColumnIndexByPosition} from "../column/selectors";
-import ColumnManager from "../column/ColumnManager";
 import IContextMenuItem from "beakerx_shared/lib/contextMenu/IContextMenuItem";
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
+import { DataGridContextMenu } from "./DataGridContextMenu";
+import { selectContextMenuItems, selectContextMenuTags } from "../model/selectors";
+import { selectColumnIndexByPosition } from "../column/selectors";
+import { ColumnManager } from "../column/ColumnManager";
 
-export default function createCellContextMenuItems(
+export function createCellContextMenuItems(
   dataGrid: BeakerXDataGrid,
   contextMenu: DataGridContextMenu
 ): IContextMenuItem[] {

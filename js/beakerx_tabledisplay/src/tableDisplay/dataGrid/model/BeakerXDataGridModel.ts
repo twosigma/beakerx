@@ -14,30 +14,28 @@
  *  limitations under the License.
  */
 
-import { DataModel } from "@phosphor/datagrid";
+import { DataModel } from "@lumino/datagrid";
+import { MapIterator, iter } from '@lumino/algorithm';
 import { ALL_TYPES } from '../dataTypes';
 import { DataFormatter } from '../DataFormatter';
-import IDataModelState from '../interface/IDataGridModelState';
-import { MapIterator, iter } from '@phosphor/algorithm';
+import { IDataModelState } from '../interface/IDataGridModelState';
 import { IColumn } from "../interface/IColumn";
-import ColumnManager from "../column/ColumnManager";
-import RowManager from "../row/RowManager";
-import DataGridRow from "../row/DataGridRow";
-import {BeakerXDataStore} from "../store/BeakerXDataStore";
+import { ColumnManager } from "../column/ColumnManager";
+import { RowManager } from "../row/RowManager";
+import { DataGridRow } from "../row/DataGridRow";
+import { BeakerXDataStore } from "../store/BeakerXDataStore";
 import {
-    selectColumnsFrozenCount,
     selectColumnsVisible,
     selectHasIndex, selectRowsToShow,
     selectValues, selectVisibleColumnsFrozenCount
 } from "./selectors";
-import DataGridAction from "../store/DataGridAction";
-import {UPDATE_MODEL_DATA, UPDATE_MODEL_FONT_COLOR, UPDATE_MODEL_VALUES} from "./reducer";
+import { DataGridAction } from "../store/DataGridAction";
+import { UPDATE_MODEL_DATA, UPDATE_MODEL_FONT_COLOR, UPDATE_MODEL_VALUES } from "./reducer";
 import {
-  selectColumnDataType,
   selectColumnIndexByPosition,
   selectVisibleBodyColumns
 } from "../column/selectors";
-import {COLUMN_TYPES} from "../column/enums";
+import { COLUMN_TYPES } from "../column/enums";
 
 export class BeakerXDataGridModel extends DataModel {
   store: BeakerXDataStore;
@@ -148,9 +146,9 @@ export class BeakerXDataGridModel extends DataModel {
     return dataGridRow.getValue(index);
   }
 
-  metadata(region: DataModel.CellRegion, position: number): DataModel.Metadata {
+  metadata(region: DataModel.CellRegion, row: number, col: number): DataModel.Metadata {
     let column = this.columnManager.getColumnByPosition({
-      value: position,
+      value: col,
       region: ColumnManager.getColumnRegionByCell({ region })
     });
 

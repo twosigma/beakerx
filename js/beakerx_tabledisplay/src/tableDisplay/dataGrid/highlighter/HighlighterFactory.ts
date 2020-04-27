@@ -14,19 +14,20 @@
  *  limitations under the License.
  */
 
-import IHihglighterState, {
+import {
+  IHighlighterState,
   HIGHLIGHTER_STYLE,
   HIGHLIGHTER_TYPE
 } from "../interface/IHighlighterState";
-import HeatmapHighlighter from "./HeatmapHighlighter";
-import DataGridColumn from "../column/DataGridColumn";
-import ThreeColorHeatmapHighlighter from "./ThreeColorHeatmapHighlighter";
-import UniqueEntriesHighlighter from "./UniqueEntriesHighlighter";
-import ValueHighlighter from "./ValueHighlighter";
-import SortHighlighter from "./SortHighlighter";
+import { HeatmapHighlighter } from "./HeatmapHighlighter";
+import { DataGridColumn } from "../column/DataGridColumn";
+import { ThreeColorHeatmapHighlighter } from "./ThreeColorHeatmapHighlighter";
+import { UniqueEntriesHighlighter } from "./UniqueEntriesHighlighter";
+import { ValueHighlighter } from "./ValueHighlighter";
+import { SortHighlighter } from "./SortHighlighter";
 
-export default class HighlighterFactory {
-  static defaultHighlighterState: IHihglighterState = {
+export class HighlighterFactory {
+  static defaultHighlighterState: IHighlighterState = {
     style: HIGHLIGHTER_STYLE.SINGLE_COLUMN,
     type: HIGHLIGHTER_TYPE.heatmap,
     colName: '',
@@ -39,7 +40,7 @@ export default class HighlighterFactory {
     colors: null,
   };
 
-  static getHighlighter(config: IHihglighterState, column: DataGridColumn) {
+  static getHighlighter(config: IHighlighterState, column: DataGridColumn) {
     switch (config.type) {
       case HIGHLIGHTER_TYPE.heatmap:
         return new HeatmapHighlighter(column, config);

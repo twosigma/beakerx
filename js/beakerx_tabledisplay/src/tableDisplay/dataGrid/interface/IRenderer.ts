@@ -18,7 +18,7 @@ export enum RENDERER_TYPE {
   DataBars = 'DataBars'
 }
 
-export default interface IRenderer {
+export interface IRenderer {
   type: RENDERER_TYPE,
   includeText: boolean,
   percent?: number

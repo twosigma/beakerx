@@ -15,8 +15,8 @@
  */
 
 import * as moment from 'moment-timezone/builds/moment-timezone-with-data';
-import {createSelector} from "reselect";
-import {DataModel} from "@phosphor/datagrid";
+import { DataModel } from "@lumino/datagrid";
+import { createSelector } from "reselect";
 import {
   selectAlignmentByType,
   selectAlignmentForColumn,
@@ -33,13 +33,12 @@ import {
   selectStringFormatForColumn,
   selectStringFormatForType
 } from "./model";
-import {getAlignmentByChar} from "../../column/columnAlignment";
-import {IColumnPosition} from "../../interface/IColumn";
-import {ALL_TYPES} from "../../dataTypes";
-import IHihglighterState from "../../interface/IHighlighterState";
+import { getAlignmentByChar } from "../../column/columnAlignment";
+import { IColumnPosition } from "../../interface/IColumn";
+import { ALL_TYPES } from "../../dataTypes";
+import { IHighlighterState } from "../../interface/IHighlighterState";
 
 export const DEFAULT_INDEX_COLUMN_NAME = '';
-
 
 const processColumnName = (name) => {
   if (name === null) {
@@ -226,7 +225,7 @@ export const selectColumnHighlighters = createSelector(
     (state, columnName) => columnName,
     (state, columnName, highlighterType) => highlighterType
   ],
-  (highlighters, columnName, highlighterType): IHihglighterState[] => highlighters.filter(
+  (highlighters, columnName, highlighterType): IHighlighterState[] => highlighters.filter(
     highlighter => highlighter.colName === columnName && highlighter.type === highlighterType
   )
 );

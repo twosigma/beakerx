@@ -14,21 +14,21 @@
  *  limitations under the License.
  */
 
-import IHihglighterState, { HIGHLIGHTER_STYLE } from "../interface/IHighlighterState";
-import DataGridColumn from "../column/DataGridColumn";
-import Highlighter from "./Highlighter";
-import {CellRenderer} from "@phosphor/datagrid";
+import { CellRenderer } from "@lumino/datagrid";
 import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
+import { IHighlighterState, HIGHLIGHTER_STYLE } from "../interface/IHighlighterState";
+import { DataGridColumn } from "../column/DataGridColumn";
+import { Highlighter } from "./Highlighter";
 
-export default class SortHighlighter extends Highlighter {
+export class SortHighlighter extends Highlighter {
 
-  constructor(column: DataGridColumn, state: IHihglighterState) {
+  constructor(column: DataGridColumn, state: IHighlighterState) {
     super(column, state);
 
     this.state.style = HIGHLIGHTER_STYLE.SINGLE_COLUMN;
   }
 
-  getBackgroundColor(config: CellRenderer.ICellConfig) {
+  getBackgroundColor(config: CellRenderer.CellConfig) {
     return config.row % 2 === 0 ?
       BeakerXThemeHelper.HIGHLIGHTED_CELL_BACKGROUND_EVEN :
       BeakerXThemeHelper.HIGHLIGHTED_CELL_BACKGROUND_ODD;

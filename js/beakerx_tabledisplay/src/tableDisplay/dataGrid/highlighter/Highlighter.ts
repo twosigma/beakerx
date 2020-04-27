@@ -14,38 +14,38 @@
  *  limitations under the License.
  */
 
-import IHihglighterState, { HIGHLIGHTER_STYLE } from "../interface/IHighlighterState";
-import { CellRenderer } from "@phosphor/datagrid";
-import DataGridColumn from "../column/DataGridColumn";
-import {BeakerXDataGridModel} from "../model/BeakerXDataGridModel";
+import { CellRenderer } from "@lumino/datagrid";
 import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
+import { IHighlighterState, HIGHLIGHTER_STYLE } from "../interface/IHighlighterState";
+import { DataGridColumn } from "../column/DataGridColumn";
+import { BeakerXDataGridModel } from "../model/BeakerXDataGridModel";
 
-export default class Highlighter {
+export class Highlighter {
   column: DataGridColumn;
-  model: BeakerXDataGridModel;
-  state: IHihglighterState;
+  state: IHighlighterState;
+  protected dataModel: BeakerXDataGridModel;
 
-  constructor(column: DataGridColumn, state: IHihglighterState) {
-    const valueResolver = column.dataGrid.model.getColumnValueResolver(column.getDataType());
+  constructor(column: DataGridColumn, state: IHighlighterState) {
+    const valueResolver = column.dataGrid.dataModel.getColumnValueResolver(column.getDataType());
 
     this.column = column;
-    this.model = column.dataGrid.model;
+    this.dataModel = column.dataGrid.dataModel;
     this.state = { ...state };
     this.state.style = state.style || HIGHLIGHTER_STYLE.SINGLE_COLUMN;
     this.state.minVal = valueResolver(Number.isFinite(this.state.minVal) ? this.state.minVal : this.column.minValue);
     this.state.maxVal = valueResolver(Number.isFinite(this.state.maxVal) ? this.state.maxVal : this.column.maxValue);
   }
 
-  getBackgroundColor(config: CellRenderer.ICellConfig) {
+  getBackgroundColor(config: CellRenderer.CellConfig) {
     return BeakerXThemeHelper.DEFAULT_CELL_BACKGROUND;
   }
 
-  getValueToHighlight(config: CellRenderer.ICellConfig) {
+  getValueToHighlight(config: CellRenderer.CellConfig) {
     let value = config.value;
-    let valueResolver = this.model.getColumnValueResolver(this.column.getDataType());
+    let valueResolver = this.dataModel.getColumnValueResolver(this.column.getDataType());
 
     if (this.state.style === HIGHLIGHTER_STYLE.FULL_ROW) {
-      value = this.model.rowManager.getValueByColumn(config.row, this.column.index, this.column.type);
+      value = this.dataModel.rowManager.getValueByColumn(config.row, this.column.index, this.column.type);
     }
 
     return valueResolver(value);
@@ -53,7 +53,7 @@ export default class Highlighter {
 
   destroy(): void {
     this.column = null;
-    this.model = null;
+    this.dataModel = null;
     this.state = null;
   }
 }

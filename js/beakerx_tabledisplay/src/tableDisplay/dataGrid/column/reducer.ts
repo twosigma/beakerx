@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-import {Reducer} from "@phosphor/datastore";
+import {Reducer} from "../../tmp_migration";
 import {
-  default as DataGridAction,
+  DataGridAction,
   DataGridColumnAction,
   DataGridColumnsAction
 } from "../store/DataGridAction";

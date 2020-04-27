@@ -14,28 +14,28 @@
  *  limitations under the License.
  */
 
-import Highlighter from "./Highlighter";
-import IHihglighterState from "../interface/IHighlighterState";
-import DataGridColumn from "../column/DataGridColumn";
-import { reduce } from "@phosphor/algorithm";
-import { CellRenderer } from "@phosphor/datagrid";
-import {selectColumnNames} from "../model/selectors/column";
+import { reduce } from "@lumino/algorithm";
+import { CellRenderer } from "@lumino/datagrid";
 import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
+import { Highlighter } from "./Highlighter";
+import { IHighlighterState } from "../interface/IHighlighterState";
+import { DataGridColumn } from "../column/DataGridColumn";
+import { selectColumnNames } from "../model/selectors/column";
 
 const MAX_HUE_VALUE = 360;
 const DEFAULT_HSL_COMPONENT_STEPS_COUNT = 50;
 
-export default class UniqueEntriesHighlighter extends Highlighter {
+export class UniqueEntriesHighlighter extends Highlighter {
   uniqueValues: any[] = [];
   uniqueColors = {};
 
-  constructor(column: DataGridColumn, state: IHihglighterState) {
+  constructor(column: DataGridColumn, state: IHighlighterState) {
     super(column, state);
 
     this.generateUniqueValues();
   }
 
-  getBackgroundColor(config: CellRenderer.ICellConfig) {
+  getBackgroundColor(config: CellRenderer.CellConfig) {
     return this.uniqueColors[this.getValueToHighlight(config)] || BeakerXThemeHelper.DEFAULT_CELL_BACKGROUND;
   }
 
@@ -44,7 +44,7 @@ export default class UniqueEntriesHighlighter extends Highlighter {
     const generateColor = this.getColorGenerationFn(1, 1);
 
     reduce(
-      this.model.getColumnValuesIterator(this.column),
+      this.dataModel.getColumnValuesIterator(this.column),
       (acc, value) => {
         if (acc.indexOf(value) === -1) {
           acc.push(value);

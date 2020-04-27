@@ -5,7 +5,6 @@
     "sourceMap": true,
     "strictNullChecks": false,
     "noEmit": true,
-
     "paths": {
       "jquery": ["jquery/dist/jquery.js"]
     },

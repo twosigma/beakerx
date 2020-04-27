@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-import {DataStore, combineReducers} from "@phosphor/datastore";
+import {DataStore, combineReducers} from "../../tmp_migration";
 import dataGridModelReducer from "../model/reducer";
-import IDataModelState from "../interface/IDataGridModelState";
+import { IDataModelState } from "../interface/IDataGridModelState";
 import columnReducer from "../column/reducer";
 import {
   selectInitialColumnAlignment,
@@ -42,8 +42,8 @@ export interface IBeakerXDataGridState {
 
 export type BeakerXDataStore = DataStore<IBeakerXDataGridState>;
 
-export default function createStore(initialState: IDataModelState) {
-  return new DataStore(combineReducers({
+export function createStore(initialState: IDataModelState) {
+  let s = new DataStore(combineReducers({
     model: dataGridModelReducer,
     columns: columnReducer
   }), { model: initialState, columns: createInitialColumnsState(initialState) });

@@ -15,7 +15,7 @@
  */
 
 import { ALL_TYPES } from "../dataTypes";
-import { TextRenderer } from "@phosphor/datagrid";
+import { TextRenderer } from "@lumino/datagrid";
 
 export const LEFT: TextRenderer.HorizontalAlignment = 'left';
 export const RIGHT: TextRenderer.HorizontalAlignment = 'right';

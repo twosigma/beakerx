@@ -14,16 +14,16 @@
  *  limitations under the License.
  */
 
-import ColumnMenu from "../headerMenu/ColumnMenu";
-import IndexMenu from "../headerMenu/IndexMenu";
+import { minmax, filter, each } from '@lumino/algorithm';
+import { CellRenderer, DataModel, TextRenderer } from "@lumino/datagrid";
+import { ColumnMenu } from "../headerMenu/ColumnMenu";
+import { IndexMenu } from "../headerMenu/IndexMenu";
 import { BeakerXDataGrid } from "../BeakerXDataGrid";
-import {IColumnOptions} from "../interface/IColumn";
-import { CellRenderer, DataModel, TextRenderer } from "@phosphor/datagrid";
-import {ALL_TYPES, getDisplayType, isDoubleWithPrecision} from "../dataTypes";
-import { minmax, filter, each } from '@phosphor/algorithm';
+import { IColumnOptions, IColumnPosition } from "../interface/IColumn";
+import { ALL_TYPES, getDisplayType, isDoubleWithPrecision } from "../dataTypes";
 import { HIGHLIGHTER_TYPE } from "../interface/IHighlighterState";
-import ColumnManager, { COLUMN_CHANGED_TYPES, IBkoColumnsChangedArgs } from "./ColumnManager";
-import ColumnFilter from "./ColumnFilter";
+import { ColumnManager, COLUMN_CHANGED_TYPES, IBkoColumnsChangedArgs } from "./ColumnManager";
+import { ColumnFilter } from "./ColumnFilter";
 import {
   selectColumnDataType,
   selectColumnDataTypeName,
@@ -33,7 +33,7 @@ import {
   selectColumnKeepTrigger, selectColumnPosition, selectColumnSortOrder,
   selectColumnState, selectColumnFormatForTimes
 } from "./selectors";
-import {DataGridColumnAction} from "../store/DataGridAction";
+import { DataGridColumnAction } from "../store/DataGridAction";
 import {
   selectColumnsVisible,
   selectHasIndex,
@@ -49,21 +49,20 @@ import {
   UPDATE_COLUMN_SORT_ORDER,
   UPDATE_COLUMN_WIDTH
 } from "./reducer";
-import {BeakerXDataStore} from "../store/BeakerXDataStore";
-import {COLUMN_TYPES, SORT_ORDER} from "./enums";
+import { BeakerXDataStore } from "../store/BeakerXDataStore";
+import { COLUMN_TYPES, SORT_ORDER } from "./enums";
 import {
   UPDATE_COLUMN_FROZEN, UPDATE_COLUMN_RENDERER,
   UPDATE_COLUMN_VISIBLE
 } from "../model/reducer";
-import {RENDERER_TYPE} from "../interface/IRenderer";
-import DataGridCell from "../cell/DataGridCell";
-import {ColumnValuesIterator} from "./ColumnValuesIterator";
-import {DataGridHelpers} from "../dataGridHelpers";
-import getStringSize = DataGridHelpers.getStringSize;
-import {selectDataFontSize} from "../model/selectors/model";
-import Highlighter from "../highlighter/Highlighter";
+import { RENDERER_TYPE } from "../interface/IRenderer";
+import { DataGridCell } from "../cell/DataGridCell";
+import { ColumnValuesIterator } from "./ColumnValuesIterator";
+import { DataGridHelpers } from "../dataGridHelpers";
+import { selectDataFontSize } from "../model/selectors/model";
+import { Highlighter } from "../highlighter/Highlighter";
 
-export default class DataGridColumn {
+export class DataGridColumn {
   index: number;
   name: string;
   type: COLUMN_TYPES;
@@ -101,7 +100,7 @@ export default class DataGridColumn {
   }
 
   assignFormatFn() {
-    this.formatFn = this.dataGrid.model.dataFormatter
+    this.formatFn = this.dataGrid.dataModel.dataFormatter
       .getFormatFnByDisplayType(this.getDisplayType(), this.getState());
   }
 
@@ -123,9 +122,9 @@ export default class DataGridColumn {
       this,
       {
         x: this.dataGrid.getColumnOffset(columnPosition.value, columnPosition.region),
-        y: this.dataGrid.baseColumnHeaderSize - 1,
-        width: this.dataGrid.columnSections.sectionSize(this.index),
-        height: this.dataGrid.baseRowSize
+        y: this.dataGrid.columnHeaderSections.defaultSize - 1,
+        width: this.dataGrid.columnSections.sizeOf(this.index),
+        height: this.dataGrid.rowSections.defaultSize
       }
     );
   }
@@ -138,7 +137,7 @@ export default class DataGridColumn {
 
     const position = this.getPosition();
 
-    this.dataGrid.dataGridResize.setSectionWidth("column", this, 1);
+    this.dataGrid.dataGridResize.setSectionWidth(position.region, this, 1);
     this.assignFormatFn();
     this.recalculateLongestStringValue(displayType);
     this.dataGrid.dataGridResize.setInitialSectionWidth({ index: position.value }, position.region);
@@ -172,13 +171,13 @@ export default class DataGridColumn {
 
     this.updateColumnFilter(filter);
     search ? this.dataGrid.rowManager.searchRows() : this.dataGrid.rowManager.filterRows();
-    this.dataGrid.model.reset();
+    this.dataGrid.dataModel.reset();
   }
 
   resetFilter() {
     this.updateColumnFilter('');
     this.dataGrid.rowManager.filterRows();
-    this.dataGrid.model.reset();
+    this.dataGrid.dataModel.reset();
   }
 
   connectToColumnsChanged() {
@@ -265,7 +264,7 @@ export default class DataGridColumn {
     return selectColumnFormatForTimes(this.store.state, this);
   }
 
-  getPosition() {
+  getPosition(): IColumnPosition {
     return selectColumnPosition(this.store.state, this);
   }
 
@@ -302,7 +301,7 @@ export default class DataGridColumn {
   }
 
   getValueResolver(): Function {
-    return this.dataGrid.model.getColumnValueResolver(this.getDataType());
+    return this.dataGrid.dataModel.getColumnValueResolver(this.getDataType());
   }
 
   move(destination: number) {
@@ -322,8 +321,8 @@ export default class DataGridColumn {
     let minMax;
     let dataType = this.getDataType();
     let displayType = this.getDisplayType();
-    let valuesIterator = this.dataGrid.model.getColumnValuesIterator(this);
-    let valueResolver = this.dataGrid.model.getColumnValueResolver(
+    let valuesIterator = this.dataGrid.dataModel.getColumnValuesIterator(this);
+    let valueResolver = this.dataGrid.dataModel.getColumnValueResolver(
       displayType === ALL_TYPES.html ? displayType : dataType
     );
 
@@ -433,14 +432,14 @@ export default class DataGridColumn {
     let longest;
 
     each(valuesIterator, (value, index) => {
-      let size = getStringSize(value, fontSize);
+      let size = DataGridHelpers.getStringSize(value, fontSize);
 
       if (!longest || longest.width < size.width) {
         longest = { width: size.width, value };
       }
 
-      if (size.height > this.dataGrid.rowSections.sectionSize(index)) {
-        this.dataGrid.resizeSection('row', index, size.height);
+      if (size.height > this.dataGrid.rowSections.sizeOf(index)) {
+        this.dataGrid.resizeRow("body", index, size.height);
       }
     });
 

@@ -15,9 +15,9 @@
  */
 
 import { createIndexMenuItems } from './createIndexMenuItems';
-import HeaderMenu from './HeaderMenu';
+import { HeaderMenu } from './HeaderMenu';
 
-export default class IndexMenu extends HeaderMenu {
+export class IndexMenu extends HeaderMenu {
   protected buildMenu(): void {
     this.menu.addClass('bko-header-menu');
     this.menu.addClass('bko-table-menu');

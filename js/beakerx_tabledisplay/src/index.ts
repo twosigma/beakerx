@@ -29,4 +29,5 @@ if (window.require) {
 }
 // Export widget models and views, and the npm package version number.
 export * from './TableDisplay';
-export const version = require('../package.json').version;
+import pkg from "../package.json";
+export const version = pkg.version;

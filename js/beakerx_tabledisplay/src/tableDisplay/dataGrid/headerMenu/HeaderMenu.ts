@@ -14,23 +14,22 @@
  *  limitations under the License.
  */
 
-import { CommandRegistry } from '@phosphor/commands';
-import { Widget } from '@phosphor/widgets';
+import { CommandRegistry } from '@lumino/commands';
+import { Widget } from '@lumino/widgets';
 import { BeakerXDataGrid } from "../BeakerXDataGrid";
-import Menu from './BkoMenu';
-import DataGridColumn from "../column/DataGridColumn";
-import {SORT_ORDER} from "../column/enums";
+import { BkoMenu } from './BkoMenu';
+import { DataGridColumn } from "../column/DataGridColumn";
+import { SORT_ORDER } from "../column/enums";
 import {DataGridHelpers} from "../dataGridHelpers";
-import getEventKeyCode = DataGridHelpers.getEventKeyCode;
 import {KEYBOARD_KEYS} from "../event/enums";
 import IMenu from "beakerx_shared/lib/contextMenu/IMenu";
 import IMenuItem from "beakerx_shared/lib/contextMenu/IMenuItem";
 
-export default abstract class HeaderMenu implements IMenu {
+export abstract class HeaderMenu implements IMenu {
   columnIndex: number;
 
   protected commands: CommandRegistry;
-  protected menu: Menu;
+  protected menu: BkoMenu;
   protected viewport: Widget;
   protected triggerNode: HTMLElement;
   protected dataGrid: BeakerXDataGrid;
@@ -45,7 +44,7 @@ export default abstract class HeaderMenu implements IMenu {
 
   constructor(column: DataGridColumn) {
     this.commands = new CommandRegistry();
-    this.menu = new Menu({ commands: this.commands });
+    this.menu = new BkoMenu({ commands: this.commands });
     this.viewport = column.dataGrid.viewport;
     this.columnIndex = column.index;
     this.dataGrid = column.dataGrid;
@@ -140,7 +139,7 @@ export default abstract class HeaderMenu implements IMenu {
       this.open(submenuIndex);
   }
 
-  createItems(items: IMenuItem[], menu: Menu): void {
+  createItems(items: IMenuItem[], menu: BkoMenu): void {
     for (let i = 0, ien = items.length; i < ien; i++) {
       let menuItem = items[i];
 
@@ -160,7 +159,7 @@ export default abstract class HeaderMenu implements IMenu {
     }
   }
 
-  addCommand(menuItem: IMenuItem, menu: Menu): string {
+  addCommand(menuItem: IMenuItem, menu: BkoMenu): string {
     const commandId = menuItem.id || menuItem.title;
 
     this.commands.addCommand(commandId, {
@@ -196,8 +195,8 @@ export default abstract class HeaderMenu implements IMenu {
     return commandId;
   }
 
-  createSubmenu(menuItem: IMenuItem, subitems: IMenuItem[]): Menu {
-    const submenu = new Menu({ commands: this.commands });
+  createSubmenu(menuItem: IMenuItem, subitems: IMenuItem[]): BkoMenu {
+    const submenu = new BkoMenu({ commands: this.commands });
 
     submenu.addClass('dropdown-submenu');
     submenu.addClass('bko-table-menu');
@@ -281,7 +280,7 @@ export default abstract class HeaderMenu implements IMenu {
     this.menu.isVisible && this.menu.handleEvent(event);
   }
 
-  protected addItemsFiltering(menu: Menu): void {
+  protected addItemsFiltering(menu: BkoMenu): void {
     const filterWrapper = document.createElement('div');
 
     filterWrapper.classList.add('dropdown-menu-search');
@@ -311,7 +310,7 @@ export default abstract class HeaderMenu implements IMenu {
     input.addEventListener('keyup', (event: KeyboardEvent) => {
       event.stopImmediatePropagation();
 
-      if (getEventKeyCode(event) === KEYBOARD_KEYS.Escape) {
+      if (DataGridHelpers.getEventKeyCode(event) === KEYBOARD_KEYS.Escape) {
         menu.close();
 
         return;
@@ -321,7 +320,7 @@ export default abstract class HeaderMenu implements IMenu {
     });
   }
 
-  protected hideMenuItems(menu: Menu, filterValue: string): void {
+  protected hideMenuItems(menu: BkoMenu, filterValue: string): void {
     const searchExp = filterValue ? new RegExp(filterValue, 'i') : null;
     const items = menu.contentNode.querySelectorAll('.p-Menu-item');
 

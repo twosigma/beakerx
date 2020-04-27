@@ -38,7 +38,7 @@ describe('BeakerXDataGrid', () => {
   });
 
   it('should have the model property of type BeakerXDataGridModel', () => {
-    expect(dataGrid.model).to.be.an.instanceof(BeakerXDataGridModel);
+    expect(dataGrid.dataModel).to.be.an.instanceof(BeakerXDataGridModel);
   });
 
   it('should have the viewport set', () => {

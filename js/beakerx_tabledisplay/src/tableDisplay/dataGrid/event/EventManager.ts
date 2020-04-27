@@ -14,28 +14,21 @@
  *  limitations under the License.
  */
 
-import {BeakerXDataGrid} from "../BeakerXDataGrid";
-import DataGridColumn from "../column/DataGridColumn";
-import {HIGHLIGHTER_TYPE} from "../interface/IHighlighterState";
-import {DataGridHelpers} from "../dataGridHelpers";
-import {BeakerXDataStore} from "../store/BeakerXDataStore";
-import {selectDoubleClickTag, selectHasDoubleClickAction} from "../model/selectors";
-import {COLUMN_TYPES} from "../column/enums";
-import CellManager from "../cell/CellManager";
-import throttle = DataGridHelpers.throttle;
-import getEventKeyCode = DataGridHelpers.getEventKeyCode;
-import {KEYBOARD_KEYS} from "./enums";
-import ColumnManager from "../column/ColumnManager";
-import {ICellData} from "../interface/ICell";
-import retrieveUrl = DataGridHelpers.retrieveUrl;
-import {EventHelpers} from "./helpers";
-import isOutsideNode = EventHelpers.isOutsideNode;
-import isInsideGridNode = EventHelpers.isInsideGridNode;
-import isInsideGrid = EventHelpers.isInsideGrid;
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
+import { DataGridColumn } from "../column/DataGridColumn";
+import { HIGHLIGHTER_TYPE } from "../interface/IHighlighterState";
+import { DataGridHelpers } from "../dataGridHelpers";
+import { BeakerXDataStore } from "../store/BeakerXDataStore";
+import { selectDoubleClickTag, selectHasDoubleClickAction } from "../model/selectors";
+import { COLUMN_TYPES } from "../column/enums";
+import { CellManager } from "../cell/CellManager";
+import { KEYBOARD_KEYS } from "./enums";
+import { ColumnManager } from "../column/ColumnManager";
+import { ICellData } from "../interface/ICell";
 
 const COLUMN_RESIZE_AREA_WIDTH = 4;
 
-export default class EventManager {
+export class EventManager {
   dataGrid: BeakerXDataGrid;
   store: BeakerXDataStore;
   cellHoverControl = { timerId: undefined };
@@ -53,9 +46,9 @@ export default class EventManager {
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleScrollBarMouseUp = this.handleScrollBarMouseUp.bind(this);
-    this.handleCellHover = throttle<MouseEvent, void>(this.handleCellHover, 100, this, this.cellHoverControl);
-    this.handleMouseMoveOutsideArea = throttle<MouseEvent, void>(this.handleMouseMoveOutsideArea, 100, this);
-    this.handleWindowResize = throttle<Event, void>(this.handleWindowResize, 200, this);
+    this.handleCellHover = DataGridHelpers.throttle<MouseEvent, void>(this.handleCellHover, 100, this, this.cellHoverControl);
+    this.handleMouseMoveOutsideArea = DataGridHelpers.throttle<MouseEvent, void>(this.handleMouseMoveOutsideArea, 100, this);
+    this.handleWindowResize = DataGridHelpers.throttle<Event, void>(this.handleWindowResize, 200, this);
 
     this.dataGrid.node.addEventListener('selectstart', this.handleSelectStart);
     this.dataGrid.node.addEventListener('mouseout', this.handleMouseOut);
@@ -91,7 +84,7 @@ export default class EventManager {
     let x = event.clientX - rect.left;
     let y = event.clientY - rect.top;
 
-    return x < (this.dataGrid.bodyWidth + this.dataGrid.rowHeaderSections.totalSize) && y < this.dataGrid.headerHeight;
+    return x < (this.dataGrid.bodyWidth + this.dataGrid.rowHeaderSections.length) && y < this.dataGrid.headerHeight;
   }
 
   destroy(): void {
@@ -166,7 +159,7 @@ export default class EventManager {
       return;
     }
 
-    let url = retrieveUrl(hoveredCellData.value);
+    let url = DataGridHelpers.retrieveUrl(hoveredCellData.value);
     url && window.open(url);
   }
 
@@ -192,11 +185,11 @@ export default class EventManager {
   }
 
   private isOutsideViewport(event: MouseEvent) {
-    return isOutsideNode(event, this.dataGrid.viewport.node);
+    return Private.EventHelpers.isOutsideNode(event, this.dataGrid.viewport.node);
   }
 
   private isOutsideGrid(event) {
-    return !isInsideGrid(event);
+    return !Private.EventHelpers.isInsideGrid(event);
   }
 
   private handleCellHover(event) {
@@ -252,7 +245,7 @@ export default class EventManager {
   }
 
   private isNodeInsideGrid(event: MouseEvent) {
-    return isInsideGridNode(event, this.dataGrid.node);
+    return Private.EventHelpers.isInsideGridNode(event, this.dataGrid.node);
   }
 
   private handleMouseWheel(event: MouseEvent, parentHandler: Function): void {
@@ -297,7 +290,7 @@ export default class EventManager {
 
     const focusedCell = this.dataGrid.cellFocusManager.focusedCellData;
     const column: DataGridColumn|null = focusedCell && this.dataGrid.columnManager.takeColumnByCell(focusedCell);
-    const code = getEventKeyCode(event);
+    const code = DataGridHelpers.getEventKeyCode(event);
 
     if (!code) {
       return;
@@ -441,5 +434,42 @@ export default class EventManager {
    */
   private getRowIndex(renderedRowIndex: number): number {
     return this.dataGrid.rowManager.rows[renderedRowIndex].index;
+  }
+}
+
+namespace Private {
+  export namespace EventHelpers {
+    export function isOutsideNode(event: MouseEvent, node: HTMLElement) {
+      const rect = node.getBoundingClientRect();
+
+      return (
+          event.clientY - rect.top <= 1
+          || rect.bottom - event.clientY <= 1
+          || event.clientX - rect.left <= 1
+          || rect.right - event.clientX <= 1
+      )
+    }
+
+    export function isInsideGrid(event) {
+      const relatedTarget = (event.relatedTarget || event.target) as HTMLElement;
+
+      return relatedTarget && (
+          relatedTarget.classList.contains('p-DataGrid')
+          || relatedTarget.classList.contains('lm-DataGrid')
+          || relatedTarget.closest('.p-DataGrid')
+          || relatedTarget.closest('.lm-DataGrid')
+      )
+    }
+
+    export function isInsideGridNode(event: MouseEvent, gridNode: HTMLElement) {
+      const relatedTarget = (event.relatedTarget || event.target) as HTMLElement;
+
+      return relatedTarget && (
+          gridNode.contains(relatedTarget)
+          || relatedTarget === gridNode
+          || relatedTarget.classList.contains('bko-menu')
+          || relatedTarget.closest('.bko-table-menu')
+      );
+    }
   }
 }

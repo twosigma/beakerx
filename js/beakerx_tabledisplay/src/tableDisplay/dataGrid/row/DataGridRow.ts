@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-import DataGridCellValue from "./DataGridCellValue";
+import { DataGridCellValue } from "./DataGridCellValue";
 
-export default class DataGridRow {
+export class DataGridRow {
     index: number;
     cells: DataGridCellValue[];
 

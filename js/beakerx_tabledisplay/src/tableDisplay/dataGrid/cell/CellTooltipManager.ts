@@ -14,15 +14,15 @@
  *  limitations under the License.
  */
 
-import {BeakerXDataGrid} from "../BeakerXDataGrid";
-import {ICellData} from "../interface/ICell";
-import CellTooltip from "./CellTooltip";
-import ColumnManager from "../column/ColumnManager";
-import DataGridCell from "./DataGridCell";
-import {COLUMN_TYPES} from "../column/enums";
-import {selectHasIndex, selectTooltips} from "../model/selectors";
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
+import { ICellData } from "../interface/ICell";
+import { CellTooltip } from "./CellTooltip";
+import { ColumnManager } from "../column/ColumnManager";
+import { DataGridCell } from "./DataGridCell";
+import { COLUMN_TYPES } from "../column/enums";
+import { selectHasIndex, selectTooltips } from "../model/selectors";
 
-export default class CellTooltipManager {
+export class CellTooltipManager {
   activeTooltips: CellTooltip[] = [];
   dataGrid: BeakerXDataGrid;
   tooltips: string[][];

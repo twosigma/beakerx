@@ -14,16 +14,16 @@
  *  limitations under the License.
  */
 
+import { CellRenderer } from "@lumino/datagrid";
+import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
 import { BeakerXDataGrid } from "../BeakerXDataGrid";
 import { ICellData } from "../interface/ICell";
-import { CellRenderer } from "@phosphor/datagrid";
-import DataGridColumn from "../column/DataGridColumn";
+import { DataGridColumn } from "../column/DataGridColumn";
 import { selectVisibleBodyColumns } from "../column/selectors";
 import { KEYBOARD_KEYS } from "../event/enums";
 import { selectColumnsFrozenNames } from "../model/selectors";
-import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
 
-export default class CellFocusManager {
+export class CellFocusManager {
   dataGrid: BeakerXDataGrid;
   focusedCellData: ICellData|null;
 
@@ -66,7 +66,7 @@ export default class CellFocusManager {
     this.dataGrid.repaint();
   }
 
-  getFocussedCellBackground(config: CellRenderer.ICellConfig): string {
+  getFocussedCellBackground(config: CellRenderer.CellConfig): string {
     const cellType = DataGridColumn.getColumnTypeByRegion(config.region, config.column);
 
     if (!this.focusedCellData || cellType !== this.focusedCellData.type) {
@@ -158,7 +158,7 @@ export default class CellFocusManager {
     }
 
     const row = this.focusedCellData.row + moveBy;
-    const rowCount = this.dataGrid.model.rowCount('body') - 1;
+    const rowCount = this.dataGrid.dataModel.rowCount('body') - 1;
 
     this.setFocusedCell({
       ...this.focusedCellData,
@@ -177,10 +177,10 @@ export default class CellFocusManager {
   }
 
   private scrollIfNeeded(direction: "up" | "right" | "down" | "left") {
-    let rowOffset = this.dataGrid.rowSections.sectionOffset(this.focusedCellData.row);
-    let rowSize = this.dataGrid.rowSections.sectionSize(this.focusedCellData.row);
-    let columnOffset = this.dataGrid.columnSections.sectionOffset(this.focusedCellData.column);
-    let columnSize = this.dataGrid.columnSections.sectionSize(this.focusedCellData.column);
+    let rowOffset = this.dataGrid.rowSections.offsetOf(this.focusedCellData.row);
+    let rowSize = this.dataGrid.rowSections.sizeOf(this.focusedCellData.row);
+    let columnOffset = this.dataGrid.columnSections.offsetOf(this.focusedCellData.column);
+    let columnSize = this.dataGrid.columnSections.sizeOf(this.focusedCellData.column);
 
     let scrollToX = this.dataGrid.scrollX;
     let scrollToY = this.dataGrid.scrollY;

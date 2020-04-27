@@ -14,28 +14,22 @@
  *  limitations under the License.
  */
 
-import {CellRenderer, GraphicsContext} from "@phosphor/datagrid";
-import DataGridCell from "./DataGridCell";
+import {CellRenderer, GraphicsContext} from "@lumino/datagrid";
+import {DataGridCell} from "./DataGridCell";
 import {RENDERER_TYPE} from "../interface/IRenderer";
-import BeakerXCellRenderer from "./BeakerXCellRenderer";
+import {BeakerXCellRenderer} from "./BeakerXCellRenderer";
 
-export default class DefaultCellRenderer extends BeakerXCellRenderer {
+export class DefaultCellRenderer extends BeakerXCellRenderer {
 
-  drawText(gc: GraphicsContext, config: CellRenderer.ICellConfig): void {
+  drawText(gc: GraphicsContext, config: CellRenderer.CellConfig): void {
     const options = this.getOptions(config);
     const renderer = this.getRenderer(config);
 
-    if (
-      !options.font
-      || !options.color
-      || options.boxHeight <= 0
-      || options.text === null
-      || (renderer
-      && renderer.type === RENDERER_TYPE.DataBars
-      && !renderer.includeText)
-    ) {
-      return;
-    }
+    if (!options.font) { return; }
+    if (!options.color) { return; }
+    if (options.boxHeight <= 0) { return; }
+    if (options.text === null) { return; }
+    if (renderer?.type === RENDERER_TYPE.DataBars && !renderer?.includeText) { return; }
 
     const { textX, textY } = this.getTextPosition(config, options);
 

@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-import { DataGrid } from "@phosphor/datagrid";
+import { DataGrid } from "@lumino/datagrid";
 
-export default interface IDataGridScopeOptions extends DataGrid.IOptions {
+export interface IDataGridScopeOptions extends DataGrid.IOptions {
   element: HTMLElement
   data: any,
   widgetModel: any,

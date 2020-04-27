@@ -14,35 +14,34 @@
  *  limitations under the License.
  */
 
-import {BeakerXDataGrid} from "../BeakerXDataGrid";
-import {ICellData} from "../interface/ICell";
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
+import { ICellData } from "../interface/ICell";
 import {
   selectColumnNames, selectColumnOrder, selectColumnsFrozenCount, selectColumnsFrozenNames,
-  selectColumnsVisible,
-  selectHasIndex
+  selectColumnsVisible, selectHasIndex
 } from "../model/selectors";
-import {UPDATE_COLUMN_POSITIONS} from "./reducer";
-import {DataGridColumnAction, DataGridColumnsAction} from "../store/DataGridAction";
-import {BeakerXDataStore} from "../store/BeakerXDataStore";
-import {selectColumnIndexByPosition} from "./selectors";
-import {UPDATE_COLUMN_ORDER} from "../model/reducer";
-import DataGridColumn from "./DataGridColumn";
-import {IColumnPosition} from "../interface/IColumn";
-import ColumnManager from "./ColumnManager";
-import {COLUMN_SIDE, COLUMN_TYPES} from "./enums";
-import {DEFAULT_BORDER_COLOR} from "../style/dataGridStyle";
+import { UPDATE_COLUMN_POSITIONS } from "./reducer";
+import { DataGridColumnAction, DataGridColumnsAction } from "../store/DataGridAction";
+import { BeakerXDataStore } from "../store/BeakerXDataStore";
+import { selectColumnIndexByPosition } from "./selectors";
+import { UPDATE_COLUMN_ORDER } from "../model/reducer";
+import { DataGridColumn } from "./DataGridColumn";
+import { IColumnPosition } from "../interface/IColumn";
+import { ColumnManager } from "./ColumnManager";
+import { COLUMN_SIDE, COLUMN_TYPES } from "./enums";
+import { DEFAULT_BORDER_COLOR } from "../style/dataGridStyle";
 
 const DATA_GRID_PADDING: number = 20;
 const DRAG_START_DEBOUNCE_TIME: number = 150;
 
-export default class ColumnPosition {
+export class ColumnPosition {
   dataGrid: BeakerXDataGrid;
   store: BeakerXDataStore;
   grabbedCellData: ICellData|null;
   dropCellData: ICellData|null;
   draggableHeaderCanvas: HTMLCanvasElement;
   draggableHeaderOffsetLeft: number|null;
-  dragStartTimeoutId: NodeJS.Timeout;
+  dragStartTimeoutId: any;
 
   constructor(dataGrid: BeakerXDataGrid) {
     this.dataGrid = dataGrid;
@@ -101,10 +100,10 @@ export default class ColumnPosition {
     }));
 
     this.dataGrid.resize();
-    this.dataGrid.model.reset();
+    this.dataGrid.dataModel.reset();
   }
 
-  getColumnByPosition(position: IColumnPosition) {
+  getColumnByPosition(position: IColumnPosition): DataGridColumn {
     const columnIndex = selectColumnIndexByPosition(this.store.state, position);
     const columnType = position.region === 'row-header' && position.value === 0 ? COLUMN_TYPES.index : COLUMN_TYPES.body;
 
@@ -202,8 +201,8 @@ export default class ColumnPosition {
 
   private attachDraggableHeader(data) {
     const widthSection = data.region === 'corner-header' ? this.dataGrid.rowHeaderSections : this.dataGrid.columnSections;
-    const sectionWidth = widthSection.sectionSize(data.column) - 1;
-    const sectionHeight = this.dataGrid.columnHeaderSections.sectionSize(data.row) - 1;
+    const sectionWidth = widthSection.sizeOf(data.column) - 1;
+    const sectionHeight = this.dataGrid.columnHeaderSections.sizeOf(data.row) - 1;
     const dpiRatio =  this.dataGrid['_dpiRatio'];
 
     this.draggableHeaderCanvas.width = sectionWidth * dpiRatio;

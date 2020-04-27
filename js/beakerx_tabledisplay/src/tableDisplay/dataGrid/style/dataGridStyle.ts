@@ -17,7 +17,7 @@
 import './dataGrid.scss';
 import CommonUtils from "beakerx_shared/lib/utils/CommonUtils";
 import GLOBALS from "beakerx_shared/lib/bk/bkGlobals";
-import {getTheme} from "beakerx_shared/lib/bk/bkHelper";
+import { getTheme } from "beakerx_shared/lib/bk/bkHelper";
 
 export const DEFAULT_DATA_FONT_SIZE = 13;
 export const DEFAULT_BORDER_COLOR = '#D4D0D0';

@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-export default class CellTooltip {
-  timeoutId: NodeJS.Timeout;
+export class CellTooltip {
+  timeoutId: any;
   node: HTMLElement;
   container: HTMLElement;
 

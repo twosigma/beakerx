@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-export default function createModalTemplate(
+export function createModalTemplate(
   outputColumnLimit: number,
   columnNumber: number
 ): string {

@@ -17,9 +17,10 @@
 import { expect } from 'chai';
 
 import modelStateMock from "../mock/modelStateMock";
-import createStore from "../../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
-import {BeakerXDataGrid} from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
-import ColumnFilter, {
+import { createStore } from "../../../../../src/tableDisplay/dataGrid/store/BeakerXDataStore";
+import { BeakerXDataGrid } from "../../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
+import {
+  ColumnFilter,
   FILTER_INPUT_TOOLTIP,
   SEARCH_INPUT_TOOLTIP
 } from "../../../../../src/tableDisplay/dataGrid/column/ColumnFilter";
@@ -71,15 +72,15 @@ describe('ColumnFilter', () => {
   it('should filter rows', () => {
     const event = new KeyboardEvent('keyup', { key: '0', code: 'Digit0' });
 
-    expect(dataGrid.model.rowCount('body')).to.equal(2);
+    expect(dataGrid.dataModel.rowCount('body')).to.equal(2);
 
     columnFilter.useSearch = false;
     columnFilter.filterInput.value = '$>0';
     columnFilter['filterHandler'](event);
 
-    expect(dataGrid.model.rowCount('body')).to.equal(1);
+    expect(dataGrid.dataModel.rowCount('body')).to.equal(1);
 
     columnManager.resetFilters();
-    expect(dataGrid.model.rowCount('body')).to.equal(2);
+    expect(dataGrid.dataModel.rowCount('body')).to.equal(2);
   });
 });

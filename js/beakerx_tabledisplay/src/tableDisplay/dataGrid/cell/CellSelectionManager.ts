@@ -14,18 +14,17 @@
  *  limitations under the License.
  */
 
-import {CellRenderer} from "@phosphor/datagrid";
-import ICellConfig = CellRenderer.ICellConfig;
-import {ICellData} from "../interface/ICell";
-import {BeakerXDataGrid} from "../BeakerXDataGrid";
+import { CellRenderer } from "@lumino/datagrid";
 import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
+import { ICellData } from "../interface/ICell";
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
 
 export interface IRangeCells {
   startCell: ICellData,
   endCell: ICellData
 }
 
-export default class CellSelectionManager {
+export class CellSelectionManager {
   startCellData: ICellData|null;
   endCellData: ICellData|null;
   enabled: boolean;
@@ -92,7 +91,7 @@ export default class CellSelectionManager {
     }
   }
 
-  isBetweenRows(config: ICellConfig) {
+  isBetweenRows(config: CellRenderer.CellConfig) {
     const rowsRange = this.getRowsRangeCells();
 
     if(!rowsRange) {
@@ -102,7 +101,7 @@ export default class CellSelectionManager {
     return config.row >= rowsRange.startCell.row && config.row <= rowsRange.endCell.row
   }
 
-  isBetweenColumns(config: ICellConfig) {
+  isBetweenColumns(config: CellRenderer.CellConfig) {
     const columnsRange = this.getColumnsRangeCells();
 
     if(!columnsRange) {
@@ -141,7 +140,7 @@ export default class CellSelectionManager {
     this.dataGrid.repaint();
   }
 
-  isSelected(config: ICellConfig) {
+  isSelected(config: CellRenderer.CellConfig) {
     if (!this.enabled || !this.startCellData || !this.endCellData) {
       return false;
     }

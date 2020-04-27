@@ -15,9 +15,9 @@
  */
 
 import { createColumnMenuItems } from './createColumnMenuItems';
-import HeaderMenu from "./HeaderMenu";
+import { HeaderMenu } from "./HeaderMenu";
 
-export default class ColumnMenu extends HeaderMenu {
+export class ColumnMenu extends HeaderMenu {
   protected buildMenu(): void {
     this.menu.addClass('bko-table-menu');
     this.menu.addClass('dropdown');

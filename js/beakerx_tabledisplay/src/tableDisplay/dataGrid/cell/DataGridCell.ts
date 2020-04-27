@@ -14,18 +14,15 @@
  *  limitations under the License.
  */
 
-import {CellRenderer, DataModel} from "@phosphor/datagrid";
-import {ICellData} from "../interface/ICell";
-import {BeakerXDataGrid} from "../BeakerXDataGrid";
-import {DataGridHelpers} from "../dataGridHelpers";
-import findSectionIndex = DataGridHelpers.findSectionIndex;
-import {COLUMN_TYPES} from "../column/enums";
-import ICellConfig = CellRenderer.ICellConfig;
-import CellRegion = DataModel.CellRegion;
-import ColumnManager from "../column/ColumnManager";
+import { CellRenderer, DataModel } from "@lumino/datagrid";
+import { ICellData } from "../interface/ICell";
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
+import { DataGridHelpers } from "../dataGridHelpers";
+import { COLUMN_TYPES } from "../column/enums";
+import { ColumnManager } from "../column/ColumnManager";
 
-export default class DataGridCell {
-  static isHeaderCell(config: CellRenderer.ICellConfig|ICellData) {
+export class DataGridCell {
+  static isHeaderCell(config: CellRenderer.CellConfig|ICellData) {
     return config && (config.region === 'column-header' || config.region === 'corner-header');
   }
 
@@ -46,7 +43,7 @@ export default class DataGridCell {
     // Test for a match in the corner header first.
     if (x <= dataGrid.headerWidth && y <= dataGrid.headerHeight) {
       if (x <= dataGrid.headerWidth) {
-        column = findSectionIndex(dataGrid.rowHeaderSections, x);
+        column = DataGridHelpers.findSectionIndex(dataGrid.rowHeaderSections, x);
       }
 
       if (column) {
@@ -58,24 +55,24 @@ export default class DataGridCell {
           offset: dataGrid.getColumnOffset(column.index, ColumnManager.getColumnRegionByCell({ region: 'corner-header' })),
           offsetTop: dataGrid.headerHeight,
           region: 'corner-header',
-          value: dataGrid.model.data('corner-header', 0, column.index),
-          width: dataGrid.rowHeaderSections.sectionSize(column.index)
+          value: dataGrid.dataModel.data('corner-header', 0, column.index),
+          width: dataGrid.rowHeaderSections.sizeOf(column.index)
         };
       }
 
       return null;
     }
 
-    let region: CellRegion = 'body';
+    let region: DataModel.CellRegion = 'body';
     let section = dataGrid.columnSections;
     let pos = x + dataGrid.scrollX - dataGrid.headerWidth;
-    if (x <= dataGrid.rowHeaderSections.totalSize) {
+    if (x <= dataGrid.rowHeaderSections.length) {
       section = dataGrid.rowHeaderSections;
       pos += dataGrid.headerWidth;
       region = 'row-header';
     }
 
-    column = findSectionIndex(section, pos);
+    column = DataGridHelpers.findSectionIndex(section, pos);
 
     const row: { index: number, delta: number } | null = DataGridCell.findHoveredRowIndex(dataGrid, y);
     const rowIndex = row ? row.index : 0;
@@ -91,8 +88,8 @@ export default class DataGridCell {
         offset: dataGrid.getColumnOffset(column.index, region),
         offsetTop: row ? dataGrid.getRowOffset(row.index) + dataGrid.headerHeight : 0,
         region: y <= dataGrid.headerHeight ? 'column-header' : region,
-        value: dataGrid.model.data(region, rowIndex, column.index),
-        width: section.sectionSize(column.index),
+        value: dataGrid.dataModel.data(region, rowIndex, column.index),
+        width: section.sizeOf(column.index),
       };
     }
 
@@ -109,7 +106,7 @@ export default class DataGridCell {
     )
   }
 
-  static isCellHovered(hoveredCell: ICellData, comparedCell: ICellData|ICellConfig): boolean {
+  static isCellHovered(hoveredCell: ICellData, comparedCell: ICellData|CellRenderer.CellConfig): boolean {
     return (
       hoveredCell
       && hoveredCell.row === comparedCell.row
@@ -122,6 +119,6 @@ export default class DataGridCell {
     // Convert the position into unscrolled coordinates.
     let pos = y + dataGrid.scrollY - dataGrid.headerHeight;
 
-    return findSectionIndex(dataGrid.rowSections, pos);
+    return DataGridHelpers.findSectionIndex(dataGrid.rowSections, pos);
   }
 }

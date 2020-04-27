@@ -15,17 +15,17 @@
  */
 
 import * as d3scale from 'd3-scale';
+import { CellRenderer } from "@lumino/datagrid";
 import { formatColor, getDefaultColor } from "../style/dataGridStyle";
-import Highlighter from "./Highlighter";
-import IHihglighterState, {HIGHLIGHTER_STYLE} from "../interface/IHighlighterState";
-import DataGridColumn from "../column/DataGridColumn";
-import { CellRenderer } from "@phosphor/datagrid";
+import { Highlighter } from "./Highlighter";
+import { IHighlighterState, HIGHLIGHTER_STYLE } from "../interface/IHighlighterState";
+import { DataGridColumn } from "../column/DataGridColumn";
 import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
 
-export default class HeatmapHighlighter extends Highlighter {
-  colorScale: Function;
+export class HeatmapHighlighter extends Highlighter {
+  protected colorScale: Function;
 
-  constructor(column: DataGridColumn, state: IHihglighterState) {
+  constructor(column: DataGridColumn, state: IHighlighterState) {
     super(column, state);
 
     this.state.minColor = formatColor(state.minColor || getDefaultColor('blue'));
@@ -36,7 +36,7 @@ export default class HeatmapHighlighter extends Highlighter {
       .range([this.state.minColor, this.state.maxColor]);
   }
 
-  getBackgroundColor(config: CellRenderer.ICellConfig) {
+  getBackgroundColor(config: CellRenderer.CellConfig) {
     const value = this.getValueToHighlight(config);
     if (this.state.style === HIGHLIGHTER_STYLE.FULL_ROW) {
       return this.colorScale(value);

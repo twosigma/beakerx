@@ -14,12 +14,12 @@
  *  limitations under the License.
  */
 
-import IHihglighterState from "./IHighlighterState";
+import { IHighlighterState } from "./IHighlighterState";
 
-export default interface IDataModelState {
+export interface IDataModelState {
   alignmentForColumn?: {},
   alignmentForType?: {},
-  cellHighlighters: IHihglighterState[],
+  cellHighlighters: IHighlighterState[],
   columnNames: string[],
   columnOrder: string[],
   columnsFrozen?: {},

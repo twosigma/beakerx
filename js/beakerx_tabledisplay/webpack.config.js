@@ -112,7 +112,7 @@ module.exports = [
         entry: './src/embed.ts',
         output: {
             filename: 'td_index.js',
-            path: path.resolve(__dirname, '../lab/lib/'),
+            path: path.resolve(__dirname, '../lab-tabledisplay/lib/'),
             libraryTarget: 'amd'
         },
         module: {

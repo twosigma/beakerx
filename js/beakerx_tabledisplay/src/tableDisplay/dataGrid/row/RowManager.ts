@@ -14,19 +14,18 @@
  *  limitations under the License.
  */
 
-import DataGridRow from "./DataGridRow";
-import { MapIterator, iter, toArray, filter } from '@phosphor/algorithm';
-import DataGridColumn from "../column/DataGridColumn";
-import ColumnManager from "../column/ColumnManager";
-import {COLUMN_TYPES, SORT_ORDER} from "../column/enums";
-import {DEFAULT_PAGE_LENGTH} from "../consts";
-import ColumnFilter from "../column/ColumnFilter";
-import {BeakerXDataStore} from "../store/BeakerXDataStore";
-import {selectFontColor, selectValues} from "../model/selectors";
-import DataGridCellValue from "./DataGridCellValue";
+import { MapIterator, iter, toArray, filter } from '@lumino/algorithm';
+import { DataGridRow } from "./DataGridRow";
+import { DataGridColumn } from "../column/DataGridColumn";
+import { ColumnManager } from "../column/ColumnManager";
+import { COLUMN_TYPES, SORT_ORDER } from "../column/enums";
+import { ColumnFilter } from "../column/ColumnFilter";
+import { BeakerXDataStore } from "../store/BeakerXDataStore";
+import { selectFontColor, selectValues } from "../model/selectors";
+import { DataGridCellValue } from "./DataGridCellValue";
 import BeakerXThemeHelper from "beakerx_shared/lib/utils/BeakerXThemeHelper";
 
-export default class RowManager {
+export class RowManager {
   rowsIterator: MapIterator<any[], DataGridRow>;
   rows: DataGridRow[];
   filterExpression: string;

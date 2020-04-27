@@ -14,14 +14,14 @@
  *  limitations under the License.
  */
 
-import ColumnManager from "../column/ColumnManager";
-import createModalTemplate from './columnLimitModalTemplate';
-import {BeakerXDataGrid} from "../BeakerXDataGrid";
-import {selectColumnNames} from "../model/selectors";
-import {BeakerXDataStore} from "../store/BeakerXDataStore";
-import {selectOutputColumnLimit} from "../column/selectors";
+import { ColumnManager } from "../column/ColumnManager";
+import { createModalTemplate } from './columnLimitModalTemplate';
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
+import { selectColumnNames } from "../model/selectors";
+import { BeakerXDataStore } from "../store/BeakerXDataStore";
+import { selectOutputColumnLimit } from "../column/selectors";
 
-export default class ColumnLimitModal {
+export class ColumnLimitModal {
   store: BeakerXDataStore;
   columnManager: ColumnManager;
   container: HTMLElement;

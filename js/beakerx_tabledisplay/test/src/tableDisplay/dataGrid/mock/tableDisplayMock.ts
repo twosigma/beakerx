@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-import {TableDisplayWidget} from "../../../../../src";
+import {TableDisplayView, TableDisplayWidget} from "../../../../../src";
 
-class TDW implements TableDisplayWidget {
+class TDW extends TableDisplayView implements TableDisplayWidget {
 
     canLoadMore() {
         return false;
@@ -27,6 +27,6 @@ class TDW implements TableDisplayWidget {
 }
 
 
-let tableDisplayWidgetMock : TableDisplayWidget = new TDW();
+let tableDisplayWidgetMock : TableDisplayWidget & TableDisplayView = new TDW();
 
 export default tableDisplayWidgetMock;

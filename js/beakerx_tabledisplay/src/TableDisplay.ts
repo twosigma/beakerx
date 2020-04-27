@@ -15,11 +15,11 @@
  */
 import './global.env';
 import widgets from './widgets';
-import {DataGridScope} from './tableDisplay/dataGrid';
+import { DataGridScope } from './tableDisplay/dataGrid';
 
 export interface TableDisplayWidget {
-    loadMoreRows():void;
-    canLoadMore():boolean;
+  loadMoreRows():void;
+  canLoadMore():boolean;
 }
 
 export class TableDisplayModel extends widgets.DOMWidgetModel {
@@ -37,7 +37,7 @@ export class TableDisplayModel extends widgets.DOMWidgetModel {
 }
 
 // Custom View. Renders the widget model.
-export class TableDisplayView extends widgets.DOMWidgetView implements TableDisplayWidget{
+export class TableDisplayView extends widgets.DOMWidgetView implements TableDisplayWidget {
   private _currentScope: DataGridScope;
 
   render(): void {
@@ -63,14 +63,14 @@ export class TableDisplayView extends widgets.DOMWidgetView implements TableDisp
   }
 
   private isEndlessLoadingMode():boolean {
-    return this.model.get('model').loadingMode == 'ENDLESS';
+    return this.model.get('model').loadingMode === 'ENDLESS';
   }
 
   handleModelUpdate(model, value, options): void {
-    let shouldReset = options.shouldResetModel==undefined || options.shouldResetModel;
+    let shouldReset = options.shouldResetModel === undefined || options.shouldResetModel;
     if (shouldReset){
-        this._currentScope.doResetAll();
-        this._currentScope.updateModelData(this.model.get('model'));
+      this._currentScope.doResetAll();
+      this._currentScope.updateModelData(this.model.get('model'));
     }
   }
 
@@ -78,26 +78,31 @@ export class TableDisplayView extends widgets.DOMWidgetView implements TableDisp
     const change = this.model.get('updateData');
     const currentModel = this.model.get('model');
     if (change.hasOwnProperty('values')){
-        this.updateValues(currentModel, change);
-    }else {
-        this.model.set('model', {...currentModel, ...change});
-        this.handleModelUpdate(model,value, options);
+      this.updateValues(currentModel, change);
+    } else {
+      this.model.set('model', {...currentModel, ...change});
+      this.handleModelUpdate(model,value, options);
     }
   }
 
   private updateValues(currentModel, change) {
-      let newValues = currentModel.values.concat(change.values || [])
-      let newFonts = currentModel.fontColor;
-      if (change.hasOwnProperty('fontColor')) {
-          newFonts = currentModel.fontColor.concat(change.fontColor || [])
-      }
-      this.model.set('model', {
-          ...currentModel, ...change,
-          values: newValues,
-          fontColor: newFonts
-      }, {"shouldResetModel": false});
-      this._currentScope.updateModelValues(this.model.get('model'));
-      this.model.set('loadMoreRows', "loadMoreJSDone");
+    let newValues = currentModel.values.concat(change.values || []);
+    let newFonts = currentModel.fontColor;
+
+    if (change.hasOwnProperty('fontColor')) {
+      newFonts = currentModel.fontColor.concat(change.fontColor || []);
+    }
+
+    this.model.set('model', {
+      ...currentModel,
+      ...change,
+      values: newValues,
+      fontColor: newFonts
+    }, {
+      shouldResetModel: false
+    });
+    this._currentScope.updateModelValues(this.model.get('model'));
+    this.model.set('loadMoreRows', "loadMoreJSDone");
   }
 
   showWarning(data): void {
@@ -133,12 +138,12 @@ export class TableDisplayView extends widgets.DOMWidgetView implements TableDisp
   }
 
   canLoadMore(): boolean {
-    return this.isEndlessLoadingMode() && (this.model.get('loadMoreRows') == "loadMoreServerInit" || this.model.get('loadMoreRows') == "loadMoreJSDone");
+    return this.isEndlessLoadingMode() && (this.model.get('loadMoreRows') === "loadMoreServerInit" || this.model.get('loadMoreRows') === "loadMoreJSDone");
   }
 
   loadMoreRows(): void {
-      this.model.set('loadMoreRows', "loadMoreRequestJS");
-      this.touch();
+    this.model.set('loadMoreRows', "loadMoreRequestJS");
+    this.touch();
   }
 }
 

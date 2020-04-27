@@ -14,12 +14,12 @@
  *  limitations under the License.
  */
 
-import DataGridContextMenu from "./DataGridContextMenu";
-import {BeakerXDataGrid} from "../BeakerXDataGrid";
-import {GistPublisherUtils} from "../../../GistPublisherUtils";
 import IContextMenuItem from "beakerx_shared/lib/contextMenu/IContextMenuItem";
+import { DataGridContextMenu } from "./DataGridContextMenu";
+import { BeakerXDataGrid } from "../BeakerXDataGrid";
+import { GistPublisherUtils } from "../../../GistPublisherUtils";
 
-export default function createPublishMenuItems(
+export function createPublishMenuItems(
   dataGrid: BeakerXDataGrid,
   contextMenu: DataGridContextMenu
 ): IContextMenuItem[] {

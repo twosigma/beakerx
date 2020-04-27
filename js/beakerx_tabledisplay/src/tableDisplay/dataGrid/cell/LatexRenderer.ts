@@ -16,12 +16,13 @@
 
 import * as katex from 'katex';
 
-export const katexCss = require('katex/dist/katex.css').toString();
+import katexCss from "katex/dist/katex.css";
+// export const katexCss = require('katex/dist/katex.css').toString();
 
 const latexFormulaRegex = /^(?:\$)(.+)(?:\$)$/; // match strings like '$e^{i\pi} + 1 = 0$'
 const latexCache = {};
 
-export default class LatexRenderer {
+export class LatexRenderer {
 
     /**
      * Convert given LaTeX formula into HTML representation.

@@ -14,14 +14,14 @@
  *  limitations under the License.
  */
 
-import createHeaderContextMenuItems from './createHeaderContextMenuItems';
-import createCellContextMenuItems from './createCellContextMenuItems';
-import createPublishMenuItems from "./createPublishMenuItem";
-import { DataGridScope } from "../DataGridScope";
 import BkoContextMenu from "beakerx_shared/lib/contextMenu/BkoContextMenu";
 import BeakerXApi from "beakerx_shared/lib/api/BeakerXApi";
+import { createHeaderContextMenuItems } from './createHeaderContextMenuItems';
+import { createCellContextMenuItems } from './createCellContextMenuItems';
+import { createPublishMenuItems } from "./createPublishMenuItem";
+import { DataGridScope } from "../DataGridScope";
 
-export default class DataGridContextMenu extends BkoContextMenu {
+export class DataGridContextMenu extends BkoContextMenu {
   constructor(scope: DataGridScope) {
     super({ ...scope, element: [scope.dataGrid.node], dataGrid: scope.dataGrid });
   }

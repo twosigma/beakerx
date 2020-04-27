@@ -14,20 +14,17 @@
  *  limitations under the License.
  */
 
+import { Widget } from "@lumino/widgets";
 import { BeakerXDataGrid } from "../BeakerXDataGrid";
-import DataGridColumn from "./DataGridColumn";
-import {selectColumnWidth} from "./selectors";
-import {DataGridHelpers} from "../dataGridHelpers";
-import getEventKeyCode = DataGridHelpers.getEventKeyCode;
-import {KEYBOARD_KEYS} from "../event/enums";
-import {Widget} from "@phosphor/widgets";
-import throttle = DataGridHelpers.throttle;
-import hasUpperCaseLetter = DataGridHelpers.hasUpperCaseLetter;
+import { DataGridColumn } from "./DataGridColumn";
+import { selectColumnWidth } from "./selectors";
+import { DataGridHelpers } from "../dataGridHelpers";
+import { KEYBOARD_KEYS } from "../event/enums";
 
 export const FILTER_INPUT_TOOLTIP = 'filter with an expression with a variable defined for each column and $ means the current column.  eg "$ > 5".';
 export const SEARCH_INPUT_TOOLTIP = 'search for a substring, show only matching rows.';
 
-export default class ColumnFilter {
+export class ColumnFilter {
   dataGrid: BeakerXDataGrid;
   column: DataGridColumn;
   filterWidget: Widget;
@@ -109,7 +106,7 @@ export default class ColumnFilter {
     );
 
     this.filterNode.style.left = `${offset}px`;
-    this.filterNode.style.top = `${this.dataGrid.baseColumnHeaderSize - 1}px`;
+    this.filterNode.style.top = `${this.dataGrid.columnHeaderSections.defaultSize - 1}px`;
   }
 
   private showInput(shouldFocus: boolean): void {
@@ -127,7 +124,7 @@ export default class ColumnFilter {
   }
 
   private filterHandler(event: KeyboardEvent) {
-    const keyCode = getEventKeyCode(event);
+    const keyCode = DataGridHelpers.getEventKeyCode(event);
 
     event.preventDefault();
     event.stopImmediatePropagation();
@@ -165,7 +162,7 @@ export default class ColumnFilter {
   }
 
   private createSearchExpression(value: any) {
-    const cellValueFormatter = hasUpperCaseLetter(value)
+    const cellValueFormatter = DataGridHelpers.hasUpperCaseLetter(value)
       ? 'String($)'
       : 'String($).toLowerCase()';
 
@@ -209,12 +206,12 @@ export default class ColumnFilter {
       }
     };
 
-    this.filterInput.addEventListener('keyup', throttle(this.filterHandler, 100, this), true);
+    this.filterInput.addEventListener('keyup', DataGridHelpers.throttle(this.filterHandler, 100, this), true);
     this.filterInput.addEventListener('mousedown', handleMouseDown, true);
     this.filterNode.addEventListener('mousedown', handleMouseDown, true);
   }
 
   private getInputHeight() {
-    return `${this.dataGrid.baseRowSize}px`;
+    return `${this.dataGrid.rowSections.defaultSize}px`;
   }
 }

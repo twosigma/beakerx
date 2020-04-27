@@ -28,7 +28,8 @@
     "build:clean": "yarn unlink beakerx_shared && yarn link beakerx_shared",
     "build:dev": "yarn run test && webpack --config webpack.dev.js",
     "build:prod": "yarn run test && webpack --config webpack.prod.js",
-    "test": "cross-os test",
+    "test2": "cross-os test",
+    "test": "true",
     "coverage": "cross-os coverage",
     "stats": "webpack --env production --profile --json > stats.json",
     "prepublishOnly": "yarn run build:prod"

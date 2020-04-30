@@ -16,47 +16,69 @@
 
 package com.twosigma.beakerx.doclet;
 
-import com.sun.javadoc.ClassDoc;
-import com.sun.javadoc.ExecutableMemberDoc;
-import com.sun.javadoc.Parameter;
-import com.sun.javadoc.RootDoc;
-import com.sun.tools.doclets.standard.Standard;
-import com.sun.tools.javadoc.ClassDocImpl;
+import com.sun.source.doctree.DocCommentTree;
+import com.sun.source.util.DocTrees;
+import jdk.javadoc.doclet.DocletEnvironment;
+import jdk.javadoc.doclet.StandardDoclet;
 
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.util.ElementFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class BeakerxDoclet extends Standard {
-    public static boolean start(RootDoc root) {
-        //iterate over all classes.
-        HashMap<String, ClassInspect> inspects = new HashMap<>(root.classes().length);
-        ClassDoc[] classes = root.classes();
+public class BeakerxDoclet extends StandardDoclet {
 
-        for (ClassDoc classDoc : classes) {
-            ClassInspect classInspect = new ClassInspect(classDoc.name(), ((ClassDocImpl) classDoc).type.toString(), classDoc.commentText());
-            inspects.put(classInspect.getFullName(), classInspect);
-            classInspect.setMethods(getInspects(classDoc.methods()));
-            classInspect.setConstructors(getInspects(classDoc.constructors()));
+  @Override
+  public boolean run(DocletEnvironment docEnv) {
+    HashMap<String, ClassInspect> inspects = new HashMap<>();
+    DocTrees docTrees = docEnv.getDocTrees();
+    for (TypeElement t : ElementFilter.typesIn(docEnv.getIncludedElements())) {
+      DocCommentTree docCommentTree = docTrees.getDocCommentTree(t);
+      String comment = (docCommentTree != null) ? docCommentTree.getFullBody().toString() : "";
+      ClassInspect classInspect = new ClassInspect(t.getSimpleName().toString(), t.getQualifiedName().toString(), comment);
+      inspects.put(classInspect.getFullName(), classInspect);
+      List<MethodInspect> constructors = new ArrayList<>();
+      List<MethodInspect> methods = new ArrayList<>();
+      for (Element ee : t.getEnclosedElements()) {
+        if (ee.getModifiers().contains(Modifier.PUBLIC) || ee.getModifiers().contains(Modifier.PROTECTED)) {
+          if (ee.getKind().equals(ElementKind.CONSTRUCTOR)) {
+            constructors.add(getInspect(ee, docTrees));
+          } else if (ee.getKind().equals(ElementKind.METHOD)) {
+            methods.add(getInspect(ee, docTrees));
+          }
         }
-
-        SerializeInspect serializeInspect = new SerializeInspect();
-        String json = serializeInspect.toJson(inspects);
-        serializeInspect.saveToFile(json);
-        return true;
+      }
+      classInspect.setMethods(methods);
+      classInspect.setConstructors(constructors);
     }
+    SerializeInspect serializeInspect = new SerializeInspect();
+    String json = serializeInspect.toJson(inspects);
+    serializeInspect.saveToFile(json);
+    return true;
+  }
 
-    private static List<MethodInspect> getInspects(ExecutableMemberDoc[] memberDocs) {
-        List<MethodInspect> methodInspects = new ArrayList<>(memberDocs.length);
-        for (ExecutableMemberDoc memberDoc : memberDocs) {
-            List<String> signature = new ArrayList<>();
-            for (Parameter parameter : memberDoc.parameters()) {
-                signature.add(parameter.type().qualifiedTypeName() + " " + parameter.name());
-            }
-            MethodInspect methodInspect = new MethodInspect(memberDoc.name(), memberDoc.getRawCommentText(),
-                    String.join(", ", signature));
-            methodInspects.add(methodInspect);
+  private static MethodInspect getInspect(Element element, DocTrees docTrees) {
+    DocCommentTree eeDocComment = docTrees.getDocCommentTree(element);
+    List<String> signature = new ArrayList<>();
+    if (element instanceof ExecutableElement) {
+      ExecutableElement eElement = (ExecutableElement) element;
+      for (VariableElement v : eElement.getParameters()) {
+        String n = v.asType().toString();
+        if (v.asType().toString().contains("<")) {
+          n = v.asType().toString().substring(0, v.asType().toString().indexOf("<"));
         }
-        return methodInspects;
+        signature.add(n + " " + v.getSimpleName());
+      }
     }
+    String comment = (eeDocComment != null) ? eeDocComment.getFullBody().toString() : "";
+    String name = element.toString().subSequence(0, element.toString().indexOf("(")).toString();
+    MethodInspect methodInspect = new MethodInspect(name, comment, String.join(", ", signature));
+    return methodInspect;
+  }
 }

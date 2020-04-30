@@ -15,7 +15,7 @@
  */
 apply plugin: 'java'
 
-sourceCompatibility = 1.8
+sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
     mavenCentral()
@@ -35,7 +35,6 @@ jar {
 }
 
 dependencies {
-    compile files(org.gradle.internal.jvm.Jvm.current().toolsJar)
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile group: 'com.google.code.gson', name: 'gson', version: '2.3.1'
     provided project(':base')

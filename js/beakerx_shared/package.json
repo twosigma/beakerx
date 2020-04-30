@@ -18,7 +18,7 @@
     "@phosphor/datagrid": "^0.1.11",
     "@phosphor/widgets": "^1.9.3",
     "moment-timezone": "^0.5.28",
-    "jquery": "^3.3.33",
+    "jquery": "^3.5.0",
     "big.js": "^5.2.2"
   },
   "devDependencies": {

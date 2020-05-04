@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2020 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@ public class JavaEvaluatorAutocompleteClassNameExpressionTest {
     AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches().size()).isGreaterThan(0);
-    assertThat(autocomplete.getMatches()).contains("Integer");
+    assertThat(autocomplete.getMatches()).contains("Integer(");
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 5);
   }
 

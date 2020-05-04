@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2020 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -92,11 +92,15 @@ public class JavaAutotranslationTest extends KernelSetUpFixtureTest {
   @Test
   public void transformFromJsonToJavaObject() throws Exception {
     //given
-    autotranslationService.update("foo", "\"Hello\"");
+    autotranslationService.update("foo", "\"Hello Java 11\"");
+    String set = "beakerx.set(\"foo\",\"Hello Java 11\");";
+    Message messageset = getExecuteRequestMessage(set);
+    kernelSocketsService.handleMsg(messageset);
+    kernelSocketsService.clear();
     //when
-    String code = "return " + NamespaceClient.NAMESPACE_CLIENT + ".get(\"foo\");";
-    Message message = getExecuteRequestMessage(code);
-    kernelSocketsService.handleMsg(message);
+    String get = "beakerx.get(\"foo\");";
+    Message messageget = getExecuteRequestMessage(get);
+    kernelSocketsService.handleMsg(messageget);
     //then
     Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
     assertThat(idleMessage).isPresent();
@@ -108,7 +112,7 @@ public class JavaAutotranslationTest extends KernelSetUpFixtureTest {
     Map actual = ((Map) message.getContent().get(Comm.DATA));
     String value = (String) actual.get("text/plain");
     assertThat(value).isNotEmpty();
-    assertThat(value).contains("Hello");
+    assertThat(value).contains("Hello Java 11");
   }
 
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2020 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ apply plugin: 'maven-publish'
 
 ext.kernelIdName = 'java'
 mainClassName = 'com.twosigma.beakerx.javash.kernel.Java'
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 configurations {
   provided
@@ -45,7 +47,6 @@ repositories {
 
 dependencies {
   provided project(':base')
-  compile group: 'org.antlr', name: 'antlr4-runtime', version: "$antlr4Version"
 
   testCompile project(':base').sourceSets.test.output
 }

@@ -13,22 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.java11.autocomplete;
+package com.twosigma.beakerx.javash.evaluator;
 
-import com.twosigma.beakerx.autocomplete.AutocompleteClasspathScanner;
+import jdk.jshell.execution.LocalExecutionControlProvider;
+import jdk.jshell.spi.ExecutionControl;
+import jdk.jshell.spi.ExecutionEnv;
 
-public class JavaClasspathScanner extends AutocompleteClasspathScanner {
+import java.util.Map;
 
-  public JavaClasspathScanner() {
-    super();
+public class BeakerxLocalExecutionControlProvider extends LocalExecutionControlProvider {
+  BeakerxLocalExecutionControl executionControl;
+
+  public BeakerxLocalExecutionControlProvider(BeakerxLocalExecutionControl executionControl) {
+    this.executionControl = executionControl;
   }
 
-  public JavaClasspathScanner(String cpp) {
-    super(cpp);
+  @Override
+  public ExecutionControl generate(ExecutionEnv env, Map<String, String> parameters) {
+    return executionControl;
   }
-
-  public String getFileForClass(String name) {
-    return null;
-  }
-
 }

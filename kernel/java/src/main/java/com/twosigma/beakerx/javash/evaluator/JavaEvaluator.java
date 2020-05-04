@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014-2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2020 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -26,26 +26,28 @@ import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
 import com.twosigma.beakerx.javash.JavaBeakerXUrlClassLoader;
 import com.twosigma.beakerx.javash.autocomplete.JavaAutocomplete;
-import com.twosigma.beakerx.javash.autocomplete.JavaClasspathScanner;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
-import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.ExecutionOptions;
 import com.twosigma.beakerx.kernel.ImportPath;
-import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.PathToJar;
+import jdk.jshell.JShell;
+import jdk.jshell.SourceCodeAnalysis;
 
-import java.io.File;
 import java.util.concurrent.Executors;
+
+import static com.twosigma.beakerx.BeakerXClientManager.BEAKER_X_CLIENT_MANAGER;
 
 public class JavaEvaluator extends BaseEvaluator {
 
-  public static final String WRAPPER_CLASS_NAME = "BeakerWrapperClass1261714175";
-  private final String packageId;
+
   private JavaAutocomplete jac;
   private JavaBeakerXUrlClassLoader loader = null;
+  private JShell jshell;
+  private SourceCodeAnalysis sourceCodeAnalysis;
+  private BeakerxLocalExecutionControl executionControl;
 
   public JavaEvaluator(String id,
                        String sId,
@@ -53,7 +55,7 @@ public class JavaEvaluator extends BaseEvaluator {
                        BeakerXClient beakerxClient,
                        MagicCommandAutocompletePatterns autocompletePatterns,
                        ClasspathScanner classpathScanner) {
-    this(id, sId, new BeakerCellExecutor("javash"), new TempFolderFactoryImpl(), evaluatorParameters, beakerxClient, autocompletePatterns, classpathScanner);
+    this(id, sId, new BeakerCellExecutor("java`"), new TempFolderFactoryImpl(), evaluatorParameters, beakerxClient, autocompletePatterns, classpathScanner);
   }
 
   public JavaEvaluator(String id,
@@ -65,9 +67,18 @@ public class JavaEvaluator extends BaseEvaluator {
                        MagicCommandAutocompletePatterns autocompletePatterns,
                        ClasspathScanner classpathScanner) {
     super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters, beakerxClient, autocompletePatterns, classpathScanner);
-    packageId = "com.twosigma.beaker.javash.bkr" + shellId.split("-")[0];
     loader = newClassLoader();
-    jac = createJavaAutocomplete(new JavaClasspathScanner(), imports, loader);
+    jac = createJavaAutocomplete();
+    this.jshell = newJShell();
+    this.sourceCodeAnalysis = this.jshell.sourceCodeAnalysis();
+  }
+
+  public JShell getJshell() {
+    return this.jshell;
+  }
+
+  public BeakerxLocalExecutionControl getExecutionControl() {
+    return executionControl;
   }
 
   @Override
@@ -77,21 +88,27 @@ public class JavaEvaluator extends BaseEvaluator {
 
   @Override
   protected void doResetEnvironment() {
-    String cpp = createClasspath(classPath, outDir);
     loader = newClassLoader();
-    jac = createAutocomplete(new JavaClasspathScanner(cpp), imports, loader);
+    this.jshell = newJShell();
+    this.sourceCodeAnalysis = this.jshell.sourceCodeAnalysis();
+    jac = createJavaAutocomplete();
     executorService.shutdown();
     executorService = Executors.newSingleThreadExecutor();
   }
 
   @Override
   protected void addJarToClassLoader(PathToJar pathToJar) {
+    this.jshell.addToClasspath(pathToJar.getPath());
     loader.addJar(pathToJar);
   }
 
   @Override
   protected void addImportToClassLoader(ImportPath anImport) {
+    addImportToClassLoader(anImport.asString(), this.jshell);
+  }
 
+  private void addImportToClassLoader(String anImport, JShell jShell) {
+    jShell.eval("import " + anImport + ";");
   }
 
   @Override
@@ -114,31 +131,11 @@ public class JavaEvaluator extends BaseEvaluator {
 
   @Override
   public AutocompleteResult autocomplete(String code, int caretPosition) {
-    return jac.find(code, caretPosition);
+    return jac.find(code, caretPosition, this.sourceCodeAnalysis);
   }
 
-  private JavaAutocomplete createJavaAutocomplete(JavaClasspathScanner c, Imports imports, ClassLoader loader) {
-    return new JavaAutocomplete(c, loader, imports, autocompletePatterns);
-  }
-
-  private JavaAutocomplete createAutocomplete(JavaClasspathScanner cps, Imports imports, ClassLoader loader) {
-    JavaAutocomplete jac = createJavaAutocomplete(cps, imports, loader);
-    return jac;
-  }
-
-  private String createClasspath(Classpath classPath, String outDir) {
-    String cpp = "";
-    for (String pt : classPath.getPathsAsStrings()) {
-      cpp += pt;
-      cpp += File.pathSeparator;
-    }
-    cpp += File.pathSeparator;
-    cpp += System.getProperty("java.class.path");
-    return cpp;
-  }
-
-  public String getPackageId() {
-    return packageId;
+  private JavaAutocomplete createJavaAutocomplete() {
+    return new JavaAutocomplete();
   }
 
   private JavaBeakerXUrlClassLoader newClassLoader() {
@@ -150,4 +147,23 @@ public class JavaEvaluator extends BaseEvaluator {
   public JavaBeakerXUrlClassLoader getJavaClassLoader() {
     return loader;
   }
+
+  private JShell newJShell() {
+    this.executionControl = new BeakerxLocalExecutionControl();
+    JShell shell = JShell.builder()
+            .executionEngine(new BeakerxLocalExecutionControlProvider(executionControl), null)
+            .build();
+    for (ImportPath ip : getImports().getImportPaths()) {
+      addImportToClassLoader(ip.asString(), shell);
+    }
+    shell = configureBeakerxObject(shell);
+    return shell;
+  }
+
+  private JShell configureBeakerxObject(JShell jShell) {
+    var beakerxObject = "var beakerx = " + BEAKER_X_CLIENT_MANAGER + ";";
+    jShell.eval(beakerxObject);
+    return jShell;
+  }
+
 }

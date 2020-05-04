@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.java11.evaluator;
+package com.twosigma.beakerx.javash.evaluator;
 
 import jdk.jshell.execution.DirectExecutionControl;
 

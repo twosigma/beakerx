@@ -139,7 +139,7 @@
   resolved "https://registry.yarnpkg.com/@phosphor/coreutils/-/coreutils-1.3.1.tgz#441e34f42340f7faa742a88b2a181947a88d7226"
   integrity sha512-9OHCn8LYRcPU/sbHm5v7viCA16Uev3gbdkwqoQqlV+EiauDHl70jmeL7XVDXdigl66Dz0LI11C99XOxp+s3zOA==
 
-"@phosphor/datagrid@^0.1.10":
+"@phosphor/datagrid@0.1.10":
   version "0.1.10"
   resolved "https://registry.yarnpkg.com/@phosphor/datagrid/-/datagrid-0.1.10.tgz#aca9376fe287f6c2507402e808bb4ddd4d0aac7b"
   integrity sha512-GLV3EEHzyzgX+Pg3Ugm0y4+aSN+zVocuO9x7BEHrdO60oGSq5X8fECbLEeLDgHiVYFm9o6twfmHU8rEcjzPr2w==
@@ -153,7 +153,7 @@
     "@phosphor/signaling" "^1.2.3"
     "@phosphor/widgets" "^1.8.1"
 
-"@phosphor/datastore@^0.7.0":
+"@phosphor/datastore@0.7.1":
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/@phosphor/datastore/-/datastore-0.7.1.tgz#748e33968d4dae49b7acdc5088734af5a45520cc"
   integrity sha512-cdRhu24twU4AupaIEcZK/Y28f73GN04egp5ywlIYPr2DOfq14etlnTyMp9xI+12oyNBy8DrQ2GVMl05e8zftCA==
@@ -233,7 +233,7 @@
   dependencies:
     "@phosphor/algorithm" "^1.1.3"
 
-"@phosphor/widgets@^1.3.0", "@phosphor/widgets@^1.8.1":
+"@phosphor/widgets@1.8.1", "@phosphor/widgets@^1.3.0", "@phosphor/widgets@^1.8.1":
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/@phosphor/widgets/-/widgets-1.8.1.tgz#e6398984a37b17b0a55417eab5e3f3517af88186"
   integrity sha512-OY5T0nAioYTitPks/lCHm7a6QpjRB/XviIT2j6WtYm5J1U8MluIPpClqZ/NQbZfm23BYpmJeiQQyZA+5YphsDA==

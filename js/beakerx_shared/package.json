@@ -14,19 +14,19 @@
     "prepublish": "yarn run build"
   },
   "dependencies": {
-    "@phosphor/commands": "^1.6.1",
-    "@phosphor/datagrid": "^0.1.6",
-    "@phosphor/widgets": "^1.6.0",
-    "moment-timezone": "^0.5.13",
-    "jquery": "^3.3.1",
+    "@phosphor/commands": "^1.7.2",
+    "@phosphor/datagrid": "^0.1.11",
+    "@phosphor/widgets": "^1.9.3",
+    "moment-timezone": "^0.5.28",
+    "jquery": "^3.5.1",
     "big.js": "^5.2.2"
   },
   "devDependencies": {
-    "@types/moment-timezone": "^0.5.12",
-    "@types/jquery": "^3.3.29",
+    "@types/moment-timezone": "^0.5.13",
+    "@types/jquery": "^3.3.38",
     "@types/big.js": "^4.0.5",
-    "rimraf": "^2.6.3",
-    "typescript": "^3.4.5"
+    "rimraf": "^3.0.2",
+    "typescript": "^3.8.3"
   },
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

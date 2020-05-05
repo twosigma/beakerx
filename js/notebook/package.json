@@ -76,7 +76,6 @@
     "jquery-ui": "^1.12.1",
     "moment": "^2.17.1",
     "moment-timezone": "^0.5.13",
-    "reselect": "^3.0.1",
     "underscore": "^1.8.3"
   }
 }

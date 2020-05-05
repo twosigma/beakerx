@@ -38,7 +38,7 @@
     "@types/d3": "^5.0.0",
     "@types/jquery": "^3.3.0",
     "@types/jqueryui": "^1.12.2",
-    "@types/node": "^12.12.37",
+    "@types/node": "^13.13.4",
     "base64-inline-loader": "^1.1.1",
     "copy-webpack-plugin": "^5.0.3",
     "css-loader": "^2.1.1",

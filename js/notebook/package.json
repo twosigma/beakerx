@@ -66,8 +66,6 @@
   },
   "dependencies": {
     "@jupyterlab/coreutils": "^3.0.0",
-    "@phosphor/datagrid": "^0.1.10",
-    "@phosphor/datastore": "^0.7.0",
     "@phosphor/widgets": "^1.8.1",
     "big.js": "^5.2.2",
     "d3": "^5.16.0",

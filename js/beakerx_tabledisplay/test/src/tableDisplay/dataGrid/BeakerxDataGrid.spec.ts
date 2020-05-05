@@ -16,7 +16,6 @@
 
 import * as sinon from 'sinon';
 import { expect } from 'chai';
-import { Widget } from "@phosphor/widgets";
 import { BeakerXDataGrid } from "../../../../src/tableDisplay/dataGrid/BeakerXDataGrid";
 import { BeakerXDataGridModel } from "../../../../src/tableDisplay/dataGrid/model/BeakerXDataGridModel";
 import modelStateMock from "./mock/modelStateMock";
@@ -43,7 +42,7 @@ describe('BeakerXDataGrid', () => {
 
   it('should have the viewport set', () => {
     expect(dataGrid).to.have.property('viewport');
-    expect(dataGrid.viewport).to.be.an.instanceof(Widget);
+    expect(dataGrid.viewport.constructor.name).to.equal('Widget');
   });
 
   it('should implement "updateModelData" method', () => {

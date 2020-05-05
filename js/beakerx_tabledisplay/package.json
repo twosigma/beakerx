@@ -84,10 +84,10 @@
     "@phosphor/widgets": "^1.8.1",
     "big.js": "^5.2.2",
     "d3": "^5.9.7",
-    "jquery": "^3.3.1",
+    "jquery": "^3.5.1",
     "katex": "^0.10.2",
     "moment-timezone": "^0.5.28",
     "reselect": "^3.0.1",
-    "underscore": "^1.8.3"
+    "underscore": "^1.10.2"
   }
 }

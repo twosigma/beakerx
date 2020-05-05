@@ -61,9 +61,9 @@
     "typescript": "^3.8.3",
     "uglifyjs-webpack-plugin": "^2.1.2",
     "url-loader": "^1.1.2",
-    "webpack": "^4.30.0",
-    "webpack-cli": "^3.3.1",
-    "webpack-merge": "^4.2.1"
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-merge": "^4.2.2"
   },
   "dependencies": {
     "@jupyterlab/coreutils": "^3.0.0",

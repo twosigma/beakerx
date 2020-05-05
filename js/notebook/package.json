@@ -44,7 +44,7 @@
     "css-loader": "^3.5.3",
     "file-loader": "^6.0.0",
     "fork-ts-checker-webpack-plugin": "^1.2.0",
-    "html-loader": "^0.5.5",
+    "html-loader": "^1.1.0",
     "ignore-styles": "^5.0.1",
     "json-loader": "^0.5.7",
     "node-sass": "^4.12.0",

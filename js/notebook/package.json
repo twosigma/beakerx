@@ -40,7 +40,7 @@
     "@types/jqueryui": "^1.12.2",
     "@types/node": "^13.13.4",
     "base64-inline-loader": "^1.1.1",
-    "copy-webpack-plugin": "^5.0.3",
+    "copy-webpack-plugin": "^5.1.1",
     "css-loader": "^3.5.3",
     "file-loader": "^6.0.0",
     "fork-ts-checker-webpack-plugin": "^1.2.0",

@@ -1605,10 +1605,10 @@ d3-zoom@1:
     d3-selection "1"
     d3-transition "1"
 
-d3@^5.9.7:
-  version "5.9.7"
-  resolved "https://registry.yarnpkg.com/d3/-/d3-5.9.7.tgz#f3835648a172b438e89ed57eb6c525bdabdcd7dc"
-  integrity sha512-jENytrmdXtGPw7HuSK2S4gxRM1eUGjKvWQkQ6ct4yK+DB8SG3VcnVrwesfnsv8rIcxMUg18TafT4Q8mOZUMP4Q==
+d3@^5.16.0:
+  version "5.16.0"
+  resolved "https://registry.yarnpkg.com/d3/-/d3-5.16.0.tgz#9c5e8d3b56403c79d4ed42fbd62f6113f199c877"
+  integrity sha512-4PL5hHaHwX4m7Zr1UapXW23apo6pexCgdetdJ5kTmADpG/7T9Gkxw0M0tf/pjoB63ezCCm0u5UaFYy2aMt0Mcw==
   dependencies:
     d3-array "1"
     d3-axis "1"
@@ -4336,10 +4336,10 @@ requires-port@^1.0.0:
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
   integrity sha1-kl0mAdOaxIXgkc8NpcbmlNw9yv8=
 
-reselect@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/reselect/-/reselect-3.0.1.tgz#efdaa98ea7451324d092b2b2163a6a1d7a9a2147"
-  integrity sha1-79qpjqdFEyTQkrKyFjpqHXqaIUc=
+reselect@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/reselect/-/reselect-4.0.0.tgz#f2529830e5d3d0e021408b246a206ef4ea4437f7"
+  integrity sha512-qUgANli03jjAyGlnbYVAV5vvnOmJnODyABz51RdBN7M4WaVu8mecZWgyQNkG8Yqe3KRGRt0l4K4B3XVEULC4CA==
 
 resolve-cwd@^2.0.0:
   version "2.0.0"

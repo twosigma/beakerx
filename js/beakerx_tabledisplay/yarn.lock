@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@jupyter-widgets/base@^1.0.0 || ^2.0.0", "@jupyter-widgets/base@^1.2.5 || ^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@jupyter-widgets/base/-/base-2.0.1.tgz#b31b5c8b2206bb008216f32abd488e5414bce3b7"
-  integrity sha512-jRNeQzvEf6MMGUaEPfBzgZ+IT4XOInpw8Ef+CunNUmUCiQZ8WfNpFR671S0Vu3xO6yGKMTU2QPdk8/aCsJRw9w==
+"@jupyter-widgets/base@^1.2.5 || ^2.0.2", "@jupyter-widgets/base@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@jupyter-widgets/base/-/base-2.0.2.tgz#a4da5bf0e117accc6d684ddd6ec3929fcc758972"
+  integrity sha512-nNpD+RGJ0As74XxDSGMeObfXSZ8XPBFHJ1AyugzYxpmxIigB2n3DxTyonASkR/3hXwxl3/nXBxHGlxQGs/+nOA==
   dependencies:
     "@jupyterlab/services" "^4.0.0"
     "@phosphor/coreutils" "^1.2.0"
@@ -18,12 +18,12 @@
     jquery "^3.1.1"
     lodash "^4.17.4"
 
-"@jupyter-widgets/controls@^1.5.2":
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/@jupyter-widgets/controls/-/controls-1.5.2.tgz#75aa7ea9a8347d9fe551780e50c90cdc6ba101d3"
-  integrity sha512-kZd1M6F16IMa0/bk1DYAvCU1AcPsv676FWQvHkMCxI8B/mrum7oCsc2iTbebaDwF6oNJbj2qAECmdUGRervavQ==
+"@jupyter-widgets/controls@^1.5.3":
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/@jupyter-widgets/controls/-/controls-1.5.3.tgz#7e54ac69442fd6df4d01d1b6aae0f50df6f34553"
+  integrity sha512-eigiIdhYeziKslm+pddZSz5RkzbkDB1C1O25K/S1+yzHm5DTR4iPt00vliOn2wokTvZUsmaC2JPL05eaVAf2iA==
   dependencies:
-    "@jupyter-widgets/base" "^1.0.0 || ^2.0.0"
+    "@jupyter-widgets/base" "^2.0.2"
     "@phosphor/algorithm" "^1.1.0"
     "@phosphor/domutils" "^1.1.0"
     "@phosphor/messaging" "^1.2.1"

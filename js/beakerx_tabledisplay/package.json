@@ -46,8 +46,8 @@
     }
   },
   "devDependencies": {
-    "@jupyter-widgets/base": "^1.2.5 || ^2.0.1",
-    "@jupyter-widgets/controls": "^1.5.2",
+    "@jupyter-widgets/base": "^1.2.5 || ^2.0.2",
+    "@jupyter-widgets/controls": "^1.5.3",
     "@types/big.js": "^4.0.5",
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.6",

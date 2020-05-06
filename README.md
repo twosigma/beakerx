@@ -77,7 +77,7 @@ beakerx_databrowser install
 ```
 conda env create -n labx -f configuration.yml
 conda activate labx # For conda versions prior to 4.6, run: source activate labx
-conda install -y -c conda-forge jupyterlab
+conda install -y -c conda-forge jupyterlab=1
 (cd beakerx; pip install -r requirements.txt --verbose)
 beakerx install
 jupyter labextension install @jupyter-widgets/jupyterlab-manager

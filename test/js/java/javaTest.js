@@ -33,7 +33,7 @@ describe('Java base tests ', function () {
   describe('Define java class ', function () {
     it('Execute result output contains "test.beaker.BeakerTest". ', function () {
       cellIndex = 0;
-      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /test.beaker.BeakerTest/);
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /BeakerTest/);
     });
   });
 
@@ -55,14 +55,14 @@ describe('Java base tests ', function () {
   describe('Define java interface ', function () {
     it('Execute result output contains "test.beaker.DateGetter" ', function () {
       cellIndex += 1;
-      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /test.beaker.DateGetter/);
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /DateGetter/);
     });
   });
 
   describe('Extend java class ', function () {
     it('Execute result output contains "test.beaker.DG2" ', function () {
       cellIndex += 1;
-      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /test.beaker.DG2/);
+      beakerxPO.runAndCheckOutputTextOfExecuteResult(cellIndex, /DG2/);
     });
   });
 
@@ -94,7 +94,7 @@ describe('Java base tests ', function () {
     it('Autocomplete list is not empty ', function(){
       cellIndex += 1;
       var codeCell = beakerxPO.getCodeCellByIndex(cellIndex);
-      var completeList = beakerxPO.callAutocompleteAndGetItsList(codeCell, 'imp');
+      var completeList = beakerxPO.callAutocompleteAndGetItsList(codeCell, 'List arr = new ArrayList(); arr.');
       expect(completeList.length).toBeGreaterThan(0);
     });
   });

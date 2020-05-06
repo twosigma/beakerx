@@ -80,7 +80,7 @@ conda activate labx # For conda versions prior to 4.6, run: source activate labx
 conda install -y -c conda-forge jupyterlab=1
 (cd beakerx; pip install -r requirements.txt --verbose)
 beakerx install
-jupyter labextension install @jupyter-widgets/jupyterlab-manager
+jupyter labextension install @jupyter-widgets/jupyterlab-manager --no-build
 (cd js/lab; jupyter labextension install . --no-build)
 (cd js/lab-theme-dark; jupyter labextension install . --no-build)
 (cd js/lab-theme-light; jupyter labextension install . --no-build)

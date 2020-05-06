@@ -46,4 +46,14 @@ class ScalaEvaluatorImportTest {
     val classEvaluate = scalaEvaluator.evaluate(classSeo, classCode)
     classEvaluate.isError shouldBe false
   }
+
+  @Test
+  def scalaStandardTypes(): Unit = {
+    val code = "val list = List()".stripMargin
+    val scalaEvaluator = TestScalaEvaluator.evaluator
+    val importSeo = KernelTest.createSeo(code)
+    val importEvaluate = scalaEvaluator.evaluate(importSeo, code)
+    importEvaluate.isError shouldBe false
+  }
+
 }

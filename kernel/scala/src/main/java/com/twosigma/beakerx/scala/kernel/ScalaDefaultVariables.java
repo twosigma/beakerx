@@ -85,7 +85,8 @@ public class ScalaDefaultVariables extends DefaultJVMVariables {
             "com.twosigma.beakerx.mimetype.ImageContainer.Image",
             "com.twosigma.beakerx.mimetype.FileLinkContainer.FileLink",
             "com.twosigma.beakerx.mimetype.FileLinkContainer.FileLinks",
-            "com.twosigma.beakerx.mimetype.MIMEContainer"
+            "com.twosigma.beakerx.mimetype.MIMEContainer",
+            "com.twosigma.beakerx.chart.treemap.Mode"
     );
   }
 }

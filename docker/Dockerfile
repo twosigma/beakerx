@@ -60,7 +60,7 @@ RUN apt-get clean
 
 COPY configuration.yml /home/beakerx/
 RUN conda env create -n beakerx -f /home/beakerx/configuration.yml
-RUN conda install -y -n beakerx -c conda-forge jupyterhub jupyterlab pyzmq pytest
+RUN conda install -y -n beakerx -c conda-forge jupyterhub jupyterlab=1 pyzmq pytest
 
 ENV LANG=en_US.UTF-8
 ENV LC_CTYPE=en_US.UTF-8

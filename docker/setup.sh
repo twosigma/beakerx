@@ -18,7 +18,10 @@ source activate beakerx
 (cd beakerx; pip install -r requirements.txt --verbose)
 beakerx install
 beakerx_databrowser install
-jupyter labextension install @jupyter-widgets/jupyterlab-manager
-(cd js/lab; jupyter labextension install .)
+jupyter labextension install @jupyter-widgets/jupyterlab-manager --no-build
+(cd js/lab; jupyter labextension install . --no-build)
+(cd js/lab-theme-dark; jupyter labextension install . --no-build)
+(cd js/lab-theme-light; jupyter labextension install . --no-build)
+jupyter lab build
 
 rm -rf docker .DS_Store .git .gradle .idea jitpack.yml kernel RELEASE.md test .cache .yarn .local logs .ipynb_checkpoints

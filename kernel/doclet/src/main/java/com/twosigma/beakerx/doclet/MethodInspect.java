@@ -38,4 +38,13 @@ public class MethodInspect {
     public String getSignature() {
         return signature;
     }
+
+    @Override
+    public String toString() {
+        return "MethodInspect{" +
+                "methodName='" + methodName + '\'' +
+                ", javadoc='" + javadoc + '\'' +
+                ", signature='" + signature + '\'' +
+                '}';
+    }
 }

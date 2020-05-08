@@ -54,7 +54,7 @@ public class GroovyEvaluatorAutocompleteClassNameExpressionTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    assertThat(autocomplete.getMatches().size()).isEqualTo(1);
+    assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getMatches().get(0)).isEqualTo("Integer");
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length()-4);
   }

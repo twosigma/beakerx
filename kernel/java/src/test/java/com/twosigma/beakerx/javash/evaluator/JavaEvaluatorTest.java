@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2020 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,20 +13,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.twosigma.beakerx.javash.evaluator;
 
 import com.twosigma.beakerx.TryResult;
-import com.twosigma.beakerx.chart.xychart.Plot;
 import com.twosigma.beakerx.evaluator.ClasspathScannerMock;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.evaluator.MagicCommandAutocompletePatternsMock;
-import com.twosigma.beakerx.javash.kernel.JavaKernelMock;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beakerx.kernel.KernelManager;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.util.Arrays;
 
 import static com.twosigma.beakerx.KernelTest.createSeo;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.KERNEL_PARAMETERS;
@@ -35,7 +33,6 @@ import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class JavaEvaluatorTest {
-
   private static JavaEvaluator javaEvaluator;
 
   @BeforeClass
@@ -48,160 +45,53 @@ public class JavaEvaluatorTest {
             new EvaluatorTest.BeakexClientTestImpl(),
             new MagicCommandAutocompletePatternsMock(),
             new ClasspathScannerMock());
-    JavaKernelMock kernel = new JavaKernelMock("id", javaEvaluator);
-    KernelManager.register(kernel);
   }
 
   @AfterClass
   public static void tearDown() throws Exception {
-    KernelManager.register(null);
     javaEvaluator.exit();
   }
 
+
   @Test
-  public void evaluatePlot_shouldCreatePlotObject() throws Exception {
+  public void testMultipleCells() throws Exception {
     //given
-    String code = "import com.twosigma.beakerx.chart.xychart.*;\n" +
-            "Plot plot = new Plot(); plot.setTitle(\"test title\");\n" +
-            "return plot;";
+    String code = "var a = 1+1;";
+    SimpleEvaluationObject seo = createSeo(code);
+    javaEvaluator.evaluate(seo, code);
+    //when
+    String code2 = "a+a";
+    SimpleEvaluationObject seo2 = createSeo(code2);
+    TryResult evaluate2 = javaEvaluator.evaluate(seo2, code2);
+    //then
+    assertThat(evaluate2.result()).isEqualTo(4);
+  }
+
+  @Test
+  public void testMultipleLines() throws Exception {
+    //given
+    String code = "import java.util.ArrayList;\n" +
+            "var a = new ArrayList();\n" +
+            "a.add(1);\n" +
+            "a;";
     SimpleEvaluationObject seo = createSeo(code);
     //when
     TryResult evaluate = javaEvaluator.evaluate(seo, code);
     //then
-    assertThat(evaluate.result() instanceof Plot).isTrue();
-    assertThat(((Plot) evaluate.result()).getTitle()).isEqualTo("test title");
+    assertThat(evaluate.result()).isEqualTo(Arrays.asList(1));
   }
 
   @Test
-  public void evaluateDivisionByZero_shouldReturnArithmeticException() throws Exception {
+  public void testMultipleLinesErrorInSecondLine() throws Exception {
     //given
-    String code = "return 16/0;";
+    String code = "import java.util.ArrayList;\n" +
+            "var a = ne ArrayList();\n" +
+            "a.add(1);\n" +
+            "a;";
     SimpleEvaluationObject seo = createSeo(code);
     //when
     TryResult evaluate = javaEvaluator.evaluate(seo, code);
     //then
-    assertThat(evaluate.error()).contains("java.lang.ArithmeticException");
+    assertThat(evaluate.error()).contains("var a = ne ArrayList();");
   }
-
-  @Test
-  public void singleImport() throws Exception {
-    //given
-    String code = "import java.util.Date;";
-    SimpleEvaluationObject seo = createSeo(code);
-    //when
-    TryResult evaluate = javaEvaluator.evaluate(seo, code);
-    //then
-    assertThat(evaluate.result()).isNull();
-  }
-
-  @Test
-  public void onlyPackage() throws Exception {
-    //given
-    String code = "package beaker.test;";
-    SimpleEvaluationObject seo = createSeo(code);
-    //when
-    TryResult evaluate = javaEvaluator.evaluate(seo, code);
-    //then
-    assertThat(evaluate.result()).isNull();
-  }
-
-  @Test
-  public void noCode() throws Exception {
-    //given
-    String code = "";
-    SimpleEvaluationObject seo = createSeo(code);
-    //when
-    TryResult evaluate = javaEvaluator.evaluate(seo, code);
-    //then
-    assertThat(evaluate).isNotNull();
-  }
-
-  @Test
-  public void evaluateStreamInMultipleLines() throws Exception {
-    //given
-    String code = "import java.util.stream.Stream;\n" +
-            "return Stream.of(1, 2, 3, 4).map(i -> { \n" +
-            "    return i * 10;\n" +
-            "});";
-    SimpleEvaluationObject seo = createSeo(code);
-    //when
-    TryResult evaluate = javaEvaluator.evaluate(seo, code);
-    //then
-    assertThat(evaluate.result()).isNotNull();
-  }
-
-  @Test
-  public void evaluateStreamInOneLine() throws Exception {
-    //given
-    String code = "import java.util.stream.Stream;\n" +
-            "return Stream.of(1, 2, 3, 4).map(i -> { return i * 10;});";
-    SimpleEvaluationObject seo = createSeo(code);
-    //when
-    TryResult evaluate = javaEvaluator.evaluate(seo, code);
-    //then
-    assertThat(evaluate.result()).isNotNull();
-  }
-
-  @Test
-  public void evaluateVoid() throws Exception {
-    //given
-    String code = "System.out.println(\"Hello\");";
-    SimpleEvaluationObject seo = createSeo(code);
-    //when
-    TryResult evaluate = javaEvaluator.evaluate(seo, code);
-    //then
-    assertThat(evaluate.result()).isNull();
-  }
-
-  @Test
-  public void evaluateIfStatement() throws Exception {
-    //given
-    String code = "" +
-            "if (true){\n" +
-            "    return \"AAA\";\n" +
-            "}else {\n" +
-            "    return \"BBB\";\n" +
-            "}";
-    SimpleEvaluationObject seo = createSeo(code);
-    //when
-    TryResult evaluate = javaEvaluator.evaluate(seo, code);
-    //then
-    assertThat((String) evaluate.result()).isEqualTo("AAA");
-  }
-
-  @Test
-  public void overwriteClass() throws Exception {
-    //given
-    runCode("" +
-            "package hello;\n" +
-            "public class Main {\n" +
-            "    public static String doSth (){\n" +
-            "        return \"hello\";\n" +
-            "    }\n" +
-            "}");
-
-    runCode("" +
-            "package hello;\n" +
-            "return Main.doSth();");
-    //when
-    runCode("" +
-            "package hello;\n" +
-            "public class Main {\n" +
-            "    public static String doSth (){\n" +
-            "        return \"hello2\";\n" +
-            "    }\n" +
-            "}");
-
-    TryResult result = runCode("" +
-            "package hello;\n" +
-            "return Main.doSth();");
-    //then
-    assertThat((String) result.result()).contains("hello2");
-  }
-
-  private TryResult runCode(String s) {
-    SimpleEvaluationObject seo = createSeo(s);
-    return javaEvaluator.evaluate(seo, s);
-  }
-
 }

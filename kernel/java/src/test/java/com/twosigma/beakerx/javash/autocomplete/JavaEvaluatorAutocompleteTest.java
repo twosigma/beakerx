@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2020 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,37 +17,54 @@ package com.twosigma.beakerx.javash.autocomplete;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
-import com.twosigma.beakerx.evaluator.ClasspathScannerMock;
+import com.twosigma.beakerx.evaluator.ClasspathScannerImpl;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.evaluator.MagicCommandAutocompletePatternsMock;
 import com.twosigma.beakerx.javash.evaluator.JavaEvaluator;
+import com.twosigma.beakerx.javash.kernel.JavaDefaultVariables;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.stream.Collectors;
 
-import static com.twosigma.beakerx.evaluator.EvaluatorTest.KERNEL_PARAMETERS;
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class JavaEvaluatorAutocompleteTest {
 
-  private static BaseEvaluator evaluator;
+  private static JavaEvaluator evaluator;
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    evaluator = new JavaEvaluator(
-            "id",
+    HashMap<String, Object> map = new HashMap<>();
+    map.put(IMPORTS, new JavaDefaultVariables().getImports());
+    EvaluatorParameters kernelParameters = new EvaluatorParameters(map);
+    evaluator = new JavaEvaluator("id",
             "sid",
             cellExecutor(),
             getTestTempFolderFactory(),
-            KERNEL_PARAMETERS,
+            kernelParameters,
             new EvaluatorTest.BeakexClientTestImpl(),
             new MagicCommandAutocompletePatternsMock(),
-            new ClasspathScannerMock());
+            new ClasspathScannerImpl()
+    );
+    waitUntilTheJShellIndexingFinishes();
+  }
+
+  private static void waitUntilTheJShellIndexingFinishes() throws InterruptedException {
+    int count = 0;
+    AutocompleteResult autocomplete = evaluator.autocomplete("jav", "jav".length());
+    while (autocomplete.getMatches().isEmpty() && count < 20) {
+      Thread.sleep(100);
+      autocomplete = evaluator.autocomplete("jav", "jav".length());
+      count++;
+    }
   }
 
   @AfterClass
@@ -59,7 +76,6 @@ public class JavaEvaluatorAutocompleteTest {
     return evaluator;
   }
 
-  @Ignore
   @Test
   public void shouldReturnPrintlnForFirstLine() throws Exception {
     //when
@@ -73,21 +89,19 @@ public class JavaEvaluatorAutocompleteTest {
     assertThat(autocomplete.getStartIndex()).isEqualTo(11);
   }
 
-  @Ignore
   @Test
   public void shouldReturnPrintlnForSecondLine() throws Exception {
     //when
     AutocompleteResult autocomplete = evaluator().autocomplete(
-            "System.out.printl\n" +
+            "System.out.println();\n" +
                     "System.out.print\n" +
-                    "System.out.prin\n" +
-                    "System.out.pri\n", 34);
+                    "System.out.print\n" +
+                    "System.out.print\n", 34);
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
-    assertThat(autocomplete.getStartIndex()).isEqualTo(29);
+    assertThat(autocomplete.getStartIndex()).isEqualTo(33);
   }
 
-  @Ignore
   @Test
   public void shouldReturnAutocompleteForPrintlnWithComment() throws Exception {
     //when
@@ -116,10 +130,11 @@ public class JavaEvaluatorAutocompleteTest {
     AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
-    assertThat(autocomplete.getMatches()).contains("println");
+    assertThat(autocomplete.getMatches()).contains("println(");
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
   }
 
+  @Ignore
   @Test
   public void shouldReturnResultEqualToImport() throws Exception {
     String code = "imp";
@@ -129,24 +144,24 @@ public class JavaEvaluatorAutocompleteTest {
     assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("import");
   }
 
-  @Ignore
   @Test
   public void shouldReturnResultEqualToToString() throws Exception {
     String code = "String v = \"str\";\nv.toS";
     //when
     AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
-    assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("toString");
+    assertThat(autocomplete.getMatches().get(0)).contains("toString");
   }
 
   @Ignore
   @Test
   public void shouldReturnResultEqualToParamInt() throws Exception {
     String code = "int paramInt = 10;\n" +
-            "System.out.println( par";
+            "System.out.println(par";
     //when
     AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
+    assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("paramInt");
   }
 
@@ -220,6 +235,7 @@ public class JavaEvaluatorAutocompleteTest {
     assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("coordinates");
   }
 
+  @Ignore
   @Test
   public void shouldReturnResultEqualToPackage() throws Exception {
     String code = "pack";
@@ -230,6 +246,7 @@ public class JavaEvaluatorAutocompleteTest {
     assertThat(autocomplete.getStartIndex()).isEqualTo(0);
   }
 
+  @Ignore
   @Test
   public void shouldReturnImplements() throws Exception {
     String code = "class Coordinates implemen";
@@ -240,6 +257,7 @@ public class JavaEvaluatorAutocompleteTest {
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 8);
   }
 
+  @Ignore
   @Test
   public void shouldReturnExtends() throws Exception {
     String code = "class Coordinates exten";
@@ -250,6 +268,7 @@ public class JavaEvaluatorAutocompleteTest {
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 5);
   }
 
+  @Ignore
   @Test
   public void shouldReturnClass() throws Exception {
     String code = "cla";
@@ -272,6 +291,7 @@ public class JavaEvaluatorAutocompleteTest {
     assertThat(autocomplete.getStartIndex()).isEqualTo(0);
   }
 
+  @Ignore
   @Test
   public void shouldAutocompleteToB() throws Exception {
     String code = "import java.awt.Color;\n" +
@@ -283,6 +303,7 @@ public class JavaEvaluatorAutocompleteTest {
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 1);
   }
 
+  @Ignore
   @Test
   public void shouldAutocompleteWithAsterisk() throws Exception {
     String code = "import java.awt.*;\n" +
@@ -300,13 +321,13 @@ public class JavaEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
-    assertThat(autocomplete.getMatches()).isEmpty();
+    assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(0);
   }
 
   @Test
   public void defaultImportsAutocompleteToRED() throws Exception {
-    String code = "def colors = [ Color.RE";
+    String code = "Color.RE";
     //when
     AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
@@ -377,13 +398,13 @@ public class JavaEvaluatorAutocompleteTest {
 
   @Test
   public void autocompleteArrayListAfterDot() throws Exception {
-    String code = "List myList = new ArrayList();\n" +
+    String code = "var myList = new ArrayList();\n" +
             "myList.";
     //when
     AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
-    assertThat(autocomplete.getMatches().stream().filter(x -> x.equals("add")).collect(Collectors.toList())).isNotEmpty();
+    assertThat(autocomplete.getMatches().stream().filter(x -> x.equals("add(")).collect(Collectors.toList())).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
   }
 
@@ -454,6 +475,26 @@ public class JavaEvaluatorAutocompleteTest {
   }
 
   @Test
+  public void autocompleteForJavaPackageToCom() throws Exception {
+    String code = "co";
+    //when
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
+    //then
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(0);
+  }
+
+  @Test
+  public void autocompleteForJavaPackageForCom() throws Exception {
+    String code = "com.";
+    //when
+    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
+    //then
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(4);
+  }
+
+  @Test
   public void autocompleteToJavaPackage() throws Exception {
     String code = "jav";
     //when
@@ -463,7 +504,6 @@ public class JavaEvaluatorAutocompleteTest {
     assertThat(autocomplete.getStartIndex()).isEqualTo(0);
   }
 
-  @Ignore
   @Test
   public void autocompleteStringMethod() throws Exception {
     String code = "String a = \"ABC\";\n" +
@@ -503,25 +543,4 @@ public class JavaEvaluatorAutocompleteTest {
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
   }
 
-  @Test
-  public void autocompleteToFileMethods() throws Exception {
-    String code = "fname = \"demoResources/bar-chart.vg.json\"\n" +
-            "fileContents = new File(fname)\n" +
-            "fileContents.t";
-    //when
-    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
-    //then
-    assertThat(autocomplete.getMatches()).isNotEmpty();
-    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 1);
-  }
-
-  @Test
-  public void shouldReturnEmptyResultForIncorrectCode() throws Exception {
-    String code = "]";
-    //when
-    AutocompleteResult autocomplete = evaluator().autocomplete(code, code.length());
-    //then
-    assertThat(autocomplete.getMatches()).isEmpty();
-    assertThat(autocomplete.getStartIndex()).isEqualTo(0);
-  }
 }

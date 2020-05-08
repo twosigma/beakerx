@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2020 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,10 +18,9 @@ package com.twosigma.beakerx.javash.kernel;
 import com.twosigma.beakerx.DefaultJVMVariables;
 
 /**
- * 
- * @author konst
  *
  */
 public class JavaDefaultVariables extends DefaultJVMVariables {
   
+
 }

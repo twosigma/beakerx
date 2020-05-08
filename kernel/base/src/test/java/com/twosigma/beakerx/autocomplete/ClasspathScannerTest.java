@@ -16,18 +16,19 @@
 
 package com.twosigma.beakerx.autocomplete;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClasspathScannerTest {
 
   @Test
-  public void createClasspathScanner_hasPackagesAndClasses(){
+  public void createClasspathScanner_hasPackagesAndClasses() {
     //when
     AutocompleteClasspathScanner cps = new AutocompleteClasspathScanner();
     //then
-    Assertions.assertThat(cps.getPackages()).isNotEmpty();
-    Assertions.assertThat(cps.getClasses("java.lang")).isNotEmpty();
+    assertThat(cps.getPackages()).isNotEmpty();
+    assertThat(cps.getClasses("java.lang")).isNotEmpty();
   }
 
 }

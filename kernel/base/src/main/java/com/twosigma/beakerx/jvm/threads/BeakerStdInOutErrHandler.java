@@ -104,7 +104,7 @@ public class BeakerStdInOutErrHandler {
   private synchronized void writeStdout(String text) throws IOException {
     boolean sendStdout = OutputManager.sendStdout(text);
     if (!sendStdout) {
-      BeakerOutputHandlers hrs = handlers.get(Thread.currentThread().getThreadGroup());
+      BeakerOutputHandlers hrs = getHandlersByThreadGroup();
       if (hrs != null && hrs.out_handler != null) {
         hrs.out_handler.write(text);
       } else {
@@ -113,10 +113,19 @@ public class BeakerStdInOutErrHandler {
     }
   }
 
+  private BeakerOutputHandlers getHandlersByThreadGroup() {
+    ThreadGroup threadGroup = Thread.currentThread().getThreadGroup();
+    BeakerOutputHandlers beakerOutputHandlers = handlers.get(threadGroup);
+    if (beakerOutputHandlers != null) {
+      return beakerOutputHandlers;
+    }
+    return handlers.get(threadGroup.getParent());
+  }
+
   private synchronized void writeStderr(String text) throws IOException {
     boolean sendStderr = OutputManager.sendStderr(text);
     if (!sendStderr) {
-      BeakerOutputHandlers hrs = handlers.get(Thread.currentThread().getThreadGroup());
+      BeakerOutputHandlers hrs = getHandlersByThreadGroup();
       if (hrs != null && hrs.err_handler != null) {
         hrs.err_handler.write(text);
       } else {
@@ -133,7 +142,7 @@ public class BeakerStdInOutErrHandler {
   }
 
   private int readStdin() {
-    BeakerOutputHandlers hrs = handlers.get(Thread.currentThread().getThreadGroup());
+    BeakerOutputHandlers hrs = getHandlersByThreadGroup();
     if (hrs != null && hrs.stdin_handler != null) {
       return hrs.stdin_handler.read();
     }

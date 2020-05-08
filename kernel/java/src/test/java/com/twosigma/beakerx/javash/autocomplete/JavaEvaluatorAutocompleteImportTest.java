@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2020 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -34,14 +34,14 @@ import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor
 
 public class JavaEvaluatorAutocompleteImportTest extends JVMEvaluatorAutocompleteImportTest {
 
-  private static BaseEvaluator groovyEvaluator;
+  private static BaseEvaluator evaluator;
 
   @BeforeClass
   public static void setUpClass() throws Exception {
     HashMap<String, Object> map = new HashMap<>();
     map.put(IMPORTS, new JavaDefaultVariables().getImports());
     EvaluatorParameters kernelParameters = new EvaluatorParameters(map);
-    groovyEvaluator = new JavaEvaluator("id",
+    evaluator = new JavaEvaluator("id",
             "sid",
             cellExecutor(),
             getTestTempFolderFactory(),
@@ -54,11 +54,11 @@ public class JavaEvaluatorAutocompleteImportTest extends JVMEvaluatorAutocomplet
 
   @AfterClass
   public static void tearDown() throws Exception {
-    groovyEvaluator.exit();
+    evaluator.exit();
   }
 
   @Override
   protected BaseEvaluator evaluator() {
-    return groovyEvaluator;
+    return evaluator;
   }
 }

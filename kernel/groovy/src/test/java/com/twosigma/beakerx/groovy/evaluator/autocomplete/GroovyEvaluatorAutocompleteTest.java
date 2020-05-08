@@ -345,7 +345,7 @@ public class GroovyEvaluatorAutocompleteTest {
 
   @Test
   public void autocompleteArrayListAfterDot() throws Exception {
-    String code = "List myList = new ArrayList();\n" +
+    String code = "def myList = new ArrayList();\n" +
             "myList.";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());

@@ -58,4 +58,15 @@ public class ClassInspect {
     public void setConstructors(List<MethodInspect> constructors) {
         this.constructors = constructors;
     }
+
+    @Override
+    public String toString() {
+        return "ClassInspect{" +
+                "className='" + className + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", javadoc='" + javadoc + '\'' +
+                ", methods=" + methods +
+                ", constructors=" + constructors +
+                '}';
+    }
 }

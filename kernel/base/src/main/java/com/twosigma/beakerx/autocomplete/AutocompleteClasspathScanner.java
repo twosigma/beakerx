@@ -20,6 +20,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.lang.module.ModuleReader;
+import java.lang.module.ResolvedModule;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -36,18 +39,32 @@ public class AutocompleteClasspathScanner {
   public AutocompleteClasspathScanner() {
     packages = new HashMap<String,List<String>>();
     String classpath = System.getProperty("java.class.path");
-    scanClasses(classpath);
+    scanClassesFromClasspath(classpath);
+    scanClassesFromModulePath();
   }
 
   public AutocompleteClasspathScanner(String classpath) {
     packages = new HashMap<String,List<String>>();
-    scanClasses(classpath);
+    scanClassesFromClasspath(classpath);
+    scanClassesFromModulePath();
+  }
+
+  private void scanClassesFromModulePath() {
+    ModuleLayer.boot().configuration().modules().stream()
+            .map(ResolvedModule::reference)
+            .forEach(mref -> {
+              try (ModuleReader reader = mref.open()) {
+                reader.list().forEach( x -> addClass(x));
+              } catch (IOException ioe) {
+                throw new UncheckedIOException(ioe);
+              }
+            });
   }
 
   public Set<String> getPackages() { return packages.keySet(); }
   public List<String> getClasses(String p) { if(packages.containsKey(p)) return packages.get(p); return null; }
 
-  private void scanClasses(String classpath) {
+  private void scanClassesFromClasspath(String classpath) {
     String[] paths = classpath.split(System.getProperty("path.separator"));
 
     String javaHome = System.getProperty("java.home");
@@ -108,18 +125,7 @@ public class AutocompleteClasspathScanner {
           while (entries.hasMoreElements()) {
             JarEntry entry = entries.nextElement();
             String name = entry.getName();
-            int extIndex = name.lastIndexOf(".class");
-            if (extIndex > 0 && !name.contains("$")) {
-              String cname = name.substring(0, extIndex).replace("/", ".");
-              int pIndex = cname.lastIndexOf('.');
-              if(pIndex > 0) {
-                String pname = cname.substring(0, pIndex);
-                cname = cname.substring(pIndex+1);
-                if(!packages.containsKey(pname))
-                  packages.put(pname, new ArrayList<String>());
-                packages.get(pname).add(cname);
-              }
-            }
+            addClass(name);
           }
         }
       }
@@ -141,6 +147,21 @@ public class AutocompleteClasspathScanner {
     }
 
     return true;
+  }
+
+  private void addClass(String name) {
+    int extIndex = name.lastIndexOf(".class");
+    if (extIndex > 0 && !name.contains("$")) {
+      String cname = name.substring(0, extIndex).replace("/", ".");
+      int pIndex = cname.lastIndexOf('.');
+      if(pIndex > 0) {
+        String pname = cname.substring(0, pIndex);
+        cname = cname.substring(pIndex+1);
+        if(!packages.containsKey(pname))
+          packages.put(pname, new ArrayList<String>());
+        packages.get(pname).add(cname);
+      }
+    }
   }
 
   /*

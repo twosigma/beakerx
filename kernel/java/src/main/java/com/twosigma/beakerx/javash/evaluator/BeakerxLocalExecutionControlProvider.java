@@ -13,20 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.javash.kernel;
+package com.twosigma.beakerx.javash.evaluator;
 
-import com.twosigma.beakerx.kernel.KernelFunctionality;
-import com.twosigma.beakerx.kernel.restserver.impl.BeakerXServerJavalin;
-import com.twosigma.beakerx.kernel.restserver.impl.GetUrlArgHandler;
-import io.javalin.Javalin;
+import jdk.jshell.execution.LocalExecutionControlProvider;
+import jdk.jshell.spi.ExecutionControl;
+import jdk.jshell.spi.ExecutionEnv;
 
-public class JavaBeakerXServer extends BeakerXServerJavalin {
+import java.util.Map;
 
-  public JavaBeakerXServer(GetUrlArgHandler urlArgHandler) {
-    super(urlArgHandler);
+public class BeakerxLocalExecutionControlProvider extends LocalExecutionControlProvider {
+  BeakerxLocalExecutionControl executionControl;
+
+  public BeakerxLocalExecutionControlProvider(BeakerxLocalExecutionControl executionControl) {
+    this.executionControl = executionControl;
   }
 
   @Override
-  public void createMapping(Javalin app, KernelFunctionality kernel) {
+  public ExecutionControl generate(ExecutionEnv env, Map<String, String> parameters) {
+    return executionControl;
   }
 }

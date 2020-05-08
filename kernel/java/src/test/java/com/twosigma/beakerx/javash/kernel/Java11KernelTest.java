@@ -35,7 +35,7 @@ import static com.twosigma.beakerx.evaluator.EvaluatorTest.getCacheFolderFactory
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 
-public class JavaKernelTest extends KernelExecutionTest {
+public class Java11KernelTest extends KernelExecutionTest {
 
   @Override
   protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
@@ -65,19 +65,19 @@ public class JavaKernelTest extends KernelExecutionTest {
 
   @Override
   protected String codeFor16Divide2() {
-    return "return 16/2;";
+    return "16/2";
   }
 
 
   @Override
   protected String codeForVerifyingAddedDemoJar() {
     return "import com.example.Demo;\n" +
-            "return new Demo().getObjectTest();";
+            "new Demo().getObjectTest();";
   }
 
   @Override
   protected String getObjectTestMethodFromAddedDemoJar() {
-    return "return new Demo().getObjectTest();";
+    return "new Demo().getObjectTest();";
   }
 
   @Override

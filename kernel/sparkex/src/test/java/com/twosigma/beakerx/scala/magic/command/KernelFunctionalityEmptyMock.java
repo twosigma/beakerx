@@ -45,7 +45,6 @@ import com.twosigma.beakerx.message.Message;
 
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Observer;
 import java.util.Set;
 
 public class KernelFunctionalityEmptyMock implements KernelFunctionality {
@@ -129,7 +128,7 @@ public class KernelFunctionalityEmptyMock implements KernelFunctionality {
 
   @Override
   public TryResult executeCode(String code, SimpleEvaluationObject seo) {
-    return null;
+    return TryResult.createResult(code);
   }
 
   @Override

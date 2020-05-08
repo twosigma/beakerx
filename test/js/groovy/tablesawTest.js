@@ -17,6 +17,7 @@
 var BeakerXPageObject = require('../beakerx.po.js');
 var PlotHelperObject = require('../plot.helper.js');
 var beakerxPO;
+var plotHelper;
 
 describe('Tests for tablesaw lib. ', function () {
 
@@ -53,8 +54,7 @@ describe('Tests for tablesaw lib. ', function () {
     it('Should displays table. ', function () {
       var width = 700, height = 100;
       cellIndex += 1;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var canvas = codeCell.$('canvas');
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell3_case1.png');
     });
@@ -64,8 +64,7 @@ describe('Tests for tablesaw lib. ', function () {
     it('Should displays table structure. ', function () {
       var width = 250, height = 200;
       cellIndex += 2;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var canvas = codeCell.$('canvas');
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell4_case1.png');
     });
@@ -92,8 +91,7 @@ describe('Tests for tablesaw lib. ', function () {
     it('Should displays the first 10 rows. ', function () {
       var width = 700, height = 100;
       cellIndex += 1;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var canvas = codeCell.$('canvas');
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell7_case1.png');
     });
@@ -122,8 +120,7 @@ describe('Tests for tablesaw lib. ', function () {
     it('Should sort "Fatalities" column. ', function () {
       var width = 700, height = 100;
       cellIndex += 1;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var canvas = codeCell.$('canvas');
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell11_case1.png');
     });
@@ -133,8 +130,7 @@ describe('Tests for tablesaw lib. ', function () {
     it('Should display summary statistic. ', function () {
       var width = 160, height = 210;
       cellIndex += 2;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var canvas = codeCell.$('canvas');
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell12_case1.png');
     });
@@ -144,8 +140,7 @@ describe('Tests for tablesaw lib. ', function () {
     it('Should display totals and sub-totals. ', function () {
       var width = 180, height = 140;
       cellIndex += 2;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var canvas = codeCell.$('canvas');
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell13_case1.png');
     });
@@ -155,8 +150,7 @@ describe('Tests for tablesaw lib. ', function () {
     it('Should display cross tabs. ', function () {
       var width = 410, height = 200;
       cellIndex += 2;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var canvas = codeCell.$('canvas');
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell14_case1.png');
     });
@@ -166,8 +160,7 @@ describe('Tests for tablesaw lib. ', function () {
     it('Create table from "whiskey.csv" file. ', function () {
       var width = 250, height = 200;
       cellIndex += 2;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var canvas = codeCell.$('canvas');
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell15_case1.png');
 
@@ -183,8 +176,7 @@ describe('Tests for tablesaw lib. ', function () {
     it('Print centroids for each claster. ', function () {
       var width = 500, height = 100;
       cellIndex += 1;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var canvas = codeCell.$('canvas');
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell17_case1.png');
     });
@@ -225,8 +217,7 @@ describe('Tests for tablesaw lib. ', function () {
 
       var width = 500, height = 100;
       cellIndex += 1;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      var canvas = codeCell.$('canvas');
+      var canvas = beakerxPO.runCellToGetCanvas(cellIndex);
       var imageData = beakerxPO.getCanvasImageData(canvas, width, height);
       beakerxPO.checkImageData(imageData, imageDir, 'cell34_case1.png');
     });

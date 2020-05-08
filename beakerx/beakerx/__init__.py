@@ -15,6 +15,7 @@
 from ._version import version_info, __version__
 from .commands import parse as beakerx_parse
 from .easyform import *
+from .spark import *
 from .environment import *
 from .handlers import load_jupyter_server_extension
 from .output_container import *

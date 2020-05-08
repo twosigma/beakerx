@@ -18,26 +18,17 @@ package com.twosigma.beakerx.widget;
 import com.twosigma.beakerx.scala.magic.command.JobLinkFactory;
 import com.twosigma.beakerx.scala.magic.command.SparkUiWebUrlFactory;
 import com.twosigma.beakerx.scala.magic.command.StageLinkFactory;
-import org.apache.spark.SparkConf;
-import org.apache.spark.sql.SparkSession;
 
 import java.util.Map;
+
 
 public interface SparkEngine {
 
   String SPARK_APP_ID = "spark.app.id";
 
-  SparkSession getOrCreate();
-
-  SparkConf getSparkConf();
-
   String getSparkAppId();
 
-  Map<String, String> getAdvanceSettings(SparkUiDefaults defaults);
-
   String getSparkUiWebUrl();
-
-  String getSparkMasterUrl();
 
   String sparkVersion();
 
@@ -56,4 +47,16 @@ public interface SparkEngine {
   void stageLinkFactory(StageLinkFactory factory);
 
   void sparkUiWebUrlFactory(SparkUiWebUrlFactory factory);
+
+  void stop();
+
+  void cancelAllJobs();
+
+  void cancelStage(int stageid);
+
+  String getStopContext();
+
+  String getConf(String name);
+
+  Map<String, Object> getUserSparkConfAsMap();
 }

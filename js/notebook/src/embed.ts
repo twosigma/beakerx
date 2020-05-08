@@ -23,6 +23,7 @@ export * from './TabView';
 export * from './GridView';
 export * from './CyclingDisplayBox';
 export * from './EasyForm';
+export * from './SparkUI2';
 export * from './Plot';
 export * from './Spinner';
 export * from './GistPublisher'
@@ -34,3 +35,4 @@ export const bkCoreManager = require('beakerx_shared/lib/bk/bkCoreManager').defa
 export const version = require('../package.json').version;
 
 export const BeakerXApi = require('beakerx_shared/lib/api/BeakerXApi').default;
+export {SparkUI2Widget} from "./sparkUI2/SparkUI2Widget";

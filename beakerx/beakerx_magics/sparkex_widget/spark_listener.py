@@ -16,17 +16,18 @@ from IPython.display import display
 
 from beakerx_magics.sparkex_widget import SparkStateProgressWidget, SparkFoldout, SparkStateGroupPanel
 
+
 class SparkListener:
 
-    def __init__(self, manager):
+    def __init__(self, sparkui, manager):
         self.manager = manager
-        self.sc = manager.sc
+        self.sparkui = sparkui
         self.group = None
         self.bar = None
         self.jobPanel = None
 
     def onApplicationEnd(self, applicationEnd):
-        pass
+        self.sparkui.end_application()
 
     def onApplicationStart(self, applicationStart):
         pass

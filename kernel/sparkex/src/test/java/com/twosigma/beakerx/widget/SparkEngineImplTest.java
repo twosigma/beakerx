@@ -16,6 +16,8 @@
  */
 package com.twosigma.beakerx.widget;
 
+import com.twosigma.beakerx.scala.magic.command.SparkListenerServiceMock;
+import com.twosigma.beakerx.scala.magic.command.SparkSessionBuilderFactoryImpl;
 import org.apache.spark.sql.SparkSession;
 import org.junit.Test;
 
@@ -26,7 +28,10 @@ public class SparkEngineImplTest {
   @Test
   public void sparkVersion() {
     //given
-    SparkEngineBase sparkEngine = new SparkEngineWithUIImpl(SparkSession.builder());
+    SparkEngineBase sparkEngine = new SparkEngineWithUIImpl(
+            new SparkSessionBuilderImpl(SparkSession.builder()),
+            new SparkSessionBuilderFactoryImpl(),
+            new SparkListenerServiceMock());
     //when
     String version = sparkEngine.sparkVersion();
     //then

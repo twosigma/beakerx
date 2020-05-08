@@ -128,7 +128,15 @@ var LabPageObject = function () {
     browser.$('button.jp-ToolbarButtonComponent > span.jp-StopIcon').click();
   };
 
-  this.getAllOutputAreaChildren = function (codeCell) {
+  this.getAllOutputAreaChildren = function (codeCell, isWait) {
+    if(isWait){
+      browser.waitUntil(function(){
+        return codeCell.$$('div.jp-OutputArea-child').length > 0;
+      });
+    }
+    else {
+      browser.pause(1000);
+    }
     return codeCell.$$('div.jp-OutputArea-child');
   };
 
@@ -161,6 +169,9 @@ var LabPageObject = function () {
   };
 
   this.getAllOutputsWidget = function(codeCell){
+    browser.waitUntil(function(){
+      return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output').length > 0;
+    });
     return codeCell.$$('div.jp-OutputArea-child > div.jp-OutputArea-output');
   };
 

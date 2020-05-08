@@ -48,7 +48,7 @@ class SQLCodeRunner implements Callable<TryResult> {
       Object r = sqlEvaluator.executeQuery(simpleEvaluationObject.getExpression(), namespaceClient, sqlEvaluator.defaultConnectionString, sqlEvaluator.namedConnectionString);
       either = TryResult.createResult(r);
     } catch (SQLException e) {
-      either = TryResult.createError(e.toString());
+      either = TryResult.createError(createErrorMessage(e));
     } catch (ThreadDeath e) {
       either = TryResult.createError(INTERUPTED_MSG);
     } catch (ReadVariableException e) {
@@ -58,5 +58,13 @@ class SQLCodeRunner implements Callable<TryResult> {
       either = TryResult.createError(e.toString());
     }
     return either;
+  }
+
+  private String createErrorMessage(SQLException e) {
+    String err = e.toString();
+    if (e.getCause() != null) {
+      err = err + ", " + e.getCause().toString();
+    }
+    return err;
   }
 }

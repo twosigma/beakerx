@@ -18,16 +18,18 @@ package com.twosigma.beakerx.widget;
 
 import com.twosigma.beakerx.kernel.BeakerXJsonConfig;
 import com.twosigma.beakerx.widget.configuration.SparkConfiguration;
-import org.apache.spark.SparkConf;
-import org.apache.spark.sql.SparkSession;
 import org.assertj.core.api.Assertions;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -54,11 +56,18 @@ public class SparkUiDefaultsImplTest {
   private BeakerXJsonConfig beakerXJson;
 
   @Before
-  public void setUp() throws URISyntaxException {
-    Path path = Paths.get(this.getClass().getClassLoader().getResource("beakerxTest.json").toURI());
-    this.pathToBeakerxTestJson = path;
+  public void setUp() throws URISyntaxException, IOException {
+    Path source = Paths.get(this.getClass().getClassLoader().getResource("beakerxTest.json").toURI());
+    File dest = new File(source.toString().replace("beakerxTest.json", "beakerxTest2.json"));
+    Files.copy(source, dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+    this.pathToBeakerxTestJson = dest.toPath();
     this.beakerXJson = new BeakerXJsonConfig(pathToBeakerxTestJson);
     this.sut = new SparkUiDefaultsImpl(beakerXJson);
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    Files.deleteIfExists(pathToBeakerxTestJson);
   }
 
   @Test
@@ -68,7 +77,7 @@ public class SparkUiDefaultsImplTest {
     profileConfig.put(NAME, DEFAULT_PROFILE);
     //when
     sut.loadDefaults();
-    sut.saveProfile(profileConfig);
+    sut.saveProfiles(Arrays.asList(profileConfig));
     //then
     Map<String, Map> result = beakerXJson.beakerxJsonAsMap();
     Assertions.assertThat(result.get("beakerx").get("version")).isEqualTo(2);
@@ -81,7 +90,7 @@ public class SparkUiDefaultsImplTest {
     profileConfig.put(SPARK_MASTER, "local[4]");
     profileConfig.put(NAME, PROFILE1);
     //when
-    sut.saveProfile(profileConfig);
+    sut.saveProfiles(Arrays.asList(profileConfig));
     //then
     Map options = getOptions(PROFILE1);
     String prop = (String) options.get(SPARK_MASTER);
@@ -95,7 +104,7 @@ public class SparkUiDefaultsImplTest {
     profileConfig.put(SPARK_EXECUTOR_MEMORY, "8g");
     profileConfig.put(NAME, PROFILE1);
     //when
-    sut.saveProfile(profileConfig);
+    sut.saveProfiles(Arrays.asList(profileConfig));
     //then
     Map options = getOptions(PROFILE1);
     String prop = (String) options.get(SPARK_EXECUTOR_MEMORY);
@@ -109,7 +118,7 @@ public class SparkUiDefaultsImplTest {
     profileConfig.put(SPARK_EXECUTOR_CORES, "10");
     profileConfig.put(NAME, PROFILE1);
     //when
-    sut.saveProfile(profileConfig);
+    sut.saveProfiles(Arrays.asList(profileConfig));
     //then
     Map options = getOptions(PROFILE1);
     String prop = (String) options.get(SPARK_EXECUTOR_CORES);
@@ -124,7 +133,7 @@ public class SparkUiDefaultsImplTest {
             new SparkConfiguration.Configuration("sparkOption2", "sp2")));
     profileConfig.put(NAME, PROFILE1);
     //when
-    sut.saveProfile(profileConfig);
+    sut.saveProfiles(Arrays.asList(profileConfig));
     //then
     List<Object> props = getProps();
     assertThat(props).isNotEmpty();
@@ -162,7 +171,7 @@ public class SparkUiDefaultsImplTest {
     List config = new ArrayList();
     config.add(profileConfig);
     //when
-    sut.saveProfile(profileConfig);
+    sut.saveProfiles(Arrays.asList(profileConfig));
     //then
     sut.loadDefaults();
     assertThat(sut.getProperties().get("sparkOption2")).isEqualTo("3");
@@ -202,8 +211,8 @@ public class SparkUiDefaultsImplTest {
     profileConfig2.put(SPARK_MASTER, "local[8]");
     profileConfig2.put(NAME, PROFILE2);
     //when
-    sut.saveProfile(profileConfig1);
-    sut.saveProfile(profileConfig2);
+    sut.saveProfiles(Arrays.asList(profileConfig1));
+    sut.saveProfiles(Arrays.asList(profileConfig2));
     sut.removeSparkConf(PROFILE1);
     //then
     Map options2 = getOptions(PROFILE2);
@@ -223,8 +232,8 @@ public class SparkUiDefaultsImplTest {
     profileConfig2.put(SPARK_MASTER, "local[8]");
     profileConfig2.put(NAME, PROFILE1);
     //when
-    sut.saveProfile(profileConfig1);
-    sut.saveProfile(profileConfig2);
+    sut.saveProfiles(Arrays.asList(profileConfig1));
+    sut.saveProfiles(Arrays.asList(profileConfig2));
     //then
     Map options = getOptions(PROFILE1);
     String prop = (String) options.get(SPARK_MASTER);

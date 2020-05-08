@@ -92,7 +92,7 @@ export default class RowManager {
   createRowsWithIndex(data) {
     this.rowsIterator = new MapIterator<any[], DataGridRow>(
       iter(data),
-      (values) => new DataGridRow(values[0], values.slice(1)
+      (values) => new DataGridRow(values[0].value, values.slice(1)
     ));
 
     this.rows = toArray(this.rowsIterator.clone());

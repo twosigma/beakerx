@@ -343,7 +343,6 @@ def transformBack(obj):
                 if ('hasIndex' in out) and (out['hasIndex'] == "true"):
                     # first column becomes the index
                     vals = out['values']
-                    is_standard_index = ('indexName' in out) and (len(out['indexName']) == 1) and (out['indexName'][0] == 'index')
                     cnames = out['columnNames'][1:]
                     index = []
                     for x in range(0, len(vals)):
@@ -352,9 +351,9 @@ def transformBack(obj):
                         fixNaNsBack(v)
                         vals[x] = v
                     if len(out['indexName']) > 1:
-                        index = pandas.MultiIndex.from_tuples(index, names=out['indexName'])
+                        index = pandas.MultiIndex.from_tuples(index, names=(out['indexName']))
                     else:
-                        index = pandas.Index(index, name=out['indexName'])
+                        index = pandas.Index(index, name=', '.join((out['indexName'])))
                     frame = pandas.DataFrame(data=vals, columns=cnames, index=index)
                     return frame
                 else:

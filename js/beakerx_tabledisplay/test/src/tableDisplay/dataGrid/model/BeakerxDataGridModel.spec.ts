@@ -72,7 +72,7 @@ describe('BeakerXDataGridModel', () => {
     it('should return proper data', () => {
       expect(beakerxDataGridModel.data('corner-header', 0, 0)).to.equal('test');
       expect(beakerxDataGridModel.data('column-header', 0, 0)).to.equal('column');
-      expect(beakerxDataGridModel.data('row-header', 0, 0).value).to.equal(1);
+      expect(beakerxDataGridModel.data('row-header', 0, 0)).to.equal(1);
       expect(beakerxDataGridModel.data('body', 0, 0)).to.equal(2);
     });
 

@@ -1,8 +1,0 @@
-{
-  "argv": [
-    "java", "-cp", ${PATH}, "com.twosigma.beakerx.javash.kernel.Java",  "{connection_file}"
-  ],
-  "display_name": "Java11",
-  "language": "java",
-  "env": { "PS1":"java>"}
-}

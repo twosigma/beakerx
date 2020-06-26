@@ -54,72 +54,17 @@ how to install and run BeakerX.
 ### Build and Install (linux and mac)
 
 ```
+cd ./beakerx-dist
 conda env create -n beakerx -f configuration.yml
-conda activate beakerx # For conda versions prior to 4.6, run: source activate beakerx
-(cd beakerx; pip install -r requirements.txt --verbose)
-beakerx install
-beakerx_databrowser install
-```
-
-### Build and Install (win)
-```
-conda env create -n beakerx -f configuration.yml
-activate beakerx
-cd beakerx
-pip install -r requirements.txt --verbose
-cd ..
-beakerx install
-beakerx_databrowser install
-```
-
-### Build and Install for Jupyter Lab
-
-```
-conda env create -n labx -f configuration.yml
-conda activate labx # For conda versions prior to 4.6, run: source activate labx
-conda install -y -c conda-forge jupyterlab=1
-(cd beakerx; pip install -r requirements.txt --verbose)
-beakerx install
-jupyter labextension install @jupyter-widgets/jupyterlab-manager --no-build
-(cd js/lab; jupyter labextension install . --no-build)
-(cd js/lab-theme-dark; jupyter labextension install . --no-build)
-(cd js/lab-theme-light; jupyter labextension install . --no-build)
-jupyter lab build
+conda activate beakerx
+conda install -y beakerx_all
+cd  ..
 ```
 
 ### Running with Docker
 
 ```
 docker run -p 8888:8888 beakerx/beakerx
-```
-
-### Update after Java change
-
-The kernels are installed to run out of the repo, so just a local
-build should suffice:
-
-```
-(cd kernel; ./gradlew build)
-```
-
-### Update after JS change
-
-The notebook extensions are installed to run out of the repo, so just
-a local build should suffice:
-
-```
-(cd js/notebook; yarn run build)
-beakerx install
-```
-
-### Run TypeScript Unit Tests
-
-The Java and TypeScript unit tests are run with every build. See [test/README.md](test/README.md) for how to run the e2e tests.
-
-### Run Python Unit Tests
-```
-(cd beakerx; python -m unittest)
-(cd beakerx_tabledisplay; python -m unittest)
 ```
 
 ## Groovy with Interactive Plotting:

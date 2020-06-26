@@ -1,8 +1,0 @@
-{
-  "argv": [
-    "java", "-cp", ${PATH}, "com.twosigma.beakerx.kotlin.kernel.Kotlin",  "{connection_file}"
-  ],
-  "display_name": "Kotlin",
-  "language": "kotlin",
-  "env": { "PS1":"kotlin>"}
-}

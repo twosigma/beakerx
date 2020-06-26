@@ -1,0 +1,32 @@
+{% set name = "beakerx_all" %}
+  {% set version = "1.6.0" %}
+
+package:
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
+
+source:
+  git_url: https://github.com/twosigma/beakerx.git
+  git_tag: master
+
+source:
+  url: https://files.pythonhosted.org/packages/source/b/beakerx/{{ name }}-{{ version }}.tar.gz
+  #url: file:///YOUR_LOCAL_PATH/beakerx/beakerx-dist/dist/{{ name }}-{{ version }}.tar.gz
+
+requirements:
+  build:
+    - python
+    - pip
+  run:
+    - beakerx_base={{ version }}
+    - beakerx_kernel_groovy={{ version }}
+    - beakerx_kernel_java={{ version }}
+    - beakerx_kernel_scala={{ version }}
+    - beakerx_kernel_sql={{ version }}
+    - beakerx_kernel_clojure={{ version }}
+    - beakerx_kernel_kotlin={{ version }}
+    - beakerx_kernel_autotranslation={{ version }}
+    - beakerx_tabledisplay={{ version }}
+    - beakerx_widgets={{ version }}
+    - python >=3
+    - notebook >=5.7.4

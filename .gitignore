@@ -1,80 +1,22 @@
-# BeakerX gitignore
+# IntelliJ
+.idea/
+.iml
 
-# General
-lib/
-
-# Beaker
-VERSION
-beakerx/static/
-beakerx/beakerx/static/
-beakerx/beakerx_databrowser/static/
-beakerx/beakerx/kernel/
-beakerx/beakerx/javadoc/
-beakerx/record.txt
-beakerx_tabledisplay/beakerx_tabledisplay/static/
-
-# Jupyter / iPython
-/.project
-jupyter_contrib_nbextensions/
+# Jupyter
 .ipynb_checkpoints/
-/*.ipynb
-!StartHere.ipynb
 
 # Gradle
 .gradle/
-/gradle*
-kernel/build/
-kernel/*/build/
-kernel/*/out/
 /build/
-/.nb-gradle/
-.nb-gradle-properties
-Groovier-1.0.0.jar
-jupyter-groovy-kernel.log
-jupyter-groovy-kernel-1.0.0.jar
-jupyter-groovy-kernel.log
-
-# Java
-/.classpath
+*/build/
+gradle*
 
 # Python
 *.py[cod]
 __pycache__/
-beakerx/dist
 *.egg-info/
 
-# Node
-js/bower_components/
-
-# Ignore tags created by etags, ctags, gtags, or cscope
-TAGS
-.TAGS
-.TAGS/
-tags
-.tags
-!tags/
-gtags.files
-GTAGS
-GRTAGS
-GPATH
-GSYMS
-cscope.files
-cscope.out
-cscope.in.out
-cscope.po.out
-
-# Emacs
-*~
-
-# Vim
-[._]*.s[a-v][a-v]
-[._]*.sw[a-p]
-[._]*s[a-v][a-z]
-[._]sw[a-p]
-
-# IntelliJ
-.idea/
-.iml
+beakerx-dist/dist
 
 # Eclipse
 .metadata/

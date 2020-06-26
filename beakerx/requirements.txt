@@ -1,3 +1,0 @@
--e ../beakerx_base
--e ../beakerx_tabledisplay
--e .

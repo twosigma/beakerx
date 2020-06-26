@@ -1,0 +1,6 @@
+name: beakerx_all
+channels:
+  - conda-forge
+dependencies:
+  - python =3.7.5
+  - pip

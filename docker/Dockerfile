@@ -58,7 +58,7 @@ RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
 
 RUN apt-get clean
 
-COPY configuration.yml /home/beakerx/
+COPY beakerx/beakerx-dist/configuration.yml /home/beakerx/
 RUN conda env create -n beakerx -f /home/beakerx/configuration.yml
 RUN conda install -y -n beakerx -c conda-forge jupyterhub jupyterlab=1 pyzmq pytest
 
@@ -70,21 +70,22 @@ ENV SHELL /bin/bash
 ENV NB_UID 1000
 ENV HOME /home/$NB_USER
 
-COPY beakerx jitpack.yml js kernel test /home/beakerx/
-COPY docker/setup.sh / $HOME/
-COPY docker/start.sh docker/start-notebook.sh docker/start-singleuser.sh /usr/local/bin/
-COPY docker/jupyter_notebook_config.py /etc/jupyter/
+COPY beakerx beakerx_base beakerx_kernel_groovy beakerx_kernel_java beakerx_kernel_scala beakerx_kernel_kotlin beakerx_kernel_sql beakerx_kernel_clojure beakerx_kernel_autotranslation beakerx_base beakerx_tabledisplay beakerx_widgets $HOME/
+
+COPY beakerx/docker/setup.sh / $HOME/
+COPY beakerx/docker/start.sh beakerx/docker/start-notebook.sh beakerx/docker/start-singleuser.sh /usr/local/bin/
+COPY beakerx/docker/jupyter_notebook_config.py /etc/jupyter/
 
 WORKDIR $HOME
 
 ###################
 #      Build      #
 ###################
-RUN chown -R beakerx:beakerx /home/beakerx /opt/conda/envs/beakerx  && \
-    /home/beakerx/setup.sh
+RUN chown -R beakerx:beakerx $HOME/ /opt/conda/envs/beakerx  && \
+    $HOME/setup.sh
 
 # Add documentation
-COPY NOTICE README.md StartHere.ipynb doc /home/beakerx/
+COPY beakerx/NOTICE beakerx/README.md beakerx/StartHere.ipynb beakerx/doc $HOME/
 
 USER $NB_USER
 

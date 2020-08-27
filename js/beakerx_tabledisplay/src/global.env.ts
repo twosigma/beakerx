@@ -1,1 +1,0 @@
-declare const BEAKERX_MODULE_VERSION: string;

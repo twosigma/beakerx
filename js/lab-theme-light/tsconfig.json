@@ -1,9 +1,0 @@
-{
-  "extends": "../tsconfigbase",
-  "compilerOptions": {
-    "outDir": "lib",
-    "rootDir": "src",
-    "lib": ["dom", "es2017"]
-  },
-  "include": ["src/*"]
-}

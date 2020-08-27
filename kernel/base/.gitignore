@@ -1,7 +1,0 @@
-/bin/
-/.classpath
-/.project
-/src/main/resources/build_time
-/src/main/resources/hash
-/src/main/resources/version
-/src/main/resources/mvnLocation

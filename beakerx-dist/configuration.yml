@@ -14,3 +14,4 @@ dependencies:
   - requests
   - pyspark
   - bottle
+  - jupyterlab=1

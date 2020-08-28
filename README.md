@@ -30,74 +30,62 @@
 
 BeakerX is a collection of JVM kernels and interactive widgets for
 plotting, tables, autotranslation, and other extensions to Jupyter
-Notebook.
+Notebook and Jupyter Lab version 1.2.x.
+
+Version 2.x of BeakerX improves on the original solution architecture by providing
+independent modules that end-users can install to better tune the platform.
 
 The [documentation](https://github.com/twosigma/beakerx/blob/master/StartHere.ipynb)
 consists of tutorial notebooks on GitHub
 and a [cheatsheet](https://github.com/twosigma/beakerx/blob/master/doc/Cheatsheet.pdf).
 
-<!--
-You can try it in the cloud for free with 
-[Binder](https://mybinder.org/v2/gh/twosigma/beakerx/1.2.0?filepath=StartHere.ipynb).
--->
 
 BeakerX is the successor to the [Beaker Notebook (source code
 archive)](https://github.com/twosigma/beaker-notebook-archive).  It
 comes from [Two Sigma Open Source](http://opensource.twosigma.com/). Yes we are
 [hiring](https://www.twosigma.com/careers).
 
-This README is for developers.  Users should see the
-[documentation](http://beakerx.com/documentation) on the homepage for
-how to install and run BeakerX.
-
 ## How to use
 
 To install BeakerX and all kernels use:
 ```
-conda install beakerx_all
+conda install -c beakerx beakerx_all
+```
+To install BeakerX extensions inside Jupyter Lab 1.2 use
+```
+conda install -c conda-forge jupyterlab=1
+conda install -c beakerx beakerx_all
 ```
 
 To install only part of the solution choose which kernels to install:
 ```
-conda install beakerx_kernel_groovy
-conda install beakerx_kernel_java
-conda install beakerx_kernel_scala
-conda install beakerx_kernel_sql
-conda install beakerx_kernel_clojure
-conda install beakerx_kernel_kotlin
+conda install -c beakerx beakerx_kernel_groovy
+conda install -c beakerx beakerx_kernel_java
+conda install -c beakerx beakerx_kernel_scala
+conda install -c beakerx beakerx_kernel_sql
+conda install -c beakerx beakerx_kernel_clojure
+conda install -c beakerx beakerx_kernel_kotlin
 ```
-And then install common packages:
+And then install optional packages:
 ```
-conda install beakerx_kernel_autotranslation
-conda install beakerx_tabledisplay
-conda install beakerx_widgets
+conda install -c beakerx beakerx_kernel_autotranslation
+conda install -c beakerx beakerx_tabledisplay
+conda install -c beakerx beakerx_widgets
 ```
 
 ## Features
 
-### Groovy with Interactive Plotting:
+### JVM kernels with Interactive Plotting:
 <img width="700" alt="screen shot" src="https://user-images.githubusercontent.com/963093/28300136-585f9f7c-6b4b-11e7-8827-b5807d3fc9a8.png">
+This feature requires all optional packages.
 
 ### Autotranslation from Python to JavaScript and D3
-
 <img width="700" alt="screen shot" src="https://cloud.githubusercontent.com/assets/963093/21077947/261def64-bf2a-11e6-8518-4845caf75690.png">
+This feature requires beakerx_kernel_autotranslation package.
 
 ### Interactive Tables
-
 <img width="700" alt="screen shot" src="https://user-images.githubusercontent.com/963093/38704584-d1fc16d8-3e74-11e8-95d5-c916bd44d10b.png">
-
-## For Developers
-
-See [DEVELOPERS.md](DEVELOPERS.md).
-
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md).
-
-## Releasing
-
-See [RELEASE.md](RELEASE.md).
+This feature requires beakerx_tabledisplay package.
 
 ## FAQs
 

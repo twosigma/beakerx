@@ -1,5 +1,5 @@
 {% set name = "beakerx_all" %}
-  {% set version = "1.6.0" %}
+  {% set version = "2.0.0" %}
 
 package:
   name: "{{ name|lower }}"
@@ -10,8 +10,8 @@ source:
   git_tag: master
 
 source:
-  url: https://files.pythonhosted.org/packages/source/b/beakerx/{{ name }}-{{ version }}.tar.gz
-  #url: file:///YOUR_LOCAL_PATH/beakerx/beakerx-dist/dist/{{ name }}-{{ version }}.tar.gz
+  #url: https://files.pythonhosted.org/packages/source/b/beakerx/{{ name }}-{{ version }}.tar.gz
+  url: file:///Users/ildipo/src/beakerx/beakerx-dist/dist/{{ name }}-{{ version }}.tar.gz
 
 requirements:
   build:

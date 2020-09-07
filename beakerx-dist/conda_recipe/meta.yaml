@@ -1,5 +1,6 @@
 {% set name = "beakerx_all" %}
-  {% set version = "2.0.0" %}
+  {% set version = "2.0.1" %}
+  {% set kversion = "2.0.0" %}
 
 package:
   name: "{{ name|lower }}"
@@ -18,15 +19,15 @@ requirements:
     - python
     - pip
   run:
-    - beakerx_base={{ version }}
-    - beakerx_kernel_groovy={{ version }}
-    - beakerx_kernel_java={{ version }}
-    - beakerx_kernel_scala={{ version }}
-    - beakerx_kernel_sql={{ version }}
-    - beakerx_kernel_clojure={{ version }}
-    - beakerx_kernel_kotlin={{ version }}
-    - beakerx_kernel_autotranslation={{ version }}
-    - beakerx_tabledisplay={{ version }}
-    - beakerx_widgets={{ version }}
+    - beakerx_base>={{ version }}
+    - beakerx_kernel_groovy>={{ kversion }}
+    - beakerx_kernel_java>={{ kversion }}
+    - beakerx_kernel_scala>={{ kversion }}
+    - beakerx_kernel_sql>={{ kversion }}
+    - beakerx_kernel_clojure>={{ kversion }}
+    - beakerx_kernel_kotlin>={{ kversion }}
+    - beakerx_kernel_autotranslation>={{ kversion }}
+    - beakerx_tabledisplay>={{ version }}
+    - beakerx_widgets>={{ version }}
     - python >=3
     - notebook >=5.7.4

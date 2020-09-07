@@ -51,11 +51,6 @@ To install BeakerX and all kernels use:
 ```
 conda install -c beakerx beakerx_all
 ```
-To install BeakerX extensions inside Jupyter Lab 1.2 use
-```
-conda install -c conda-forge jupyterlab=1.2.16
-conda install -c beakerx beakerx_all
-```
 
 To install only part of the solution choose which kernels to install:
 ```
@@ -71,6 +66,14 @@ And then install optional packages:
 conda install -c beakerx beakerx_kernel_autotranslation
 conda install -c beakerx beakerx_tabledisplay
 conda install -c beakerx beakerx_widgets
+```
+
+To install BeakerX extensions inside Jupyter Lab 1.2 use
+```
+// ensure you have yarn, nodejs and npm installed
+conda install -c conda-forge jupyterlab=1.2
+beakerx install --lab
+beakerx_tabledisplay install --lab
 ```
 
 ## Features

@@ -53,7 +53,7 @@ conda install -c beakerx beakerx_all
 ```
 To install BeakerX extensions inside Jupyter Lab 1.2 use
 ```
-conda install -c conda-forge jupyterlab=1
+conda install -c conda-forge jupyterlab=1.2.16
 conda install -c beakerx beakerx_all
 ```
 

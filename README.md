@@ -30,7 +30,7 @@
 
 BeakerX is a collection of JVM kernels and interactive widgets for
 plotting, tables, autotranslation, and other extensions to Jupyter
-Notebook and Jupyter Lab version 1.2.x.
+Notebook and Jupyter Lab version 1.2.x and 2.x.
 
 Version 2.x of BeakerX improves on the original solution architecture by providing
 independent modules that end-users can install to better tune the platform.
@@ -72,8 +72,16 @@ To install BeakerX extensions inside Jupyter Lab 1.2 use
 ```
 // ensure you have yarn, nodejs and npm installed
 conda install -c conda-forge jupyterlab=1.2
-beakerx install --lab
-beakerx_tabledisplay install --lab
+beakerx install
+beakerx_tabledisplay install
+```
+
+To install BeakerX extensions inside Jupyter Lab 2.x use
+```
+// ensure you have yarn, nodejs and npm installed
+conda install -c conda-forge jupyterlab=2
+beakerx install
+beakerx_tabledisplay install
 ```
 
 ## Features

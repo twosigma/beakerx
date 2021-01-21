@@ -72,16 +72,14 @@ To install BeakerX extensions inside Jupyter Lab 1.2 use
 ```
 // ensure you have yarn, nodejs and npm installed
 conda install -c conda-forge jupyterlab=1.2
-beakerx install
-beakerx_tabledisplay install
+conda install -c beakerx beakerx_all
 ```
 
 To install BeakerX extensions inside Jupyter Lab 2.x use
 ```
 // ensure you have yarn, nodejs and npm installed
 conda install -c conda-forge jupyterlab=2
-beakerx install
-beakerx_tabledisplay install
+conda install -c beakerx beakerx_all
 ```
 
 ## Features

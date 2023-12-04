@@ -12,6 +12,10 @@ c.NotebookApp.ip = '0.0.0.0'
 c.NotebookApp.port = 8888
 c.NotebookApp.open_browser = False
 
+# configure a path prefix for the app if it had been set
+if 'CONTEXT_PATH' in os.environ:
+  c.NotebookApp.base_url = os.environ['CONTEXT_PATH']
+
 # Generate a self-signed certificate
 if 'GEN_CERT' in os.environ:
   dir_name = jupyter_data_dir()
